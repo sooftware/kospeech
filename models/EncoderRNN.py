@@ -65,28 +65,24 @@ class EncoderRNN(BaseRNN):
         MIT License
         """
         self.conv = nn.Sequential(
-            nn.Conv2d(1, 16, kernel_size=3, padding=1, bias=False),
-            nn.BatchNorm2d(16),
-            nn.Hardtanh(0, 20, inplace=True),
-            nn.Conv2d(16, 32, kernel_size=3, padding=1, bias=False),
-            nn.BatchNorm2d(32),
-            nn.Hardtanh(0, 20, inplace=True),
-            nn.Conv2d(32, 64, kernel_size=3, padding=1, bias=False),
-            nn.BatchNorm2d(64),
-            nn.Hardtanh(0, 20, inplace=True),
-            nn.MaxPool2d(2, 2),
-            nn.Conv2d(64, 128, kernel_size=3, padding=1, bias=False),
-            nn.BatchNorm2d(128),
-            nn.Hardtanh(0, 20, inplace=True),
-            nn.MaxPool2d(2, 2),
-            nn.Conv2d(128, 256, kernel_size=3, padding=1, bias=False),
-            nn.BatchNorm2d(256),
-            nn.Hardtanh(0, 20, inplace=True)
+            nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.BatchNorm2d(num_features=64),
+            nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(2, stride=2),
+            nn.BatchNorm2d(num_features=64),
+            nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.BatchNorm2d(num_features=128),
+            nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(2, stride=2)
         )
 
         feature_size = math.ceil((feature_size - 11 + 1 + (5 * 2)) / 2)
         feature_size = math.ceil(feature_size - 11 + 1 + (5 * 2))
-        feature_size *= 128  # baseCNN 기준
+        feature_size *= 64  # baseCNN 기준
 
         self.rnn = self.rnn_cell(feature_size, hidden_size, n_layers,
                                  batch_first=True, bidirectional = bidirectional, dropout = dropout_p)
