@@ -86,33 +86,6 @@ class DecoderRNN(BaseRNN):
         self.bidirectional_encoder = bidirectional
         # rnn_cell -> gru를 의미
         self.rnn = self.rnn_cell(hidden_size , hidden_size, n_layers, batch_first=True, dropout=dropout_p)
-
-        '''
-                GRU
-
-                num_directions : bidirectional이면 2 아니면 1
-
-                input1 : (L,N,H_in) H_in == input_size, L == sequence length
-                input2 : (S,N,H_out) H_out == hidden_size, S == num_layer * num_directions if the RNN is bidirectional
-                Output1 : (L,N,H_all) H_all == num_directions * hidden_size
-                Output2 : (S,N,H_out) tensor containing the next hidden state for each element in the batch
-
-                input1 -> input
-                input2 -> h_0
-
-                output1 -> output
-                output2 -> h_n
-
-                즉,
-                output은 (feature_size,  Batch(?), Hidden_size)
-                hidden은 (num_layers * num_directions, Batch(?), Hidden_size)
-                -> print(output.shape)
-                -> print(hidden.shape)
-
-                hidden 은 context!! -> 주변 cell
-                output 은 타겟!! -> 해당 cell
-                '''
-
         self.output_size = vocab_size # 발음 개수 사이즈만큼 output을 내놓아야 하니까!!
         self.max_length = max_len
         self.use_attention = use_attention
