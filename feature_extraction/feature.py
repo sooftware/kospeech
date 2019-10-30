@@ -9,9 +9,11 @@ STRIDE : 5.2ms ( 75% duplicated )
 FRAME_LENGTH = N_FFT / SAMPLE_RATE => N_FFT = 336
 STRIDE = HOP_LENGTH / SAMPLE_RATE => STRIDE = 168
 
-=> 확장성보다는 빠른 학습을 위해 미리 계산해서 상수로 적용
++++++
+remove silence Using librosa
++++++
 
-by Kai.lib
+ - Soo-Hwan -
 """
 
 import torch

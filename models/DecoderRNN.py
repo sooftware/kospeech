@@ -128,8 +128,10 @@ class DecoderRNN(BaseRNN):
         #========================================
         # Differ Encoder & Decoder Layer size
         # ===== by Soo-Hwan
+        #
+        # B : batch_size, L : layer_size, H : hidden_size
+        # LxBxH -> BxLxH
 
-        # LxBxH -> BxLxH ( L : Layer, B : Batch, H : Hidden )
         BxLxH = decoder_hidden.transpose(0, 1)
         decoder_hidden = torch.FloatTensor()
         endec_ratio = int(len(encoder_hidden) / self.n_layers) # Ex) enc : 8 , dec : 2 -> enc_per_dec = 4
@@ -145,10 +147,11 @@ class DecoderRNN(BaseRNN):
         decoder_hidden = decoder_hidden.view(len(encoder_hidden[0]), self.n_layers, self.hidden_size)
         decoder_hidden = decoder_hidden.transpose(0, 1)
 
-        #   Comment
+        #   -* Comment *-
         #   Encoder & Decoder 사이즈 다르게 하는 부분
         #   인코더의 hidden_state 를 1 : 1 로 매핑하는 기존 코드에서
-        #   순서대로 인코더의 enc_per_dec 개 레이어 => 1개 레이어 로 평균내는 방법으로 decoder_hidden 초기화
+        #   순서대로 인코더의 enc_per_dec 개 레이어
+        #   => 1개 레이어 로 평균내는 방법으로 decoder_hidden 초기화
         #
         # ===== Encoder & Decoder layer size test
         # ===============================================
