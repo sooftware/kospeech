@@ -65,23 +65,23 @@ class EncoderRNN(BaseRNN):
         MIT License
         """
         self.conv = nn.Sequential(
-            nn.Conv2d(1, 16, kernel_size=3, padding=1, bias=False),
-            nn.BatchNorm2d(16),
+            nn.Conv2d(1, 64, kernel_size=3, padding=1, bias=False),
             nn.Hardtanh(0, 20, inplace=True),
-            nn.Conv2d(16, 32, kernel_size=3, padding=1, bias=False),
-            nn.BatchNorm2d(32),
-            nn.Hardtanh(0, 20, inplace=True),
-            nn.Conv2d(32, 64, kernel_size=3, padding=1, bias=False),
             nn.BatchNorm2d(64),
+            nn.Conv2d(64, 64, kernel_size=3, padding=1, bias=False),
             nn.Hardtanh(0, 20, inplace=True),
             nn.MaxPool2d(2, 2),
+            nn.BatchNorm2d(64),
             nn.Conv2d(64, 128, kernel_size=3, padding=1, bias=False),
-            nn.BatchNorm2d(128),
             nn.Hardtanh(0, 20, inplace=True),
-            nn.MaxPool2d(2, 2),
+            nn.BatchNorm2d(128),
+            nn.Conv2d(128, 128, kernel_size=3, padding=1, bias=False),
+            nn.Hardtanh(0, 20, inplace=True),
+            nn.BatchNorm2d(128),
             nn.Conv2d(128, 256, kernel_size=3, padding=1, bias=False),
+            nn.Hardtanh(0, 20, inplace=True),
             nn.BatchNorm2d(256),
-            nn.Hardtanh(0, 20, inplace=True)
+            nn.MaxPool2d(2, 2)
         )
 
         feature_size *= 64
