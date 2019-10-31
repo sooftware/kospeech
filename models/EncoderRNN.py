@@ -80,9 +80,8 @@ class EncoderRNN(BaseRNN):
             nn.MaxPool2d(2, stride=2)
         )
 
-        feature_size = math.ceil((feature_size - 11 + 1 + (5 * 2)) / 2)
-        feature_size = math.ceil(feature_size - 11 + 1 + (5 * 2))
-        feature_size *= 64  # baseCNN 기준
+        # ceil : 올림  Ex) math.ceil(-3.14) => -3, math.ceil(3.14) => 4
+        feature_size *= 32
 
         self.rnn = self.rnn_cell(feature_size, hidden_size, n_layers,
                                  batch_first=True, bidirectional = bidirectional, dropout = dropout_p)

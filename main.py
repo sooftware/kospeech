@@ -5,7 +5,7 @@ import random
 import os
 import torch.nn as nn
 import torch.optim as optim
-from funcCall import *
+from base_func import *
 from loader import label_loader
 from models import EncoderRNN, DecoderRNN, Seq2seq
 from hyperParams import HyperParams
