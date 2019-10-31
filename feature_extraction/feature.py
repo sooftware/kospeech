@@ -36,9 +36,8 @@ def get_librosa_melspectrogram(filepath, n_mels = 80, rm_silence = True, type_ =
     if type_ == 'log_mel':
         log_mel = librosa.amplitude_to_db(mel, ref = np.max)
         return torch.FloatTensor(log_mel).transpose(0, 1)
-
+    # get Mel-Spectrogram
     return torch.FloatTensor(mel).transpose(0, 1)
-
 
 def get_librosa_mfcc(filepath, n_mfcc = 40, rm_silence = True):
     sig, sr = librosa.core.load(filepath, SAMPLE_RATE)
