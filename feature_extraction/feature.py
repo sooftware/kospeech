@@ -7,13 +7,13 @@ FRAME_LENGTH : 21ms
 STRIDE : 5.2ms ( 75% duplicated )
 
 FRAME_LENGTH = N_FFT / SAMPLE_RATE => N_FFT = 336
-STRIDE = HOP_LENGTH / SAMPLE_RATE => STRIDE = 168
+STRIDE = HOP_LENGTH / SAMPLE_RATE => HOP_LENGTH = 84
 
 +++++
 remove silence Using librosa
 +++++
 
- /* Soo-Hwan */
+ -*- Soo-Hwan -*-
 """
 
 import torch
@@ -46,6 +46,6 @@ def get_librosa_mfcc(filepath, n_mfcc = 40, rm_silence = True):
     if rm_silence:
         non_silence_indices = librosa.effects.split(sig, top_db=30)
         sig = np.concatenate([sig[start:end] for start, end in non_silence_indices])
-
     mfccs = librosa.feature.mfcc(y = sig, sr = sr, hop_length = HOP_LENGTH, n_mfcc = n_mfcc, n_fft = N_FFT)
+
     return torch.FloatTensor(mfccs).transpose(0, 1)

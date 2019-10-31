@@ -28,7 +28,7 @@ class HyperParams():
         self.dropout = float(input("dropout : "))
         self.encoder_layer_size = int(input("encoder_layer_size : "))
         self.decoder_layer_size = int(input("decoder_layer_size : "))
-        self.batch_size = int(input("batch_size"))
+        self.batch_size = int(input("batch_size : "))
         self.workers = int(input("workers : "))
         self.max_epochs = int(input("max_epochs : "))
         self.lr = float(input("learning rate : "))

@@ -134,7 +134,7 @@ class DecoderRNN(BaseRNN):
 
         BxLxH = decoder_hidden.transpose(0, 1)
         decoder_hidden = torch.FloatTensor()
-        endec_ratio = int(len(encoder_hidden) / self.n_layers) # Ex) enc : 8 , dec : 2 -> enc_per_dec = 4
+        endec_ratio = int(len(encoder_hidden) / self.n_layers)   # Ex) enc : 8 , dec : 2 -> enc_per_dec = 4
 
         for batch in BxLxH:             # => BxLxH 에서 item으로 받으므로 LxH 단위로 access
             LxH = torch.FloatTensor()
