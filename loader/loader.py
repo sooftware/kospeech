@@ -78,7 +78,7 @@ class BaseDataset(Dataset):
 
     def getitem(self, idx):
         # 음성데이터에 대한 feature를 feat에 저장 -> tensor 형식
-        feat = get_librosa_mfcc(self.wav_paths[idx], n_mfcc = 40)
+        feat = get_librosa_mfcc(self.wav_paths[idx], n_mfcc = 40, rm_silence = True)
         # 리스트 형식으로 label을 저장
         script = get_script(self.script_paths[idx], self.bos_id, self.eos_id, self.target_dict)
         return feat, script

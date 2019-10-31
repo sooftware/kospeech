@@ -107,6 +107,7 @@ def train(model, total_batch_size, queue, criterion, optimizer, device, train_be
         optimizer.step()
 
         if batch % print_batch == 0:
+            # ====테스트
             current = time.time()
             elapsed = current - begin
             epoch_elapsed = (current - epoch_begin) / 60.0
@@ -119,6 +120,7 @@ def train(model, total_batch_size, queue, criterion, optimizer, device, train_be
                         total_dist / total_length,
                         elapsed, epoch_elapsed, train_elapsed))
             begin = time.time()
+
         batch += 1
         train.cumulative_batch_count += 1
 
@@ -169,36 +171,6 @@ def evaluate(model, dataloader, queue, criterion, device):
 
     logger.info('evaluate() completed')
     return total_loss / total_num, total_dist / total_length
-
-def bind_model(model, optimizer=None):
-    def load(filename, **kwargs):
-        state = torch.load(os.path.join(filename, 'model.pt'))
-        model.load_state_dict(state['model'])
-        if 'optimizer' in state and optimizer:
-            optimizer.load_state_dict(state['optimizer'])
-        print('Model loaded')
-
-    def save(filename, **kwargs):
-        state = {
-            'model': model.state_dict(),
-            'optimizer': optimizer.state_dict()
-        }
-        torch.save(state, os.path.join(filename, 'model.pt'))
-
-    def infer(wav_path):
-        model.eval()
-        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
-        input = feature.get_librosa_mfcc(wav_path, n_mfcc = 40).unsqueeze(0)
-        input = input.to(device)
-
-        logit = model(input_variable=input, input_lengths=None, teacher_forcing_ratio=0)
-        logit = torch.stack(logit, dim=1).to(device)
-
-        y_hat = logit.max(-1)[1]
-        hyp = label_to_string(y_hat)
-
-        return hyp[0]
 
 def split_dataset(config, wav_paths, script_paths, valid_ratio=0.05, target_dict = dict()):
     train_loader_count = config.workers
