@@ -1,16 +1,16 @@
 # Korean-ASR
 based on https://github.com/sh951011/Naver-Hackathon-2019-Speech-Team_Kai.Lib  
 Modifying from above repository  
-(+) remove silence from audio signal  
+##(+) remove silence from audio signal  
 ![rm_silence](https://postfiles.pstatic.net/MjAxOTEwMzFfMjgy/MDAxNTcyNTI0ODg3Nzcw.rrhpw0MQUaT74qJTM38Q-1z7TxOXlm-rfNXEPRJTY_Ag.SdAUwOdD1loQt2CJBNUbFYUFElG3dSaAly9iZiHwu1Eg.PNG.sooftware/image.png?type=w773)  
-(+) add log Mel feature  
+##(+) add log Mel feature  
 ![feature_extraction](https://postfiles.pstatic.net/MjAxOTEwMzFfMjE4/MDAxNTcyNTIxNTQ2ODk0.M17MGaHYxtsa_aTH4YO5uZgdVVJaubIkPTJdFZjPopgg.yDEQa5pRaj6Rvd1p3gLGZBYMv32fiArBMhlEYU4tdz4g.PNG.sooftware/image.png?type=w773)  
-(+) Modify the size of Encoder & Decoder layer size differently  
+##(+) Modify the size of Encoder & Decoder layer size differently  
 * original  
 ![original](https://postfiles.pstatic.net/MjAxOTEwMzFfMTQ5/MDAxNTcyNTIxNjM5MDAw.twW68KaLExncbk5DM-LCwt9KKvXRhnnhv3KqU0vUnekg.EA-DBdyvt-YPFYqxljAUHZ07jqXw_4bUgrq5DOP5o84g.PNG.sooftware/image.png?type=w773)  
 * modify  
 ![modify](https://postfiles.pstatic.net/MjAxOTEwMzFfMTgw/MDAxNTcyNTIxNjYzNjc2.fSIYRYDJpI_wWHmrKL_8thae3bNDR5s4AfoBipWvuC8g.DnVgwbOxpsv7j4RTKeCt56mta_RoYYUpc96lzA71sXIg.PNG.sooftware/image.png?type=w773)  
-(+) Modify Convolution layer of Encoder  
+##(+) Modify Convolution layer of Encoder  
 * original  
 ```python
 Sequential(
