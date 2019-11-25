@@ -37,9 +37,10 @@ def load_targets(path, target_dict):
 # 정답을 리스트 형식으로 담아주는 함수
 def get_script(filepath, bos_id, eos_id, target_dict):
     # key : 41_0508_171_0_08412_03.script 중 41_0508_171_0_08412_03 -> label
-    key = filepath.split('/')[-1].split('.')[0]
+    key = filepath.split('\\')[-1].split('.')[0]
     # 41_0508_171_0_08412_03 에 해당하는 label
-    script = target_dict[key.split('\\')[1]]
+    #script = target_dict[key.split('n\\')[1]]
+    script = target_dict[key]
     # 텍스트를 ' ' 기준으로 나눈다 -> 10 268 10207 와 같이 레이블
     tokens = script.split(' ')
 
@@ -77,7 +78,7 @@ class BaseDataset(Dataset):
 
     def getitem(self, idx):
         # 음성데이터에 대한 feature를 feat에 저장 -> tensor 형식
-        feat = get_librosa_mfcc(self.wav_paths[idx], n_mfcc = 40, rm_silence = True)
+        feat = get_librosa_melspectrogram(self.wav_paths[idx], n_mels = 80, rm_silence = True, type_='log_mel')
         # 리스트 형식으로 label을 저장
         script = get_script(self.script_paths[idx], self.bos_id, self.eos_id, self.target_dict)
         return feat, script

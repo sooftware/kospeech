@@ -10,7 +10,7 @@ FRAME_LENGTH = N_FFT / SAMPLE_RATE => N_FFT = 336
 STRIDE = HOP_LENGTH / SAMPLE_RATE => HOP_LENGTH = 84
 
 +++++
-remove silence Using librosa
+remove silence Using librosa & NumPy
 +++++
 
  -*- Soo-Hwan -*-

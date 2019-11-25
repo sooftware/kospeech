@@ -122,35 +122,33 @@ class DecoderRNN(BaseRNN):
 
         inputs, batch_size, max_length = self._validate_args(inputs, encoder_hidden, encoder_outputs,
                                                              function, teacher_forcing_ratio)
-        # (layer_size, batch_size, hidden_size)
-        decoder_hidden = self._init_state(encoder_hidden)
-
         #========================================
         # Differ Encoder & Decoder Layer size
         # ===== by Soo-Hwan
         #
         # B : batch_size, L : layer_size, H : hidden_size
         # LxBxH -> BxLxH
-
+        decoder_hidden = self._init_state(encoder_hidden) # encoder_hidden : LxBxH
         BxLxH = decoder_hidden.transpose(0, 1)
         decoder_hidden = torch.FloatTensor()
-        endec_ratio = int(len(encoder_hidden) / self.n_layers)   # Ex) enc : 8 , dec : 2 -> enc_per_dec = 4
+        encoder_layer_size = len(BxLxH[0])  # Bidirectional 때문에 * 2가 적용되기 전의 인코더 레이어 사이즈
+        endec_ratio = int(encoder_layer_size / self.n_layers)   # Ex) enc : 8 , dec : 2 -> endec_ratio = 4
 
         for batch in BxLxH:             # => BxLxH 에서 item으로 받으므로 LxH 단위로 access
             LxH = torch.FloatTensor()
-            for i in range(0, len(encoder_hidden), endec_ratio):
+            for i in range(0, encoder_layer_size, endec_ratio):
                 enc_sum = 0
-                for j in range(int(endec_ratio)):
+                for j in range(endec_ratio):
                     enc_sum += batch[i + j]
                 LxH = torch.cat( [LxH, enc_sum / endec_ratio ] )
             decoder_hidden = torch.cat( [decoder_hidden, LxH] )
-        decoder_hidden = decoder_hidden.view(len(encoder_hidden[0]), self.n_layers, self.hidden_size)
-        decoder_hidden = decoder_hidden.transpose(0, 1)
+        decoder_hidden = decoder_hidden.view(len(encoder_hidden[0]), self.n_layers, self.hidden_size) # BxLxH
+        decoder_hidden = decoder_hidden.transpose(0, 1) # BxLxH -> LxBxH
 
         #   -* Comment *-
         #   Encoder & Decoder 사이즈 다르게 하는 부분
         #   인코더의 hidden_state 를 1 : 1 로 매핑하는 기존 코드에서
-        #   순서대로 인코더의 enc_per_dec 개 레이어
+        #   순서대로 인코더의 endec_ratio 개 레이어
         #   => 1개 레이어 로 평균내는 방법으로 decoder_hidden 초기화
         #
         # ===== Encoder & Decoder layer size test

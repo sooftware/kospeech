@@ -16,11 +16,11 @@ global index2char
 global SOS_token
 global EOS_token
 global PAD_token
-DATASET_PATH = './data/'
+DATASET_PATH = '.\\data\\'
 target_dict = dict()
 
 h_params = HyperParams()
-#h_params.input_params()
+h_params.input_params()
 
 char2index, index2char = label_loader.load_label('./hackathon.labels')
 SOS_token = char2index['<s>']
@@ -33,7 +33,7 @@ torch.cuda.manual_seed_all(h_params.seed)
 cuda = not h_params.no_cuda and torch.cuda.is_available()
 device = torch.device('cuda' if cuda else 'cpu')
 
-feature_size = 40  # MFCC n_mfcc = 40이라 40
+feature_size = 80  #
 
 enc = EncoderRNN(feature_size, h_params.hidden_size ,
                  input_dropout_p = h_params.dropout, dropout_p = h_params.dropout,
@@ -55,7 +55,7 @@ optimizer = optim.Adam(model.module.parameters(), lr = h_params.lr)
 criterion = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_token).to(device)
 
 # 데이터 로드 start
-data_list = os.path.join(DATASET_PATH, 'train_data', 'data_list.csv')
+data_list = os.path.join(DATASET_PATH, 'train\\train_data', 'data_list.csv')
 wav_paths = list()
 script_paths = list()
 
@@ -63,15 +63,15 @@ with open(data_list, 'r') as f:
     for line in f:
         # line: "aaa.wav,aaa.label"
         wav_path, script_path = line.strip().split(',') # wav_path 여기 있음!!
-        wav_paths.append(os.path.join(DATASET_PATH, 'train_data', wav_path))
-        script_paths.append(os.path.join(DATASET_PATH, 'train_data', script_path))
+        wav_paths.append(os.path.join(DATASET_PATH, 'train\\train_data', wav_path))
+        script_paths.append(os.path.join(DATASET_PATH, 'train', script_path))
 
 best_loss = 1e10
 best_cer = 1.0
 begin_epoch = 0
 
 # load all target scripts for reducing disk i/o
-target_path = os.path.join(DATASET_PATH, 'train_label')
+target_path = os.path.join(DATASET_PATH,'train', 'train_label')
 load_targets(target_path, target_dict)
 
 # 데이터 로드 end
@@ -118,7 +118,8 @@ for epoch in range(begin_epoch, h_params.max_epochs):
     is_best_cer = (eval_cer < best_cer)
 
     if is_best_loss:
-        torch.save(model, "./best_loss")
+        torch.save(model, "./weight_file/best_loss")
 
     if is_best_cer:
-        torch.save(model, "./best_cer")
+        torch.save(model, "./weight_file/best_cer")
+    torch.save(model, "./weight_file/epoch" + str(epoch))
