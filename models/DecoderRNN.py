@@ -202,23 +202,31 @@ class DecoderRNN(BaseRNN):
 
         return decoder_outputs, decoder_hidden, ret_dict
 
-    # 여기를 수정해야함!!
+    # 디코더 히든스테이트를 인코더 히든스테이트로 초기화해주는 함수
     def _init_state(self, encoder_hidden):
         """ Initialize the encoder hidden state. """
         if encoder_hidden is None:
             return None
+        # Unidirectional이면
         if isinstance(encoder_hidden, tuple):
             encoder_hidden = tuple([self._cat_directions(h) for h in encoder_hidden])
+        # Bidirectional이면
         else:
             encoder_hidden = self._cat_directions(encoder_hidden)
         return encoder_hidden
 
+    # Bidirectional일 경우 인코더의 레이어 사이즈가 x2 가 되기 때문에
+    # 그에 대한 처리를 해주는 함수
     def _cat_directions(self, h):
-        """ If the encoder is bidirectional, do the following transformation.
+        """ If the encoder is bidirectional, do the following transformation
             (#directions * #layers, #batch, hidden_size) -> (#layers, #batch, #directions * hidden_size)
         """
         if self.bidirectional_encoder:
-            h = torch.cat([h[0:h.size(0):2], h[1:h.size(0):2]], 2)
+            # 0 2 4 .. 2n 에는 Forward encoder hidden이
+            # 1 3 5 .. 2n + 1 에는 Backward encoder hidden이 있음
+            # 이를 (0,1), (2,3) .. (2n, 2n+1)로 hidden_size에 concatenate한다
+            # 즉, 간단히 말하면 Layer_size 레벨로 나뉘어져 있던 것을 Hidden_Size 레벨로 Concatenate한다
+            h = torch.cat([h[0:h.size(0):2], h[1:h.size(0):2]], 2) # 여기서 2는 차원 즉, 2차원 == LxBxH의 H (Hidden)
         return h
 
     def _validate_args(self, inputs, encoder_hidden, encoder_outputs, function, teacher_forcing_ratio):
