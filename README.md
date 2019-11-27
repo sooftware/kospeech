@@ -7,9 +7,9 @@ Modifying from above repository
 ![feature_extraction](https://postfiles.pstatic.net/MjAxOTEwMzFfMjE4/MDAxNTcyNTIxNTQ2ODk0.M17MGaHYxtsa_aTH4YO5uZgdVVJaubIkPTJdFZjPopgg.yDEQa5pRaj6Rvd1p3gLGZBYMv32fiArBMhlEYU4tdz4g.PNG.sooftware/image.png?type=w773)  
 ## (+) Modify the size of Encoder & Decoder layer size differently  
 * original  
-![original](https://postfiles.pstatic.net/MjAxOTEwMzFfMTQ5/MDAxNTcyNTIxNjM5MDAw.twW68KaLExncbk5DM-LCwt9KKvXRhnnhv3KqU0vUnekg.EA-DBdyvt-YPFYqxljAUHZ07jqXw_4bUgrq5DOP5o84g.PNG.sooftware/image.png?type=w773)  
+![original](https://postfiles.pstatic.net/MjAxOTExMjdfMTk4/MDAxNTc0ODIxODc3MTkx.0JdK_SdhSHTGjkYpHhDq4MlztY4pn93g9ZoPRTotxbwg.uwbhrBU7jqTUFLKOZRU9pnBRX0kUU35Gy70P01JLdvcg.PNG.sooftware/image.png?type=w773)  
 * modify  
-![modify](https://postfiles.pstatic.net/MjAxOTEwMzFfMTgw/MDAxNTcyNTIxNjYzNjc2.fSIYRYDJpI_wWHmrKL_8thae3bNDR5s4AfoBipWvuC8g.DnVgwbOxpsv7j4RTKeCt56mta_RoYYUpc96lzA71sXIg.PNG.sooftware/image.png?type=w773)  
+![modify](https://postfiles.pstatic.net/MjAxOTExMjdfMjM1/MDAxNTc0ODIxOTY1NDI3.KIFNl1lvjCnYHXCzkEssJLJxXGs-m6zKvSfaurZncasg.PnUqcLztGAueEecp5DoOWf61AExatLIu4ZZoEeS1Ia4g.PNG.sooftware/image.png?type=w773)  
 ## (+) Modify Convolution layer of Encoder  
 * original  
 ```python
