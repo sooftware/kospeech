@@ -2,7 +2,7 @@
 based on https://github.com/sh951011/Naver-Hackathon-2019-Speech-Team_Kai.Lib  
 Modifying from above repository  
   
-## (+) Modify the size of Encoder & Decoder layer size differently  
+## (+) Apply different Encoder & Decoder Layer size  
 * Previous  
   
 ![original](https://postfiles.pstatic.net/MjAxOTExMjdfMTk4/MDAxNTc0ODIxODc3MTkx.0JdK_SdhSHTGjkYpHhDq4MlztY4pn93g9ZoPRTotxbwg.uwbhrBU7jqTUFLKOZRU9pnBRX0kUU35Gy70P01JLdvcg.PNG.sooftware/image.png?type=w773)  
@@ -12,7 +12,7 @@ Modifying from above repository
 ![modify](https://postfiles.pstatic.net/MjAxOTExMjdfMjM1/MDAxNTc0ODIxOTY1NDI3.KIFNl1lvjCnYHXCzkEssJLJxXGs-m6zKvSfaurZncasg.PnUqcLztGAueEecp5DoOWf61AExatLIu4ZZoEeS1Ia4g.PNG.sooftware/image.png?type=w773)  
   
 ## (+) Modify Convolution layer of Encoder  
-* Preious  
+* Previous  
 ```python
 Sequential(
   (0): Conv2d(1, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
