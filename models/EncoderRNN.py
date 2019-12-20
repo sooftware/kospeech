@@ -11,7 +11,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-import math
 import torch.nn as nn
 from .baseRNN import BaseRNN
 
@@ -64,6 +63,11 @@ class EncoderRNN(BaseRNN):
         Copyright (c) 2017 Sean Naren
         MIT License
         """
+
+        # nn.Conv2d(in_channel,out_channel)
+        # => 여기서 channel이란?
+        #    nn.Conv2d(1,64) 라면 1개의 이미지를 64개의 차원으로 만든다
+
         self.conv = nn.Sequential(
             nn.Conv2d(1, 64, kernel_size=3, padding=1, bias=False),
             nn.Hardtanh(0, 20, inplace=True),
