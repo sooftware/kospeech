@@ -20,7 +20,7 @@ DATASET_PATH = '.\\data\\'
 target_dict = dict()
 
 h_params = HyperParams()
-h_params.input_params()
+#h_params.input_params()
 
 char2index, index2char = label_loader.load_label('./hackathon.labels')
 SOS_token = char2index['<s>']

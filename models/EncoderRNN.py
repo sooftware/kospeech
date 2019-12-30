@@ -51,7 +51,7 @@ class EncoderRNN(BaseRNN):
 
     def __init__(self, feature_size, hidden_size,
                  input_dropout_p=0, dropout_p=0,
-                 n_layers=1, bidirectional=False, rnn_cell='gru',
+                 n_layers=1, bidirectional=True, rnn_cell='gru',
                  variable_lengths=False):
         super(EncoderRNN, self).__init__(0, 0, hidden_size,
                 input_dropout_p, dropout_p, n_layers, rnn_cell)
@@ -90,6 +90,7 @@ class EncoderRNN(BaseRNN):
 
         feature_size *= 64
 
+        # LSTM or GRU
         self.rnn = self.rnn_cell(feature_size, hidden_size, n_layers,
                                  batch_first=True, bidirectional = bidirectional, dropout = dropout_p)
 
@@ -109,15 +110,22 @@ class EncoderRNN(BaseRNN):
             - **hidden** (num_layers * num_directions, batch, hidden_size): variable containing the features in the hidden state h
                           => (16, 32, 512)
         """
-        
+
+        # (batch_size, seq_len, n_mels) -> (batch_size, 1(in_channel), seq_len, n_mels)
         input_var = input_var.unsqueeze(1)
+        # (batch_size, 1, seq_len, n_mels) -> (batch_size, out_channel, seq_len / 4 , n_mels / 4) 4는 MaxPool2d x 2번
         x = self.conv(input_var)
+        # (batch_size, out_channel, seq_len, n_mels) -> (batch_size, seq_len, out_channel, n_mels)
         x = x.transpose(1, 2)
+        # 메모리에 contiguous 하게 저장 ( torch.view() 사용시 필요 )
         x = x.contiguous()
+        # x`s shape
         sizes = x.size()
+        # Dimenstion Synchronization
+        # (batch_size, seq_len, out_channel, n_mels) -> (batch_size, seq_len, out_channel * n_mels)
         x = x.view(sizes[0], sizes[1], sizes[2] * sizes[3])
-        if self.training:
-            self.rnn.flatten_parameters()
+
+        if self.training: self.rnn.flatten_parameters()
 
         output, hidden = self.rnn(x)
         return output, hidden

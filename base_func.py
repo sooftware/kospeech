@@ -87,6 +87,8 @@ def train(model, total_batch_size, queue, criterion, optimizer, device, train_be
         src_len = scripts.size(1)
         target = scripts[:, 1:]
         model.module.flatten_parameters()
+
+        # Seq2seq forward()
         logit = model(feats, feat_lengths, scripts, teacher_forcing_ratio=teacher_forcing_ratio)
 
         logit = torch.stack(logit, dim=1).to(device)
