@@ -2,7 +2,7 @@
 based on https://github.com/sh951011/Naver-Hackathon-2019-Speech-Team_Kai.Lib  
 Modifying from above repository  
   
-## (+) Apply different Encoder & Decoder Layer size  
+## Apply different Encoder & Decoder Layer size  
 * Previous  
   
 ![original](https://postfiles.pstatic.net/MjAxOTExMjdfMTk4/MDAxNTc0ODIxODc3MTkx.0JdK_SdhSHTGjkYpHhDq4MlztY4pn93g9ZoPRTotxbwg.uwbhrBU7jqTUFLKOZRU9pnBRX0kUU35Gy70P01JLdvcg.PNG.sooftware/image.png?type=w773)  
@@ -11,54 +11,3 @@ Modifying from above repository
   
 ![modify](https://postfiles.pstatic.net/MjAxOTExMjdfMjM1/MDAxNTc0ODIxOTY1NDI3.KIFNl1lvjCnYHXCzkEssJLJxXGs-m6zKvSfaurZncasg.PnUqcLztGAueEecp5DoOWf61AExatLIu4ZZoEeS1Ia4g.PNG.sooftware/image.png?type=w773)  
   
-## (+) Modify Convolution layer of Encoder  
-* Previous  
-```python
-Sequential(
-  (0): Conv2d(1, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-  (1): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-  (2): Hardtanh(min_val=0, max_val=20, inplace=True)
-  (3): Conv2d(16, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-  (4): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-  (5): Hardtanh(min_val=0, max_val=20, inplace=True)
-  (6): Conv2d(32, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-  (7): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-  (8): Hardtanh(min_val=0, max_val=20, inplace=True)
-  (9): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
-  (10): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-  (11): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-  (12): Hardtanh(min_val=0, max_val=20, inplace=True)
-  (13): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
-  (14): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-  (15): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-  (16): Hardtanh(min_val=0, max_val=20, inplace=True)
-)
-```
-* modify  
-```python
-Sequential(
-  (0): Conv2d(1, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-  (1): Hardtanh(min_val=0, max_val=20, inplace=True)
-  (2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-  (3): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-  (4): Hardtanh(min_val=0, max_val=20, inplace=True)
-  (5): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
-  (6): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-  (7): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-  (8): Hardtanh(min_val=0, max_val=20, inplace=True)
-  (9): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-  (10): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-  (11): Hardtanh(min_val=0, max_val=20, inplace=True)
-  (12): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-  (13): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-  (14): Hardtanh(min_val=0, max_val=20, inplace=True)
-  (15): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-  (16): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
-)
-```
-
-  
-## (+) remove silence from audio signal  
-![rm_silence](https://postfiles.pstatic.net/MjAxOTEwMzFfMjgy/MDAxNTcyNTI0ODg3Nzcw.rrhpw0MQUaT74qJTM38Q-1z7TxOXlm-rfNXEPRJTY_Ag.SdAUwOdD1loQt2CJBNUbFYUFElG3dSaAly9iZiHwu1Eg.PNG.sooftware/image.png?type=w773)  
-## (+) add log Mel feature  
-![feature_extraction](https://postfiles.pstatic.net/MjAxOTEwMzFfMjE4/MDAxNTcyNTIxNTQ2ODk0.M17MGaHYxtsa_aTH4YO5uZgdVVJaubIkPTJdFZjPopgg.yDEQa5pRaj6Rvd1p3gLGZBYMv32fiArBMhlEYU4tdz4g.PNG.sooftware/image.png?type=w773)  
