@@ -93,9 +93,9 @@ CRR = (1.0 - CER) * 100.0
 
 ## Reference
 * Model  
-  + IBM pytorch-seq2seq (https://github.com/IBM/pytorch-seq2seq) 모델 사용
+  + IBM pytorch-seq2seq : https://github.com/IBM/pytorch-seq2seq
 * Dataset
-  + [A.I Hub 한국어 음성 데이터셋](http://www.aihub.or.kr/aidata/105)
+  + A.I Hub 한국어 음성 데이터셋 : http://www.aihub.or.kr/aidata/105
   
 ## License
 ```
