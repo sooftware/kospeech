@@ -71,7 +71,7 @@ A.I Hub에서 제공한 1,000시간 데이터 사용
 5 0 105 0 729 0 172 31 25 0 318 0 119 0 489 551 156 0 314 746 3 32 20
 ```
 ### Data Preprocessing
-* b/, n/, u/ .. 등의 잡음 레이블 삭제 
+* b/, n/, / .. 등의 잡음 레이블 삭제 
 ```
 "b/ 아/ 모+ 몬 소리야 (70%)/(칠 십 퍼센트) 확률이라니 n/" => "아/ 모+ 몬 소리야 (70%)/(칠 십 퍼센트) 확률이라니"
 ```
@@ -83,4 +83,31 @@ A.I Hub에서 제공한 1,000시간 데이터 사용
 ```
 "아/ 모+ 몬 소리야 칠 십 퍼센트 확률이라니" => "아 모 몬 소리야 칠 십 퍼센트 확률이라니"
 ```
+## Score
+```
+CRR = (1.0 - CER) * 100.0
+```
+* CRR : Character Recognition Rate
+* CER : Character Error Rate based on Edit Distance
+![crr](https://github.com/AjouJuneK/NAVER_speech_hackathon_2019/raw/master/docs/edit_distance.png)
 
+## Reference
+* Model  
+  + IBM pytorch-seq2seq (https://github.com/IBM/pytorch-seq2seq) 모델 사용
+* Dataset
+  + [A.I Hub 한국어 음성 데이터셋](http://www.aihub.or.kr/aidata/105)
+  
+## License
+```
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```
