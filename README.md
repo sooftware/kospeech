@@ -1,5 +1,5 @@
 # Korean-ASR
-based on https://github.com/sh951011/Naver-Hackathon-2019-Speech-Team_Kai.Lib  
+Further Works from https://github.com/sh951011/Naver-Hackathon-2019-Speech-Team_Kai.Lib  
 Korean Speech Recognition Using PyTorch.  
 This Project is currently in progress.  
 [Demonstration Video](https://www.youtube.com/watch?v=dHJnCqo2gaU)   
