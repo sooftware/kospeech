@@ -74,7 +74,7 @@ class Attention(nn.Module):
         hidden_size = output.size(2)
         input_size = context.size(1)
         # (batch, out_len, dim) * (batch, in_len, dim) -> (batch, out_len, in_len)
-        attn = torch.bmm(output, context.transpose(1, 2)) # 요 놈이 문제
+        attn = torch.bmm(output, context.transpose(1, 2))
         if self.mask is not None:
             attn.data.masked_fill_(self.mask, -float('inf'))
         attn = F.softmax(attn.view(-1, input_size), dim=1).view(batch_size, -1, input_size)

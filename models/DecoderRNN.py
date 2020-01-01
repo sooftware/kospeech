@@ -39,7 +39,7 @@ class DecoderRNN(BaseRNN):
         hidden_size (int): the number of features in the hidden state `h`
         sos_id (int): index of the start of sentence symbol
         eos_id (int): index of the end of sentence symbol
-        n_layers (int, optional): number of recurrent layers (default: 1)
+        layer_size (int, optional): number of recurrent layers (default: 1)
         rnn_cell (str, optional): type of RNN cell (default: gru)
         bidirectional (bool, optional): if the encoder is bidirectional (default False)
         input_dropout_p (float, optional): dropout probability for the input sequence (default: 0)
@@ -77,25 +77,26 @@ class DecoderRNN(BaseRNN):
 
     def __init__(self, vocab_size, max_len, hidden_size,
             sos_id, eos_id,
-            n_layers=1, rnn_cell='gru', bidirectional=True,
+            layer_size=1, rnn_cell='gru', bidirectional=True,
             input_dropout_p=0, dropout_p=0, use_attention=True):
         super(DecoderRNN, self).__init__(vocab_size, max_len, hidden_size,
                 input_dropout_p, dropout_p,
-                n_layers, rnn_cell)
+                layer_size, rnn_cell)
 
         self.bidirectional_encoder = bidirectional
         # rnn_cell -> gru를 의미
-        self.rnn = self.rnn_cell(hidden_size , hidden_size, n_layers, batch_first=True, dropout=dropout_p)
-        self.output_size = vocab_size # 발음 개수 사이즈만큼 output을 내놓아야 하니까!!
+        self.rnn = self.rnn_cell(hidden_size , hidden_size, layer_size, batch_first=True, dropout=dropout_p)
+        self.output_size = vocab_size
         self.max_length = max_len
         self.use_attention = use_attention
         self.eos_id = eos_id
         self.sos_id = sos_id
         self.init_input = None
         self.embedding = nn.Embedding(self.output_size, self.hidden_size)
-        if use_attention:
-            self.attention = Attention(self.hidden_size)
         self.out = nn.Linear(self.hidden_size, self.output_size)
+        self.layer_size = layer_size
+        self.hidden_size = hidden_size
+        if use_attention: self.attention = Attention(self.hidden_size)
 
     def forward_step(self, input_var, hidden, encoder_outputs, function):
         batch_size = input_var.size(0)
@@ -119,40 +120,11 @@ class DecoderRNN(BaseRNN):
         if self.use_attention:
             ret_dict[DecoderRNN.KEY_ATTN_SCORE] = list()
 
-        inputs, batch_size, max_length = self._validate_args(inputs, encoder_hidden, encoder_outputs,
-                                                             function, teacher_forcing_ratio)
-        #========================================
-        # Differ Encoder & Decoder Layer size
-        # ===== by Soo-Hwan
-        #
-        # B : batch_size, L : layer_size, H : hidden_size
-        # LxBxH -> BxLxH
-        decoder_hidden = self._init_state(encoder_hidden) # encoder_hidden : LxBxH
-        BxLxH = decoder_hidden.transpose(0, 1)
-        decoder_hidden = torch.FloatTensor()
-        encoder_layer_size = len(BxLxH[0])  # Bidirectional 때문에 * 2가 적용되기 전의 인코더 레이어 사이즈
-        endec_ratio = int(encoder_layer_size / self.n_layers)   # Ex) enc : 8 , dec : 2 -> endec_ratio = 4
-
-        for batch in BxLxH:             # => BxLxH 에서 item으로 받으므로 LxH 단위로 access
-            LxH = torch.FloatTensor()
-            for i in range(0, encoder_layer_size, endec_ratio):
-                enc_sum = 0
-                for j in range(endec_ratio):
-                    enc_sum += batch[i + j]
-                LxH = torch.cat( [LxH, enc_sum / endec_ratio ] )
-            decoder_hidden = torch.cat( [decoder_hidden, LxH] )
-        decoder_hidden = decoder_hidden.view(len(encoder_hidden[0]), self.n_layers, self.hidden_size) # BxLxH
-        decoder_hidden = decoder_hidden.transpose(0, 1) # BxLxH -> LxBxH
-
-        #   -* Comment *-
-        #   Encoder & Decoder 사이즈 다르게 하는 부분
-        #   인코더의 hidden_state 를 1 : 1 로 매핑하는 기존 코드에서
-        #   순서대로 인코더의 endec_ratio 개 레이어
-        #   => 1개 레이어 로 평균내는 방법으로 decoder_hidden 초기화
-        #
-        # ===== Encoder & Decoder layer size test
-        # ===============================================
-
+        # Validate Arguments
+        inputs, batch_size, max_length = self._validate_args(inputs, encoder_hidden, encoder_outputs, teacher_forcing_ratio)
+        # Initiate Decoder Hidden State
+        decoder_hidden = self._init_state(self.bidirectional_encoder, batch_size)
+        # Decide Use Teacher Forcing or Not
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
 
         decoder_outputs = []
@@ -201,35 +173,13 @@ class DecoderRNN(BaseRNN):
 
         return decoder_outputs, decoder_hidden, ret_dict
 
-    # Encoder - Decoder 사이즈가 같을 때
-    # 디코더 히든스테이트를 인코더 히든스테이트로 초기화해주는 함수
-    def _init_state(self, encoder_hidden):
-        """ Initialize the encoder hidden state. """
-        if encoder_hidden is None:
-            return None
-        # Unidirectional이면
-        if isinstance(encoder_hidden, tuple):
-            encoder_hidden = tuple([self._cat_directions(h) for h in encoder_hidden])
-        # Bidirectional이면
-        else:
-            encoder_hidden = self._cat_directions(encoder_hidden)
-        return encoder_hidden
 
-    # Bidirectional일 경우 인코더의 레이어 사이즈가 x2 가 되기 때문에
-    # 그에 대한 처리를 해주는 함수
-    def _cat_directions(self, h):
-        """ If the encoder is bidirectional, do the following transformation
-            (#directions * #layers, #batch, hidden_size) -> (#layers, #batch, #directions * hidden_size)
-        """
-        if self.bidirectional_encoder:
-            # 0 2 4 .. 2n 에는 Forward encoder hidden이
-            # 1 3 5 .. 2n + 1 에는 Backward encoder hidden이 있음
-            # 이를 (0,1), (2,3) .. (2n, 2n+1)로 hidden_size에 concatenate한다
-            # 즉, 간단히 말하면 Layer_size 레벨로 나뉘어져 있던 것을 Hidden_Size 레벨로 Concatenate한다
-            h = torch.cat([h[0:h.size(0):2], h[1:h.size(0):2]], 2) # 여기서 2는 차원 즉, 2차원 == LxBxH의 H (Hidden)
-        return h
+    # Initialize Decoder Hidden State to random
+    def _init_state(self, bidirectional_encoder, batch_size):
+        direction = 2 if bidirectional_encoder else 1  # if bidirectional direction is 2 else 1
+        return torch.FloatTensor(np.random.rand(self.layer_size, batch_size, self.hidden_size * direction))
 
-    def _validate_args(self, inputs, encoder_hidden, encoder_outputs, function, teacher_forcing_ratio):
+    def _validate_args(self, inputs, encoder_hidden, encoder_outputs, teacher_forcing_ratio):
         if self.use_attention:
             if encoder_outputs is None:
                 raise ValueError("Argument encoder_outputs cannot be None when attention is used.")

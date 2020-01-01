@@ -33,7 +33,7 @@ torch.cuda.manual_seed_all(h_params.seed)
 cuda = not h_params.no_cuda and torch.cuda.is_available()
 device = torch.device('cuda' if cuda else 'cpu')
 
-feature_size = 80  #
+feature_size = 80
 
 enc = EncoderRNN(feature_size, h_params.hidden_size ,
                  input_dropout_p = h_params.dropout, dropout_p = h_params.dropout,
