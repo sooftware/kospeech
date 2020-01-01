@@ -53,7 +53,23 @@ Seq2seq(
 A.I Hub에서 제공한 1,000시간 데이터 사용 
 ### Data Format
 * 음성 데이터 : 16k sampling PCM  
-* 정답 스크립트 : 자체 제작한 kai_labels.csv Character level dictionary를 통해서 인덱스로 변환된 정답
+* 정답 스크립트 : Character level dictionary를 통해서 인덱스로 변환된 정답
+### Dataset folder structure
+```
+* DATASET-ROOT-FOLDER
+|--KaiSpeech
+   +--KaiSpeech_000001.pcm, KaiSpeech_000002.pcm, ... KaiSpeech_622245.pcm
+   +--KaiSpeech_000001.txt, KaiSpeech_000002.txt, ... KaiSpeech_622245.txt
+   +--KaiSpeech_label_000001.pcm, KaiSpeech_label_000002.pcm, ... KaiSpeech_label_622245.pcm
+```
+* KaiSpeech_FileNum.txt
+```
+아 모 몬 소리야 칠 십 퍼센트 확률이라니
+```
+* KaiSpeech_lable_FileNum.txt
+```
+5 0 105 0 729 0 172 31 25 0 318 0 119 0 489 551 156 0 314 746 3 32 20
+```
 ### Data Preprocessing
 * b/, n/, u/ .. 등의 잡음 레이블 삭제 
 ```
