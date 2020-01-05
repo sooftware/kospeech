@@ -42,7 +42,7 @@ enc = EncoderRNN(feature_size, h_params.hidden_size ,
 
 dec = DecoderRNN(len(char2index), h_params.max_len, h_params.hidden_size * (2 if h_params.bidirectional else 1),
                  SOS_token, EOS_token,
-                 n_layers = h_params.decoder_layer_size, rnn_cell = 'gru', bidirectional = h_params.bidirectional,
+                 layer_size = h_params.decoder_layer_size, rnn_cell = 'gru', bidirectional = h_params.bidirectional,
                  input_dropout_p = h_params.dropout, dropout_p = h_params.dropout, use_attention = h_params.attention)
 
 model = Seq2seq(enc, dec)
