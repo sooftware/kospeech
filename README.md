@@ -1,64 +1,113 @@
 # Korean-ASR
-based on https://github.com/sh951011/Naver-Hackathon-2019-Speech-Team_Kai.Lib  
-Modifying from above repository  
-  
-## (+) Apply different Encoder & Decoder Layer size  
-* Previous  
-  
-![original](https://postfiles.pstatic.net/MjAxOTExMjdfMTk4/MDAxNTc0ODIxODc3MTkx.0JdK_SdhSHTGjkYpHhDq4MlztY4pn93g9ZoPRTotxbwg.uwbhrBU7jqTUFLKOZRU9pnBRX0kUU35Gy70P01JLdvcg.PNG.sooftware/image.png?type=w773)  
-  
-* modify  
-  
-![modify](https://postfiles.pstatic.net/MjAxOTExMjdfMjM1/MDAxNTc0ODIxOTY1NDI3.KIFNl1lvjCnYHXCzkEssJLJxXGs-m6zKvSfaurZncasg.PnUqcLztGAueEecp5DoOWf61AExatLIu4ZZoEeS1Ia4g.PNG.sooftware/image.png?type=w773)  
-  
-## (+) Modify Convolution layer of Encoder  
-* Previous  
-```python
-Sequential(
-  (0): Conv2d(1, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-  (1): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-  (2): Hardtanh(min_val=0, max_val=20, inplace=True)
-  (3): Conv2d(16, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-  (4): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-  (5): Hardtanh(min_val=0, max_val=20, inplace=True)
-  (6): Conv2d(32, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-  (7): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-  (8): Hardtanh(min_val=0, max_val=20, inplace=True)
-  (9): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
-  (10): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-  (11): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-  (12): Hardtanh(min_val=0, max_val=20, inplace=True)
-  (13): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
-  (14): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-  (15): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-  (16): Hardtanh(min_val=0, max_val=20, inplace=True)
-)
-```
-* modify  
-```python
-Sequential(
-  (0): Conv2d(1, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-  (1): Hardtanh(min_val=0, max_val=20, inplace=True)
-  (2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-  (3): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-  (4): Hardtanh(min_val=0, max_val=20, inplace=True)
-  (5): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
-  (6): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-  (7): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-  (8): Hardtanh(min_val=0, max_val=20, inplace=True)
-  (9): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-  (10): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-  (11): Hardtanh(min_val=0, max_val=20, inplace=True)
-  (12): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-  (13): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-  (14): Hardtanh(min_val=0, max_val=20, inplace=True)
-  (15): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-  (16): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
-)
-```
+Further Works from https://github.com/sh951011/Naver-Hackathon-2019-Speech-Team_Kai.Lib  
+Korean Speech Recognition Using PyTorch.  
+This Project is currently in progress.  
+[Demonstration Video](https://www.youtube.com/watch?v=dHJnCqo2gaU)   
 
+## Team Member  
+* [김수환](https://github.com/sh951011) KWU. elcomm.  
+* [배세영](https://github.com/triplet02) KWU. elcomm.  
+* [원철황](https://github.com/wch18735) KWU. elcomm.  
+
+## Model
+![model](https://postfiles.pstatic.net/MjAxOTExMjdfMjM1/MDAxNTc0ODIxOTY1NDI3.KIFNl1lvjCnYHXCzkEssJLJxXGs-m6zKvSfaurZncasg.PnUqcLztGAueEecp5DoOWf61AExatLIu4ZZoEeS1Ia4g.PNG.sooftware/image.png?type=w773)  
+* Model Architecture : Seq2seq with Attention  
+```python
+Seq2seq(
+  (encoder): EncoderRNN(
+    (input_dropout): Dropout(p=0.3, inplace=False)
+    (conv): Sequential(
+      (0): Conv2d(1, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (1): Hardtanh(min_val=0, max_val=20, inplace=True)
+      (2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (3): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (4): Hardtanh(min_val=0, max_val=20, inplace=True)
+      (5): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+      (6): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (7): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (8): Hardtanh(min_val=0, max_val=20, inplace=True)
+      (9): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (10): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (11): Hardtanh(min_val=0, max_val=20, inplace=True)
+      (12): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (13): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (14): Hardtanh(min_val=0, max_val=20, inplace=True)
+      (15): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (16): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    )
+    (rnn): GRU(5120, 256, num_layers=6, batch_first=True, dropout=0.3, bidirectional=True)
+  )
+  (decoder): DecoderRNN(
+    (input_dropout): Dropout(p=0.3, inplace=False)
+    (rnn): GRU(512, 512, num_layers=6, batch_first=True, dropout=0.3)
+    (embedding): Embedding(800, 512)
+    (out): Linear(in_features=512, out_features=800, bias=True)
+    (attention): Attention(
+      (linear_out): Linear(in_features=1024, out_features=512, bias=True)
+    )
+  )
+)
+```  
+* Model based on IBM PyTorch-seq2seq  
+## Data
+A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용 
+### Data Format
+* 음성 데이터 : 16k sampling PCM  
+* 정답 스크립트 : Character level dictionary를 통해서 인덱스로 변환된 정답
+### Dataset folder structure
+```
+* DATASET-ROOT-FOLDER
+|--KaiSpeech
+   +--KaiSpeech_000001.pcm, KaiSpeech_000002.pcm, ... KaiSpeech_622245.pcm
+   +--KaiSpeech_000001.txt, KaiSpeech_000002.txt, ... KaiSpeech_622245.txt
+   +--KaiSpeech_label_000001.pcm, KaiSpeech_label_000002.pcm, ... KaiSpeech_label_622245.pcm
+```
+* KaiSpeech_FileNum.txt
+```
+아 모 몬 소리야 칠 십 퍼센트 확률이라니
+```
+* KaiSpeech_lable_FileNum.txt
+```
+5 0 105 0 729 0 172 31 25 0 318 0 119 0 489 551 156 0 314 746 3 32 20
+```
+### Data Preprocessing
+* b/, n/, / .. 등의 잡음 레이블 삭제 
+```
+"b/ 아/ 모+ 몬 소리야 (70%)/(칠 십 퍼센트) 확률이라니 n/" => "아/ 모+ 몬 소리야 (70%)/(칠 십 퍼센트) 확률이라니"
+```
+* 제공된 (철자전사)/(발음전사) 중 발음전사 사용  
+```
+"아/ 모+ 몬 소리야 (70%)/(칠 십 퍼센트) 확률이라니" => "아/ 모+ 몬 소리야 칠 십 퍼센트 확률이라니"
+```
+* 간투어 표현 등을 위해 사용된 '/', '*', '+' 등의 레이블 삭제
+```
+"아/ 모+ 몬 소리야 칠 십 퍼센트 확률이라니" => "아 모 몬 소리야 칠 십 퍼센트 확률이라니"
+```
+## Score
+```
+CRR = (1.0 - CER) * 100.0
+```
+* CRR : Character Recognition Rate
+* CER : Character Error Rate based on Edit Distance
+![crr](https://github.com/AjouJuneK/NAVER_speech_hackathon_2019/raw/master/docs/edit_distance.png)
+
+## Reference
+* Model  
+  + IBM pytorch-seq2seq : https://github.com/IBM/pytorch-seq2seq
+* Dataset
+  + A.I Hub 한국어 음성 데이터셋 : http://www.aihub.or.kr/aidata/105
   
-## (+) remove silence from audio signal  
-![rm_silence](https://postfiles.pstatic.net/MjAxOTEwMzFfMjgy/MDAxNTcyNTI0ODg3Nzcw.rrhpw0MQUaT74qJTM38Q-1z7TxOXlm-rfNXEPRJTY_Ag.SdAUwOdD1loQt2CJBNUbFYUFElG3dSaAly9iZiHwu1Eg.PNG.sooftware/image.png?type=w773)  
-## (+) add log Mel feature  
-![feature_extraction](https://postfiles.pstatic.net/MjAxOTEwMzFfMjE4/MDAxNTcyNTIxNTQ2ODk0.M17MGaHYxtsa_aTH4YO5uZgdVVJaubIkPTJdFZjPopgg.yDEQa5pRaj6Rvd1p3gLGZBYMv32fiArBMhlEYU4tdz4g.PNG.sooftware/image.png?type=w773)  
+## License
+```
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```
