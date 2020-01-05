@@ -50,7 +50,7 @@ Seq2seq(
 ```  
 * Model based on IBM PyTorch-seq2seq  
 ## Data
-A.I Hub에서 제공한 1,000시간 데이터 사용 
+A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용 
 ### Data Format
 * 음성 데이터 : 16k sampling PCM  
 * 정답 스크립트 : Character level dictionary를 통해서 인덱스로 변환된 정답
