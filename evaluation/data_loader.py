@@ -12,7 +12,7 @@ limitations under the License.
 """
 
 import os
-from nsml.constants import DATASET_PATH
+from definition import DATASET_PATH
 
 def feed_infer(output_file, infer_func):
 

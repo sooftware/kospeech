@@ -33,22 +33,21 @@ License:
     limitations under the License.
 """
 #-*- coding: utf-8 -*-
-import queue
-import torch.nn as nn
-import torch.optim as optim
-from base_func import split_dataset, train, BaseDataLoader, evaluate
-from models import EncoderRNN, DecoderRNN, Seq2seq
+from data.split_dataset import split_dataset
+from train.evaluate import evaluate
+from train.training import train
+from loader.baseLoader import BaseDataLoader
+from loader.loader import load_data_list, load_targets
+from loader.multiLoader import MultiLoader
+from models.encoderRNN import EncoderRNN
+from models.decoderRNN import DecoderRNN
+from models.seq2seq import Seq2seq
 from hyper_params import HyperParams
-from loader.loader import  MultiLoader, load_targets, load_data_list
-import random
-import torch
-import time
 from definition import *
 
 if __name__ == '__main__':
     hparams = HyperParams()
     #h_params.input_params()
-
 
     random.seed(hparams.seed)
     torch.manual_seed(hparams.seed)
@@ -58,7 +57,7 @@ if __name__ == '__main__':
 
     feature_size = 80
 
-    enc = EncoderRNN(feature_size, hparams.hidden_size ,
+    enc = EncoderRNN(feature_size, hparams.hidden_size,
                      input_dropout_p = hparams.dropout, dropout_p = hparams.dropout,
                      n_layers = hparams.encoder_layer_size,
                      bidirectional = hparams.bidirectional, rnn_cell = 'gru', variable_lengths = False)
@@ -72,7 +71,7 @@ if __name__ == '__main__':
     model.flatten_parameters()
     model = nn.DataParallel(model).to(device) # 병렬처리 부분인 듯
 
-    # Adam Algorithm
+    # Optimize Adam Algorithm
     optimizer = optim.Adam(model.module.parameters(), lr = hparams.lr)
     # CrossEntropy로 loss 계산
     criterion = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_token).to(device)
