@@ -91,8 +91,7 @@ class EncoderRNN(BaseRNN):
         feature_size *= 64
 
         # LSTM or GRU
-        self.rnn = self.rnn_cell(feature_size, hidden_size, n_layers,
-                                 batch_first=True, bidirectional = bidirectional, dropout = dropout_p)
+        self.rnn = self.rnn_cell(feature_size, hidden_size, n_layers, batch_first=True, bidirectional = bidirectional, dropout = dropout_p)
 
 
     def forward(self, input_var, input_lengths=None):

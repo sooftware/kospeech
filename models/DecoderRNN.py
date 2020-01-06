@@ -135,23 +135,21 @@ class DecoderRNN(BaseRNN):
             decoder_outputs.append(step_output)
             if self.use_attention:
                 ret_dict[DecoderRNN.KEY_ATTN_SCORE].append(step_attn)
-            symbols = decoder_outputs[-1].topk(1)[1]
-            sequence_symbols.append(symbols)
+            symbol = decoder_outputs[-1].topk(1)[1]  # symbols : index
+            sequence_symbols.append(symbol)
+            eos_batches = symbol.data.eq(self.eos_id)
 
-            eos_batches = symbols.data.eq(self.eos_id)
             if eos_batches.dim() > 0:
                 eos_batches = eos_batches.cpu().view(-1).numpy()
                 update_idx = ((lengths > step) & eos_batches) != 0
                 lengths[update_idx] = len(sequence_symbols)
-            return symbols
+            return symbol
 
         # Manual unrolling is used to support random teacher forcing.
         # If teacher_forcing_ratio is True or False instead of a probability, the unrolling can be done in graph
         if use_teacher_forcing:
             decoder_input = inputs[:, :-1]
-            decoder_output, decoder_hidden, attn = self.forward_step(decoder_input, decoder_hidden, encoder_outputs,
-                                                                     function=function)
-
+            decoder_output, decoder_hidden, attn = self.forward_step(decoder_input, decoder_hidden, encoder_outputs, function=function)
             for di in range(decoder_output.size(1)):
                 step_output = decoder_output[:, di, :]
                 if attn is not None:

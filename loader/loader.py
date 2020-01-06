@@ -1,86 +1,115 @@
 """
-Copyright 2019-present NAVER Corp.
+Copyright 2020- Kai.Lib
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
-     http://www.apache.org/licenses/LICENSE-2.0
+      http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-
-#-*- coding: utf-8 -*-
-
-import sys
-sys.path.append('..')
 import math
+import pandas as pd
 import torch
 import random
 import threading
-import logging
-from torch.utils.data import Dataset, DataLoader
-from feature_extraction.feature import get_librosa_mfcc, get_librosa_melspectrogram
+from torch.utils.data import Dataset
+from feature_extraction.feature import get_librosa_melspectrogram
+from definition import *
 
-logger = logging.getLogger('root')
-FORMAT = "[%(asctime)s %(filename)s:%(lineno)s - %(funcName)s()] %(message)s"
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format=FORMAT)
-logger.setLevel(logging.INFO)
+def load_data_list(data_list_path):
+    """
+    Provides set of audio path & label path
+    Inputs: data_list_path
+        data_list_path: csv file with training or test data list
+    Outputs: audio_paths, label_paths
+        - **audio_paths**: set of audio path
+                Format : [base_dir/KaiSpeech/KaiSpeech_123260.pcm, ... , base_dir/KaiSpeech/KaiSpeech_621245.pcm]
+        - **label_paths**: set of label path
+                Format : [base_dir/KaiSpeech/KaiSpeech_label_123260.txt, ... , base_dir/KaiSpeech/KaiSpeech_label_621245.txt]
+    """
+    data_list = pd.read_csv(data_list_path, "r", delimiter = ",", encoding="UTF-8")
+    audio_paths = list(DATASET_PATH + data_list["audio"])
+    label_paths = list(DATASET_PATH + data_list["label"])
+    return audio_paths, label_paths
 
-def load_targets(path, target_dict):
-    with open(path, 'r') as f:
-        for no, line in enumerate(f):
-            key, target = line.strip().split(',')
-            target_dict[key] = target
 
-# 정답을 리스트 형식으로 담아주는 함수
-def get_script(filepath, bos_id, eos_id, target_dict):
-    # key : 41_0508_171_0_08412_03.script 중 41_0508_171_0_08412_03 -> label
-    key = filepath.split('\\')[-1].split('.')[0]
-    # 41_0508_171_0_08412_03 에 해당하는 label
-    #script = target_dict[key.split('n\\')[1]]
+def load_targets(label_paths):
+    """
+    Provides dictionary of filename and labels
+    Inputs: label_paths
+        - **label_paths**: set of label paths
+                Format : [base_dir/KaiSpeech/KaiSpeech_label_123260.txt, ... , base_dir/KaiSpeech/KaiSpeech_label_621245.txt]
+    Outputs: target_dict
+        - **target_dict**: dictionary of filename and labels
+                Format : {KaiSpeech_label_FileNum : '5 0 49 4 0 8 190 0 78 115', ... }
+    """
+    target_dict = dict()
+    for label_txt in label_paths:
+        f = open(file=label_txt, mode="r")
+        label = f.readline()
+        f.close()
+        file_num = label_txt.split('/')[-1].split('.')[0].split('_')[-1]
+        target_dict['KaiSpeech_label_'+file_num] = label
+    return target_dict
+
+
+def get_label(label_path, bos_id=2037, eos_id=2038, target_dict=None):
+    """
+    Provides specific file`s label to list format.
+    Inputs: filepath, bos_id, eos_id, target_dict
+        - **filepath**: specific path of label file
+        - **bos_id**: <s>`s id
+        - **eos_id**: </s>`s id
+        - **target_dict**: dictionary of filename and labels
+                Format : {KaiSpeech_label_FileNum : '5 0 49 4 0 8 190 0 78 115', ... }
+    Outputs: label
+        - **label**: list of bos + sequence of label + eos
+                Format : [<s>, 5, 0, 49, 4, 0, 8, 190, 0, 78, 115, </s>]
+    """
+    if target_dict == None: logger.info("target_dict is None")
+    key = label_path.split('/')[-1].split('.')[0]
     script = target_dict[key]
-    # 텍스트를 ' ' 기준으로 나눈다 -> 10 268 10207 와 같이 레이블
     tokens = script.split(' ')
 
-    # result를 담을 리스트 초기화
-    result = list()
-
-    # result에 bos_id로 시작을 표시
-    # Begin Of Script 일 듯
-    result.append(bos_id)
-
-    # 나눈 token들을 result에 추가
-    for i in range(len(tokens)):
-        if len(tokens[i]) > 0:
-            result.append(int(tokens[i]))
-    # 마지막 End Of Script 표시
-    result.append(eos_id)
-    return result
+    label = list()
+    label.append(bos_id)
+    for token in tokens:
+        label.append(int(token))
+    label.append(eos_id)
+    return label
 
 class BaseDataset(Dataset):
-    # wav_paths : wav_path가 모여있는 리스트
-    # script_paths : script_path가 모여있는 리스트 script == label
-    # bos_id : Begin Of Script -> script의 시작을 표시하는 Number
-    # eos_id : End Of Script -> script의 끝을 표시하는 Number
-    def __init__(self, wav_paths, script_paths, bos_id = 1307, eos_id = 1308, target_dict = dict()):
-        self.wav_paths = wav_paths
-        self.script_paths = script_paths
+    """
+    Inputs: audio_paths, label_paths, bos_id, eos_id, target_dict
+        - **audio_paths**: set of audio path
+                Format : [base_dir/KaiSpeech/KaiSpeech_123260.pcm, ... , base_dir/KaiSpeech/KaiSpeech_621245.pcm]
+        - **label_paths**: set of label paths
+                Format : [base_dir/KaiSpeech/KaiSpeech_label_123260.txt, ... , base_dir/KaiSpeech/KaiSpeech_label_621245.txt]
+        - **bos_id**: <s>`s id
+        - **eos_id**: </s>`s id
+        - **target_dict**: dictionary of filename and labels
+                Format : {KaiSpeech_label_FileNum : '5 0 49 4 0 8 190 0 78 115', ... }
+    """
+    def __init__(self, audio_paths, label_paths, bos_id = 2037, eos_id = 2038, target_dict = None):
+        self.audio_paths = audio_paths
+        self.label_paths = label_paths
         self.bos_id, self.eos_id = bos_id, eos_id
         self.target_dict = target_dict
 
     def __len__(self):
-        return len(self.wav_paths)
+        return len(self.audio_paths)
 
     def count(self):
-        return len(self.wav_paths)
+        return len(self.audio_paths)
 
     def getitem(self, idx):
-        # 음성데이터에 대한 feature를 feat에 저장 -> tensor 형식
-        feat = get_librosa_melspectrogram(self.wav_paths[idx], n_mels = 80, rm_silence = True, type_='log_mel')
         # 리스트 형식으로 label을 저장
-        script = get_script(self.script_paths[idx], self.bos_id, self.eos_id, self.target_dict)
+        script = get_label(self.label_paths[idx], self.bos_id, self.eos_id, self.target_dict)
+        # 음성데이터에 대한 feature를 feat에 저장 -> tensor 형식
+        feat = get_librosa_melspectrogram(self.audio_paths[idx], n_mels = 80, del_silence = True, type_='log_mel')
         return feat, script
 
 def _collate_fn(batch):
@@ -147,7 +176,6 @@ class BaseDataLoader(threading.Thread):
             for i in range(self.batch_size): 
                 if self.index >= self.dataset_count:
                     break
-                #logger.info('BaseDataLoader 들어옴')
                 items.append(self.dataset.getitem(self.index))
                 self.index += 1
 
@@ -184,4 +212,3 @@ class MultiLoader():
     def join(self):
         for i in range(self.worker_size):
             self.loader[i].join()
-

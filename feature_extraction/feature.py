@@ -1,50 +1,75 @@
 """
-feature for Speech Recognition
-get_librosa_melspectrogram : get Mel-Spectrogram or log Mel feature using librosa library
-get_librosa_mfcc : get MFCC (Mel-Frequency-Cepstral-Coefficient) feature using librosa library
-
-FRAME_LENGTH : 21ms
-STRIDE : 5.2ms ( 75% duplicated )
-
-FRAME_LENGTH = N_FFT / SAMPLE_RATE => N_FFT = 336
-STRIDE = HOP_LENGTH / SAMPLE_RATE => HOP_LENGTH = 84
-
-+++++
-remove silence Using librosa & NumPy
-+++++
-
- -*- Soo-Hwan -*-
+Copyright 2020- Kai.Lib
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+      http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 """
 
 import torch
 import librosa
 import numpy as np
 
-SAMPLE_RATE = 16000
-N_FFT = 336
-HOP_LENGTH = 84
-
-def get_librosa_melspectrogram(filepath, n_mels = 80, rm_silence = True, type_ = 'mel'):
+def get_librosa_melspectrogram(filepath, n_mels = 80, del_silence = True, mel_type = 'log_mel'):
+    """
+    Provides Mel-Spectrogram for Speech Recognition
+    Args:
+        del_silence: flag indication whether to delete silence or not (default: True)
+        mel_type: flag indication whether to use mel or log(mel) (default: log(mel))
+        n_mels: number of mel filter
+    Inputs:
+        filepath: specific path of audio file
+    Local Varibles:
+        SAMPLE_RATE: sampling rate of signal
+        N_FFT: number of the Fast Fourier Transform window
+        HOP_LENGTH: number of samples between successive frames
+    Outputs:
+        mel_spec: return log(mel-spectrogram) if mel_type is 'log_mel' or mel-spectrogram
+    """
+    SAMPLE_RATE = 16000
+    N_FFT = 336
+    HOP_LENGTH = 84
     sig, sr = librosa.core.load(filepath, SAMPLE_RATE)
     # delete silence
-    if rm_silence:
+    if del_silence:
         non_silence_indices = librosa.effects.split(sig, top_db = 30)
         sig = np.concatenate([sig[start:end] for start, end in non_silence_indices])
-    mel = librosa.feature.melspectrogram(sig, n_mels = n_mels, n_fft = N_FFT, hop_length = HOP_LENGTH)
+    mel_spec = librosa.feature.melspectrogram(sig, n_mels = n_mels, n_fft = N_FFT, hop_length = HOP_LENGTH)
 
     # get log Mel
-    if type_ == 'log_mel':
-        log_mel = librosa.amplitude_to_db(mel, ref = np.max)
-        return torch.FloatTensor(log_mel).transpose(0, 1)
-    # get Mel-Spectrogram
-    return torch.FloatTensor(mel).transpose(0, 1)
+    if mel_type == 'log_mel':
+        mel_spec = librosa.amplitude_to_db(mel_spec, ref = np.max)
 
-def get_librosa_mfcc(filepath, n_mfcc = 40, rm_silence = True):
+    return torch.FloatTensor(mel_spec).transpose(0, 1)
+
+def get_librosa_mfcc(filepath, n_mfcc = 40, del_silence = True):
+    """
+    Provides Mel Frequency Cepstral Coefficient (MFCC) for Speech Recognition
+    Args:
+        del_silence: flag indication whether to delete silence or not (default: True)
+        n_mfcc: number of mel filter
+    Inputs:
+        filepath: specific path of audio file
+    Local Varibles:
+        SAMPLE_RATE: sampling rate of signal
+        N_FFT: number of the Fast Fourier Transform window
+        HOP_LENGTH: number of samples between successive frames
+    Outputs:
+        mfcc: return MFCC values of signal
+    """
+    SAMPLE_RATE = 16000
+    N_FFT = 336
+    HOP_LENGTH = 84
     sig, sr = librosa.core.load(filepath, SAMPLE_RATE)
     # delete silence
-    if rm_silence:
+    if del_silence:
         non_silence_indices = librosa.effects.split(sig, top_db=30)
         sig = np.concatenate([sig[start:end] for start, end in non_silence_indices])
-    mfccs = librosa.feature.mfcc(y = sig, sr = sr, hop_length = HOP_LENGTH, n_mfcc = n_mfcc, n_fft = N_FFT)
+    mfcc = librosa.feature.mfcc(y = sig, sr = sr, hop_length = HOP_LENGTH, n_mfcc = n_mfcc, n_fft = N_FFT)
 
-    return torch.FloatTensor(mfccs).transpose(0, 1)
+    return torch.FloatTensor(mfcc).transpose(0, 1)

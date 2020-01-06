@@ -1,125 +1,130 @@
+"""
+- Korean Speech Recognition
+Team: Kai.Lib (KwangWoon A.I Library)
+    ● Team Member
+        ○ Kim-Soo-Hwan: KW University elcomm. senior
+        ○ Bae-Se-Young: KW University elcomm. senior
+        ○ Won-Cheol-Hwang: KW University elcomm. senior
+Model Architecture:
+    ● seq2seq with Attention (Listen Attend and Spell)
+Data:
+    ● Using A.I Hub Dataset : http://www.aihub.or.kr/
+Score:
+    ● CRR: Character Recognition Rate
+    ● CER: Character Error Rate based on Edit Distance
+Reference:
+    ● Model
+        ○ IBM PyTorch-seq2seq : https://github.com/IBM/pytorch-seq2seq
+    ● Dataset
+        ○ A.I Hub Korean Voice Dataset : http://www.aihub.or.kr/aidata/105
+
+gitHub repository : https://github.com/sh951011/Korean-ASR
+
+License:
+    Copyright 2020- Kai.Lib
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+          http://www.apache.org/licenses/LICENSE-2.0
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+"""
 #-*- coding: utf-8 -*-
 import queue
-import torch
-import random
-import os
 import torch.nn as nn
 import torch.optim as optim
-from base_func import *
-from loader import label_loader
+from base_func import split_dataset, train, BaseDataLoader, evaluate
 from models import EncoderRNN, DecoderRNN, Seq2seq
-from hyperParams import HyperParams
+from hyper_params import HyperParams
+from loader.loader import  MultiLoader, load_targets, load_data_list
+import random
+import torch
+import time
+from definition import *
 
-global target_dict
-global char2index
-global index2char
-global SOS_token
-global EOS_token
-global PAD_token
-DATASET_PATH = '.\\data\\'
-target_dict = dict()
-
-h_params = HyperParams()
-#h_params.input_params()
-
-char2index, index2char = label_loader.load_label('./hackathon.labels')
-SOS_token = char2index['<s>']
-EOS_token = char2index['</s>']
-PAD_token = char2index['_']
-
-random.seed(h_params.seed)
-torch.manual_seed(h_params.seed)
-torch.cuda.manual_seed_all(h_params.seed)
-cuda = not h_params.no_cuda and torch.cuda.is_available()
-device = torch.device('cuda' if cuda else 'cpu')
-
-feature_size = 80
-
-enc = EncoderRNN(feature_size, h_params.hidden_size ,
-                 input_dropout_p = h_params.dropout, dropout_p = h_params.dropout,
-                 n_layers = h_params.encoder_layer_size,
-                 bidirectional = h_params.bidirectional, rnn_cell = 'gru', variable_lengths = False)
-
-dec = DecoderRNN(len(char2index), h_params.max_len, h_params.hidden_size * (2 if h_params.bidirectional else 1),
-                 SOS_token, EOS_token,
-                 layer_size = h_params.decoder_layer_size, rnn_cell = 'gru', bidirectional = h_params.bidirectional,
-                 input_dropout_p = h_params.dropout, dropout_p = h_params.dropout, use_attention = h_params.attention)
-
-model = Seq2seq(enc, dec)
-model.flatten_parameters()
-model = nn.DataParallel(model).to(device) # 병렬처리 부분인 듯
-
-# Adam Algorithm
-optimizer = optim.Adam(model.module.parameters(), lr = h_params.lr)
-# CrossEntropy로 loss 계산
-criterion = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_token).to(device)
-
-# 데이터 로드 start
-data_list = os.path.join(DATASET_PATH, 'train\\train_data', 'data_list.csv')
-wav_paths = list()
-script_paths = list()
-
-with open(data_list, 'r') as f:
-    for line in f:
-        # line: "aaa.wav,aaa.label"
-        wav_path, script_path = line.strip().split(',') # wav_path 여기 있음!!
-        wav_paths.append(os.path.join(DATASET_PATH, 'train\\train_data', wav_path))
-        script_paths.append(os.path.join(DATASET_PATH, 'train', script_path))
-
-best_loss = 1e10
-best_cer = 1.0
-begin_epoch = 0
-
-# load all target scripts for reducing disk i/o
-target_path = os.path.join(DATASET_PATH,'train', 'train_label')
-load_targets(target_path, target_dict)
-
-# 데이터 로드 end
-train_batch_num, train_dataset_list, valid_dataset = split_dataset(h_params, wav_paths,
-                                                                   script_paths,
-                                                                   valid_ratio = 0.05,
-                                                                   target_dict = target_dict)
+if __name__ == '__main__':
+    hparams = HyperParams()
+    #h_params.input_params()
 
 
-logger.info('start')
-train_begin = time.time()
+    random.seed(hparams.seed)
+    torch.manual_seed(hparams.seed)
+    torch.cuda.manual_seed_all(hparams.seed)
+    cuda = not hparams.no_cuda and torch.cuda.is_available()
+    device = torch.device('cuda' if cuda else 'cpu')
+
+    feature_size = 80
+
+    enc = EncoderRNN(feature_size, hparams.hidden_size ,
+                     input_dropout_p = hparams.dropout, dropout_p = hparams.dropout,
+                     n_layers = hparams.encoder_layer_size,
+                     bidirectional = hparams.bidirectional, rnn_cell = 'gru', variable_lengths = False)
+
+    dec = DecoderRNN(len(char2index), hparams.max_len, hparams.hidden_size * (2 if hparams.bidirectional else 1),
+                     SOS_token, EOS_token,
+                     layer_size = hparams.decoder_layer_size, rnn_cell = 'gru', bidirectional = hparams.bidirectional,
+                     input_dropout_p = hparams.dropout, dropout_p = hparams.dropout, use_attention = hparams.attention)
+
+    model = Seq2seq(enc, dec)
+    model.flatten_parameters()
+    model = nn.DataParallel(model).to(device) # 병렬처리 부분인 듯
+
+    # Adam Algorithm
+    optimizer = optim.Adam(model.module.parameters(), lr = hparams.lr)
+    # CrossEntropy로 loss 계산
+    criterion = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_token).to(device)
+
+    # load audio_paths & label_paths
+    if hparams.mode == 'train': audio_paths, label_paths = load_data_list(data_list_path=TRAIN_LIST_PATH)
+    else: audio_paths, label_paths = load_data_list(data_list_path=TEST_LIST_PATH)
+    # load all target scripts for reducing disk i/o
+    target_dict = load_targets(label_paths)
+
+    best_loss = 3.0
+    best_cer = 1.0
+
+    # 데이터 로드 end
+    train_batch_num, train_dataset_list, valid_dataset = \
+        split_dataset(hparams, audio_paths, label_paths, valid_ratio = 0.05, target_dict = target_dict)
 
 
-for epoch in range(begin_epoch, h_params.max_epochs):
-    train_queue = queue.Queue(h_params.workers * 2)
+    logger.info('start')
+    train_begin = time.time()
 
-    train_loader = MultiLoader(train_dataset_list, train_queue, h_params.batch_size, h_params.workers)
-    train_loader.start()
+    for epoch in range(hparams.max_epochs):
+        train_queue = queue.Queue(hparams.workers * 2)
 
-    if epoch == 25:
-        optimizer = optim.Adam(model.module.parameters(), lr = 0.00005 )
-        h_params.teacher_forcing = 0.99
+        train_loader = MultiLoader(train_dataset_list, train_queue, hparams.batch_size, hparams.workers)
+        train_loader.start()
 
-    train_loss, train_cer = train(model, train_batch_num,
-                                  train_queue, criterion,
-                                  optimizer, device,
-                                  train_begin, h_params.workers,
-                                  10, h_params.teacher_forcing)
+        train_loss, train_cer = train(model, train_batch_num,
+                                      train_queue, criterion,
+                                      optimizer, device,
+                                      train_begin, hparams.workers,
+                                      10, hparams.teacher_forcing)
 
-    logger.info('Epoch %d (Training) Loss %0.4f CER %0.4f' % (epoch, train_loss, train_cer))
+        logger.info('Epoch %d (Training) Loss %0.4f CER %0.4f' % (epoch, train_loss, train_cer))
 
-    train_loader.join()
+        train_loader.join()
 
-    valid_queue = queue.Queue(h_params.workers * 2)
-    valid_loader = BaseDataLoader(valid_dataset, valid_queue, h_params.batch_size, 0)
-    valid_loader.start()
+        valid_queue = queue.Queue(hparams.workers * 2)
+        valid_loader = BaseDataLoader(valid_dataset, valid_queue, hparams.batch_size, 0)
+        valid_loader.start()
 
-    eval_loss, eval_cer = evaluate(model, valid_loader, valid_queue, criterion, device)
-    logger.info('Epoch %d (Evaluate) Loss %0.4f CER %0.4f' % (epoch, eval_loss, eval_cer))
+        eval_loss, eval_cer = evaluate(model, valid_loader, valid_queue, criterion, device)
+        logger.info('Epoch %d (Evaluate) Loss %0.4f CER %0.4f' % (epoch, eval_loss, eval_cer))
 
-    valid_loader.join()
+        valid_loader.join()
 
-    is_best_loss = (eval_loss < best_loss)
-    is_best_cer = (eval_cer < best_cer)
+        is_best_loss = (eval_loss < best_loss)
+        is_best_cer = (eval_cer < best_cer)
 
-    if is_best_loss:
-        torch.save(model, "./weight_file/best_loss")
+        if is_best_loss:
+            torch.save(model, "./weight_file/best_loss")
 
-    if is_best_cer:
-        torch.save(model, "./weight_file/best_cer")
-    torch.save(model, "./weight_file/epoch" + str(epoch))
+        if is_best_cer:
+            torch.save(model, "./weight_file/best_cer")
+        torch.save(model, "./weight_file/epoch" + str(epoch))
