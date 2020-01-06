@@ -5,9 +5,9 @@ This Project is currently in progress.
 [Demonstration Video](https://www.youtube.com/watch?v=dHJnCqo2gaU)   
 
 ## Team Member  
-* [김수환](https://github.com/sh951011) KWU. elcomm.  
-* [배세영](https://github.com/triplet02) KWU. elcomm.  
-* [원철황](https://github.com/wch18735) KWU. elcomm.  
+* [김수환](https://github.com/sh951011) KW University. elcomm. senior
+* [배세영](https://github.com/triplet02) KW University. elcomm. senior  
+* [원철황](https://github.com/wch18735) KW University. elcomm. senior
 
 ## Model
 ![model](https://postfiles.pstatic.net/MjAxOTExMjdfMjM1/MDAxNTc0ODIxOTY1NDI3.KIFNl1lvjCnYHXCzkEssJLJxXGs-m6zKvSfaurZncasg.PnUqcLztGAueEecp5DoOWf61AExatLIu4ZZoEeS1Ia4g.PNG.sooftware/image.png?type=w773)  
