@@ -46,12 +46,12 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
     train_batch_num = batch_num - valid_batch_num
     train_num_per_worker = math.ceil(train_num / hparams.workers)
 
-    # generate random index list
+    # audio_paths & label_paths shuffled in the same order
     data_paths = list(zip(audio_paths, label_paths))
     random.shuffle(data_paths)
     audio_paths[:], label_paths[:] = zip(*data_paths)
 
-    # train dataset을 worker 수 만큼 분리
+    # seperating the train dataset by the number of workers
     for idx in range(hparams.workers):
         train_begin_idx = train_num_per_worker * idx
         train_end_idx = min(train_num_per_worker * (idx + 1), train_num)
