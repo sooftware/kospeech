@@ -15,7 +15,7 @@ This Project is currently in progress.
 ```python
 Seq2seq(
   (encoder): EncoderRNN(
-    (input_dropout): Dropout(p=0.3, inplace=False)
+    (input_dropout): Dropout(p=0.5, inplace=False)
     (conv): Sequential(
       (0): Conv2d(1, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
       (1): Hardtanh(min_val=0, max_val=20, inplace=True)
@@ -35,13 +35,13 @@ Seq2seq(
       (15): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
       (16): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
     )
-    (rnn): GRU(5120, 256, num_layers=6, batch_first=True, dropout=0.3, bidirectional=True)
+    (rnn): GRU(5120, 256, num_layers=8, batch_first=True, dropout=0.5, bidirectional=True)
   )
   (decoder): DecoderRNN(
-    (input_dropout): Dropout(p=0.3, inplace=False)
-    (rnn): GRU(512, 512, num_layers=6, batch_first=True, dropout=0.3)
-    (embedding): Embedding(800, 512)
-    (out): Linear(in_features=512, out_features=800, bias=True)
+    (input_dropout): Dropout(p=0.5, inplace=False)
+    (rnn): GRU(512, 512, num_layers=2, batch_first=True, dropout=0.5)
+    (embedding): Embedding(2040, 512)
+    (out): Linear(in_features=512, out_features=2040, bias=True)
     (attention): Attention(
       (linear_out): Linear(in_features=1024, out_features=512, bias=True)
     )
