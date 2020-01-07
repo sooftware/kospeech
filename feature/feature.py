@@ -31,21 +31,18 @@ def get_librosa_melspectrogram(filepath, n_mels = 80, del_silence = True, mel_ty
     Outputs:
         mel_spec: return log(mel-spectrogram) if mel_type is 'log_mel' or mel-spectrogram
     """
-    SAMPLE_RATE = 16000
-    N_FFT = 336
-    HOP_LENGTH = 84
-    sig, sr = librosa.core.load(filepath, SAMPLE_RATE)
+    sig, sr = librosa.core.load(filepath=filepath, sr=16000)
     # delete silence
     if del_silence:
-        non_silence_indices = librosa.effects.split(sig, top_db = 30)
+        non_silence_indices = librosa.effects.split(y=sig, top_db = 30)
         sig = np.concatenate([sig[start:end] for start, end in non_silence_indices])
-    mel_spec = librosa.feature.melspectrogram(sig, n_mels = n_mels, n_fft = N_FFT, hop_length = HOP_LENGTH)
+    feat = librosa.feature.melspectrogram(sig, n_mels = n_mels, n_fft = 336, hop_length = 84)
 
     # get log Mel
     if mel_type == 'log_mel':
-        mel_spec = librosa.amplitude_to_db(mel_spec, ref = np.max)
+        feat = librosa.amplitude_to_db(feat, ref = np.max)
 
-    return torch.FloatTensor(mel_spec).transpose(0, 1)
+    return torch.FloatTensor(feat).transpose(0, 1)
 
 def get_librosa_mfcc(filepath, n_mfcc = 40, del_silence = True):
     """

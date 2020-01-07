@@ -49,7 +49,7 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
     # audio_paths & label_paths shuffled in the same order
     data_paths = list(zip(audio_paths, label_paths))
     random.shuffle(data_paths)
-    audio_paths[:], label_paths[:] = zip(*data_paths)
+    audio_paths, label_paths = zip(*data_paths)
 
     # seperating the train dataset by the number of workers
     for idx in range(hparams.workers):
