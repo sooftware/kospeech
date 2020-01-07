@@ -118,21 +118,6 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 * code   
 ```python
 def get_librosa_melspectrogram(filepath, n_mels = 80, del_silence = True, mel_type = 'log_mel'):
-    """
-    Provides Mel-Spectrogram for Speech Recognition
-    Args:
-        del_silence: flag indication whether to delete silence or not (default: True)
-        mel_type: flag indication whether to use mel or log(mel) (default: log(mel))
-        n_mels: number of mel filter
-    Inputs:
-        filepath: specific path of audio file
-    Local Varibles:
-        SAMPLE_RATE: sampling rate of signal
-        N_FFT: number of the Fast Fourier Transform window
-        HOP_LENGTH: number of samples between successive frames
-    Outputs:
-        mel_spec: return log(mel-spectrogram) if mel_type is 'log_mel' or mel-spectrogram
-    """
     SAMPLE_RATE = 16000
     N_FFT = 336
     HOP_LENGTH = 84
