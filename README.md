@@ -71,7 +71,7 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 5 0 105 0 729 0 172 31 25 0 318 0 119 0 489 551 156 0 314 746 3 32 20
 ```
 * train_list.csv    
-전체 데이터셋의 70%에 해당하는 데이터 리스트  
+전체 데이터셋의 70%에 해당하는 학습용 데이터 리스트  
 전체 데이터셋에서 등장한 2,340개의 문자 중 1번 만 등장한 문자들은 포함된 데이터를 제외한 리스트    
   
 | pcm-filaname| txt-filename|   
@@ -83,7 +83,7 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 | KaiSpeech_000005.pcm | KaiSpeech_label_000005.txt  |  
   
 * test_list.csv   
-전체 데이터셋의 30%에 해당하는 데이터 리스트   
+전체 데이터셋의 30%에 해당하는 테스트용  리스트   
 전체 데이터셋에서 등장한 2,340개의 문자 중 1번 만 등장한 문자들이 포함된 데이터 포함   
   
 | pcm-filaname| txt-filename|    
@@ -106,6 +106,48 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 * 간투어 표현 등을 위해 사용된 '/', '*', '+' 등의 레이블 삭제
 ```
 "아/ 모+ 몬 소리야 칠 십 퍼센트 확률이라니" => "아 모 몬 소리야 칠 십 퍼센트 확률이라니"
+```
+## Feature  
+* Mel-Spectrogram  
+  
+| Parameter| Value|    
+| :-----| :----|     
+| N_FFT | 336  |
+| hop length | 84  |
+| n_mels | 80  |  
+* code   
+```python
+def get_librosa_melspectrogram(filepath, n_mels = 80, del_silence = True, mel_type = 'log_mel'):
+    """
+    Provides Mel-Spectrogram for Speech Recognition
+    Args:
+        del_silence: flag indication whether to delete silence or not (default: True)
+        mel_type: flag indication whether to use mel or log(mel) (default: log(mel))
+        n_mels: number of mel filter
+    Inputs:
+        filepath: specific path of audio file
+    Local Varibles:
+        SAMPLE_RATE: sampling rate of signal
+        N_FFT: number of the Fast Fourier Transform window
+        HOP_LENGTH: number of samples between successive frames
+    Outputs:
+        mel_spec: return log(mel-spectrogram) if mel_type is 'log_mel' or mel-spectrogram
+    """
+    SAMPLE_RATE = 16000
+    N_FFT = 336
+    HOP_LENGTH = 84
+    sig, sr = librosa.core.load(filepath, SAMPLE_RATE)
+    # delete silence
+    if del_silence:
+        non_silence_indices = librosa.effects.split(sig, top_db = 30)
+        sig = np.concatenate([sig[start:end] for start, end in non_silence_indices])
+    mel_spec = librosa.feature.melspectrogram(sig, n_mels = n_mels, n_fft = N_FFT, hop_length = HOP_LENGTH)
+
+    # get log Mel
+    if mel_type == 'log_mel':
+        mel_spec = librosa.amplitude_to_db(mel_spec, ref = np.max)
+
+    return torch.FloatTensor(mel_spec).transpose(0, 1)
 ```
 ## Score
 ```
