@@ -22,7 +22,7 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
         - **hparams**: set of hyper parameters
         - **audio_paths**: set of audio path
                 Format : [base_dir/KaiSpeech/KaiSpeech_123260.pcm, ... , base_dir/KaiSpeech/KaiSpeech_621245.pcm]
-        - **label_paths**: set of label paths
+        - **label_paths**: set of label path
                 Format : [base_dir/KaiSpeech/KaiSpeech_label_123260.txt, ... , base_dir/KaiSpeech/KaiSpeech_label_621245.txt]
         - **target_dict**: dictionary of filename and labels
                 {KaiSpeech_label_FileNum : '5 0 49 4 0 8 190 0 78 115', ... }

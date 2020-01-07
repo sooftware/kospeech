@@ -8,7 +8,7 @@ Team: Kai.Lib (KwangWoon A.I Library)
 Model Architecture:
     ● seq2seq with Attention (Listen Attend and Spell)
 Data:
-    ● Using A.I Hub Dataset : http://www.aihub.or.kr/
+    ● Using A.I Hub Dataset
 Score:
     ● CRR: Character Recognition Rate
     ● CER: Character Error Rate based on Edit Distance
@@ -42,7 +42,7 @@ from loader.multiLoader import MultiLoader
 from models.encoderRNN import EncoderRNN
 from models.decoderRNN import DecoderRNN
 from models.seq2seq import Seq2seq
-from hyper_params import HyperParams
+from hyperParams import HyperParams
 from definition import *
 
 if __name__ == '__main__':

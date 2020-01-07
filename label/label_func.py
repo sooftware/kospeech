@@ -14,8 +14,17 @@ limitations under the License.
 from definition import *
 
 def load_label(label_path):
-    char2index = dict() # [ch] = id
-    index2char = dict() # [id] = ch
+    """
+    Provides char2index, index2char
+    Inputs: label_path
+        label_path: csv file with character labels
+            Format : char | id | freq
+    Outputs: char2index, index2char
+        - **char2index**: char2index[ch] = id
+        - **index2char**: index2char[id] = ch
+    """
+    char2index = dict()
+    index2char = dict()
     f = open(label_path, 'r', encoding="UTF-8")
     labels = csv.reader(f, delimiter=',')
     header = next(labels)
