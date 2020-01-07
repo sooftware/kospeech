@@ -118,15 +118,12 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 * code   
 ```python
 def get_librosa_melspectrogram(filepath, n_mels = 80, del_silence = True, mel_type = 'log_mel'):
-    SAMPLE_RATE = 16000
-    N_FFT = 336
-    HOP_LENGTH = 84
-    sig, sr = librosa.core.load(filepath, SAMPLE_RATE)
+    sig, sr = librosa.core.load(filepath=filepath, sr=16000)
     # delete silence
     if del_silence:
-        non_silence_indices = librosa.effects.split(sig, top_db = 30)
+        non_silence_indices = librosa.effects.split(y=sig, top_db = 30)
         sig = np.concatenate([sig[start:end] for start, end in non_silence_indices])
-    mel_spec = librosa.feature.melspectrogram(sig, n_mels = n_mels, n_fft = N_FFT, hop_length = HOP_LENGTH)
+    mel_spec = librosa.feature.melspectrogram(sig, n_mels = n_mels, n_fft = 336, hop_length = 84)
 
     # get log Mel
     if mel_type == 'log_mel':
