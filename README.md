@@ -73,24 +73,24 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 * train_list.csv
 전체 데이터셋의 70%에 해당하는 데이터 리스트  
 전체 데이터셋에서 등장한 2,340개의 문자 중 1번 만 등장한 문자들은 포함된 데이터를 제외한 리스트    
-| pcm-filaname         | txt-filename                |  
-| :--------------------| :--------------------------:|    
-| KaiSpeech_000001.pcm | KaiSpeech_label_000001.txt  |
-| KaiSpeech_000002.pcm | KaiSpeech_label_000002.txt  |
-| KaiSpeech_000003.pcm | KaiSpeech_label_000003.txt  |
-| KaiSpeech_000004.pcm | KaiSpeech_label_000004.txt  |
-| KaiSpeech_000005.pcm | KaiSpeech_label_000005.txt  |
+| pcm-filaname         | txt-filename                |   
+| :--------------------| :--------------------------:|     
+| KaiSpeech_000001.pcm | KaiSpeech_label_000001.txt  |  
+| KaiSpeech_000002.pcm | KaiSpeech_label_000002.txt  |  
+| KaiSpeech_000003.pcm | KaiSpeech_label_000003.txt  |  
+| KaiSpeech_000004.pcm | KaiSpeech_label_000004.txt  |  
+| KaiSpeech_000005.pcm | KaiSpeech_label_000005.txt  |  
 * test_list.csv
 전체 데이터셋의 30%에 해당하는 데이터 리스트   
 전체 데이터셋에서 등장한 2,340개의 문자 중 1번 만 등장한 문자들이 포함된 데이터 포함   
-| pcm-filaname         | txt-filename                |  
-| :----------          | :--------------------------:|    
-| KaiSpeech_489836.pcm | KaiSpeech_label_489836.txt  |
-| KaiSpeech_489837.pcm | KaiSpeech_label_489837.txt  |
-| KaiSpeech_489838.pcm | KaiSpeech_label_489838.txt  |
-| KaiSpeech_489839.pcm | KaiSpeech_label_489839.txt  |
-| KaiSpeech_489840.pcm | KaiSpeech_label_489840.txt  |
-```
+| pcm-filaname         | txt-filename                |    
+| :----------          | :--------------------------:|     
+| KaiSpeech_489836.pcm | KaiSpeech_label_489836.txt  |  
+| KaiSpeech_489837.pcm | KaiSpeech_label_489837.txt  |   
+| KaiSpeech_489838.pcm | KaiSpeech_label_489838.txt  |  
+| KaiSpeech_489839.pcm | KaiSpeech_label_489839.txt  |  
+| KaiSpeech_489840.pcm | KaiSpeech_label_489840.txt  |  
+```  
 <pcm-filename><label-filename>
 KaiSpeech_000001.pcm,wav_001.label
 wav_002.wav,wav_002.label
