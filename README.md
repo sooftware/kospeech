@@ -123,13 +123,13 @@ def get_librosa_melspectrogram(filepath, n_mels = 80, del_silence = True, mel_ty
     if del_silence:
         non_silence_indices = librosa.effects.split(y=sig, top_db = 30)
         sig = np.concatenate([sig[start:end] for start, end in non_silence_indices])
-    mel_spec = librosa.feature.melspectrogram(sig, n_mels = n_mels, n_fft = 336, hop_length = 84)
+    feat = librosa.feature.melspectrogram(sig, n_mels = n_mels, n_fft = 336, hop_length = 84)
 
     # get log Mel
     if mel_type == 'log_mel':
-        mel_spec = librosa.amplitude_to_db(mel_spec, ref = np.max)
+        feat = librosa.amplitude_to_db(feat, ref = np.max)
 
-    return torch.FloatTensor(mel_spec).transpose(0, 1)
+    return torch.FloatTensor(feat).transpose(0, 1)
 ```
 ## Score
 ```
