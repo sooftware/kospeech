@@ -36,3 +36,4 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format=FORMAT)
 logger.setLevel(logging.INFO)
 TRAIN_LIST_PATH = "./data/train_list.csv"
 TEST_LIST_PATH = "./data/test_list.csv"
+

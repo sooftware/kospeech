@@ -17,6 +17,35 @@ import numpy as np
 
 def get_librosa_melspectrogram(filepath, n_mels = 80, del_silence = True, mel_type = 'log_mel'):
     """
+        Provides Mel-Spectrogram for Speech Recognition
+        Args:
+            del_silence: flag indication whether to delete silence or not (default: True)
+            mel_type: flag indication whether to use mel or log(mel) (default: log(mel))
+            n_mels: number of mel filter
+        Inputs:
+            filepath: specific path of audio file
+        Local Varibles:
+            SAMPLE_RATE: sampling rate of signal
+            N_FFT: number of the Fast Fourier Transform window
+            HOP_LENGTH: number of samples between successive frames
+        Outputs:
+            mel_spec: return log(mel-spectrogram) if mel_type is 'log_mel' or mel-spectrogram
+        """
+    pcm = np.memmap(filepath, dtype='h', mode='r')
+    sig = np.array([float(x) for x in pcm])
+    if del_silence:
+        non_silence_indices = librosa.effects.split(y=sig, top_db=30)
+        sig = np.concatenate([sig[start:end] for start, end in non_silence_indices])
+    feat = librosa.feature.melspectrogram(sig, n_mels=n_mels, n_fft=336, hop_length=84)
+
+    # get log Mel
+    if mel_type == 'log_mel':
+        feat = librosa.amplitude_to_db(feat, ref=np.max)
+    return torch.FloatTensor(feat).transpose(0, 1)
+
+
+def get_wav_melspectrogram(filepath, n_mels = 80, del_silence = True, mel_type = 'log_mel'):
+    """
     Provides Mel-Spectrogram for Speech Recognition
     Args:
         del_silence: flag indication whether to delete silence or not (default: True)

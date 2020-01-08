@@ -48,7 +48,6 @@ def load_targets(label_paths):
         target_dict['KaiSpeech_label_'+file_num] = label
     return target_dict
 
-
 def get_label(label_path, bos_id=2037, eos_id=2038, target_dict=None):
     """
     Provides specific file`s label to list format.
@@ -73,3 +72,4 @@ def get_label(label_path, bos_id=2037, eos_id=2038, target_dict=None):
         label.append(int(token))
     label.append(eos_id)
     return label
+

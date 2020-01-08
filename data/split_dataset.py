@@ -61,3 +61,4 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
     valid_dataset = BaseDataset(audio_paths[train_num:], label_paths[train_num:], SOS_token, EOS_token, target_dict)
 
     return train_batch_num, train_dataset, valid_dataset
+
