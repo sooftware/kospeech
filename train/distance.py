@@ -11,8 +11,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from definition import *
+import Levenshtein as Lev
 from label.label_func import label_to_string
+from definition import logger
+from definition import index2char, EOS_token
 
 def char_distance(ref, hyp):
     ref = ref.replace(' ', '')
@@ -26,8 +28,8 @@ def get_distance(ref_labels, hyp_labels, display=False):
     total_dist = 0
     total_length = 0
     for i in range(len(ref_labels)):
-        ref = label_to_string(ref_labels[i])
-        hyp = label_to_string(hyp_labels[i])
+        ref = label_to_string(ref_labels[i], index2char, EOS_token)
+        hyp = label_to_string(hyp_labels[i], index2char, EOS_token)
         dist, length = char_distance(ref, hyp)
         total_dist += dist
         total_length += length

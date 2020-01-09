@@ -1,4 +1,5 @@
-from definition import *
+import threading, math, torch, random
+from definition import logger
 
 class BaseDataLoader(threading.Thread):
     def __init__(self, dataset, queue, batch_size, thread_id):

@@ -10,9 +10,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-
-from definition import *
+import time, torch, random
 from train.distance import get_distance
+from definition import logger
 
 def train(model, total_batch_size, queue, criterion, optimizer, device, train_begin, train_loader_count, print_batch=5, teacher_forcing_ratio=1):
     total_loss = 0.
@@ -44,7 +44,7 @@ def train(model, total_batch_size, queue, criterion, optimizer, device, train_be
         model.module.flatten_parameters()
 
         # Seq2seq forward()
-        logit = model(feats, feat_lengths, scripts, teacher_forcing_ratio=teacher_forcing_ratio)
+        logit = model(feats, feat_lengths, scripts, teacher_forcing_ratio)
 
         logit = torch.stack(logit, dim=1).to(device)
 

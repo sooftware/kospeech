@@ -14,10 +14,10 @@ class HyperParams():
     def __init__(self):
         self.bidirectional = False
         self.attention = False
-        self.hidden_size = 256
+        self.hidden_size = 64
         self.dropout = 0.5
-        self.encoder_layer_size = 6
-        self.decoder_layer_size = 3
+        self.encoder_layer_size = 2
+        self.decoder_layer_size = 1
         self.batch_size = 1
         self.workers = 4
         self.max_epochs = 30

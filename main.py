@@ -33,17 +33,23 @@ License:
     limitations under the License.
 """
 #-*- coding: utf-8 -*-
+import queue
+import torch.nn as nn
+import torch.optim as optim
+import random
+import torch
+import time
+from definition import *
 from data.split_dataset import split_dataset
-from train.evaluate import evaluate
-from train.training import train
+from hyperParams import HyperParams
 from loader.baseLoader import BaseDataLoader
 from loader.loader import load_data_list, load_targets
 from loader.multiLoader import MultiLoader
-from models.encoderRNN import EncoderRNN
 from models.decoderRNN import DecoderRNN
+from models.encoderRNN import EncoderRNN
 from models.seq2seq import Seq2seq
-from hyperParams import HyperParams
-from definition import *
+from train.evaluate import evaluate
+from train.training import train
 
 if __name__ == '__main__':
     hparams = HyperParams()
@@ -62,8 +68,9 @@ if __name__ == '__main__':
                      n_layers = hparams.encoder_layer_size,
                      bidirectional = hparams.bidirectional, rnn_cell = 'gru', variable_lengths = False)
 
-    dec = DecoderRNN(len(char2index), hparams.max_len, hparams.hidden_size * (2 if hparams.bidirectional else 1),
-                     SOS_token, EOS_token,
+    dec = DecoderRNN(vocab_size=len(char2index), max_len=hparams.max_len,
+                     hidden_size=hparams.hidden_size * (2 if hparams.bidirectional else 1),
+                     sos_id=SOS_token, eos_id=EOS_token,
                      layer_size = hparams.decoder_layer_size, rnn_cell = 'gru', bidirectional = hparams.bidirectional,
                      input_dropout_p = hparams.dropout, dropout_p = hparams.dropout, use_attention = hparams.attention)
 
@@ -77,8 +84,10 @@ if __name__ == '__main__':
     criterion = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_token).to(device)
 
     # load audio_paths & label_paths
-    if hparams.mode == 'train': audio_paths, label_paths = load_data_list(data_list_path=TRAIN_LIST_PATH)
-    else: audio_paths, label_paths = load_data_list(data_list_path=TEST_LIST_PATH)
+    if hparams.mode == 'train':
+        audio_paths, label_paths = load_data_list(data_list_path=TRAIN_LIST_PATH, dataset_path=DATASET_PATH)
+    else:
+        audio_paths, label_paths = load_data_list(data_list_path=TEST_LIST_PATH, dataset_path=DATASET_PATH)
     # load all target scripts for reducing disk i/o
     target_dict = load_targets(label_paths)
 
@@ -95,10 +104,8 @@ if __name__ == '__main__':
 
     for epoch in range(hparams.max_epochs):
         train_queue = queue.Queue(hparams.workers * 2)
-
         train_loader = MultiLoader(train_dataset_list, train_queue, hparams.batch_size, hparams.workers)
         train_loader.start()
-
         train_loss, train_cer = train(model, train_batch_num,
                                       train_queue, criterion,
                                       optimizer, device,

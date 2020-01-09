@@ -11,8 +11,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from definition import *
+import torch
+import random
 from train.distance import get_distance
+from definition import logger
 
 def evaluate(model, dataloader, queue, criterion, device):
     logger.info('evaluate() start')

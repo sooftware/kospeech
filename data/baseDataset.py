@@ -13,7 +13,7 @@ limitations under the License.
 
 from torch.utils.data import Dataset
 from feature.feature import get_librosa_melspectrogram
-from loader.loader import get_label
+from label.label_func import get_label
 
 class BaseDataset(Dataset):
     """
@@ -41,7 +41,9 @@ class BaseDataset(Dataset):
 
     def getitem(self, idx):
         # 리스트 형식으로 label을 저장
-        script = get_label(self.label_paths[idx], self.bos_id, self.eos_id, self.target_dict)
-        # 음성데이터에 대한 feature를 feat에 저장 -> tensor 형식
-        feat = get_librosa_melspectrogram(self.audio_paths[idx], n_mels = 80, del_silence = True, mel_type='log_mel')
-        return feat, script
+        label = get_label(self.label_paths[idx], self.bos_id, self.eos_id, self.target_dict)
+        # 음성데이터에 대한 feature를 feat에 저장 -> tensor 형식'
+        feat = get_librosa_melspectrogram(self.audio_paths[idx], n_mels = 80,
+                                          del_silence = True, mel_type='log_mel',
+                                          format='pcm')
+        return feat, label

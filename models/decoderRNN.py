@@ -84,7 +84,6 @@ class DecoderRNN(BaseRNN):
                 layer_size, rnn_cell)
 
         self.bidirectional_encoder = bidirectional
-        # rnn_cell -> gru를 의미
         self.rnn = self.rnn_cell(hidden_size , hidden_size, layer_size, batch_first=True, dropout=dropout_p)
         self.output_size = vocab_size
         self.max_length = max_len
@@ -99,15 +98,13 @@ class DecoderRNN(BaseRNN):
         if use_attention: self.attention = Attention(self.hidden_size)
 
     def forward_step(self, input_var, hidden, encoder_outputs, function):
-        batch_size = input_var.size(0)
-        output_size = input_var.size(1)
+        batch_size = input_var.size(0)  # decoder_input.size(0) : batch_size
+        output_size = input_var.size(1)  # decoder_input.size(1) : seq_len
         embedded = self.embedding(input_var)
         embedded = self.input_dropout(embedded)
         if self.training:
             self.rnn.flatten_parameters()
-
-        # hidden_size, output_size,
-        output, hidden = self.rnn(embedded, hidden) # 여기서 문제가 생김
+        output, hidden = self.rnn(embedded, hidden)
         attn = None
         if self.use_attention:
             output, attn = self.attention(output, encoder_outputs)  # 여기 수정

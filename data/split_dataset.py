@@ -11,7 +11,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 from data.baseDataset import BaseDataset
-from definition import *
+import math, random
+from definition import SOS_token, EOS_token
 
 def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_dict = dict()):
     """
