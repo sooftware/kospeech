@@ -117,20 +117,25 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 | n_mels | 80  |  
 * code   
 ```python
-def get_librosa_melspectrogram(filepath, n_mels = 80, del_silence = True, mel_type = 'log_mel'):
-    sig, sr = librosa.core.load(filepath=filepath, sr=16000)
-    # delete silence
+def get_librosa_melspectrogram(filepath, n_mels=80, del_silence=True, mel_type='log_mel', format='pcm'):
+    if format == 'pcm':
+        pcm = np.memmap(filepath, dtype='h', mode='r')
+        sig = np.array([float(x) for x in pcm])
+    elif format == 'wav': 
+        sig, _ = librosa.core.load(filepath=filepath, sr=16000)
+    else: 
+        logger.info("get_librosa_melspectrogram() : Invalid format")
+
     if del_silence:
-        non_silence_indices = librosa.effects.split(y=sig, top_db = 30)
+        non_silence_indices = librosa.effects.split(y=sig, top_db=30)
         sig = np.concatenate([sig[start:end] for start, end in non_silence_indices])
-    feat = librosa.feature.melspectrogram(sig, n_mels = n_mels, n_fft = 336, hop_length = 84)
+    feat = librosa.feature.melspectrogram(sig, n_mels=n_mels, n_fft=336, hop_length=84)
 
-    # get log Mel
     if mel_type == 'log_mel':
-        feat = librosa.amplitude_to_db(feat, ref = np.max)
-
+        feat = librosa.amplitude_to_db(feat, ref=np.max)
     return torch.FloatTensor(feat).transpose(0, 1)
 ```
+  
 ## Score
 ```
 CRR = (1.0 - CER) * 100.0
