@@ -117,9 +117,13 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 | n_mels | 80  |  
 * code   
 ```python
-def get_librosa_melspectrogram(filepath, n_mels = 80, del_silence = True, mel_type = 'log_mel'):
-    pcm = np.memmap(filepath, dtype='h', mode='r')
-    sig = np.array([float(x) for x in pcm])
+def get_librosa_melspectrogram(filepath, n_mels=80, del_silence=True, mel_type='log_mel', format='pcm'):
+    if format == 'pcm':
+        pcm = np.memmap(filepath, dtype='h', mode='r')
+        sig = np.array([float(x) for x in pcm])
+    elif format == 'wav': sig, _ = librosa.core.load(filepath=filepath, sr=16000)
+    else: logger.info("get_librosa_melspectrogram() : Invalid format")
+
     if del_silence:
         non_silence_indices = librosa.effects.split(y=sig, top_db=30)
         sig = np.concatenate([sig[start:end] for start, end in non_silence_indices])
