@@ -116,6 +116,7 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 | hop length | 84  |
 | n_mels | 80  |  
 * code   
+```python
 def get_librosa_melspectrogram(filepath, n_mels=80, del_silence=True, mel_type='log_mel', format='pcm'):
     if format == 'pcm':
         pcm = np.memmap(filepath, dtype='h', mode='r')
@@ -133,6 +134,8 @@ def get_librosa_melspectrogram(filepath, n_mels=80, del_silence=True, mel_type='
     if mel_type == 'log_mel':
         feat = librosa.amplitude_to_db(feat, ref=np.max)
     return torch.FloatTensor(feat).transpose(0, 1)
+```
+  
 ## Score
 ```
 CRR = (1.0 - CER) * 100.0
