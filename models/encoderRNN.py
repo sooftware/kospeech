@@ -57,17 +57,6 @@ class EncoderRNN(BaseRNN):
                 input_dropout_p, dropout_p, n_layers, rnn_cell)
 
         self.variable_lengths = variable_lengths
-
-        """
-        Copied from https://github.com/SeanNaren/deepspeech.pytorch/blob/master/model.py
-        Copyright (c) 2017 Sean Naren
-        MIT License
-        """
-
-        # nn.Conv2d(in_channel,out_channel)
-        # => 여기서 channel이란?
-        #    nn.Conv2d(1,64) 라면 1개의 이미지를 64개의 차원으로 만든다
-
         self.conv = nn.Sequential(
             nn.Conv2d(1, 64, kernel_size=3, padding=1, bias=False),
             nn.Hardtanh(0, 20, inplace=True),
@@ -87,10 +76,10 @@ class EncoderRNN(BaseRNN):
             nn.BatchNorm2d(256),
             nn.MaxPool2d(2, 2)
         )
-
+        # in_channel : 1, out_channel : 256 => x256
+        # MaxPool x 2 : /4
+        # (1x256) / (4) = 64
         feature_size *= 64
-
-        # LSTM or GRU
         self.rnn = self.rnn_cell(feature_size, hidden_size, n_layers, batch_first=True, bidirectional = bidirectional, dropout = dropout_p)
 
 
