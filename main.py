@@ -53,6 +53,11 @@ from train.evaluate import evaluate
 from train.training import train
 
 if __name__ == '__main__':
+    logger.info("device : ", torch.cuda.get_device_name(0))
+    logger.info("CUDA is available : ", str(torch.cuda.is_available()))
+    logger.info("CUDA version : ", torch.versopm.cuda)
+    logger.info("PyTorch version : " + torch.__version__)
+
     train_result = {'loss': [], 'cer': []}
     eval_result = {'loss': [], 'cer': []}
 
@@ -65,7 +70,7 @@ if __name__ == '__main__':
     cuda = not hparams.no_cuda and torch.cuda.is_available()
     device = torch.device('cuda' if cuda else 'cpu')
 
-    feature_size = 80
+    feature_size = 40
 
     enc = EncoderRNN(feature_size, hparams.hidden_size,
                      input_dropout_p = hparams.dropout, dropout_p = hparams.dropout,
@@ -94,9 +99,6 @@ if __name__ == '__main__':
         audio_paths, label_paths = load_data_list(data_list_path=TEST_LIST_PATH, dataset_path=DATASET_PATH)
     # load all target scripts for reducing disk i/o
     target_dict = load_targets(label_paths)
-
-    best_loss = 3.0
-    best_cer = 1.0
 
     # 데이터 로드 end
     train_batch_num, train_dataset_list, valid_dataset = \
@@ -133,15 +135,6 @@ if __name__ == '__main__':
         eval_result["cer"].append(eval_cer)
 
         valid_loader.join()
-
-        is_best_loss = (eval_loss < best_loss)
-        is_best_cer = (eval_cer < best_cer)
-
-        if is_best_loss:
-            torch.save(model, "./weight_file/best_loss")
-
-        if is_best_cer:
-            torch.save(model, "./weight_file/best_cer")
 
         torch.save(model, "./weight_file/epoch" + str(epoch))
         train_result = pd.DataFrame(train_result)
