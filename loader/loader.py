@@ -23,7 +23,7 @@ def load_data_list(data_list_path, dataset_path):
         - **label_paths**: set of label path
                 Format : [base_dir/KaiSpeech/KaiSpeech_label_123260.txt, ... , base_dir/KaiSpeech/KaiSpeech_label_621245.txt]
     """
-    data_list = pd.read_csv(data_list_path, "r", delimiter = ",", encoding="UTF-8")
+    data_list = pd.read_csv(data_list_path, "r", delimiter = ",", encoding="cp949")
     audio_paths = list(dataset_path + data_list["audio"])
     label_paths = list(dataset_path + data_list["label"])
     return audio_paths, label_paths

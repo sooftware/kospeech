@@ -39,6 +39,7 @@ import torch.optim as optim
 import random
 import torch
 import time
+import pandas as pd
 from definition import *
 from data.split_dataset import split_dataset
 from hyperParams import HyperParams
@@ -52,8 +53,11 @@ from train.evaluate import evaluate
 from train.training import train
 
 if __name__ == '__main__':
+    train_result = {'loss': [], 'cer': []}
+    eval_result = {'loss': [], 'cer': []}
+
     hparams = HyperParams()
-    #h_params.input_params()
+    hparams.input_params()
 
     random.seed(hparams.seed)
     torch.manual_seed(hparams.seed)
@@ -123,6 +127,11 @@ if __name__ == '__main__':
         eval_loss, eval_cer = evaluate(model, valid_loader, valid_queue, criterion, device)
         logger.info('Epoch %d (Evaluate) Loss %0.4f CER %0.4f' % (epoch, eval_loss, eval_cer))
 
+        train_result["loss"].append(train_loss)
+        train_result["cer"].append(train_cer)
+        eval_result["loss"].append(eval_loss)
+        eval_result["cer"].append(eval_cer)
+
         valid_loader.join()
 
         is_best_loss = (eval_loss < best_loss)
@@ -133,4 +142,9 @@ if __name__ == '__main__':
 
         if is_best_cer:
             torch.save(model, "./weight_file/best_cer")
+
         torch.save(model, "./weight_file/epoch" + str(epoch))
+        train_result = pd.DataFrame(train_result)
+        eval_result = pd.DataFrame(eval_result)
+        train_result.to_csv("./csv/train_result.csv", encoding='cp949', index=False)
+        eval_result.to_csv("./csv/eval_result.csv", encoding='cp949', index=False)

@@ -44,6 +44,6 @@ class BaseDataset(Dataset):
         label = get_label(self.label_paths[idx], self.bos_id, self.eos_id, self.target_dict)
         # 음성데이터에 대한 feature를 feat에 저장 -> tensor 형식'
         feat = get_librosa_melspectrogram(self.audio_paths[idx], n_mels = 80,
-                                          del_silence = True, mel_type='log_mel',
+                                          del_silence = False, mel_type='log_mel',
                                           format='pcm')
         return feat, label

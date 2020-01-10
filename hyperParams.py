@@ -12,20 +12,20 @@ limitations under the License.
 """
 class HyperParams():
     def __init__(self):
-        self.bidirectional = False
-        self.attention = False
-        self.hidden_size = 64
+        self.bidirectional = True
+        self.attention = True
+        self.hidden_size = 256
         self.dropout = 0.5
-        self.encoder_layer_size = 2
-        self.decoder_layer_size = 1
-        self.batch_size = 1
+        self.encoder_layer_size = 6
+        self.decoder_layer_size = 3
+        self.batch_size = 32
         self.workers = 4
-        self.max_epochs = 30
+        self.max_epochs = 40
         self.lr = 0.0001
         self.teacher_forcing = 0.99
         self.seed = 1
         self.max_len = 80
-        self.no_cuda = True
+        self.no_cuda = False
         self.save_name = 'model'
         self.mode = 'train'
 
