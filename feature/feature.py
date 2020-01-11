@@ -78,6 +78,6 @@ def get_librosa_mfcc(filepath, n_mfcc = 40, del_silence = True, format='pcm'):
     if del_silence:
         non_silence_indices = librosa.effects.split(sig, top_db=30)
         sig = np.concatenate([sig[start:end] for start, end in non_silence_indices])
-    mfcc = librosa.feature.mfcc(y = sig, sr = sr, hop_length = 84, n_mfcc = n_mfcc, n_fft = 336)
+    mfcc = librosa.feature.mfcc(y = sig, hop_length = 84, n_mfcc = n_mfcc, n_fft = 336)
 
     return torch.FloatTensor(mfcc).transpose(0, 1)

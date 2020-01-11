@@ -87,10 +87,10 @@ class DecoderRNN(BaseRNN):
         self.eos_id = eos_id
         self.sos_id = sos_id
         self.init_input = None
+        self.hidden_size = hidden_size
         self.embedding = nn.Embedding(self.output_size, self.hidden_size)
         self.out = nn.Linear(self.hidden_size, self.output_size)
         self.layer_size = layer_size
-        self.hidden_size = hidden_size
         if use_attention: self.attention = Attention(self.hidden_size)
 
     def forward_step(self, input_var, hidden, encoder_outputs, function):
@@ -116,7 +116,7 @@ class DecoderRNN(BaseRNN):
         # Validate Arguments
         inputs, batch_size, max_length = self._validate_args(inputs, encoder_hidden, encoder_outputs, teacher_forcing_ratio)
         # Initiate Decoder Hidden State
-        decoder_hidden = self._init_state(self.bidirectional_encoder, batch_size)
+        decoder_hidden = self._init_state(batch_size)
         # Decide Use Teacher Forcing or Not
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
 
@@ -165,10 +165,10 @@ class DecoderRNN(BaseRNN):
         return decoder_outputs, decoder_hidden, ret_dict
 
 
-    # Initialize Decoder Hidden State to random
-    def _init_state(self, bidirectional_encoder, batch_size):
-        direction = 2 if bidirectional_encoder else 1  # if bidirectional direction is 2 else 1
-        return torch.FloatTensor(np.random.rand(self.layer_size, batch_size, self.hidden_size * direction))
+    # Initialize Decoder Hidden State to zeros
+    def _init_state(self, batch_size):
+        init_state = torch.zeros(self.layer_size, batch_size, self.hidden_size)
+        return init_state
 
     def _validate_args(self, inputs, encoder_hidden, encoder_outputs, teacher_forcing_ratio):
         if self.use_attention:

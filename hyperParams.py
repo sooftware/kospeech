@@ -16,9 +16,9 @@ class HyperParams():
         self.attention = True
         self.hidden_size = 256
         self.dropout = 0.5
-        self.encoder_layer_size = 6
-        self.decoder_layer_size = 3
-        self.batch_size = 8
+        self.encoder_layer_size = 3
+        self.decoder_layer_size = 2
+        self.batch_size = 1
         self.workers = 4
         self.max_epochs = 40
         self.lr = 0.0001

@@ -43,5 +43,5 @@ class BaseDataset(Dataset):
         # 리스트 형식으로 label을 저장
         label = get_label(self.label_paths[idx], self.bos_id, self.eos_id, self.target_dict)
         # 음성데이터에 대한 feature를 feat에 저장 -> tensor 형식'
-        feat = get_librosa_mfcc(self.audio_paths[idx], n_mfcc = 80, del_silence = False, format='pcm')
+        feat = get_librosa_mfcc(self.audio_paths[idx], n_mfcc = 40, del_silence = False, format='pcm')
         return feat, label
