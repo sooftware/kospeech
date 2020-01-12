@@ -78,7 +78,8 @@ class EncoderRNN(BaseRNN):
             nn.MaxPool2d(2, 2)
         )
 
-        feature_size = math.ceil((feature_size * 256) / 4)
+        if feature_size % 2: feature_size = (feature_size-1) * 64
+        else: feature_size *= 64
         self.rnn = self.rnn_cell(feature_size, hidden_size, n_layers, batch_first=True, bidirectional = bidirectional, dropout = dropout_p)
 
 

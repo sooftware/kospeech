@@ -66,4 +66,3 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
                                 target_dict=target_dict, reverse=hparams.reverse)
 
     return train_batch_num, train_dataset, valid_dataset
-
