@@ -28,6 +28,7 @@ class HyperParams():
         self.no_cuda = False
         self.save_name = 'model'
         self.mode = 'train'
+        self.input_reverse = True
 
     def input_params(self):
         use_bidirectional = input("use bidirectional : ")

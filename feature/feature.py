@@ -14,7 +14,6 @@ limitations under the License.
 import torch
 import librosa
 import numpy as np
-from definition import logger
 
 def get_librosa_melspectrogram(filepath, n_mels=80, del_silence=True, mel_type='log_mel', format='pcm'):
     """
@@ -38,20 +37,18 @@ def get_librosa_melspectrogram(filepath, n_mels=80, del_silence=True, mel_type='
         pcm = np.memmap(filepath, dtype='h', mode='r')
         sig = np.array([float(x) for x in pcm])
     elif format == 'wav':
-        sig, _ = librosa.core.load(filepath=filepath, sr=16000)
-    else:
-        logger.info("get_librosa_melspectrogram() : Invalid format")
+        sig, _ = librosa.core.load(filepath, sr=16000)
 
     if del_silence:
         non_silence_indices = librosa.effects.split(y=sig, top_db=30)
         sig = np.concatenate([sig[start:end] for start, end in non_silence_indices])
-    feat = librosa.feature.melspectrogram(sig, n_mels=n_mels, n_fft=336, hop_length=84)
+    feat = librosa.feature.melspectrogram(sig, sr=16000, n_mels=n_mels, n_fft=336, hop_length=84, window='hamming')
 
     if mel_type == 'log_mel':
         feat = librosa.amplitude_to_db(feat, ref=np.max)
     return torch.FloatTensor(feat).transpose(0, 1)
 
-def get_librosa_mfcc(filepath, n_mfcc = 40, del_silence = True, format='pcm'):
+def get_librosa_mfcc(filepath, n_mfcc = 33, del_silence = True, input_reverse = True, format='pcm'):
     """
     Provides Mel Frequency Cepstral Coefficient (MFCC) for Speech Recognition
     Args:
@@ -71,13 +68,12 @@ def get_librosa_mfcc(filepath, n_mfcc = 40, del_silence = True, format='pcm'):
         pcm = np.memmap(filepath, dtype='h', mode='r')
         sig = np.array([float(x) for x in pcm])
     elif format == 'wav':
-        sig, sr = librosa.core.load(filepath=filepath, sr=16000)
-    else:
-        logger.info("get_librosa_mfcc() : Invalid format")
+        sig, sr = librosa.core.load(filepath, sr=16000)
 
     if del_silence:
         non_silence_indices = librosa.effects.split(sig, top_db=30)
         sig = np.concatenate([sig[start:end] for start, end in non_silence_indices])
-    mfcc = librosa.feature.mfcc(y = sig, hop_length = 84, n_mfcc = n_mfcc, n_fft = 336)
+    feat = librosa.feature.mfcc(y=sig,sr=16000, hop_length=84, n_mfcc=n_mfcc, n_fft=336, window='hamming')
+    if input_reverse: feat = feat[:,::-1]
 
-    return torch.FloatTensor(mfcc).transpose(0, 1)
+    return torch.FloatTensor(feat).transpose(0, 1)

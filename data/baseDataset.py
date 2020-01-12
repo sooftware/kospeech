@@ -27,11 +27,12 @@ class BaseDataset(Dataset):
         - **target_dict**: dictionary of filename and labels
                 Format : {KaiSpeech_label_FileNum : '5 0 49 4 0 8 190 0 78 115', ... }
     """
-    def __init__(self, audio_paths, label_paths, bos_id = 2037, eos_id = 2038, target_dict = None):
+    def __init__(self, audio_paths, label_paths, bos_id = 2037, eos_id = 2038, target_dict = None, reverse = True):
         self.audio_paths = audio_paths
         self.label_paths = label_paths
         self.bos_id, self.eos_id = bos_id, eos_id
         self.target_dict = target_dict
+        self.reverse = reverse
 
     def __len__(self):
         return len(self.audio_paths)
@@ -43,5 +44,6 @@ class BaseDataset(Dataset):
         # 리스트 형식으로 label을 저장
         label = get_label(self.label_paths[idx], self.bos_id, self.eos_id, self.target_dict)
         # 음성데이터에 대한 feature를 feat에 저장 -> tensor 형식'
-        feat = get_librosa_mfcc(self.audio_paths[idx], n_mfcc = 40, del_silence = False, format='pcm')
+        feat = get_librosa_mfcc(self.audio_paths[idx], n_mfcc = 33, del_silence = False,
+                                reverse = self.reverse, format='pcm')
         return feat, label

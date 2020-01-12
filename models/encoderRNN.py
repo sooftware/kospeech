@@ -13,6 +13,7 @@ limitations under the License.
 
 import torch.nn as nn
 from .baseRNN import BaseRNN
+import math
 
 class EncoderRNN(BaseRNN):
     """
@@ -76,10 +77,8 @@ class EncoderRNN(BaseRNN):
             nn.BatchNorm2d(256),
             nn.MaxPool2d(2, 2)
         )
-        # in_channel : 1, out_channel : 256 => x256
-        # MaxPool x 2 : /4
-        # (1x256) / (4) = 64
-        feature_size *= 64
+
+        feature_size = math.ceil((feature_size * 256) / 4)
         self.rnn = self.rnn_cell(feature_size, hidden_size, n_layers, batch_first=True, bidirectional = bidirectional, dropout = dropout_p)
 
 

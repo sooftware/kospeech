@@ -62,7 +62,7 @@ if __name__ == '__main__':
     eval_result = {'loss': [], 'cer': []}
 
     hparams = HyperParams()
-    hparams.input_params()
+    #hparams.input_params()
 
     random.seed(hparams.seed)
     torch.manual_seed(hparams.seed)
@@ -70,7 +70,7 @@ if __name__ == '__main__':
     cuda = not hparams.no_cuda and torch.cuda.is_available()
     device = torch.device('cuda' if cuda else 'cpu')
 
-    feature_size = 40
+    feature_size = 33
 
     enc = EncoderRNN(feature_size, hparams.hidden_size,
                      input_dropout_p = hparams.dropout, dropout_p = hparams.dropout,
