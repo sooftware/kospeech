@@ -108,31 +108,31 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 "아/ 모+ 몬 소리야 칠 십 퍼센트 확률이라니" => "아 모 몬 소리야 칠 십 퍼센트 확률이라니"
 ```
 ## Feature  
-* Mel-Spectrogram  
+* MFCC (Mel-Frequency-Cepstral-Coefficients)  
   
 | Parameter| Value|    
 | :-----| :----|     
 | N_FFT | 336  |
 | hop length | 84  |
-| n_mels | 80  |  
+| n_mfcc | 33  |  
+|window|hamming|  
+  
+
 * code   
 ```python
-def get_librosa_melspectrogram(filepath, n_mels=80, del_silence=True, mel_type='log_mel', format='pcm'):
+def get_librosa_mfcc(filepath, n_mfcc = 33, del_silence = True, input_reverse = True, format='pcm'):
     if format == 'pcm':
         pcm = np.memmap(filepath, dtype='h', mode='r')
         sig = np.array([float(x) for x in pcm])
-    elif format == 'wav': 
-        sig, _ = librosa.core.load(filepath=filepath, sr=16000)
-    else: 
-        logger.info("get_librosa_melspectrogram() : Invalid format")
+    elif format == 'wav':
+        sig, sr = librosa.core.load(filepath, sr=16000)
 
     if del_silence:
-        non_silence_indices = librosa.effects.split(y=sig, top_db=30)
+        non_silence_indices = librosa.effects.split(sig, top_db=30)
         sig = np.concatenate([sig[start:end] for start, end in non_silence_indices])
-    feat = librosa.feature.melspectrogram(sig, n_mels=n_mels, n_fft=336, hop_length=84)
+    feat = librosa.feature.mfcc(y=sig,sr=16000, hop_length=84, n_mfcc=n_mfcc, n_fft=336, window='hamming')
+    if input_reverse: feat = feat[:,::-1]
 
-    if mel_type == 'log_mel':
-        feat = librosa.amplitude_to_db(feat, ref=np.max)
     return torch.FloatTensor(feat).transpose(0, 1)
 ```
   
