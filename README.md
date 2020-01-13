@@ -35,11 +35,11 @@ Seq2seq(
       (15): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
       (16): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
     )
-    (rnn): GRU(5120, 256, num_layers=8, batch_first=True, dropout=0.5, bidirectional=True)
+    (rnn): GRU(5120, 256, num_layers=5, batch_first=True, dropout=0.5, bidirectional=True)
   )
   (decoder): DecoderRNN(
     (input_dropout): Dropout(p=0.5, inplace=False)
-    (rnn): GRU(512, 512, num_layers=2, batch_first=True, dropout=0.5)
+    (rnn): GRU(512, 512, num_layers=3, batch_first=True, dropout=0.5)
     (embedding): Embedding(2040, 512)
     (out): Linear(in_features=512, out_features=2040, bias=True)
     (attention): Attention(
