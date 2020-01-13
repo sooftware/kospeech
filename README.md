@@ -130,7 +130,7 @@ def get_librosa_mfcc(filepath, n_mfcc = 33, del_silence = True, input_reverse = 
     if del_silence:
         non_silence_indices = librosa.effects.split(sig, top_db=30)
         sig = np.concatenate([sig[start:end] for start, end in non_silence_indices])
-    feat = librosa.feature.mfcc(y=sig,sr=16000, hop_length=84, n_mfcc=n_mfcc, n_fft=336, window='hamming')
+    feat = librosa.feature.mfcc(y=sig,sr=16000, hop_length=120, n_mfcc=n_mfcc, n_fft=480, window='hamming')
     if input_reverse: feat = feat[:,::-1]
 
     return torch.FloatTensor(feat).transpose(0, 1)
