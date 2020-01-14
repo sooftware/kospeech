@@ -76,11 +76,11 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
   
 | pcm-filaname| txt-filename|   
 | :-------------------:| :--------------------------:|     
-| KaiSpeech_000001.pcm | KaiSpeech_label_000001.txt  |  
-| KaiSpeech_000002.pcm | KaiSpeech_label_000002.txt  |  
-| KaiSpeech_000003.pcm | KaiSpeech_label_000003.txt  |  
-| KaiSpeech_000004.pcm | KaiSpeech_label_000004.txt  |  
-| KaiSpeech_000005.pcm | KaiSpeech_label_000005.txt  |  
+| KaiSpeech_078903.pcm | KaiSpeech_label_078903.txt  |  
+| KaiSpeech_449461.pcm | KaiSpeech_label_449461.txt  |  
+| KaiSpeech_178531.pcm | KaiSpeech_label_178531.txt  |  
+| KaiSpeech_374874.pcm | KaiSpeech_label_374874.txt  |  
+| KaiSpeech_039018.pcm | KaiSpeech_label_039018.txt  |  
   
 * test_list.csv   
 전체 데이터셋의 30%에 해당하는 테스트용  리스트   
@@ -88,10 +88,10 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
   
 | pcm-filaname| txt-filename|    
 | :-------------------:| :--------------------------:|     
-| KaiSpeech_489836.pcm | KaiSpeech_label_489836.txt  |  
-| KaiSpeech_489837.pcm | KaiSpeech_label_489837.txt  |    
-| KaiSpeech_489838.pcm | KaiSpeech_label_489838.txt  |   
-| KaiSpeech_489839.pcm | KaiSpeech_label_489839.txt  |   
+| KaiSpeech_126887.pcm | KaiSpeech_label_126887.txt  |  
+| KaiSpeech_067340.pcm | KaiSpeech_label_067340.txt  |    
+| KaiSpeech_350293.pcm | KaiSpeech_label_350293.txt  |   
+| KaiSpeech_212197.pcm | KaiSpeech_label_212197.txt  |   
 | KaiSpeech_489840.pcm | KaiSpeech_label_489840.txt  |   
   
 ### Data Preprocessing
