@@ -75,7 +75,7 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 전체 데이터셋에서 등장한 2,340개의 문자 중 1번 만 등장한 문자들은 포함된 데이터를 제외한 리스트    
   
 | pcm-filaname| txt-filename|   
-| :-------------------:| :--------------------------:|     
+| :-------------------| :--------------------------|     
 | KaiSpeech_078903.pcm | KaiSpeech_label_078903.txt  |  
 | KaiSpeech_449461.pcm | KaiSpeech_label_449461.txt  |  
 | KaiSpeech_178531.pcm | KaiSpeech_label_178531.txt  |  
@@ -87,7 +87,7 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 전체 데이터셋에서 등장한 2,340개의 문자 중 1번 만 등장한 문자들이 포함된 데이터 포함   
   
 | pcm-filaname| txt-filename|    
-| :-------------------:| :--------------------------:|     
+| :-------------------| :--------------------------|     
 | KaiSpeech_126887.pcm | KaiSpeech_label_126887.txt  |  
 | KaiSpeech_067340.pcm | KaiSpeech_label_067340.txt  |    
 | KaiSpeech_350293.pcm | KaiSpeech_label_350293.txt  |   
