@@ -29,6 +29,7 @@ class HyperParams():
         self.save_name = 'model'
         self.mode = 'train'
         self.input_reverse = True
+        self.augment_ratio = 0.3
 
     def input_params(self):
         use_bidirectional = input("use bidirectional : ")

@@ -13,6 +13,9 @@ def spec_augment(feat, T=40, F=30, time_mask_num=2, freq_mask_num=2):
         freq_mask_num: how many freq-masked area to make
     Outputs:
         - **augmented**: Applied Spec-Augmentation to feat
+
+    Reference :
+        「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」Google Brain Team. 2019.12.03
     """
     n_mfcc = feat.size(1)
     feat_len = feat.size(0)
