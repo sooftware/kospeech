@@ -148,9 +148,11 @@ CRR = (1.0 - CER) * 100.0
 
 ## Reference
 * Model  
-  + IBM pytorch-seq2seq : https://github.com/IBM/pytorch-seq2seq
+  + [IBM pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)
 * Dataset
-  + A.I Hub 한국어 음성 데이터셋 : http://www.aihub.or.kr/aidata/105
+  + [A.I Hub 한국어 음성 데이터셋](http://www.aihub.or.kr/aidata/105)
+* SpecAugment  
+  + [「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」Google Brain Team. 2019.12.03](https://arxiv.org/abs/1904.08779)
   
 ## License
 ```
