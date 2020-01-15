@@ -108,21 +108,21 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 "아/ 모+ 몬 소리야 칠 십 퍼센트 확률이라니" => "아 모 몬 소리야 칠 십 퍼센트 확률이라니"
 ```
 ## Hyperparameters  
-| Hyperparameter  | Use         |  
-| :----------      | :----------:|    
-| use_bidirectional| True|  
-| use_attention    | True        |   
-|input_reverse|True|   
-|use_augment| True|  
-|augment_ratio|0.3|   
-|encoder_layer_size|5|  
-| decoder_layer_size       | 3           |  
-| hidden_size      | 256         |
-| batch_size       | 8          |
-| dropout          | 0.5  |
-| teacher_forcing  | 0.99|
-| lr               | 1e-4        |
-| max_epochs       | 30          |   
+| Hyperparameter  | Use         |Help|  
+| :----------      | :----------:|:---|    
+| use_bidirectional| True|if True, becomes a bidirectional encodr|  
+| use_attention    | True |flag indication whether to use attention mechanism or not|   
+|input_reverse|True|flag indication whether to reverse input feature or not|   
+|use_augment| True|flag indication whether to use spec-augmentation or not|  
+|augment_ratio|0.3|ratio of spec-augmentation applied data|   
+|encoder_layer_size|5|num of encoder`s RNN cell|  
+| decoder_layer_size| 3|num of decoder`s RNN cell|  
+| hidden_size| 256|size of hidden state of RNN|
+| batch_size | 8|mini-batch size|
+| dropout          | 0.5  |dropout probability|
+| teacher_forcing  | 0.99|The probability that teacher forcing will be used|
+| lr               | 1e-4        |learning rate|
+| max_epochs       | 30          |max epoch|   
   
   
 ## Feature  
