@@ -110,7 +110,7 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 ## Hyperparameters  
 | Hyperparameter  | Use         |Help|  
 | :----------      | :----------:|:---:|    
-| use_bidirectional| True|if True, becomes a bidirectional encodr|  
+| use_bidirectional| True|if True, becomes a bidirectional encoder|  
 | use_attention    | True |flag indication whether to use attention mechanism or not|   
 |input_reverse|True|flag indication whether to reverse input feature or not|   
 |use_augment| True|flag indication whether to use spec-augmentation or not|  
