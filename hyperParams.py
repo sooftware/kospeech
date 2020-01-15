@@ -18,7 +18,7 @@ class HyperParams():
         self.dropout = 0.5
         self.encoder_layer_size = 5
         self.decoder_layer_size = 3
-        self.batch_size = 6
+        self.batch_size = 8
         self.workers = 4
         self.max_epochs = 40
         self.lr = 0.0001
@@ -33,11 +33,9 @@ class HyperParams():
 
     def input_params(self):
         use_bidirectional = input("use bidirectional : ")
-        if use_bidirectional.lower() == 'true':
-            self.bidirectional = True
+        if use_bidirectional.lower() == 'true': self.bidirectional = True
         use_attention = input("use_attention : ")
-        if use_attention.lower() == 'true':
-            self.attention = True
+        if use_attention.lower() == 'true': self.attention = True
         self.hidden_size = int(input("hidden_size : "))
         self.dropout = float(input("dropout : "))
         self.encoder_layer_size = int(input("encoder_layer_size : "))
@@ -48,4 +46,5 @@ class HyperParams():
         self.input_reverse = input("input reverse : ")
         self.lr = float(input("learning rate : "))
         self.teacher_forcing = float(input("teacher_forcing : "))
+        self.augment_ratio = float(input("augment_ratio : "))
         self.seed = int(input("seed : "))

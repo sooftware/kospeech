@@ -51,8 +51,10 @@ from models.encoderRNN import EncoderRNN
 from models.seq2seq import Seq2seq
 from train.evaluate import evaluate
 from train.training import train
+import os
 
 if __name__ == '__main__':
+    os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
     logger.info("device : ", torch.cuda.get_device_name(0))
     logger.info("CUDA is available : ", str(torch.cuda.is_available()))
     logger.info("CUDA version : ", torch.versopm.cuda)

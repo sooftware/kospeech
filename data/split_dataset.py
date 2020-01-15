@@ -49,6 +49,7 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
     train_num_per_worker = math.ceil(train_num / hparams.workers)
 
     # audio_paths & label_paths shuffled in the same order
+    # for seperating train & validation
     data_paths = list(zip(audio_paths, label_paths))
     random.shuffle(data_paths)
     audio_paths, label_paths = zip(*data_paths)
@@ -59,7 +60,7 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
         train_end_idx = min(train_num_per_worker * (idx + 1), train_num)
         #  train_begin                    augment_end                             train_end
         #      │-----hparms.augment_ratio------│-----------------else-----------------│
-        augment_end_idx = train_begin_idx + ((train_end_idx - train_begin_idx) * hparams.augment_ratio)
+        augment_end_idx = int(train_begin_idx + ((train_end_idx - train_begin_idx) * hparams.augment_ratio))
         train_dataset.append(BaseDataset(audio_paths=audio_paths[train_begin_idx:train_end_idx],
                                          label_paths=label_paths[train_begin_idx:train_end_idx],
                                          bos_id=SOS_token, eos_id=EOS_token,
@@ -68,6 +69,7 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
                                             label_paths=label_paths[train_begin_idx:augment_end_idx],
                                             bos_id=SOS_token, eos_id=EOS_token,
                                             target_dict=target_dict, reverse=hparams.input_reverse))
+    # shuffled train_dataset
     random.shuffle(train_dataset)
     valid_dataset = BaseDataset(audio_paths=audio_paths[train_num:],
                                 label_paths=label_paths[train_num:],
