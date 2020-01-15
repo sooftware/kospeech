@@ -13,7 +13,6 @@ limitations under the License.
 from data.baseDataset import BaseDataset
 import math, random
 from definition import SOS_token, EOS_token
-from data.augmentDataset import AugmentDataset
 
 def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_dict = dict()):
     """
@@ -58,22 +57,24 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
     for idx in range(hparams.workers):
         train_begin_idx = train_num_per_worker * idx
         train_end_idx = min(train_num_per_worker * (idx + 1), train_num)
-        #  train_begin                    augment_end                             train_end
-        #      │-----hparms.augment_ratio------│-----------------else-----------------│
+        #  train_begin                     augment_end                             train_end
+        #      │-----hparams.augment_ratio------│-----------------else-----------------│
         augment_end_idx = int(train_begin_idx + ((train_end_idx - train_begin_idx) * hparams.augment_ratio))
         train_dataset.append(BaseDataset(audio_paths=audio_paths[train_begin_idx:train_end_idx],
                                          label_paths=label_paths[train_begin_idx:train_end_idx],
-                                         bos_id=SOS_token, eos_id=EOS_token,
-                                         target_dict=target_dict, reverse=hparams.input_reverse))
-        train_dataset.append(AugmentDataset(audio_paths=audio_paths[train_begin_idx:augment_end_idx],
-                                            label_paths=label_paths[train_begin_idx:augment_end_idx],
-                                            bos_id=SOS_token, eos_id=EOS_token,
-                                            target_dict=target_dict, reverse=hparams.input_reverse))
+                                         bos_id=SOS_token, eos_id=EOS_token, target_dict=target_dict,
+                                         reverse=hparams.input_reverse, augment=False))
+        if hparams.use_augment:
+            train_dataset.append(BaseDataset(audio_paths=audio_paths[train_begin_idx:augment_end_idx],
+                                             label_paths=label_paths[train_begin_idx:augment_end_idx],
+                                             bos_id=SOS_token, eos_id=EOS_token, target_dict=target_dict,
+                                             reverse=hparams.input_reverse, augment=True))
     # shuffled train_dataset
     random.shuffle(train_dataset)
     valid_dataset = BaseDataset(audio_paths=audio_paths[train_num:],
                                 label_paths=label_paths[train_num:],
                                 bos_id=SOS_token, eos_id=EOS_token,
-                                target_dict=target_dict, reverse=hparams.input_reverse)
+                                target_dict=target_dict, reverse=hparams.input_reverse,
+                                augment=False)
 
     return train_batch_num, train_dataset, valid_dataset

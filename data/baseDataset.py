@@ -12,6 +12,8 @@ limitations under the License.
 """
 
 from torch.utils.data import Dataset
+
+from feature.augmentation import spec_augment
 from feature.feature import get_librosa_mfcc
 from label.label_func import get_label
 
@@ -31,12 +33,13 @@ class BaseDataset(Dataset):
         - **feat**: feature vector for audio
         - **label**: label for audio
     """
-    def __init__(self, audio_paths, label_paths, bos_id = 2037, eos_id = 2038, target_dict = None, reverse = True):
+    def __init__(self, audio_paths, label_paths, bos_id = 2037, eos_id = 2038, target_dict = None, reverse = True, augment = False):
         self.audio_paths = audio_paths
         self.label_paths = label_paths
         self.bos_id, self.eos_id = bos_id, eos_id
         self.target_dict = target_dict
         self.reverse = reverse
+        self.augment = augment
 
     def __len__(self):
         return len(self.audio_paths)
@@ -50,5 +53,6 @@ class BaseDataset(Dataset):
         # 음성데이터에 대한 feature를 feat에 저장 -> tensor 형식'
         feat = get_librosa_mfcc(self.audio_paths[idx], n_mfcc = 33, del_silence = False,
                                 input_reverse = self.reverse, format='pcm')
+        if self.augment: feat = spec_augment(feat, T=40, F=30, time_mask_num=2, freq_mask_num=2)
 
         return feat, label

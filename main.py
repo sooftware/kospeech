@@ -64,7 +64,8 @@ if __name__ == '__main__':
     eval_result = {'loss': [], 'cer': []}
 
     hparams = HyperParams()
-    #hparams.input_params()
+    hparams.input_params()
+    hparams.print_hparams()
 
     random.seed(hparams.seed)
     torch.manual_seed(hparams.seed)
