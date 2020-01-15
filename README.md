@@ -107,6 +107,24 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 ```
 "아/ 모+ 몬 소리야 칠 십 퍼센트 확률이라니" => "아 모 몬 소리야 칠 십 퍼센트 확률이라니"
 ```
+## Hyperparameters  
+| Hyperparameter  | Use         |  
+| :----------      | :----------:|    
+| use_bidirectional| True|  
+| use_attention    | True        |   
+|input_reverse|True|   
+|use_augment| True|  
+|augment_ratio|0.3|   
+|encoder_layer_size|5|  
+| decoder_layer_size       | 3           |  
+| hidden_size      | 256         |
+| batch_size       | 8          |
+| dropout          | 0.5  |
+| teacher_forcing  | 0.99|
+| lr               | 1e-4        |
+| max_epochs       | 30          |   
+  
+  
 ## Feature  
 * MFCC (Mel-Frequency-Cepstral-Coefficients)  
   
