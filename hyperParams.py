@@ -44,6 +44,7 @@ class HyperParams():
         self.batch_size = int(input("batch_size : "))
         self.workers = int(input("workers : "))
         self.max_epochs = int(input("max_epochs : "))
+        self.input_reverse = input("input reverse : ")
         self.lr = float(input("learning rate : "))
         self.teacher_forcing = float(input("teacher_forcing : "))
         self.seed = int(input("seed : "))

@@ -13,6 +13,7 @@ limitations under the License.
 from data.baseDataset import BaseDataset
 import math, random
 from definition import SOS_token, EOS_token
+from data.augmentDataset import AugmentDataset
 
 def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_dict = dict()):
     """
@@ -60,9 +61,14 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
                                          label_paths=label_paths[train_begin_idx:train_end_idx],
                                          bos_id=SOS_token, eos_id=EOS_token,
                                          target_dict=target_dict, reverse=hparams.input_reverse))
+        train_dataset.append(AugmentDataset(audio_paths=audio_paths[train_begin_idx:train_end_idx],
+                                            label_paths=label_paths[train_begin_idx:train_end_idx],
+                                            bos_id=SOS_token, eos_id=EOS_token,
+                                            target_dict=target_dict, reverse=hparams.input_reverse))
+    random.shuffle(train_dataset)
     valid_dataset = BaseDataset(audio_paths=audio_paths[train_num:],
                                 label_paths=label_paths[train_num:],
-                                sos_id=SOS_token, eos_id=EOS_token,
-                                target_dict=target_dict, reverse=hparams.reverse)
+                                bos_id=SOS_token, eos_id=EOS_token,
+                                target_dict=target_dict, reverse=hparams.input_reverse)
 
     return train_batch_num, train_dataset, valid_dataset

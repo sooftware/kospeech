@@ -27,9 +27,9 @@ def get_librosa_melspectrogram(filepath, n_mels=80, del_silence=True, mel_type='
             - **filepath**: specific path of audio file
         Comment:
             - **sample rate**: A.I Hub dataset`s sample rate is 16,000
-            - **frame length**: 21ms
-            - **stride**: 5.2ms
-            - **overlap**: 15.8ms (≒75%)
+            - **frame length**: 30ms
+            - **stride**: 7.5ms
+            - **overlap**: 22.5ms (≒75%)
         Outputs:
             mel_spec: return log(mel-spectrogram) if mel_type is 'log_mel' or mel-spectrogram
         """
@@ -42,7 +42,7 @@ def get_librosa_melspectrogram(filepath, n_mels=80, del_silence=True, mel_type='
     if del_silence:
         non_silence_indices = librosa.effects.split(y=sig, top_db=30)
         sig = np.concatenate([sig[start:end] for start, end in non_silence_indices])
-    feat = librosa.feature.melspectrogram(sig, sr=16000, n_mels=n_mels, n_fft=336, hop_length=84, window='hamming')
+    feat = librosa.feature.melspectrogram(sig, sr=16000, n_mels=n_mels, n_fft=480, hop_length=120, window='hamming')
 
     if mel_type == 'log_mel':
         feat = librosa.amplitude_to_db(feat, ref=np.max)
@@ -52,17 +52,19 @@ def get_librosa_mfcc(filepath, n_mfcc = 33, del_silence = True, input_reverse = 
     """
     Provides Mel Frequency Cepstral Coefficient (MFCC) for Speech Recognition
     Args:
-        del_silence: flag indication whether to delete silence or not (default: True)
-        n_mfcc: number of mel filter
-    Inputs:
         filepath: specific path of audio file
+        n_mfcc: number of mel filter
+        del_silence: flag indication whether to delete silence or not (default: True)
+        input_reverse: flag indication whether to reverse input or not (default: True)
+        format: file format ex) pcm, wav
     Comment:
-        - **sample rate**: A.I Hub dataset`s sample rate is 16,000
-        - **frame length**: 30ms
-        - **stride**: 7.5ms
-        - **overlap**: 22.5ms (≒75%)
-        n_fft = sr * frame_length
-        hop_length = sr * stride
+        sample rate: A.I Hub dataset`s sample rate is 16,000
+        frame length: 30ms
+        stride: 7.5ms
+        overlap: 22.5ms (≒75%)
+        window: Hamming Window
+        n_fft = sr * frame_length (16,000 * 30ms)
+        hop_length = sr * stride (16,000 * 7.5ms)
     Outputs:
         mfcc: return MFCC values of signal
     """
