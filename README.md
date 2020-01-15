@@ -74,7 +74,7 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 전체 데이터셋의 70%에 해당하는 학습용 데이터 리스트  
 전체 데이터셋에서 등장한 2,340개의 문자 중 1번 만 등장한 문자들은 포함된 데이터를 제외한 리스트    
   
-| pcm-filaname| txt-filename|   
+| pcm-filename| txt-filename|   
 | :-------------------| :--------------------------|     
 | KaiSpeech_078903.pcm | KaiSpeech_label_078903.txt  |  
 | KaiSpeech_449461.pcm | KaiSpeech_label_449461.txt  |  
