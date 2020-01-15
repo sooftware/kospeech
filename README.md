@@ -109,7 +109,7 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 ```
 ## Hyperparameters  
 | Hyperparameter  | Use         |Help|  
-| :----------      | :----------:|:---|    
+| :----------      | :----------:|:---:|    
 | use_bidirectional| True|if True, becomes a bidirectional encodr|  
 | use_attention    | True |flag indication whether to use attention mechanism or not|   
 |input_reverse|True|flag indication whether to reverse input feature or not|   
@@ -123,7 +123,6 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 | teacher_forcing  | 0.99|The probability that teacher forcing will be used|
 | lr               | 1e-4        |learning rate|
 | max_epochs       | 30          |max epoch|   
-  
   
 ## Feature  
 * MFCC (Mel-Frequency-Cepstral-Coefficients)  
