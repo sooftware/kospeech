@@ -112,20 +112,20 @@ if __name__ == '__main__':
     train_begin = time.time()
 
     for epoch in range(hparams.max_epochs):
-        train_queue = queue.Queue(hparams.workers * 2)
-        train_loader = MultiLoader(train_dataset_list, train_queue, hparams.batch_size, hparams.workers)
+        train_queue = queue.Queue(hparams.worker_num * 2)
+        train_loader = MultiLoader(train_dataset_list, train_queue, hparams.batch_size, hparams.worker_num)
         train_loader.start()
         train_loss, train_cer = train(model, train_batch_num,
                                       train_queue, criterion,
                                       optimizer, device,
-                                      train_begin, hparams.workers,
+                                      train_begin, hparams.worker_num,
                                       10, hparams.teacher_forcing)
 
         logger.info('Epoch %d (Training) Loss %0.4f CER %0.4f' % (epoch, train_loss, train_cer))
 
         train_loader.join()
 
-        valid_queue = queue.Queue(hparams.workers * 2)
+        valid_queue = queue.Queue(hparams.worker_num * 2)
         valid_loader = BaseDataLoader(valid_dataset, valid_queue, hparams.batch_size, 0)
         valid_loader.start()
 
