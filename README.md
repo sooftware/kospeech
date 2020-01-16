@@ -179,7 +179,24 @@ CRR = (1.0 - CER) * 100.0
   + [PyTorch Spec-Augmentation](https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py)
 * Invert Input Data
   + [「Sequence to sequence learning with neural networks」  Paper](https://arxiv.org/abs/1409.3215)
-  
+   
+## Requirements  
+Install Levenshtein  
+```
+pip install python-levenshtein 
+```
+Install PyTorch
+```
+pip install torch
+```  
+Install librosa   
+``` 
+pip install librosa
+```
+Install tqdm  
+```
+pip install tqdm
+```
 ## License
 ```
 Licensed under the Apache License, Version 2.0 (the "License");
