@@ -64,7 +64,7 @@ if __name__ == '__main__':
     eval_result = {'loss': [], 'cer': []}
 
     hparams = HyperParams()
-    hparams.input_params()
+    #hparams.input_params()
     hparams.log_hparams()
 
     random.seed(hparams.seed)
@@ -100,7 +100,7 @@ if __name__ == '__main__':
         audio_paths, label_paths = load_data_list(data_list_path=TRAIN_LIST_PATH, dataset_path=DATASET_PATH)
     else:
         audio_paths, label_paths = load_data_list(data_list_path=TEST_LIST_PATH, dataset_path=DATASET_PATH)
-    # load all target scripts for reducing disk i/o
+    # load all target scripts for reducing disk I/O
     target_dict = load_targets(label_paths)
 
     # 데이터 로드 end

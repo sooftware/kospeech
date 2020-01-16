@@ -48,8 +48,8 @@ class BaseDataset(Dataset):
         if use_augment: self.augmentation()
 
     def get_feature(self):
-        logger.info("\nGet Features for reducing disking I/O during training...")
-        for idx in trange(self.audio_paths):
+        logger.info("\nget Features for reducing disking I/O during training...")
+        for idx in trange(len(self.audio_paths)):
             self.features.append(get_librosa_mfcc(self.audio_paths[idx], n_mfcc = 33, del_silence = False, input_reverse = self.reverse, format='pcm'))
 
     def augmentation(self):
