@@ -173,6 +173,8 @@ CRR = (1.0 - CER) * 100.0
 * SpecAugment  
   + [「A Simple Data Augmentation Method for Automatic Speech Recognition」 Paper](https://arxiv.org/abs/1904.08779)  
   + [Souce Code](https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py)
+* Invert Input Data
+  + [「Sequence to sequence learning with neural networks」 Paper](https://arxiv.org/abs/1409.3215)
   
 ## License
 ```
