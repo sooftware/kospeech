@@ -18,7 +18,7 @@ def load_label(label_path):
     """
     Provides char2index, index2char
     Inputs: label_path
-        label_path: csv file with character labels
+        - **label_path**: csv file with character labels
             Format : char | id | freq
     Outputs: char2index, index2char
         - **char2index**: char2index[ch] = id

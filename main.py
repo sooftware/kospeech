@@ -55,17 +55,17 @@ import os
 
 if __name__ == '__main__':
     os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
-    logger.info("device : ", torch.cuda.get_device_name(0))
-    logger.info("CUDA is available : ", str(torch.cuda.is_available()))
-    logger.info("CUDA version : ", torch.versopm.cuda)
-    logger.info("PyTorch version : " + torch.__version__)
+    logger.info("device : %s" % torch.cuda.get_device_name(0))
+    logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
+    logger.info("CUDA version : %s" % (torch.version.cuda))
+    logger.info("PyTorch version : %s" % (torch.__version__))
 
     train_result = {'loss': [], 'cer': []}
     eval_result = {'loss': [], 'cer': []}
 
     hparams = HyperParams()
     hparams.input_params()
-    hparams.print_hparams()
+    hparams.log_hparams()
 
     random.seed(hparams.seed)
     torch.manual_seed(hparams.seed)
@@ -78,13 +78,13 @@ if __name__ == '__main__':
     enc = EncoderRNN(feature_size, hparams.hidden_size,
                      input_dropout_p = hparams.dropout, dropout_p = hparams.dropout,
                      n_layers = hparams.encoder_layer_size,
-                     bidirectional = hparams.bidirectional, rnn_cell = 'gru', variable_lengths = False)
+                     bidirectional = hparams.use_bidirectional, rnn_cell = 'gru', variable_lengths = False)
 
     dec = DecoderRNN(vocab_size=len(char2index), max_len=hparams.max_len,
-                     hidden_size=hparams.hidden_size * (2 if hparams.bidirectional else 1),
+                     hidden_size=hparams.hidden_size * (2 if hparams.use_bidirectional else 1),
                      sos_id=SOS_token, eos_id=EOS_token,
-                     layer_size = hparams.decoder_layer_size, rnn_cell = 'gru', bidirectional = hparams.bidirectional,
-                     input_dropout_p = hparams.dropout, dropout_p = hparams.dropout, use_attention = hparams.attention)
+                     layer_size = hparams.decoder_layer_size, rnn_cell = 'gru', bidirectional = hparams.use_bidirectional,
+                     input_dropout_p = hparams.dropout, dropout_p = hparams.dropout, use_attention = hparams.use_attention)
 
     model = Seq2seq(enc, dec)
     model.flatten_parameters()

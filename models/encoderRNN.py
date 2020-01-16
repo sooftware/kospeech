@@ -25,7 +25,7 @@ class EncoderRNN(BaseRNN):
         input_dropout_p (float, optional): dropout probability for the input sequence (default: 0)
         dropout_p (float, optional): dropout probability for the output sequence (default: 0)
         n_layers (int, optional): number of recurrent layers (default: 1)
-        bidirectional (bool, optional): if True, becomes a bidirectional encodr (defulat False)
+        bidirectional (bool, optional): if True, becomes a bidirectional encoder (defulat False)
         rnn_cell (str, optional): type of RNN cell (default: gru)
         variable_lengths (bool, optional): if use variable length RNN (default: False)
         embedding (torch.Tensor, optional): Pre-trained embedding.  The size of the tensor has to match

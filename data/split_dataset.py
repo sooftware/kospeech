@@ -45,7 +45,7 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
     batch_num = math.ceil(len(audio_paths) / hparams.batch_size)
     valid_batch_num = math.ceil(batch_num * valid_ratio)
     train_batch_num = batch_num - valid_batch_num
-    train_num_per_worker = math.ceil(train_num / hparams.woker_num)
+    train_num_per_worker = math.ceil(train_num / hparams.worker_num)
 
     # audio_paths & label_paths shuffled in the same order
     # for seperating train & validation
@@ -69,7 +69,7 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
                                                   label_paths=label_paths[train_begin_idx:augment_end_idx],
                                                   bos_id=SOS_token, eos_id=EOS_token, target_dict=target_dict,
                                                   reverse=hparams.input_reverse, augment=True))
-        # shuffled train_dataset                                                    -
+        # shuffled train_dataset
         random.shuffle(train_dataset[idx])
     valid_dataset = BaseDataset(audio_paths=audio_paths[train_num:],
                                 label_paths=label_paths[train_num:],

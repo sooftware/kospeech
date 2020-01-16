@@ -12,10 +12,11 @@ def spec_augment(feat, T=40, F=30, time_mask_num=2, freq_mask_num=2):
         time_mask_num: how many time-masked area to make
         freq_mask_num: how many freq-masked area to make
     Outputs:
-        - **augmented**: Applied Spec-Augmentation to feat
+        - **feat**: Applied Spec-Augmentation to feat
 
     Reference :
         「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」Google Brain Team. 2019.12.03
+         https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py
     """
     n_mfcc = feat.size(1)
     feat_len = feat.size(0)
@@ -25,13 +26,13 @@ def spec_augment(feat, T=40, F=30, time_mask_num=2, freq_mask_num=2):
         t = np.random.uniform(low=0.0, high=T)
         t = int(t)
         t0 = random.randint(0, feat_len - t)
-        feat[t0:t0+t, :] = 0
+        feat[t0 : t0 + t, :] = 0
 
     # freq mask
     for _ in range(freq_mask_num):
         f = np.random.uniform(low=0.0, high=F)
         f = int(f)
         f0 = random.randint(0, n_mfcc - f)
-        feat[:, f0:f0 + f] = 0
+        feat[:, f0 : f0 + f] = 0
 
     return feat
