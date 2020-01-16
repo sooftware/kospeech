@@ -71,10 +71,10 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 5 0 105 0 729 0 172 31 25 0 318 0 119 0 489 551 156 0 314 746 3 32 20
 ```
 * train_list.csv    
-전체 데이터셋의 70%에 해당하는 학습용 데이터 리스트  
+전체 데이터셋의 80%에 해당하는 학습용 데이터 리스트  
 전체 데이터셋에서 등장한 2,340개의 문자 중 1번 만 등장한 문자들은 포함된 데이터를 제외한 리스트    
   
-| pcm-filaname| txt-filename|   
+| pcm-filename| txt-filename|   
 | :-------------------| :--------------------------|     
 | KaiSpeech_078903.pcm | KaiSpeech_label_078903.txt  |  
 | KaiSpeech_449461.pcm | KaiSpeech_label_449461.txt  |  
@@ -83,7 +83,7 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 | KaiSpeech_039018.pcm | KaiSpeech_label_039018.txt  |  
   
 * test_list.csv   
-전체 데이터셋의 30%에 해당하는 테스트용  리스트   
+전체 데이터셋의 20%에 해당하는 테스트용  리스트   
 전체 데이터셋에서 등장한 2,340개의 문자 중 1번 만 등장한 문자들이 포함된 데이터 포함   
   
 | pcm-filaname| txt-filename|    
@@ -95,22 +95,43 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 | KaiSpeech_489840.pcm | KaiSpeech_label_489840.txt  |   
   
 ### Data Preprocessing
+* Raw Data  
+```
+"b/ 아/ 모+ 몬 소리야 (70%)/(칠 십 퍼센트) 확률이라니 n/"  
+```
 * b/, n/, / .. 등의 잡음 레이블 삭제 
 ```
-"b/ 아/ 모+ 몬 소리야 (70%)/(칠 십 퍼센트) 확률이라니 n/" => "아/ 모+ 몬 소리야 (70%)/(칠 십 퍼센트) 확률이라니"
+""아/ 모+ 몬 소리야 (70%)/(칠 십 퍼센트) 확률이라니"
 ```
 * 제공된 (철자전사)/(발음전사) 중 발음전사 사용  
 ```
-"아/ 모+ 몬 소리야 (70%)/(칠 십 퍼센트) 확률이라니" => "아/ 모+ 몬 소리야 칠 십 퍼센트 확률이라니"
+"아/ 모+ 몬 소리야 칠 십 퍼센트 확률이라니"
 ```
 * 간투어 표현 등을 위해 사용된 '/', '*', '+' 등의 레이블 삭제
 ```
-"아/ 모+ 몬 소리야 칠 십 퍼센트 확률이라니" => "아 모 몬 소리야 칠 십 퍼센트 확률이라니"
+"아 모 몬 소리야 칠 십 퍼센트 확률이라니"
 ```
+## Hyperparameters  
+| Hyperparameter  |Help| Use|              
+| ----------      |---|----------|    
+| use_bidirectional| if True, becomes a bidirectional encoder|True|  
+| use_attention    | flag indication whether to use attention mechanism or not|True |   
+|input_reverse|flag indication whether to reverse input feature or not|True|   
+|use_augment| flag indication whether to use spec-augmentation or not|True|  
+|augment_ratio|ratio of spec-augmentation applied data|0.3|   
+|encoder_layer_size|num of encoder`s RNN cell|5|  
+| decoder_layer_size|num of decoder`s RNN cell| 3|  
+| hidden_size| size of hidden state of RNN|256|
+| batch_size | mini-batch size|8|
+| dropout          | dropout probability|0.5  |
+| teacher_forcing  | The probability that teacher forcing will be used|0.99|
+| lr               | learning rate|1e-4        |
+| max_epochs       | max epoch|30          |   
+  
 ## Feature  
 * MFCC (Mel-Frequency-Cepstral-Coefficients)  
   
-| Parameter| Value|    
+| Parameter| Use|    
 | :-----| :----|     
 |Frame length|30ms|
 |Stride|7.5ms|
@@ -155,6 +176,9 @@ CRR = (1.0 - CER) * 100.0
   + [「Voice Recognition Using MFCC Algorithm」 Paper](https://s3.amazonaws.com/academia.edu.documents/36789621/27.NVEC10086.pdf?response-content-disposition=inline%3B%20filename%3DIJIRAE_Voice_Recognition_Using_MFCC_Algo.pdf&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWOWYYGZ2Y53UL3A%2F20200115%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20200115T053516Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=109747040e3e0f7ed358a3131fe2190d1fab0ba80985ffe08f819a2b5da4e36a)
 * SpecAugment  
   + [「A Simple Data Augmentation Method for Automatic Speech Recognition」 Paper](https://arxiv.org/abs/1904.08779)  
+  + [Souce Code](https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py)
+* Invert Input Data
+  + [「Sequence to sequence learning with neural networks」 Paper](https://arxiv.org/abs/1409.3215)
   
 ## License
 ```
