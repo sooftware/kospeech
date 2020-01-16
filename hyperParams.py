@@ -72,7 +72,7 @@ class HyperParams():
         logger.info("batch_size : %d" % self.batch_size)
         logger.info("worker_num : %d" % self.worker_num)
         logger.info("max_epochs : %d" % self.max_epochs)
-        logger.info("learning rate : %0.2f" % self.lr)
+        logger.info("learning rate : %0.4f" % self.lr)
         logger.info("teacher_forcing_ratio : %0.2f" % self.teacher_forcing)
         logger.info("seed : %d" % self.seed)
         logger.info("max_len : %d" % self.max_len)

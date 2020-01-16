@@ -60,11 +60,11 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
         train_dataset.append(BaseDataset(audio_paths=audio_paths[train_begin_idx:train_end_idx],
                                          label_paths=label_paths[train_begin_idx:train_end_idx],
                                          bos_id=SOS_token, eos_id=EOS_token, target_dict=target_dict,
-                                         reverse=hparams.input_reverse, augment=hparams.use_augment))
+                                         reverse=hparams.input_reverse, use_augment=hparams.use_augment))
 
     valid_dataset = BaseDataset(audio_paths=audio_paths[train_num:],
                                 label_paths=label_paths[train_num:],
                                 bos_id=SOS_token, eos_id=EOS_token,
-                                target_dict=target_dict, reverse=hparams.input_reverse, augment=False)
+                                target_dict=target_dict, reverse=hparams.input_reverse, use_augment=False)
 
     return train_batch_num, train_dataset, valid_dataset
