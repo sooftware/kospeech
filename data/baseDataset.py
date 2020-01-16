@@ -16,6 +16,7 @@ from torch.utils.data import Dataset
 from feature.augmentation import spec_augment
 from feature.feature import get_librosa_mfcc
 from label.label_func import get_label
+import random
 
 class BaseDataset(Dataset):
     """
@@ -33,13 +34,30 @@ class BaseDataset(Dataset):
         - **feat**: feature vector for audio
         - **label**: label for audio
     """
-    def __init__(self, audio_paths, label_paths, bos_id = 2037, eos_id = 2038, target_dict = None, reverse = True, augment = False):
+    def __init__(self, audio_paths, label_paths, bos_id = 2037, eos_id = 2038, target_dict = None, reverse = True, use_augment = True, augment_ratio = 0.3):
         self.audio_paths = audio_paths
         self.label_paths = label_paths
         self.bos_id, self.eos_id = bos_id, eos_id
         self.target_dict = target_dict
         self.reverse = reverse
-        self.augment = augment
+        self.augment_ratio = augment_ratio
+        if use_augment: self.augmentation()
+
+    def augmentation(self):
+        augment_end_idx = int(0 + ((len(self.audio_paths) - 0) * self.augment_ratio))
+        #  train_begin                     augment_end                             train_end
+        #      │-----hparams.augment_ratio------│-----------------else-----------------│
+        for idx in range(augment_end_idx):
+            label = get_label(self.label_paths[idx], self.bos_id, self.eos_id, self.target_dict)
+            feat = get_librosa_mfcc(self.audio_paths[idx], n_mfcc=33, del_silence=False, input_reverse=self.reverse, format='pcm')
+            augmented = spec_augment(feat, T=40, F=30, time_mask_num=2, freq_mask_num=2)
+            self.audio_paths.append(augmented)
+            self.label_paths.append(label)
+
+        # 오그멘티이션 추가 후 랜덤하게 Shuffle
+        data_paths = list(zip(self.audio_paths, self.label_paths))
+        random.shuffle(data_paths)
+        self.audio_paths, self.label_paths = zip(*data_paths)
 
     def __len__(self):
         return len(self.audio_paths)
@@ -51,8 +69,6 @@ class BaseDataset(Dataset):
         # 리스트 형식으로 label을 저장
         label = get_label(self.label_paths[idx], self.bos_id, self.eos_id, self.target_dict)
         # 음성데이터에 대한 feature를 feat에 저장 -> tensor 형식'
-        feat = get_librosa_mfcc(self.audio_paths[idx], n_mfcc = 33, del_silence = False,
-                                input_reverse = self.reverse, format='pcm')
-        if self.augment: feat = spec_augment(feat, T=40, F=30, time_mask_num=2, freq_mask_num=2)
+        feat = get_librosa_mfcc(self.audio_paths[idx], n_mfcc = 33, del_silence = False, input_reverse = self.reverse, format='pcm')
 
         return feat, label

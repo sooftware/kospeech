@@ -11,6 +11,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 import pandas as pd
+from tqdm import trange
 
 def load_data_list(data_list_path, dataset_path):
     """
@@ -40,7 +41,8 @@ def load_targets(label_paths):
                 Format : {KaiSpeech_label_FileNum : '5 0 49 4 0 8 190 0 78 115', ... }
     """
     target_dict = dict()
-    for label_txt in label_paths:
+    for idx in trange(len(label_paths)):
+        label_txt = label_paths[idx]
         f = open(file=label_txt, mode="r")
         label = f.readline()
         f.close()

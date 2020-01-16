@@ -21,7 +21,7 @@ class HyperParams():
         self.dropout = 0.5
         self.encoder_layer_size = 5
         self.decoder_layer_size = 3
-        self.batch_size = 8
+        self.batch_size = 7
         self.worker_num = 4
         self.max_epochs = 40
         self.lr = 0.0001
