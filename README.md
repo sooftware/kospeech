@@ -71,7 +71,7 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 5 0 105 0 729 0 172 31 25 0 318 0 119 0 489 551 156 0 314 746 3 32 20
 ```
 * train_list.csv    
-전체 데이터셋의 70%에 해당하는 학습용 데이터 리스트  
+전체 데이터셋의 80%에 해당하는 학습용 데이터 리스트  
 전체 데이터셋에서 등장한 2,340개의 문자 중 1번 만 등장한 문자들은 포함된 데이터를 제외한 리스트    
   
 | pcm-filename| txt-filename|   
@@ -83,7 +83,7 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 | KaiSpeech_039018.pcm | KaiSpeech_label_039018.txt  |  
   
 * test_list.csv   
-전체 데이터셋의 30%에 해당하는 테스트용  리스트   
+전체 데이터셋의 20%에 해당하는 테스트용  리스트   
 전체 데이터셋에서 등장한 2,340개의 문자 중 1번 만 등장한 문자들이 포함된 데이터 포함   
   
 | pcm-filaname| txt-filename|    
@@ -95,39 +95,43 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 | KaiSpeech_489840.pcm | KaiSpeech_label_489840.txt  |   
   
 ### Data Preprocessing
+* Raw Data  
+```
+"b/ 아/ 모+ 몬 소리야 (70%)/(칠 십 퍼센트) 확률이라니 n/"  
+```
 * b/, n/, / .. 등의 잡음 레이블 삭제 
 ```
-"b/ 아/ 모+ 몬 소리야 (70%)/(칠 십 퍼센트) 확률이라니 n/" => "아/ 모+ 몬 소리야 (70%)/(칠 십 퍼센트) 확률이라니"
+""아/ 모+ 몬 소리야 (70%)/(칠 십 퍼센트) 확률이라니"
 ```
 * 제공된 (철자전사)/(발음전사) 중 발음전사 사용  
 ```
-"아/ 모+ 몬 소리야 (70%)/(칠 십 퍼센트) 확률이라니" => "아/ 모+ 몬 소리야 칠 십 퍼센트 확률이라니"
+"아/ 모+ 몬 소리야 칠 십 퍼센트 확률이라니"
 ```
 * 간투어 표현 등을 위해 사용된 '/', '*', '+' 등의 레이블 삭제
 ```
-"아/ 모+ 몬 소리야 칠 십 퍼센트 확률이라니" => "아 모 몬 소리야 칠 십 퍼센트 확률이라니"
+"아 모 몬 소리야 칠 십 퍼센트 확률이라니"
 ```
 ## Hyperparameters  
-| Hyperparameter  | Use         |Help|  
-| :----------      | :----------:|:---:|    
-| use_bidirectional| True|if True, becomes a bidirectional encoder|  
-| use_attention    | True |flag indication whether to use attention mechanism or not|   
-|input_reverse|True|flag indication whether to reverse input feature or not|   
-|use_augment| True|flag indication whether to use spec-augmentation or not|  
-|augment_ratio|0.3|ratio of spec-augmentation applied data|   
-|encoder_layer_size|5|num of encoder`s RNN cell|  
-| decoder_layer_size| 3|num of decoder`s RNN cell|  
-| hidden_size| 256|size of hidden state of RNN|
-| batch_size | 8|mini-batch size|
-| dropout          | 0.5  |dropout probability|
-| teacher_forcing  | 0.99|The probability that teacher forcing will be used|
-| lr               | 1e-4        |learning rate|
-| max_epochs       | 30          |max epoch|   
+| Hyperparameter  |Help| Use|              
+| ----------      |---|----------|    
+| use_bidirectional| if True, becomes a bidirectional encoder|True|  
+| use_attention    | flag indication whether to use attention mechanism or not|True |   
+|input_reverse|flag indication whether to reverse input feature or not|True|   
+|use_augment| flag indication whether to use spec-augmentation or not|True|  
+|augment_ratio|ratio of spec-augmentation applied data|0.3|   
+|encoder_layer_size|num of encoder`s RNN cell|5|  
+| decoder_layer_size|num of decoder`s RNN cell| 3|  
+| hidden_size| size of hidden state of RNN|256|
+| batch_size | mini-batch size|8|
+| dropout          | dropout probability|0.5  |
+| teacher_forcing  | The probability that teacher forcing will be used|0.99|
+| lr               | learning rate|1e-4        |
+| max_epochs       | max epoch|30          |   
   
 ## Feature  
 * MFCC (Mel-Frequency-Cepstral-Coefficients)  
   
-| Parameter| Value|    
+| Parameter| Use|    
 | :-----| :----|     
 |Frame length|30ms|
 |Stride|7.5ms|
