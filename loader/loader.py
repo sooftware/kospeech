@@ -17,7 +17,7 @@ def load_data_list(data_list_path, dataset_path):
     """
     Provides set of audio path & label path
     Inputs: data_list_path
-        data_list_path: csv file with training or test data list
+        - **data_list_path**: csv file with training or test data list
     Outputs: audio_paths, label_paths
         - **audio_paths**: set of audio path
                 Format : [base_dir/KaiSpeech/KaiSpeech_123260.pcm, ... , base_dir/KaiSpeech/KaiSpeech_621245.pcm]

@@ -13,10 +13,35 @@ limitations under the License.
 from definition import logger
 
 class HyperParams():
+    """
+    Set of Hyperparameters
+    Hyperparameters:
+        - **use_bidirectional**: if True, becomes a bidirectional encoder
+        - **use_attention**: flag indication whether to use attention mechanism or not
+        - **input_reverse**: flag indication whether to reverse input feature or not
+        - **use_augment**: flag indication whether to use spec-augmentation or not
+        - **augment_ratio**: ratio of spec-augmentation applied data
+        - **encoder_layer_size**: num of encoder`s RNN cell
+        - **decoder_layer_size**: num of decoder`s RNN cell
+        - **hidden_size**: size of hidden state of RNN
+        - **dropout**: dropout probability
+        - **batch_size**: mini-batch size
+        - **worker_num**: num of cpu core will be used
+        - **max_epochs**: max epoch
+        - **lr**: learning rate
+        - **teacher_forcing**: The probability that teacher forcing will be used
+        - **seed**: seed for random
+        - **max_len**: a maximum allowed length for the sequence to be processed
+        - **no_cuda**: if True, don`t use CUDA
+        - **save_name**: save name of model
+        - **mode**: train or test
+    """
     def __init__(self):
         self.use_bidirectional = True
         self.use_attention = True
+        self.input_reverse = True
         self.use_augment = True
+        self.augment_ratio = 0.3
         self.hidden_size = 256
         self.dropout = 0.5
         self.encoder_layer_size = 5
@@ -31,8 +56,6 @@ class HyperParams():
         self.no_cuda = False
         self.save_name = 'model'
         self.mode = 'train'
-        self.input_reverse = True
-        self.augment_ratio = 0.3
 
     def input_params(self):
         use_bidirectional = input("use bidirectional : ")

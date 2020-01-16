@@ -48,15 +48,15 @@ class BaseDataset(Dataset):
         if use_augment: self.augmentation()
 
     def get_feature(self):
-        logger.info("\nget Features for reducing disking I/O during training...")
+        logger.info("get Features for reducing disking I/O during training...")
         for idx in trange(len(self.audio_paths)):
             self.features.append(get_librosa_mfcc(self.audio_paths[idx], n_mfcc = 33, del_silence = False, input_reverse = self.reverse, format='pcm'))
 
     def augmentation(self):
-        augment_end_idx = int(0 + ((len(self.audio_paths) - 0) * self.augment_ratio))
-        #  train_begin                     augment_end                             train_end
+        #      0                    augment_end                                     end_idx (len(self.audio_paths)
         #      │-----hparams.augment_ratio------│-----------------else-----------------│
-        logger.info("\nApplying Augmentation...")
+        augment_end_idx = int(0 + ((len(self.audio_paths) - 0) * self.augment_ratio))
+        logger.info("Applying Augmentation...")
         for idx in trange(augment_end_idx):
             label = get_label(self.label_paths[idx], self.bos_id, self.eos_id, self.target_dict)
             feat = get_librosa_mfcc(self.audio_paths[idx], n_mfcc=33, del_silence=False, input_reverse=self.reverse, format='pcm')
@@ -64,7 +64,7 @@ class BaseDataset(Dataset):
             self.features.append(augmented)
             self.label_paths.append(label)
 
-        # 오그멘티이션 추가 후 랜덤하게 Shuffle
+        # after add data which applied Spec-Augmentation, shuffle
         data_paths = list(zip(self.features, self.label_paths))
         random.shuffle(data_paths)
         self.features, self.label_paths = zip(*data_paths)
@@ -76,9 +76,6 @@ class BaseDataset(Dataset):
         return len(self.audio_paths)
 
     def getitem(self, idx):
-        # 리스트 형식으로 label을 저장
         label = get_label(self.label_paths[idx], self.bos_id, self.eos_id, self.target_dict)
-        # 음성데이터에 대한 feature를 feat에 저장 -> tensor 형식'
         feat = self.features[idx]
-
         return feat, label
