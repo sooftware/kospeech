@@ -22,7 +22,6 @@ def get_librosa_melspectrogram(filepath, n_mels=80, del_silence=True, mel_type='
             - **del_silence**: flag indication whether to delete silence or not (default: True)
             - **mel_type**: flag indication whether to use mel or log(mel) (default: log(mel))
             - **n_mels**: number of mel filter
-            - **format**:
         Inputs:
             - **filepath**: specific path of audio file
         Comment:
@@ -56,7 +55,7 @@ def get_librosa_mfcc(filepath, n_mfcc = 33, del_silence = True, input_reverse = 
         n_mfcc: number of mel filter
         del_silence: flag indication whether to delete silence or not (default: True)
         input_reverse: flag indication whether to reverse input or not (default: True)
-        format: file format ex) pcm, wav
+        format: file format ex) pcm, wav (default: pcm)
     Comment:
         sample rate: A.I Hub dataset`s sample rate is 16,000
         frame length: 30ms

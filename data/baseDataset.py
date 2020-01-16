@@ -43,24 +43,31 @@ class BaseDataset(Dataset):
         self.target_dict = target_dict
         self.reverse = reverse
         self.augment_ratio = augment_ratio
+        self.features = list()
+        self.get_feature()
         if use_augment: self.augmentation()
+
+    def get_feature(self):
+        logger.info("\nGet Features for reducing disking I/O during training...")
+        for idx in trange(self.audio_paths):
+            self.features.append(get_librosa_mfcc(self.audio_paths[idx], n_mfcc = 33, del_silence = False, input_reverse = self.reverse, format='pcm'))
 
     def augmentation(self):
         augment_end_idx = int(0 + ((len(self.audio_paths) - 0) * self.augment_ratio))
         #  train_begin                     augment_end                             train_end
         #      │-----hparams.augment_ratio------│-----------------else-----------------│
-        logger.info("Applying Augmentation...")
+        logger.info("\nApplying Augmentation...")
         for idx in trange(augment_end_idx):
             label = get_label(self.label_paths[idx], self.bos_id, self.eos_id, self.target_dict)
             feat = get_librosa_mfcc(self.audio_paths[idx], n_mfcc=33, del_silence=False, input_reverse=self.reverse, format='pcm')
             augmented = spec_augment(feat, T=40, F=30, time_mask_num=2, freq_mask_num=2)
-            self.audio_paths.append(augmented)
+            self.features.append(augmented)
             self.label_paths.append(label)
 
         # 오그멘티이션 추가 후 랜덤하게 Shuffle
-        data_paths = list(zip(self.audio_paths, self.label_paths))
+        data_paths = list(zip(self.features, self.label_paths))
         random.shuffle(data_paths)
-        self.audio_paths, self.label_paths = zip(*data_paths)
+        self.features, self.label_paths = zip(*data_paths)
 
     def __len__(self):
         return len(self.audio_paths)
@@ -72,6 +79,6 @@ class BaseDataset(Dataset):
         # 리스트 형식으로 label을 저장
         label = get_label(self.label_paths[idx], self.bos_id, self.eos_id, self.target_dict)
         # 음성데이터에 대한 feature를 feat에 저장 -> tensor 형식'
-        feat = get_librosa_mfcc(self.audio_paths[idx], n_mfcc = 33, del_silence = False, input_reverse = self.reverse, format='pcm')
+        feat = self.features[idx]
 
         return feat, label
