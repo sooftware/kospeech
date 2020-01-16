@@ -143,12 +143,13 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 
 * code   
 ```python
-def get_librosa_mfcc(filepath, n_mfcc = 33, del_silence = True, input_reverse = True, format='pcm'):
+def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = True, input_reverse = True, format='pcm'):
     if format == 'pcm':
         pcm = np.memmap(filepath, dtype='h', mode='r')
         sig = np.array([float(x) for x in pcm])
     elif format == 'wav':
         sig, sr = librosa.core.load(filepath, sr=16000)
+    else: logger.info("Invalid file format!!")
 
     if del_silence:
         non_silence_indices = librosa.effects.split(sig, top_db=30)
