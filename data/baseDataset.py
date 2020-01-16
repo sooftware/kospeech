@@ -53,7 +53,7 @@ class BaseDataset(Dataset):
             self.features.append(get_librosa_mfcc(self.audio_paths[idx], n_mfcc = 33, del_silence = False, input_reverse = self.reverse, format='pcm'))
 
     def augmentation(self):
-        #      0                    augment_end                                     end_idx (len(self.audio_paths)
+        #      0                            augment_end                             end_idx (len(self.audio_paths)
         #      │-----hparams.augment_ratio------│-----------------else-----------------│
         augment_end_idx = int(0 + ((len(self.audio_paths) - 0) * self.augment_ratio))
         logger.info("Applying Augmentation...")
@@ -65,15 +65,15 @@ class BaseDataset(Dataset):
             self.label_paths.append(label)
 
         # after add data which applied Spec-Augmentation, shuffle
-        data_paths = list(zip(self.features, self.label_paths))
-        random.shuffle(data_paths)
-        self.features, self.label_paths = zip(*data_paths)
+        featureNlabel = list(zip(self.features, self.label_paths))
+        random.shuffle(featureNlabel)
+        self.features, self.label_paths = zip(*featureNlabel)
 
     def __len__(self):
-        return len(self.audio_paths)
+        return len(self.features)
 
     def count(self):
-        return len(self.audio_paths)
+        return len(self.features)
 
     def getitem(self, idx):
         label = get_label(self.label_paths[idx], self.bos_id, self.eos_id, self.target_dict)

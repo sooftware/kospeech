@@ -14,6 +14,7 @@ limitations under the License.
 import torch
 import librosa
 import numpy as np
+from definition import logger
 
 def get_librosa_melspectrogram(filepath, n_mels=80, del_silence=True, mel_type='log_mel', format='pcm'):
     """
@@ -47,7 +48,7 @@ def get_librosa_melspectrogram(filepath, n_mels=80, del_silence=True, mel_type='
         feat = librosa.amplitude_to_db(feat, ref=np.max)
     return torch.FloatTensor(feat).transpose(0, 1)
 
-def get_librosa_mfcc(filepath, n_mfcc = 33, del_silence = True, input_reverse = True, format='pcm'):
+def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = True, input_reverse = True, format='pcm'):
     """
     Provides Mel Frequency Cepstral Coefficient (MFCC) for Speech Recognition
     Args:
@@ -72,6 +73,7 @@ def get_librosa_mfcc(filepath, n_mfcc = 33, del_silence = True, input_reverse = 
         sig = np.array([float(x) for x in pcm])
     elif format == 'wav':
         sig, sr = librosa.core.load(filepath, sr=16000)
+    else: logger.info("Invalid file format!!")
 
     if del_silence:
         non_silence_indices = librosa.effects.split(sig, top_db=30)
