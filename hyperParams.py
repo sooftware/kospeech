@@ -19,6 +19,7 @@ class HyperParams():
         - **use_bidirectional**: if True, becomes a bidirectional encoder
         - **use_attention**: flag indication whether to use attention mechanism or not
         - **input_reverse**: flag indication whether to reverse input feature or not
+        - **use_pickle**: flag indication whether to load data from pickle or not
         - **use_augment**: flag indication whether to use spec-augmentation or not
         - **augment_ratio**: ratio of spec-augmentation applied data
         - **encoder_layer_size**: num of encoder`s RNN cell
@@ -47,7 +48,7 @@ class HyperParams():
         self.dropout = 0.5
         self.encoder_layer_size = 5
         self.decoder_layer_size = 3
-        self.batch_size = 7
+        self.batch_size = 6
         self.worker_num = 4
         self.max_epochs = 40
         self.lr = 0.0001

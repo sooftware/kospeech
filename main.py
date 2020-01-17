@@ -1,4 +1,5 @@
 """
+-*- coding: utf-8 -*-
 - Korean Speech Recognition
 Team: Kai.Lib (KwangWoon A.I Library)
     ● Team Member
@@ -32,7 +33,7 @@ License:
     See the License for the specific language governing permissions and
     limitations under the License.
 """
-#-*- coding: utf-8 -*-
+
 import queue
 import torch.nn as nn
 import torch.optim as optim
@@ -40,7 +41,6 @@ import random
 import torch
 import time
 import pandas as pd
-
 from data.load_dataset import load_dataset
 from definition import *
 from data.split_dataset import split_dataset
