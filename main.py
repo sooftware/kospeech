@@ -40,6 +40,8 @@ import random
 import torch
 import time
 import pandas as pd
+
+from data.load_dataset import load_dataset
 from definition import *
 from data.split_dataset import split_dataset
 from hyperParams import HyperParams
@@ -52,6 +54,7 @@ from models.seq2seq import Seq2seq
 from train.evaluate import evaluate
 from train.training import train
 import os
+import pickle
 
 if __name__ == '__main__':
     os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
@@ -100,12 +103,30 @@ if __name__ == '__main__':
         audio_paths, label_paths = load_data_list(data_list_path=TRAIN_LIST_PATH, dataset_path=DATASET_PATH)
     else:
         audio_paths, label_paths = load_data_list(data_list_path=TEST_LIST_PATH, dataset_path=DATASET_PATH)
-    # load all target scripts for reducing disk I/O
-    target_dict = load_targets(label_paths)
 
-    # 데이터 로드 end
-    train_batch_num, train_dataset_list, valid_dataset = \
-        split_dataset(hparams, audio_paths, label_paths, valid_ratio = 0.05, target_dict = target_dict)
+    if hparams.use_pickle:
+        logger.info("load all target_dict using pickle")
+        with open("./pickle/target_dict.txt", "rb") as f:
+            target_dict = pickle.load(f)
+        logger.info("load all target_dict using pickle complete !!")
+    else:
+        logger.info("load all target dictionary for reducing disk I/O")
+        target_dict = load_targets(label_paths)
+        logger.info("dump all target dictionary using pickle")
+        with open("./pickle/target_dict.txt", "wb") as f:
+            pickle.dump(target_dict, f)
+        logger.info("dump all target dictionary using pickle complete !!")
+
+    if hparams.use_pickle:
+        logger.info("load all train_daset & valid_dataset using pickle")
+        train_batch_num, train_dataset, valid_dataset = \
+            load_dataset(hparams, audio_paths, valid_ratio=0.05)
+        logger.info("load all train_daset & valid_dataset using pickle complete !!")
+    else:
+        logger.info("split dataset start !!")
+        train_batch_num, train_dataset, valid_dataset = \
+            split_dataset(hparams, audio_paths, label_paths, valid_ratio = 0.05, target_dict = target_dict)
+        logger.info("split dataset complete !!")
 
 
     logger.info('start')
@@ -113,7 +134,7 @@ if __name__ == '__main__':
 
     for epoch in range(hparams.max_epochs):
         train_queue = queue.Queue(hparams.worker_num * 2)
-        train_loader = MultiLoader(train_dataset_list, train_queue, hparams.batch_size, hparams.worker_num)
+        train_loader = MultiLoader(train_dataset, train_queue, hparams.batch_size, hparams.worker_num)
         train_loader.start()
         train_loss, train_cer = train(model, train_batch_num,
                                       train_queue, criterion,

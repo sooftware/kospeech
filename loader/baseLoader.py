@@ -36,14 +36,12 @@ class BaseDataLoader(threading.Thread):
 
             if len(items) == 0:
                 batch = self.create_empty_batch()
-                # 큐에 batch 삽입
                 self.queue.put(batch)
                 break
 
             random.shuffle(items)
 
             batch = self.collate_fn(items)
-            # 큐에 batch 삽입
             self.queue.put(batch)
         logger.debug('loader %d stop' % (self.thread_id))
 

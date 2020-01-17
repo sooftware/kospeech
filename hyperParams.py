@@ -41,6 +41,7 @@ class HyperParams():
         self.use_attention = True
         self.input_reverse = True
         self.use_augment = True
+        self.use_pickle = False
         self.augment_ratio = 0.3
         self.hidden_size = 256
         self.dropout = 0.5
@@ -64,6 +65,9 @@ class HyperParams():
         use_attention = input("use_attention : ")
         if use_attention.lower() == 'true': self.use_attention = True
         else: self.use_attention = False
+        use_pickle = input("use_pickle : ")
+        if use_pickle.lower() == 'true': self.use_pickle = True
+        else: self.use_pickle = False
         use_augment = input("use_augment : ")
         if use_augment.lower() == 'true': self.use_augment = True
         else: self.use_augment = False
@@ -85,6 +89,7 @@ class HyperParams():
     def log_hparams(self):
         logger.info("use_bidirectional : %s" % str(self.use_bidirectional))
         logger.info("use_attention : %s" % str(self.use_attention))
+        logger.info("use_pickle : %s" % str(self.use_pickle))
         logger.info("use_augment : %s" % str(self.use_augment))
         logger.info("augment_ratio : %0.2f" % self.augment_ratio)
         logger.info("input_reverse : %s" % str(self.input_reverse))

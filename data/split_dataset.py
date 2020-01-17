@@ -13,6 +13,8 @@ limitations under the License.
 from data.baseDataset import BaseDataset
 import math, random
 from definition import SOS_token, EOS_token
+import pickle
+from definition import logger
 
 def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_dict = dict()):
     """
@@ -62,9 +64,19 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
                                          bos_id=SOS_token, eos_id=EOS_token, target_dict=target_dict,
                                          reverse=hparams.input_reverse, use_augment=hparams.use_augment))
 
+    logger.info("dump all train_dataset using pickle")
+    with open('./pickle/train_dataset.txt', 'wb') as f:
+        pickle.dump(train_dataset, f)
+    logger.info("dump all train_dataset using pickle complete !!")
+
     valid_dataset = BaseDataset(audio_paths=audio_paths[train_num:],
                                 label_paths=label_paths[train_num:],
                                 bos_id=SOS_token, eos_id=EOS_token,
                                 target_dict=target_dict, reverse=hparams.input_reverse, use_augment=False)
+
+    logger.info("dump all valid_dataset using pickle")
+    with open('./pickle/valid_dataset.txt', 'wb') as f:
+        pickle.dump(valid_dataset, f)
+    logger.info("dump all valid_dataset using pickle complete !!")
 
     return train_batch_num, train_dataset, valid_dataset

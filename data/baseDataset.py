@@ -50,7 +50,12 @@ class BaseDataset(Dataset):
     def get_feature(self):
         logger.info("get Features for reducing disking I/O during training...")
         for idx in trange(len(self.audio_paths)):
-            self.features.append(get_librosa_mfcc(self.audio_paths[idx], n_mfcc = 33, del_silence = False, input_reverse = self.reverse, format='pcm'))
+            feat = get_librosa_mfcc(self.audio_paths[idx], n_mfcc = 33, del_silence = False, input_reverse = self.reverse, format='pcm')
+            if feat.size(0) == 1:
+                logger.info("Delete label_paths : %s" % self.label_paths[idx])
+                del self.label_paths[idx]
+            else:
+                self.features.append(feat)
 
     def augmentation(self):
         #      0                            augment_end                             end_idx (len(self.audio_paths)

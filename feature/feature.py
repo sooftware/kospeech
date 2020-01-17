@@ -69,7 +69,11 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = True, input_rev
         mfcc: return MFCC values of signal
     """
     if format == 'pcm':
-        pcm = np.memmap(filepath, dtype='h', mode='r')
+        try:
+            pcm = np.memmap(filepath, dtype='h', mode='r')
+        except:
+            logger.info("get_librosa_mfcc() Error in %s" % filepath)
+            return torch.zeros(1)
         sig = np.array([float(x) for x in pcm])
     elif format == 'wav':
         sig, sr = librosa.core.load(filepath, sr=16000)
