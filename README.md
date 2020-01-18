@@ -10,7 +10,7 @@ This Project is currently in progress.
 * [원철황](https://github.com/wch18735) KW University. elcomm. senior
 
 ## Model
-![model](https://postfiles.pstatic.net/MjAyMDAxMTlfODQg/MDAxNTc5MzY1NjE0MTA1.u3uWULKnEJKYj5PwWWRFF6gbQAcluuZIw3uKoiw_5csg.zOtsMmAINj9Tp_G5f9Pc291OFsldZgXRdtsCQzn5WOgg.GIF.sooftware/Kai_architecture.gif?type=w773)  
+![model](https://postfiles.pstatic.net/MjAyMDAxMTlfMjkw/MDAxNTc5MzY4NDY0NTA1.Tt6HY6fz84gihNXFQtBcnQt6oSDVgox7Asn6Fa6WU-og.bckaR29Oki9o7tzoWvSoneQIqLH0Ip6O8QO_yY3gSGQg.GIF.sooftware/Model-Architecture.gif?type=w773)  
 * Model Architecture : Seq2seq with Attention  
 ```python
 Seq2seq(
