@@ -10,11 +10,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-from data.baseDataset import BaseDataset
+
 import math, random
-from definition import SOS_token, EOS_token
 import pickle
-from definition import logger
+from definition import SOS_token, EOS_token, logger
+from data.baseDataset import BaseDataset
 
 def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_dict = dict()):
     """
@@ -47,7 +47,7 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
     batch_num = math.ceil(len(audio_paths) / hparams.batch_size)
     valid_batch_num = math.ceil(batch_num * valid_ratio)
     train_batch_num = batch_num - valid_batch_num
-    train_batch_num *= int(1 + hparams.augment_ratio)
+    if hparams.use_augment: train_batch_num *= int(1 + hparams.augment_ratio)
     train_num_per_worker = math.ceil(train_num / hparams.worker_num)
 
     # audio_paths & label_paths shuffled in the same order
