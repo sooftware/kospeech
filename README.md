@@ -175,6 +175,7 @@ CRR = (1.0 - CER) * 100.0
 * [[4]「A Simple Data Augmentation Method for Automatic Speech Recognition」  Paper](https://arxiv.org/abs/1904.08779)  
 * [[5] PyTorch Spec-Augmentation](https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py)
 * [[6]「Sequence to sequence learning with neural networks」  Paper](https://arxiv.org/abs/1409.3215)
+( [[7]「Attention Is All You Need」  Paper](https://arxiv.org/abs/1706.03762)
    
 ## Requirements  
 Install Levenshtein  
