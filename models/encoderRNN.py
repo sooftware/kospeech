@@ -93,23 +93,27 @@ class EncoderRNN(BaseRNN):
 
         Returns: output, hidden
             - **output** (batch, seq_len, hidden_size): variable containing the encoded features of the input sequence
-                          => (32, 257, 512)
+                          => Ex (32, 257, 512)
             - **hidden** (num_layers * num_directions, batch, hidden_size): variable containing the features in the hidden state h
-                          => (16, 32, 512)
+                          => Ex (16, 32, 512)
         """
 
-        # (batch_size, seq_len, n_mels) -> (batch_size, 1(in_channel), seq_len, n_mels)
+        # Before : (batch_size, seq_len, n_mels)
+        # After  : (batch_size, 1(in_channel), seq_len, n_mels)
         input_var = input_var.unsqueeze(1)
-        # (batch_size, 1, seq_len, n_mels) -> (batch_size, out_channel, seq_len / 4 , n_mels / 4) 4는 MaxPool2d x 2번
+        # Before : (batch_size, 1, seq_len, n_mels)
+        # After  : (batch_size, out_channel, seq_len / 4 , n_mels / 4) 4는 MaxPool2d x 2번
         x = self.conv(input_var)
-        # (batch_size, out_channel, seq_len, n_mels) -> (batch_size, seq_len, out_channel, n_mels)
+        # Before : (batch_size, out_channel, seq_len, n_mels)
+        # After  : (batch_size, seq_len, out_channel, n_mels)
         x = x.transpose(1, 2)
         # 메모리에 contiguous 하게 저장 ( torch.view() 사용시 필요 )
         x = x.contiguous()
         # x`s shape
         sizes = x.size()
         # Dimenstion Synchronization
-        # (batch_size, seq_len, out_channel, n_mels) -> (batch_size, seq_len, out_channel * n_mels)
+        # Before : (batch_size, seq_len, out_channel, n_mels)
+        # After  : (batch_size, seq_len, out_channel * n_mels)
         x = x.view(sizes[0], sizes[1], sizes[2] * sizes[3])
 
         if self.training: self.rnn.flatten_parameters()

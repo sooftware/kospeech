@@ -45,7 +45,7 @@ class BaseDataset(Dataset):
         self.augment_ratio = augment_ratio
         self.features = list()
         self.get_feature()
-        if use_augment: self.augmentation()
+        if use_augment: self.append_augmentation()
 
     def get_feature(self):
         logger.info("get Features for reducing disking I/O during training...")
@@ -57,7 +57,7 @@ class BaseDataset(Dataset):
             else:
                 self.features.append(feat)
 
-    def augmentation(self):
+    def append_augmentation(self):
         #      0                            augment_end                             end_idx (len(self.audio_paths)
         #      │-----hparams.augment_ratio------│-----------------else-----------------│
         augment_end_idx = int(0 + ((len(self.audio_paths) - 0) * self.augment_ratio))
