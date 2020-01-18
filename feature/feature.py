@@ -48,6 +48,7 @@ def get_librosa_melspectrogram(filepath, n_mels=80, del_silence=True, mel_type='
         feat = librosa.amplitude_to_db(feat, ref=np.max)
     return torch.FloatTensor(feat).transpose(0, 1)
 
+
 def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = True, input_reverse = True, format='pcm'):
     """
     Provides Mel Frequency Cepstral Coefficient (MFCC) for Speech Recognition
@@ -84,5 +85,4 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = True, input_rev
         sig = np.concatenate([sig[start:end] for start, end in non_silence_indices])
     feat = librosa.feature.mfcc(y=sig,sr=16000, hop_length=120, n_mfcc=n_mfcc, n_fft=480, window='hamming')
     if input_reverse: feat = feat[:,::-1]
-
     return torch.FloatTensor( np.ascontiguousarray( np.swapaxes(feat, 0, 1) ) )
