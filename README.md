@@ -132,7 +132,7 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 * MFCC (Mel-Frequency-Cepstral-Coefficients)  
   
 | Parameter| Use|    
-| :-----| :----|     
+| -----| -----|     
 |Frame length|30ms|
 |Stride|7.5ms|
 | N_FFT | 480  |   
