@@ -47,7 +47,7 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
     batch_num = math.ceil(len(audio_paths) / hparams.batch_size)
     valid_batch_num = math.ceil(batch_num * valid_ratio)
     train_batch_num = batch_num - valid_batch_num
-    if hparams.use_augment: train_batch_num *= int(1 + hparams.augment_ratio)
+    if hparams.use_augmentation: train_batch_num *= int(1 + hparams.augment_ratio)
     train_num_per_worker = math.ceil(train_num / hparams.worker_num)
 
     # audio_paths & label_paths shuffled in the same order
@@ -63,7 +63,7 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
         train_dataset.append(BaseDataset(audio_paths=audio_paths[train_begin_idx:train_end_idx],
                                          label_paths=label_paths[train_begin_idx:train_end_idx],
                                          bos_id=SOS_token, eos_id=EOS_token, target_dict=target_dict,
-                                         reverse=hparams.input_reverse, use_augment=hparams.use_augment))
+                                         reverse=hparams.input_reverse, use_augmentation=hparams.use_augmentation))
 
     logger.info("dump all train_dataset using pickle")
     with open('./pickle/train_dataset.txt', 'wb') as f:
@@ -73,7 +73,7 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
     valid_dataset = BaseDataset(audio_paths=audio_paths[train_num:],
                                 label_paths=label_paths[train_num:],
                                 bos_id=SOS_token, eos_id=EOS_token,
-                                target_dict=target_dict, reverse=hparams.input_reverse, use_augment=False)
+                                target_dict=target_dict, reverse=hparams.input_reverse, use_augmentation=False)
 
     logger.info("dump all valid_dataset using pickle")
     with open('./pickle/valid_dataset.txt', 'wb') as f:

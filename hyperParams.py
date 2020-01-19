@@ -41,8 +41,8 @@ class HyperParams():
         self.use_bidirectional = True
         self.use_attention = True
         self.input_reverse = True
-        self.use_augment = True
-        self.use_pickle = False
+        self.use_augmentation = True
+        self.use_pickle = True
         self.augment_ratio = 0.3
         self.hidden_size = 256
         self.dropout = 0.5
@@ -55,7 +55,7 @@ class HyperParams():
         self.teacher_forcing = 0.99
         self.seed = 1
         self.max_len = 80
-        self.no_cuda = False
+        self.no_cuda = True
         self.save_name = 'model'
         self.mode = 'train'
 
@@ -69,9 +69,9 @@ class HyperParams():
         use_pickle = input("use_pickle : ")
         if use_pickle.lower() == 'true': self.use_pickle = True
         else: self.use_pickle = False
-        use_augment = input("use_augment : ")
-        if use_augment.lower() == 'true': self.use_augment = True
-        else: self.use_augment = False
+        use_augmentation = input("use_augmentation : ")
+        if use_augmentation.lower() == 'true': self.use_augmentation = True
+        else: self.use_augmentation = False
         input_reverse = input("input reverse : ")
         if input_reverse.lower() == 'true' : self.input_reverse = True
         else: self.input_reverse = False
@@ -91,7 +91,7 @@ class HyperParams():
         logger.info("use_bidirectional : %s" % str(self.use_bidirectional))
         logger.info("use_attention : %s" % str(self.use_attention))
         logger.info("use_pickle : %s" % str(self.use_pickle))
-        logger.info("use_augment : %s" % str(self.use_augment))
+        logger.info("use_augmentation : %s" % str(self.use_augmentation))
         logger.info("augment_ratio : %0.2f" % self.augment_ratio)
         logger.info("input_reverse : %s" % str(self.input_reverse))
         logger.info("hidden_size : %d" % self.hidden_size)

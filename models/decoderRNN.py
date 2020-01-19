@@ -116,7 +116,7 @@ class DecoderRNN(BaseRNN):
         # Validate Arguments
         inputs, batch_size, max_length = self._validate_args(inputs, encoder_hidden, encoder_outputs, teacher_forcing_ratio)
         # Initiate Decoder Hidden State
-        decoder_hidden = self._init_state(batch_size).cuda() # CUDA
+        decoder_hidden = torch.zeros(self.layer_size, batch_size, self.hidden_size).cuda() # CUDA
         # Decide Use Teacher Forcing or Not
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
 
@@ -163,13 +163,6 @@ class DecoderRNN(BaseRNN):
         ret_dict[DecoderRNN.KEY_LENGTH] = lengths.tolist()
 
         return decoder_outputs, decoder_hidden, ret_dict
-
-
-    # Initialize Decoder Hidden State to zeros
-    def _init_state(self, batch_size):
-        init_state = torch.Tensor(np.random.rand(self.layer_size, batch_size, self.hidden_size))
-        init_state = torch.zeros(self.layer_size, batch_size, self.hidden_size)
-        return init_state
 
     def _validate_args(self, inputs, encoder_hidden, encoder_outputs, teacher_forcing_ratio):
         if self.use_attention:

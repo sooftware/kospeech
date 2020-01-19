@@ -36,21 +36,23 @@ class BaseDataset(Dataset):
         - **feat**: feature vector for audio
         - **label**: label for audio
     """
-    def __init__(self, audio_paths, label_paths, bos_id = 2037, eos_id = 2038, target_dict = None, reverse = True, use_augment = True, augment_ratio = 0.3):
+    def __init__(self, audio_paths, label_paths, bos_id = 2037, eos_id = 2038,
+                 target_dict = None, input_reverse = True, use_augmentation = True, augment_ratio = 0.3):
         self.audio_paths = list(audio_paths)
         self.label_paths = list(label_paths)
         self.bos_id, self.eos_id = bos_id, eos_id
         self.target_dict = target_dict
-        self.reverse = reverse
+        self.input_reverse = input_reverse
         self.augment_ratio = augment_ratio
         self.features = list()
         self.get_feature()
-        if use_augment: self.append_augmentation()
+        if use_augmentation: self.append_augmentation()
+        del self.audio_paths
 
     def get_feature(self):
         logger.info("get Features for reducing disking I/O during training...")
         for idx in trange(len(self.audio_paths)):
-            feat = get_librosa_mfcc(self.audio_paths[idx], n_mfcc = 33, del_silence = False, input_reverse = self.reverse, format='pcm')
+            feat = get_librosa_mfcc(self.audio_paths[idx], n_mfcc = 33, del_silence = False, input_reverse = self.input_reverse, format='pcm')
             if feat.size(0) == 1:
                 logger.info("Delete label_paths : %s" % self.label_paths[idx])
                 del self.label_paths[idx]
@@ -64,15 +66,15 @@ class BaseDataset(Dataset):
         logger.info("Applying Augmentation...")
         for idx in trange(augment_end_idx):
             label = get_label(self.label_paths[idx], self.bos_id, self.eos_id, self.target_dict)
-            feat = get_librosa_mfcc(self.audio_paths[idx], n_mfcc=33, del_silence=False, input_reverse=self.reverse, format='pcm')
+            feat = get_librosa_mfcc(self.audio_paths[idx], n_mfcc=33, del_silence=False, input_reverse=self.input_reverse, format='pcm')
             augmented = spec_augment(feat, T=40, F=30, time_mask_num=2, freq_mask_num=2)
             self.features.append(augmented)
             self.label_paths.append(label)
 
         # after add data which applied Spec-Augmentation, shuffle
-        featureNlabel = list(zip(self.features, self.label_paths))
-        random.shuffle(featureNlabel)
-        self.features, self.label_paths = zip(*featureNlabel)
+        feature_N_label = list(zip(self.features, self.label_paths))
+        random.shuffle(feature_N_label)
+        self.features, self.label_paths = zip(*feature_N_label)
 
     def __len__(self):
         return len(self.features)
@@ -80,7 +82,7 @@ class BaseDataset(Dataset):
     def count(self):
         return len(self.features)
 
-    def getitem(self, idx):
+    def get_item(self, idx):
         label = get_label(self.label_paths[idx], self.bos_id, self.eos_id, self.target_dict)
         feat = self.features[idx]
         return feat, label
