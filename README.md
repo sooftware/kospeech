@@ -176,6 +176,7 @@ CRR = (1.0 - CER) * 100.0
 * [[5] PyTorch Spec-Augmentation](https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py)  
 * [[6]「Sequence to sequence learning with neural networks」  Paper](https://arxiv.org/abs/1409.3215)  
 * [[7]「Attention Is All You Need」  Paper](https://arxiv.org/abs/1706.03762)
+* [[8] Levenshtein Distance](https://en.wikipedia.org/wiki/Levenshtein_distance)
    
 ## Requirements  
 Install Levenshtein  
