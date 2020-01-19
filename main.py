@@ -129,10 +129,10 @@ if __name__ == '__main__':
     logger.info('start')
     train_begin = time.time()
 
-    for epoch in range(hparams.max_epochs):
-        train_result = {'loss': [], 'cer': []}
-        eval_result = {'loss': [], 'cer': []}
+    train_result = {'loss': [], 'cer': []}
+    eval_result = {'loss': [], 'cer': []}
 
+    for epoch in range(hparams.max_epochs):
         train_queue = queue.Queue(hparams.worker_num * 2)
         train_loader = MultiLoader(train_dataset, train_queue, hparams.batch_size, hparams.worker_num)
         train_loader.start()
@@ -165,6 +165,3 @@ if __name__ == '__main__':
         eval_result = pd.DataFrame(eval_result)
         train_result.to_csv("./csv/train_result.csv", encoding='cp949', index=False)
         eval_result.to_csv("./csv/eval_result.csv", encoding='cp949', index=False)
-
-        del train_result
-        del eval_result
