@@ -10,7 +10,7 @@ This Project is currently in progress.
 * [원철황](https://github.com/wch18735) KW University. elcomm. senior
 
 ## Model
-![model](https://postfiles.pstatic.net/MjAxOTExMjdfMjM1/MDAxNTc0ODIxOTY1NDI3.KIFNl1lvjCnYHXCzkEssJLJxXGs-m6zKvSfaurZncasg.PnUqcLztGAueEecp5DoOWf61AExatLIu4ZZoEeS1Ia4g.PNG.sooftware/image.png?type=w773)  
+![model](https://postfiles.pstatic.net/MjAyMDAxMTlfMjkw/MDAxNTc5MzY4NDY0NTA1.Tt6HY6fz84gihNXFQtBcnQt6oSDVgox7Asn6Fa6WU-og.bckaR29Oki9o7tzoWvSoneQIqLH0Ip6O8QO_yY3gSGQg.GIF.sooftware/Model-Architecture.gif?type=w773)  
 * Model Architecture : Seq2seq with Attention  
 ```python
 Seq2seq(
@@ -173,8 +173,9 @@ CRR = (1.0 - CER) * 100.0
 * [[2] A.I Hub 한국어 음성 데이터셋](http://www.aihub.or.kr/aidata/105)
 * [[3]「Voice Recognition Using MFCC Algorithm」  Paper](https://s3.amazonaws.com/academia.edu.documents/36789621/27.NVEC10086.pdf?response-content-disposition=inline%3B%20filename%3DIJIRAE_Voice_Recognition_Using_MFCC_Algo.pdf&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWOWYYGZ2Y53UL3A%2F20200115%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20200115T053516Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=109747040e3e0f7ed358a3131fe2190d1fab0ba80985ffe08f819a2b5da4e36a)
 * [[4]「A Simple Data Augmentation Method for Automatic Speech Recognition」  Paper](https://arxiv.org/abs/1904.08779)  
-* [[5] PyTorch Spec-Augmentation](https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py)
-* [[6]「Sequence to sequence learning with neural networks」  Paper](https://arxiv.org/abs/1409.3215)
+* [[5] PyTorch Spec-Augmentation](https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py)  
+* [[6]「Sequence to sequence learning with neural networks」  Paper](https://arxiv.org/abs/1409.3215)  
+* [[7]「Attention Is All You Need」  Paper](https://arxiv.org/abs/1706.03762)
    
 ## Requirements  
 Install Levenshtein  
