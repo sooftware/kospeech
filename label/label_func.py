@@ -26,7 +26,7 @@ def load_label(label_path):
     """
     char2index = dict()
     index2char = dict()
-    f = open(label_path, 'r', encoding="UTF-8")
+    f = open(label_path, 'r', encoding="utf-8")
     labels = csv.reader(f, delimiter=',')
     next(labels)
 

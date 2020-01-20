@@ -47,6 +47,6 @@ def load_targets(label_paths):
         label = f.readline()
         f.close()
         file_num = label_txt.split('/')[-1].split('.')[0].split('_')[-1]
-        target_dict['KaiSpeech_label_'+file_num] = label
+        target_dict['KaiSpeech_label_%s' % file_num] = label
     return target_dict
 

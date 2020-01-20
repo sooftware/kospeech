@@ -160,7 +160,7 @@ if __name__ == '__main__':
 
         valid_loader.join()
 
-        torch.save(model, "./weight_file/epoch" + str(epoch))
+        torch.save(model, "./weight_file/epoch%s" % str(epoch))
         train_result = pd.DataFrame(train_result)
         eval_result = pd.DataFrame(eval_result)
         train_result.to_csv("./csv/train_result.csv", encoding='cp949', index=False)
