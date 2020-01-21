@@ -118,16 +118,25 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 | use_attention    | flag indication whether to use attention mechanism or not|True |   
 |input_reverse|flag indication whether to reverse input feature or not|True|   
 |use_augment| flag indication whether to use spec-augmentation or not|True|  
-|augment_ratio|ratio of spec-augmentation applied data|0.3|   
+|augment_ratio|ratio of spec-augmentation applied data|0.4|   
 |encoder_layer_size|num of encoder`s RNN cell|5|  
 | decoder_layer_size|num of decoder`s RNN cell| 3|  
 | hidden_size| size of hidden state of RNN|256|
-| batch_size | mini-batch size|8|
+| batch_size | mini-batch size|6|
 | dropout          | dropout probability|0.5  |
 | teacher_forcing  | The probability that teacher forcing will be used|0.99|
 | lr               | learning rate|1e-4        |
 | max_epochs       | max epoch|30          |   
+   
+## Training  
+Training in Progress   
   
+|Epoch|train cer|eval cer|  
+|-----|---------|--------|    
+|0|0.67|0.58|   
+|1|0.33|0.35|   
+   
+ 
 ## Feature  
 * MFCC (Mel-Frequency-Cepstral-Coefficients)  
   
