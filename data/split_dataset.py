@@ -47,7 +47,8 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
     batch_num = math.ceil(len(audio_paths) / hparams.batch_size)
     valid_batch_num = math.ceil(batch_num * valid_ratio)
     train_batch_num = batch_num - valid_batch_num
-    if hparams.use_augmentation: train_batch_num = int( train_batch_num * (1 + hparams.augment_ratio))
+    if hparams.use_augmentation:
+        train_batch_num = int( train_batch_num * (1 + hparams.augment_ratio))
     train_num_per_worker = math.ceil(train_num / hparams.worker_num)
 
     # audio_paths & label_paths shuffled in the same order
@@ -79,5 +80,8 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
     with open('./pickle/valid_dataset.txt', 'wb') as f:
         pickle.dump(valid_dataset, f)
     logger.info("dump all valid_dataset using pickle complete !!")
+
+    # momory deallocation
+    del train_end_idx, train_begin_idx, train_num_per_worker, train_num, batch_num, valid_batch_num, data_paths
 
     return train_batch_num, train_dataset, valid_dataset

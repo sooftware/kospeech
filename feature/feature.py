@@ -16,7 +16,7 @@ import librosa
 import numpy as np
 from definition import logger
 
-def get_librosa_melspectrogram(filepath, n_mels=80, del_silence=True, mel_type='log_mel', format='pcm'):
+def get_librosa_melspectrogram(filepath, n_mels=80, del_silence=True,input_reverse=True, mel_type='log_mel', format='pcm'):
     """
         Provides Mel-Spectrogram for Speech Recognition
         Args:
@@ -46,7 +46,10 @@ def get_librosa_melspectrogram(filepath, n_mels=80, del_silence=True, mel_type='
 
     if mel_type == 'log_mel':
         feat = librosa.amplitude_to_db(feat, ref=np.max)
-    return torch.FloatTensor(feat).transpose(0, 1)
+    if input_reverse:
+        feat = feat[:,::-1]
+
+    return torch.FloatTensor( np.ascontiguousarray( np.swapaxes(feat, 0, 1) ) )
 
 
 def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = True, input_reverse = True, format='pcm'):
@@ -76,13 +79,18 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = True, input_rev
             logger.info("get_librosa_mfcc() Error in %s" % filepath)
             return torch.zeros(1)
         sig = np.array([float(x) for x in pcm])
+        del pcm
     elif format == 'wav':
-        sig, sr = librosa.core.load(filepath, sr=16000)
+        sig, _ = librosa.core.load(filepath, sr=16000)
     else: logger.info("Invalid file format!!")
 
     if del_silence:
         non_silence_indices = librosa.effects.split(sig, top_db=30)
         sig = np.concatenate([sig[start:end] for start, end in non_silence_indices])
     feat = librosa.feature.mfcc(y=sig,sr=16000, hop_length=120, n_mfcc=n_mfcc, n_fft=480, window='hamming')
-    if input_reverse: feat = feat[:,::-1]
+    if input_reverse:
+        feat = feat[:,::-1]
+
+    del sig # memory deallocation
+
     return torch.FloatTensor( np.ascontiguousarray( np.swapaxes(feat, 0, 1) ) )

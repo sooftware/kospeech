@@ -34,6 +34,7 @@ def spec_augment(feat, T=40, F=30, time_mask_num=2, freq_mask_num=2):
         f = int(f)
         f0 = random.randint(0, n_mfcc - f)
         feat[:, f0 : f0 + f] = 0
+    del n_mfcc, feat_len, t, t0, f, f0 # memory deallocation
 
     return feat
 

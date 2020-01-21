@@ -41,7 +41,7 @@ class HyperParams():
         self.use_bidirectional = True
         self.use_attention = True
         self.input_reverse = True
-        self.use_augmentation = False
+        self.use_augmentation = True
         self.use_pickle = True
         self.augment_ratio = 0.3
         self.hidden_size = 256

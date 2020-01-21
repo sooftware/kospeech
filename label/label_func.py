@@ -26,13 +26,14 @@ def load_label(label_path):
     """
     char2index = dict()
     index2char = dict()
-    f = open(label_path, 'r', encoding="utf-8")
-    labels = csv.reader(f, delimiter=',')
+    with open(label_path, 'r', encoding="utf-8") as f:
+        labels = csv.reader(f, delimiter=',')
     next(labels)
 
     for row in labels:
         char2index[row[1]] = row[0]
         index2char[int(row[0])] = row[1]
+    del labels # memory deallocation
 
     return char2index, index2char
 
@@ -59,6 +60,8 @@ def get_label(label_path, bos_id=2037, eos_id=2038, target_dict=None):
     for token in tokens:
         label.append(int(token))
     label.append(int(eos_id))
+    del script, tokens # memory deallocation
+
     return label
 
 def label_to_string(labels, index2char, EOS_token):
