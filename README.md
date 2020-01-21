@@ -129,6 +129,7 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 | max_epochs       | max epoch|30          |   
    
 ## Training  
+training in progress  
 |Epoch|train cer|eval cer|  
 |-----|---------|--------|    
 |0|0.67|0.58|   
