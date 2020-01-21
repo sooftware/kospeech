@@ -191,14 +191,14 @@ def spec_augment(feat, T=40, F=30, time_mask_num=2, freq_mask_num=2):
 |input_reverse|flag indication whether to reverse input feature or not|True|   
 |use_augment| flag indication whether to use spec-augmentation or not|True|  
 |augment_ratio|ratio of spec-augmentation applied data|0.4|   
-|encoder_layer_size|num of encoder`s RNN cell|5|  
-| decoder_layer_size|num of decoder`s RNN cell| 3|  
+|encoder_layer_size|number of encoder`s RNN cell|5|  
+| decoder_layer_size|number of decoder`s RNN cell| 3|  
 | hidden_size| size of hidden state of RNN|256|
 | batch_size | mini-batch size|6|
 | dropout          | dropout probability|0.5  |
 | teacher_forcing  | The probability that teacher forcing will be used|0.99|
 | lr               | learning rate|1e-4        |
-| max_epochs       | max epoch|30          |   
+| max_epochs       | max epoch|40          |   
    
 ## Training  
 Training in Progress   
