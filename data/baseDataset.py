@@ -44,10 +44,6 @@ class BaseDataset(Dataset):
         self.target_dict = target_dict
         self.input_reverse = input_reverse
         self.augment_ratio = augment_ratio
-        self.features = list()
-        self.get_feature()
-        if use_augmentation: self.append_augmentation()
-        del self.audio_paths
 
     def get_feature(self):
         logger.info("get Features for reducing disking I/O during training...")
@@ -77,12 +73,17 @@ class BaseDataset(Dataset):
         self.features, self.label_paths = zip(*feature_N_label)
 
     def __len__(self):
-        return len(self.features)
+        return len(self.audio_paths)
 
     def count(self):
-        return len(self.features)
+        return len(self.audio_paths)
 
     def get_item(self, idx):
         label = get_label(self.label_paths[idx], self.bos_id, self.eos_id, self.target_dict)
-        feat = self.features[idx]
+        feat = get_librosa_mfcc(self.audio_paths[idx], n_mfcc = 33, del_silence = False, input_reverse = self.input_reverse, format='pcm')
+        if feat.size(0) == 1:
+            logger.info("Delete label_paths : %s" % self.label_paths[idx])
+            del self.label_paths[idx]
+            del self.audio_paths[idx]
+            label = ''
         return feat, label

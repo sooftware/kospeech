@@ -41,7 +41,7 @@ class HyperParams():
         self.use_bidirectional = True
         self.use_attention = True
         self.input_reverse = True
-        self.use_augmentation = True
+        self.use_augmentation = False
         self.use_pickle = True
         self.augment_ratio = 0.3
         self.hidden_size = 256
@@ -49,7 +49,7 @@ class HyperParams():
         self.encoder_layer_size = 5
         self.decoder_layer_size = 3
         self.batch_size = 6
-        self.worker_num = 4
+        self.worker_num = 1
         self.max_epochs = 40
         self.lr = 0.0001
         self.teacher_forcing = 0.99

@@ -75,20 +75,44 @@ if __name__ == '__main__':
 
     feature_size = 33
 
-    enc = EncoderRNN(feature_size, hparams.hidden_size,
+    def model_load():
+        enc = EncoderRNN(feature_size, hparams.hidden_size,
                      input_dropout_p = hparams.dropout, dropout_p = hparams.dropout,
                      n_layers = hparams.encoder_layer_size,
                      bidirectional = hparams.use_bidirectional, rnn_cell = 'gru', variable_lengths = False)
 
-    dec = DecoderRNN(vocab_size=len(char2index), max_len=hparams.max_len,
+        dec = DecoderRNN(vocab_size=len(char2index), max_len=hparams.max_len,
                      hidden_size=hparams.hidden_size * (2 if hparams.use_bidirectional else 1),
                      sos_id=SOS_token, eos_id=EOS_token,
                      layer_size = hparams.decoder_layer_size, rnn_cell = 'gru', bidirectional = hparams.use_bidirectional,
                      input_dropout_p = hparams.dropout, dropout_p = hparams.dropout, use_attention = hparams.use_attention)
 
-    model = Seq2seq(enc, dec)
-    model.flatten_parameters()
-    model = nn.DataParallel(model).to(device) # 병렬처리 부분인 듯
+        cuda = torch.cuda.is_available()
+        device = torch.device('cuda' if cuda else 'cpu')
+        model = Seq2seq(enc, dec)
+        model.flatten_parameters()
+        model = nn.DataParallel(model).to(device)
+        state = torch.load('./weight_file/model.pt')
+        model.load_state_dict(state['model'])
+        logger.info("model load complete !!")
+        return model
+
+    model = model_load()
+
+#    enc = EncoderRNN(feature_size, hparams.hidden_size,
+#                     input_dropout_p = hparams.dropout, dropout_p = hparams.dropout,
+#                     n_layers = hparams.encoder_layer_size,
+#                     bidirectional = hparams.use_bidirectional, rnn_cell = 'gru', variable_lengths = False)
+
+#    dec = DecoderRNN(vocab_size=len(char2index), max_len=hparams.max_len,
+#                     hidden_size=hparams.hidden_size * (2 if hparams.use_bidirectional else 1),
+#                     sos_id=SOS_token, eos_id=EOS_token,
+#                     layer_size = hparams.decoder_layer_size, rnn_cell = 'gru', bidirectional = hparams.use_bidirectional,
+#                     input_dropout_p = hparams.dropout, dropout_p = hparams.dropout, use_attention = hparams.use_attention)
+
+#    model = Seq2seq(enc, dec)
+#    model.flatten_parameters()
+#    model = nn.DataParallel(model).to(device) # 병렬처리 부분인 듯
 
     # Optimize Adam Algorithm
     optimizer = optim.Adam(model.module.parameters(), lr = hparams.lr)
@@ -125,14 +149,13 @@ if __name__ == '__main__':
             split_dataset(hparams, audio_paths, label_paths, valid_ratio = 0.05, target_dict = target_dict)
         logger.info("split dataset complete !!")
 
-
     logger.info('start')
     train_begin = time.time()
 
-    train_result = {'loss': [], 'cer': []}
-    eval_result = {'loss': [], 'cer': []}
+    train_result = {'loss': [0.115912], 'cer': [0.67106]}
+    eval_result = {'loss': [0.331449], 'cer': [0.580006]}
 
-    for epoch in range(hparams.max_epochs):
+    for epoch in range(1, hparams.max_epochs + 1):
         train_queue = queue.Queue(hparams.worker_num * 2)
         train_loader = MultiLoader(train_dataset, train_queue, hparams.batch_size, hparams.worker_num)
         train_loader.start()
@@ -153,15 +176,18 @@ if __name__ == '__main__':
         eval_loss, eval_cer = evaluate(model, valid_loader, valid_queue, criterion, device)
         logger.info('Epoch %d (Evaluate) Loss %0.4f CER %0.4f' % (epoch, eval_loss, eval_cer))
 
+        valid_loader.join()
+        torch.save(model, "./weight_file/epoch%s" % str(epoch))
+
         train_result["loss"].append(train_loss)
         train_result["cer"].append(train_cer)
         eval_result["loss"].append(eval_loss)
         eval_result["cer"].append(eval_cer)
 
-        valid_loader.join()
+        train_df = pd.DataFrame(train_result)
+        eval_df = pd.DataFrame(eval_result)
+        train_df.to_csv("./csv/train_result.csv", encoding='cp949', index=False)
+        eval_df.to_csv("./csv/eval_result.csv", encoding='cp949', index=False)
 
-        torch.save(model, "./weight_file/epoch%s" % str(epoch))
-        train_result = pd.DataFrame(train_result)
-        eval_result = pd.DataFrame(eval_result)
-        train_result.to_csv("./csv/train_result.csv", encoding='cp949', index=False)
-        eval_result.to_csv("./csv/eval_result.csv", encoding='cp949', index=False)
+        del train_df
+        del eval_df
