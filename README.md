@@ -61,8 +61,12 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
    +--KaiSpeech_000001.pcm, KaiSpeech_000002.pcm, ... KaiSpeech_622245.pcm
    +--KaiSpeech_000001.txt, KaiSpeech_000002.txt, ... KaiSpeech_622245.txt
    +--KaiSpeech_label_000001.pcm, KaiSpeech_label_000002.pcm, ... KaiSpeech_label_622245.pcm
+```  
+* KaiSpeech_FileNum.pcm  
 ```
-* KaiSpeech_FileNum.txt
+audio signal  
+```
+* KaiSpeech_FileNum.txt 
 ```
 아 모 몬 소리야 칠 십 퍼센트 확률이라니
 ```
@@ -110,33 +114,8 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 * 간투어 표현 등을 위해 사용된 '/', '*', '+' 등의 레이블 삭제
 ```
 "아 모 몬 소리야 칠 십 퍼센트 확률이라니"
-```
-## Hyperparameters  
-| Hyperparameter  |Help| Use|              
-| ----------      |---|----------|    
-| use_bidirectional| if True, becomes a bidirectional encoder|True|  
-| use_attention    | flag indication whether to use attention mechanism or not|True |   
-|input_reverse|flag indication whether to reverse input feature or not|True|   
-|use_augment| flag indication whether to use spec-augmentation or not|True|  
-|augment_ratio|ratio of spec-augmentation applied data|0.4|   
-|encoder_layer_size|num of encoder`s RNN cell|5|  
-| decoder_layer_size|num of decoder`s RNN cell| 3|  
-| hidden_size| size of hidden state of RNN|256|
-| batch_size | mini-batch size|6|
-| dropout          | dropout probability|0.5  |
-| teacher_forcing  | The probability that teacher forcing will be used|0.99|
-| lr               | learning rate|1e-4        |
-| max_epochs       | max epoch|30          |   
-   
-## Training  
-Training in Progress   
+```  
   
-|Epoch|train cer|eval cer|  
-|-----|---------|--------|    
-|0|0.67|0.58|   
-|1|0.33|0.35|   
-   
- 
 ## Feature  
 * MFCC (Mel-Frequency-Cepstral-Coefficients)  
   
@@ -168,7 +147,8 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = True, input_rev
 
     return torch.FloatTensor( np.ascontiguousarray( np.swapaxes(feat, 0, 1) ) )
 ```
-  
+   
+   
 ## Score
 ```
 CRR = (1.0 - CER) * 100.0
@@ -176,7 +156,58 @@ CRR = (1.0 - CER) * 100.0
 * CRR : Character Recognition Rate
 * CER : Character Error Rate based on Edit Distance
 ![crr](https://github.com/AjouJuneK/NAVER_speech_hackathon_2019/raw/master/docs/edit_distance.png)
+  
+## SpecAugmentation
+* Reference : 「A Simple Data Augmentation Method for Automatic Speech Recognition」 Paper    
+계산 효율 대비 큰 효과가 없는 Time Warping을 제외한 Frequency Masking, Time Masking 적용   
+* code  
+```python
+def spec_augment(feat, T=40, F=30, time_mask_num=2, freq_mask_num=2):
+    n_mfcc = feat.size(1)
+    feat_len = feat.size(0)
 
+    # time mask
+    for _ in range(time_mask_num):
+        t = np.random.uniform(low=0.0, high=T)
+        t = int(t)
+        t0 = random.randint(0, feat_len - t)
+        feat[t0 : t0 + t, :] = 0
+
+    # freq mask
+    for _ in range(freq_mask_num):
+        f = np.random.uniform(low=0.0, high=F)
+        f = int(f)
+        f0 = random.randint(0, n_mfcc - f)
+        feat[:, f0 : f0 + f] = 0
+
+    return feat
+```    
+
+## Hyperparameters  
+| Hyperparameter  |Help| Use|              
+| ----------      |---|----------|    
+| use_bidirectional| if True, becomes a bidirectional encoder|True|  
+| use_attention    | flag indication whether to use attention mechanism or not|True |   
+|input_reverse|flag indication whether to reverse input feature or not|True|   
+|use_augment| flag indication whether to use spec-augmentation or not|True|  
+|augment_ratio|ratio of spec-augmentation applied data|0.4|   
+|encoder_layer_size|number of encoder`s RNN cell|5|  
+| decoder_layer_size|number of decoder`s RNN cell| 3|  
+| hidden_size| size of hidden state of RNN|256|
+| batch_size | mini-batch size|6|
+| dropout          | dropout probability|0.5  |
+| teacher_forcing  | The probability that teacher forcing will be used|0.99|
+| lr               | learning rate|1e-4        |
+| max_epochs       | max epoch|40          |   
+   
+## Training  
+Training in Progress   
+  
+|Epoch|train cer|eval cer|  
+|-----|---------|--------|    
+|0|0.67|0.58|   
+|1|0.33|0.35|   
+  
 ## Reference
 * [[1] IBM pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)
 * [[2] A.I Hub 한국어 음성 데이터셋](http://www.aihub.or.kr/aidata/105)
