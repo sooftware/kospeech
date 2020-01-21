@@ -75,50 +75,20 @@ if __name__ == '__main__':
 
     feature_size = 33
 
-    def model_load():
-        enc = EncoderRNN(feature_size, hparams.hidden_size,
+    enc = EncoderRNN(feature_size, hparams.hidden_size,
                      input_dropout_p = hparams.dropout, dropout_p = hparams.dropout,
                      n_layers = hparams.encoder_layer_size,
                      bidirectional = hparams.use_bidirectional, rnn_cell = 'gru', variable_lengths = False)
 
-        dec = DecoderRNN(vocab_size=len(char2index), max_len=hparams.max_len,
+    dec = DecoderRNN(vocab_size=len(char2index), max_len=hparams.max_len,
                      hidden_size=hparams.hidden_size * (2 if hparams.use_bidirectional else 1),
                      sos_id=SOS_token, eos_id=EOS_token,
                      layer_size = hparams.decoder_layer_size, rnn_cell = 'gru', bidirectional = hparams.use_bidirectional,
                      input_dropout_p = hparams.dropout, dropout_p = hparams.dropout, use_attention = hparams.use_attention)
 
-<<<<<<< HEAD
     model = Seq2seq(enc, dec)
     model.flatten_parameters()
-    model = nn.DataParallel(model).to(device)
-=======
-        cuda = torch.cuda.is_available()
-        device = torch.device('cuda' if cuda else 'cpu')
-        model = Seq2seq(enc, dec)
-        model.flatten_parameters()
-        model = nn.DataParallel(model).to(device)
-        state = torch.load('./weight_file/model.pt')
-        model.load_state_dict(state['model'])
-        logger.info("model load complete !!")
-        return model
-
-    model = model_load()
-
-#    enc = EncoderRNN(feature_size, hparams.hidden_size,
-#                     input_dropout_p = hparams.dropout, dropout_p = hparams.dropout,
-#                     n_layers = hparams.encoder_layer_size,
-#                     bidirectional = hparams.use_bidirectional, rnn_cell = 'gru', variable_lengths = False)
-
-#    dec = DecoderRNN(vocab_size=len(char2index), max_len=hparams.max_len,
-#                     hidden_size=hparams.hidden_size * (2 if hparams.use_bidirectional else 1),
-#                     sos_id=SOS_token, eos_id=EOS_token,
-#                     layer_size = hparams.decoder_layer_size, rnn_cell = 'gru', bidirectional = hparams.use_bidirectional,
-#                     input_dropout_p = hparams.dropout, dropout_p = hparams.dropout, use_attention = hparams.use_attention)
-
-#    model = Seq2seq(enc, dec)
-#    model.flatten_parameters()
-#    model = nn.DataParallel(model).to(device) # 병렬처리 부분인 듯
->>>>>>> 601fe03bcc7840c4b4ade3bcc8d2d1fd4c1debf3
+    model = nn.DataParallel(model).to(device) # 병렬처리 부분인 듯
 
     # Optimize Adam Algorithm
     optimizer = optim.Adam(model.module.parameters(), lr = hparams.lr)
@@ -158,8 +128,8 @@ if __name__ == '__main__':
     logger.info('start')
     train_begin = time.time()
 
-    train_result = {'loss': [0.115912], 'cer': [0.67106]}
-    eval_result = {'loss': [0.331449], 'cer': [0.580006]}
+    train_result = {'loss': [], 'cer': []}
+    eval_result = {'loss': [], 'cer': []}
 
     for epoch in range(1, hparams.max_epochs + 1):
         train_queue = queue.Queue(hparams.worker_num * 2)
@@ -195,9 +165,4 @@ if __name__ == '__main__':
         train_df.to_csv("./csv/train_result.csv", encoding='cp949', index=False)
         eval_df.to_csv("./csv/eval_result.csv", encoding='cp949', index=False)
 
-        del train_df
-<<<<<<< HEAD
-        del eval_df
-=======
-        del eval_df
->>>>>>> 601fe03bcc7840c4b4ade3bcc8d2d1fd4c1debf3
+        del train_df, eval_df

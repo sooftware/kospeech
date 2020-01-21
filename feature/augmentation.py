@@ -36,3 +36,4 @@ def spec_augment(feat, T=40, F=30, time_mask_num=2, freq_mask_num=2):
         feat[:, f0 : f0 + f] = 0
 
     return feat
+

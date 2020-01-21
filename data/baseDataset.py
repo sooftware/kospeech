@@ -44,11 +44,8 @@ class BaseDataset(Dataset):
         self.target_dict = target_dict
         self.input_reverse = input_reverse
         self.augment_ratio = augment_ratio
-<<<<<<< HEAD
         self.is_augment = [False] * len(self.audio_paths)
         if use_augmentation: self.apply_augment()
-=======
->>>>>>> 601fe03bcc7840c4b4ade3bcc8d2d1fd4c1debf3
 
     # 오그멘테이션 적용
     # augmentation list로 하나 만들어서 [True, True ...., False, False] 식으로 만듭시다
@@ -79,14 +76,7 @@ class BaseDataset(Dataset):
         feat = get_librosa_mfcc(self.audio_paths[idx], n_mfcc = 33, del_silence = False, input_reverse = self.input_reverse, format='pcm')
         if feat.size(0) == 1:
             logger.info("Delete label_paths : %s" % self.label_paths[idx])
-            del self.label_paths[idx]
-            del self.audio_paths[idx]
+            del self.label_paths[idx], self.audio_paths[idx]
             label = ''
-<<<<<<< HEAD
-
-        if self.is_augment[idx]:
-            feat = spec_augment(feat, T=40, F=30, time_mask_num=2, freq_mask_num=2)
-
-=======
->>>>>>> 601fe03bcc7840c4b4ade3bcc8d2d1fd4c1debf3
+        if self.is_augment[idx]: feat = spec_augment(feat, T=40, F=30, time_mask_num=2, freq_mask_num=2)
         return feat, label
