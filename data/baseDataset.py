@@ -44,45 +44,43 @@ class BaseDataset(Dataset):
         self.target_dict = target_dict
         self.input_reverse = input_reverse
         self.augment_ratio = augment_ratio
-        self.features = list()
-        self.get_feature()
-        if use_augmentation: self.append_augmentation()
-        del self.audio_paths
+        self.is_augment = [False] * len(self.audio_paths)
+        if use_augmentation: self.apply_augment()
 
-    def get_feature(self):
-        logger.info("get Features for reducing disking I/O during training...")
-        for idx in trange(len(self.audio_paths)):
-            feat = get_librosa_mfcc(self.audio_paths[idx], n_mfcc = 33, del_silence = False, input_reverse = self.input_reverse, format='pcm')
-            if feat.size(0) == 1:
-                logger.info("Delete label_paths : %s" % self.label_paths[idx])
-                del self.label_paths[idx]
-            else:
-                self.features.append(feat)
-
-    def append_augmentation(self):
+    # 오그멘테이션 적용
+    # augmentation list로 하나 만들어서 [True, True ...., False, False] 식으로 만듭시다
+    def apply_augment(self):
         #      0                            augment_end                             end_idx (len(self.audio_paths)
         #      │-----hparams.augment_ratio------│-----------------else-----------------│
         augment_end_idx = int(0 + ((len(self.audio_paths) - 0) * self.augment_ratio))
         logger.info("Applying Augmentation...")
-        for idx in trange(augment_end_idx):
-            label = get_label(self.label_paths[idx], self.bos_id, self.eos_id, self.target_dict)
-            feat = get_librosa_mfcc(self.audio_paths[idx], n_mfcc=33, del_silence=False, input_reverse=self.input_reverse, format='pcm')
-            augmented = spec_augment(feat, T=40, F=30, time_mask_num=2, freq_mask_num=2)
-            self.features.append(augmented)
-            self.label_paths.append(label)
+
+        for idx in range(augment_end_idx):
+            self.is_augment.append(True)
+            self.audio_paths.append(self.audio_paths[idx])
+            self.label_paths.append(self.label_paths[idx])
 
         # after add data which applied Spec-Augmentation, shuffle
-        feature_N_label = list(zip(self.features, self.label_paths))
-        random.shuffle(feature_N_label)
-        self.features, self.label_paths = zip(*feature_N_label)
+        tmp = list(zip(self.audio_paths, self.label_paths, self.is_augment))
+        random.shuffle(tmp)
+        self.audio_paths, self.label_paths, self.is_augment = zip(*tmp)
 
     def __len__(self):
-        return len(self.features)
+        return len(self.audio_paths)
 
     def count(self):
-        return len(self.features)
+        return len(self.audio_paths)
 
     def get_item(self, idx):
         label = get_label(self.label_paths[idx], self.bos_id, self.eos_id, self.target_dict)
-        feat = self.features[idx]
+        feat = get_librosa_mfcc(self.audio_paths[idx], n_mfcc = 33, del_silence = False, input_reverse = self.input_reverse, format='pcm')
+        if feat.size(0) == 1:
+            logger.info("Delete label_paths : %s" % self.label_paths[idx])
+            del self.label_paths[idx]
+            del self.audio_paths[idx]
+            label = ''
+
+        if self.is_augment[idx]:
+            feat = spec_augment(feat, T=40, F=30, time_mask_num=2, freq_mask_num=2)
+
         return feat, label

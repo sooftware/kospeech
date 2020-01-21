@@ -88,7 +88,7 @@ if __name__ == '__main__':
 
     model = Seq2seq(enc, dec)
     model.flatten_parameters()
-    model = nn.DataParallel(model).to(device) # 병렬처리 부분인 듯
+    model = nn.DataParallel(model).to(device)
 
     # Optimize Adam Algorithm
     optimizer = optim.Adam(model.module.parameters(), lr = hparams.lr)
@@ -125,14 +125,13 @@ if __name__ == '__main__':
             split_dataset(hparams, audio_paths, label_paths, valid_ratio = 0.05, target_dict = target_dict)
         logger.info("split dataset complete !!")
 
-
     logger.info('start')
     train_begin = time.time()
 
     train_result = {'loss': [], 'cer': []}
     eval_result = {'loss': [], 'cer': []}
 
-    for epoch in range(hparams.max_epochs):
+    for epoch in range(1, hparams.max_epochs + 1):
         train_queue = queue.Queue(hparams.worker_num * 2)
         train_loader = MultiLoader(train_dataset, train_queue, hparams.batch_size, hparams.worker_num)
         train_loader.start()
@@ -153,15 +152,18 @@ if __name__ == '__main__':
         eval_loss, eval_cer = evaluate(model, valid_loader, valid_queue, criterion, device)
         logger.info('Epoch %d (Evaluate) Loss %0.4f CER %0.4f' % (epoch, eval_loss, eval_cer))
 
+        valid_loader.join()
+        torch.save(model, "./weight_file/epoch%s" % str(epoch))
+
         train_result["loss"].append(train_loss)
         train_result["cer"].append(train_cer)
         eval_result["loss"].append(eval_loss)
         eval_result["cer"].append(eval_cer)
 
-        valid_loader.join()
+        train_df = pd.DataFrame(train_result)
+        eval_df = pd.DataFrame(eval_result)
+        train_df.to_csv("./csv/train_result.csv", encoding='cp949', index=False)
+        eval_df.to_csv("./csv/eval_result.csv", encoding='cp949', index=False)
 
-        torch.save(model, "./weight_file/epoch%s" % str(epoch))
-        train_result = pd.DataFrame(train_result)
-        eval_result = pd.DataFrame(eval_result)
-        train_result.to_csv("./csv/train_result.csv", encoding='cp949', index=False)
-        eval_result.to_csv("./csv/eval_result.csv", encoding='cp949', index=False)
+        del train_df
+        del eval_df

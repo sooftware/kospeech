@@ -27,11 +27,11 @@ class BaseDataLoader(threading.Thread):
         logger.debug('loader %d start' % (self.thread_id))
         while True:
             items = list()
-
             for i in range(self.batch_size):
                 if self.index >= self.dataset_count:
                     break
-                items.append(self.dataset.get_item(self.index))
+                feat, label = self.dataset.get_item(self.index)
+                if label != '': items.append((feat, label))
                 self.index += 1
 
             if len(items) == 0:
