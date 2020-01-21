@@ -27,6 +27,8 @@ def load_data_list(data_list_path, dataset_path):
     data_list = pd.read_csv(data_list_path, "r", delimiter = ",", encoding="cp949")
     audio_paths = list(dataset_path + data_list["audio"])
     label_paths = list(dataset_path + data_list["label"])
+    del data_list # memory deallocation
+
     return audio_paths, label_paths
 
 
@@ -43,10 +45,11 @@ def load_targets(label_paths):
     target_dict = dict()
     for idx in trange(len(label_paths)):
         label_txt = label_paths[idx]
-        f = open(file=label_txt, mode="r")
-        label = f.readline()
-        f.close()
-        file_num = label_txt.split('/')[-1].split('.')[0].split('_')[-1]
-        target_dict['KaiSpeech_label_%s' % file_num] = label
+        with open(file=label_txt, mode="r") as f:
+            label = f.readline()
+            file_num = label_txt.split('/')[-1].split('.')[0].split('_')[-1]
+            target_dict['KaiSpeech_label_%s' % file_num] = label
+        del label_txt, label # memory deallocation
+
     return target_dict
 
