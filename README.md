@@ -158,7 +158,7 @@ CRR = (1.0 - CER) * 100.0
 ![crr](https://github.com/AjouJuneK/NAVER_speech_hackathon_2019/raw/master/docs/edit_distance.png)
   
 ## SpecAugmentation
-* Reference : 「A Simple Data Augmentation Method for Automatic Speech Recognition」 Paper    
+* Google Brain 팀에서 낸「A Simple Data Augmentation Method for Automatic Speech Recognition」 논문 참고  
 계산 효율 대비 큰 효과가 없는 Time Warping을 제외한 Frequency Masking, Time Masking 적용   
 * code  
 ```python
