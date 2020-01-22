@@ -250,3 +250,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ```
+```
+※ 데이터 출처는 [A.I Hub]임을 밝힙니다
+```
