@@ -62,10 +62,10 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
    +--KaiSpeech_000001.txt, KaiSpeech_000002.txt, ... KaiSpeech_622245.txt
    +--KaiSpeech_label_000001.pcm, KaiSpeech_label_000002.pcm, ... KaiSpeech_label_622245.pcm
 ```  
+  
 * KaiSpeech_FileNum.pcm  
-```
-audio signal  
-```
+![signal](https://postfiles.pstatic.net/MjAyMDAxMjJfMTYx/MDAxNTc5NjcyNzMyMTkz.Kw1WWrvvv9qLEf-pa0QYOcKYL3GOqXxahw_6sBsjqLgg.nkysalfeHToY9_FbVgxVcOM_Q5_RYlbpfFrAdFsdev4g.PNG.sooftware/audio-signal.png?type=w773)
+  
 * KaiSpeech_FileNum.txt 
 ```
 아 모 몬 소리야 칠 십 퍼센트 확률이라니
