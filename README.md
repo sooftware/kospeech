@@ -52,7 +52,7 @@ Seq2seq(
   
 ## Hyperparameters  
 | Hyperparameter  |Help| Use|              
-| ----------      |---|----------|    
+| ----------      |---|:----------:|    
 | use_bidirectional| if True, becomes a bidirectional encoder|True|  
 | use_attention    | flag indication whether to use attention mechanism or not|True |   
 |input_reverse|flag indication whether to reverse input feature or not|True|   
@@ -70,12 +70,20 @@ Seq2seq(
    
 ## Training  
 Training in Progress   
-  
+### Training Result 
+   
 |Epoch|train cer|eval cer|  
 |-----|---------|--------|    
 |0|0.67|0.58|   
 |1|0.33|0.35|   
-   
+  
+### Training Envirionment  
+```
+Device : GTX 1080 Ti   
+CUDA version : 10.1  
+PyTorch version : 1.3.1    
+```
+ 
 ## Data
 A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용 
 ### Data Format
@@ -161,7 +169,7 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 * MFCC (Mel-Frequency-Cepstral-Coefficients)  
   
 | Parameter| Use|    
-| -----| -----|     
+| -----|:-----:|     
 |Frame length|30ms|
 |Stride|7.5ms|
 | N_FFT | 480  |   
@@ -265,6 +273,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+```
 ```
 ※ Data : Copyright 2019 AI Hub Inc.
 ```
