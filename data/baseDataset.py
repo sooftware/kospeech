@@ -48,9 +48,15 @@ class BaseDataset(Dataset):
         self.is_augment = [False] * len(self.audio_paths)
         if use_augmentation: self.apply_augment()
 
-    # 오그멘테이션 적용
-    # augmentation list로 하나 만들어서 [True, True ...., False, False] 식으로 만듭시다
     def apply_augment(self):
+        """
+        Apply Spec-Augmentation
+        Comment:
+            - **audio_paths**: [KaiSpeech_135248.pcm, KaiSpeech_453892.pcm, ......, KaiSpeech_357891.pcm]
+            - **label_paths**: [KaiSpeech_135248.txt, KaiSpeech_453892.txt, ......, KaiSpeech_357891.txt]
+            - **is_augment**: [True, False, ......, False]
+            Apply SpecAugmentation if is_augment[idx] == True otherwise, it doesn`t
+        """
         #      0                            augment_end                             end_idx (len(self.audio_paths)
         #      │-----hparams.augment_ratio------│-----------------else-----------------│
         augment_end_idx = int(0 + ((len(self.audio_paths) - 0) * self.augment_ratio))

@@ -76,13 +76,13 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = True, input_rev
         try:
             pcm = np.memmap(filepath, dtype='h', mode='r')
         except:
-            logger.info("get_librosa_mfcc() Error in %s" % filepath)
+            logger.info("np.memmap error in %s" % filepath)
             return torch.zeros(1)
         sig = np.array([float(x) for x in pcm])
         del pcm
     elif format == 'wav':
         sig, _ = librosa.core.load(filepath, sr=16000)
-    else: logger.info("Invalid file format!!")
+    else: logger.info("%s is not Supported" % format)
 
     if del_silence:
         non_silence_indices = librosa.effects.split(sig, top_db=30)
