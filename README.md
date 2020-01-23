@@ -190,8 +190,8 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = True, input_rev
 ```
    
 ## SpecAugmentation
-* Google Brain 팀에서 낸「A Simple Data Augmentation Method for Automatic Speech Recognition」 논문 참고  
-  + 계산 효율 대비 큰 효과가 없는 Time Warping을 제외한 Frequency Masking, Time Masking 적용   
+* Reference : 「A Simple Data Augmentation Method for Automatic Speech Recognition」 Paper  
+  + Applying Frequency Masking & Time Masking except Time Warping   
 * code  
 ```python
 def spec_augment(feat, T=40, F=30, time_mask_num=2, freq_mask_num=2):
