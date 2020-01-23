@@ -2,15 +2,23 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6161586e-cbe0-4aa8-a946-8d73ac0b4877" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/train/save.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/baseDataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/data/baseDataset.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/feature/feature.py" beforeDir="false" afterPath="$PROJECT_DIR$/feature/feature.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/definition.py" beforeDir="false" afterPath="$PROJECT_DIR$/definition.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
