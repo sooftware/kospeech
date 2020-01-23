@@ -49,6 +49,33 @@ Seq2seq(
 )
 ```  
 * Model based on IBM PyTorch-seq2seq  
+  
+## Hyperparameters  
+| Hyperparameter  |Help| Use|              
+| ----------      |---|----------|    
+| use_bidirectional| if True, becomes a bidirectional encoder|True|  
+| use_attention    | flag indication whether to use attention mechanism or not|True |   
+|input_reverse|flag indication whether to reverse input feature or not|True|   
+|use_augment| flag indication whether to use spec-augmentation or not|True|  
+|augment_ratio|ratio of spec-augmentation applied data|0.4|   
+|encoder_layer_size|number of encoder`s RNN cell|5|  
+| decoder_layer_size|number of decoder`s RNN cell| 3|  
+| hidden_size| size of hidden state of RNN|256|
+| batch_size | mini-batch size|6|
+| dropout          | dropout probability|0.5  |
+| teacher_forcing  | The probability that teacher forcing will be used|0.99|
+| lr               | learning rate|1e-4        |
+| max_epochs       | max epoch|40          |   
+   
+   
+## Training  
+Training in Progress   
+  
+|Epoch|train cer|eval cer|  
+|-----|---------|--------|    
+|0|0.67|0.58|   
+|1|0.33|0.35|   
+   
 ## Data
 A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용 
 ### Data Format
@@ -62,10 +89,10 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
    +--KaiSpeech_000001.txt, KaiSpeech_000002.txt, ... KaiSpeech_622245.txt
    +--KaiSpeech_label_000001.pcm, KaiSpeech_label_000002.pcm, ... KaiSpeech_label_622245.pcm
 ```  
+  
 * KaiSpeech_FileNum.pcm  
-```
-audio signal  
-```
+![signal](https://postfiles.pstatic.net/MjAyMDAxMjJfMTYx/MDAxNTc5NjcyNzMyMTkz.Kw1WWrvvv9qLEf-pa0QYOcKYL3GOqXxahw_6sBsjqLgg.nkysalfeHToY9_FbVgxVcOM_Q5_RYlbpfFrAdFsdev4g.PNG.sooftware/audio-signal.png?type=w773)
+  
 * KaiSpeech_FileNum.txt 
 ```
 아 모 몬 소리야 칠 십 퍼센트 확률이라니
@@ -75,8 +102,7 @@ audio signal
 5 0 105 0 729 0 172 31 25 0 318 0 119 0 489 551 156 0 314 746 3 32 20
 ```
 * train_list.csv    
-전체 데이터셋의 80%에 해당하는 학습용 데이터 리스트  
-전체 데이터셋에서 등장한 2,340개의 문자 중 1번 만 등장한 문자들은 포함된 데이터를 제외한 리스트    
+전체 데이터셋의 80%에 해당하는 학습용 데이터 리스트    
   
 | pcm-filename| txt-filename|   
 | :-------------------| :--------------------------|     
@@ -87,8 +113,7 @@ audio signal
 | KaiSpeech_039018.pcm | KaiSpeech_label_039018.txt  |  
   
 * test_list.csv   
-전체 데이터셋의 20%에 해당하는 테스트용  리스트   
-전체 데이터셋에서 등장한 2,340개의 문자 중 1번 만 등장한 문자들이 포함된 데이터 포함   
+전체 데이터셋의 20%에 해당하는 테스트용  리스트     
   
 | pcm-filaname| txt-filename|    
 | :-------------------| :--------------------------|     
@@ -115,6 +140,22 @@ audio signal
 ```
 "아 모 몬 소리야 칠 십 퍼센트 확률이라니"
 ```  
+   
+## Character label  
+전체 데이터셋에서 등장한 2,340개의 문자 중 1번 만 등장한 문자들은 제외한 2,040개의 문자 레이블  
+* kai_labels.csv  
+  
+|id|char|freq|  
+|:--:|:----:|:----:|   
+|0|\ |5774462|   
+|1|.|640924|   
+|2|그|556373|   
+|3|이|509291|   
+|.|.|.|  
+|.|.|.|     
+|2037|\<s\>|0|   
+|2038|\</s\>|0|   
+|2039|\_|0|    
   
 ## Feature  
 * MFCC (Mel-Frequency-Cepstral-Coefficients)  
@@ -148,18 +189,9 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = True, input_rev
     return torch.FloatTensor( np.ascontiguousarray( np.swapaxes(feat, 0, 1) ) )
 ```
    
-   
-## Score
-```
-CRR = (1.0 - CER) * 100.0
-```
-* CRR : Character Recognition Rate
-* CER : Character Error Rate based on Edit Distance
-![crr](https://github.com/AjouJuneK/NAVER_speech_hackathon_2019/raw/master/docs/edit_distance.png)
-  
 ## SpecAugmentation
-* Google Brain 팀에서 낸「A Simple Data Augmentation Method for Automatic Speech Recognition」 논문 참고  
-  + 계산 효율 대비 큰 효과가 없는 Time Warping을 제외한 Frequency Masking, Time Masking 적용   
+* Reference : 「A Simple Data Augmentation Method for Automatic Speech Recognition」 Paper  
+  + Applying Frequency Masking & Time Masking except Time Warping   
 * code  
 ```python
 def spec_augment(feat, T=40, F=30, time_mask_num=2, freq_mask_num=2):
@@ -182,31 +214,15 @@ def spec_augment(feat, T=40, F=30, time_mask_num=2, freq_mask_num=2):
 
     return feat
 ```    
-
-## Hyperparameters  
-| Hyperparameter  |Help| Use|              
-| ----------      |---|----------|    
-| use_bidirectional| if True, becomes a bidirectional encoder|True|  
-| use_attention    | flag indication whether to use attention mechanism or not|True |   
-|input_reverse|flag indication whether to reverse input feature or not|True|   
-|use_augment| flag indication whether to use spec-augmentation or not|True|  
-|augment_ratio|ratio of spec-augmentation applied data|0.4|   
-|encoder_layer_size|number of encoder`s RNN cell|5|  
-| decoder_layer_size|number of decoder`s RNN cell| 3|  
-| hidden_size| size of hidden state of RNN|256|
-| batch_size | mini-batch size|6|
-| dropout          | dropout probability|0.5  |
-| teacher_forcing  | The probability that teacher forcing will be used|0.99|
-| lr               | learning rate|1e-4        |
-| max_epochs       | max epoch|40          |   
    
-## Training  
-Training in Progress   
+## Score
+```
+CRR = (1.0 - CER) * 100.0
+```
+* CRR : Character Recognition Rate
+* CER : Character Error Rate based on Edit Distance
+![crr](https://github.com/AjouJuneK/NAVER_speech_hackathon_2019/raw/master/docs/edit_distance.png)
   
-|Epoch|train cer|eval cer|  
-|-----|---------|--------|    
-|0|0.67|0.58|   
-|1|0.33|0.35|   
   
 ## Reference
 * [[1] IBM pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)
@@ -249,4 +265,6 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+```
+※ Data : Copyright 2019 AI Hub Inc.
 ```
