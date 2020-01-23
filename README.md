@@ -49,6 +49,33 @@ Seq2seq(
 )
 ```  
 * Model based on IBM PyTorch-seq2seq  
+  
+## Hyperparameters  
+| Hyperparameter  |Help| Use|              
+| ----------      |---|----------|    
+| use_bidirectional| if True, becomes a bidirectional encoder|True|  
+| use_attention    | flag indication whether to use attention mechanism or not|True |   
+|input_reverse|flag indication whether to reverse input feature or not|True|   
+|use_augment| flag indication whether to use spec-augmentation or not|True|  
+|augment_ratio|ratio of spec-augmentation applied data|0.4|   
+|encoder_layer_size|number of encoder`s RNN cell|5|  
+| decoder_layer_size|number of decoder`s RNN cell| 3|  
+| hidden_size| size of hidden state of RNN|256|
+| batch_size | mini-batch size|6|
+| dropout          | dropout probability|0.5  |
+| teacher_forcing  | The probability that teacher forcing will be used|0.99|
+| lr               | learning rate|1e-4        |
+| max_epochs       | max epoch|40          |   
+   
+   
+## Training  
+Training in Progress   
+  
+|Epoch|train cer|eval cer|  
+|-----|---------|--------|    
+|0|0.67|0.58|   
+|1|0.33|0.35|   
+   
 ## Data
 A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용 
 ### Data Format
@@ -115,6 +142,21 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 ```
 "아 모 몬 소리야 칠 십 퍼센트 확률이라니"
 ```  
+   
+## Character label
+  
+|id|char|freq|  
+|--|----|----|   
+|0|\ |5774462|   
+|1|.|640924|   
+|2|그|556373|   
+|3|이|509291|   
+|.|.|.|  
+|.|.|.|   
+|.|.|.|    
+|2037|<s>|0|   
+|2038|</s>|0|   
+|2039|\_|0|    
   
 ## Feature  
 * MFCC (Mel-Frequency-Cepstral-Coefficients)  
@@ -148,15 +190,6 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = True, input_rev
     return torch.FloatTensor( np.ascontiguousarray( np.swapaxes(feat, 0, 1) ) )
 ```
    
-   
-## Score
-```
-CRR = (1.0 - CER) * 100.0
-```
-* CRR : Character Recognition Rate
-* CER : Character Error Rate based on Edit Distance
-![crr](https://github.com/AjouJuneK/NAVER_speech_hackathon_2019/raw/master/docs/edit_distance.png)
-  
 ## SpecAugmentation
 * Google Brain 팀에서 낸「A Simple Data Augmentation Method for Automatic Speech Recognition」 논문 참고  
   + 계산 효율 대비 큰 효과가 없는 Time Warping을 제외한 Frequency Masking, Time Masking 적용   
@@ -182,31 +215,15 @@ def spec_augment(feat, T=40, F=30, time_mask_num=2, freq_mask_num=2):
 
     return feat
 ```    
-
-## Hyperparameters  
-| Hyperparameter  |Help| Use|              
-| ----------      |---|----------|    
-| use_bidirectional| if True, becomes a bidirectional encoder|True|  
-| use_attention    | flag indication whether to use attention mechanism or not|True |   
-|input_reverse|flag indication whether to reverse input feature or not|True|   
-|use_augment| flag indication whether to use spec-augmentation or not|True|  
-|augment_ratio|ratio of spec-augmentation applied data|0.4|   
-|encoder_layer_size|number of encoder`s RNN cell|5|  
-| decoder_layer_size|number of decoder`s RNN cell| 3|  
-| hidden_size| size of hidden state of RNN|256|
-| batch_size | mini-batch size|6|
-| dropout          | dropout probability|0.5  |
-| teacher_forcing  | The probability that teacher forcing will be used|0.99|
-| lr               | learning rate|1e-4        |
-| max_epochs       | max epoch|40          |   
    
-## Training  
-Training in Progress   
+## Score
+```
+CRR = (1.0 - CER) * 100.0
+```
+* CRR : Character Recognition Rate
+* CER : Character Error Rate based on Edit Distance
+![crr](https://github.com/AjouJuneK/NAVER_speech_hackathon_2019/raw/master/docs/edit_distance.png)
   
-|Epoch|train cer|eval cer|  
-|-----|---------|--------|    
-|0|0.67|0.58|   
-|1|0.33|0.35|   
   
 ## Reference
 * [[1] IBM pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)
