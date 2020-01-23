@@ -52,7 +52,7 @@ Seq2seq(
   
 ## Hyperparameters  
 | Hyperparameter  |Help| Use|              
-| ----------      |---|----------|    
+| ----------      |---|:----------:|    
 | use_bidirectional| if True, becomes a bidirectional encoder|True|  
 | use_attention    | flag indication whether to use attention mechanism or not|True |   
 |input_reverse|flag indication whether to reverse input feature or not|True|   
