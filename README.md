@@ -10,7 +10,7 @@ This Project is currently in progress.
 * [원철황](https://github.com/wch18735) KW University. elcomm. senior
 
 ## Model
-![model](https://postfiles.pstatic.net/MjAyMDAxMTlfMjkw/MDAxNTc5MzY4NDY0NTA1.Tt6HY6fz84gihNXFQtBcnQt6oSDVgox7Asn6Fa6WU-og.bckaR29Oki9o7tzoWvSoneQIqLH0Ip6O8QO_yY3gSGQg.GIF.sooftware/Model-Architecture.gif?type=w773)  
+![model](https://postfiles.pstatic.net/MjAyMDAxMjRfMTEw/MDAxNTc5ODExMTU5Nzkw.UhNI6DSHTRpo3Ep_i53oFlTL7DFcZ0TXaIeXWuMefggg.RBhsYljjJ8cGRO5V5dNjLNphWue-O7eKeREdw6czIm8g.GIF.sooftware/model_architecture.gif?type=w773)  
 * Model Architecture : Seq2seq with Attention  
 ```python
 Seq2seq(
@@ -240,7 +240,7 @@ CRR = (1.0 - CER) * 100.0
 * [[5] PyTorch Spec-Augmentation](https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py)  
 * [[6]「Sequence to sequence learning with neural networks」  Paper](https://arxiv.org/abs/1409.3215)  
 * [[7]「Neural Machine Translation by jointly learning to align and Translate」  Paper](https://arxiv.org/pdf/1409.0473.pdf)  
-* [[8]「Attention Is All You Need」  Paper](https://arxiv.org/abs/1706.03762)
+* [[8]「Listen, Attend and Spell」  Paper](https://arxiv.org/abs/1508.01211)
 * [[9] Levenshtein Distance](https://en.wikipedia.org/wiki/Levenshtein_distance)
    
 ## Requirements  
