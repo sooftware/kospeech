@@ -18,7 +18,7 @@ import pandas as pd
 train_step_result = {'loss': [], 'cer': []}
 eval_step_result = {'loss': [], 'cer': []}
 
-def train(model, total_batch_size, queue, criterion, optimizer, device, train_begin, train_loader_count, print_batch=5, teacher_forcing_ratio=1):
+def train(model, total_batch_size, queue, criterion, optimizer, device, train_begin, worker_num, print_batch=5, teacher_forcing_ratio=1):
     total_loss = 0.
     total_num = 0
     total_dist = 0
@@ -33,10 +33,10 @@ def train(model, total_batch_size, queue, criterion, optimizer, device, train_be
         feats, scripts, feat_lengths, script_lengths = queue.get()
         if feats.shape[0] == 0:
             # empty feats means closing one loader
-            train_loader_count -= 1
-            logger.debug('left train_loader: %d' % (train_loader_count))
+            worker_num -= 1
+            logger.debug('left train_loader: %d' % (worker_num))
 
-            if train_loader_count == 0:
+            if worker_num == 0:
                 break
             else:
                 continue
