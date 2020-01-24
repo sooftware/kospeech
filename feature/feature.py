@@ -75,11 +75,10 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = True, input_rev
     if format == 'pcm':
         try:
             pcm = np.memmap(filepath, dtype='h', mode='r')
-        except:
+        except: # exception handling
             logger.info("np.memmap error in %s" % filepath)
             return torch.zeros(1)
         sig = np.array([float(x) for x in pcm])
-        del pcm
     elif format == 'wav':
         sig, _ = librosa.core.load(filepath, sr=16000)
     else: logger.info("%s is not Supported" % format)
@@ -88,9 +87,6 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = True, input_rev
         non_silence_indices = librosa.effects.split(sig, top_db=30)
         sig = np.concatenate([sig[start:end] for start, end in non_silence_indices])
     feat = librosa.feature.mfcc(y=sig,sr=16000, hop_length=120, n_mfcc=n_mfcc, n_fft=480, window='hamming')
-    if input_reverse:
-        feat = feat[:,::-1]
-
-    del sig # memory deallocation
+    if input_reverse: feat = feat[:,::-1]
 
     return torch.FloatTensor( np.ascontiguousarray( np.swapaxes(feat, 0, 1) ) )

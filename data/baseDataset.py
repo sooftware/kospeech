@@ -81,10 +81,11 @@ class BaseDataset(Dataset):
 
     def get_item(self, idx):
         label = get_label(self.label_paths[idx], self.bos_id, self.eos_id, self.target_dict)
-        feat = get_librosa_mfcc(self.audio_paths[idx], n_mfcc = 33, del_silence = False, input_reverse = self.input_reverse, format='pcm')
+        feat = get_librosa_mfcc(self.audio_paths[idx], n_mfcc=33, del_silence=False, input_reverse=self.input_reverse, format='pcm')
+        # exception handling
         if feat.size(0) == 1:
             logger.info("Delete label_paths : %s" % self.label_paths[idx])
-            del self.label_paths[idx], self.audio_paths[idx]
             label = ''
+            return feat, label
         if self.is_augment[idx]: feat = spec_augment(feat, T=40, F=30, time_mask_num=2, freq_mask_num=2)
         return feat, label
