@@ -95,7 +95,7 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 |--KaiSpeech
    +--KaiSpeech_000001.pcm, KaiSpeech_000002.pcm, ... KaiSpeech_622245.pcm
    +--KaiSpeech_000001.txt, KaiSpeech_000002.txt, ... KaiSpeech_622245.txt
-   +--KaiSpeech_label_000001.pcm, KaiSpeech_label_000002.pcm, ... KaiSpeech_label_622245.pcm
+   +--KaiSpeech_label_000001.txt, KaiSpeech_label_000002.txt, ... KaiSpeech_label_622245.txt
 ```  
   
 * KaiSpeech_FileNum.pcm  
