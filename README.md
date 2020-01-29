@@ -75,7 +75,7 @@ Training in Progress
 |Epoch|train cer|eval cer|  
 |-----|---------|--------|    
 |0|0.67|0.58|   
-|1|0.33|0.35|   
+|1|0.36|0.33|   
   
 ### Training Envirionment  
 ```
@@ -202,7 +202,7 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = True, input_rev
   + Applying Frequency Masking & Time Masking except Time Warping   
 * code  
 ```python
-def spec_augment(feat, T=40, F=30, time_mask_num=2, freq_mask_num=2):
+def spec_augment(feat, T=40, F=20, time_mask_num=2, freq_mask_num=2):
     n_mfcc = feat.size(1)
     feat_len = feat.size(0)
 
