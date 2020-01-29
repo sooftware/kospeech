@@ -1,3 +1,16 @@
+"""
+Copyright 2020- Kai.Lib
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+      http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+"""
+
 import os
 import queue
 import random
@@ -13,6 +26,13 @@ from train.distance import get_distance
 from train.save_and_load import load_model
 
 def test(model, queue, device):
+    """
+    Test for Model Performance
+    Inputs:
+        - ***model*: target model
+    Outputs:
+        - **CER**: Character Error Rate
+    """
     logger.info('evaluate() start')
     total_dist = 0
     total_length = 0
@@ -46,7 +66,6 @@ def test(model, queue, device):
     return total_dist / total_length
 
 if __name__ == '__main__':
-    logger.info("test.py start")
     os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
     logger.info("device : %s" % torch.cuda.get_device_name(0))
     logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
@@ -55,7 +74,7 @@ if __name__ == '__main__':
     device = torch.device('cuda')
 
     hparams = HyperParams()
-    hparams.log_hparams()
+    hparams.logger_hparams()
 
     criterion = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_token).to(device)
     model = load_model("./weight_file/epoch2.pt")
@@ -80,5 +99,5 @@ if __name__ == '__main__':
     test_loader = BaseDataLoader(test_dataset, test_queue, hparams.batch_size, 0)
     test_loader.start()
 
-    test_loss, test_cer = test(model, test_queue, criterion, device)
-    logger.info('200h Test Set CER : %s' % test_cer)
+    CER = test(model, test_queue, criterion, device)
+    logger.info('200h Test Set CER : %s' % CER)

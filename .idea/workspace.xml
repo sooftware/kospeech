@@ -3,18 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="6161586e-cbe0-4aa8-a946-8d73ac0b4877" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/baseDataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/data/baseDataset.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/definition.py" beforeDir="false" afterPath="$PROJECT_DIR$/definition.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/evaluation/data_loader.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/evaluation/evaluation.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/feature/augmentation.py" beforeDir="false" afterPath="$PROJECT_DIR$/feature/augmentation.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hyperParams.py" beforeDir="false" afterPath="$PROJECT_DIR$/hyperParams.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/label/label_func.py" beforeDir="false" afterPath="$PROJECT_DIR$/label/label_func.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/train/distance.py" beforeDir="false" afterPath="$PROJECT_DIR$/train/distance.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/train/save.py" beforeDir="false" afterPath="$PROJECT_DIR$/train/save_and_load.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/train/training.py" beforeDir="false" afterPath="$PROJECT_DIR$/train/training.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -83,6 +72,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/test.py</url>
+          <line>13</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
