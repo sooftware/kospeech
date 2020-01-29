@@ -82,14 +82,12 @@ class EncoderRNN(BaseRNN):
         self.rnn = self.rnn_cell(feature_size, hidden_size, n_layers, batch_first=True, bidirectional = bidirectional, dropout = dropout_p)
 
 
-    def forward(self, input_var, input_lengths=None):
+    def forward(self, input_var):
         """
         Applies a multi-layer RNN to an input sequence.
 
         Args:
             input_var (batch, seq_len): tensor containing the features of the input sequence.
-            input_lengths (list of int, optional): A list that contains the lengths of sequences
-              in the mini-batch
 
         Returns: output, hidden
             - **output** (batch, seq_len, hidden_size): variable containing the encoded features of the input sequence

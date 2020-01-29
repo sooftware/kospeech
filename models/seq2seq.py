@@ -25,11 +25,10 @@ class Seq2seq(nn.Module):
         self.encoder.rnn.flatten_parameters()
         self.decoder.rnn.flatten_parameters()
 
-    def forward(self, input_variable, input_lengths=None,
-                target_variable=None, teacher_forcing_ratio=0):
-
-        encoder_outputs, encoder_hidden = self.encoder(input_variable, input_lengths)
-        result = self.decoder(inputs=target_variable,
+    # feats, labels, teacher_forcing_ratio
+    def forward(self, feats, targets=None, teacher_forcing_ratio=0.99):
+        encoder_outputs, encoder_hidden = self.encoder(feats)
+        result = self.decoder(inputs=targets,
                               encoder_hidden = encoder_hidden,
                               encoder_outputs = encoder_outputs,
                               function=self.decode_function,

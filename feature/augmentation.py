@@ -1,7 +1,7 @@
 import numpy as np
 import random
 
-def spec_augment(feat, T=40, F=30, time_mask_num=2, freq_mask_num=2):
+def spec_augment(feat, T=40, F=20, time_mask_num=2, freq_mask_num=2):
     """
     Provides Augmentation for audio
     Inputs:
@@ -18,7 +18,7 @@ def spec_augment(feat, T=40, F=30, time_mask_num=2, freq_mask_num=2):
         「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」Google Brain Team. 2019.12.03
          https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py
     """
-    n_mfcc = feat.size(1)
+    feat_size = feat.size(1)
     feat_len = feat.size(0)
 
     # time mask
@@ -32,9 +32,9 @@ def spec_augment(feat, T=40, F=30, time_mask_num=2, freq_mask_num=2):
     for _ in range(freq_mask_num):
         f = np.random.uniform(low=0.0, high=F)
         f = int(f)
-        f0 = random.randint(0, n_mfcc - f)
+        f0 = random.randint(0, feat_size - f)
         feat[:, f0 : f0 + f] = 0
-    del n_mfcc, feat_len, t, t0, f, f0 # memory deallocation
+    del feat_size, feat_len, t, t0, f, f0 # memory deallocation
 
     return feat
 

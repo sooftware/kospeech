@@ -62,7 +62,7 @@ class BaseDataset(Dataset):
             logger.info("Delete label_paths : %s" % self.label_paths[idx])
             label = ''
             return feat, label
-        if self.is_augment[idx]: feat = spec_augment(feat, T=40, F=30, time_mask_num=2, freq_mask_num=2)
+        if self.is_augment[idx]: feat = spec_augment(feat, T=40, F=20, time_mask_num=2, freq_mask_num=2)
         return feat, label
 
     def apply_augment(self):

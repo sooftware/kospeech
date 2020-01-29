@@ -30,7 +30,7 @@ def train(model, total_batch_size, queue, criterion, optimizer, device, train_be
     begin = epoch_begin = time.time()
 
     while True:
-        feats, scripts, feat_lengths, script_lengths = queue.get()
+        feats, targets, feat_lengths, label_lengths = queue.get()
         if feats.shape[0] == 0:
             # empty feats means closing one loader
             worker_num -= 1
@@ -43,13 +43,12 @@ def train(model, total_batch_size, queue, criterion, optimizer, device, train_be
         optimizer.zero_grad()
 
         feats = feats.to(device)
-        scripts = scripts.to(device)
-        src_len = scripts.size(1)
-        target = scripts[:, 1:]
+        targets = targets.to(device)
+        target = targets[:, 1:]
         model.module.flatten_parameters()
 
         # Seq2seq forward()
-        logit = model(feats, feat_lengths, scripts, teacher_forcing_ratio)
+        logit = model(feats, targets, teacher_forcing_ratio)
 
         logit = torch.stack(logit, dim=1).to(device)
 

@@ -4,7 +4,11 @@
     <list default="true" id="6161586e-cbe0-4aa8-a946-8d73ac0b4877" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data/baseDataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/data/baseDataset.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/feature/augmentation.py" beforeDir="false" afterPath="$PROJECT_DIR$/feature/augmentation.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/decoderRNN.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/decoderRNN.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/encoderRNN.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/encoderRNN.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/seq2seq.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/seq2seq.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/train/training.py" beforeDir="false" afterPath="$PROJECT_DIR$/train/training.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />

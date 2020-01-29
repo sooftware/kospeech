@@ -86,36 +86,48 @@ class DecoderRNN(BaseRNN):
         self.use_attention = use_attention
         self.eos_id = eos_id
         self.sos_id = sos_id
-        self.init_input = None
         self.hidden_size = hidden_size
         self.embedding = nn.Embedding(self.output_size, self.hidden_size)
         self.out = nn.Linear(self.hidden_size, self.output_size)
         self.layer_size = layer_size
         if use_attention: self.attention = Attention(self.hidden_size)
 
-    def forward_step(self, input_var, hidden, encoder_outputs, function):
-        batch_size = input_var.size(0)  # decoder_input.size(0) : batch_size
-        output_size = input_var.size(1)  # decoder_input.size(1) : seq_len
-        embedded = self.embedding(input_var)
+    def forward_step(self, decoder_input, decoder_hidden, encoder_outputs, function):
+        """
+        :param decoder_input: labels (except </s>)
+        :param decoder_hidden: hidden state of decoder
+        :param encoder_outputs: last hidden state of encoder
+        :param function: decode function
+        """
+        batch_size = decoder_input.size(0)   # decoder_input.size(0) : batch_size
+        output_size = decoder_input.size(1)  # decoder_input.size(1) : seq_len
+        embedded = self.embedding(decoder_input)
         embedded = self.input_dropout(embedded)
         if self.training:
             self.rnn.flatten_parameters()
-        output, hidden = self.rnn(embedded, hidden)
+        output, hidden = self.rnn(embedded, decoder_hidden)
         attn = None
         if self.use_attention:
             output, attn = self.attention(output, encoder_outputs)  # 여기 수정
+        # torch.view()에서 -1이면 나머지 알아서 맞춰줌
         predicted_softmax = function(self.out(output.contiguous().view(-1, self.hidden_size)), dim=1).view(batch_size, output_size, -1)
         return predicted_softmax, hidden, attn
 
-    def forward(self, inputs=None, encoder_hidden=None, encoder_outputs=None,
-                    function=F.log_softmax, teacher_forcing_ratio=0):
+    def forward(self, inputs=None, encoder_hidden=None, encoder_outputs=None, function=F.log_softmax, teacher_forcing_ratio=0.99):
+        """
+        :param inputs: targets -
+        :param encoder_hidden: hidden state of encoder
+        :param encoder_outputs:  last hidden state of encoder
+        :param function: decode function
+        :param teacher_forcing_ratio: ratio of teacher forcing
+        """
         ret_dict = dict()
         if self.use_attention:
             ret_dict[DecoderRNN.KEY_ATTN_SCORE] = list()
 
         # Validate Arguments
         inputs, batch_size, max_length = self._validate_args(inputs, encoder_hidden, encoder_outputs, teacher_forcing_ratio)
-        # Initiate Decoder Hidden State
+        # Initiate Decoder Hidden State to zeros  :  LxBxH
         decoder_hidden = torch.zeros(self.layer_size, batch_size, self.hidden_size).cuda() # CUDA
         # Decide Use Teacher Forcing or Not
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
@@ -141,7 +153,7 @@ class DecoderRNN(BaseRNN):
         # Manual unrolling is used to support random teacher forcing.
         # If teacher_forcing_ratio is True or False instead of a probability, the unrolling can be done in graph
         if use_teacher_forcing:
-            decoder_input = inputs[:, :-1]
+            decoder_input = inputs[:, :-1] # except </s>
             decoder_output, decoder_hidden, attn = self.forward_step(decoder_input, decoder_hidden, encoder_outputs, function=function)
             for di in range(decoder_output.size(1)):
                 step_output = decoder_output[:, di, :]

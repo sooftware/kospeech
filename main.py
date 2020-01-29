@@ -63,7 +63,6 @@ if __name__ == '__main__':
     logger.info("PyTorch version : %s" % (torch.__version__))
 
     hparams = HyperParams()
-    #hparams.input_params()
     hparams.log_hparams()
 
     random.seed(hparams.seed)
@@ -126,7 +125,8 @@ if __name__ == '__main__':
 
     for epoch in range(hparams.max_epochs):
         train_queue = queue.Queue(hparams.worker_num * 2)
-        train_dataset.shuffle()
+        for worker in range(hparams.worker_num):
+            train_dataset[worker].shuffle()
         train_loader = MultiLoader(train_dataset, train_queue, hparams.batch_size, hparams.worker_num)
         train_loader.start()
         train_loss, train_cer = train(model=model, total_batch_size=train_batch_num,
