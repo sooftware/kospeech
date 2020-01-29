@@ -62,7 +62,7 @@ class BaseDataset(Dataset):
             logger.info("Delete label_paths : %s" % self.label_paths[idx])
             label = ''
             return feat, label
-        if self.is_augment[idx]: feat = spec_augment(feat, T=40, F=20, time_mask_num=2, freq_mask_num=2)
+        if self.is_augment[idx]: feat = spec_augment(feat, T=40, F=15, time_mask_num=2, freq_mask_num=2)
         return feat, label
 
     def apply_augment(self):
@@ -73,9 +73,10 @@ class BaseDataset(Dataset):
             - **label_paths**: [KaiSpeech_135248.txt, KaiSpeech_453892.txt, ......, KaiSpeech_357891.txt]
             - **is_augment**: [True, False, ......, False]
             Apply SpecAugmentation if is_augment[idx] == True otherwise, it doesn`t
+
+        0                            augment_end                             end_idx (len(self.audio_paths)
+        │-----hparams.augment_ratio------│-----------------else-----------------│
         """
-        #      0                            augment_end                             end_idx (len(self.audio_paths)
-        #      │-----hparams.augment_ratio------│-----------------else-----------------│
         augment_end_idx = int(0 + ((len(self.audio_paths) - 0) * self.augment_ratio))
         logger.info("Applying Augmentation...")
 

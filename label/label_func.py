@@ -14,7 +14,7 @@ limitations under the License.
 import csv
 from definition import logger
 
-def load_label(label_path):
+def load_label(label_path, encoding='utf-8'):
     """
     Provides char2index, index2char
     Inputs: label_path
@@ -26,7 +26,7 @@ def load_label(label_path):
     """
     char2index = dict()
     index2char = dict()
-    with open(label_path, 'r', encoding="utf-8") as f:
+    with open(label_path, 'r', encoding=encoding) as f:
         labels = csv.reader(f, delimiter=',')
     next(labels)
 

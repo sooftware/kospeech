@@ -1,7 +1,7 @@
 import numpy as np
 import random
 
-def spec_augment(feat, T=40, F=20, time_mask_num=2, freq_mask_num=2):
+def spec_augment(feat, T=40, F=15, time_mask_num=2, freq_mask_num=2):
     """
     Provides Augmentation for audio
     Inputs:
@@ -19,13 +19,13 @@ def spec_augment(feat, T=40, F=20, time_mask_num=2, freq_mask_num=2):
          https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py
     """
     feat_size = feat.size(1)
-    feat_len = feat.size(0)
+    seq_len = feat.size(0)
 
     # time mask
     for _ in range(time_mask_num):
         t = np.random.uniform(low=0.0, high=T)
         t = int(t)
-        t0 = random.randint(0, feat_len - t)
+        t0 = random.randint(0, seq_len - t)
         feat[t0 : t0 + t, :] = 0
 
     # freq mask
@@ -34,7 +34,7 @@ def spec_augment(feat, T=40, F=20, time_mask_num=2, freq_mask_num=2):
         f = int(f)
         f0 = random.randint(0, feat_size - f)
         feat[:, f0 : f0 + f] = 0
-    del feat_size, feat_len, t, t0, f, f0 # memory deallocation
+    del feat_size, seq_len, t, t0, f, f0 # memory deallocation
 
     return feat
 

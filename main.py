@@ -50,7 +50,7 @@ from models.decoderRNN import DecoderRNN
 from models.encoderRNN import EncoderRNN
 from models.seq2seq import Seq2seq
 from train.evaluate import evaluate
-from train.save import save_epoch_result
+from train.save_and_load import save_epoch_result, load_model
 from train.training import train
 import os
 import pickle
@@ -63,7 +63,7 @@ if __name__ == '__main__':
     logger.info("PyTorch version : %s" % (torch.__version__))
 
     hparams = HyperParams()
-    hparams.log_hparams()
+    hparams.logger_hparams()
 
     random.seed(hparams.seed)
     torch.manual_seed(hparams.seed)
@@ -84,9 +84,12 @@ if __name__ == '__main__':
                      layer_size = hparams.decoder_layer_size, rnn_cell = 'gru', bidirectional = hparams.use_bidirectional,
                      input_dropout_p = hparams.dropout, dropout_p = hparams.dropout, use_attention = hparams.use_attention)
 
-    model = Seq2seq(enc, dec)
-    model.flatten_parameters()
-    model = nn.DataParallel(model).to(device)
+    if hparams.load_model:
+        model = load_model(hparams.model_path)
+    else:
+        model = Seq2seq(enc, dec)
+        model.flatten_parameters()
+        model = nn.DataParallel(model).to(device)
 
     # Optimize Adam Algorithm
     optimizer = optim.Adam(model.module.parameters(), lr = hparams.lr)
@@ -94,13 +97,7 @@ if __name__ == '__main__':
     criterion = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_token).to(device)
 
     # load audio_paths & label_paths
-    if hparams.mode == 'train':
-        audio_paths, label_paths = load_data_list(data_list_path=TRAIN_LIST_PATH, dataset_path=DATASET_PATH)
-    else:
-        audio_paths, label_paths = load_data_list(data_list_path=TEST_LIST_PATH, dataset_path=DATASET_PATH)
-        ##############
-        # Load Model #
-        ##############
+    audio_paths, label_paths = load_data_list(data_list_path=TRAIN_LIST_PATH, dataset_path=DATASET_PATH)
 
     if hparams.use_pickle:
         logger.info("load all target_dict using pickle")
