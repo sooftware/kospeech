@@ -23,9 +23,13 @@ if __name__ == '__main__':
 
     criterion = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_token).to(device)
 
-    """
-    Model Load
-    """
+    def load_model(filepath):
+        logger.info("Load model..")
+        model = torch.load(filepath)
+        model.eval()
+        logger.info("Load model Succesfuuly completely !!")
+
+    model = load_model("./weight_file/epoch2.pt")
 
     audio_paths, label_paths = load_data_list(data_list_path=TEST_LIST_PATH, dataset_path=DATASET_PATH)
 
