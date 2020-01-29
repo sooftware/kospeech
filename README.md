@@ -56,7 +56,7 @@ Seq2seq(
 | use_bidirectional| if True, becomes a bidirectional encoder|True|  
 | use_attention    | flag indication whether to use attention mechanism or not|True |   
 |input_reverse|flag indication whether to reverse input feature or not|True|   
-|use_augment| flag indication whether to use spec-augmentation or not|True|  
+|use_augmentation| flag indication whether to use spec-augmentation or not|True|  
 |augment_ratio|ratio of spec-augmentation applied data|0.4|   
 |encoder_layer_size|number of encoder`s RNN cell|5|  
 | decoder_layer_size|number of decoder`s RNN cell| 3|  
@@ -75,7 +75,7 @@ Training in Progress
 |Epoch|train cer|eval cer|  
 |-----|---------|--------|    
 |0|0.67|0.58|   
-|1|0.33|0.35|   
+|1|0.36|0.33|   
   
 ### Training Envirionment  
 ```
@@ -95,7 +95,7 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 |--KaiSpeech
    +--KaiSpeech_000001.pcm, KaiSpeech_000002.pcm, ... KaiSpeech_622245.pcm
    +--KaiSpeech_000001.txt, KaiSpeech_000002.txt, ... KaiSpeech_622245.txt
-   +--KaiSpeech_label_000001.pcm, KaiSpeech_label_000002.pcm, ... KaiSpeech_label_622245.pcm
+   +--KaiSpeech_label_000001.txt, KaiSpeech_label_000002.txt, ... KaiSpeech_label_622245.txt
 ```  
   
 * KaiSpeech_FileNum.pcm  
@@ -155,7 +155,7 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
   
 |id|char|freq|  
 |:--:|:----:|:----:|   
-|0|\ |5774462|   
+|0| |5774462|   
 |1|.|640924|   
 |2|그|556373|   
 |3|이|509291|   
@@ -202,7 +202,7 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = True, input_rev
   + Applying Frequency Masking & Time Masking except Time Warping   
 * code  
 ```python
-def spec_augment(feat, T=40, F=30, time_mask_num=2, freq_mask_num=2):
+def spec_augment(feat, T=40, F=20, time_mask_num=2, freq_mask_num=2):
     n_mfcc = feat.size(1)
     feat_len = feat.size(0)
 
