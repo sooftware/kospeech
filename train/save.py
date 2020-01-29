@@ -1,6 +1,6 @@
 import pandas as pd
 
-def save_csv(train_result, valid_result):
+def save_epoch_result(train_result, valid_result):
     train_dict, train_loss, train_cer = train_result
     valid_dict, valid_loss, valid_cer = valid_result
     train_dict["loss"].append(train_loss)
@@ -14,3 +14,11 @@ def save_csv(train_result, valid_result):
     valid_df.to_csv("../csv/eval_result.csv", encoding='cp949', index=False)
 
     del train_df, valid_df  # memory deallocation
+
+def save_step_result(train_step_result, loss, cer):
+    train_step_result["loss"].append(loss)
+    train_step_result["cer"].append(cer)
+    train_step_df = pd.DataFrame(train_step_result)
+    train_step_df.to_csv("./csv/train_step_result.csv", encoding='cp949', index=False)
+
+    del train_step_df

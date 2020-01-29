@@ -91,6 +91,7 @@ class BaseDataset(Dataset):
         del tmp, augment_end_idx
 
     def shuffle(self):
+        """Shuffle Dataset"""
         tmp = list(zip(self.audio_paths, self.label_paths, self.is_augment))
         random.shuffle(tmp)
         self.audio_paths, self.label_paths, self.is_augment = zip(*tmp)

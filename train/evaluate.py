@@ -16,7 +16,7 @@ import random
 from train.distance import get_distance
 from definition import logger
 
-def evaluate(model, dataloader, queue, criterion, device):
+def evaluate(model, queue, criterion, device):
     logger.info('evaluate() start')
     total_loss = 0.
     total_num = 0
@@ -34,8 +34,6 @@ def evaluate(model, dataloader, queue, criterion, device):
 
             feats = feats.to(device)
             scripts = scripts.to(device)
-
-            src_len = scripts.size(1)
             target = scripts[:, 1:]
 
             model.module.flatten_parameters()

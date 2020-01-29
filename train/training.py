@@ -13,10 +13,10 @@ limitations under the License.
 import time, torch, random
 from train.distance import get_distance
 from definition import logger
-import pandas as pd
+
+from train.save import save_step_result
 
 train_step_result = {'loss': [], 'cer': []}
-eval_step_result = {'loss': [], 'cer': []}
 
 def train(model, total_batch_size, queue, criterion, optimizer, device, train_begin, worker_num, print_batch=5, teacher_forcing_ratio=1):
     total_loss = 0.
@@ -36,10 +36,8 @@ def train(model, total_batch_size, queue, criterion, optimizer, device, train_be
             worker_num -= 1
             logger.debug('left train_loader: %d' % (worker_num))
 
-            if worker_num == 0:
-                break
-            else:
-                continue
+            if worker_num == 0: break
+            else: continue
         optimizer.zero_grad()
 
         feats = feats.to(device)
@@ -82,15 +80,7 @@ def train(model, total_batch_size, queue, criterion, optimizer, device, train_be
             begin = time.time()
 
         if batch % 1000 == 0:
-            train_step_result["loss"].append(total_loss / total_num)
-            eval_step_result["cer"].append(total_dist / total_length)
-            train_df = pd.DataFrame(train_step_result)
-            eval_df = pd.DataFrame(eval_step_result)
-            train_df.to_csv("./csv/train_step_result.csv", encoding='cp949', index=False)
-            eval_df.to_csv("./csv/eval_step_result.csv", encoding='cp949', index=False)
-
-            del train_df
-            del eval_df
+            save_step_result(train_step_result, total_loss / total_num, total_dist, total_length)
 
         batch += 1
         train.cumulative_batch_count += 1

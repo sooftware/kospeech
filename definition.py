@@ -11,5 +11,3 @@ PAD_token = int(char2index['_'])
 DATASET_PATH = "E:/한국어 음성데이터/KaiSpeech/"
 TRAIN_LIST_PATH = "./csv/train_list.csv"
 TEST_LIST_PATH = "./csv/test_list.csv"
-train_dict = {'loss': [], 'cer': []}
-valid_dict = {'loss': [], 'cer': []}

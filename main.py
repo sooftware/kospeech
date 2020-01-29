@@ -50,7 +50,7 @@ from models.decoderRNN import DecoderRNN
 from models.encoderRNN import EncoderRNN
 from models.seq2seq import Seq2seq
 from train.evaluate import evaluate
-from train.save import save_csv
+from train.save import save_epoch_result
 from train.training import train
 import os
 import pickle
@@ -98,6 +98,9 @@ if __name__ == '__main__':
         audio_paths, label_paths = load_data_list(data_list_path=TRAIN_LIST_PATH, dataset_path=DATASET_PATH)
     else:
         audio_paths, label_paths = load_data_list(data_list_path=TEST_LIST_PATH, dataset_path=DATASET_PATH)
+        ##############
+        # Load Model #
+        ##############
 
     if hparams.use_pickle:
         logger.info("load all target_dict using pickle")
@@ -143,11 +146,11 @@ if __name__ == '__main__':
         valid_loader = BaseDataLoader(valid_dataset, valid_queue, hparams.batch_size, 0)
         valid_loader.start()
 
-        valid_loss, valid_cer = evaluate(model, valid_loader, valid_queue, criterion, device)
+        valid_loss, valid_cer = evaluate(model, valid_queue, criterion, device)
         logger.info('Epoch %d (Evaluate) Loss %0.4f CER %0.4f' % (epoch, valid_loss, valid_cer))
 
         valid_loader.join()
         torch.save(model, "./weight_file/epoch%s" % str(epoch))
 
-        save_csv(train_result=[train_dict, train_loss, train_cer], valid_result=[valid_dict, valid_loss, valid_cer])
+        save_epoch_result(train_result=[train_dict, train_loss, train_cer], valid_result=[valid_dict, valid_loss, valid_cer])
         logger.info('Epoch %d Training result saved as a csv file complete !!' % epoch)
