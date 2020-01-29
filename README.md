@@ -200,7 +200,7 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = True, input_rev
 ## SpecAugmentation
 Applying Frequency Masking & Time Masking except Time Warping
 * Reference
-  + 「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」Google Brain Team. 2019.12.03
+  + 「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」 Google Brain Team.
   + https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py
 * code  
 ```python
