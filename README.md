@@ -72,11 +72,11 @@ Seq2seq(
 Training in Progress   
 ### Training Result 
    
-|Epoch|train cer|eval cer|  
-|-----|---------|--------|    
-|0|0.67|0.58|   
-|1|0.36|0.33|   
-|2|0.29|0.27|  
+|Epoch|train CRR|valid CRR|test CRR|  
+|:-----:|:---------:|:--------:|:------:|    
+|0|0.33|0.42|-|   
+|1|0.64|0.67|-|   
+|2|0.71|0.73|0.73|  
   
 ### Training Envirionment  
 ```
