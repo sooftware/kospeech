@@ -11,7 +11,7 @@ This Project is currently in progress.
 
 ## Model
 ![model](https://postfiles.pstatic.net/MjAyMDAxMjRfMTEw/MDAxNTc5ODExMTU5Nzkw.UhNI6DSHTRpo3Ep_i53oFlTL7DFcZ0TXaIeXWuMefggg.RBhsYljjJ8cGRO5V5dNjLNphWue-O7eKeREdw6czIm8g.GIF.sooftware/model_architecture.gif?type=w773)  
-* Model Architecture : Seq2seq with Attention  
+### Listen, Attend and Spell Architecture 
 ```python
 ListenAttendSpell(
   (listener): Listener(
@@ -48,7 +48,7 @@ ListenAttendSpell(
   )
 )
 ```  
-* Model based on IBM PyTorch-seq2seq  
+* Reference : IBM/PyTorch-seq2seq 
   
 ## Hyperparameters  
 | Hyperparameter  |Help| Use|              
@@ -77,16 +77,8 @@ Training in Progress
 |0|0.33|0.42|-|   
 |1|0.64|0.67|-|   
 |2|0.71|0.73|0.73|  
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 
 **CRR** : Character Recognition Rate
->>>>>>> 97564abfcfb9e6d98c0833f167e04f3f85156de0
-=======
-
-**CRR** : Character Recognition Rate
->>>>>>> 97564abfcfb9e6d98c0833f167e04f3f85156de0
   
 ### Training Envirionment  
 ```
@@ -211,9 +203,6 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = False, input_re
    
 ## SpecAugmentation
 Applying Frequency Masking & Time Masking except Time Warping
-* Reference
-  + 「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」 Google Brain Team.
-  + https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py
 * code  
 ```python
 def spec_augment(feat, T=40, F=15, time_mask_num=2, freq_mask_num=2):
@@ -236,7 +225,11 @@ def spec_augment(feat, T=40, F=15, time_mask_num=2, freq_mask_num=2):
 
     return feat
 ```    
-   
+  
+* Reference
+  + 「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」 Google Brain Team.
+  + https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py
+  
 ## Score
 ```
 CRR = (1.0 - CER) * 100.0
@@ -256,6 +249,7 @@ CRR = (1.0 - CER) * 100.0
 * [[7]「Neural Machine Translation by jointly learning to align and Translate」  Paper](https://arxiv.org/pdf/1409.0473.pdf)  
 * [[8]「Listen, Attend and Spell」  Paper](https://arxiv.org/abs/1508.01211)
 * [[9] Levenshtein Distance](https://en.wikipedia.org/wiki/Levenshtein_distance)
+* [[10] PyTorch VGG Net 16](https://github.com/chengyangfu/pytorch-vgg-cifar10/blob/master/vgg.py)
    
 ## Requirements  
 Install Levenshtein  
