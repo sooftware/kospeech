@@ -11,7 +11,7 @@ This Project is currently in progress.
 
 ## Model
 ![model](https://postfiles.pstatic.net/MjAyMDAxMjRfMTEw/MDAxNTc5ODExMTU5Nzkw.UhNI6DSHTRpo3Ep_i53oFlTL7DFcZ0TXaIeXWuMefggg.RBhsYljjJ8cGRO5V5dNjLNphWue-O7eKeREdw6czIm8g.GIF.sooftware/model_architecture.gif?type=w773)  
-* Model Architecture : Seq2seq with Attention  
+* Listen, Attend and Spell Architecture 
 ```python
 ListenAttendSpell(
   (listener): Listener(
