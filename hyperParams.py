@@ -36,6 +36,8 @@ class HyperParams():
         - **no_cuda**: if True, don`t use CUDA
         - **save_name**: save name of model
         - **mode**: train or test
+        - **load_model**: flag indication whether to load weight file or not
+        - **model_path**: path for weight file
     """
     def __init__(self):
         self.use_bidirectional = True
@@ -58,6 +60,8 @@ class HyperParams():
         self.no_cuda = False
         self.save_name = 'model'
         self.mode = 'train'
+        self.load_model = False
+        self.model_path = './weight_file/epoch2'
 
     def input_params(self):
         use_bidirectional = input("use bidirectional : ")
@@ -87,7 +91,7 @@ class HyperParams():
         self.augment_ratio = float(input("augment_ratio : "))
         self.seed = int(input("seed : "))
 
-    def log_hparams(self):
+    def logger_hparams(self):
         logger.info("use_bidirectional : %s" % str(self.use_bidirectional))
         logger.info("use_attention : %s" % str(self.use_attention))
         logger.info("use_pickle : %s" % str(self.use_pickle))

@@ -1,5 +1,19 @@
+"""
+Copyright 2020- Kai.Lib
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+      http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+"""
+
 import os
 import queue
+import random
 from data.baseDataset import BaseDataset
 from definition import *
 import torch
@@ -7,8 +21,50 @@ import pickle
 import torch.nn as nn
 from hyperParams import HyperParams
 from loader.baseLoader import BaseDataLoader
-from loader.loader import load_data_list
-from train.evaluate import evaluate
+from loader.loader import load_data_list, load_targets
+from train.distance import get_distance
+from train.save_and_load import load_model
+
+def test(model, queue, device):
+    """
+    Test for Model Performance
+    Inputs:
+        - ***model*: target model
+    Outputs:
+        - **CER**: Character Error Rate
+    """
+    logger.info('evaluate() start')
+    total_dist = 0
+    total_length = 0
+    total_sent_num = 0
+
+    model.eval()
+
+    with torch.no_grad():
+        while True:
+            feats, scripts, feat_lengths, script_lengths = queue.get()
+            if feats.shape[0] == 0:
+                break
+
+            feats = feats.to(device)
+            scripts = scripts.to(device)
+            target = scripts[:, 1:]
+
+            model.module.flatten_parameters()
+            logit = model(feats, feat_lengths, scripts, teacher_forcing_ratio=0.0)
+
+            logit = torch.stack(logit, dim=1).to(device)
+            y_hat = logit.max(-1)[1]
+
+            display = random.randrange(0, 100) == 0
+            dist, length = get_distance(target, y_hat, display=display, train=False)
+            total_dist += dist
+            total_length += length
+            total_sent_num += target.size(0)
+
+    CER = total_dist / total_length
+    logger.info('evaluate() completed')
+    return CER
 
 if __name__ == '__main__':
     os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
@@ -19,20 +75,19 @@ if __name__ == '__main__':
     device = torch.device('cuda')
 
     hparams = HyperParams()
-    hparams.log_hparams()
+    hparams.logger_hparams()
 
     criterion = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_token).to(device)
-
-    """
-    Model Load
-    """
+    model = load_model("./weight_file/epoch2.pt")
 
     audio_paths, label_paths = load_data_list(data_list_path=TEST_LIST_PATH, dataset_path=DATASET_PATH)
 
-    logger.info("load all target_dict using pickle")
-    with open("./pickle/target_dict_test.txt", "rb") as f:
-        target_dict = pickle.load(f)
-    logger.info("load all target_dict using pickle complete !!")
+    logger.info("load all target dictionary for reducing disk I/O")
+    target_dict = load_targets(label_paths)
+    logger.info("dump all target dictionary using pickle")
+    with open("./pickle/target_dict_test.txt", "wb") as f:
+        pickle.dump(target_dict, f)
+    logger.info("dump all target dictionary using pickle complete !!")
 
     logger.info('start')
 
@@ -45,5 +100,10 @@ if __name__ == '__main__':
     test_loader = BaseDataLoader(test_dataset, test_queue, hparams.batch_size, 0)
     test_loader.start()
 
-    test_loss, test_cer = evaluate(model, test_queue, criterion, device)
-    logger.info('200h Test Set CER : %s' % test_cer)
+    CER = test(model, test_queue, criterion, device)
+<<<<<<< HEAD
+    logger.info('200h Test Set CER : %s' % CER)
+    logger.info('200h Test Set CRR : %s' % str(1 - float(CER)))
+=======
+    logger.info('200h Test Set CER : %s' % CER)
+>>>>>>> 97564abfcfb9e6d98c0833f167e04f3f85156de0

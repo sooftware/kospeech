@@ -14,7 +14,7 @@ import time, torch, random
 from train.distance import get_distance
 from definition import logger
 
-from train.save import save_step_result
+from train.save_and_load import save_step_result
 
 train_step_result = {'loss': [], 'cer': []}
 

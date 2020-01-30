@@ -13,7 +13,7 @@ limitations under the License.
 
 import Levenshtein as Lev
 from label.label_func import label_to_string
-from definition import logger
+from definition import logger, test_index2char
 from definition import index2char, EOS_token
 
 def char_distance(ref, hyp):
@@ -24,9 +24,13 @@ def char_distance(ref, hyp):
 
     return dist, length
 
-def get_distance(ref_labels, hyp_labels, display=False):
+def get_distance(ref_labels, hyp_labels, display=False, train=True):
     total_dist = 0
     total_length = 0
+
+    if train == False:
+        index2char = test_index2char
+
     for i in range(len(ref_labels)):
         ref = label_to_string(ref_labels[i], index2char, EOS_token)
         hyp = label_to_string(hyp_labels[i], index2char, EOS_token)

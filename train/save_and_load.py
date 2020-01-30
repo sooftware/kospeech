@@ -1,4 +1,6 @@
 import pandas as pd
+import torch
+from definition import logger
 
 def save_epoch_result(train_result, valid_result):
     train_dict, train_loss, train_cer = train_result
@@ -22,3 +24,11 @@ def save_step_result(train_step_result, loss, cer):
     train_step_df.to_csv("./csv/train_step_result.csv", encoding='cp949', index=False)
 
     del train_step_df
+
+
+def load_model(filepath):
+    logger.info("Load model..")
+    model = torch.load(filepath)
+    model.eval()
+    logger.info("Load model Succesfuuly completely !!")
+    return model
