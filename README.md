@@ -11,7 +11,7 @@ This Project is currently in progress.
 
 ## Model
 ![model](https://postfiles.pstatic.net/MjAyMDAxMjRfMTEw/MDAxNTc5ODExMTU5Nzkw.UhNI6DSHTRpo3Ep_i53oFlTL7DFcZ0TXaIeXWuMefggg.RBhsYljjJ8cGRO5V5dNjLNphWue-O7eKeREdw6czIm8g.GIF.sooftware/model_architecture.gif?type=w773)  
-* Listen, Attend and Spell Architecture 
+### Listen, Attend and Spell Architecture 
 ```python
 ListenAttendSpell(
   (listener): Listener(
@@ -48,7 +48,7 @@ ListenAttendSpell(
   )
 )
 ```  
-* Model based on IBM PyTorch-seq2seq  
+* Reference : IBM/PyTorch-seq2seq 
   
 ## Hyperparameters  
 | Hyperparameter  |Help| Use|              
@@ -203,9 +203,6 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = False, input_re
    
 ## SpecAugmentation
 Applying Frequency Masking & Time Masking except Time Warping
-* Reference
-  + 「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」 Google Brain Team.
-  + https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py
 * code  
 ```python
 def spec_augment(feat, T=40, F=15, time_mask_num=2, freq_mask_num=2):
@@ -228,7 +225,11 @@ def spec_augment(feat, T=40, F=15, time_mask_num=2, freq_mask_num=2):
 
     return feat
 ```    
-   
+  
+* Reference
+  + 「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」 Google Brain Team.
+  + https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py
+  
 ## Score
 ```
 CRR = (1.0 - CER) * 100.0
