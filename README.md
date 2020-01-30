@@ -13,8 +13,8 @@ This Project is currently in progress.
 ![model](https://postfiles.pstatic.net/MjAyMDAxMjRfMTEw/MDAxNTc5ODExMTU5Nzkw.UhNI6DSHTRpo3Ep_i53oFlTL7DFcZ0TXaIeXWuMefggg.RBhsYljjJ8cGRO5V5dNjLNphWue-O7eKeREdw6czIm8g.GIF.sooftware/model_architecture.gif?type=w773)  
 * Model Architecture : Seq2seq with Attention  
 ```python
-Seq2seq(
-  (encoder): EncoderRNN(
+ListenAttendSpell(
+  (listener): Listener(
     (input_dropout): Dropout(p=0.5, inplace=False)
     (conv): Sequential(
       (0): Conv2d(1, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
@@ -35,9 +35,9 @@ Seq2seq(
       (15): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
       (16): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
     )
-    (rnn): GRU(5120, 256, num_layers=5, batch_first=True, dropout=0.5, bidirectional=True)
+    (rnn): GRU(2048, 256, num_layers=5, batch_first=True, dropout=0.5, bidirectional=True)
   )
-  (decoder): DecoderRNN(
+  (speller): Speller(
     (input_dropout): Dropout(p=0.5, inplace=False)
     (rnn): GRU(512, 512, num_layers=3, batch_first=True, dropout=0.5)
     (embedding): Embedding(2040, 512)
