@@ -26,7 +26,7 @@ else:
     import torch as device
 
 
-class DecoderRNN(BaseRNN):
+class Speller(BaseRNN):
     """
     Provides functionality for decoding in a seq2seq framework, with an option for attention.
     Args:
@@ -75,7 +75,7 @@ class DecoderRNN(BaseRNN):
             sos_id, eos_id,
             layer_size=1, rnn_cell='gru', bidirectional=True,
             input_dropout_p=0, dropout_p=0, use_attention=True):
-        super(DecoderRNN, self).__init__(vocab_size, max_len, hidden_size,
+        super(Speller, self).__init__(vocab_size, max_len, hidden_size,
                 input_dropout_p, dropout_p,
                 layer_size, rnn_cell)
 
@@ -123,7 +123,7 @@ class DecoderRNN(BaseRNN):
         """
         ret_dict = dict()
         if self.use_attention:
-            ret_dict[DecoderRNN.KEY_ATTN_SCORE] = list()
+            ret_dict[Speller.KEY_ATTN_SCORE] = list()
 
         # Validate Arguments
         inputs, batch_size, max_length = self._validate_args(inputs, encoder_hidden, encoder_outputs, teacher_forcing_ratio)
@@ -139,7 +139,7 @@ class DecoderRNN(BaseRNN):
         def greedy_decode(step, step_output, step_attn):
             decoder_outputs.append(step_output)
             if self.use_attention:
-                ret_dict[DecoderRNN.KEY_ATTN_SCORE].append(step_attn)
+                ret_dict[Speller.KEY_ATTN_SCORE].append(step_attn)
             symbol = decoder_outputs[-1].topk(1)[1]  # symbols : index
             sequence_symbols.append(symbol)
             eos_batches = symbol.data.eq(self.eos_id)
@@ -171,8 +171,8 @@ class DecoderRNN(BaseRNN):
                 symbols = greedy_decode(di, step_output, step_attn)
                 decoder_input = symbols
 
-        ret_dict[DecoderRNN.KEY_SEQUENCE] = sequence_symbols
-        ret_dict[DecoderRNN.KEY_LENGTH] = lengths.tolist()
+        ret_dict[Speller.KEY_SEQUENCE] = sequence_symbols
+        ret_dict[Speller.KEY_LENGTH] = lengths.tolist()
 
         return decoder_outputs, decoder_hidden, ret_dict
 

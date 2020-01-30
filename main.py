@@ -40,20 +40,20 @@ import torch.optim as optim
 import random
 import torch
 import time
+import os
+import pickle
 from definition import *
 from data.split_dataset import split_dataset
 from hyperParams import HyperParams
 from loader.baseLoader import BaseDataLoader
 from loader.loader import load_data_list, load_targets
 from loader.multiLoader import MultiLoader
-from models.decoderRNN import DecoderRNN
-from models.encoderRNN import EncoderRNN
-from models.seq2seq import Seq2seq
+from models.speller import Speller
+from models.listener import Listener
+from models.listenAttendSpell import ListenAttendSpell
 from train.evaluate import evaluate
 from train.save_and_load import save_epoch_result, load_model
 from train.training import train
-import os
-import pickle
 
 if __name__ == '__main__':
     os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
@@ -73,21 +73,21 @@ if __name__ == '__main__':
 
     feature_size = 33
 
-    enc = EncoderRNN(feature_size, hparams.hidden_size,
-                     input_dropout_p = hparams.dropout, dropout_p = hparams.dropout,
-                     n_layers = hparams.encoder_layer_size,
-                     bidirectional = hparams.use_bidirectional, rnn_cell = 'gru', variable_lengths = False)
+    listener = Listener(feature_size, hparams.hidden_size,
+                        input_dropout_p = hparams.dropout, dropout_p = hparams.dropout,
+                        n_layers = hparams.encoder_layer_size,
+                        bidirectional = hparams.use_bidirectional, rnn_cell = 'gru', variable_lengths = False)
 
-    dec = DecoderRNN(vocab_size=len(char2index), max_len=hparams.max_len,
-                     hidden_size=hparams.hidden_size * (2 if hparams.use_bidirectional else 1),
-                     sos_id=SOS_token, eos_id=EOS_token,
-                     layer_size = hparams.decoder_layer_size, rnn_cell = 'gru', bidirectional = hparams.use_bidirectional,
-                     input_dropout_p = hparams.dropout, dropout_p = hparams.dropout, use_attention = hparams.use_attention)
+    speller = Speller(vocab_size=len(char2index), max_len=hparams.max_len,
+                      hidden_size=hparams.hidden_size * (2 if hparams.use_bidirectional else 1),
+                      sos_id=SOS_token, eos_id=EOS_token,
+                      layer_size = hparams.decoder_layer_size, rnn_cell = 'gru', bidirectional = hparams.use_bidirectional,
+                      input_dropout_p = hparams.dropout, dropout_p = hparams.dropout, use_attention = hparams.use_attention)
 
     if hparams.load_model:
         model = load_model(hparams.model_path)
     else:
-        model = Seq2seq(enc, dec)
+        model = ListenAttendSpell(listener=listener, speller=speller)
         model.flatten_parameters()
         model = nn.DataParallel(model).to(device)
 
@@ -119,9 +119,6 @@ if __name__ == '__main__':
 
     logger.info('start')
     train_begin = time.time()
-
-    train_dict = {'loss': [], 'cer': []}
-    valid_dict = {'loss': [], 'cer': []}
 
     for epoch in range(hparams.max_epochs):
         train_queue = queue.Queue(hparams.worker_num * 2)

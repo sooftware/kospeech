@@ -1,5 +1,5 @@
 """
-Copyright 2017- IBM Corporation
+Copyright 2020- Kai.Lib
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -14,21 +14,32 @@ limitations under the License.
 import torch.nn as nn
 import torch.nn.functional as F
 
-class Seq2seq(nn.Module):
-    def __init__(self, encoder, decoder, decode_function = F.log_softmax):
-        super(Seq2seq, self).__init__()
-        self.encoder = encoder
-        self.decoder = decoder
+class ListenAttendSpell(nn.Module):
+    """
+    Listen, Attend and Spell (LAS) Model
+
+    Args:
+        - **listener**: encoder of seq2seq
+        - **speller**: decoder of seq2seq
+        - **decode_function**: A function used to generate symbols from RNN hidden state
+
+    Reference:
+        「Listen, Attend and Spell」 paper :  https://arxiv.org/abs/1508.01211
+    """
+    def __init__(self, listener, speller, decode_function = F.log_softmax):
+        super(ListenAttendSpell, self).__init__()
+        self.listener = listener
+        self.speller = speller
         self.decode_function = decode_function
 
     def flatten_parameters(self):
-        self.encoder.rnn.flatten_parameters()
-        self.decoder.rnn.flatten_parameters()
+        self.listener.rnn.flatten_parameters()
+        self.speller.rnn.flatten_parameters()
 
     # feats, labels, teacher_forcing_ratio
     def forward(self, feats, targets=None, teacher_forcing_ratio=0.99):
-        encoder_outputs, encoder_hidden = self.encoder(feats)
-        result = self.decoder(inputs=targets,
+        encoder_outputs, encoder_hidden = self.listener(feats)
+        result = self.speller(inputs=targets,
                               encoder_hidden = encoder_hidden,
                               encoder_outputs = encoder_outputs,
                               function=self.decode_function,

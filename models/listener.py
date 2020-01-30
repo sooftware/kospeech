@@ -14,7 +14,7 @@ limitations under the License.
 import torch.nn as nn
 from .baseRNN import BaseRNN
 
-class EncoderRNN(BaseRNN):
+class Listener(BaseRNN):
     """
     Applies a multi-layer RNN to an input sequence.
 
@@ -53,7 +53,7 @@ class EncoderRNN(BaseRNN):
                  input_dropout_p=0, dropout_p=0,
                  n_layers=1, bidirectional=True, rnn_cell='gru',
                  variable_lengths=False):
-        super(EncoderRNN, self).__init__(0, 0, hidden_size,
+        super(Listener, self).__init__(0, 0, hidden_size,
                 input_dropout_p, dropout_p, n_layers, rnn_cell)
 
         self.variable_lengths = variable_lengths
