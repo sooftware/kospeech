@@ -249,6 +249,7 @@ CRR = (1.0 - CER) * 100.0
 * [[7]「Neural Machine Translation by jointly learning to align and Translate」  Paper](https://arxiv.org/pdf/1409.0473.pdf)  
 * [[8]「Listen, Attend and Spell」  Paper](https://arxiv.org/abs/1508.01211)
 * [[9] Levenshtein Distance](https://en.wikipedia.org/wiki/Levenshtein_distance)
+* [[10] PyTorch VGG Net 16](https://github.com/chengyangfu/pytorch-vgg-cifar10/blob/master/vgg.py)
    
 ## Requirements  
 Install Levenshtein  
