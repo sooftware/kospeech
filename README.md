@@ -78,6 +78,11 @@ Training in Progress
 |1|0.64|0.67|-|   
 |2|0.71|0.73|0.73|  
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+**CRR** : Character Recognition Rate
+>>>>>>> 97564abfcfb9e6d98c0833f167e04f3f85156de0
 =======
 
 **CRR** : Character Recognition Rate

@@ -62,9 +62,14 @@ def test(model, queue, device):
             total_length += length
             total_sent_num += target.size(0)
 
+<<<<<<< HEAD
     CER = total_dist / total_length
     logger.info('evaluate() completed')
     return CER
+=======
+    logger.info('evaluate() completed')
+    return total_dist / total_length
+>>>>>>> 97564abfcfb9e6d98c0833f167e04f3f85156de0
 
 if __name__ == '__main__':
     os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
@@ -102,8 +107,12 @@ if __name__ == '__main__':
 
     CER = test(model, test_queue, criterion, device)
 <<<<<<< HEAD
+<<<<<<< HEAD
     logger.info('200h Test Set CER : %s' % CER)
     logger.info('200h Test Set CRR : %s' % str(1 - float(CER)))
+=======
+    logger.info('200h Test Set CER : %s' % CER)
+>>>>>>> 97564abfcfb9e6d98c0833f167e04f3f85156de0
 =======
     logger.info('200h Test Set CER : %s' % CER)
 >>>>>>> 97564abfcfb9e6d98c0833f167e04f3f85156de0
