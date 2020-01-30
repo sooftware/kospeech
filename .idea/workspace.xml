@@ -2,11 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="132cd630-2557-4b82-ba45-7cafc5d4274e" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/definition.py" beforeDir="false" afterPath="$PROJECT_DIR$/definition.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/decoderRNN.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/speller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/encoderRNN.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/listener.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/seq2seq.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/listenAttendSpell.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/model_structure-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/model_structure-checkpoint.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model_structure.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/model_structure.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/listenAttendSpell.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/listenAttendSpell.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/speller.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/speller.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -48,7 +48,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
