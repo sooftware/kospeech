@@ -73,16 +73,16 @@ if __name__ == '__main__':
 
     feature_size = 33
 
-    listener = Listener(feature_size, hparams.hidden_size,
-                        input_dropout_p = hparams.dropout, dropout_p = hparams.dropout,
-                        n_layers = hparams.encoder_layer_size,
-                        bidirectional = hparams.use_bidirectional, rnn_cell = 'gru', variable_lengths = False)
+    listener = Listener(feature_size=feature_size, hidden_size=hparams.hidden_size,
+                        dropout_p = hparams.dropout,
+                        layer_size = hparams.encoder_layer_size,
+                        bidirectional = hparams.use_bidirectional, rnn_cell = 'gru')
 
     speller = Speller(vocab_size=len(char2index), max_len=hparams.max_len,
                       hidden_size=hparams.hidden_size * (2 if hparams.use_bidirectional else 1),
                       sos_id=SOS_token, eos_id=EOS_token,
                       layer_size = hparams.decoder_layer_size, rnn_cell = 'gru', bidirectional = hparams.use_bidirectional,
-                      input_dropout_p = hparams.dropout, dropout_p = hparams.dropout, use_attention = hparams.use_attention)
+                      dropout_p = hparams.dropout, use_attention = hparams.use_attention)
 
     if hparams.load_model:
         model = load_model(hparams.model_path)
@@ -133,9 +133,7 @@ if __name__ == '__main__':
                                       print_batch=10, teacher_forcing_ratio=hparams.teacher_forcing)
 
         logger.info('Epoch %d (Training) Loss %0.4f CER %0.4f' % (epoch, train_loss, train_cer))
-
         train_loader.join()
-
         valid_queue = queue.Queue(hparams.worker_num * 2)
         valid_loader = BaseDataLoader(valid_dataset, valid_queue, hparams.batch_size, 0)
         valid_loader.start()

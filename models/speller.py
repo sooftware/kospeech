@@ -16,9 +16,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
 from .attention import Attention
-from .baseRNN import BaseRNN
 
 if torch.cuda.is_available():
     import torch.cuda as device
@@ -26,7 +24,7 @@ else:
     import torch as device
 
 
-class Speller(BaseRNN):
+class Speller(nn.Module):
     """
     Provides functionality for decoding in a seq2seq framework, with an option for attention.
     Args:
@@ -71,15 +69,13 @@ class Speller(BaseRNN):
     KEY_LENGTH = 'length'
     KEY_SEQUENCE = 'sequence'
 
-    def __init__(self, vocab_size, max_len, hidden_size,
-            sos_id, eos_id,
-            layer_size=1, rnn_cell='gru', bidirectional=True,
-            input_dropout_p=0, dropout_p=0, use_attention=True):
-        super(Speller, self).__init__(vocab_size, max_len, hidden_size,
-                input_dropout_p, dropout_p,
-                layer_size, rnn_cell)
-
+    def __init__(self, vocab_size, max_len, hidden_size, sos_id, eos_id,
+                 layer_size=1, rnn_cell='gru', bidirectional=True, dropout_p=0, use_attention=True):
+        super(Speller, self).__init__()
+        if rnn_cell.lower() != 'gru' and rnn_cell.lower() != 'lstm':
+            raise ValueError("Unsupported RNN Cell: %s" % rnn_cell)
         self.bidirectional_encoder = bidirectional
+        self.rnn_cell = nn.GRU if rnn_cell.lower() == 'gru' else nn.LSTM
         self.rnn = self.rnn_cell(hidden_size , hidden_size, layer_size, batch_first=True, dropout=dropout_p)
         self.output_size = vocab_size
         self.max_length = max_len
@@ -108,14 +104,14 @@ class Speller(BaseRNN):
         output, hidden = self.rnn(embedded, speller_hidden)
         attn = None
         if self.use_attention:
-            output, attn = self.attention(output, listener_outputs)  # 여기 수정
+            output, attn = self.attention(output, listener_outputs)
         # torch.view()에서 -1이면 나머지 알아서 맞춰줌
         predicted_softmax = function(self.out(output.contiguous().view(-1, self.hidden_size)), dim=1).view(batch_size, output_size, -1)
         return predicted_softmax, hidden, attn
 
     def forward(self, inputs=None, listener_hidden=None, listener_outputs=None, function=F.log_softmax, teacher_forcing_ratio=0.99):
         """
-        :param inputs: targets -
+        :param inputs: targets
         :param listener_hidden: hidden state of listener
         :param listener_outputs:  last hidden state of listener
         :param function: decode function
