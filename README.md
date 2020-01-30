@@ -72,11 +72,11 @@ ListenAttendSpell(
 Training in Progress   
 ### Training Result 
    
-|Epoch|train CRR|valid CRR|test CRR|  
+|Epoch|train CRR (%)|valid CRR (%)|test CRR (%)|  
 |:-----:|:---------:|:--------:|:------:|    
-|0|0.33|0.42|-|   
-|1|0.64|0.67|-|   
-|2|0.71|0.73|0.73|  
+|0|33|42|-|   
+|1|64|67|-|   
+|2|71|73|73|  
 
 **CRR** : Character Recognition Rate
   
