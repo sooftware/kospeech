@@ -248,8 +248,9 @@ CRR = (1.0 - CER) * 100.0
 * [[6]「Sequence to sequence learning with neural networks」  Paper](https://arxiv.org/abs/1409.3215)  
 * [[7]「Neural Machine Translation by jointly learning to align and Translate」  Paper](https://arxiv.org/pdf/1409.0473.pdf)  
 * [[8]「Listen, Attend and Spell」  Paper](https://arxiv.org/abs/1508.01211)
-* [[9] Levenshtein Distance](https://en.wikipedia.org/wiki/Levenshtein_distance)
+* [[9]「Deep Speech: Scaling up end-to-End Speech Recognition」  Paper](https://arxiv.org/abs/1412.5567)
 * [[10] PyTorch VGG Net 16](https://github.com/chengyangfu/pytorch-vgg-cifar10/blob/master/vgg.py)
+* [[11] Levenshtein Distance](https://en.wikipedia.org/wiki/Levenshtein_distance)
    
 ## Requirements  
 Install Levenshtein  
