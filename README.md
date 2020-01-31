@@ -50,8 +50,8 @@ ListenAttendSpell(
 ```  
   
 * Reference
-  + [「Listen, Attend and Spell」](https://arxiv.org/abs/1508.01211)  
-  + [ IBM pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)
+  + 「Listen, Attend and Spell」
+  + https://github.com/IBM/pytorch-seq2seq
   
 ## Hyperparameters  
 | Hyperparameter  |Help| Use|              
@@ -206,8 +206,10 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = False, input_re
 ```
    
 * Reference
-  + [ 「 Voice Recognition Using MFCC Algorithm」](https://pdfs.semanticscholar.org/32d7/2b00454d5155599fb9e8e5119e16970db50d.pdf)  
+  + 「 Voice Recognition Using MFCC Algorithm」 
+  + https://github.com/librosa/librosa
     
+
 ## SpecAugmentation
 Applying Frequency Masking & Time Masking except Time Warping
 * code  
