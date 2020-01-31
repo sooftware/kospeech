@@ -57,6 +57,7 @@ ListenAttendSpell(
 | use_attention    | flag indication whether to use attention mechanism or not|True |   
 |input_reverse|flag indication whether to reverse input feature or not|True|   
 |use_augmentation| flag indication whether to use spec-augmentation or not|True|  
+|use_pyramidal| flag indication whether to use pLSTM or not|False|  
 |augment_ratio|ratio of spec-augmentation applied data|0.4|   
 |encoder_layer_size|number of encoder`s RNN cell|5|  
 | decoder_layer_size|number of decoder`s RNN cell| 3|  
