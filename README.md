@@ -206,8 +206,8 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = False, input_re
 ```
    
 * Reference
-  + [ 「 Voice Recognition Using MFCC Algorithm」](https://s3.amazonaws.com/academia.edu.documents/36789621/27.NVEC10086.pdf?response-content-disposition=inline%3B%20filename%3DIJIRAE_Voice_Recognition_Using_MFCC_Algo.pdf&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWOWYYGZ2Y53UL3A%2F20200115%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20200115T053516Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=109747040e3e0f7ed358a3131fe2190d1fab0ba80985ffe08f819a2b5da4e36a)
-   
+  + [ 「 Voice Recognition Using MFCC Algorithm」](https://pdfs.semanticscholar.org/32d7/2b00454d5155599fb9e8e5119e16970db50d.pdf)  
+    
 ## SpecAugmentation
 Applying Frequency Masking & Time Masking except Time Warping
 * code  
@@ -249,7 +249,7 @@ CRR = (1.0 - CER) * 100.0
 ## Reference
 * [[1] IBM pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)
 * [[2] A.I Hub 한국어 음성 데이터셋](http://www.aihub.or.kr/aidata/105)
-* [[3]「Voice Recognition Using MFCC Algorithm」  Paper](https://s3.amazonaws.com/academia.edu.documents/36789621/27.NVEC10086.pdf?response-content-disposition=inline%3B%20filename%3DIJIRAE_Voice_Recognition_Using_MFCC_Algo.pdf&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWOWYYGZ2Y53UL3A%2F20200115%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20200115T053516Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=109747040e3e0f7ed358a3131fe2190d1fab0ba80985ffe08f819a2b5da4e36a)
+* [[3]「Voice Recognition Using MFCC Algorithm」  Paper](https://pdfs.semanticscholar.org/32d7/2b00454d5155599fb9e8e5119e16970db50d.pdf)
 * [[4]「A Simple Data Augmentation Method for Automatic Speech Recognition」  Paper](https://arxiv.org/abs/1904.08779)  
 * [[5] PyTorch Spec-Augmentation](https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py)  
 * [[6]「Sequence to sequence learning with neural networks」  Paper](https://arxiv.org/abs/1409.3215)  
