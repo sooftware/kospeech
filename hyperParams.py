@@ -45,6 +45,7 @@ class HyperParams():
         self.input_reverse = True
         self.use_augmentation = True
         self.use_pickle = True
+        self.use_pyramidal = False
         self.augment_ratio = 0.3
         self.hidden_size = 256
         self.dropout = 0.5

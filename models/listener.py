@@ -113,16 +113,24 @@ class Listener(nn.Module):
                 self.rnn.flatten_parameters()
         # Apply pBLSTM
         if self.use_pyramidal:
-            def _make_pyramid(h_outputs):
-                if h_outputs.size(1) % 2:
-                    zeros = torch.zeros((h_outputs.size(0), 1, h_outputs.size(2)))
-                    bottom_output = torch.cat([h_outputs, zeros], 1)
-                return torch.cat([bottom_output[:, 0::2], bottom_output[:, 1::2]], 2)
             bottom_outputs, _ = self.bottom_rnn(x)
-            middle_inputs = _make_pyramid(bottom_outputs)
+            middle_inputs = self._make_pyramid(bottom_outputs)
             middle_outputs, _ = self.middle_rnn(middle_inputs)
-            top_inputs = _make_pyramid(middle_outputs)
+            top_inputs = self._make_pyramid(middle_outputs)
             outputs, hiddens = self.top_rnn(top_inputs)
+            del bottom_outputs, middle_inputs, middle_outputs, top_inputs
         else:
             outputs, hiddens = self.rnn(x)
         return outputs, hiddens
+
+    def _make_pyramid(self, h_outputs):
+        """
+        Inputs:
+            - **h_outputs**: (batch, seq_len, hidden_size * direction)
+        Outputs:
+            - **output**: (batch, seq_len / 2, hidden_size * direction * 2)
+        """
+        if h_outputs.size(1) % 2:
+            zeros = torch.zeros((h_outputs.size(0), 1, h_outputs.size(2)))
+            h_outputs = torch.cat([h_outputs, zeros], 1)
+        return torch.cat([h_outputs[:, 0::2], h_outputs[:, 1::2]], 2)

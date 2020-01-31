@@ -76,7 +76,7 @@ if __name__ == '__main__':
     listener = Listener(feature_size=feature_size, hidden_size=hparams.hidden_size,
                         dropout_p = hparams.dropout,
                         layer_size = hparams.encoder_layer_size,
-                        bidirectional = hparams.use_bidirectional, rnn_cell = 'gru', use_pyramidal = False)
+                        bidirectional = hparams.use_bidirectional, rnn_cell = 'gru', use_pyramidal = hparams.use_pyramidal)
 
     speller = Speller(vocab_size=len(char2index), max_len=hparams.max_len,
                       hidden_size=hparams.hidden_size * (2 if hparams.use_bidirectional else 1),
