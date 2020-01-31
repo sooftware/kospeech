@@ -48,7 +48,7 @@ ListenAttendSpell(
   )
 )
 ```  
-* Reference : IBM/PyTorch-seq2seq 
+* [「Listen, Attend and Spell」  Paper](https://arxiv.org/abs/1508.01211)
   
 ## Hyperparameters  
 | Hyperparameter  |Help| Use|              
@@ -56,7 +56,7 @@ ListenAttendSpell(
 | use_bidirectional| if True, becomes a bidirectional encoder|True|  
 | use_attention    | flag indication whether to use attention mechanism or not|True |   
 |input_reverse|flag indication whether to reverse input feature or not|True|   
-|use_augmentation| flag indication whether to use spec-augmentation or not|True|  
+|use_augment| flag indication whether to use spec-augmentation or not|True|  
 |use_pyramidal| flag indication whether to use pLSTM or not|False|  
 |augment_ratio|ratio of spec-augmentation applied data|0.4|   
 |encoder_layer_size|number of encoder`s RNN cell|5|  
