@@ -49,6 +49,10 @@ ListenAttendSpell(
 )
 ```  
   
+* Reference
+  + [「Listen, Attend and Spell」](https://arxiv.org/abs/1508.01211)  
+  + [IBM pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)
+  
 ## Hyperparameters  
 | Hyperparameter  |Help| Use|              
 | ----------      |---|:----------:|    
