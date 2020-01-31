@@ -48,7 +48,6 @@ ListenAttendSpell(
   )
 )
 ```  
-* [「Listen, Attend and Spell」  Paper](https://arxiv.org/abs/1508.01211)
   
 ## Hyperparameters  
 | Hyperparameter  |Help| Use|              
