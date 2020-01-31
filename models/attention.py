@@ -74,6 +74,7 @@ class Attention(nn.Module):
         hidden_size = output.size(2)
         input_size = context.size(1)
         # (batch, out_len, dim) * (batch, in_len, dim) -> (batch, out_len, in_len)
+        # bmm : Batch Matrix Multiplication
         attn = torch.bmm(output, context.transpose(1, 2))
         if self.mask is not None:
             attn.data.masked_fill_(self.mask, -float('inf'))

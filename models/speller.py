@@ -104,7 +104,7 @@ class Speller(nn.Module):
         output, hidden = self.rnn(embedded, speller_hidden)
         attn = None
         if self.use_attention:
-            output, attn = self.attention(output, listener_outputs)
+            output, attn = self.attention(output=output, context=listener_outputs)
         # torch.view()에서 -1이면 나머지 알아서 맞춰줌
         predicted_softmax = function(self.out(output.contiguous().view(-1, self.hidden_size)), dim=1).view(batch_size, output_size, -1)
         return predicted_softmax, hidden, attn

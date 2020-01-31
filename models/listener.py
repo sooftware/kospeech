@@ -12,6 +12,7 @@ limitations under the License.
 """
 
 import torch.nn as nn
+import torch
 
 class Listener(nn.Module):
     """
@@ -23,9 +24,6 @@ class Listener(nn.Module):
         layer_size (int, optional): number of recurrent layers (default: 1)
         bidirectional (bool, optional): if True, becomes a bidirectional encoder (defulat False)
         rnn_cell (str, optional): type of RNN cell (default: gru)
-        embedding (torch.Tensor, optional): Pre-trained embedding.  The size of the tensor has to match
-            the size of the embedding parameter: (vocab_size, hidden_size).  The embedding layer would be initialized
-            with the tensor if provided (default: None).
         update_embedding (bool, optional): If the embedding should be updated during training (default: False).
 
     Inputs: inputs, input_lengths
@@ -38,10 +36,11 @@ class Listener(nn.Module):
         - **hidden** (num_layers * num_directions, batch, hidden_size): tensor containing the features in the hidden state `h`
     """
 
-    def __init__(self, feature_size, hidden_size, dropout_p=0.5, layer_size=5, bidirectional=True, rnn_cell='gru'):
+    def __init__(self, feature_size, hidden_size, dropout_p=0.5, layer_size=5, bidirectional=True, rnn_cell='gru', use_pyramidal = False):
         super(Listener, self).__init__()
         if rnn_cell.lower() != 'gru' and rnn_cell.lower() != 'lstm':
             raise ValueError("Unsupported RNN Cell: %s" % rnn_cell)
+        self.use_pyramidal = use_pyramidal
         self.rnn_cell = nn.GRU if rnn_cell.lower() == 'gru' else nn.LSTM
         self.conv = nn.Sequential(
             nn.Conv2d(1, 64, kernel_size=3, padding=1, bias=False),
@@ -62,10 +61,15 @@ class Listener(nn.Module):
             nn.BatchNorm2d(256),
             nn.MaxPool2d(2, 2)
         )
-
         if feature_size % 2: feature_size = (feature_size-1) * 64
         else: feature_size *= 64
-        self.rnn = self.rnn_cell(feature_size, hidden_size, layer_size, batch_first=True, bidirectional=bidirectional, dropout=dropout_p)
+        if use_pyramidal:
+            self.bottom_layer_size = layer_size - 2
+            self.bottom_rnn = self.rnn_cell(feature_size, hidden_size, self.bottom_layer_size, batch_first=True, bidirectional=bidirectional, dropout=dropout_p)
+            self.middle_rnn = self.rnn_cell(hidden_size * 4, hidden_size, 1, batch_first=True, bidirectional=bidirectional, dropout=dropout_p)
+            self.top_rnn = self.rnn_cell(hidden_size * 4, hidden_size, 1, batch_first=True, bidirectional=bidirectional, dropout=dropout_p)
+        else:
+            self.rnn = self.rnn_cell(feature_size, hidden_size, layer_size, batch_first=True, bidirectional=bidirectional, dropout=dropout_p)
 
 
     def forward(self, inputs):
@@ -82,25 +86,43 @@ class Listener(nn.Module):
                           => Ex (16, 32, 512)
         """
 
-        # Before : (batch_size, seq_len, n_mels)
-        # After  : (batch_size, 1(in_channel), seq_len, n_mels)
+        # Before : (batch_size, seq_len, feature_size)
+        # After  : (batch_size, 1(in_channel), seq_len, feature_size)
         inputs = inputs.unsqueeze(1)
-        # Before : (batch_size, 1, seq_len, n_mels)
-        # After  : (batch_size, out_channel, seq_len / 4 , n_mels / 4) 4는 MaxPool2d x 2번
+        # Before : (batch_size, 1, seq_len, feature_size)
+        # After  : (batch_size, out_channel, seq_len / 4 , feature_size / 4) 4는 MaxPool2d x 2번
         x = self.conv(inputs)
-        # Before : (batch_size, out_channel, seq_len, n_mels)
-        # After  : (batch_size, seq_len, out_channel, n_mels)
+        # Before : (batch_size, out_channel, seq_len, feature_size)
+        # After  : (batch_size, seq_len, out_channel, feature_size)
         x = x.transpose(1, 2)
         # 메모리에 contiguous 하게 저장 ( torch.view() 사용시 필요 )
         x = x.contiguous()
         # x`s shape
         sizes = x.size()
         # Dimenstion Synchronization
-        # Before : (batch_size, seq_len, out_channel, n_mels)
-        # After  : (batch_size, seq_len, out_channel * n_mels)
+        # Before : (batch_size, seq_len, out_channel, feature_size)
+        # After  : (batch_size, seq_len, out_channel * feature_size)
         x = x.view(sizes[0], sizes[1], sizes[2] * sizes[3])
 
-        if self.training: self.rnn.flatten_parameters()
-
-        output, hidden = self.rnn(x)
-        return output, hidden
+        if self.training:
+            if self.use_pyramidal:
+                self.bottom_rnn.flatten_parameters()
+                self.middle_rnn.flatten_parameters()
+                self.top_rnn.flatten_parameters()
+            else:
+                self.rnn.flatten_parameters()
+        # Apply pBLSTM
+        if self.use_pyramidal:
+            def _make_pyramid(h_outputs):
+                if h_outputs.size(1) % 2:
+                    zeros = torch.zeros((h_outputs.size(0), 1, h_outputs.size(2)))
+                    bottom_output = torch.cat([h_outputs, zeros], 1)
+                return torch.cat([bottom_output[:, 0::2], bottom_output[:, 1::2]], 2)
+            bottom_outputs, _ = self.bottom_rnn(x)
+            middle_inputs = _make_pyramid(bottom_outputs)
+            middle_outputs, _ = self.middle_rnn(middle_inputs)
+            top_inputs = _make_pyramid(middle_outputs)
+            outputs, hiddens = self.top_rnn(top_inputs)
+        else:
+            outputs, hiddens = self.rnn(x)
+        return outputs, hiddens
