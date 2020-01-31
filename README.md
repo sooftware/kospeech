@@ -206,7 +206,7 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = False, input_re
 ```
    
 * Reference
-  + 「 Voice Recognition Using MFCC Algorithm」](https://s3.amazonaws.com/academia.edu.documents/36789621/27.NVEC10086.pdf?response-content-disposition=inline%3B%20filename%3DIJIRAE_Voice_Recognition_Using_MFCC_Algo.pdf&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWOWYYGZ2Y53UL3A%2F20200115%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20200115T053516Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=109747040e3e0f7ed358a3131fe2190d1fab0ba80985ffe08f819a2b5da4e36a)
+  + [ 「 Voice Recognition Using MFCC Algorithm」](https://s3.amazonaws.com/academia.edu.documents/36789621/27.NVEC10086.pdf?response-content-disposition=inline%3B%20filename%3DIJIRAE_Voice_Recognition_Using_MFCC_Algo.pdf&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWOWYYGZ2Y53UL3A%2F20200115%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20200115T053516Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=109747040e3e0f7ed358a3131fe2190d1fab0ba80985ffe08f819a2b5da4e36a)
    
 ## SpecAugmentation
 Applying Frequency Masking & Time Masking except Time Warping
