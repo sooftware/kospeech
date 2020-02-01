@@ -48,7 +48,10 @@ ListenAttendSpell(
   )
 )
 ```  
-* Reference : IBM/PyTorch-seq2seq 
+  
+* Reference
+  + 「Listen, Attend and Spell」
+  + https://github.com/IBM/pytorch-seq2seq
   
 ## Hyperparameters  
 | Hyperparameter  |Help| Use|              
@@ -56,7 +59,8 @@ ListenAttendSpell(
 | use_bidirectional| if True, becomes a bidirectional encoder|True|  
 | use_attention    | flag indication whether to use attention mechanism or not|True |   
 |input_reverse|flag indication whether to reverse input feature or not|True|   
-|use_augmentation| flag indication whether to use spec-augmentation or not|True|  
+|use_augment| flag indication whether to use spec-augmentation or not|True|  
+|use_pyramidal| flag indication whether to use pLSTM or not|False|  
 |augment_ratio|ratio of spec-augmentation applied data|0.4|   
 |encoder_layer_size|number of encoder`s RNN cell|5|  
 | decoder_layer_size|number of decoder`s RNN cell| 3|  
@@ -201,6 +205,11 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = False, input_re
     return torch.FloatTensor( np.ascontiguousarray( np.swapaxes(feat, 0, 1) ) )
 ```
    
+* Reference
+  + 「 Voice Recognition Using MFCC Algorithm」 
+  + https://github.com/librosa/librosa
+    
+
 ## SpecAugmentation
 Applying Frequency Masking & Time Masking except Time Warping
 * code  
@@ -242,14 +251,15 @@ CRR = (1.0 - CER) * 100.0
 ## Reference
 * [[1] IBM pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)
 * [[2] A.I Hub 한국어 음성 데이터셋](http://www.aihub.or.kr/aidata/105)
-* [[3]「Voice Recognition Using MFCC Algorithm」  Paper](https://s3.amazonaws.com/academia.edu.documents/36789621/27.NVEC10086.pdf?response-content-disposition=inline%3B%20filename%3DIJIRAE_Voice_Recognition_Using_MFCC_Algo.pdf&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWOWYYGZ2Y53UL3A%2F20200115%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20200115T053516Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=109747040e3e0f7ed358a3131fe2190d1fab0ba80985ffe08f819a2b5da4e36a)
+* [[3]「Voice Recognition Using MFCC Algorithm」  Paper](https://pdfs.semanticscholar.org/32d7/2b00454d5155599fb9e8e5119e16970db50d.pdf)
 * [[4]「A Simple Data Augmentation Method for Automatic Speech Recognition」  Paper](https://arxiv.org/abs/1904.08779)  
 * [[5] PyTorch Spec-Augmentation](https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py)  
 * [[6]「Sequence to sequence learning with neural networks」  Paper](https://arxiv.org/abs/1409.3215)  
 * [[7]「Neural Machine Translation by jointly learning to align and Translate」  Paper](https://arxiv.org/pdf/1409.0473.pdf)  
 * [[8]「Listen, Attend and Spell」  Paper](https://arxiv.org/abs/1508.01211)
-* [[9] Levenshtein Distance](https://en.wikipedia.org/wiki/Levenshtein_distance)
+* [[9]「Deep Speech: Scaling up end-to-End Speech Recognition」  Paper](https://arxiv.org/abs/1412.5567)
 * [[10] PyTorch VGG Net 16](https://github.com/chengyangfu/pytorch-vgg-cifar10/blob/master/vgg.py)
+* [[11] Levenshtein Distance](https://en.wikipedia.org/wiki/Levenshtein_distance)
    
 ## Requirements  
 Install Levenshtein  
