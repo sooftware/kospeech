@@ -16,7 +16,7 @@ import torch
 
 class Listener(nn.Module):
     """
-    Applies a multi-layer RNN to an input sequence.
+    Converts low level speech signals into higher level features
 
     Args:
         hidden_size (int): the number of features in the hidden state `h`
@@ -36,12 +36,10 @@ class Listener(nn.Module):
         - **hidden** (num_layers * num_directions, batch, hidden_size): tensor containing the features in the hidden state `h`
     """
 
-    def __init__(self, feature_size, hidden_size, dropout_p=0.5, layer_size=5, bidirectional=True, rnn_cell='gru', use_pyramidal = False):
+    def __init__(self, feat_size, hidden_size, dropout_p=0.5, layer_size=5, bidirectional=True, rnn_cell='gru', use_pyramidal = False):
         super(Listener, self).__init__()
-        if rnn_cell.lower() != 'gru' and rnn_cell.lower() != 'lstm':
-            raise ValueError("Unsupported RNN Cell: %s" % rnn_cell)
         self.use_pyramidal = use_pyramidal
-        self.rnn_cell = nn.GRU if rnn_cell.lower() == 'gru' else nn.LSTM
+        self.rnn_cell = nn.LSTM if rnn_cell.lower() == 'lstm' else nn.GRU if rnn_cell.lower() == 'gru' else nn.RNN
         self.conv = nn.Sequential(
             nn.Conv2d(1, 64, kernel_size=3, padding=1, bias=False),
             nn.Hardtanh(0, 20, inplace=True),
@@ -61,15 +59,24 @@ class Listener(nn.Module):
             nn.BatchNorm2d(256),
             nn.MaxPool2d(2, 2)
         )
-        if feature_size % 2: feature_size = (feature_size-1) * 64
-        else: feature_size *= 64
+
+        if feat_size % 2: feat_size = (feat_size-1) * 64
+        else: feat_size *= 64
+
         if use_pyramidal:
             self.bottom_layer_size = layer_size - 2
-            self.bottom_rnn = self.rnn_cell(feature_size, hidden_size, self.bottom_layer_size, batch_first=True, bidirectional=bidirectional, dropout=dropout_p)
-            self.middle_rnn = self.rnn_cell(hidden_size * 4, hidden_size, 1, batch_first=True, bidirectional=bidirectional, dropout=dropout_p)
-            self.top_rnn = self.rnn_cell(hidden_size * 4, hidden_size, 1, batch_first=True, bidirectional=bidirectional, dropout=dropout_p)
+            self.bottom_rnn = self.rnn_cell(input_size=feat_size, hidden_size=hidden_size,
+                                            num_layers=self.bottom_layer_size, bias=True,
+                                            batch_first=True, bidirectional=bidirectional, dropout=dropout_p)
+            self.middle_rnn = self.rnn_cell(input_size=hidden_size * 2 * (2 if bidirectional else 1),
+                                            hidden_size=hidden_size, num_layers=1, bias=True,
+                                            batch_first=True, bidirectional=bidirectional, dropout=dropout_p)
+            self.top_rnn = self.rnn_cell(input_size=hidden_size * 2 * (2 if bidirectional else 1),
+                                         hidden_size=hidden_size, num_layers=1, bias=True,
+                                         batch_first=True, bidirectional=bidirectional, dropout=dropout_p)
         else:
-            self.rnn = self.rnn_cell(feature_size, hidden_size, layer_size, batch_first=True, bidirectional=bidirectional, dropout=dropout_p)
+            self.rnn = self.rnn_cell(input_size=feat_size, hidden_size=hidden_size, num_layers=layer_size,
+                                     bias=True, batch_first=True, bidirectional=bidirectional, dropout=dropout_p)
 
 
     def forward(self, inputs):
@@ -86,22 +93,22 @@ class Listener(nn.Module):
                           => Ex (16, 32, 512)
         """
 
-        # Before : (batch_size, seq_len, feature_size)
-        # After  : (batch_size, 1(in_channel), seq_len, feature_size)
+        # Before : (batch_size, seq_len, feat_size)
+        # After  : (batch_size, 1(in_channel), seq_len, feat_size)
         inputs = inputs.unsqueeze(1)
-        # Before : (batch_size, 1, seq_len, feature_size)
-        # After  : (batch_size, out_channel, seq_len / 4 , feature_size / 4) 4는 MaxPool2d x 2번
+        # Before : (batch_size, 1, seq_len, feat_size)
+        # After  : (batch_size, out_channel, seq_len / 4 , feat_size / 4) 4는 MaxPool2d x 2번
         x = self.conv(inputs)
-        # Before : (batch_size, out_channel, seq_len, feature_size)
-        # After  : (batch_size, seq_len, out_channel, feature_size)
+        # Before : (batch_size, out_channel, seq_len, feat_size)
+        # After  : (batch_size, seq_len, out_channel, feat_size)
         x = x.transpose(1, 2)
         # 메모리에 contiguous 하게 저장 ( torch.view() 사용시 필요 )
         x = x.contiguous()
         # x`s shape
         sizes = x.size()
         # Dimenstion Synchronization
-        # Before : (batch_size, seq_len, out_channel, feature_size)
-        # After  : (batch_size, seq_len, out_channel * feature_size)
+        # Before : (batch_size, seq_len, out_channel, feat_size)
+        # After  : (batch_size, seq_len, out_channel * feat_size)
         x = x.view(sizes[0], sizes[1], sizes[2] * sizes[3])
 
         if self.training:
@@ -114,23 +121,19 @@ class Listener(nn.Module):
         # Apply pBLSTM
         if self.use_pyramidal:
             bottom_outputs, _ = self.bottom_rnn(x)
-            middle_inputs = self._make_pyramid(bottom_outputs)
+            middle_inputs = self._cat_consecutive(bottom_outputs)
             middle_outputs, _ = self.middle_rnn(middle_inputs)
-            top_inputs = self._make_pyramid(middle_outputs)
+            top_inputs = self._cat_consecutive(middle_outputs)
             outputs, hiddens = self.top_rnn(top_inputs)
             del bottom_outputs, middle_inputs, middle_outputs, top_inputs
         else:
             outputs, hiddens = self.rnn(x)
         return outputs, hiddens
 
-    def _make_pyramid(self, h_outputs):
-        """
-        Inputs:
-            - **h_outputs**: (batch, seq_len, hidden_size * direction)
-        Outputs:
-            - **output**: (batch, seq_len / 2, hidden_size * direction * 2)
-        """
-        if h_outputs.size(1) % 2:
-            zeros = torch.zeros((h_outputs.size(0), 1, h_outputs.size(2)))
-            h_outputs = torch.cat([h_outputs, zeros], 1)
-        return torch.cat([h_outputs[:, 0::2], h_outputs[:, 1::2]], 2)
+    def _cat_consecutive(self, prev_layer_outputs):
+        """concatenate the outputs at consecutive setps of  each layer before feeding it to the next layer"""
+        if prev_layer_outputs.size(1) % 2:
+            """if prev_layer_outputs`s seq_len is odd, concatenate zeros"""
+            zeros = torch.zeros((prev_layer_outputs.size(0), 1, prev_layer_outputs.size(2)))
+            prev_layer_outputs = torch.cat([prev_layer_outputs, zeros], 1)
+        return torch.cat([prev_layer_outputs[:, 0::2], prev_layer_outputs[:, 1::2]], 2)

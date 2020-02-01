@@ -12,9 +12,10 @@ limitations under the License.
 """
 
 import math, random
-import pickle
-from definition import SOS_token, EOS_token, logger
+from definition import SOS_token, EOS_token
 from data.baseDataset import BaseDataset
+from train.save_and_load import save_pickle
+
 
 def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_dict = dict()):
     """
@@ -37,12 +38,12 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
         - **data_paths**: temp variables for audio_paths and label_paths to be shuffled in the same order
         - **train_begin_idx**: begin index of worker`s training dataset
         - **train_end_idx**: end index of worker`s training dataset
-    Outputs: train_batch_num, train_dataset, valid_dataset
+    Outputs: train_batch_num, train_dataset_list, valid_dataset
         - **train_batch_num**: num of batch for training
-        - **train_dataset**: list of training data
+        - **train_dataset_list**: list of training data
         - **valid_dataset**: list of validation data
     """
-    train_dataset = list()
+    train_dataset_list = []
     train_num = math.ceil(len(audio_paths) * (1 - valid_ratio))
     batch_num = math.ceil(len(audio_paths) / hparams.batch_size)
     valid_batch_num = math.ceil(batch_num * valid_ratio)
@@ -61,27 +62,17 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
     for idx in range(hparams.worker_num):
         train_begin_idx = train_num_per_worker * idx
         train_end_idx = min(train_num_per_worker * (idx + 1), train_num)
-        train_dataset.append(BaseDataset(audio_paths=audio_paths[train_begin_idx:train_end_idx],
-                                         label_paths=label_paths[train_begin_idx:train_end_idx],
-                                         bos_id=SOS_token, eos_id=EOS_token, target_dict=target_dict,
-                                         input_reverse=hparams.input_reverse, use_augmentation=hparams.use_augmentation))
-
-    logger.info("dump all train_dataset using pickle")
-    with open('./pickle/train_dataset.txt', 'wb') as f:
-        pickle.dump(train_dataset, f)
-    logger.info("dump all train_dataset using pickle complete !!")
+        train_dataset_list.append(BaseDataset(audio_paths=audio_paths[train_begin_idx:train_end_idx],
+                                              label_paths=label_paths[train_begin_idx:train_end_idx],
+                                              bos_id=SOS_token, eos_id=EOS_token, target_dict=target_dict,
+                                              input_reverse=hparams.input_reverse, use_augment=hparams.use_augment))
 
     valid_dataset = BaseDataset(audio_paths=audio_paths[train_num:],
                                 label_paths=label_paths[train_num:],
                                 bos_id=SOS_token, eos_id=EOS_token,
-                                target_dict=target_dict, input_reverse=hparams.input_reverse, use_augmentation=False)
+                                target_dict=target_dict, input_reverse=hparams.input_reverse, use_augment=False)
 
-    logger.info("dump all valid_dataset using pickle")
-    with open('./pickle/valid_dataset.txt', 'wb') as f:
-        pickle.dump(valid_dataset, f)
-    logger.info("dump all valid_dataset using pickle complete !!")
+    save_pickle(train_dataset_list, "./pickle/train_dataset.txt", "dump all train_dataset_list using pickle complete !!")
+    save_pickle(valid_dataset, "./pickle/valid_dataset.txt", "dump all valid_dataset using pickle complete !!")
 
-    # momory deallocation
-    del train_end_idx, train_begin_idx, train_num_per_worker, train_num, batch_num, valid_batch_num, data_paths
-
-    return train_batch_num, train_dataset, valid_dataset
+    return train_batch_num, train_dataset_list, valid_dataset

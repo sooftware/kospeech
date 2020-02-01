@@ -16,7 +16,7 @@ import random
 from train.distance import get_distance
 from definition import logger
 
-def evaluate(model, queue, criterion, device):
+def evaluate(model, queue, loss_func, device):
     logger.info('evaluate() start')
     total_loss = 0.
     total_num = 0
@@ -42,7 +42,7 @@ def evaluate(model, queue, criterion, device):
             logit = torch.stack(logit, dim=1).to(device)
             y_hat = logit.max(-1)[1]
 
-            loss = criterion(logit.contiguous().view(-1, logit.size(-1)), target.contiguous().view(-1))
+            loss = loss_func(logit.contiguous().view(-1, logit.size(-1)), target.contiguous().view(-1))
             total_loss += loss.item()
             total_num += sum(feat_lengths)
 

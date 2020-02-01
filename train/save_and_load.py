@@ -1,6 +1,7 @@
 import pandas as pd
 import torch
 from definition import logger
+import pickle
 
 def save_epoch_result(train_result, valid_result):
     train_dict, train_loss, train_cer = train_result
@@ -15,16 +16,11 @@ def save_epoch_result(train_result, valid_result):
     train_df.to_csv("../csv/train_result.csv", encoding='cp949', index=False)
     valid_df.to_csv("../csv/eval_result.csv", encoding='cp949', index=False)
 
-    del train_df, valid_df  # memory deallocation
-
 def save_step_result(train_step_result, loss, cer):
     train_step_result["loss"].append(loss)
     train_step_result["cer"].append(cer)
     train_step_df = pd.DataFrame(train_step_result)
     train_step_df.to_csv("./csv/train_step_result.csv", encoding='cp949', index=False)
-
-    del train_step_df
-
 
 def load_model(filepath):
     logger.info("Load model..")
@@ -32,3 +28,14 @@ def load_model(filepath):
     model.eval()
     logger.info("Load model Succesfuuly completely !!")
     return model
+
+def save_pickle(save_var, savepath, message=""):
+    with open(savepath, "wb") as f:
+        pickle.dump(save_var, f)
+    logger.info(message)
+
+def load_pickle(filepath, message=""):
+    with open(filepath, "rb") as f:
+        load_result = pickle.load(f)
+        logger.info(message)
+        return load_result

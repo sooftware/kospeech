@@ -18,7 +18,7 @@ from train.save_and_load import save_step_result
 
 train_step_result = {'loss': [], 'cer': []}
 
-def train(model, total_batch_size, queue, criterion, optimizer, device, train_begin, worker_num, print_batch=5, teacher_forcing_ratio=1):
+def train(model, total_batch_size, queue, loss_func, optimizer, device, train_begin, worker_num, print_batch=5, teacher_forcing_ratio=1):
     total_loss = 0.
     total_num = 0
     total_dist = 0
@@ -52,7 +52,7 @@ def train(model, total_batch_size, queue, criterion, optimizer, device, train_be
 
         y_hat = logit.max(-1)[1]
 
-        loss = criterion(logit.contiguous().view(-1, logit.size(-1)), target.contiguous().view(-1))
+        loss = loss_func(logit.contiguous().view(-1, logit.size(-1)), target.contiguous().view(-1))
         total_loss += loss.item()
         total_num += sum(feat_lengths)
         display = random.randrange(0, 100) == 0
@@ -80,7 +80,7 @@ def train(model, total_batch_size, queue, criterion, optimizer, device, train_be
             begin = time.time()
 
         if batch % 1000 == 0:
-            save_step_result(train_step_result, total_loss / total_num, total_dist, total_length)
+            save_step_result(train_step_result, total_loss / total_num, total_dist / total_length)
 
         batch += 1
         train.cumulative_batch_count += 1

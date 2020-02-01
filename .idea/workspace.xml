@@ -3,9 +3,18 @@
   <component name="ChangeListManager">
     <list default="true" id="132cd630-2557-4b82-ba45-7cafc5d4274e" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/baseDataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/data/baseDataset.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/split_dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/data/split_dataset.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/feature/augmentation.py" beforeDir="false" afterPath="$PROJECT_DIR$/feature/augmentation.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hyperParams.py" beforeDir="false" afterPath="$PROJECT_DIR$/hyperParams.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/bahdanau-attention.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/models/listener.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/listener.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/speller.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/speller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/evaluate.py" beforeDir="false" afterPath="$PROJECT_DIR$/train/evaluate.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/save_and_load.py" beforeDir="false" afterPath="$PROJECT_DIR$/train/save_and_load.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/training.py" beforeDir="false" afterPath="$PROJECT_DIR$/train/training.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -24,6 +33,9 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1X6ZzvWzaStzOk8U4fwa1HDYP7e" />
+  <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../Web-Crawling/Correlation-Analysis-between-Naver-Daum-Google-Search-Ranking/main.py" />
+  </component>
   <component name="RunDashboard">
     <option name="ruleStates">
       <list>

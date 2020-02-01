@@ -37,7 +37,7 @@ class BaseDataset(Dataset):
         - **label**: label for audio
     """
     def __init__(self, audio_paths, label_paths, bos_id = 2037, eos_id = 2038,
-                 target_dict = None, input_reverse = True, use_augmentation = True,
+                 target_dict = None, input_reverse = True, use_augment = True,
                  augment_ratio = 0.3):
         self.audio_paths = list(audio_paths)
         self.label_paths = list(label_paths)
@@ -46,7 +46,7 @@ class BaseDataset(Dataset):
         self.input_reverse = input_reverse
         self.augment_ratio = augment_ratio
         self.is_augment = [False] * len(self.audio_paths)
-        if use_augmentation: self.apply_augment()
+        if use_augment: self.apply_augment()
 
     def __len__(self):
         return len(self.audio_paths)
@@ -62,7 +62,8 @@ class BaseDataset(Dataset):
             logger.info("Delete label_paths : %s" % self.label_paths[idx])
             label = ''
             return feat, label
-        if self.is_augment[idx]: feat = spec_augment(feat, T=40, F=15, time_mask_num=2, freq_mask_num=2)
+        if self.is_augment[idx]:
+            feat = spec_augment(feat, T=40, F=15, time_mask_num=2, freq_mask_num=2)
         return feat, label
 
     def apply_augment(self):
@@ -89,11 +90,9 @@ class BaseDataset(Dataset):
         tmp = list(zip(self.audio_paths, self.label_paths, self.is_augment))
         random.shuffle(tmp)
         self.audio_paths, self.label_paths, self.is_augment = zip(*tmp)
-        del tmp, augment_end_idx
 
     def shuffle(self):
         """Shuffle Dataset"""
         tmp = list(zip(self.audio_paths, self.label_paths, self.is_augment))
         random.shuffle(tmp)
         self.audio_paths, self.label_paths, self.is_augment = zip(*tmp)
-        del tmp

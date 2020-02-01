@@ -23,7 +23,8 @@ from hyperParams import HyperParams
 from loader.baseLoader import BaseDataLoader
 from loader.loader import load_data_list, load_targets
 from train.distance import get_distance
-from train.save_and_load import load_model
+from train.save_and_load import load_model, load_pickle
+
 
 def test(model, queue, device):
     """
@@ -62,14 +63,9 @@ def test(model, queue, device):
             total_length += length
             total_sent_num += target.size(0)
 
-<<<<<<< HEAD
     CER = total_dist / total_length
     logger.info('evaluate() completed')
     return CER
-=======
-    logger.info('evaluate() completed')
-    return total_dist / total_length
->>>>>>> 97564abfcfb9e6d98c0833f167e04f3f85156de0
 
 if __name__ == '__main__':
     os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
@@ -87,32 +83,20 @@ if __name__ == '__main__':
 
     audio_paths, label_paths = load_data_list(data_list_path=TEST_LIST_PATH, dataset_path=DATASET_PATH)
 
-    logger.info("load all target dictionary for reducing disk I/O")
-    target_dict = load_targets(label_paths)
-    logger.info("dump all target dictionary using pickle")
-    with open("./pickle/target_dict_test.txt", "wb") as f:
-        pickle.dump(target_dict, f)
-    logger.info("dump all target dictionary using pickle complete !!")
+    target_dict = load_pickle("./pickle/target_dict_test.txt", "load all target_dict using pickle complete !!")
 
     logger.info('start')
 
     test_dataset = BaseDataset(audio_paths=audio_paths[:],
                                label_paths=label_paths[:],
                                bos_id=SOS_token, eos_id=EOS_token, target_dict=target_dict,
-                               input_reverse=hparams.input_reverse, use_augmentation=False)
+                               input_reverse=hparams.input_reverse, use_augment=False)
 
     test_queue = queue.Queue(hparams.worker_num * 2)
     test_loader = BaseDataLoader(test_dataset, test_queue, hparams.batch_size, 0)
     test_loader.start()
 
-    CER = test(model, test_queue, criterion, device)
-<<<<<<< HEAD
-<<<<<<< HEAD
+    CER = test(model, test_queue, device)
+
     logger.info('200h Test Set CER : %s' % CER)
     logger.info('200h Test Set CRR : %s' % str(1 - float(CER)))
-=======
-    logger.info('200h Test Set CER : %s' % CER)
->>>>>>> 97564abfcfb9e6d98c0833f167e04f3f85156de0
-=======
-    logger.info('200h Test Set CER : %s' % CER)
->>>>>>> 97564abfcfb9e6d98c0833f167e04f3f85156de0

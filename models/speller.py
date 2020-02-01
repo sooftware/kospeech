@@ -26,7 +26,8 @@ else:
 
 class Speller(nn.Module):
     """
-    Provides functionality for decoding in a seq2seq framework, with an option for attention.
+    Converts higher level features (from listener) into output utterances by specifying a probability distribution over sequences of characters.
+
     Args:
         vocab_size (int): size of the vocabulary
         max_len (int): a maximum allowed length for the sequence to be processed
@@ -35,7 +36,7 @@ class Speller(nn.Module):
         eos_id (int): index of the end of sentence symbol
         layer_size (int, optional): number of recurrent layers (default: 1)
         rnn_cell (str, optional): type of RNN cell (default: gru)
-        bidirectional (bool, optional): if the encoder is bidirectional (default False)
+        bidirectional (bool, optional): if the listener is bidirectional (default False)
         input_dropout_p (float, optional): dropout probability for the input sequence (default: 0)
         dropout_p (float, optional): dropout probability for the output sequence (default: 0)
         use_attention(bool, optional): flag indication whether to use attention mechanism or not (default: false)
@@ -43,12 +44,12 @@ class Speller(nn.Module):
         KEY_ATTN_SCORE (str): key used to indicate attention weights in `ret_dict`
         KEY_LENGTH (str): key used to indicate a list representing lengths of output sequences in `ret_dict`
         KEY_SEQUENCE (str): key used to indicate a list of sequences in `ret_dict`
-    Inputs: inputs, encoder_hidden, listener_outputs, function, teacher_forcing_ratio
+    Inputs: inputs, listener_hidden, listener_outputs, function, teacher_forcing_ratio
         - **inputs** (batch, seq_len, input_size): list of sequences, whose length is the batch size and within which
           each sequence is a list of token IDs.  It is used for teacher forcing when provided. (default `None`)
         - **listener_hidden** (num_layers * num_directions, batch_size, hidden_size): tensor containing the features in the
-          hidden state `h` of encoder. Used as the initial hidden state of the decoder. (default `None`)
-        - **listener_outputs** (batch, seq_len, hidden_size): tensor with containing the outputs of the encoder.
+          hidden state `h` of listener. Used as the initial hidden state of the decoder. (default `None`)
+        - **listener_outputs** (batch, seq_len, hidden_size): tensor with containing the outputs of the listener.
           Used for attention mechanism (default is `None`).
         - **function** (torch.nn.Module): A function used to generate symbols from RNN hidden state
           (default is `torch.nn.functional.log_softmax`).
@@ -74,7 +75,7 @@ class Speller(nn.Module):
         super(Speller, self).__init__()
         if rnn_cell.lower() != 'gru' and rnn_cell.lower() != 'lstm':
             raise ValueError("Unsupported RNN Cell: %s" % rnn_cell)
-        self.bidirectional_encoder = bidirectional
+        self.bidirectional_listenerncod = bidirectional
         self.rnn_cell = nn.GRU if rnn_cell.lower() == 'gru' else nn.LSTM
         self.rnn = self.rnn_cell(hidden_size , hidden_size, layer_size, batch_first=True, dropout=dropout_p)
         self.output_size = vocab_size
@@ -92,7 +93,7 @@ class Speller(nn.Module):
         """
         :param speller_input: labels (except </s>)
         :param speller_hidden: hidden state of speller
-        :param listener_outputs: last hidden state of encoder
+        :param listener_outputs: output of listener
         :param function: decode function
         """
         batch_size = speller_input.size(0)   # speller_input.size(0) : batch_size
