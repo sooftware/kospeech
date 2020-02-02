@@ -251,17 +251,17 @@ CRR = (1.0 - CER) * 100.0
   
   
 ## Reference
-[[1] IBM pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)
-[[2] A.I Hub 한국어 음성 데이터셋](http://www.aihub.or.kr/aidata/105)
-[[3]「Voice Recognition Using MFCC Algorithm」  Paper](https://pdfs.semanticscholar.org/32d7/2b00454d5155599fb9e8e5119e16970db50d.pdf)
-[[4]「A Simple Data Augmentation Method for Automatic Speech Recognition」  Paper](https://arxiv.org/abs/1904.08779)  
-[[5] PyTorch Spec-Augmentation](https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py)  
-[[6]「Sequence to sequence learning with neural networks」  Paper](https://arxiv.org/abs/1409.3215)  
-[[7]「Neural Machine Translation by jointly learning to align and Translate」  Paper](https://arxiv.org/pdf/1409.0473.pdf)  
-[[8]「Listen, Attend and Spell」  Paper](https://arxiv.org/abs/1508.01211)
-[[9]「Deep Speech: Scaling up end-to-End Speech Recognition」  Paper](https://arxiv.org/abs/1412.5567)
-[[10] PyTorch VGG Net 16](https://github.com/chengyangfu/pytorch-vgg-cifar10/blob/master/vgg.py)
-[[11] Levenshtein Distance](https://en.wikipedia.org/wiki/Levenshtein_distance)
+[[1] IBM pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)   
+[[2] A.I Hub 한국어 음성 데이터셋](http://www.aihub.or.kr/aidata/105)   
+[[3]「Voice Recognition Using MFCC Algorithm」  Paper](https://pdfs.semanticscholar.org/32d7/2b00454d5155599fb9e8e5119e16970db50d.pdf)   
+[[4]「A Simple Data Augmentation Method for Automatic Speech Recognition」  Paper](https://arxiv.org/abs/1904.08779)    
+[[5] PyTorch Spec-Augmentation](https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py)     
+[[6]「Sequence to sequence learning with neural networks」  Paper](https://arxiv.org/abs/1409.3215)    
+[[7]「Neural Machine Translation by jointly learning to align and Translate」  Paper](https://arxiv.org/pdf/1409.0473.pdf)   
+[[8]「Listen, Attend and Spell」  Paper](https://arxiv.org/abs/1508.01211)   
+[[9]「Deep Speech: Scaling up end-to-End Speech Recognition」  Paper](https://arxiv.org/abs/1412.5567)  
+[[10] PyTorch VGG Net 16](https://github.com/chengyangfu/pytorch-vgg-cifar10/blob/master/vgg.py)  
+[[11] Levenshtein Distance](https://en.wikipedia.org/wiki/Levenshtein_distance)  
    
 ## Requirements  
 Install Levenshtein  
