@@ -12,12 +12,10 @@ limitations under the License.
 """
 
 from torch.utils.data import Dataset
-
 from feature.augmentation import spec_augment
 from feature.feature import get_librosa_mfcc
 from label.label_func import get_label
 import random
-from tqdm import trange
 from definition import logger
 
 class BaseDataset(Dataset):

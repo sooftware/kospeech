@@ -17,7 +17,6 @@ import random
 from data.baseDataset import BaseDataset
 from definition import *
 import torch
-import pickle
 import torch.nn as nn
 from hyperParams import HyperParams
 from loader.baseLoader import BaseDataLoader
