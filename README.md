@@ -179,10 +179,10 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
   
 | Parameter| Use|    
 | -----|:-----:|     
-|Frame length|30ms|
-|Stride|7.5ms|
-| N_FFT | 480  |   
-| hop length | 120  |
+|Frame length|25ms|
+|Stride|10ms|
+| N_FFT | 400  |   
+| hop length | 160  |
 | n_mfcc | 33  |  
 |window|hamming|  
   
