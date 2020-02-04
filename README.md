@@ -83,6 +83,7 @@ Training in Progress
 |2|71|73.2|72.5|  
 |3|76.8|74.6|-|  
 |4|77.5|75.2|-|  
+|5|78.4|76.5|-|  
 
 **CRR** : Character Recognition Rate
   
