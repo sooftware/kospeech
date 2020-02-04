@@ -1,4 +1,4 @@
-from loader.baseLoader import BaseDataLoader
+from Loader.baseLoader import BaseDataLoader
 
 class MultiLoader():
     def __init__(self, dataset_list, queue, batch_size, worker_num):

@@ -43,32 +43,32 @@ class HyperParams():
         self.use_bidirectional = True
         self.use_attention = True
         self.input_reverse = True
-        self.use_augment = True
+        self.use_augment = False
         self.use_pickle = True
         self.use_pyramidal = True
-        self.use_cuda = True
+        self.use_cuda = False
         self.augment_ratio = 0.4
-        self.hidden_size = 256
+        self.hidden_size = 64
         self.dropout = 0.5
-        self.listener_layer_size = 5
-        self.speller_layer_size = 3
-        self.batch_size = 6
+        self.listener_layer_size = 3
+        self.speller_layer_size = 1
+        self.batch_size = 3
         self.worker_num = 1
         self.max_epochs = 40
         self.lr = 0.0001
-        self.teacher_forcing = 0.99
+        self.teacher_forcing = 0.90
         self.seed = 1
         self.max_len = 80
         self.save_name = 'model'
         self.mode = 'train'
         self.load_model = False
-        self.model_path = './weight_file/epoch2'
+        self.model_path = ""
 
     def logger_hparams(self):
         logger.info("use_bidirectional : %s" % str(self.use_bidirectional))
         logger.info("use_attention : %s" % str(self.use_attention))
         logger.info("use_pickle : %s" % str(self.use_pickle))
-        logger.info("use_augmentation : %s" % str(self.use_augmentation))
+        logger.info("use_augment : %s" % str(self.use_augment))
         logger.info("use_pyramidal : %s" % str(self.use_pyramidal))
         logger.info("augment_ratio : %0.2f" % self.augment_ratio)
         logger.info("input_reverse : %s" % str(self.input_reverse))
@@ -83,6 +83,6 @@ class HyperParams():
         logger.info("teacher_forcing_ratio : %0.2f" % self.teacher_forcing)
         logger.info("seed : %d" % self.seed)
         logger.info("max_len : %d" % self.max_len)
-        logger.info("no_cuda : %s" % str(self.no_cuda))
+        logger.info("use_cuda : %s" % str(self.use_cuda))
         logger.info("save_name : %s" % self.save_name)
         logger.info("mode : %s" % self.mode)

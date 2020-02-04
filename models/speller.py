@@ -58,7 +58,7 @@ class Speller(nn.Module):
     """
 
     def __init__(self, vocab_size, max_len, hidden_size, sos_id, eos_id,
-                 layer_size=1, rnn_cell='gru', dropout_p=0, use_attention=True):
+                 layer_size=1, rnn_cell='gru', dropout_p=0, use_attention=True, device=None):
         super(Speller, self).__init__()
         if rnn_cell.lower() != 'gru' and rnn_cell.lower() != 'lstm':
             raise ValueError("Unsupported RNN Cell: %s" % rnn_cell)
@@ -74,6 +74,7 @@ class Speller(nn.Module):
         self.out = nn.Linear(self.hidden_size, self.output_size)
         self.layer_size = layer_size
         self.input_dropout = nn.Dropout(p=dropout_p)
+        self.device = device
         if use_attention:
             self.attention = Attention(self.hidden_size)
 
@@ -93,11 +94,11 @@ class Speller(nn.Module):
         speller_output, hidden = self.rnn(embedded, speller_hidden) # speller output
         attn = None
         if self.use_attention:
-            output, attn = self.attention(output=speller_output, encoder_output=listener_outputs)
+            output, attn = self.attention(decoder_output=speller_output, encoder_output=listener_outputs)
         else: output = speller_output
         # torch.view()에서 -1이면 나머지 알아서 맞춰줌
         predicted_softmax = function(self.out(output.contiguous().view(-1, self.hidden_size)), dim=1).view(batch_size, output_size, -1)
-        return predicted_softmax, hidden, attn
+        return predicted_softmax
 
     def forward(self, inputs=None, listener_hidden=None, listener_outputs=None, function=F.log_softmax, teacher_forcing_ratio=0.99):
         """
@@ -111,7 +112,7 @@ class Speller(nn.Module):
         # Validate Arguments
         inputs, batch_size, max_length = self._validate_args(inputs, listener_hidden, listener_outputs, teacher_forcing_ratio)
         # Initiate Speller Hidden State to zeros  :  LxBxH
-        speller_hidden = torch.FloatTensor(self.layer_size, batch_size, self.hidden_size).uniform_(-1.0, 1.0).cuda()
+        speller_hidden = torch.FloatTensor(self.layer_size, batch_size, self.hidden_size).uniform_(-1.0, 1.0)#.cuda()
         # Decide Use Teacher Forcing or Not
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
 
@@ -119,24 +120,24 @@ class Speller(nn.Module):
         # If teacher_forcing_ratio is True or False instead of a probability, the unrolling can be done in graph
         if use_teacher_forcing:
             speller_input = inputs[:, :-1] # except </s>
-            predicted_softmax, speller_hidden, attn = self.forward_step(speller_input, speller_hidden, listener_outputs, function=function)
+            # (batch_size, seq_len, classfication_num)
+            predicted_softmax = self.forward_step(speller_input, speller_hidden, listener_outputs, function=function)
             """Extract Output by Step"""
             for di in range(predicted_softmax.size(1)):
                 step_output = predicted_softmax[:, di, :]
-                if attn is not None:
-                    step_attn = attn[:, di, :]
-                else:
-                    step_attn = None
                 decode_results.append(step_output)
         else:
             speller_input = inputs[:, 0].unsqueeze(1)
             for di in range(max_length):
-                predicted_softmax, speller_hidden, step_attn = self.forward_step(speller_input, speller_hidden, listener_outputs, function=function)
+                predicted_softmax = self.forward_step(speller_input, speller_hidden, listener_outputs, function=function)
                 step_output = predicted_softmax.squeeze(1)
                 decode_results.append(step_output)
                 speller_input = decode_results[-1].topk(1)[1]
 
-        return decode_results
+        logit = torch.stack(decode_results, dim=1).to(self.device)
+        y_hat = logit.max(-1)[1]
+
+        return y_hat, logit
 
     def _validate_args(self, inputs, listener_hidden, listener_outputs, teacher_forcing_ratio):
         if self.use_attention:

@@ -71,7 +71,7 @@ class Attention(nn.Module):
         # get attention value
         attn_val = torch.bmm(attn, encoder_output) # get attention value
 
-        # concat -> (batch, o1ut_len, 2*dim)
+        # concat -> (batch, out_len, 2*dim)
         combined = torch.cat((attn_val, decoder_output), dim=2)
         # output -> (batch, out_len, dim)
         output = torch.tanh(self.linear_out(combined.view(-1, 2 * hidden_size))).view(batch_size, -1, hidden_size)

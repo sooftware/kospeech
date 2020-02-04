@@ -51,13 +51,10 @@ def test(model, queue, device):
             target = scripts[:, 1:]
 
             model.module.flatten_parameters()
-            logit = model(feats, feat_lengths, scripts, teacher_forcing_ratio=0.0)
-
-            logit = torch.stack(logit, dim=1).to(device)
-            y_hat = logit.max(-1)[1]
+            y_hat, _ = model(feats, feat_lengths, scripts, teacher_forcing_ratio=0.0)
 
             display = random.randrange(0, 100) == 0
-            dist, length = get_distance(target, y_hat, display=display, train=False)
+            dist, length = get_distance(target, y_hat, display=display)
             total_dist += dist
             total_length += length
             total_sent_num += target.size(0)

@@ -48,7 +48,7 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
     batch_num = math.ceil(len(audio_paths) / hparams.batch_size)
     valid_batch_num = math.ceil(batch_num * valid_ratio)
     train_batch_num = batch_num - valid_batch_num
-    if hparams.use_augmentation:
+    if hparams.use_augment:
         train_batch_num = int( train_batch_num * (1 + hparams.augment_ratio))
     train_num_per_worker = math.ceil(train_num / hparams.worker_num)
 

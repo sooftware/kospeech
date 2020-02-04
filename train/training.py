@@ -46,11 +46,7 @@ def train(model, total_batch_size, queue, loss_func, optimizer, device, train_be
         model.module.flatten_parameters()
 
         # Seq2seq forward()
-        logit = model(feats, targets, teacher_forcing_ratio)
-
-        logit = torch.stack(logit, dim=1).to(device)
-
-        y_hat = logit.max(-1)[1]
+        y_hat, logit = model(feats, targets, teacher_forcing_ratio)
 
         loss = loss_func(logit.contiguous().view(-1, logit.size(-1)), target.contiguous().view(-1))
         total_loss += loss.item()

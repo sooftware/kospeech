@@ -44,9 +44,9 @@ import os
 from definition import *
 from data.split_dataset import split_dataset
 from hyperParams import HyperParams
-from loader.baseLoader import BaseDataLoader
-from loader.loader import load_data_list, load_targets
-from loader.multiLoader import MultiLoader
+from Loader.baseLoader import BaseDataLoader
+from Loader.loader import load_targets, load_data_list
+from Loader.multiLoader import MultiLoader
 from models.speller import Speller
 from models.listener import Listener
 from models.listenAttendSpell import ListenAttendSpell
@@ -55,11 +55,11 @@ from train.save_and_load import save_epoch_result, load_model, load_pickle, save
 from train.training import train
 
 if __name__ == '__main__':
-    os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
-    logger.info("device : %s" % torch.cuda.get_device_name(0))
-    logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
-    logger.info("CUDA version : %s" % (torch.version.cuda))
-    logger.info("PyTorch version : %s" % (torch.__version__))
+    #os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
+    #logger.info("device : %s" % torch.cuda.get_device_name(0))
+    #logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
+    #logger.info("CUDA version : %s" % (torch.version.cuda))
+    #logger.info("PyTorch version : %s" % (torch.__version__))
 
     hparams = HyperParams()
     hparams.logger_hparams()
@@ -79,12 +79,12 @@ if __name__ == '__main__':
     speller = Speller(vocab_size=len(char2index), max_len=hparams.max_len,
                       hidden_size=hparams.hidden_size * (2 if hparams.use_bidirectional else 1),
                       sos_id=SOS_token, eos_id=EOS_token, layer_size = hparams.speller_layer_size,
-                      rnn_cell = 'gru', dropout_p = hparams.dropout, use_attention = hparams.use_attention)
+                      rnn_cell = 'gru', dropout_p = hparams.dropout, use_attention = hparams.use_attention, device=device)
 
     if hparams.load_model:
         model = load_model(hparams.model_path)
     else:
-        model = ListenAttendSpell(listener=listener, speller=speller)
+        model = ListenAttendSpell(listener=listener, speller=speller, use_pyramidal=hparams.use_pyramidal)
         model.flatten_parameters()
         model = nn.DataParallel(model).to(device)
 

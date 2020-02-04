@@ -24,12 +24,9 @@ def char_distance(ref, hyp):
 
     return dist, length
 
-def get_distance(ref_labels, hyp_labels, display=False, train=True):
+def get_distance(ref_labels, hyp_labels, display=False):
     total_dist = 0
     total_length = 0
-
-    if train == False:
-        index2char = test_index2char
 
     for i in range(len(ref_labels)):
         ref = label_to_string(ref_labels[i], index2char, EOS_token)

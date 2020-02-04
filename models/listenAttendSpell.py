@@ -26,22 +26,28 @@ class ListenAttendSpell(nn.Module):
     Reference:
         「Listen, Attend and Spell」 paper :  https://arxiv.org/abs/1508.01211
     """
-    def __init__(self, listener, speller, decode_function = F.log_softmax):
+    def __init__(self, listener, speller, decode_function = F.log_softmax, use_pyramidal = False):
         super(ListenAttendSpell, self).__init__()
         self.listener = listener
         self.speller = speller
         self.decode_function = decode_function
+        self.use_pyramidal = use_pyramidal
 
     def flatten_parameters(self):
-        self.listener.rnn.flatten_parameters()
+        if self.use_pyramidal:
+            self.listener.bottom_rnn.flatten_parameters()
+            self.listener.middle_rnn.flatten_parameters()
+            self.listener.top_rnn.flatten_parameters()
+        else:
+            self.listener.rnn.flatten_parameters()
         self.speller.rnn.flatten_parameters()
 
     # feats, labels, teacher_forcing_ratio
     def forward(self, feats, targets=None, teacher_forcing_ratio=0.99):
         listener_outputs, listener_hidden = self.listener(feats)
-        result = self.speller(inputs = targets,
+        y_hat, logit = self.speller(inputs = targets,
                               listener_hidden = listener_hidden,
                               listener_outputs = listener_outputs,
                               function = self.decode_function,
                               teacher_forcing_ratio = teacher_forcing_ratio)
-        return result
+        return y_hat, logit

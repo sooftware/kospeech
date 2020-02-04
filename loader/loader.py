@@ -13,25 +13,6 @@ limitations under the License.
 import pandas as pd
 from tqdm import trange
 
-def load_data_list(data_list_path, dataset_path):
-    """
-    Provides set of audio path & label path
-    Inputs: data_list_path
-        - **data_list_path**: csv file with training or test data list
-    Outputs: audio_paths, label_paths
-        - **audio_paths**: set of audio path
-                Format : [base_dir/KaiSpeech/KaiSpeech_123260.pcm, ... , base_dir/KaiSpeech/KaiSpeech_621245.pcm]
-        - **label_paths**: set of label path
-                Format : [base_dir/KaiSpeech/KaiSpeech_label_123260.txt, ... , base_dir/KaiSpeech/KaiSpeech_label_621245.txt]
-    """
-    data_list = pd.read_csv(data_list_path, "r", delimiter = ",", encoding="cp949")
-    audio_paths = list(dataset_path + data_list["audio"])
-    label_paths = list(dataset_path + data_list["label"])
-    del data_list # memory deallocation
-
-    return audio_paths, label_paths
-
-
 def load_targets(label_paths):
     """
     Provides dictionary of filename and labels
@@ -53,3 +34,19 @@ def load_targets(label_paths):
 
     return target_dict
 
+def load_data_list(data_list_path, dataset_path):
+    """
+    Provides set of audio path & label path
+    Inputs: data_list_path
+        - **data_list_path**: csv file with training or test data list
+    Outputs: audio_paths, label_paths
+        - **audio_paths**: set of audio path
+                Format : [base_dir/KaiSpeech/KaiSpeech_123260.pcm, ... , base_dir/KaiSpeech/KaiSpeech_621245.pcm]
+        - **label_paths**: set of label path
+                Format : [base_dir/KaiSpeech/KaiSpeech_label_123260.txt, ... , base_dir/KaiSpeech/KaiSpeech_label_621245.txt]
+    """
+    data_list = pd.read_csv(data_list_path, "r", delimiter = ",", encoding="cp949")
+    audio_paths = list(dataset_path + data_list["audio"])
+    label_paths = list(dataset_path + data_list["label"])
+
+    return audio_paths, label_paths

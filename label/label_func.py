@@ -28,12 +28,11 @@ def load_label(label_path, encoding='utf-8'):
     index2char = dict()
     with open(label_path, 'r', encoding=encoding) as f:
         labels = csv.reader(f, delimiter=',')
-    next(labels)
+        next(labels)
 
-    for row in labels:
-        char2index[row[1]] = row[0]
-        index2char[int(row[0])] = row[1]
-    del labels # memory deallocation
+        for row in labels:
+            char2index[row[1]] = row[0]
+            index2char[int(row[0])] = row[1]
 
     return char2index, index2char
 
