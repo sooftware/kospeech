@@ -72,7 +72,7 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
                                 bos_id=SOS_token, eos_id=EOS_token,
                                 target_dict=target_dict, input_reverse=hparams.input_reverse, use_augment=False)
 
-    save_pickle(train_dataset_list, "./pickle/train_dataset.txt", "dump all train_dataset_list using pickle complete !!")
-    save_pickle(valid_dataset, "./pickle/valid_dataset.txt", "dump all valid_dataset using pickle complete !!")
+    #save_pickle(train_dataset_list, "./pickle/train_dataset.txt", "dump all train_dataset_list using pickle complete !!")
+    #save_pickle(valid_dataset, "./pickle/valid_dataset.txt", "dump all valid_dataset using pickle complete !!")
 
     return train_batch_num, train_dataset_list, valid_dataset

@@ -56,7 +56,7 @@ class HyperParams():
         self.worker_num = 1
         self.max_epochs = 40
         self.lr = 0.0001
-        self.teacher_forcing = 0.90
+        self.teacher_forcing = 0.0
         self.seed = 1
         self.max_len = 80
         self.save_name = 'model'
