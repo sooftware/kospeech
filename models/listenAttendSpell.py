@@ -44,4 +44,4 @@ class ListenAttendSpell(nn.Module):
                               listener_outputs = listener_outputs,
                               function = self.decode_function,
                               teacher_forcing_ratio = teacher_forcing_ratio)
-        return result[0]
+        return result

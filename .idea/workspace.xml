@@ -3,8 +3,15 @@
   <component name="ChangeListManager">
     <list default="true" id="132cd630-2557-4b82-ba45-7cafc5d4274e" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/baseDataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/data/baseDataset.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/model_structure-checkpoint.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/feature/feature.py" beforeDir="false" afterPath="$PROJECT_DIR$/feature/feature.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hyperParams.py" beforeDir="false" afterPath="$PROJECT_DIR$/hyperParams.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/attention.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/attention.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/listenAttendSpell.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/listenAttendSpell.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/listener.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/listener.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/speller.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/speller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/training.py" beforeDir="false" afterPath="$PROJECT_DIR$/train/training.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

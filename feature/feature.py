@@ -63,9 +63,9 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = False, input_re
         format: file format ex) pcm, wav (default: pcm)
     Comment:
         sample rate: A.I Hub dataset`s sample rate is 16,000
-        frame length: 30ms
-        stride: 7.5ms
-        overlap: 22.5ms (≒75%)
+        frame length: 25ms
+        stride: 10ms
+        overlap: 15ms
         window: Hamming Window
         n_fft = sr * frame_length (16,000 * 30ms)
         hop_length = sr * stride (16,000 * 7.5ms)
@@ -86,7 +86,7 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = False, input_re
     if del_silence:
         non_silence_indices = librosa.effects.split(sig, top_db=30)
         sig = np.concatenate([sig[start:end] for start, end in non_silence_indices])
-    feat = librosa.feature.mfcc(y=sig,sr=16000, hop_length=120, n_mfcc=n_mfcc, n_fft=480, window='hamming')
+    feat = librosa.feature.mfcc(y=sig,sr=16000, hop_length=160, n_mfcc=n_mfcc, n_fft=400, window='hamming')
     if input_reverse:
         feat = feat[:,::-1]
 

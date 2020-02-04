@@ -59,9 +59,7 @@ def train(model, total_batch_size, queue, loss_func, optimizer, device, train_be
         dist, length = get_distance(target, y_hat, display=display)
         total_dist += dist
         total_length += length
-
         total_sent_num += target.size(0)
-
         loss.backward()
         optimizer.step()
 

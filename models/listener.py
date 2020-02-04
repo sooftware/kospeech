@@ -125,7 +125,6 @@ class Listener(nn.Module):
             middle_outputs, _ = self.middle_rnn(middle_inputs)
             top_inputs = self._cat_consecutive(middle_outputs)
             outputs, hiddens = self.top_rnn(top_inputs)
-            del bottom_outputs, middle_inputs, middle_outputs, top_inputs
         else:
             outputs, hiddens = self.rnn(x)
         return outputs, hiddens
