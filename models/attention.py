@@ -65,15 +65,15 @@ class Attention(nn.Module):
         input_size = encoder_output.size(1)
 
         # get attention score
-        attn = torch.bmm(decoder_output, encoder_output.transpose(1, 2)) # bmm : Batch Matrix Multiplication
+        attn_score = torch.bmm(decoder_output, encoder_output.transpose(1, 2))
         # get attention distribution
-        attn = F.softmax(attn.view(-1, input_size), dim=1).view(batch_size, -1, input_size)
+        attn_distribution = F.softmax(attn_score.view(-1, input_size), dim=1).view(batch_size, -1, input_size)
         # get attention value
-        attn_val = torch.bmm(attn, encoder_output) # get attention value
+        attn_val = torch.bmm(attn_distribution, encoder_output) # get attention value
 
         # concat -> (batch, out_len, 2*dim)
         combined = torch.cat((attn_val, decoder_output), dim=2)
         # output -> (batch, out_len, dim)
         output = torch.tanh(self.linear_out(combined.view(-1, 2 * hidden_size))).view(batch_size, -1, hidden_size)
 
-        return output, attn
+        return output

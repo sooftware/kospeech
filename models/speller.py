@@ -60,7 +60,8 @@ class Speller(nn.Module):
     """
 
     def __init__(self, vocab_size, max_len, hidden_size, sos_id, eos_id,
-                 layer_size=1, rnn_cell='gru', dropout_p=0, use_attention=True, device=None, use_beam_search=True):
+                 layer_size=1, rnn_cell='gru', dropout_p=0, use_attention=True,
+                 device=None, use_beam_search=False, k=8):
         super(Speller, self).__init__()
         if rnn_cell.lower() != 'gru' and rnn_cell.lower() != 'lstm':
             raise ValueError("Unsupported RNN Cell: %s" % rnn_cell)
@@ -78,7 +79,7 @@ class Speller(nn.Module):
         self.input_dropout = nn.Dropout(p=dropout_p)
         self.device = device
         self.use_beam_search = use_beam_search
-        self.beam_size = 8
+        self.k = k
         if use_attention:
             self.attention = Attention(self.hidden_size)
 
@@ -98,7 +99,7 @@ class Speller(nn.Module):
         speller_output, hidden = self.rnn(embedded, speller_hidden) # speller output
         attn = None
         if self.use_attention:
-            output, attn = self.attention(decoder_output=speller_output, encoder_output=listener_outputs)
+            output = self.attention(decoder_output=speller_output, encoder_output=listener_outputs)
         else: output = speller_output
         # torch.view()에서 -1이면 나머지 알아서 맞춰줌
         predicted_softmax = function(self.out(output.contiguous().view(-1, self.hidden_size)), dim=1).view(batch_size, output_size, -1)
@@ -132,64 +133,8 @@ class Speller(nn.Module):
                 decode_results.append(step_output)
         else:
             if self.use_beam_search:
-                ongoing_beam_list = []
-                complete_sentences = dict()
-                for _ in range(self.beam_size):
-                    ongoing_beam_list.append(Beam(self.eos_id, self.beam_size, inputs[:, 0].unsqueeze(1), self.embedding, self.input_dropout,
-                                                  self.rnn, self.use_attention, self.attention, self.out, self.hidden_size, listener_outputs,
-                                                  function, speller_hidden, batch_size))
-
-                for di in range(max_length):
-                    candidate_probs = [0] * self.beam_size
-                    for idx, beam in enumerate(ongoing_beam_list):
-                        candidate_probs[idx] = beam.search()
-                    candidate_probs = torch.cat(candidate_probs, dim=1)
-                    update_idx = candidate_probs.topk(self.beam_size)[1]
-                    standby_idx = candidate_probs.topk(self.beam_size * 2)[1][self.beam_size:]
-                    update_beam_idx = update_idx // self.beam_size
-                    update_candidate_idx = update_idx % self.beam_size
-                    standby_beam_idx = standby_idx // self.beam_size
-                    standby_candidate_idx = standby_idx % self.beam_size
-
-                    while True:
-                        is_all_one, counts = self._is_all_ones(update_beam_idx)
-                        if is_all_one:
-                            break
-                        batch_num, upper_one_idx, zero_idx = self._beam_distributor(counts)
-                        print(batch_num)
-                        print(upper_one_idx)
-                        print(zero_idx)
-                        ongoing_beam_list[zero_idx].reset_beam(symbols=ongoing_beam_list[upper_one_idx].symbols[batch_num],
-                                                               probs=ongoing_beam_list[upper_one_idx].probs[batch_num],
-                                                               candidate_symbols=ongoing_beam_list[upper_one_idx].candidate_symbols[batch_num],
-                                                               candidate_probs=ongoing_beam_list[upper_one_idx].candidate_probs[batch_num])
-                        update_beam_idx[batch_num][upper_one_idx] -= 1
-                        update_beam_idx[batch_num][zero_idx] += 1
-                    exit()
-                    complete_indice = []
-                    for idx, beam in enumerate(ongoing_beam_list):
-                        is_complete = beam.forward(candidate_idx=update_candidate_idx[idx])
-                        if is_complete:
-                            complete_sentences[beam.symbols] = beam.probs
-                            complete_indice.append(idx)
-
-                    for idx in range(len(complete_indice)):
-                        ongoing_beam_list[idx].beam.reset_beam(symbols=ongoing_beam_list[standby_beam_idx[0]].symbols,
-                                                               probs=ongoing_beam_list[standby_beam_idx[0]].probs,
-                                                               candidate_symbols=ongoing_beam_list[standby_beam_idx[0]].candidate_symbols,
-                                                               candidate_probs=ongoing_beam_list[standby_beam_idx[0]].candidate_probs)
-                        ongoing_beam_list[idx].beam.forward(candidate_idx=standby_candidate_idx[0])
-                        del standby_beam_idx[0], standby_candidate_idx[0]
-
-                    if len(complete_sentences) == self.beam_size:
-                        break
-
-                complete_sentences_keys = complete_sentences.keys()
-                complete_sentences_probs = complete_sentences.values()
-
-                tmp = zip(complete_sentences_probs, complete_sentences_keys)
-                complete_sentences_probs, complete_sentences_keys = zip(*sorted(tmp, reverse=True))
-
+                """Implementation of Beam-Search Decoding"""
+                pass
             else:
                 speller_input = inputs[:, 0].unsqueeze(1)
                 for di in range(max_length):
@@ -203,32 +148,6 @@ class Speller(nn.Module):
         y_hat = logit.max(-1)[1]
 
         return y_hat, logit
-
-    def _beam_distributor(self, counts): # (batch_size, beam_size)
-        print(counts)
-        upper_one_idx = None
-        zero_idx = None
-
-        for batch_num, batch in enumerate(counts):
-            for idx, bi in enumerate(batch):
-                if bi > 1:
-                    upper_one_idx = idx
-                elif bi == 0:
-                    zero_idx = idx
-                if upper_one_idx is not None and zero_idx is not None:
-                    return batch_num, upper_one_idx, zero_idx
-
-
-    def _is_all_ones(self, tensors):
-        counts = torch.Tensor([[0] * self.beam_size] * tensors.size(0)) # ?
-        for batch, tensor in enumerate(tensors):
-            for bi in tensor:
-                counts[batch][bi] += 1
-        print(counts)
-        for idx, element in enumerate(counts):
-            if not all(element == 1):
-                return False, counts
-        return True, counts
 
     def _validate_args(self, inputs, listener_hidden, listener_outputs, teacher_forcing_ratio):
         if self.use_attention:
