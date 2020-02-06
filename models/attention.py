@@ -22,8 +22,8 @@ import torch.nn.functional as F
 
 
 class Attention(nn.Module):
-    r"""
-    Applies an attention mechanism on the output features from the decoder.
+    """
+    Applies an attention mechanism on the output features from the decoder. (Concat-Attention)
 
     .. math::
             \begin{array}{ll}
@@ -41,19 +41,6 @@ class Attention(nn.Module):
 
     Outputs: output, attn
         - **output** (batch, output_len, dimensions): tensor containing the attended output features from the decoder.
-        - **attn** (batch, output_len, input_len): tensor containing attention weights.
-
-    Attributes:
-        linear_out (torch.nn.Linear): applies a linear transformation to the incoming data: :math:`y = Ax + b`.
-        mask (torch.Tensor, optional): applies a :math:`-inf` to the indices specified in the `Tensor`.
-
-    Examples::
-
-         >>> attention = seq2seq.models.Attention(256)
-         >>> encoder_output = Variable(torch.randn(5, 3, 256))
-         >>> output = Variable(torch.randn(5, 5, 256))
-         >>> output, attn = attention(output, encoder_output)
-
     """
     def __init__(self, dim):
         super(Attention, self).__init__()
@@ -64,16 +51,11 @@ class Attention(nn.Module):
         hidden_size = decoder_output.size(2)  # hidden_size
         input_size = encoder_output.size(1)
 
-        # get attention score
         attn_score = torch.bmm(decoder_output, encoder_output.transpose(1, 2))
-        # get attention distribution
         attn_distribution = F.softmax(attn_score.view(-1, input_size), dim=1).view(batch_size, -1, input_size)
-        # get attention value
         attn_val = torch.bmm(attn_distribution, encoder_output) # get attention value
 
-        # concat -> (batch, out_len, 2*dim)
         combined = torch.cat((attn_val, decoder_output), dim=2)
-        # output -> (batch, out_len, dim)
         output = torch.tanh(self.linear_out(combined.view(-1, 2 * hidden_size))).view(batch_size, -1, hidden_size)
 
         return output

@@ -18,7 +18,7 @@ from data.baseDataset import BaseDataset
 from definition import *
 import torch
 import torch.nn as nn
-from hyperParams import HyperParams
+from hparameter import HyperParams
 from loader.baseLoader import BaseDataLoader
 from loader.loader import load_data_list, load_targets
 from train.distance import get_distance
