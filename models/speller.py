@@ -124,8 +124,8 @@ class Speller(nn.Module):
         # Manual unrolling is used to support random teacher forcing.
         # If teacher_forcing_ratio is True or False instead of a probability, the unrolling can be done in graph
         if use_teacher_forcing:
-            speller_input = inputs[:, :-1] # except </s>
-            # (batch_size, seq_len, classfication_num)
+            speller_input = inputs[:, :-1]  # except </s>
+            """ if teacher_forcing, Infer all at once """
             predicted_softmax = self.forward_step(speller_input, speller_hidden, listener_outputs, function=function)
             """Extract Output by Step"""
             for di in range(predicted_softmax.size(1)):

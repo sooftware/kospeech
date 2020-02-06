@@ -60,6 +60,7 @@ class Listener(nn.Module):
             nn.MaxPool2d(2, 2)
         )
 
+        """ math :: feat_size = (in_channel * out_channel) / maxpool_layer_num """
         if feat_size % 2: feat_size = (feat_size-1) * 64
         else: feat_size *= 64
 
