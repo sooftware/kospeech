@@ -61,7 +61,7 @@ class Speller(nn.Module):
 
     def __init__(self, vocab_size, max_len, hidden_size, sos_id, eos_id,
                  layer_size=1, rnn_cell='gru', dropout_p=0, use_attention=True,
-                 device=None, use_beam_search=False, k=8):
+                 device=None, use_beam_search=True, k=3):
         super(Speller, self).__init__()
         if rnn_cell.lower() != 'gru' and rnn_cell.lower() != 'lstm':
             raise ValueError("Unsupported RNN Cell: %s" % rnn_cell)
@@ -79,7 +79,7 @@ class Speller(nn.Module):
         self.input_dropout = nn.Dropout(p=dropout_p)
         self.device = device
         self.use_beam_search = use_beam_search
-        self.k = k
+        self.k = k  # size of beam
         if use_attention:
             self.attention = Attention(self.hidden_size)
 
@@ -97,7 +97,7 @@ class Speller(nn.Module):
         if self.training:
             self.rnn.flatten_parameters()
         speller_output, hidden = self.rnn(embedded, speller_hidden) # speller output
-        attn = None
+
         if self.use_attention:
             output = self.attention(decoder_output=speller_output, encoder_output=listener_outputs)
         else: output = speller_output
@@ -134,7 +134,14 @@ class Speller(nn.Module):
         else:
             if self.use_beam_search:
                 """Implementation of Beam-Search Decoding"""
-                pass
+                speller_input = inputs[:, 0].unsqueeze(1)
+                beam = Beam(k=self.k, speller_input=speller_input, speller_hidden=speller_hidden,
+                            batch_size=batch_size, max_len=max_length, decode_func=function,
+                            rnn=self.rnn, embedding=self.embedding, input_dropout=self.input_dropout,
+                            use_attention=self.use_attention, attention=self.attention,
+                            hidden_size=self.hidden_size, out=self.out)
+                beam.search(speller_input, listener_outputs)
+
             else:
                 speller_input = inputs[:, 0].unsqueeze(1)
                 for di in range(max_length):
