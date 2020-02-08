@@ -135,11 +135,11 @@ class Speller(nn.Module):
             if self.use_beam_search:
                 """Implementation of Beam-Search Decoding"""
                 speller_input = inputs[:, 0].unsqueeze(1)
-                beam = Beam(k=self.k, speller_input=speller_input, speller_hidden=speller_hidden,
+                beam = Beam(k=self.k, speller_hidden=speller_hidden,
                             batch_size=batch_size, max_len=max_length, decode_func=function,
                             rnn=self.rnn, embedding=self.embedding, input_dropout=self.input_dropout,
                             use_attention=self.use_attention, attention=self.attention,
-                            hidden_size=self.hidden_size, out=self.out)
+                            hidden_size=self.hidden_size, out=self.out, eos_id=self.eos_id)
                 beam.search(speller_input, listener_outputs)
 
             else:
