@@ -22,14 +22,13 @@ class Beam:
         - batch_size (int) : mini-batch size during infer
         - max_len (int) :  a maximum allowed length for the sequence to be processed
         - decode_func (torch.nn.Module) : A function used to generate symbols from RNN hidden state (default : torch.nn.functional.log_softmax)
-        - rnn (torch.nn.Module) :
     Inputs:
 
     Outputs:
     """
-    def __init__(self, k, speller_hidden,
-                 batch_size, max_len, decode_func, rnn,
-                 embedding, input_dropout, use_attention, attention,
+    def __init__(self, k, speller_hidden, batch_size,
+                 max_len, decode_func, rnn, embedding,
+                 input_dropout, use_attention, attention,
                  hidden_size, out, eos_id):
         self.k = k
         self.speller_hidden = speller_hidden
@@ -46,12 +45,12 @@ class Beam:
         self.eos_id = eos_id
         self.cumulative_p = None
         self.beams = None
-        self.done_list = []
-        self.done_p = []
+        self.done_list = [[None] * self.k] * self.batch_size
+        self.done_p = [[None] * self.k] * self.batch_size
 
     def search(self, init_speller_input, listener_outputs):
         """
-        Notation:
+        Comment Notation:
             - **B**: batch_size
             - **K**: size of beam
             - **C**: number of classfication
@@ -66,7 +65,7 @@ class Beam:
         self.beams = self.beams.view(self.batch_size, self.k, 1)
 
         for di in range(self.max_len-1):
-            if len(self.done_list) >= self.k:
+            if self.is_done():
                 break
             # For each beam, get class classfication distribution (shape: BxKxC)
             step_output = self.forward_step(speller_input, listener_outputs).squeeze(1)
@@ -77,7 +76,6 @@ class Beam:
             candidate_v = candidate_v.view(self.batch_size, self.k * self.k)
             # Select Top k in K^2 (shape: BxK)
             select_p, select_indice = candidate_p.topk(self.k)
-
             select_v = torch.LongTensor(self.batch_size, self.k)
             # Initiate Tensor (shape: BxKxS)
             prev_beams = torch.LongTensor(self.beams.size(0), self.beams.size(1), self.beams.size(2))
@@ -91,16 +89,40 @@ class Beam:
             # BxKx(S) => BxKx(S+1)
             self.beams = torch.cat([prev_beams, select_v.view(self.batch_size, self.k, 1)], dim=2)
             # get cumulative probability (applying length penalty)
-            self.cumulative_p = select_p * self.get_length_penalty(length=select_p.size(1), alpha=1.2, min_length=5)
+            self.cumulative_p = select_p * self.get_length_penalty(length=di+1, alpha=1.2, min_length=5)
             # update speller_input by select_ch
-            speller_input = select_v
-            """ eos 처리 """
-            done_coords = torch.where(select_v == self.eos_id)
-            for done_coord in done_coords:
-                for batch_num, beam_idx in done_coord:
-                    self.done_list.append(self.beams[batch_num, beam_idx])
-                    self.done_p.append(self.cumulative_p[batch_num, beam_idx])
 
+
+            if torch.any(select_v == self.eos_id):
+                eos_coords = torch.where(select_v == self.eos_id)
+                for sub_num, eos_coord in enumerate(eos_coords):
+                    for batch_num, beam_idx in eos_coord:
+                        self.done_list[batch_num][beam_idx] = self.beams[batch_num, beam_idx]
+                        self.done_p[batch_num][beam_idx] = self.cumulative_p[batch_num, beam_idx]
+                        self._replace_beam(candidate_p, candidate_v, batch_num, sub_num, di)
+            speller_input = select_v
+
+    def is_done(self):
+        for batch in self.done_list:
+            for beam in batch:
+                if beam is None:
+                    return False
+        return True
+
+    def _replace_beam(self, candidate_p, candidate_v, batch_num, beam_idx, sub_num, step):
+        # Bx(K+1)
+        sub_p, sub_indice = candidate_p.topk(self.k + sub_num + 1)
+        # Bx1
+        sub_p = sub_p[:, (self.k + sub_num):]
+        sub_indice = sub_indice[:, (self.k + sub_num):]
+        # Bx1
+        parent_node = (sub_indice % self.k).view(self.batch_size, 1)
+        prev_beam = self.beams[batch_num, parent_node[batch_num, 0]]
+        prev_beam_p = self.cumulative_p[batch_num, parent_node[batch_num, 0]]
+        sub_v = candidate_v[batch_num, sub_indice[batch_num, 0]]
+        new_beam = torch.cat([prev_beam, sub_v])
+        self.beams[batch_num, beam_idx] = new_beam
+        self.cumulative_p[batch_num, beam_idx] = (prev_beam_p + sub_p) *  self.get_length_penalty(length=step+1, alpha=1.2, min_length=5)
 
     def forward_step(self, speller_input, listener_outputs):
         output_size = speller_input.size(1)

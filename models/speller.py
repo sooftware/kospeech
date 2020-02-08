@@ -59,12 +59,11 @@ class Speller(nn.Module):
           the outputs of the decoding function.
     """
 
-    def __init__(self, vocab_size, max_len, hidden_size, sos_id, eos_id,
-                 layer_size=1, rnn_cell='gru', dropout_p=0, use_attention=True,
-                 device=None, use_beam_search=True, k=3):
+    def __init__(self, vocab_size, max_len, hidden_size,
+                 sos_id, eos_id,
+                 layer_size=1, rnn_cell='gru', dropout_p=0,
+                 use_attention=True, device=None, use_beam_search=True, k=3):
         super(Speller, self).__init__()
-        if rnn_cell.lower() != 'gru' and rnn_cell.lower() != 'lstm':
-            raise ValueError("Unsupported RNN Cell: %s" % rnn_cell)
         self.rnn_cell = nn.LSTM if rnn_cell.lower() == 'lstm' else nn.GRU if rnn_cell.lower() == 'gru' else nn.RNN
         self.rnn = self.rnn_cell(hidden_size , hidden_size, layer_size, batch_first=True, dropout=dropout_p)
         self.output_size = vocab_size
@@ -121,27 +120,26 @@ class Speller(nn.Module):
         # Decide Use Teacher Forcing or Not
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
 
-        # Manual unrolling is used to support random teacher forcing.
-        # If teacher_forcing_ratio is True or False instead of a probability, the unrolling can be done in graph
-        if use_teacher_forcing:
-            speller_input = inputs[:, :-1]  # except </s>
-            """ if teacher_forcing, Infer all at once """
-            predicted_softmax = self.forward_step(speller_input, speller_hidden, listener_outputs, function=function)
-            """Extract Output by Step"""
-            for di in range(predicted_softmax.size(1)):
-                step_output = predicted_softmax[:, di, :]
-                decode_results.append(step_output)
+        if self.use_beam_search:
+            """Implementation of Beam-Search Decoding"""
+            speller_input = inputs[:, 0].unsqueeze(1)
+            beam = Beam(k=self.k, speller_hidden=speller_hidden,
+                        batch_size=batch_size, max_len=max_length, decode_func=function,
+                        rnn=self.rnn, embedding=self.embedding, input_dropout=self.input_dropout,
+                        use_attention=self.use_attention, attention=self.attention,
+                        hidden_size=self.hidden_size, out=self.out, eos_id=self.eos_id)
+            beam.search(speller_input, listener_outputs)
         else:
-            if self.use_beam_search:
-                """Implementation of Beam-Search Decoding"""
-                speller_input = inputs[:, 0].unsqueeze(1)
-                beam = Beam(k=self.k, speller_hidden=speller_hidden,
-                            batch_size=batch_size, max_len=max_length, decode_func=function,
-                            rnn=self.rnn, embedding=self.embedding, input_dropout=self.input_dropout,
-                            use_attention=self.use_attention, attention=self.attention,
-                            hidden_size=self.hidden_size, out=self.out, eos_id=self.eos_id)
-                beam.search(speller_input, listener_outputs)
-
+            # Manual unrolling is used to support random teacher forcing.
+            # If teacher_forcing_ratio is True or False instead of a probability, the unrolling can be done in graph
+            if use_teacher_forcing:
+                speller_input = inputs[:, :-1]  # except </s>
+                """ if teacher_forcing, Infer all at once """
+                predicted_softmax = self.forward_step(speller_input, speller_hidden, listener_outputs, function=function)
+                """Extract Output by Step"""
+                for di in range(predicted_softmax.size(1)):
+                    step_output = predicted_softmax[:, di, :]
+                    decode_results.append(step_output)
             else:
                 speller_input = inputs[:, 0].unsqueeze(1)
                 for di in range(max_length):

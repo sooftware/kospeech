@@ -93,41 +93,24 @@ class Listener(nn.Module):
             - **hidden** (num_layers * num_directions, batch, hidden_size): variable containing the features in the hidden state h
                           => Ex (16, 32, 512)
         """
-
-        # Before : (batch_size, seq_len, feat_size)
-        # After  : (batch_size, 1(in_channel), seq_len, feat_size)
-        inputs = inputs.unsqueeze(1)
-        # Before : (batch_size, 1, seq_len, feat_size)
-        # After  : (batch_size, out_channel, seq_len / 4 , feat_size / 4) 4는 MaxPool2d x 2번
-        x = self.conv(inputs)
-        # Before : (batch_size, out_channel, seq_len, feat_size)
-        # After  : (batch_size, seq_len, out_channel, feat_size)
+        x = self.conv(inputs.unsqueeze(1))
         x = x.transpose(1, 2)
-        # 메모리에 contiguous 하게 저장 ( torch.view() 사용시 필요 )
-        x = x.contiguous()
-        # x`s shape
-        sizes = x.size()
-        # Dimenstion Synchronization
-        # Before : (batch_size, seq_len, out_channel, feat_size)
-        # After  : (batch_size, seq_len, out_channel * feat_size)
-        x = x.view(sizes[0], sizes[1], sizes[2] * sizes[3])
+        x = x.contiguous().view(x.size(0), x.size(1), x.size(2) * x.size(3))
 
-        if self.training:
-            if self.use_pyramidal:
-                self.bottom_rnn.flatten_parameters()
-                self.middle_rnn.flatten_parameters()
-                self.top_rnn.flatten_parameters()
-            else:
-                self.rnn.flatten_parameters()
-        # Apply pBLSTM
         if self.use_pyramidal:
+            self.bottom_rnn.flatten_parameters()
+            self.middle_rnn.flatten_parameters()
+            self.top_rnn.flatten_parameters()
+
             bottom_outputs, _ = self.bottom_rnn(x)
             middle_inputs = self._cat_consecutive(bottom_outputs)
             middle_outputs, _ = self.middle_rnn(middle_inputs)
             top_inputs = self._cat_consecutive(middle_outputs)
             outputs, hiddens = self.top_rnn(top_inputs)
         else:
+            self.rnn.flatten_parameters()
             outputs, hiddens = self.rnn(x)
+
         return outputs, hiddens
 
     def _cat_consecutive(self, prev_layer_outputs):
