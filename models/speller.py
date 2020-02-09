@@ -82,13 +82,7 @@ class Speller(nn.Module):
         if use_attention:
             self.attention = Attention(self.hidden_size)
 
-    def forward_step(self, speller_input, speller_hidden, listener_outputs, function):
-        """
-        :param speller_input: labels (except </s>)
-        :param speller_hidden: hidden state of speller
-        :param listener_outputs: output of listener
-        :param function: decode function
-        """
+    def _forward_step(self, speller_input, speller_hidden, listener_outputs, function):
         batch_size = speller_input.size(0)   # speller_input.size(0) : batch_size
         output_size = speller_input.size(1)  # speller_input.size(1) : seq_len
         embedded = self.embedding(speller_input)
@@ -105,16 +99,10 @@ class Speller(nn.Module):
         return predicted_softmax
 
     def forward(self, inputs=None, listener_hidden=None, listener_outputs=None, function=F.log_softmax, teacher_forcing_ratio=0.99):
-        """
-        :param inputs: targets
-        :param listener_hidden: hidden state of listener
-        :param listener_outputs:  last hidden state of listener
-        :param function: decode function
-        :param teacher_forcing_ratio: ratio of teacher forcing
-        """
         decode_results = []
         # Validate Arguments
-        inputs, batch_size, max_length = self._validate_args(inputs, listener_hidden, listener_outputs, teacher_forcing_ratio)
+        batch_size = inputs.size(0)
+        max_length = inputs.size(1) - 1  # minus the start of sequence symbol
         # Initiate Speller Hidden State to zeros  :  LxBxH
         speller_hidden = torch.FloatTensor(self.layer_size, batch_size, self.hidden_size).uniform_(-1.0, 1.0)#.cuda()
         # Decide Use Teacher Forcing or Not
@@ -135,7 +123,7 @@ class Speller(nn.Module):
             if use_teacher_forcing:
                 speller_input = inputs[:, :-1]  # except </s>
                 """ if teacher_forcing, Infer all at once """
-                predicted_softmax = self.forward_step(speller_input, speller_hidden, listener_outputs, function=function)
+                predicted_softmax = self._forward_step(speller_input, speller_hidden, listener_outputs, function=function)
                 """Extract Output by Step"""
                 for di in range(predicted_softmax.size(1)):
                     step_output = predicted_softmax[:, di, :]
@@ -143,7 +131,7 @@ class Speller(nn.Module):
             else:
                 speller_input = inputs[:, 0].unsqueeze(1)
                 for di in range(max_length):
-                    predicted_softmax = self.forward_step(speller_input, speller_hidden, listener_outputs, function=function)
+                    predicted_softmax = self._forward_step(speller_input, speller_hidden, listener_outputs, function=function)
                     # (batch_size, classfication_num)
                     step_output = predicted_softmax.squeeze(1)
                     decode_results.append(step_output)
@@ -153,33 +141,3 @@ class Speller(nn.Module):
         y_hat = logit.max(-1)[1]
 
         return y_hat, logit
-
-    def _validate_args(self, inputs, listener_hidden, listener_outputs, teacher_forcing_ratio):
-        if self.use_attention:
-            if listener_outputs is None:
-                raise ValueError("Argument listener_outputs cannot be None when attention is used.")
-
-        # inference batch size
-        if inputs is None and listener_hidden is None:
-            batch_size = 1
-        else:
-            if inputs is not None:
-                batch_size = inputs.size(0)
-            else:
-                if self.rnn_cell is nn.LSTM:
-                    batch_size = listener_hidden[0].size(1)
-                elif self.rnn_cell is nn.GRU:
-                    batch_size = listener_hidden.size(1)
-
-        # set default input and max decoding length
-        if inputs is None:
-            if teacher_forcing_ratio > 0:
-                raise ValueError("Teacher forcing has to be disabled (set 0) when no inputs is provided.")
-            inputs = torch.LongTensor([self.sos_id] * batch_size).view(batch_size, 1)
-            if torch.cuda.is_available():
-                inputs = inputs.cuda()
-            max_length = self.max_length
-        else:
-            max_length = inputs.size(1) - 1 # minus the start of sequence symbol
-
-        return inputs, batch_size, max_length

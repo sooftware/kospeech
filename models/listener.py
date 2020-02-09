@@ -98,23 +98,24 @@ class Listener(nn.Module):
         x = x.contiguous().view(x.size(0), x.size(1), x.size(2) * x.size(3))
 
         if self.use_pyramidal:
-            self.bottom_rnn.flatten_parameters()
-            self.middle_rnn.flatten_parameters()
-            self.top_rnn.flatten_parameters()
-
-            bottom_outputs, _ = self.bottom_rnn(x)
+            if self.training:
+                self.bottom_rnn.flatten_parameters()
+                self.middle_rnn.flatten_parameters()
+                self.top_rnn.flatten_parameters()
+            bottom_outputs = self.bottom_rnn(x)[0]
             middle_inputs = self._cat_consecutive(bottom_outputs)
-            middle_outputs, _ = self.middle_rnn(middle_inputs)
+            middle_outputs = self.middle_rnn(middle_inputs)[0]
             top_inputs = self._cat_consecutive(middle_outputs)
             outputs, hiddens = self.top_rnn(top_inputs)
         else:
-            self.rnn.flatten_parameters()
+            if self.training:
+                self.rnn.flatten_parameters()
             outputs, hiddens = self.rnn(x)
 
         return outputs, hiddens
 
     def _cat_consecutive(self, prev_layer_outputs):
-        """concatenate the outputs at consecutive setps of  each layer before feeding it to the next layer"""
+        """concatenate the outputs at consecutive steps of  each layer before feeding it to the next layer"""
         if prev_layer_outputs.size(1) % 2:
             """if prev_layer_outputs`s seq_len is odd, concatenate zeros"""
             zeros = torch.zeros((prev_layer_outputs.size(0), 1, prev_layer_outputs.size(2)))
