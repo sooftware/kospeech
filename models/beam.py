@@ -80,31 +80,32 @@ class Beam:
             # get child probability (applying length penalty)
             child_p = (self.cumulative_p.view(self.batch_size, 1, self.k) + child_p) * self._get_length_penalty(length=di+1, alpha=1.2, min_length=5)
             # Transpose (BxKxK) => (BxK^2)
-            child_p = child_p.view(self.batch_size, self.k * self.k)
-            child_v = child_v.view(self.batch_size, self.k * self.k)
+            child_p, child_v = child_p.view(self.batch_size, self.k * self.k), child_v.view(self.batch_size, self.k * self.k)
             # Select Top k in K^2 (shape: BxK)
             topk_child_p, topk_child_indices = child_p.topk(self.k)
+            # Initiate topk_child_v (shape: BxK)
             topk_child_v = torch.LongTensor(self.batch_size, self.k)
-            # Initiate Tensor (shape: BxKxS)
+            # Initiate parent_beams (shape: BxKxS)
             parent_beams = torch.LongTensor(self.beams.size(0), self.beams.size(1), self.beams.size(2))
-            # index % k => index of parent node
+            # indices % k => indices of topk_child`s parent node
             parent_beams_indices = (topk_child_indices % self.k).view(self.batch_size, self.k)
 
             for batch_num, batch in enumerate(topk_child_indices):
                 for beam_num, topk_child_idx in enumerate(batch):
                     topk_child_v[batch_num, beam_num] = child_v[batch_num, topk_child_idx]
                     parent_beams[batch_num, beam_num] = self.beams[batch_num, parent_beams_indices[batch_num, beam_num]]
-            # BxKx(S) => BxKx(S+1)
+            # append new_topk_child (shape: BxKx(S) => BxKx(S+1))
             self.beams = torch.cat([parent_beams, topk_child_v.view(self.batch_size, self.k, 1)], dim=2)
+            self.cumulative_p = topk_child_p
 
-            """ 여기 확인해봐야함 """
+            """ Check for comleted beams """
             if torch.any(topk_child_v == self.eos_id):
-                eos_coords = torch.where(topk_child_v == self.eos_id)
-                for sub_num, eos_coord in enumerate(eos_coords):
-                    for batch_num, beam_idx in eos_coord:
-                        self.done_list.append(self.beams[batch_num, beam_idx])
-                        self.done_p.append(self.cumulative_p[batch_num, beam_idx])
-                        self._replace_beam(child_p, child_v, batch_num, sub_num, di)
+                done_indices = torch.where(topk_child_v == self.eos_id)
+                for done_idx in done_indices:
+                    batch_num, beam_num = done_idx[0], done_idx[1]
+                    self.done_list[batch_num].append(self.beams[batch_num, beam_num])
+                    self.done_p[batch_num].append(self.cumulative_p[batch_num, beam_num])
+                    #self._replace_beam(child_p, child_v, batch_num, sub_num, di)
             """ ================ """
             # update speller_input by select_ch
             speller_input = topk_child_v
@@ -115,7 +116,7 @@ class Beam:
             if len(done) < self.k:
                 return False
         return True
-
+"""
     def _replace_beam(self, candidate_p, child_v, batch_num, beam_idx, sub_num, step):
         # Bx(K+1)
         sub_p, sub_indice = candidate_p.topk(self.k + sub_num + 1)
@@ -130,7 +131,7 @@ class Beam:
         new_beam = torch.cat([prev_beam, sub_v])
         self.beams[batch_num, beam_idx] = new_beam
         self.cumulative_p[batch_num, beam_idx] = (prev_beam_p + sub_p) *  self._get_length_penalty(length=step+1, alpha=1.2, min_length=5)
-
+"""
     def _forward_step(self, speller_input, listener_outputs):
         output_size = speller_input.size(1)
         embedded = self.embedding(speller_input)
