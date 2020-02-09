@@ -11,6 +11,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 import torch
+import numpy as np
 
 class Beam:
     """
@@ -98,40 +99,26 @@ class Beam:
             self.beams = torch.cat([parent_beams, topk_child_v.view(self.batch_size, self.k, 1)], dim=2)
             self.cumulative_p = topk_child_p
 
-            """ Check for comleted beams """
+            """ EOS Processing """
             if torch.any(topk_child_v == self.eos_id):
                 done_indices = torch.where(topk_child_v == self.eos_id)
+                count = 1
                 for done_idx in done_indices:
                     batch_num, beam_num = done_idx[0], done_idx[1]
                     self.done_list[batch_num].append(self.beams[batch_num, beam_num])
                     self.done_p[batch_num].append(self.cumulative_p[batch_num, beam_num])
-                    #self._replace_beam(child_p, child_v, batch_num, sub_num, di)
-            """ ================ """
+                    self._replace_beam(child_p=child_p, child_v=child_v, done_beam_idx=[batch_num, beam_num], count=count)
+                    count += 1
+            """ 이제 eos를 못 만난 놈들을 처리해주면 됨 """
             # update speller_input by select_ch
             speller_input = topk_child_v
-
 
     def _is_done(self):
         for done in self.done_list:
             if len(done) < self.k:
                 return False
         return True
-"""
-    def _replace_beam(self, candidate_p, child_v, batch_num, beam_idx, sub_num, step):
-        # Bx(K+1)
-        sub_p, sub_indice = candidate_p.topk(self.k + sub_num + 1)
-        # Bx1
-        sub_p = sub_p[:, (self.k + sub_num):]
-        sub_indice = sub_indice[:, (self.k + sub_num):]
-        # Bx1
-        parent_beams_indices = (sub_indice % self.k).view(self.batch_size, 1)
-        prev_beam = self.beams[batch_num, parent_beams_indices[batch_num, 0]]
-        prev_beam_p = self.cumulative_p[batch_num, parent_beams_indices[batch_num, 0]]
-        sub_v = child_v[batch_num, sub_indice[batch_num, 0]]
-        new_beam = torch.cat([prev_beam, sub_v])
-        self.beams[batch_num, beam_idx] = new_beam
-        self.cumulative_p[batch_num, beam_idx] = (prev_beam_p + sub_p) *  self._get_length_penalty(length=step+1, alpha=1.2, min_length=5)
-"""
+
     def _forward_step(self, speller_input, listener_outputs):
         output_size = speller_input.size(1)
         embedded = self.embedding(speller_input)
@@ -151,3 +138,31 @@ class Beam:
         Using alpha = 1.2, min_length = 5 usually.
         """
         return ((1+length) / (1+min_length)) ** alpha
+
+    def _replace_beam(self, child_p, child_v, done_beam_idx, count):
+        """
+        eos로 끝나버린 빔을 다음으로 높은 확률을 가지는 빔으로 바꿔주는 함수
+        """
+        # 끝난 배치 번호와 빔 번호를 받는다
+        done_batch_num, done_beam_num = done_beam_idx[0], done_beam_idx[1]
+        # child_p에서 top k+count의 인덱스들을 뽑는다
+        tmp_indices = child_p.topk(self.k + count)[1]
+        # 뽑은 인덱스둘 중 마지막 (-1), 즉 가장 낮은 확률을 갖는 인덱스를 뽑는다.
+        # (해당 확률을 제외하고는 이미 빔에 들어가 있음)
+        new_child_idx = tmp_indices[done_batch_num, -1]
+        # child_p에서 new_child_idx를 이용해서 new_child_p를 get
+        new_child_p = child_p[done_batch_num, new_child_idx]
+        # child_v에서 new_child_idx를 이용해서 new_child_v를 get
+        new_child_v = child_v[done_batch_num, new_child_idx]
+        # parent beam의 idx를 구함
+        # new_child_idx % self.k == parent_beam_idx
+        parent_beam_idx = (new_child_idx % self.k)
+        # parent_beam을 구함
+        parent_beam = self.beams[done_batch_num, parent_beam_idx]
+        # 이미 해당 빔은 다음 step을 진행했으므로, [:-1]로 받아와서, new_child_v를 추가한다
+        # 일반 값 append가 편한 numpy로 변환 후, 값 추가 및 다시 텐서로 변환
+        new_beam = torch.LongTensor(np.append(parent_beam[:-1].numpy(), new_child_v))
+        # new_beam으로 끝난 빔 자리를 업데이트
+        self.beams[done_batch_num, done_beam_num] = new_beam
+        # 누적 확률 값을 새로운 확률로 업데이트
+        self.cumulative_p[done_batch_num] = new_child_p
