@@ -78,13 +78,13 @@ class Speller(nn.Module):
         self.input_dropout = nn.Dropout(p=dropout_p)
         self.device = device
         self.use_beam_search = use_beam_search
-        self.k = k  # size of beam
+        self.k = k
         if use_attention:
             self.attention = Attention(self.hidden_size)
 
     def _forward_step(self, speller_input, speller_hidden, listener_outputs, function):
-        batch_size = speller_input.size(0)   # speller_input.size(0) : batch_size
-        output_size = speller_input.size(1)  # speller_input.size(1) : seq_len
+        batch_size = speller_input.size(0)
+        output_size = speller_input.size(1)
         embedded = self.embedding(speller_input)
         embedded = self.input_dropout(embedded)
         if self.training:
@@ -111,12 +111,9 @@ class Speller(nn.Module):
         if self.use_beam_search:
             """Implementation of Beam-Search Decoding"""
             speller_input = inputs[:, 0].unsqueeze(1)
-            beam = Beam(k=self.k, speller_hidden=speller_hidden,
-                        batch_size=batch_size, max_len=max_length, decode_func=function,
-                        rnn=self.rnn, embedding=self.embedding, input_dropout=self.input_dropout,
-                        use_attention=self.use_attention, attention=self.attention,
-                        hidden_size=self.hidden_size, out=self.out, eos_id=self.eos_id)
-            beam.search(speller_input, listener_outputs)
+            beam = Beam(k=self.k, speller_hidden=speller_hidden, decoder=self,
+                        batch_size=batch_size, max_len=max_length, decode_func=function)
+            y_hat, logit = beam.search(speller_input, listener_outputs)
         else:
             # Manual unrolling is used to support random teacher forcing.
             # If teacher_forcing_ratio is True or False instead of a probability, the unrolling can be done in graph

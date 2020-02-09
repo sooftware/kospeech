@@ -27,23 +27,21 @@ class Beam:
 
     Outputs:
     """
-    def __init__(self, k, speller_hidden, batch_size,
-                 max_len, decode_func, rnn, embedding,
-                 input_dropout, use_attention, attention,
-                 hidden_size, out, eos_id):
+    def __init__(self, k, speller_hidden, decoder,
+                 batch_size, max_len, decode_func):
         self.k = k
         self.speller_hidden = speller_hidden
         self.batch_size = batch_size
         self.max_len = max_len
         self.decode_func = decode_func
-        self.rnn = rnn
-        self.embedding = embedding
-        self.input_dropout = input_dropout
-        self.use_attention = use_attention
-        self.attention = attention
-        self.hidden_size = hidden_size
-        self.out = out
-        self.eos_id = eos_id
+        self.rnn = decoder.rnn
+        self.embedding = decoder.embedding
+        self.input_dropout = decoder.input_dropout
+        self.use_attention = decoder.use_attention
+        self.attention = decoder.attention
+        self.hidden_size = decoder.hidden_size
+        self.out = decoder.out
+        self.eos_id = decoder.eos_id
         self.cumulative_p = None
         self.beams = None
         self.done_list = []
@@ -63,6 +61,7 @@ class Beam:
             - **C**: number of classfication
             - **S**: sequence length
         """
+        y_hat, logit = None, None
         # get class classfication distribution (shape: BxC)
         init_step_output = self._forward_step(init_speller_input, listener_outputs).squeeze(1)
         # get top K probability & index (shape: BxK)
@@ -112,6 +111,7 @@ class Beam:
             """ 이제 eos를 못 만난 놈들을 처리해주면 됨 """
             # update speller_input by select_ch
             speller_input = topk_child_v
+        return y_hat, logit
 
     def _is_done(self):
         for done in self.done_list:
