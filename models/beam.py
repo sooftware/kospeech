@@ -42,14 +42,10 @@ class Beam:
         self.hidden_size = decoder.hidden_size
         self.out = decoder.out
         self.eos_id = decoder.eos_id
-        self.cumulative_p = None
+        self.beam_scores = None
         self.beams = None
-        self.done_list = []
-        for _ in range(self.batch_size):
-            self.done_list.append([])
-        self.done_p = []
-        for _ in range(self.batch_size):
-            self.done_p.append([])
+        self.done_beams = [[] for _ in range(self.batch_size)]
+        self.done_beam_scores = [[] for _ in range(self.batch_size)]
 
     def search(self, init_speller_input, listener_outputs):
         """
@@ -61,11 +57,11 @@ class Beam:
             - **C**: number of classfication
             - **S**: sequence length
         """
-        y_hat, logit = None, None
+        y_hat = None
         # get class classfication distribution (shape: BxC)
         init_step_output = self._forward_step(init_speller_input, listener_outputs).squeeze(1)
         # get top K probability & index (shape: BxK)
-        self.cumulative_p, self.beams = init_step_output.topk(self.k)
+        self.beam_scores, self.beams = init_step_output.topk(self.k)
         speller_input = self.beams
         # transpose (BxK) => (BxKx1)
         self.beams = self.beams.view(self.batch_size, self.k, 1)
@@ -76,45 +72,46 @@ class Beam:
             # For each beam, get class classfication distribution (shape: BxKxC)
             step_output = self._forward_step(speller_input, listener_outputs).squeeze(1)
             # get top k distribution (shape: BxKxK)
-            child_p, child_v = step_output.topk(self.k)
+            child_ps, child_vs = step_output.topk(self.k)
             # get child probability (applying length penalty)
-            child_p = (self.cumulative_p.view(self.batch_size, 1, self.k) + child_p) * self._get_length_penalty(length=di+1, alpha=1.2, min_length=5)
+            child_ps = (self.beam_scores.view(self.batch_size, 1, self.k) + child_ps) * self._get_length_penalty(length=di+1, alpha=1.2, min_length=5)
             # Transpose (BxKxK) => (BxK^2)
-            child_p, child_v = child_p.view(self.batch_size, self.k * self.k), child_v.view(self.batch_size, self.k * self.k)
+            child_ps, child_vs = child_ps.view(self.batch_size, self.k * self.k), child_vs.view(self.batch_size, self.k * self.k)
             # Select Top k in K^2 (shape: BxK)
-            topk_child_p, topk_child_indices = child_p.topk(self.k)
-            # Initiate topk_child_v (shape: BxK)
-            topk_child_v = torch.LongTensor(self.batch_size, self.k)
+            topk_child_ps, topk_child_indices = child_ps.topk(self.k)
+            # Initiate topk_child_vs (shape: BxK)
+            topk_child_vs = torch.LongTensor(self.batch_size, self.k)
             # Initiate parent_beams (shape: BxKxS)
             parent_beams = torch.LongTensor(self.beams.size(0), self.beams.size(1), self.beams.size(2))
-            # indices % k => indices of topk_child`s parent node
-            parent_beams_indices = (topk_child_indices % self.k).view(self.batch_size, self.k)
+            # indices // k => indices of topk_child`s parent node
+            parent_beams_indices = (topk_child_indices // self.k).view(self.batch_size, self.k)
 
             for batch_num, batch in enumerate(topk_child_indices):
                 for beam_num, topk_child_idx in enumerate(batch):
-                    topk_child_v[batch_num, beam_num] = child_v[batch_num, topk_child_idx]
+                    topk_child_vs[batch_num, beam_num] = child_vs[batch_num, topk_child_idx]
                     parent_beams[batch_num, beam_num] = self.beams[batch_num, parent_beams_indices[batch_num, beam_num]]
             # append new_topk_child (shape: BxKx(S) => BxKx(S+1))
-            self.beams = torch.cat([parent_beams, topk_child_v.view(self.batch_size, self.k, 1)], dim=2)
-            self.cumulative_p = topk_child_p
+            self.beams = torch.cat([parent_beams, topk_child_vs.view(self.batch_size, self.k, 1)], dim=2)
+            self.beam_scores = topk_child_ps
 
-            """ EOS Processing """
-            if torch.any(topk_child_v == self.eos_id):
-                done_indices = torch.where(topk_child_v == self.eos_id)
-                count = 1
+            if torch.any(topk_child_vs == self.eos_id):
+                done_indices = torch.where(topk_child_vs == self.eos_id)
+                count = [1 * self.k]
                 for done_idx in done_indices:
                     batch_num, beam_num = done_idx[0], done_idx[1]
-                    self.done_list[batch_num].append(self.beams[batch_num, beam_num])
-                    self.done_p[batch_num].append(self.cumulative_p[batch_num, beam_num])
-                    self._replace_beam(child_p=child_p, child_v=child_v, done_beam_idx=[batch_num, beam_num], count=count)
-                    count += 1
-            """ 이제 eos를 못 만난 놈들을 처리해주면 됨 """
+                    self.done_beams[batch_num].append(self.beams[batch_num, beam_num])
+                    self.done_beam_scores[batch_num].append(self.beam_scores[batch_num, beam_num])
+                    self._replace_beam(child_ps=child_ps, child_vs=child_vs, done_beam_idx=[batch_num, beam_num], count=count[batch_num])
+                    count[batch_num] += 1
             # update speller_input by select_ch
-            speller_input = topk_child_v
-        return y_hat, logit
+            speller_input = topk_child_vs
+
+
+
+        return y_hat
 
     def _is_done(self):
-        for done in self.done_list:
+        for done in self.done_beams:
             if len(done) < self.k:
                 return False
         return True
@@ -139,30 +136,15 @@ class Beam:
         """
         return ((1+length) / (1+min_length)) ** alpha
 
-    def _replace_beam(self, child_p, child_v, done_beam_idx, count):
-        """
-        eos로 끝나버린 빔을 다음으로 높은 확률을 가지는 빔으로 바꿔주는 함수
-        """
-        # 끝난 배치 번호와 빔 번호를 받는다
+    def _replace_beam(self, child_ps, child_vs, done_beam_idx, count):
+        """ Replaces a beam that ends with EOS with a beam with the next higher probability. """
         done_batch_num, done_beam_num = done_beam_idx[0], done_beam_idx[1]
-        # child_p에서 top k+count의 인덱스들을 뽑는다
-        tmp_indices = child_p.topk(self.k + count)[1]
-        # 뽑은 인덱스둘 중 마지막 (-1), 즉 가장 낮은 확률을 갖는 인덱스를 뽑는다.
-        # (해당 확률을 제외하고는 이미 빔에 들어가 있음)
+        tmp_indices = child_ps.topk(self.k + count)[1]
         new_child_idx = tmp_indices[done_batch_num, -1]
-        # child_p에서 new_child_idx를 이용해서 new_child_p를 get
-        new_child_p = child_p[done_batch_num, new_child_idx]
-        # child_v에서 new_child_idx를 이용해서 new_child_v를 get
-        new_child_v = child_v[done_batch_num, new_child_idx]
-        # parent beam의 idx를 구함
-        # new_child_idx % self.k == parent_beam_idx
-        parent_beam_idx = (new_child_idx % self.k)
-        # parent_beam을 구함
+        new_child_p = child_ps[done_batch_num, new_child_idx]
+        new_child_v = child_vs[done_batch_num, new_child_idx]
+        parent_beam_idx = (new_child_idx // self.k)
         parent_beam = self.beams[done_batch_num, parent_beam_idx]
-        # 이미 해당 빔은 다음 step을 진행했으므로, [:-1]로 받아와서, new_child_v를 추가한다
-        # 일반 값 append가 편한 numpy로 변환 후, 값 추가 및 다시 텐서로 변환
         new_beam = torch.LongTensor(np.append(parent_beam[:-1].numpy(), new_child_v))
-        # new_beam으로 끝난 빔 자리를 업데이트
         self.beams[done_batch_num, done_beam_num] = new_beam
-        # 누적 확률 값을 새로운 확률로 업데이트
-        self.cumulative_p[done_batch_num] = new_child_p
+        self.beam_scores[done_batch_num, done_beam_num] = new_child_p
