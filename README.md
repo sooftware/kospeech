@@ -62,8 +62,8 @@ ListenAttendSpell(
 |use_augment| flag indication whether to use spec-augmentation or not|True|  
 |use_pyramidal| flag indication whether to use pLSTM or not|False|  
 |augment_ratio|ratio of spec-augmentation applied data|0.4|   
-|encoder_layer_size|number of encoder`s RNN cell|5|  
-| decoder_layer_size|number of decoder`s RNN cell| 3|  
+|listener_layer_size|number of listener`s RNN layer|5|  
+| speller_layer_size|number of speller`s RNN layer| 3|  
 | hidden_size| size of hidden state of RNN|256|
 | batch_size | mini-batch size|6|
 | dropout          | dropout probability|0.5  |
@@ -248,8 +248,10 @@ CRR = (1.0 - CER) * 100.0
 ```
 * CRR : Character Recognition Rate
 * CER : Character Error Rate based on Edit Distance
-![crr](https://github.com/AjouJuneK/NAVER_speech_hackathon_2019/raw/master/docs/edit_distance.png)
+![crr](https://github.com/AjouJuneK/NAVER_speech_hackathon_2019/raw/master/docs/edit_distance.png)   
   
+* Reference
+  + https://en.wikipedia.org/wiki/Levenshtein_distance
   
 ## Reference
 [[1]   IBM pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)   
