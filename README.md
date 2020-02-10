@@ -120,7 +120,7 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 5 0 105 0 729 0 172 31 25 0 318 0 119 0 489 551 156 0 314 746 3 32 20
 ```
 * train_list.csv    
-전체 데이터셋의 80%에 해당하는 학습용 데이터 리스트    
+980시간에 해당하는 학습용 데이터 리스트    
   
 | pcm-filename| txt-filename|   
 | :-------------------| :--------------------------|     
@@ -131,7 +131,7 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 | KaiSpeech_039018.pcm | KaiSpeech_label_039018.txt  |  
   
 * test_list.csv   
-전체 데이터셋의 20%에 해당하는 테스트용  리스트     
+20시간에 해당하는 테스트용  리스트     
   
 | pcm-filaname| txt-filename|    
 | :-------------------| :--------------------------|     
@@ -191,6 +191,7 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 * code   
 ```python
 def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = False, input_reverse = True, format='pcm'):
+    if format == 'pcm':
         pcm = np.memmap(filepath, dtype='h', mode='r')
         sig = np.array([float(x) for x in pcm])
     elif format == 'wav':
