@@ -19,8 +19,8 @@ from definition import *
 import torch
 import torch.nn as nn
 from hparameter import HyperParams
-from loader.baseLoader import BaseDataLoader
-from loader.loader import load_data_list, load_targets
+from Loader.baseLoader import BaseDataLoader
+from Loader.loader import load_data_list
 from train.distance import get_distance
 from train.save_and_load import load_model, load_pickle
 
@@ -51,7 +51,7 @@ def test(model, queue, device):
             target = scripts[:, 1:]
 
             model.module.flatten_parameters()
-            y_hat, _ = model(feats, feat_lengths, scripts, teacher_forcing_ratio=0.0)
+            y_hat = model(feats, feat_lengths, scripts, teacher_forcing_ratio=0.0)
 
             display = random.randrange(0, 100) == 0
             dist, length = get_distance(target, y_hat, display=display)
@@ -69,18 +69,19 @@ if __name__ == '__main__':
     logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
     logger.info("CUDA version : %s" % (torch.version.cuda))
     logger.info("PyTorch version : %s" % (torch.__version__))
-    device = torch.device('cuda')
 
     hparams = HyperParams()
     hparams.logger_hparams()
+    cuda = hparams.use_cuda and torch.cuda.is_available()
+    device = torch.device('cuda' if cuda else 'cpu')
 
     criterion = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_token).to(device)
     model = load_model("./weight_file/epoch2.pt")
+    model.beam_search(True)
 
     audio_paths, label_paths = load_data_list(data_list_path=TEST_LIST_PATH, dataset_path=DATASET_PATH)
 
     target_dict = load_pickle("./pickle/target_dict_test.txt", "load all target_dict using pickle complete !!")
-
     logger.info('start')
 
     test_dataset = BaseDataset(audio_paths=audio_paths[:],

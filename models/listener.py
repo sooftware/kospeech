@@ -66,15 +66,12 @@ class Listener(nn.Module):
 
         if use_pyramidal:
             self.bottom_layer_size = layer_size - 2
-            self.bottom_rnn = self.rnn_cell(input_size=feat_size, hidden_size=hidden_size,
-                                            num_layers=self.bottom_layer_size, bias=True,
-                                            batch_first=True, bidirectional=bidirectional, dropout=dropout_p)
-            self.middle_rnn = self.rnn_cell(input_size=hidden_size * 2 * (2 if bidirectional else 1),
-                                            hidden_size=hidden_size, num_layers=1, bias=True,
-                                            batch_first=True, bidirectional=bidirectional, dropout=dropout_p)
-            self.top_rnn = self.rnn_cell(input_size=hidden_size * 2 * (2 if bidirectional else 1),
-                                         hidden_size=hidden_size, num_layers=1, bias=True,
-                                         batch_first=True, bidirectional=bidirectional, dropout=dropout_p)
+            self.bottom_rnn = self.rnn_cell(input_size=feat_size, hidden_size=hidden_size, num_layers=self.bottom_layer_size,
+                                            bias=True, batch_first=True, bidirectional=bidirectional, dropout=dropout_p)
+            self.middle_rnn = self.rnn_cell(input_size=hidden_size * 2 * (2 if bidirectional else 1), hidden_size=hidden_size,
+                                            num_layers=1, bias=True, batch_first=True, bidirectional=bidirectional, dropout=dropout_p)
+            self.top_rnn = self.rnn_cell(input_size=hidden_size * 2 * (2 if bidirectional else 1), hidden_size=hidden_size,
+                                         num_layers=1, bias=True, batch_first=True, bidirectional=bidirectional, dropout=dropout_p)
         else:
             self.rnn = self.rnn_cell(input_size=feat_size, hidden_size=hidden_size, num_layers=layer_size,
                                      bias=True, batch_first=True, bidirectional=bidirectional, dropout=dropout_p)

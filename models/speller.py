@@ -62,7 +62,7 @@ class Speller(nn.Module):
     def __init__(self, vocab_size, max_len, hidden_size,
                  sos_id, eos_id,
                  layer_size=1, rnn_cell='gru', dropout_p=0,
-                 use_attention=True, device=None, use_beam_search=True, k=3):
+                 use_attention=True, device=None, use_beam_search=True, k=8):
         super(Speller, self).__init__()
         self.rnn_cell = nn.LSTM if rnn_cell.lower() == 'lstm' else nn.GRU if rnn_cell.lower() == 'gru' else nn.RNN
         self.rnn = self.rnn_cell(hidden_size , hidden_size, layer_size, batch_first=True, dropout=dropout_p)
@@ -99,6 +99,7 @@ class Speller(nn.Module):
         return predicted_softmax
 
     def forward(self, inputs=None, listener_hidden=None, listener_outputs=None, function=F.log_softmax, teacher_forcing_ratio=0.99):
+        y_hats, logit = None, None
         decode_results = []
         # Validate Arguments
         batch_size = inputs.size(0)
@@ -113,7 +114,7 @@ class Speller(nn.Module):
             speller_input = inputs[:, 0].unsqueeze(1)
             beam = Beam(k=self.k, speller_hidden=speller_hidden, decoder=self,
                         batch_size=batch_size, max_len=max_length, decode_func=function)
-            y_hat, logit = beam.search(speller_input, listener_outputs)
+            y_hats = beam.search(speller_input, listener_outputs)
         else:
             # Manual unrolling is used to support random teacher forcing.
             # If teacher_forcing_ratio is True or False instead of a probability, the unrolling can be done in graph
@@ -134,7 +135,9 @@ class Speller(nn.Module):
                     decode_results.append(step_output)
                     speller_input = decode_results[-1].topk(1)[1]
 
-        logit = torch.stack(decode_results, dim=1).to(self.device)
-        y_hat = logit.max(-1)[1]
+            logit = torch.stack(decode_results, dim=1).to(self.device)
+            y_hats = logit.max(-1)[1]
+        print("Speller y_hats ====================")
+        print(y_hats)
 
-        return y_hat, logit
+        return y_hats, logit if self.training else y_hats
