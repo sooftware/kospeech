@@ -23,13 +23,10 @@ class Beam:
         - batch_size (int) : mini-batch size during infer
         - max_len (int) :  a maximum allowed length for the sequence to be processed
         - decode_func (torch.nn.Module) : A function used to generate symbols from RNN hidden state (default : torch.nn.functional.log_softmax)
-    Inputs:
-
-    Outputs:
+        - decoder (torch.nn.module) : get pointer of decoder object to get multiple parameters at once
     """
 
-    def __init__(self, k, speller_hidden, decoder,
-                 batch_size, max_len, decode_func):
+    def __init__(self, k, speller_hidden, decoder, batch_size, max_len, decode_func):
         self.k = k
         self.speller_hidden = speller_hidden
         self.batch_size = batch_size
@@ -109,24 +106,29 @@ class Beam:
         return y_hats
 
     def get_best(self):
+        """ get sentences which has the highest probability at each batch, stack it, and return it as 2d torch """
         y_hats = list()
+        # done_beams has <eos> terminate sentences during decoding process
         for batch_num, batch in enumerate(self.done_beams):
             if batch == []:
-                # 진행중인 놈중 가장 높은 놈 갖고와야함
+                # if there is no terminated sentences, bring ongoing sentence which has the highest probability instead
                 top_beam_idx = self.beam_scores[batch_num].topk(1)[1]
             else:
+                # bring highest probability sentence
                 top_beam_idx = self.done_beam_scores[batch_num].topk(1)[1]
             y_hats.append(*self.beams[batch_num, top_beam_idx])
         return torch.stack(y_hats, dim=0)
 
 
     def _is_done(self):
+        """ check if all beam search process has terminated """
         for done in self.done_beams:
             if len(done) < self.k:
                 return False
         return True
 
     def _forward_step(self, speller_input, listener_outputs):
+        """ forward one step on each decoder cell """
         output_size = speller_input.size(1)
         embedded = self.embedding(speller_input)
         embedded = self.input_dropout(embedded)

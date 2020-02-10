@@ -90,7 +90,7 @@ if __name__ == '__main__':
 
     # Optimize Adam Algorithm
     optimizer = optim.Adam(model.module.parameters(), lr=hparams.lr)
-    # CrossEntropy로 loss 계산
+    # Calculate loss by CrossEntropy
     loss_func = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_token).to(device)
 
     # load audio_paths & label_paths

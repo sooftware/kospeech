@@ -130,7 +130,6 @@ class Speller(nn.Module):
                 speller_input = inputs[:, 0].unsqueeze(1)
                 for di in range(max_length):
                     predicted_softmax = self._forward_step(speller_input, speller_hidden, listener_outputs, function=function)
-                    # (batch_size, classfication_num)
                     step_output = predicted_softmax.squeeze(1)
                     decode_results.append(step_output)
                     speller_input = decode_results[-1].topk(1)[1]
