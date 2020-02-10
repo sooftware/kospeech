@@ -19,16 +19,16 @@ class Beam:
 
     Args:
         - k (int) : size of beam
-        - speller_hidden (torch.Tensor) : hidden state of speller
+        - decoder_hidden (torch.Tensor) : hidden state of decoder
         - batch_size (int) : mini-batch size during infer
         - max_len (int) :  a maximum allowed length for the sequence to be processed
         - decode_func (torch.nn.Module) : A function used to generate symbols from RNN hidden state (default : torch.nn.functional.log_softmax)
         - decoder (torch.nn.module) : get pointer of decoder object to get multiple parameters at once
     """
 
-    def __init__(self, k, speller_hidden, decoder, batch_size, max_len, decode_func):
+    def __init__(self, k, decoder_hidden, decoder, batch_size, max_len, decode_func):
         self.k = k
-        self.speller_hidden = speller_hidden
+        self.decoder_hidden = decoder_hidden
         self.batch_size = batch_size
         self.max_len = max_len
         self.decode_func = decode_func
@@ -45,7 +45,7 @@ class Beam:
         self.done_beams = [[] for _ in range(self.batch_size)]
         self.done_beam_scores = [[] for _ in range(self.batch_size)]
 
-    def search(self, init_speller_input, listener_outputs):
+    def search(self, init_decoder_input, encoder_outputs):
         """
         Beam-Search
 
@@ -56,10 +56,10 @@ class Beam:
             - **S**: sequence length
         """
         # get class classfication distribution (shape: BxC)
-        init_step_output = self._forward_step(init_speller_input, listener_outputs).squeeze(1)
+        init_step_output = self._forward_step(init_decoder_input, encoder_outputs).squeeze(1)
         # get top K probability & index (shape: BxK)
         self.beam_scores, self.beams = init_step_output.topk(self.k)
-        speller_input = self.beams
+        decoder_input = self.beams
         # transpose (BxK) => (BxKx1)
         self.beams = self.beams.view(self.batch_size, self.k, 1)
 
@@ -67,7 +67,7 @@ class Beam:
             if self._is_done():
                 break
             # For each beam, get class classfication distribution (shape: BxKxC)
-            step_output = self._forward_step(speller_input, listener_outputs).squeeze(1)
+            step_output = self._forward_step(decoder_input, encoder_outputs).squeeze(1)
             # get top k distribution (shape: BxKxK)
             child_ps, child_vs = step_output.topk(self.k)
             # get child probability (applying length penalty)
@@ -100,8 +100,8 @@ class Beam:
                     self.done_beam_scores[batch_num].append(self.beam_scores[batch_num, beam_num])
                     self._replace_beam(child_ps=child_ps, child_vs=child_vs, done_beam_idx=[batch_num, beam_num], count=count[batch_num])
                     count[batch_num] += 1
-            # update speller_input by topk_child_vs
-            speller_input = topk_child_vs
+            # update decoder_input by topk_child_vs
+            decoder_input = topk_child_vs
         y_hats = self._get_best()
         return y_hats
 
@@ -127,16 +127,16 @@ class Beam:
                 return False
         return True
 
-    def _forward_step(self, speller_input, listener_outputs):
+    def _forward_step(self, decoder_input, encoder_outputs):
         """ forward one step on each decoder cell """
-        output_size = speller_input.size(1)
-        embedded = self.embedding(speller_input)
+        output_size = decoder_input.size(1)
+        embedded = self.embedding(decoder_input)
         embedded = self.input_dropout(embedded)
-        speller_output, hidden = self.rnn(embedded, self.speller_hidden)  # speller output
+        decoder_output, hidden = self.rnn(embedded, self.decoder_hidden)  # decoder output
 
         if self.use_attention:
-            output = self.attention(decoder_output=speller_output, encoder_output=listener_outputs)
-        else: output = speller_output
+            output = self.attention(decoder_output=decoder_output, encoder_output=encoder_outputs)
+        else: output = decoder_output
         predicted_softmax = self.decode_func(self.out(output.contiguous().view(-1, self.hidden_size)), dim=1).view(self.batch_size,output_size,-1)
         return predicted_softmax
 

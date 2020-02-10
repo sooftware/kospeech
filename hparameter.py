@@ -43,16 +43,16 @@ class HyperParams():
         self.use_bidirectional = True
         self.use_attention = True
         self.input_reverse = True
-        self.use_augment = False
+        self.use_augment = True
         self.use_pickle = True
         self.use_pyramidal = True
-        self.use_cuda = False
+        self.use_cuda = True
         self.augment_ratio = 0.7
         self.hidden_size = 256
         self.dropout = 0.5
         self.listener_layer_size = 5
         self.speller_layer_size = 3
-        self.batch_size = 4
+        self.batch_size = 8
         self.worker_num = 1
         self.max_epochs = 40
         self.lr = 0.0001
@@ -62,7 +62,7 @@ class HyperParams():
         self.save_name = 'model'
         self.mode = 'train'
         self.load_model = False
-        self.model_path = ""
+        self.model_path = "nothing.pt"
 
     def logger_hparams(self):
         logger.info("use_bidirectional : %s" % str(self.use_bidirectional))
