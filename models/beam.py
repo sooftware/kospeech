@@ -100,12 +100,12 @@ class Beam:
                     self.done_beam_scores[batch_num].append(self.beam_scores[batch_num, beam_num])
                     self._replace_beam(child_ps=child_ps, child_vs=child_vs, done_beam_idx=[batch_num, beam_num], count=count[batch_num])
                     count[batch_num] += 1
-            # update speller_input by select_ch
+            # update speller_input by topk_child_vs
             speller_input = topk_child_vs
-        y_hats = self.get_best()
+        y_hats = self._get_best()
         return y_hats
 
-    def get_best(self):
+    def _get_best(self):
         """ get sentences which has the highest probability at each batch, stack it, and return it as 2d torch """
         y_hats = list()
         # done_beams has <eos> terminate sentences during decoding process
