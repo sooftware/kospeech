@@ -72,8 +72,6 @@ ListenAttendSpell(
    
 ## Training  
 Training in Progress   
-### Training Result 
-   
 [Training Result](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/markdown/train_result.md)
  
 ## Data
