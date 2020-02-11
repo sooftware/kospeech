@@ -72,7 +72,10 @@ ListenAttendSpell(
    
 ## Training  
 Training in Progress   
-[Training Result](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/markdown/train_result.md)
+### Multi-Step learning rate  
+  
+### Training Result
+[AI Hub Dataset #2](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/markdown/train_result.md)
  
 ## Data
 A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용 
