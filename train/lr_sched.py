@@ -30,6 +30,6 @@ def ramp_up(optimizer, time_step, hparams):
 def exp_decay(optimizer, total_time_step, hparams):
     """ exponential decay learning rate """
     decay_rate = hparams.low_plateau_lr / hparams.high_plateau_lr
-    decay_speed = decay_rate ** (-total_time_step)
+    decay_speed = decay_rate ** (1/total_time_step)
     lr = get_lr(optimizer)
     set_lr(optimizer, lr * decay_speed)

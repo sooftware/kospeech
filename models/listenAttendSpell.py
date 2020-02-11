@@ -42,14 +42,12 @@ class ListenAttendSpell(nn.Module):
             self.listener.rnn.flatten_parameters()
         self.speller.rnn.flatten_parameters()
 
-    def beam_search(self, use=True):
-        self.speller.use_beam_search = use
-
-    def forward(self, feats, targets=None, teacher_forcing_ratio=0.99):
+    def forward(self, feats, targets=None, teacher_forcing_ratio=0.99, use_beam_search = False):
         listener_outputs, listener_hidden = self.listener(feats)
         y_hat, logit = self.speller(inputs = targets,
                                     listener_hidden = listener_hidden,
                                     listener_outputs = listener_outputs,
                                     function = self.decode_function,
-                                    teacher_forcing_ratio = teacher_forcing_ratio)
+                                    teacher_forcing_ratio = teacher_forcing_ratio,
+                                    use_beam_search = use_beam_search)
         return y_hat, logit

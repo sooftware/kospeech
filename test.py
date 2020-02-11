@@ -51,7 +51,10 @@ def test(model, queue, device):
             target = scripts[:, 1:]
 
             model.module.flatten_parameters()
-            y_hat = model(feats, feat_lengths, scripts, teacher_forcing_ratio=0.0)
+            y_hat = model(feats=feats,
+                          targets=scripts,
+                          teacher_forcing_ratio=0.0,
+                          use_beam_search=True)
 
             display = random.randrange(0, 100) == 0
             dist, length = get_distance(target, y_hat, display=display)
@@ -60,7 +63,7 @@ def test(model, queue, device):
             total_sent_num += target.size(0)
 
     CER = total_dist / total_length
-    logger.info('evaluate() completed')
+    logger.info('test() completed')
     return CER
 
 if __name__ == '__main__':
@@ -74,10 +77,7 @@ if __name__ == '__main__':
     hparams.logger_hparams()
     cuda = hparams.use_cuda and torch.cuda.is_available()
     device = torch.device('cuda' if cuda else 'cpu')
-
-    criterion = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_token).to(device)
-    model = load_model("./weight_file/epoch2.pt")
-    model.beam_search(True)
+    model = load_model(hparams.load_model)
 
     audio_paths, label_paths = load_data_list(data_list_path=TEST_LIST_PATH, dataset_path=DATASET_PATH)
 
