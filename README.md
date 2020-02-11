@@ -52,22 +52,22 @@ ListenAttendSpell(
   + https://github.com/IBM/pytorch-seq2seq
   
 ## Hyperparameters  
-| Hyperparameter  |Help| Use|              
+| Hyperparameter  |Help| Default|              
 | ----------      |---|:----------:|    
 | use_bidirectional| if True, becomes a bidirectional encoder|True|  
 | use_attention    | flag indication whether to use attention mechanism or not|True |   
 |input_reverse|flag indication whether to reverse input feature or not|True|   
 |use_augment| flag indication whether to use spec-augmentation or not|True|  
 |use_pyramidal| flag indication whether to use pLSTM or not|False|  
-|augment_ratio|ratio of spec-augmentation applied data|0.4|   
+|augment_ratio|ratio of spec-augmentation applied data|-|   
 |listener_layer_size|number of listener`s RNN layer|5|  
 | speller_layer_size|number of speller`s RNN layer| 3|  
 | hidden_size| size of hidden state of RNN|256|
-| batch_size | mini-batch size|6|
+| batch_size | mini-batch size|12|
 | dropout          | dropout probability|0.5  |
 | teacher_forcing  | The probability that teacher forcing will be used|0.99|
-| lr               | learning rate|1e-4        |
-| max_epochs       | max epoch|40          |   
+| lr               | learning rate|Multi-Step        |
+| max_epochs       | max epoch|-          |   
    
    
 ## Training  
