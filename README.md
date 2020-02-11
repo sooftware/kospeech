@@ -52,45 +52,31 @@ ListenAttendSpell(
   + https://github.com/IBM/pytorch-seq2seq
   
 ## Hyperparameters  
-| Hyperparameter  |Help| Use|              
+| Hyperparameter  |Help| Default|              
 | ----------      |---|:----------:|    
 | use_bidirectional| if True, becomes a bidirectional encoder|True|  
 | use_attention    | flag indication whether to use attention mechanism or not|True |   
 |input_reverse|flag indication whether to reverse input feature or not|True|   
 |use_augment| flag indication whether to use spec-augmentation or not|True|  
 |use_pyramidal| flag indication whether to use pLSTM or not|False|  
-|augment_ratio|ratio of spec-augmentation applied data|0.4|   
+|augment_ratio|ratio of spec-augmentation applied data|-|   
 |listener_layer_size|number of listener`s RNN layer|5|  
 | speller_layer_size|number of speller`s RNN layer| 3|  
 | hidden_size| size of hidden state of RNN|256|
-| batch_size | mini-batch size|6|
+| batch_size | mini-batch size|12|
 | dropout          | dropout probability|0.5  |
 | teacher_forcing  | The probability that teacher forcing will be used|0.99|
-| lr               | learning rate|1e-4        |
-| max_epochs       | max epoch|40          |   
+| lr               | learning rate|Multi-Step        |
+| max_epochs       | max epoch|-          |   
    
    
 ## Training  
 Training in Progress   
-### Training Result 
-   
-|Epoch|train CRR (%)|valid CRR (%)|test CRR (%)|  
-|:-----:|:---------:|:--------:|:------:|    
-|0|33.86|42.35|-|   
-|1|64.35|67.25|-|   
-|2|71.04|73.21|72.50|  
-|3|76.82|74.65|-|  
-|4|77.51|75.21|-|  
-|5|78.41|76.52|76.46|  
-
-**CRR** : Character Recognition Rate
+### Multi-Step learning rate  
+<img src="https://postfiles.pstatic.net/MjAyMDAyMTFfMTI5/MDAxNTgxNDEyMDA3ODMy.mlpUW1PXf-DULyC0fxyN7XjGGOKtmY2NqgITFe8XP2kg.htjspYMju3q7UhJXnZuoUc9D9eIwUXRbg_Ip4BuWDxMg.PNG.sooftware/image.png?type=w773" width="550">  
   
-### Training Envirionment  
-```
-Device : GTX 1080 Ti   
-CUDA version : 10.1  
-PyTorch version : 1.3.1    
-```
+### Training Result
+[AI Hub Dataset #2](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/markdown/AI%20Hub%20Dataset%20%232.md)
  
 ## Data
 A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용 
