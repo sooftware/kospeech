@@ -10,26 +10,29 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-import time, torch, random
+import time, random
 from train.distance import get_distance
 from definition import logger
-
+from train.lr_sched import ramp_up, exp_decay
 from train.save_and_load import save_step_result
-
 train_step_result = {'loss': [], 'cer': []}
 
-def train(model, total_batch_size, queue, loss_func, optimizer, device, train_begin, worker_num, print_batch=5, teacher_forcing_ratio=1):
+def train(model, hparams, epoch, lr_rampup, total_time_step, queue, loss_func, optimizer, device, train_begin, worker_num, print_batch=5, teacher_forcing_ratio=1):
     total_loss = 0.
     total_num = 0
     total_dist = 0
     total_length = 0
     total_sent_num = 0
-    batch = 0
+    time_step = 0
 
     model.train()
     begin = epoch_begin = time.time()
 
     while True:
+        if lr_rampup and epoch == 0 and time_step < 1000:
+            ramp_up(optimizer, time_step, hparams)
+        if epoch == 1:
+            exp_decay(optimizer, total_time_step, hparams)
         feats, targets, feat_lengths, label_lengths = queue.get()
         if feats.shape[0] == 0:
             # empty feats means closing one loader
@@ -59,24 +62,24 @@ def train(model, total_batch_size, queue, loss_func, optimizer, device, train_be
         loss.backward()
         optimizer.step()
 
-        if batch % print_batch == 0:
+        if time_step % print_batch == 0:
             current = time.time()
             elapsed = current - begin
             epoch_elapsed = (current - epoch_begin) / 60.0
             train_elapsed = (current - train_begin) / 3600.0
 
-            logger.info('batch: {:4d}/{:4d}, loss: {:.4f}, cer: {:.2f}, elapsed: {:.2f}s {:.2f}m {:.2f}h'
-                .format(batch,
-                        total_batch_size,
+            logger.info('timestep: {:4d}/{:4d}, loss: {:.4f}, cer: {:.2f}, elapsed: {:.2f}s {:.2f}m {:.2f}h'
+                .format(time_step,
+                        total_time_step,
                         total_loss / total_num,
                         total_dist / total_length,
                         elapsed, epoch_elapsed, train_elapsed))
             begin = time.time()
 
-        if batch % 1000 == 0:
+        if time_step % 1000 == 0:
             save_step_result(train_step_result, total_loss / total_num, total_dist / total_length)
 
-        batch += 1
+        time_step += 1
         train.cumulative_batch_count += 1
 
     logger.info('train() completed')

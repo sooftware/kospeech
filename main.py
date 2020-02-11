@@ -55,11 +55,11 @@ from train.save_and_load import save_epoch_result, load_model, load_pickle, save
 from train.training import train
 
 if __name__ == '__main__':
-    os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
-    logger.info("device : %s" % torch.cuda.get_device_name(0))
-    logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
-    logger.info("CUDA version : %s" % (torch.version.cuda))
-    logger.info("PyTorch version : %s" % (torch.__version__))
+    #os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
+    #logger.info("device : %s" % torch.cuda.get_device_name(0))
+    #logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
+    #logger.info("CUDA version : %s" % (torch.version.cuda))
+    #logger.info("PyTorch version : %s" % (torch.__version__))
 
     hparams = HyperParams()
     hparams.logger_hparams()
@@ -89,7 +89,7 @@ if __name__ == '__main__':
         model = nn.DataParallel(model).to(device)
 
     # Optimize Adam Algorithm
-    optimizer = optim.Adam(model.module.parameters(), lr=hparams.lr)
+    optimizer = optim.Adam(model.module.parameters(), lr=hparams.init_lr)
     # Calculate loss by CrossEntropy
     loss_func = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_token).to(device)
 
@@ -117,9 +117,9 @@ if __name__ == '__main__':
             train_dataset.shuffle()
         train_loader = MultiLoader(train_dataset_list, train_queue, hparams.batch_size, hparams.worker_num)
         train_loader.start()
-        train_loss, train_cer = train(model=model, total_batch_size=train_batch_num,
-                                      queue=train_queue, loss_func=loss_func,
-                                      optimizer=optimizer, device=device,
+        train_loss, train_cer = train(model=model, total_batch_size=train_batch_num, hparams=hparams,
+                                      queue=train_queue, loss_func=loss_func, epoch=epoch,
+                                      optimizer=optimizer, device=device, lr_rampup=True,
                                       train_begin=train_begin, worker_num=hparams.worker_num,
                                       print_batch=10, teacher_forcing_ratio=hparams.teacher_forcing)
         logger.info('Epoch %d (Training) Loss %0.4f CER %0.4f' % (epoch, train_loss, train_cer))

@@ -55,7 +55,9 @@ class HyperParams():
         self.batch_size = 8
         self.worker_num = 1
         self.max_epochs = 40
-        self.lr = 0.0001
+        self.init_lr = 0.0
+        self.high_plateau_lr = 0.001
+        self.low_plateau_lr = 0.00003
         self.teacher_forcing = 0.9
         self.seed = 1
         self.max_len = 160
@@ -79,7 +81,9 @@ class HyperParams():
         logger.info("batch_size : %d" % self.batch_size)
         logger.info("worker_num : %d" % self.worker_num)
         logger.info("max_epochs : %d" % self.max_epochs)
-        logger.info("learning rate : %0.4f" % self.lr)
+        logger.info("initial learning rate : %0.4f" % self.init_lr)
+        logger.info("high plateau learning rate : %0.4f" % self.high_plateau_lr)
+        logger.info("low plateau learning rate : %0.4f" % self.low_plateau_lr)
         logger.info("teacher_forcing_ratio : %0.2f" % self.teacher_forcing)
         logger.info("seed : %d" % self.seed)
         logger.info("max_len : %d" % self.max_len)

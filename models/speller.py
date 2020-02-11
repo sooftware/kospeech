@@ -12,7 +12,6 @@ limitations under the License.
 """
 
 import random
-import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -105,14 +104,14 @@ class Speller(nn.Module):
         batch_size = inputs.size(0)
         max_length = inputs.size(1) - 1  # minus the start of sequence symbol
         # Initiate Speller Hidden State to zeros  :  LxBxH
-        speller_hidden = torch.FloatTensor(self.layer_size, batch_size, self.hidden_size).uniform_(-1.0, 1.0)#.cuda()
+        speller_hidden = torch.FloatTensor(self.layer_size, batch_size, self.hidden_size).uniform_(-0.1, 0.1)#.cuda()
         # Decide Use Teacher Forcing or Not
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
 
         if self.use_beam_search:
             """Implementation of Beam-Search Decoding"""
             speller_input = inputs[:, 0].unsqueeze(1)
-            beam = Beam(k=self.k, speller_hidden=speller_hidden, decoder=self,
+            beam = Beam(k=self.k, decoder_hidden=speller_hidden, decoder=self,
                         batch_size=batch_size, max_len=max_length, decode_func=function)
             y_hats = beam.search(speller_input, listener_outputs)
         else:
@@ -136,7 +135,5 @@ class Speller(nn.Module):
 
             logit = torch.stack(decode_results, dim=1).to(self.device)
             y_hats = logit.max(-1)[1]
-        print("Speller y_hats ====================")
-        print(y_hats)
 
         return y_hats, logit if self.training else y_hats

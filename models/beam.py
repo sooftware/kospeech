@@ -84,8 +84,8 @@ class Beam:
             parent_beams_indices = (topk_child_indices // self.k).view(self.batch_size, self.k)
 
             for batch_num, batch in enumerate(topk_child_indices):
-                for beam_num, topk_child_idx in enumerate(batch):
-                    topk_child_vs[batch_num, beam_num] = child_vs[batch_num, topk_child_idx]
+                for beam_num, topk_child_index in enumerate(batch):
+                    topk_child_vs[batch_num, beam_num] = child_vs[batch_num, topk_child_index]
                     parent_beams[batch_num, beam_num] = self.beams[batch_num, parent_beams_indices[batch_num, beam_num]]
             # append new_topk_child (shape: BxKx(S) => BxKx(S+1))
             self.beams = torch.cat([parent_beams, topk_child_vs.view(self.batch_size, self.k, 1)], dim=2)
@@ -94,11 +94,11 @@ class Beam:
             if torch.any(topk_child_vs == self.eos_id):
                 done_indices = torch.where(topk_child_vs == self.eos_id)
                 count = [1 * self.k]
-                for done_idx in done_indices:
-                    batch_num, beam_num = done_idx[0], done_idx[1]
+                for done_index in done_indices:
+                    batch_num, beam_num = done_index[0], done_index[1]
                     self.done_beams[batch_num].append(self.beams[batch_num, beam_num])
                     self.done_beam_scores[batch_num].append(self.beam_scores[batch_num, beam_num])
-                    self._replace_beam(child_ps=child_ps, child_vs=child_vs, done_beam_idx=[batch_num, beam_num], count=count[batch_num])
+                    self._replace_beam(child_ps=child_ps, child_vs=child_vs, done_beam_index=[batch_num, beam_num], count=count[batch_num])
                     count[batch_num] += 1
             # update decoder_input by topk_child_vs
             decoder_input = topk_child_vs
@@ -112,11 +112,11 @@ class Beam:
         for batch_num, batch in enumerate(self.done_beams):
             if batch == []:
                 # if there is no terminated sentences, bring ongoing sentence which has the highest probability instead
-                top_beam_idx = self.beam_scores[batch_num].topk(1)[1]
+                top_beam_index = self.beam_scores[batch_num].topk(1)[1]
             else:
                 # bring highest probability sentence
-                top_beam_idx = self.done_beam_scores[batch_num].topk(1)[1]
-            y_hats.append(*self.beams[batch_num, top_beam_idx])
+                top_beam_index = self.done_beam_scores[batch_num].topk(1)[1]
+            y_hats.append(*self.beams[batch_num, top_beam_index])
         return torch.stack(y_hats, dim=0)
 
 
@@ -148,15 +148,15 @@ class Beam:
         """
         return ((1+length) / (1+min_length)) ** alpha
 
-    def _replace_beam(self, child_ps, child_vs, done_beam_idx, count):
+    def _replace_beam(self, child_ps, child_vs, done_beam_index, count):
         """ Replaces a beam that ends with EOS with a beam with the next higher probability. """
-        done_batch_num, done_beam_num = done_beam_idx[0], done_beam_idx[1]
+        done_batch_num, done_beam_num = done_beam_index[0], done_beam_index[1]
         tmp_indices = child_ps.topk(self.k + count)[1]
-        new_child_idx = tmp_indices[done_batch_num, -1]
-        new_child_p = child_ps[done_batch_num, new_child_idx]
-        new_child_v = child_vs[done_batch_num, new_child_idx]
-        parent_beam_idx = (new_child_idx // self.k)
-        parent_beam = self.beams[done_batch_num, parent_beam_idx]
+        new_child_index = tmp_indices[done_batch_num, -1]
+        new_child_p = child_ps[done_batch_num, new_child_index]
+        new_child_v = child_vs[done_batch_num, new_child_index]
+        parent_beam_index = (new_child_index // self.k)
+        parent_beam = self.beams[done_batch_num, parent_beam_index]
         new_beam = torch.LongTensor(np.append(parent_beam[:-1].numpy(), new_child_v))
         self.beams[done_batch_num, done_beam_num] = new_beam
         self.beam_scores[done_batch_num, done_beam_num] = new_child_p
