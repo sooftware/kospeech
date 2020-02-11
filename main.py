@@ -117,7 +117,7 @@ if __name__ == '__main__':
             train_dataset.shuffle()
         train_loader = MultiLoader(train_dataset_list, train_queue, hparams.batch_size, hparams.worker_num)
         train_loader.start()
-        train_loss, train_cer = train(model=model, total_batch_size=train_batch_num, hparams=hparams,
+        train_loss, train_cer = train(model=model, total_time_step=train_batch_num, hparams=hparams,
                                       queue=train_queue, loss_func=loss_func, epoch=epoch,
                                       optimizer=optimizer, device=device, lr_rampup=True,
                                       train_begin=train_begin, worker_num=hparams.worker_num,
