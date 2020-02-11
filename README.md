@@ -1,8 +1,6 @@
 # Korean-Speech-Recognition
-Further Works from https://github.com/sh951011/Naver-Hackathon-2019-Speech-Team_Kai.Lib  
 Korean Speech Recognition Using PyTorch. (Korean-ASR)  
 This Project is currently in progress.  
-[Demonstration Video](https://www.youtube.com/watch?v=dHJnCqo2gaU)   
 
 ## Team Member  
 * [김수환](https://github.com/sh951011) KW University. elcomm. senior
@@ -50,7 +48,7 @@ ListenAttendSpell(
 ```  
   
 * Reference
-  + 「Listen, Attend and Spell」
+  + 「Listen, Attend and Spell」 \[William Chan et al. 2015\]
   + https://github.com/IBM/pytorch-seq2seq
   
 ## Hyperparameters  
@@ -62,8 +60,8 @@ ListenAttendSpell(
 |use_augment| flag indication whether to use spec-augmentation or not|True|  
 |use_pyramidal| flag indication whether to use pLSTM or not|False|  
 |augment_ratio|ratio of spec-augmentation applied data|0.4|   
-|encoder_layer_size|number of encoder`s RNN cell|5|  
-| decoder_layer_size|number of decoder`s RNN cell| 3|  
+|listener_layer_size|number of listener`s RNN layer|5|  
+| speller_layer_size|number of speller`s RNN layer| 3|  
 | hidden_size| size of hidden state of RNN|256|
 | batch_size | mini-batch size|6|
 | dropout          | dropout probability|0.5  |
@@ -120,7 +118,7 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 5 0 105 0 729 0 172 31 25 0 318 0 119 0 489 551 156 0 314 746 3 32 20
 ```
 * train_list.csv    
-980시간에 해당하는 학습용 데이터 리스트    
+학습용 데이터 리스트 (980h)    
   
 | pcm-filename| txt-filename|   
 | :-------------------| :--------------------------|     
@@ -131,7 +129,7 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 | KaiSpeech_039018.pcm | KaiSpeech_label_039018.txt  |  
   
 * test_list.csv   
-20시간에 해당하는 테스트용  리스트     
+테스트용 데이터 리스트 (20h)   
   
 | pcm-filaname| txt-filename|    
 | :-------------------| :--------------------------|     
@@ -209,7 +207,7 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = False, input_re
 ```
    
 * Reference
-  + 「 Voice Recognition Using MFCC Algorithm」 
+  + 「 Voice Recognition Using MFCC Algorithm」 \[Koustav Chakraborty et al. 2014\]
   + https://github.com/librosa/librosa
     
 
@@ -248,8 +246,10 @@ CRR = (1.0 - CER) * 100.0
 ```
 * CRR : Character Recognition Rate
 * CER : Character Error Rate based on Edit Distance
-![crr](https://github.com/AjouJuneK/NAVER_speech_hackathon_2019/raw/master/docs/edit_distance.png)
+![crr](https://github.com/AjouJuneK/NAVER_speech_hackathon_2019/raw/master/docs/edit_distance.png)   
   
+* Reference
+  + https://en.wikipedia.org/wiki/Levenshtein_distance
   
 ## Reference
 [[1]   IBM pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)   
@@ -261,7 +261,7 @@ CRR = (1.0 - CER) * 100.0
 [[7] 「Neural Machine Translation by jointly learning to align and Translate」  Paper](https://arxiv.org/pdf/1409.0473.pdf)   
 [[8] 「Listen, Attend and Spell」  Paper](https://arxiv.org/abs/1508.01211)   
 [[9] 「Deep Speech: Scaling up end-to-End Speech Recognition」  Paper](https://arxiv.org/abs/1412.5567)  
-[[10]   PyTorch VGG Net 16](https://github.com/chengyangfu/pytorch-vgg-cifar10/blob/master/vgg.py)  
+[[10]   PyTorch VGG Net](https://github.com/chengyangfu/pytorch-vgg-cifar10/blob/master/vgg.py)  
 [[11]   Levenshtein Distance](https://en.wikipedia.org/wiki/Levenshtein_distance)  
    
 ## Requirements  
