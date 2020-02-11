@@ -73,7 +73,7 @@ ListenAttendSpell(
 ## Training  
 Training in Progress   
 ### Multi-Step learning rate  
-![multi_step_lr](https://postfiles.pstatic.net/MjAyMDAyMTFfMTI5/MDAxNTgxNDEyMDA3ODMy.mlpUW1PXf-DULyC0fxyN7XjGGOKtmY2NqgITFe8XP2kg.htjspYMju3q7UhJXnZuoUc9D9eIwUXRbg_Ip4BuWDxMg.PNG.sooftware/image.png?type=w773)
+<img src="https://postfiles.pstatic.net/MjAyMDAyMTFfMTI5/MDAxNTgxNDEyMDA3ODMy.mlpUW1PXf-DULyC0fxyN7XjGGOKtmY2NqgITFe8XP2kg.htjspYMju3q7UhJXnZuoUc9D9eIwUXRbg_Ip4BuWDxMg.PNG.sooftware/image.png?type=w773" width="550">  
   
 ### Training Result
 [AI Hub Dataset #2](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/markdown/train_result.md)
