@@ -113,12 +113,12 @@ class Beam:
             if batch == []:
                 # if there is no terminated sentences, bring ongoing sentence which has the highest probability instead
                 top_beam_index = self.beam_scores[batch_num].topk(1)[1]
+                y_hats.append(*self.beams[batch_num, top_beam_index])
             else:
                 # bring highest probability sentence
                 top_beam_index = self.done_beam_scores[batch_num].topk(1)[1]
-            y_hats.append(*self.beams[batch_num, top_beam_index])
+                y_hats.append(*self.done_beams[batch_num, top_beam_index])
         return torch.stack(y_hats, dim=0)
-
 
     def _is_done(self):
         """ check if all beam search process has terminated """

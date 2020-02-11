@@ -136,4 +136,4 @@ class Speller(nn.Module):
             logit = torch.stack(decode_results, dim=1).to(self.device)
             y_hats = logit.max(-1)[1]
 
-        return y_hats, logit if self.training else y_hats
+        return (y_hats, logit if self.training else y_hats)
