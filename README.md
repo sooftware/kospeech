@@ -268,22 +268,10 @@ pip install python-levenshtein
 Install PyTorch
 ```
 pip install torch
-```  
-Install NumPy
-```
-pip install numpy
-```  
-Install Pandas
-```
-pip install pandas
-```  
+```   
 Install librosa   
 ``` 
 pip install librosa
-```
-Install tqdm  
-```
-pip install tqdm
 ```
 ## License
 Copyright 2020 Kai.Lib
