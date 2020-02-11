@@ -76,7 +76,7 @@ Training in Progress
 <img src="https://postfiles.pstatic.net/MjAyMDAyMTFfMTI5/MDAxNTgxNDEyMDA3ODMy.mlpUW1PXf-DULyC0fxyN7XjGGOKtmY2NqgITFe8XP2kg.htjspYMju3q7UhJXnZuoUc9D9eIwUXRbg_Ip4BuWDxMg.PNG.sooftware/image.png?type=w773" width="550">  
   
 ### Training Result
-[AI Hub Dataset #2](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/markdown/AI%20Hub%20Dataset%20%232.md)
+[AI Hub Dataset #2](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/AI%20Hub%20Dataset%20%232.md)
  
 ## Data
 A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용 
