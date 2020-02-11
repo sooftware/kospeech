@@ -1,3 +1,5 @@
+### Training Result  
+
 |Epoch|train CRR (%)|valid CRR (%)|test CRR (%)|  
 |:-----:|:---------:|:--------:|:------:|    
 |0|33.86|42.35|-|   
