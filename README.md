@@ -8,7 +8,8 @@ This Project is currently in progress.
 * [원철황](https://github.com/wch18735) KW University. elcomm. senior
 
 ## Model
-![model](https://postfiles.pstatic.net/MjAyMDAxMjRfMTEw/MDAxNTc5ODExMTU5Nzkw.UhNI6DSHTRpo3Ep_i53oFlTL7DFcZ0TXaIeXWuMefggg.RBhsYljjJ8cGRO5V5dNjLNphWue-O7eKeREdw6czIm8g.GIF.sooftware/model_architecture.gif?type=w773)  
+<img src="https://postfiles.pstatic.net/MjAyMDAxMjRfMTEw/MDAxNTc5ODExMTU5Nzkw.UhNI6DSHTRpo3Ep_i53oFlTL7DFcZ0TXaIeXWuMefggg.RBhsYljjJ8cGRO5V5dNjLNphWue-O7eKeREdw6czIm8g.GIF.sooftware/model_architecture.gif?type=w773" width="800"> 
+  
 ### Listen, Attend and Spell Architecture 
 ```python
 ListenAttendSpell(
