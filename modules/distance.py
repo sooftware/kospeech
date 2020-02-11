@@ -12,9 +12,8 @@ limitations under the License.
 """
 
 import Levenshtein as Lev
-from label.label_func import label_to_string
-from definition import logger, test_index2char
-from definition import index2char, EOS_token
+from modules.label import label_to_string
+from modules.define import logger, index2char, EOS_token
 
 def char_distance(ref, hyp):
     ref = ref.replace(' ', '')

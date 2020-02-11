@@ -1,7 +1,19 @@
+"""
+Copyright 2020- Kai.Lib
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+      http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+"""
+
 import pandas as pd
-import torch
-from definition import logger
 import pickle
+from modules.define import logger
 
 def save_epoch_result(train_result, valid_result):
     train_dict, train_loss, train_cer = train_result
@@ -22,20 +34,7 @@ def save_step_result(train_step_result, loss, cer):
     train_step_df = pd.DataFrame(train_step_result)
     train_step_df.to_csv("./csv/train_step_result.csv", encoding='cp949', index=False)
 
-def load_model(filepath):
-    logger.info("Load model..")
-    model = torch.load(filepath)
-    model.eval()
-    logger.info("Load model Succesfuuly completely !!")
-    return model
-
 def save_pickle(save_var, savepath, message=""):
     with open(savepath, "wb") as f:
         pickle.dump(save_var, f)
     logger.info(message)
-
-def load_pickle(filepath, message=""):
-    with open(filepath, "rb") as f:
-        load_result = pickle.load(f)
-        logger.info(message)
-        return load_result

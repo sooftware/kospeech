@@ -16,14 +16,16 @@ logger = logging.getLogger('root')
 FORMAT = "[%(asctime)s %(filename)s:%(lineno)s - %(funcName)s()] %(message)s"
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format=FORMAT)
 logger.setLevel(logging.INFO)
-from label.label_func import load_label
-char2index, index2char = load_label('./csv/kai_labels.csv', encoding='utf-8')
-test_char2index, test_index2char = load_label('./csv/test_labels.csv', encoding='cp949')
+from .label import load_label
+char2index, index2char = load_label('../data/label/train_labels.csv', encoding='utf-8')
+test_char2index, test_index2char = load_label('./csv/test_labels.csv', encoding='utf-8')
 SOS_token = int(char2index['<s>'])
 EOS_token = int(char2index['</s>'])
 PAD_token = int(char2index['_'])
 DATASET_PATH = "E:/한국어 음성데이터/KaiSpeech/"
-TRAIN_LIST_PATH = "./csv/train_list_.csv"
-TEST_LIST_PATH = "./csv/test_list_.csv"
+TRAIN_LIST_PATH = "../data/data_list/train_list_.csv"
+TEST_LIST_PATH = "../data/data_list/test_list_.csv"
+TARGET_DICT_PATH = "./data/pickle/target_dict.txt"
+SAVE_WEIGHT_PATH = "./data/weight_file/epoch%s"
 train_dict = {'loss': [], 'cer': []}
 valid_dict = {'loss': [], 'cer': []}

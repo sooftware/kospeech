@@ -1,7 +1,0 @@
-.metadata/
-data/
-pickle/
-*.wav
-*.label
-*.script
-data/       # ignore all files in data

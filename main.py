@@ -41,18 +41,17 @@ import random
 import torch
 import time
 import os
-from definition import *
-from data.split_dataset import split_dataset
-from hparameter import HyperParams
-from Loader.baseLoader import BaseDataLoader
-from Loader.loader import load_targets, load_data_list
-from Loader.multiLoader import MultiLoader
+from modules.define import *
+from modules.dataset import split_dataset
+from modules.hparams import HyperParams
+from modules.loader import BaseDataLoader, MultiLoader
+from modules.load import load_targets, load_data_list, load_model, load_pickle
+from modules.save import save_epoch_result, save_pickle
+from modules.evaluator import evaluate
+from modules.trainer import train
 from models.speller import Speller
 from models.listener import Listener
 from models.listenAttendSpell import ListenAttendSpell
-from train.evaluate import evaluate
-from train.save_and_load import save_epoch_result, load_model, load_pickle, save_pickle
-from train.training import train
 
 if __name__ == '__main__':
     os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
@@ -80,13 +79,9 @@ if __name__ == '__main__':
                       hidden_size=hparams.hidden_size * (2 if hparams.use_bidirectional else 1),
                       sos_id=SOS_token, eos_id=EOS_token, layer_size = hparams.speller_layer_size,
                       rnn_cell = 'gru', dropout_p = hparams.dropout, use_attention = hparams.use_attention, device=device)
-
-    if hparams.load_model:
-        model = load_model(hparams.model_path)
-    else:
-        model = ListenAttendSpell(listener=listener, speller=speller, use_pyramidal=hparams.use_pyramidal)
-        model.flatten_parameters()
-        model = nn.DataParallel(model).to(device)
+    model = ListenAttendSpell(listener=listener, speller=speller, use_pyramidal=hparams.use_pyramidal)
+    model.flatten_parameters()
+    model = nn.DataParallel(model).to(device)
 
     # Optimize Adam Algorithm
     optimizer = optim.Adam(model.module.parameters(), lr=hparams.init_lr)
@@ -97,14 +92,14 @@ if __name__ == '__main__':
     audio_paths, label_paths = load_data_list(data_list_path=TRAIN_LIST_PATH, dataset_path=DATASET_PATH)
 
     if hparams.use_pickle:
-        target_dict = load_pickle("./pickle/target_dict.txt", "load all target_dict using pickle complete !!")
+        target_dict = load_pickle(TARGET_DICT_PATH, "load all target_dict using pickle complete !!")
     else:
-        logger.info("load all target dictionary for reducing disk I/O")
+        # load all target dictionary for reducing disk I/O
         target_dict = load_targets(label_paths)
-        save_pickle(target_dict, "./pickle/target_dict.txt", "dump all target dictionary using pickle complete !!")
+        save_pickle(target_dict, TARGET_DICT_PATH, "dump all target dictionary using pickle complete !!")
 
     logger.info("split dataset start !!")
-    train_batch_num, train_dataset_list, valid_dataset = \
+    total_time_step, train_dataset_list, valid_dataset = \
         split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.015, target_dict=target_dict)
     logger.info("split dataset complete !!")
 
@@ -117,7 +112,7 @@ if __name__ == '__main__':
             train_dataset.shuffle()
         train_loader = MultiLoader(train_dataset_list, train_queue, hparams.batch_size, hparams.worker_num)
         train_loader.start()
-        train_loss, train_cer = train(model=model, total_time_step=train_batch_num, hparams=hparams,
+        train_loss, train_cer = train(model=model, total_time_step=total_time_step, hparams=hparams,
                                       queue=train_queue, loss_func=loss_func, epoch=epoch,
                                       optimizer=optimizer, device=device, lr_rampup=True,
                                       train_begin=train_begin, worker_num=hparams.worker_num,
@@ -132,7 +127,7 @@ if __name__ == '__main__':
         logger.info('Epoch %d (Evaluate) Loss %0.4f CER %0.4f' % (epoch, valid_loss, valid_cer))
 
         valid_loader.join()
-        torch.save(model, "./weight_file/epoch%s" % str(epoch))
+        torch.save(model, SAVE_WEIGHT_PATH % str(epoch))
 
         save_epoch_result(train_result=[train_dict, train_loss, train_cer], valid_result=[valid_dict, valid_loss, valid_cer])
         logger.info('Epoch %d Training result saved as a csv file complete !!' % epoch)

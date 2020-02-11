@@ -10,8 +10,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+
+import torch
+import pickle
+import math
 import pandas as pd
 from tqdm import trange
+from modules.define import logger
 
 def load_targets(label_paths):
     """
@@ -50,3 +55,30 @@ def load_data_list(data_list_path, dataset_path):
     label_paths = list(dataset_path + data_list["label"])
 
     return audio_paths, label_paths
+
+def load_model(filepath):
+    logger.info("Load model..")
+    model = torch.load(filepath)
+    model.eval()
+    logger.info("Load model Succesfuuly completely !!")
+    return model
+
+def load_pickle(filepath, message=""):
+    with open(filepath, "rb") as f:
+        load_result = pickle.load(f)
+        logger.info(message)
+        return load_result
+
+def load_dataset(hparams, audio_paths, valid_ratio=0.05):
+    batch_num = math.ceil(len(audio_paths) / hparams.batch_size)
+    valid_batch_num = math.ceil(batch_num * valid_ratio)
+    train_batch_num = batch_num - valid_batch_num
+    if hparams.use_augmentation: train_batch_num *= int(1 + hparams.augment_ratio)
+
+    with open('./pickle/train_dataset.txt', 'rb') as f:
+        train_dataset = pickle.load(f)
+
+    with open('./pickle/valid_dataset.txt', 'rb') as f:
+        valid_dataset = pickle.load(f)
+
+    return train_batch_num, train_dataset, valid_dataset

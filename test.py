@@ -14,16 +14,13 @@ limitations under the License.
 import os
 import queue
 import random
-from data.baseDataset import BaseDataset
-from definition import *
+from modules.dataset import BaseDataset
+from modules.define import *
 import torch
-import torch.nn as nn
-from hparameter import HyperParams
-from Loader.baseLoader import BaseDataLoader
-from Loader.loader import load_data_list
-from train.distance import get_distance
-from train.save_and_load import load_model, load_pickle
-
+from modules.hparams import HyperParams
+from modules.loader import BaseDataLoader
+from modules.load import load_data_list, load_model, load_pickle
+from modules.distance import get_distance
 
 def test(model, queue, device):
     """

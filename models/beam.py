@@ -24,6 +24,10 @@ class Beam:
         - max_len (int) :  a maximum allowed length for the sequence to be processed
         - decode_func (torch.nn.Module) : A function used to generate symbols from RNN hidden state (default : torch.nn.functional.log_softmax)
         - decoder (torch.nn.module) : get pointer of decoder object to get multiple parameters at once
+        - beams (torch.Tensor) : ongoing beams for decoding
+        - beam_scores (torch.Tensor) : score of beams (cumulative probability)
+        - done_beams (list2d) : beams that complete with sentence.
+        - done_beam_scores (list2d) : score of done_beams
     """
 
     def __init__(self, k, decoder_hidden, decoder, batch_size, max_len, decode_func):
@@ -40,14 +44,14 @@ class Beam:
         self.hidden_size = decoder.hidden_size
         self.out = decoder.out
         self.eos_id = decoder.eos_id
-        self.beam_scores = None
         self.beams = None
+        self.beam_scores = None
         self.done_beams = [[] for _ in range(self.batch_size)]
         self.done_beam_scores = [[] for _ in range(self.batch_size)]
 
     def search(self, init_decoder_input, encoder_outputs):
         """
-        Beam-Search
+        Provides Beam-Search
 
         Comment Notation:
             - **B**: batch_size
@@ -149,7 +153,7 @@ class Beam:
         return ((1+length) / (1+min_length)) ** alpha
 
     def _replace_beam(self, child_ps, child_vs, done_beam_index, count):
-        """ Replaces a beam that ends with EOS with a beam with the next higher probability. """
+        """ Replaces a beam that ends with <eos> with a beam with the next higher probability. """
         done_batch_num, done_beam_num = done_beam_index[0], done_beam_index[1]
         tmp_indices = child_ps.topk(self.k + count)[1]
         new_child_index = tmp_indices[done_batch_num, -1]
