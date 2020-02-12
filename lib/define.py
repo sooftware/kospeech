@@ -22,6 +22,7 @@ test_char2index, test_index2char = load_label('./data/label/test_labels.csv', en
 SOS_token = int(char2index['<s>'])
 EOS_token = int(char2index['</s>'])
 PAD_token = int(char2index['_'])
+SAMPLE_DATASET_PATH = "./data/sample/"
 DATASET_PATH = "E:/한국어 음성데이터/KaiSpeech/"
 TRAIN_LIST_PATH = "./data/data_list/train_list.csv"
 TEST_LIST_PATH = "./data/data_list/test_list.csv"
