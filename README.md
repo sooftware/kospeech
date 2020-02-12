@@ -56,7 +56,7 @@ ListenAttendSpell(
 | Hyperparameter  |Help| Default|              
 | ----------      |---|:----------:|    
 | [use_bidirectional](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/hparams/bidirectional.md)| if True, becomes a bidirectional encoder|True|  
-| use_attention    | flag indication whether to use attention mechanism or not|True |   
+| [use_attention](https://blog.naver.com/sooftware/221784472231)    | flag indication whether to use attention mechanism or not|True |   
 |input_reverse|flag indication whether to reverse input feature or not|True|   
 |[use_augment](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/hparams/spec-augmentation.md)| flag indication whether to use spec-augmentation or not|True|  
 |[use_pyramidal](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/hparams/pyramidal.md)| flag indication whether to use pLSTM or not|False|  
@@ -66,7 +66,7 @@ ListenAttendSpell(
 | hidden_size| size of hidden state of RNN|256|
 | batch_size | mini-batch size|12|
 | dropout          | dropout probability|0.5  |
-| teacher_forcing  | The probability that teacher forcing will be used|0.99|
+| [teacher_forcing](https://blog.naver.com/sooftware/221790750668)  | The probability that teacher forcing will be used|0.99|
 | lr               | learning rate|[Multi-Step](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/hparams/multi-step-lr.md)        |
 | max_epochs       | max epoch|-          |   
    
