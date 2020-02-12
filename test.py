@@ -15,12 +15,12 @@ import os
 import queue
 import random
 import torch
-from lib.dataset import BaseDataset
-from lib.define import *
-from lib.hparams import HyperParams
-from lib.loader import BaseDataLoader
-from lib.load import load_data_list, load_model, load_pickle
-from lib.distance import get_distance
+from util.dataset import BaseDataset
+from util.define import *
+from util.hparams import HyperParams
+from util.loader import BaseDataLoader
+from util.load import load_data_list, load_model, load_pickle
+from util.distance import get_distance
 
 def test(model, queue, device):
     """

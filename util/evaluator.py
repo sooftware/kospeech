@@ -13,8 +13,8 @@ limitations under the License.
 
 import torch
 import random
-from lib.distance import get_distance
-from lib.define import logger
+from util.distance import get_distance
+from util.define import logger
 
 def evaluate(model, queue, loss_func, device):
     logger.info('evaluate() start')

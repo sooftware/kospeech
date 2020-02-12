@@ -41,14 +41,14 @@ import random
 import torch
 import time
 import os
-from lib.define import *
-from lib.dataset import split_dataset
-from lib.hparams import HyperParams
-from lib.loader import BaseDataLoader, MultiLoader
-from lib.load import load_targets, load_data_list, load_pickle
-from lib.save import save_epoch_result, save_pickle
-from lib.evaluator import evaluate
-from lib.trainer import train
+from util.define import *
+from util.dataset import split_dataset
+from util.hparams import HyperParams
+from util.loader import BaseDataLoader, MultiLoader
+from util.load import load_targets, load_data_list, load_pickle
+from util.save import save_epoch_result, save_pickle
+from util.evaluator import evaluate
+from util.trainer import train
 from models.speller import Speller
 from models.listener import Listener
 from models.listenAttendSpell import ListenAttendSpell

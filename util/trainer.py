@@ -12,10 +12,10 @@ limitations under the License.
 """
 
 import time, random
-from lib.distance import get_distance
-from lib.define import logger
-from lib.lr import ramp_up, exp_decay
-from lib.save import save_step_result
+from util.distance import get_distance
+from util.define import logger
+from util.lr import ramp_up, exp_decay
+from util.save import save_step_result
 train_step_result = {'loss': [], 'cer': []}
 
 def train(model, hparams, epoch, lr_rampup, total_time_step, queue, loss_func, optimizer, device, train_begin, worker_num, print_batch=5, teacher_forcing_ratio=1):
