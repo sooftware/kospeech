@@ -67,7 +67,7 @@ ListenAttendSpell(
 | batch_size | mini-batch size|12|
 | dropout          | dropout probability|0.5  |
 | teacher_forcing  | The probability that teacher forcing will be used|0.99|
-| lr               | learning rate|Multi-Step        |
+| lr               | learning rate|[Multi-Step](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/hparams/multi-step-lr.md)        |
 | max_epochs       | max epoch|-          |   
    
    
