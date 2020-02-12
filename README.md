@@ -70,7 +70,6 @@ ListenAttendSpell(
 | lr               | learning rate|Multi-Step        |
 | max_epochs       | max epoch|-          |   
    
-[Hyperparameters Comment](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/hparams/hparams.md)
    
 ## Training  
 Training in Progress   
