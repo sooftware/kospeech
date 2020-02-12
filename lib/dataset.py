@@ -10,14 +10,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-
-from torch.utils.data import Dataset
-from modules.augment import spec_augment
-from modules.feature import get_librosa_mfcc
-from modules.label import get_label
-from modules.define import logger, SOS_token, EOS_token
 import random
 import math
+from torch.utils.data import Dataset
+from lib.augment import spec_augment
+from lib.feature import get_librosa_mfcc
+from lib.label import get_label
+from lib.define import logger, SOS_token, EOS_token
 
 class BaseDataset(Dataset):
     """
@@ -123,11 +122,12 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
         - **train_dataset_list**: list of training data
         - **valid_dataset**: list of validation data
     """
+    logger.info("split dataset start !!")
     train_dataset_list = []
     train_num = math.ceil(len(audio_paths) * (1 - valid_ratio))
-    batch_num = math.ceil(len(audio_paths) / hparams.batch_size)
-    valid_time_step = math.ceil(batch_num * valid_ratio)
-    train_time_step = batch_num - valid_time_step
+    total_time_step = math.ceil(len(audio_paths) / hparams.batch_size)
+    valid_time_step = math.ceil(total_time_step * valid_ratio)
+    train_time_step = total_time_step - valid_time_step
     if hparams.use_augment:
         train_time_step = int( train_time_step * (1 + hparams.augment_ratio))
     train_num_per_worker = math.ceil(train_num / hparams.worker_num)
@@ -140,10 +140,10 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
 
     # seperating the train dataset by the number of workers
     for idx in range(hparams.worker_num):
-        train_begin_idx = train_num_per_worker * idx
-        train_end_idx = min(train_num_per_worker * (idx + 1), train_num)
-        train_dataset_list.append(BaseDataset(audio_paths=audio_paths[train_begin_idx:train_end_idx],
-                                              label_paths=label_paths[train_begin_idx:train_end_idx],
+        train_begin_index = train_num_per_worker * idx
+        train_end_index = min(train_num_per_worker * (idx + 1), train_num)
+        train_dataset_list.append(BaseDataset(audio_paths=audio_paths[train_begin_index:train_end_index],
+                                              label_paths=label_paths[train_begin_index:train_end_index],
                                               bos_id=SOS_token, eos_id=EOS_token, target_dict=target_dict,
                                               input_reverse=hparams.input_reverse, use_augment=hparams.use_augment))
 
@@ -154,5 +154,5 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
 
     #save_pickle(train_dataset_list, "./pickle/train_dataset.txt", "dump all train_dataset_list using pickle complete !!")
     #save_pickle(valid_dataset, "./pickle/valid_dataset.txt", "dump all valid_dataset using pickle complete !!")
-
+    logger.info("split dataset complete !!")
     return train_time_step, train_dataset_list, valid_dataset

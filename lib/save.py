@@ -13,7 +13,8 @@ limitations under the License.
 
 import pandas as pd
 import pickle
-from modules.define import logger
+from lib.define import logger
+from lib.define import TRAIN_RESULT_PATH, VALID_RESULT_PATH, ENCODING, TRAIN_STEP_RESULT_PATH
 
 def save_epoch_result(train_result, valid_result):
     train_dict, train_loss, train_cer = train_result
@@ -25,14 +26,14 @@ def save_epoch_result(train_result, valid_result):
 
     train_df = pd.DataFrame(train_dict)
     valid_df = pd.DataFrame(valid_dict)
-    train_df.to_csv("../csv/train_result.csv", encoding='cp949', index=False)
-    valid_df.to_csv("../csv/eval_result.csv", encoding='cp949', index=False)
+    train_df.to_csv(TRAIN_RESULT_PATH, encoding=ENCODING, index=False)
+    valid_df.to_csv(VALID_RESULT_PATH, encoding=ENCODING, index=False)
 
 def save_step_result(train_step_result, loss, cer):
     train_step_result["loss"].append(loss)
     train_step_result["cer"].append(cer)
     train_step_df = pd.DataFrame(train_step_result)
-    train_step_df.to_csv("./csv/train_step_result.csv", encoding='cp949', index=False)
+    train_step_df.to_csv(TRAIN_STEP_RESULT_PATH, encoding=ENCODING, index=False)
 
 def save_pickle(save_var, savepath, message=""):
     with open(savepath, "wb") as f:

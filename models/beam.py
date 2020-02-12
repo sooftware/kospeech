@@ -26,7 +26,7 @@ class Beam:
         - decoder (torch.nn.module) : get pointer of decoder object to get multiple parameters at once
         - beams (torch.Tensor) : ongoing beams for decoding
         - beam_scores (torch.Tensor) : score of beams (cumulative probability)
-        - done_beams (list2d) : beams that complete with sentence.
+        - done_beams (list2d) : store beams which met <eos> token and terminated decoding process.
         - done_beam_scores (list2d) : score of done_beams
     """
 

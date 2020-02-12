@@ -41,24 +41,24 @@ import random
 import torch
 import time
 import os
-from modules.define import *
-from modules.dataset import split_dataset
-from modules.hparams import HyperParams
-from modules.loader import BaseDataLoader, MultiLoader
-from modules.load import load_targets, load_data_list, load_model, load_pickle
-from modules.save import save_epoch_result, save_pickle
-from modules.evaluator import evaluate
-from modules.trainer import train
+from lib.define import *
+from lib.dataset import split_dataset
+from lib.hparams import HyperParams
+from lib.loader import BaseDataLoader, MultiLoader
+from lib.load import load_targets, load_data_list, load_pickle
+from lib.save import save_epoch_result, save_pickle
+from lib.evaluator import evaluate
+from lib.trainer import train
 from models.speller import Speller
 from models.listener import Listener
 from models.listenAttendSpell import ListenAttendSpell
 
 if __name__ == '__main__':
-    os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
-    logger.info("device : %s" % torch.cuda.get_device_name(0))
-    logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
-    logger.info("CUDA version : %s" % (torch.version.cuda))
-    logger.info("PyTorch version : %s" % (torch.__version__))
+    #os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
+    #logger.info("device : %s" % torch.cuda.get_device_name(0))
+    #logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
+    #logger.info("CUDA version : %s" % (torch.version.cuda))
+    #logger.info("PyTorch version : %s" % (torch.__version__))
 
     hparams = HyperParams()
     hparams.logger_hparams()
@@ -98,10 +98,8 @@ if __name__ == '__main__':
         target_dict = load_targets(label_paths)
         save_pickle(target_dict, TARGET_DICT_PATH, "dump all target dictionary using pickle complete !!")
 
-    logger.info("split dataset start !!")
     total_time_step, train_dataset_list, valid_dataset = \
         split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.015, target_dict=target_dict)
-    logger.info("split dataset complete !!")
 
     logger.info('start')
     train_begin = time.time()

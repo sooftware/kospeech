@@ -16,7 +16,7 @@ import pickle
 import math
 import pandas as pd
 from tqdm import trange
-from modules.define import logger
+from lib.define import logger, TRAIN_DATASET_PICKLE_PATH, VALID_DATASET_PICKLE_PATH, ENCODING
 
 def load_targets(label_paths):
     """
@@ -35,7 +35,6 @@ def load_targets(label_paths):
             label = f.readline()
             file_num = label_txt.split('/')[-1].split('.')[0].split('_')[-1]
             target_dict['KaiSpeech_label_%s' % file_num] = label
-        del label_txt, label # memory deallocation
 
     return target_dict
 
@@ -50,7 +49,7 @@ def load_data_list(data_list_path, dataset_path):
         - **label_paths**: set of label path
                 Format : [base_dir/KaiSpeech/KaiSpeech_label_123260.txt, ... , base_dir/KaiSpeech/KaiSpeech_label_621245.txt]
     """
-    data_list = pd.read_csv(data_list_path, "r", delimiter = ",", encoding="cp949")
+    data_list = pd.read_csv(data_list_path, "r", delimiter = ",", encoding=ENCODING)
     audio_paths = list(dataset_path + data_list["audio"])
     label_paths = list(dataset_path + data_list["label"])
 
@@ -75,10 +74,10 @@ def load_dataset(hparams, audio_paths, valid_ratio=0.05):
     train_batch_num = batch_num - valid_batch_num
     if hparams.use_augmentation: train_batch_num *= int(1 + hparams.augment_ratio)
 
-    with open('./pickle/train_dataset.txt', 'rb') as f:
+    with open(TRAIN_DATASET_PICKLE_PATH, 'rb') as f:
         train_dataset = pickle.load(f)
 
-    with open('./pickle/valid_dataset.txt', 'rb') as f:
+    with open(VALID_DATASET_PICKLE_PATH, 'rb') as f:
         valid_dataset = pickle.load(f)
 
     return train_batch_num, train_dataset, valid_dataset

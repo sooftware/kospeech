@@ -14,7 +14,7 @@ limitations under the License.
 import torch
 import librosa
 import numpy as np
-from modules.define import logger
+from lib.define import logger
 
 def get_librosa_melspectrogram(filepath, n_mels=80, del_silence=True,input_reverse=True, mel_type='log_mel', format='pcm'):
     """

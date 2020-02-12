@@ -12,7 +12,7 @@ limitations under the License.
 """
 
 import csv
-from modules.define import logger
+from lib.define import logger
 
 def load_label(label_path, encoding='utf-8'):
     """
