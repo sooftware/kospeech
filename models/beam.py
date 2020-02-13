@@ -140,9 +140,9 @@ class Beam:
         decoder_output, hidden = self.rnn(embedded, self.decoder_hidden)  # decoder output
 
         if self.use_attention:
-            output, alignment = self.attention(decoder_output, encoder_outputs, last_alignment)
-        else: output = decoder_output
-        predicted_softmax = self.decode_func(self.out(output.contiguous().view(-1, self.hidden_size)), dim=1).view(self.batch_size,output_size,-1)
+            context, alignment = self.attention(decoder_output, encoder_outputs, last_alignment)
+        else: context = decoder_output
+        predicted_softmax = self.decode_func(self.out(context.contiguous().view(-1, self.hidden_size)), dim=1).view(self.batch_size,output_size,-1)
         return predicted_softmax, alignment
 
     def _get_length_penalty(self, length, alpha=1.2, min_length=5):

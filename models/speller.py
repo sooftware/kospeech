@@ -81,8 +81,8 @@ class Speller(nn.Module):
         if use_attention:
             self.attention = LocationAwareAttention(decoder_hidden_size=self.hidden_size,
                                                     encoder_hidden_size=self.hidden_size,
-                                                    attn_size=self.hidden_size,
-                                                    conv_size=32,
+                                                    context_size=self.hidden_size,
+                                                    conv_out=32,
                                                     smoothing=False)
 
     def _forward_step(self, speller_input, speller_hidden, listener_outputs, last_alignment, function):
@@ -95,10 +95,10 @@ class Speller(nn.Module):
         speller_output = self.rnn(embedded, speller_hidden)[0] # speller output BxSxH
 
         if self.use_attention:
-            output, alignment = self.attention(speller_output, listener_outputs, last_alignment)
-        else: output = speller_output
+            context, alignment = self.attention(speller_output, listener_outputs, last_alignment)
+        else: context = speller_output
         # torch.view()에서 -1이면 나머지 알아서 맞춰줌
-        predicted_softmax = function(self.out(output.contiguous().view(-1, self.hidden_size)), dim=1).view(batch_size, output_size, -1)
+        predicted_softmax = function(self.out(context.contiguous().view(-1, self.hidden_size)), dim=1).view(batch_size, output_size, -1)
         return predicted_softmax, alignment
 
     def forward(self, inputs=None, listener_hidden=None, listener_outputs=None, function=F.log_softmax, teacher_forcing_ratio=0.99, use_beam_search=False):

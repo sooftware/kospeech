@@ -20,18 +20,17 @@ class LocationAwareAttention(nn.Module):
     Applies an location-aware attention (Hybrid Attention) mechanism on the output features from the decoder.
     implementation of: https://arxiv.org/pdf/1506.07503.pdf
     '''
-    def __init__(self, decoder_hidden_size, encoder_hidden_size, attn_size, conv_size=32, smoothing=False):
+    def __init__(self, decoder_hidden_size, encoder_hidden_size, context_size, conv_out=32, smoothing=False):
         super(LocationAwareAttention, self).__init__()
-        self.attn_size = attn_size
+        self.context_size = context_size
         self.decoder_hidden_size = decoder_hidden_size
-        self.conv_size = conv_size
-        self.loc_conv = nn.Conv1d(in_channels=1, out_channels=conv_size, kernel_size=3, padding=1)
-        self.attn_size = attn_size
-        self.W = nn.Linear(decoder_hidden_size, attn_size, bias=False)
-        self.V = nn.Linear(encoder_hidden_size, attn_size, bias=False)
-        self.U = nn.Linear(conv_size, attn_size, bias=False)
-        self.b = nn.Parameter(torch.FloatTensor(attn_size).uniform_(-0.1, 0.1))
-        self.w = nn.Linear(attn_size, 1, bias=False)
+        self.conv_out = conv_out
+        self.loc_conv = nn.Conv1d(in_channels=1, out_channels=conv_out, kernel_size=3, padding=1)
+        self.W = nn.Linear(decoder_hidden_size, context_size, bias=False)
+        self.V = nn.Linear(encoder_hidden_size, context_size, bias=False)
+        self.U = nn.Linear(conv_out, context_size, bias=False)
+        self.b = nn.Parameter(torch.FloatTensor(context_size).uniform_(-0.1, 0.1))
+        self.w = nn.Linear(context_size, 1, bias=False)
         self.smoothing = smoothing
         self.tanh = nn.Tanh()
         self.softmax = nn.Softmax(dim=-1)
@@ -46,11 +45,11 @@ class LocationAwareAttention(nn.Module):
                                                 + self.V(encoder_outputs.reshape(-1, hidden_size)).view(batch_size, -1, self.attn_size)
                                                 + self.b)).squeeze(dim=-1)
         else:
-            conv_feat = torch.transpose(self.loc_conv(last_alignment.unsqueeze(1)), 1, 2)
+            conv_prev_align = torch.transpose(self.loc_conv(last_alignment.unsqueeze(1)), 1, 2)
 
             attn_scores = self.w(self.tanh( self.W(decoder_output.reshape(-1, hidden_size)).view(batch_size, -1, self.attn_size)
                                                 + self.V(encoder_outputs.reshape(-1, hidden_size)).view(batch_size, -1, self.attn_size)
-                                                + self.U(conv_feat)
+                                                + self.U(conv_prev_align)
                                                 + self.b )).squeeze(dim=-1)
 
         if self.smoothing:
@@ -59,8 +58,8 @@ class LocationAwareAttention(nn.Module):
         else:
             alignment = self.softmax(attn_scores)
 
-        output = torch.bmm(alignment.unsqueeze(dim=1), encoder_outputs).squeeze(dim=1)
-        return output, alignment
+        context = torch.bmm(alignment.unsqueeze(dim=1), encoder_outputs).squeeze(dim=1)
+        return context, alignment
 
 class ConcatAttention(nn.Module):
     """
