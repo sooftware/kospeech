@@ -54,11 +54,11 @@ from models.listener import Listener
 from models.listenAttendSpell import ListenAttendSpell
 
 if __name__ == '__main__':
-    os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
-    logger.info("device : %s" % torch.cuda.get_device_name(0))
-    logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
-    logger.info("CUDA version : %s" % (torch.version.cuda))
-    logger.info("PyTorch version : %s" % (torch.__version__))
+    #os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
+    #logger.info("device : %s" % torch.cuda.get_device_name(0))
+    #logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
+    #logger.info("CUDA version : %s" % (torch.version.cuda))
+    #logger.info("PyTorch version : %s" % (torch.__version__))
 
     hparams = HyperParams()
     hparams.logger_hparams()
@@ -76,7 +76,7 @@ if __name__ == '__main__':
                         bidirectional=hparams.use_bidirectional, rnn_cell='gru', use_pyramidal=hparams.use_pyramidal)
 
     speller = Speller(vocab_size=len(char2index), max_len=hparams.max_len, k=8,
-                      hidden_size=hparams.hidden_size * (2 if hparams.use_bidirectional else 1),
+                      hidden_size=hparams.hidden_size * (2 if hparams.use_bidirectional else 1), batch_size=hparams.batch_size,
                       sos_id=SOS_token, eos_id=EOS_token, layer_size = hparams.speller_layer_size,
                       rnn_cell = 'gru', dropout_p = hparams.dropout, use_attention = hparams.use_attention, device=device)
     model = ListenAttendSpell(listener=listener, speller=speller, use_pyramidal=hparams.use_pyramidal)
@@ -89,14 +89,15 @@ if __name__ == '__main__':
     loss_func = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_token).to(device)
 
     # load audio_paths & label_paths
-    audio_paths, label_paths = load_data_list(data_list_path=TRAIN_LIST_PATH, dataset_path=DATASET_PATH)
+    #audio_paths, label_paths = load_data_list(data_list_path=TRAIN_LIST_PATH, dataset_path=DATASET_PATH)
+    audio_paths, label_paths = load_data_list(data_list_path=SAMPLE_LIST_PATH, dataset_path=SAMPLE_DATASET_PATH)
 
     if hparams.use_pickle:
         target_dict = load_pickle(TARGET_DICT_PATH, "load all target_dict using pickle complete !!")
     else:
         # load all target dictionary for reducing disk I/O
         target_dict = load_targets(label_paths)
-        save_pickle(target_dict, TARGET_DICT_PATH, "dump all target dictionary using pickle complete !!")
+        #save_pickle(target_dict, TARGET_DICT_PATH, "dump all target dictionary using pickle complete !!")
 
     total_time_step, train_dataset_list, valid_dataset = \
         split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.015, target_dict=target_dict)

@@ -66,12 +66,13 @@ class Beam:
         decoder_input = self.beams
         # transpose (BxK) => (BxKx1)
         self.beams = self.beams.view(self.batch_size, self.k, 1)
-
+        last_alignment = torch.FloatTensor(self.batch_size, encoder_outputs.size(1)).uniform_(-0.1, 0.1)
         for di in range(self.max_len-1):
             if self._is_done():
                 break
             # For each beam, get class classfication distribution (shape: BxKxC)
-            step_output = self._forward_step(decoder_input, encoder_outputs).squeeze(1)
+            predicted_softmax, last_alignment = self._forward_step(decoder_input, encoder_outputs, last_alignment)
+            step_output = predicted_softmax.squeeze(1)
             # get top k distribution (shape: BxKxK)
             child_ps, child_vs = step_output.topk(self.k)
             # get child probability (applying length penalty)
@@ -131,7 +132,7 @@ class Beam:
                 return False
         return True
 
-    def _forward_step(self, decoder_input, encoder_outputs):
+    def _forward_step(self, decoder_input, encoder_outputs, last_alignment):
         """ forward one step on each decoder cell """
         output_size = decoder_input.size(1)
         embedded = self.embedding(decoder_input)
@@ -139,10 +140,10 @@ class Beam:
         decoder_output, hidden = self.rnn(embedded, self.decoder_hidden)  # decoder output
 
         if self.use_attention:
-            output = self.attention(decoder_output=decoder_output, encoder_output=encoder_outputs)
+            output, alignment = self.attention(decoder_output, encoder_outputs, last_alignment)
         else: output = decoder_output
         predicted_softmax = self.decode_func(self.out(output.contiguous().view(-1, self.hidden_size)), dim=1).view(self.batch_size,output_size,-1)
-        return predicted_softmax
+        return predicted_softmax, alignment
 
     def _get_length_penalty(self, length, alpha=1.2, min_length=5):
         """

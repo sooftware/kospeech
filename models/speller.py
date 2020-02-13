@@ -17,7 +17,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from models.beam import Beam
-from .attention import Attention
+from .attention import Attention, LocationAwareAttention, ContentBasedAttention
 
 if torch.cuda.is_available():
     import torch.cuda as device
@@ -59,9 +59,9 @@ class Speller(nn.Module):
     """
 
     def __init__(self, vocab_size, max_len, hidden_size,
-                 sos_id, eos_id,
+                 batch_size, sos_id, eos_id,
                  layer_size=1, rnn_cell='gru', dropout_p=0,
-                 use_attention=True, device=None, use_beam_search=True, k=8):
+                 use_attention=True, device=None, k=8):
         super(Speller, self).__init__()
         self.rnn_cell = nn.LSTM if rnn_cell.lower() == 'lstm' else nn.GRU if rnn_cell.lower() == 'gru' else nn.RNN
         self.rnn = self.rnn_cell(hidden_size , hidden_size, layer_size, batch_first=True, dropout=dropout_p)
@@ -76,28 +76,32 @@ class Speller(nn.Module):
         self.layer_size = layer_size
         self.input_dropout = nn.Dropout(p=dropout_p)
         self.device = device
-        self.use_beam_search = use_beam_search
+        self.batch_size = batch_size
         self.k = k
         if use_attention:
-            self.attention = Attention(self.hidden_size)
+            self.attention = LocationAwareAttention(decoder_hidden_size=self.hidden_size,
+                                                    encoder_hidden_size=self.hidden_size,
+                                                    attn_size=self.hidden_size,
+                                                    conv_size=32,
+                                                    smoothing=False)
 
-    def _forward_step(self, speller_input, speller_hidden, listener_outputs, function):
+    def _forward_step(self, speller_input, speller_hidden, listener_outputs, last_alignment, function):
         batch_size = speller_input.size(0)
         output_size = speller_input.size(1)
         embedded = self.embedding(speller_input)
         embedded = self.input_dropout(embedded)
         if self.training:
             self.rnn.flatten_parameters()
-        speller_output, hidden = self.rnn(embedded, speller_hidden) # speller output
+        speller_output = self.rnn(embedded, speller_hidden)[0] # speller output BxSxH
 
         if self.use_attention:
-            output = self.attention(decoder_output=speller_output, encoder_output=listener_outputs)
+            output, alignment = self.attention(speller_output, listener_outputs, last_alignment)
         else: output = speller_output
         # torch.view()에서 -1이면 나머지 알아서 맞춰줌
         predicted_softmax = function(self.out(output.contiguous().view(-1, self.hidden_size)), dim=1).view(batch_size, output_size, -1)
-        return predicted_softmax
+        return predicted_softmax, alignment
 
-    def forward(self, inputs=None, listener_hidden=None, listener_outputs=None, function=F.log_softmax, teacher_forcing_ratio=0.99):
+    def forward(self, inputs=None, listener_hidden=None, listener_outputs=None, function=F.log_softmax, teacher_forcing_ratio=0.99, use_beam_search=False):
         y_hats, logit = None, None
         decode_results = []
         # Validate Arguments
@@ -108,7 +112,7 @@ class Speller(nn.Module):
         # Decide Use Teacher Forcing or Not
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
 
-        if self.use_beam_search:
+        if use_beam_search:
             """Implementation of Beam-Search Decoding"""
             speller_input = inputs[:, 0].unsqueeze(1)
             beam = Beam(k=self.k, decoder_hidden=speller_hidden, decoder=self,
@@ -119,21 +123,29 @@ class Speller(nn.Module):
             # If teacher_forcing_ratio is True or False instead of a probability, the unrolling can be done in graph
             if use_teacher_forcing:
                 speller_input = inputs[:, :-1]  # except </s>
-                """ if teacher_forcing, Infer all at once """
-                predicted_softmax = self._forward_step(speller_input, speller_hidden, listener_outputs, function=function)
-                """Extract Output by Step"""
-                for di in range(predicted_softmax.size(1)):
-                    step_output = predicted_softmax[:, di, :]
+                last_alignment = torch.FloatTensor(batch_size, listener_outputs.size(1)).uniform_(-0.1, 0.1)
+                """ Fix to non-parallel process even in teacher forcing to apply location-aware attention """
+                for di in range(len(speller_input[0])):
+                    predicted_softmax, last_alignment = self._forward_step(speller_input=speller_input[:, di].unsqueeze(1),
+                                                                           speller_hidden=speller_hidden,
+                                                                           listener_outputs=listener_outputs,
+                                                                           last_alignment=last_alignment,
+                                                                           function=function)
+                    step_output = predicted_softmax.squeeze(1)
                     decode_results.append(step_output)
             else:
                 speller_input = inputs[:, 0].unsqueeze(1)
+                last_alignment = torch.FloatTensor(batch_size, listener_outputs.size(1)).uniform_(-0.1, 0.1)
                 for di in range(max_length):
-                    predicted_softmax = self._forward_step(speller_input, speller_hidden, listener_outputs, function=function)
+                    predicted_softmax, last_alignment = self._forward_step(speller_input=speller_input,
+                                                                           speller_hidden=speller_hidden,
+                                                                           listener_outputs=listener_outputs,
+                                                                           last_alignment=last_alignment,
+                                                                           function=function)
                     step_output = predicted_softmax.squeeze(1)
                     decode_results.append(step_output)
                     speller_input = decode_results[-1].topk(1)[1]
 
             logit = torch.stack(decode_results, dim=1).to(self.device)
             y_hats = logit.max(-1)[1]
-
         return (y_hats, logit if self.training else y_hats)
