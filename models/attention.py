@@ -17,7 +17,7 @@ import torch.nn.functional as F
 
 class LocationAwareAttention(nn.Module):
     '''
-    Applies an location-aware attention mechanism on the output features from the decoder.
+    Applies an location-aware attention (Hybrid Attention) mechanism on the output features from the decoder.
 
     implementation of: https://arxiv.org/pdf/1506.07503.pdf
     '''
