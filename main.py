@@ -54,11 +54,11 @@ from models.listener import Listener
 from models.listenAttendSpell import ListenAttendSpell
 
 if __name__ == '__main__':
-    #os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
-    #logger.info("device : %s" % torch.cuda.get_device_name(0))
-    #logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
-    #logger.info("CUDA version : %s" % (torch.version.cuda))
-    #logger.info("PyTorch version : %s" % (torch.__version__))
+    os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
+    logger.info("device : %s" % torch.cuda.get_device_name(0))
+    logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
+    logger.info("CUDA version : %s" % (torch.version.cuda))
+    logger.info("PyTorch version : %s" % (torch.__version__))
 
     hparams = HyperParams()
     hparams.logger_hparams()

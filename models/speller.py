@@ -17,7 +17,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from models.beam import Beam
-from .attention import Attention, LocationAwareAttention, ContentBasedAttention
+from .attention import LocationAwareAttention
 
 if torch.cuda.is_available():
     import torch.cuda as device
@@ -123,7 +123,7 @@ class Speller(nn.Module):
             # If teacher_forcing_ratio is True or False instead of a probability, the unrolling can be done in graph
             if use_teacher_forcing:
                 speller_input = inputs[:, :-1]  # except </s>
-                last_alignment = torch.FloatTensor(batch_size, listener_outputs.size(1)).uniform_(-0.1, 0.1)
+                last_alignment = None
                 """ Fix to non-parallel process even in teacher forcing to apply location-aware attention """
                 for di in range(len(speller_input[0])):
                     predicted_softmax, last_alignment = self._forward_step(speller_input=speller_input[:, di].unsqueeze(1),
@@ -135,7 +135,7 @@ class Speller(nn.Module):
                     decode_results.append(step_output)
             else:
                 speller_input = inputs[:, 0].unsqueeze(1)
-                last_alignment = torch.FloatTensor(batch_size, listener_outputs.size(1)).uniform_(-0.1, 0.1)
+                last_alignment = None
                 for di in range(max_length):
                     predicted_softmax, last_alignment = self._forward_step(speller_input=speller_input,
                                                                            speller_hidden=speller_hidden,

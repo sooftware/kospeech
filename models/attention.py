@@ -18,7 +18,6 @@ import torch.nn.functional as F
 class LocationAwareAttention(nn.Module):
     '''
     Applies an location-aware attention (Hybrid Attention) mechanism on the output features from the decoder.
-
     implementation of: https://arxiv.org/pdf/1506.07503.pdf
     '''
     def __init__(self, decoder_hidden_size, encoder_hidden_size, attn_size, conv_size=32, smoothing=False):
@@ -41,12 +40,18 @@ class LocationAwareAttention(nn.Module):
         """ """
         batch_size = decoder_output.size(0)
         hidden_size = decoder_output.size(2)
-        conv_feat = torch.transpose(self.loc_conv(last_alignment.unsqueeze(1)), 1, 2)
 
-        attn_scores = self.w(self.tanh( self.W(decoder_output.reshape(-1, hidden_size)).view(batch_size, -1, self.attn_size)
-                                            + self.V(encoder_outputs.reshape(-1, hidden_size)).view(batch_size, -1, self.attn_size)
-                                            + self.U(conv_feat)
-                                            + self.b )).squeeze(dim=-1)
+        if last_alignment is None:
+            attn_scores = self.w( self.tanh(self.W(decoder_output.reshape(-1, hidden_size)).view(batch_size, -1, self.attn_size)
+                                                + self.V(encoder_outputs.reshape(-1, hidden_size)).view(batch_size, -1, self.attn_size)
+                                                + self.b)).squeeze(dim=-1)
+        else:
+            conv_feat = torch.transpose(self.loc_conv(last_alignment.unsqueeze(1)), 1, 2)
+
+            attn_scores = self.w(self.tanh( self.W(decoder_output.reshape(-1, hidden_size)).view(batch_size, -1, self.attn_size)
+                                                + self.V(encoder_outputs.reshape(-1, hidden_size)).view(batch_size, -1, self.attn_size)
+                                                + self.U(conv_feat)
+                                                + self.b )).squeeze(dim=-1)
 
         if self.smoothing:
             attn_scores = torch.sigmoid(attn_scores)

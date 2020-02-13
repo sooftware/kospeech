@@ -66,7 +66,7 @@ class Beam:
         decoder_input = self.beams
         # transpose (BxK) => (BxKx1)
         self.beams = self.beams.view(self.batch_size, self.k, 1)
-        last_alignment = torch.FloatTensor(self.batch_size, encoder_outputs.size(1)).uniform_(-0.1, 0.1)
+        last_alignment = None
         for di in range(self.max_len-1):
             if self._is_done():
                 break
