@@ -41,24 +41,24 @@ import random
 import torch
 import time
 import os
-from util.define import *
-from util.dataset import split_dataset
-from util.hparams import HyperParams
-from util.loader import BaseDataLoader, MultiLoader
-from util.load import load_targets, load_data_list, load_pickle
-from util.save import save_epoch_result, save_pickle
-from util.evaluator import evaluate
-from util.trainer import train
+from utils.define import *
+from utils.dataset import split_dataset
+from utils.hparams import HyperParams
+from utils.loader import BaseDataLoader, MultiLoader
+from utils.load import load_targets, load_data_list, load_pickle
+from utils.save import save_epoch_result, save_pickle
+from utils.evaluator import evaluate
+from utils.trainer import train
 from models.speller import Speller
 from models.listener import Listener
 from models.listenAttendSpell import ListenAttendSpell
 
 if __name__ == '__main__':
-    #os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
-    #logger.info("device : %s" % torch.cuda.get_device_name(0))
-    #logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
-    #logger.info("CUDA version : %s" % (torch.version.cuda))
-    #logger.info("PyTorch version : %s" % (torch.__version__))
+    os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
+    logger.info("device : %s" % torch.cuda.get_device_name(0))
+    logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
+    logger.info("CUDA version : %s" % (torch.version.cuda))
+    logger.info("PyTorch version : %s" % (torch.__version__))
 
     hparams = HyperParams()
     hparams.logger_hparams()
@@ -70,7 +70,6 @@ if __name__ == '__main__':
     device = torch.device('cuda' if cuda else 'cpu')
 
     feat_size = 33
-
     listener = Listener(feat_size=feat_size, hidden_size=hparams.hidden_size,
                         dropout_p=hparams.dropout, layer_size=hparams.listener_layer_size,
                         bidirectional=hparams.use_bidirectional, rnn_cell='gru', use_pyramidal=hparams.use_pyramidal)

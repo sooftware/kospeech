@@ -13,8 +13,7 @@ limitations under the License.
 
 import pandas as pd
 import pickle
-from util.define import logger
-from util.define import TRAIN_RESULT_PATH, VALID_RESULT_PATH, ENCODING, TRAIN_STEP_RESULT_PATH
+from utils.define import TRAIN_RESULT_PATH, VALID_RESULT_PATH, ENCODING, TRAIN_STEP_RESULT_PATH, logger
 
 def save_epoch_result(train_result, valid_result):
     train_dict, train_loss, train_cer = train_result

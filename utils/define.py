@@ -16,7 +16,7 @@ logger = logging.getLogger('root')
 FORMAT = "[%(asctime)s %(filename)s:%(lineno)s - %(funcName)s()] %(message)s"
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format=FORMAT)
 logger.setLevel(logging.INFO)
-from util.label import load_label
+from utils.label import load_label
 char2index, index2char = load_label('./data/label/train_labels.csv', encoding='utf-8')
 test_char2index, test_index2char = load_label('./data/label/test_labels.csv', encoding='utf-8')
 SOS_token = int(char2index['<s>'])

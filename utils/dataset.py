@@ -13,10 +13,10 @@ limitations under the License.
 import random
 import math
 from torch.utils.data import Dataset
-from util.augment import spec_augment
-from util.feature import get_librosa_mfcc
-from util.label import get_label
-from util.define import logger, SOS_token, EOS_token
+from utils.augment import spec_augment
+from utils.feature import get_librosa_mfcc
+from utils.label import get_label
+from utils.define import logger, SOS_token, EOS_token
 
 class BaseDataset(Dataset):
     """

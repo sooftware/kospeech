@@ -12,10 +12,10 @@ limitations under the License.
 """
 
 import time, random
-from util.distance import get_distance
-from util.define import logger
-from util.lr import ramp_up, exp_decay
-from util.save import save_step_result
+from utils.distance import get_distance
+from utils.define import logger
+from utils.lr import ramp_up, exp_decay
+from utils.save import save_step_result
 train_step_result = {'loss': [], 'cer': []}
 
 def train(model, hparams, epoch, lr_rampup, total_time_step, queue, loss_func, optimizer, device, train_begin, worker_num, print_batch=5, teacher_forcing_ratio=1):
@@ -49,7 +49,6 @@ def train(model, hparams, epoch, lr_rampup, total_time_step, queue, loss_func, o
         target = targets[:, 1:]
         model.module.flatten_parameters()
 
-        # Seq2seq forward()
         y_hat, logit = model(feats, targets, teacher_forcing_ratio)
 
         loss = loss_func(logit.contiguous().view(-1, logit.size(-1)), target.contiguous().view(-1))

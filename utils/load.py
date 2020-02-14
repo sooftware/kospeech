@@ -16,7 +16,7 @@ import pickle
 import math
 import pandas as pd
 from tqdm import trange
-from util.define import logger, TRAIN_DATASET_PICKLE_PATH, VALID_DATASET_PICKLE_PATH, ENCODING
+from utils.define import logger, TRAIN_DATASET_PICKLE_PATH, VALID_DATASET_PICKLE_PATH, ENCODING
 
 def load_targets(label_paths):
     """

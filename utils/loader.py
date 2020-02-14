@@ -2,7 +2,7 @@ import threading
 import math
 import torch
 import random
-from util.define import logger
+from utils.define import logger
 
 class MultiLoader():
     def __init__(self, dataset_list, queue, batch_size, worker_num):
