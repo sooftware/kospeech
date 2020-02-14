@@ -83,7 +83,7 @@ Training in Progress
 **Low Plateau** : Steps to be maintained at a certain number to avoid extremely slow learning.
   
 * Reference
-  + 「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」 Google Brain Team. 2019
+  + 「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」 Google Brain Team.   
   
 ### Training Result
 [AI Hub Dataset #2](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/training/AI%20Hub%20Dataset%20%232.md)
@@ -233,7 +233,7 @@ def spec_augment(feat, T=40, F=15, time_mask_num=2, freq_mask_num=2):
 ```    
   
 * Reference
-  + 「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」 Google Brain Team. 2019
+  + 「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」 Google Brain Team.  
   + https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py
   
 ## Score
