@@ -49,8 +49,9 @@ ListenAttendSpell(
 ```  
   
 * Reference
-  + 「Listen, Attend and Spell」 \[William Chan et al. 2015\]
-  + https://github.com/IBM/pytorch-seq2seq
+  + 「Listen, Attend and Spell」 Chan et al. 2015
+  + 「Attention-Based Models for Speech Recognition」 Chorowski et al. 2015
+  +  https://github.com/IBM/pytorch-seq2seq
   
 ## Hyperparameters  
 | Hyperparameter  |Help| Default|              
@@ -82,7 +83,7 @@ Training in Progress
 **Low Plateau** : Steps to be maintained at a certain number to avoid extremely slow learning.
   
 * Reference
-  + 「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」 Google Brain Team.
+  + 「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」 Google Brain Team.   
   
 ### Training Result
 [AI Hub Dataset #2](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/training/AI%20Hub%20Dataset%20%232.md)
@@ -113,7 +114,7 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 5 0 105 0 729 0 172 31 25 0 318 0 119 0 489 551 156 0 314 746 3 32 20
 ```
 * train_list.csv    
-학습용 데이터 리스트 (980h)    
+학습용 데이터 리스트 - **980h**    
   
 | pcm-filename| txt-filename|   
 | :-------------------| :--------------------------|     
@@ -124,7 +125,7 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 | KaiSpeech_039018.pcm | KaiSpeech_label_039018.txt  |  
   
 * test_list.csv   
-테스트용 데이터 리스트 (20h)   
+테스트용 데이터 리스트  - **20h**     
   
 | pcm-filaname| txt-filename|    
 | :-------------------| :--------------------------|     
@@ -202,7 +203,7 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = False, input_re
 ```
    
 * Reference
-  + 「 Voice Recognition Using MFCC Algorithm」 \[Koustav Chakraborty et al. 2014\]
+  + 「 Voice Recognition Using MFCC Algorithm」 Chakraborty et al. 2014
   + https://github.com/librosa/librosa
     
 
@@ -232,7 +233,7 @@ def spec_augment(feat, T=40, F=15, time_mask_num=2, freq_mask_num=2):
 ```    
   
 * Reference
-  + 「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」 Google Brain Team.
+  + 「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」 Google Brain Team.  
   + https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py
   
 ## Score
@@ -246,18 +247,19 @@ CRR = (1.0 - CER) * 100.0
 * Reference
   + https://en.wikipedia.org/wiki/Levenshtein_distance
   
-## Reference
-[[1]   IBM pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)   
-[[2]   A.I Hub 한국어 음성 데이터셋](http://www.aihub.or.kr/aidata/105)   
-[[3]  「Voice Recognition Using MFCC Algorithm」  Paper](https://pdfs.semanticscholar.org/32d7/2b00454d5155599fb9e8e5119e16970db50d.pdf)   
-[[4] 「A Simple Data Augmentation Method for Automatic Speech Recognition」  Paper](https://arxiv.org/abs/1904.08779)    
-[[5]   PyTorch Spec-Augmentation](https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py)     
-[[6] 「Sequence to sequence learning with neural networks」  Paper](https://arxiv.org/abs/1409.3215)    
-[[7] 「Neural Machine Translation by jointly learning to align and Translate」  Paper](https://arxiv.org/pdf/1409.0473.pdf)   
-[[8] 「Listen, Attend and Spell」  Paper](https://arxiv.org/abs/1508.01211)   
-[[9] 「Deep Speech: Scaling up end-to-End Speech Recognition」  Paper](https://arxiv.org/abs/1412.5567)  
+## Reference   
+[[1] 「Listen, Attend and Spell」  Paper](https://arxiv.org/abs/1508.01211)   
+[[2] 「Attention-Based Models for Speech Recognition」  Paper](https://arxiv.org/pdf/1506.07503.pdf)  
+[[3]   IBM pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)   
+[[4]   A.I Hub 한국어 음성 데이터셋](http://www.aihub.or.kr/aidata/105)   
+[[5] 「A Simple Data Augmentation Method for Automatic Speech Recognition」  Paper](https://arxiv.org/abs/1904.08779)    
+[[6]   PyTorch Spec-Augmentation](https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py)     
+[[7]  「Voice Recognition Using MFCC Algorithm」  Paper](https://pdfs.semanticscholar.org/32d7/2b00454d5155599fb9e8e5119e16970db50d.pdf) 
+[[8] 「Deep Speech: Scaling up end-to-End Speech Recognition」  Paper](https://arxiv.org/abs/1412.5567)  
+[[9] 「Deep Speech 2: End-to-End Speech Recognition in English and Mandarin」  Paper](https://arxiv.org/abs/1512.02595)  
 [[10]   PyTorch VGG Net](https://github.com/chengyangfu/pytorch-vgg-cifar10/blob/master/vgg.py)  
-[[11]   Levenshtein Distance](https://en.wikipedia.org/wiki/Levenshtein_distance)  
+[[11]   Levenshtein Distance](https://en.wikipedia.org/wiki/Levenshtein_distance)   
+[[12]   librosa](https://github.com/librosa/librosa)  
    
 ## Requirements  
 Install Levenshtein  
