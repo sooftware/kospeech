@@ -17,7 +17,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from models.beam import Beam
-from .attention import LocationAwareAttention
+from .attention import Attention
 
 if torch.cuda.is_available():
     import torch.cuda as device
@@ -79,11 +79,7 @@ class Speller(nn.Module):
         self.batch_size = batch_size
         self.k = k
         if use_attention:
-            self.attention = LocationAwareAttention(decoder_hidden_size=self.hidden_size,
-                                                    encoder_hidden_size=self.hidden_size,
-                                                    context_size=self.hidden_size,
-                                                    conv_out=32,
-                                                    smoothing=False)
+            self.attention = Attention(attention='hybrid', decoder=self)
 
     def _forward_step(self, speller_input, speller_hidden, listener_outputs, last_alignment, function):
         batch_size = speller_input.size(0)

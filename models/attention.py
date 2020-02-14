@@ -15,14 +15,39 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-class LocationAwareAttention(nn.Module):
+class Attention(nn.Module):
+    def __init__(self, attention = 'hybrid', decoder = None):
+        super(Attention, self).__init__()
+        self.decoder = decoder
+        if attention.lower() == 'hybrid':
+            self.attention = HybridAttention(decoder_hidden_size=decoder.hidden_size,
+                                             encoder_hidden_size=decoder.hidden_size,
+                                             context_size=decoder.hidden_size,
+                                             conv_out=32,
+                                             smoothing=False)
+        elif attention.lower() == 'content-based':
+            self.attention = ContentBasedAttention(decoder_hidden_size=decoder.hidden_size,
+                                                   encoder_hidden_size=decoder.hidden_size,
+                                                   context_size=decoder.hidden_size)
+        else:
+            self.attention = BaseAttention(decoder_hidden_size=decoder.hidden_size)
+
+    def forward(self, decoder_output, encoder_outputs, last_alignment):
+        if isinstance(self.attention, HybridAttention):
+            context, alignment = self.attention.forward(decoder_output, encoder_outputs, last_alignment)
+            return context, alignment
+        else:
+            context = self.attention.forward(decoder_output, encoder_outputs)
+            return context
+
+
+class HybridAttention(nn.Module):
     '''
-    Applies an location-aware attention (Hybrid Attention) mechanism on the output features from the decoder.
+    Applies an Hybrid attention (Location-aware Attention) mechanism on the output features from the decoder.
     implementation of: https://arxiv.org/pdf/1506.07503.pdf
     '''
     def __init__(self, decoder_hidden_size, encoder_hidden_size, context_size, conv_out=32, smoothing=False):
-        super(LocationAwareAttention, self).__init__()
-        self.context_size = context_size
+        super(HybridAttention, self).__init__()
         self.decoder_hidden_size = decoder_hidden_size
         self.conv_out = conv_out
         self.loc_conv = nn.Conv1d(in_channels=1, out_channels=conv_out, kernel_size=3, padding=1)
@@ -61,9 +86,34 @@ class LocationAwareAttention(nn.Module):
         context = torch.bmm(alignment.unsqueeze(dim=1), encoder_outputs).squeeze(dim=1)
         return context, alignment
 
-class ConcatAttention(nn.Module):
+
+class ContentBasedAttention(nn.Module):
+    """ Applies an content-based attention mechanism on the output features from the decoder. """
+    def __init__(self, decoder_hidden_size, encoder_hidden_size, context_size):
+        super(ContentBasedAttention, self).__init__()
+        self.W = nn.Linear(decoder_hidden_size, context_size, bias=False)
+        self.V = nn.Linear(encoder_hidden_size, context_size, bias=False)
+        self.b = nn.Parameter(torch.FloatTensor(context_size).uniform_(-0.1, 0.1))
+        self.w = nn.Linear(context_size, 1, bias=False)
+        self.tanh = nn.Tanh()
+        self.softmax = nn.Softmax(dim=-1)
+
+    def forward(self, decoder_output, encoder_outputs):
+        batch_size = decoder_output.size(0)
+        hidden_size = decoder_output.size(2)
+
+        attn_scores = self.w(self.tanh( self.W(decoder_output.reshape(-1, hidden_size)).view(batch_size, -1, self.attn_size)
+                                        + self.V(encoder_outputs.reshape(-1, hidden_size)).view(batch_size, -1, self.attn_size)
+                                        + self.b )).squeeze(dim=-1)
+        alignment = self.softmax(attn_scores)
+
+        context = torch.bmm(alignment.unsqueeze(dim=1), encoder_outputs).squeeze(dim=1)
+        return context
+
+
+class BaseAttention(nn.Module):
     """
-    Applies an concat attention mechanism on the output features from the decoder.
+    Applies an base attention mechanism on the output features from the decoder.
 
     .. math::
             \begin{array}{ll}
@@ -82,9 +132,9 @@ class ConcatAttention(nn.Module):
     Outputs: output, attn
         - **output** (batch, output_len, dimensions): tensor containing the attended output features from the decoder.
     """
-    def __init__(self, dim):
-        super(ConcatAttention, self).__init__()
-        self.linear_out = nn.Linear(dim*2, dim)
+    def __init__(self, decoder_hidden_size):
+        super(BaseAttention, self).__init__()
+        self.linear_out = nn.Linear(decoder_hidden_size*2, decoder_hidden_size)
 
     def forward(self, decoder_output, encoder_outputs):
         batch_size = decoder_output.size(0)
@@ -99,30 +149,5 @@ class ConcatAttention(nn.Module):
         attn_val = torch.bmm(attn_distribution, encoder_outputs) # get attention value
         # concatenate attn_val & decoder_output
         combined = torch.cat((attn_val, decoder_output), dim=2)
-        output = torch.tanh(self.linear_out(combined.view(-1, 2 * hidden_size))).view(batch_size, -1, hidden_size)
-        return output
-
-
-class ContentBasedAttention(nn.Module):
-    """ Applies an content-based attention mechanism on the output features from the decoder. """
-    def __init__(self, decoder_hidden_size, encoder_hidden_size, attn_size):
-        super(ContentBasedAttention, self).__init__()
-        self.W = nn.Linear(decoder_hidden_size, attn_size, bias=False)
-        self.V = nn.Linear(encoder_hidden_size, attn_size, bias=False)
-        self.b = nn.Parameter(torch.FloatTensor(attn_size).uniform_(-0.1, 0.1))
-        self.w = nn.Linear(attn_size, 1, bias=False)
-        self.attn_size = attn_size
-        self.tanh = nn.Tanh()
-        self.softmax = nn.Softmax(dim=-1)
-
-    def forward(self, decoder_output, encoder_outputs):
-        batch_size = decoder_output.size(0)
-        hidden_size = decoder_output.size(2)
-
-        attn_scores = self.w(self.tanh( self.W(decoder_output.reshape(-1, hidden_size)).view(batch_size, -1, self.attn_size)
-                                        + self.V(encoder_outputs.reshape(-1, hidden_size)).view(batch_size, -1, self.attn_size)
-                                        + self.b )).squeeze(dim=-1)
-        alignment = self.softmax(attn_scores)
-
-        output = torch.bmm(alignment.unsqueeze(dim=1), encoder_outputs).squeeze(dim=1)
-        return output
+        context = torch.tanh(self.linear_out(combined.view(-1, 2 * hidden_size))).view(batch_size, -1, hidden_size)
+        return context
