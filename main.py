@@ -77,18 +77,15 @@ if __name__ == '__main__':
 
     speller = Speller(vocab_size=len(char2index), max_len=hparams.max_len, k=8,
                       hidden_size=hparams.hidden_size * (2 if hparams.use_bidirectional else 1), batch_size=hparams.batch_size,
-                      sos_id=SOS_token, eos_id=EOS_token, layer_size = hparams.speller_layer_size,
+                      sos_id=SOS_token, eos_id=EOS_token, layer_size = hparams.speller_layer_size, score_function=hparams.score_function,
                       rnn_cell = 'gru', dropout_p = hparams.dropout, use_attention = hparams.use_attention, device=device)
     model = ListenAttendSpell(listener=listener, speller=speller, use_pyramidal=hparams.use_pyramidal)
     model.flatten_parameters()
     model = nn.DataParallel(model).to(device)
 
-    # Optimize Adam Algorithm
     optimizer = optim.Adam(model.module.parameters(), lr=hparams.init_lr)
-    # Calculate loss by CrossEntropy
     loss_func = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_token).to(device)
 
-    # load audio_paths & label_paths
     #audio_paths, label_paths = load_data_list(data_list_path=TRAIN_LIST_PATH, dataset_path=DATASET_PATH)
     audio_paths, label_paths = load_data_list(data_list_path=SAMPLE_LIST_PATH, dataset_path=SAMPLE_DATASET_PATH)
 

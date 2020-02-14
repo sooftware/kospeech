@@ -47,7 +47,8 @@ class HyperParams():
         self.use_pickle = True
         self.use_pyramidal = False
         self.use_cuda = True
-        self.augment_ratio = 1.0
+        self.score_function = 'hybrid'
+        self.augment_ratio = 0.0
         self.hidden_size = 256
         self.dropout = 0.5
         self.listener_layer_size = 5
@@ -72,6 +73,7 @@ class HyperParams():
         logger.info("use_pickle : %s" % str(self.use_pickle))
         logger.info("use_augment : %s" % str(self.use_augment))
         logger.info("use_pyramidal : %s" % str(self.use_pyramidal))
+        logger.info("attention : %s" % self.score_function)
         logger.info("augment_ratio : %0.2f" % self.augment_ratio)
         logger.info("input_reverse : %s" % str(self.input_reverse))
         logger.info("hidden_size : %d" % self.hidden_size)

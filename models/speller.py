@@ -61,7 +61,7 @@ class Speller(nn.Module):
     def __init__(self, vocab_size, max_len, hidden_size,
                  batch_size, sos_id, eos_id,
                  layer_size=1, rnn_cell='gru', dropout_p=0,
-                 use_attention=True, device=None, k=8):
+                 use_attention=True, score_function=None, device=None, k=8):
         super(Speller, self).__init__()
         self.rnn_cell = nn.LSTM if rnn_cell.lower() == 'lstm' else nn.GRU if rnn_cell.lower() == 'gru' else nn.RNN
         self.rnn = self.rnn_cell(hidden_size , hidden_size, layer_size, batch_first=True, dropout=dropout_p)
@@ -79,7 +79,7 @@ class Speller(nn.Module):
         self.batch_size = batch_size
         self.k = k
         if use_attention:
-            self.attention = Attention(attention='hybrid', decoder=self)
+            self.attention = Attention(score_function=score_function, decoder_hidden_size=hidden_size)
 
     def _forward_step(self, speller_input, speller_hidden, listener_outputs, last_alignment, function):
         batch_size = speller_input.size(0)
@@ -95,7 +95,7 @@ class Speller(nn.Module):
         else: context = speller_output
         # torch.view()에서 -1이면 나머지 알아서 맞춰줌
         predicted_softmax = function(self.out(context.contiguous().view(-1, self.hidden_size)), dim=1).view(batch_size, output_size, -1)
-        return predicted_softmax, alignment
+        return predicted_softmax, alignment if self.use_attention else predicted_softmax
 
     def forward(self, inputs=None, listener_hidden=None, listener_outputs=None, function=F.log_softmax, teacher_forcing_ratio=0.99, use_beam_search=False):
         y_hats, logit = None, None
@@ -144,4 +144,4 @@ class Speller(nn.Module):
 
             logit = torch.stack(decode_results, dim=1).to(self.device)
             y_hats = logit.max(-1)[1]
-        return (y_hats, logit if self.training else y_hats)
+        return y_hats, logit if self.training else y_hats

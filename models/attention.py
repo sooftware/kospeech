@@ -16,21 +16,23 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 class Attention(nn.Module):
-    def __init__(self, attention = 'hybrid', decoder = None):
+    """
+    Applies an attention mechanism on the output features from the decoder.
+    """
+    def __init__(self, score_function = 'hybrid', decoder_hidden_size = None):
         super(Attention, self).__init__()
-        self.decoder = decoder
-        if attention.lower() == 'hybrid':
-            self.attention = HybridAttention(decoder_hidden_size=decoder.hidden_size,
-                                             encoder_hidden_size=decoder.hidden_size,
-                                             context_size=decoder.hidden_size,
+        if score_function.lower() == 'hybrid':
+            self.attention = HybridAttention(decoder_hidden_size=decoder_hidden_size,
+                                             encoder_hidden_size=decoder_hidden_size,
+                                             context_size=decoder_hidden_size,
                                              conv_out=32,
                                              smoothing=False)
-        elif attention.lower() == 'content-based':
-            self.attention = ContentBasedAttention(decoder_hidden_size=decoder.hidden_size,
-                                                   encoder_hidden_size=decoder.hidden_size,
-                                                   context_size=decoder.hidden_size)
+        elif score_function.lower() == 'content-based':
+            self.attention = ContentBasedAttention(decoder_hidden_size=decoder_hidden_size,
+                                                   encoder_hidden_size=decoder_hidden_size,
+                                                   context_size=decoder_hidden_size)
         else:
-            self.attention = BaseAttention(decoder_hidden_size=decoder.hidden_size)
+            self.attention = BaseAttention(decoder_hidden_size=decoder_hidden_size)
 
     def forward(self, decoder_output, encoder_outputs, last_alignment):
         if isinstance(self.attention, HybridAttention):
@@ -41,15 +43,18 @@ class Attention(nn.Module):
             return context
 
 
-class HybridAttention(nn.Module):
+class HybridAttention(Attention):
     '''
-    Applies an Hybrid attention (Location-aware Attention) mechanism on the output features from the decoder.
-    implementation of: https://arxiv.org/pdf/1506.07503.pdf
+    Score function : Hybrid attention (Location-aware Attention)
+    Reference:
+        「Attention-Based Models for Speech Recognition」 Paper
+         https://arxiv.org/pdf/1506.07503.pdf
     '''
     def __init__(self, decoder_hidden_size, encoder_hidden_size, context_size, conv_out=32, smoothing=False):
-        super(HybridAttention, self).__init__()
+        super(Attention, self).__init__()
         self.decoder_hidden_size = decoder_hidden_size
         self.conv_out = conv_out
+        self.context_size=context_size
         self.loc_conv = nn.Conv1d(in_channels=1, out_channels=conv_out, kernel_size=3, padding=1)
         self.W = nn.Linear(decoder_hidden_size, context_size, bias=False)
         self.V = nn.Linear(encoder_hidden_size, context_size, bias=False)
@@ -66,14 +71,13 @@ class HybridAttention(nn.Module):
         hidden_size = decoder_output.size(2)
 
         if last_alignment is None:
-            attn_scores = self.w( self.tanh(self.W(decoder_output.reshape(-1, hidden_size)).view(batch_size, -1, self.attn_size)
-                                                + self.V(encoder_outputs.reshape(-1, hidden_size)).view(batch_size, -1, self.attn_size)
+            attn_scores = self.w( self.tanh(self.W(decoder_output.reshape(-1, hidden_size)).view(batch_size, -1, self.context_size)
+                                                + self.V(encoder_outputs.reshape(-1, hidden_size)).view(batch_size, -1, self.context_size)
                                                 + self.b)).squeeze(dim=-1)
         else:
             conv_prev_align = torch.transpose(self.loc_conv(last_alignment.unsqueeze(1)), 1, 2)
-
-            attn_scores = self.w(self.tanh( self.W(decoder_output.reshape(-1, hidden_size)).view(batch_size, -1, self.attn_size)
-                                                + self.V(encoder_outputs.reshape(-1, hidden_size)).view(batch_size, -1, self.attn_size)
+            attn_scores = self.w(self.tanh( self.W(decoder_output.reshape(-1, hidden_size)).view(batch_size, -1, self.context_size)
+                                                + self.V(encoder_outputs.reshape(-1, hidden_size)).view(batch_size, -1, self.context_size)
                                                 + self.U(conv_prev_align)
                                                 + self.b )).squeeze(dim=-1)
 
@@ -87,14 +91,15 @@ class HybridAttention(nn.Module):
         return context, alignment
 
 
-class ContentBasedAttention(nn.Module):
+class ContentBasedAttention(Attention):
     """ Applies an content-based attention mechanism on the output features from the decoder. """
     def __init__(self, decoder_hidden_size, encoder_hidden_size, context_size):
-        super(ContentBasedAttention, self).__init__()
+        super(Attention, self).__init__()
         self.W = nn.Linear(decoder_hidden_size, context_size, bias=False)
         self.V = nn.Linear(encoder_hidden_size, context_size, bias=False)
         self.b = nn.Parameter(torch.FloatTensor(context_size).uniform_(-0.1, 0.1))
         self.w = nn.Linear(context_size, 1, bias=False)
+        self.context_size = context_size
         self.tanh = nn.Tanh()
         self.softmax = nn.Softmax(dim=-1)
 
@@ -102,8 +107,8 @@ class ContentBasedAttention(nn.Module):
         batch_size = decoder_output.size(0)
         hidden_size = decoder_output.size(2)
 
-        attn_scores = self.w(self.tanh( self.W(decoder_output.reshape(-1, hidden_size)).view(batch_size, -1, self.attn_size)
-                                        + self.V(encoder_outputs.reshape(-1, hidden_size)).view(batch_size, -1, self.attn_size)
+        attn_scores = self.w(self.tanh( self.W(decoder_output.reshape(-1, hidden_size)).view(batch_size, -1, self.context_size)
+                                        + self.V(encoder_outputs.reshape(-1, hidden_size)).view(batch_size, -1, self.context_size)
                                         + self.b )).squeeze(dim=-1)
         alignment = self.softmax(attn_scores)
 
@@ -111,7 +116,7 @@ class ContentBasedAttention(nn.Module):
         return context
 
 
-class BaseAttention(nn.Module):
+class BaseAttention(Attention):
     """
     Applies an base attention mechanism on the output features from the decoder.
 
@@ -133,7 +138,7 @@ class BaseAttention(nn.Module):
         - **output** (batch, output_len, dimensions): tensor containing the attended output features from the decoder.
     """
     def __init__(self, decoder_hidden_size):
-        super(BaseAttention, self).__init__()
+        super(Attention, self).__init__()
         self.linear_out = nn.Linear(decoder_hidden_size*2, decoder_hidden_size)
 
     def forward(self, decoder_output, encoder_outputs):
