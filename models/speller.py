@@ -93,19 +93,15 @@ class Speller(nn.Module):
         if self.use_attention:
             context, alignment = self.attention(speller_output, listener_outputs, last_alignment)
         else: context = speller_output
-        # torch.view()에서 -1이면 나머지 알아서 맞춰줌
         predicted_softmax = function(self.out(context.contiguous().view(-1, self.hidden_size)), dim=1).view(batch_size, output_size, -1)
         return predicted_softmax, alignment if self.use_attention else predicted_softmax
 
     def forward(self, inputs=None, listener_hidden=None, listener_outputs=None, function=F.log_softmax, teacher_forcing_ratio=0.99, use_beam_search=False):
         y_hats, logit = None, None
         decode_results = []
-        # Validate Arguments
         batch_size = inputs.size(0)
         max_length = inputs.size(1) - 1  # minus the start of sequence symbol
-        # Initiate Speller Hidden State to zeros  :  LxBxH
-        speller_hidden = torch.FloatTensor(self.layer_size, batch_size, self.hidden_size).uniform_(-0.1, 0.1)#.cuda()
-        # Decide Use Teacher Forcing or Not
+        speller_hidden = torch.FloatTensor(self.layer_size, batch_size, self.hidden_size).uniform_(-0.1, 0.1).to(self.device)
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
 
         if use_beam_search:
@@ -115,8 +111,6 @@ class Speller(nn.Module):
                         batch_size=batch_size, max_len=max_length, decode_func=function)
             y_hats = beam.search(speller_input, listener_outputs)
         else:
-            # Manual unrolling is used to support random teacher forcing.
-            # If teacher_forcing_ratio is True or False instead of a probability, the unrolling can be done in graph
             if use_teacher_forcing:
                 speller_input = inputs[:, :-1]  # except </s>
                 last_alignment = None

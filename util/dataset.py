@@ -44,7 +44,8 @@ class BaseDataset(Dataset):
         self.input_reverse = input_reverse
         self.augment_ratio = augment_ratio
         self.is_augment = [False] * len(self.audio_paths)
-        if use_augment: self.apply_augment()
+        if use_augment:
+            self.apply_augment()
 
     def __len__(self):
         return len(self.audio_paths)
@@ -56,10 +57,8 @@ class BaseDataset(Dataset):
         label = get_label(self.label_paths[idx], self.bos_id, self.eos_id, self.target_dict)
         feat = get_librosa_mfcc(self.audio_paths[idx], n_mfcc=33, del_silence=False, input_reverse=self.input_reverse, format='pcm')
         # exception handling
-        if feat.size(0) == 1:
-            logger.info("Delete label_paths : %s" % self.label_paths[idx])
-            label = ''
-            return feat, label
+        if feat is None:
+            return None, None
         if self.is_augment[idx]:
             feat = spec_augment(feat, T=40, F=15, time_mask_num=2, freq_mask_num=2)
         return feat, label
@@ -145,7 +144,8 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
         train_dataset_list.append(BaseDataset(audio_paths=audio_paths[train_begin_index:train_end_index],
                                               label_paths=label_paths[train_begin_index:train_end_index],
                                               bos_id=SOS_token, eos_id=EOS_token, target_dict=target_dict,
-                                              input_reverse=hparams.input_reverse, use_augment=hparams.use_augment))
+                                              input_reverse=hparams.input_reverse, use_augment=hparams.use_augment,
+                                              augment_ratio=hparams.augment_ratio))
 
     valid_dataset = BaseDataset(audio_paths=audio_paths[train_num:],
                                 label_paths=label_paths[train_num:],

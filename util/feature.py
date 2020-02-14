@@ -50,8 +50,6 @@ def get_librosa_melspectrogram(filepath, n_mels=80, del_silence=True,input_rever
         feat = feat[:,::-1]
 
     return torch.FloatTensor( np.ascontiguousarray( np.swapaxes(feat, 0, 1) ) )
-
-
 def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = False, input_reverse = True, format='pcm'):
     """
     Provides Mel Frequency Cepstral Coefficient (MFCC) for Speech Recognition
@@ -77,7 +75,7 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = False, input_re
             pcm = np.memmap(filepath, dtype='h', mode='r')
         except: # exception handling
             logger.info("np.memmap error in %s" % filepath)
-            return torch.zeros(1)
+            return None
         sig = np.array([float(x) for x in pcm])
     elif format == 'wav':
         sig, _ = librosa.core.load(filepath, sr=16000)
@@ -91,3 +89,4 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = False, input_re
         feat = feat[:,::-1]
 
     return torch.FloatTensor( np.ascontiguousarray( np.swapaxes(feat, 0, 1) ) )
+

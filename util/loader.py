@@ -54,7 +54,8 @@ class BaseDataLoader(threading.Thread):
                 if self.index >= self.dataset_count:
                     break
                 feat, label = self.dataset.get_item(self.index)
-                if label != '': items.append((feat, label))
+                if feat is not None:
+                    items.append((feat, label))
                 self.index += 1
 
             if len(items) == 0:
