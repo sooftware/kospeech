@@ -37,8 +37,6 @@ class Speller(nn.Module):
         eos_id (int): index of the end of sentence symbol
         layer_size (int, optional): number of recurrent layers (default: 1)
         rnn_cell (str, optional): type of RNN cell (default: gru)
-        bidirectional (bool, optional): if the listener is bidirectional (default False)
-        input_dropout_p (float, optional): dropout probability for the input sequence (default: 0)
         dropout_p (float, optional): dropout probability for the output sequence (default: 0)
         use_attention(bool, optional): flag indication whether to use attention mechanism or not (default: false)
     Inputs: inputs, listener_hidden, listener_outputs, function, teacher_forcing_ratio
@@ -90,11 +88,12 @@ class Speller(nn.Module):
             self.rnn.flatten_parameters()
         speller_output = self.rnn(embedded, speller_hidden)[0] # speller output BxSxH
 
+        alignment = None
         if self.use_attention:
             context, alignment = self.attention(speller_output, listener_outputs, last_alignment)
         else: context = speller_output
         predicted_softmax = function(self.out(context.contiguous().view(-1, self.hidden_size)), dim=1).view(batch_size, output_size, -1)
-        return predicted_softmax, alignment if self.use_attention else predicted_softmax
+        return predicted_softmax, alignment
 
     def forward(self, inputs=None, listener_hidden=None, listener_outputs=None, function=F.log_softmax, teacher_forcing_ratio=0.99, use_beam_search=False):
         y_hats, logit = None, None
