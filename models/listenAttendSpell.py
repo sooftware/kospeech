@@ -24,7 +24,8 @@ class ListenAttendSpell(nn.Module):
         - **decode_function**: A function used to generate symbols from RNN hidden state
 
     Reference:
-        「Listen, Attend and Spell」 paper :  https://arxiv.org/abs/1508.01211
+        「Listen, Attend and Spell」 paper
+         https://arxiv.org/abs/1508.01211
     """
     def __init__(self, listener, speller, decode_function = F.log_softmax, use_pyramidal = False):
         super(ListenAttendSpell, self).__init__()
@@ -34,12 +35,7 @@ class ListenAttendSpell(nn.Module):
         self.use_pyramidal = use_pyramidal
 
     def flatten_parameters(self):
-        if self.use_pyramidal:
-            self.listener.bottom_rnn.flatten_parameters()
-            self.listener.middle_rnn.flatten_parameters()
-            self.listener.top_rnn.flatten_parameters()
-        else:
-            self.listener.rnn.flatten_parameters()
+        self.listener.flatten_paremeters()
         self.speller.rnn.flatten_parameters()
 
     def forward(self, feats, targets=None, teacher_forcing_ratio=0.99, use_beam_search = False):

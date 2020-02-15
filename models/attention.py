@@ -18,6 +18,10 @@ import torch.nn.functional as F
 class Attention(nn.Module):
     """
     Applies an attention mechanism on the output features from the decoder.
+
+    Args:
+        score_function (str) : type of Attention`s score function (default 'hybrid')
+            list => 'hybrid', 'content-based', 'dop-product'
     """
     def __init__(self, score_function = 'hybrid', decoder_hidden_size = None):
         super(Attention, self).__init__()
@@ -31,8 +35,10 @@ class Attention(nn.Module):
             self.attention = ContentBasedAttention(decoder_hidden_size=decoder_hidden_size,
                                                    encoder_hidden_size=decoder_hidden_size,
                                                    context_size=decoder_hidden_size)
+        elif score_function.lower() == 'dot-product':
+            self.attention = DotProductAttention(decoder_hidden_size=decoder_hidden_size)
         else:
-            self.attention = BaseAttention(decoder_hidden_size=decoder_hidden_size)
+            raise ValueError("Invalid Score function !!")
 
     def forward(self, decoder_output, encoder_outputs, last_alignment):
         if isinstance(self.attention, HybridAttention):
@@ -46,6 +52,7 @@ class Attention(nn.Module):
 class HybridAttention(Attention):
     '''
     Score function : Hybrid attention (Location-aware Attention)
+
     Reference:
         「Attention-Based Models for Speech Recognition」 Paper
          https://arxiv.org/pdf/1506.07503.pdf
@@ -116,9 +123,9 @@ class ContentBasedAttention(Attention):
         return context
 
 
-class BaseAttention(Attention):
+class DotProductAttention(Attention):
     """
-    Applies an base attention mechanism on the output features from the decoder.
+    Applies an dot product attention mechanism on the output features from the decoder.
 
     .. math::
             \begin{array}{ll}

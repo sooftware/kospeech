@@ -48,10 +48,10 @@ def test(model, queue, device):
             target = scripts[:, 1:]
 
             model.module.flatten_parameters()
-            y_hat = model(feats=feats,
-                          targets=scripts,
-                          teacher_forcing_ratio=0.0,
-                          use_beam_search=True)
+            y_hat, _ = model(feats=feats,
+                             targets=scripts,
+                             teacher_forcing_ratio=0.0,
+                             use_beam_search=True)
 
             display = random.randrange(0, 100) == 0
             dist, length = get_distance(target, y_hat, display=display)

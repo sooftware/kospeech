@@ -18,7 +18,9 @@ from utils.lr import ramp_up, exp_decay
 from utils.save import save_step_result
 train_step_result = {'loss': [], 'cer': []}
 
-def train(model, hparams, epoch, lr_rampup, total_time_step, queue, loss_func, optimizer, device, train_begin, worker_num, print_batch=5, teacher_forcing_ratio=1):
+def train(model, hparams, epoch, lr_rampup, total_time_step, queue,
+          criterion, optimizer, device, train_begin, worker_num,
+          print_batch=5, teacher_forcing_ratio=0.99):
     total_loss = 0.
     total_num = 0
     total_dist = 0
@@ -51,7 +53,7 @@ def train(model, hparams, epoch, lr_rampup, total_time_step, queue, loss_func, o
 
         y_hat, logit = model(feats, targets, teacher_forcing_ratio)
 
-        loss = loss_func(logit.contiguous().view(-1, logit.size(-1)), target.contiguous().view(-1))
+        loss = criterion(logit.contiguous().view(-1, logit.size(-1)), target.contiguous().view(-1))
         total_loss += loss.item()
         total_num += sum(feat_lengths)
         display = random.randrange(0, 100) == 0

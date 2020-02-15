@@ -83,7 +83,7 @@ if __name__ == '__main__':
     model = nn.DataParallel(model).to(device)
 
     optimizer = optim.Adam(model.module.parameters(), lr=hparams.init_lr)
-    loss_func = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_token).to(device)
+    criterion = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_token).to(device)
 
     #audio_paths, label_paths = load_data_list(data_list_path=TRAIN_LIST_PATH, dataset_path=DATASET_PATH)
     audio_paths, label_paths = load_data_list(data_list_path=SAMPLE_LIST_PATH, dataset_path=SAMPLE_DATASET_PATH)
@@ -107,7 +107,7 @@ if __name__ == '__main__':
         train_loader = MultiLoader(train_dataset_list, train_queue, hparams.batch_size, hparams.worker_num)
         train_loader.start()
         train_loss, train_cer = train(model=model, total_time_step=total_time_step, hparams=hparams,
-                                      queue=train_queue, loss_func=loss_func, epoch=epoch,
+                                      queue=train_queue, criterion=criterion, epoch=epoch,
                                       optimizer=optimizer, device=device, lr_rampup=True,
                                       train_begin=train_begin, worker_num=hparams.worker_num,
                                       print_batch=10, teacher_forcing_ratio=hparams.teacher_forcing)
@@ -117,7 +117,7 @@ if __name__ == '__main__':
         valid_loader = BaseDataLoader(valid_dataset, valid_queue, hparams.batch_size, 0)
         valid_loader.start()
 
-        valid_loss, valid_cer = evaluate(model, valid_queue, loss_func, device)
+        valid_loss, valid_cer = evaluate(model, valid_queue, criterion, device)
         logger.info('Epoch %d (Evaluate) Loss %0.4f CER %0.4f' % (epoch, valid_loss, valid_cer))
 
         valid_loader.join()

@@ -16,7 +16,7 @@ import librosa
 import numpy as np
 from utils.define import logger
 
-def get_librosa_melspectrogram(filepath, n_mels=80, del_silence=True,input_reverse=True, mel_type='log_mel', format='pcm'):
+def get_librosa_melspectrogram(filepath, n_mels=80, del_silence=False, input_reverse=True, mel_type='log_mel', format='pcm'):
     """
         Provides Mel-Spectrogram for Speech Recognition
         Args:
@@ -38,11 +38,13 @@ def get_librosa_melspectrogram(filepath, n_mels=80, del_silence=True,input_rever
         sig = np.array([float(x) for x in pcm])
     elif format == 'wav':
         sig, _ = librosa.core.load(filepath, sr=16000)
+    else: logger.info("%s is Invalid format !!" % format)
 
     if del_silence:
         non_silence_indices = librosa.effects.split(y=sig, top_db=30)
         sig = np.concatenate([sig[start:end] for start, end in non_silence_indices])
-    feat = librosa.feature.melspectrogram(sig, sr=16000, n_mels=n_mels, n_fft=480, hop_length=120, window='hamming')
+
+    feat = librosa.feature.melspectrogram(sig, sr=16000, n_mels=n_mels, n_fft=400, hop_length=160, window='hamming')
 
     if mel_type == 'log_mel':
         feat = librosa.amplitude_to_db(feat, ref=np.max)
@@ -50,9 +52,12 @@ def get_librosa_melspectrogram(filepath, n_mels=80, del_silence=True,input_rever
         feat = feat[:,::-1]
 
     return torch.FloatTensor( np.ascontiguousarray( np.swapaxes(feat, 0, 1) ) )
+
+
 def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = False, input_reverse = True, format='pcm'):
     """
     Provides Mel Frequency Cepstral Coefficient (MFCC) for Speech Recognition
+
     Args:
         filepath: specific path of audio file
         n_mfcc: number of mel filter
@@ -79,11 +84,12 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = False, input_re
         sig = np.array([float(x) for x in pcm])
     elif format == 'wav':
         sig, _ = librosa.core.load(filepath, sr=16000)
-    else: logger.info("%s is not Supported" % format)
+    else: logger.info("%s is Invalid format !!" % format)
 
     if del_silence:
         non_silence_indices = librosa.effects.split(sig, top_db=30)
         sig = np.concatenate([sig[start:end] for start, end in non_silence_indices])
+
     feat = librosa.feature.mfcc(y=sig,sr=16000, hop_length=160, n_mfcc=n_mfcc, n_fft=400, window='hamming')
     if input_reverse:
         feat = feat[:,::-1]

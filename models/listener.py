@@ -37,6 +37,7 @@ class PyramidalRNN(nn.Module):
     def flatten_parameters(self):
         self.rnn.flatten_parameters()
 
+
 class Listener(nn.Module):
     """
     Converts low level speech signals into higher level features
@@ -51,6 +52,10 @@ class Listener(nn.Module):
     Outputs: output, hidden
         - **output** (batch, seq_len, hidden_size): tensor containing the encoded features of the input sequence
         - **hidden** (num_layers * num_directions, batch, hidden_size): tensor containing the features in the hidden state `h`
+
+    Reference:
+        「Listen, Attend and Spell」 paper
+         https://arxiv.org/abs/1508.01211
     """
 
     def __init__(self, feat_size, hidden_size, dropout_p=0.5, layer_size=5, bidirectional=True, rnn_cell='gru', use_pyramidal = False):
@@ -86,8 +91,8 @@ class Listener(nn.Module):
             self.bottom_layer_size = layer_size - 2
             self.bottom_rnn = self.rnn_cell(input_size=feat_size, hidden_size=hidden_size, num_layers=self.bottom_layer_size,
                                             bias=True, batch_first=True, bidirectional=bidirectional, dropout=dropout_p)
-            self.middle_rnn = PyramidalRNN(rnn_cell=rnn_cell, input_size=hidden_size * 2, hidden_size=hidden_size, dropout_p=dropout_p)
-            self.top_rnn = PyramidalRNN(rnn_cell=rnn_cell, input_size=hidden_size * 2, hidden_size=hidden_size, dropout_p=dropout_p)
+            self.middle_rnn = PyramidalRNN(rnn_cell=rnn_cell, input_size=hidden_size * 2 if bidirectional else 1, hidden_size=hidden_size, dropout_p=dropout_p)
+            self.top_rnn = PyramidalRNN(rnn_cell=rnn_cell, input_size=hidden_size * 2 if bidirectional else 1, hidden_size=hidden_size, dropout_p=dropout_p)
         else:
             self.rnn = self.rnn_cell(input_size=feat_size, hidden_size=hidden_size, num_layers=layer_size,
                                      bias=True, batch_first=True, bidirectional=bidirectional, dropout=dropout_p)
@@ -99,17 +104,22 @@ class Listener(nn.Module):
         x = x.transpose(1, 2)
         x = x.contiguous().view(x.size(0), x.size(1), x.size(2) * x.size(3))
 
+        if self.training:
+            self.flatten_parameters()
+
         if self.use_pyramidal:
-            if self.training:
-                self.bottom_rnn.flatten_parameters()
-                self.middle_rnn.flatten_parameters()
-                self.top_rnn.flatten_parameters()
             bottom_output = self.bottom_rnn(x)[0]
             middle_output = self.middle_rnn(bottom_output)[0]
             output, hidden = self.top_rnn(middle_output)
         else:
-            if self.training:
-                self.rnn.flatten_parameters()
             output, hidden = self.rnn(x)
 
         return output, hidden
+
+    def flatten_parameters(self):
+        if self.use_pyramidal:
+            self.bottom_rnn.flatten_parameters()
+            self.middle_rnn.flatten_parameters()
+            self.top_rnn.flatten_parameters()
+        else:
+            self.rnn.flatten_parameters()

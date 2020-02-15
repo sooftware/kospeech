@@ -39,6 +39,7 @@ class Speller(nn.Module):
         rnn_cell (str, optional): type of RNN cell (default: gru)
         dropout_p (float, optional): dropout probability for the output sequence (default: 0)
         use_attention(bool, optional): flag indication whether to use attention mechanism or not (default: false)
+        k (int) : size of beam
     Inputs: inputs, listener_hidden, listener_outputs, function, teacher_forcing_ratio
         - **inputs** (batch, seq_len, input_size): list of sequences, whose length is the batch size and within which
           each sequence is a list of token IDs.  It is used for teacher forcing when provided. (default `None`)
@@ -54,6 +55,10 @@ class Speller(nn.Module):
     Outputs: speller_outputs, speller_hidden, ret_dict
         - **speller_outputs** (seq_len, batch, vocab_size): list of tensors with size (batch_size, vocab_size) containing
           the outputs of the decoding function.
+
+    Reference:
+        「Listen, Attend and Spell」 paper
+         https://arxiv.org/abs/1508.01211
     """
 
     def __init__(self, vocab_size, max_len, hidden_size,
@@ -80,6 +85,7 @@ class Speller(nn.Module):
             self.attention = Attention(score_function=score_function, decoder_hidden_size=hidden_size)
 
     def _forward_step(self, speller_input, speller_hidden, listener_outputs, last_alignment, function):
+        """ forward one time step """
         batch_size = speller_input.size(0)
         output_size = speller_input.size(1)
         embedded = self.embedding(speller_input)
@@ -95,7 +101,7 @@ class Speller(nn.Module):
         predicted_softmax = function(self.out(context.contiguous().view(-1, self.hidden_size)), dim=1).view(batch_size, output_size, -1)
         return predicted_softmax, alignment
 
-    def forward(self, inputs=None, listener_hidden=None, listener_outputs=None, function=F.log_softmax, teacher_forcing_ratio=0.99, use_beam_search=False):
+    def forward(self, inputs, listener_hidden, listener_outputs, function=F.log_softmax, teacher_forcing_ratio=0.99, use_beam_search=False):
         y_hats, logit = None, None
         decode_results = []
         batch_size = inputs.size(0)
@@ -104,7 +110,7 @@ class Speller(nn.Module):
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
 
         if use_beam_search:
-            """Implementation of Beam-Search Decoding"""
+            """ Beam-Search Decoding """
             speller_input = inputs[:, 0].unsqueeze(1)
             beam = Beam(k=self.k, decoder_hidden=speller_hidden, decoder=self,
                         batch_size=batch_size, max_len=max_length, decode_func=function)
@@ -137,4 +143,4 @@ class Speller(nn.Module):
 
             logit = torch.stack(decode_results, dim=1).to(self.device)
             y_hats = logit.max(-1)[1]
-        return y_hats, logit if self.training else y_hats
+        return y_hats, logit
