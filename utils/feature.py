@@ -38,7 +38,8 @@ def get_librosa_melspectrogram(filepath, n_mels=80, del_silence=False, input_rev
         sig = np.array([float(x) for x in pcm])
     elif format == 'wav':
         sig, _ = librosa.core.load(filepath, sr=16000)
-    else: logger.info("%s is Invalid format !!" % format)
+    else:
+        raise ValueError("Invalid format !!")
 
     if del_silence:
         non_silence_indices = librosa.effects.split(y=sig, top_db=30)
@@ -79,12 +80,13 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = False, input_re
         try:
             pcm = np.memmap(filepath, dtype='h', mode='r')
         except: # exception handling
-            logger.info("np.memmap error in %s" % filepath)
+            logger.info("np.memmap() error in %s" % filepath)
             return None
         sig = np.array([float(x) for x in pcm])
     elif format == 'wav':
         sig, _ = librosa.core.load(filepath, sr=16000)
-    else: logger.info("%s is Invalid format !!" % format)
+    else:
+        raise ValueError("Invalid format !!")
 
     if del_silence:
         non_silence_indices = librosa.effects.split(sig, top_db=30)

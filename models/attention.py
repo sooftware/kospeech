@@ -29,8 +29,8 @@ class Attention(nn.Module):
             self.attention = HybridAttention(decoder_hidden_size=decoder_hidden_size,
                                              encoder_hidden_size=decoder_hidden_size,
                                              context_size=decoder_hidden_size,
-                                             conv_out=32,
-                                             smoothing=False)
+                                             conv_out=10,
+                                             smoothing=True)
         elif score_function.lower() == 'content-based':
             self.attention = ContentBasedAttention(decoder_hidden_size=decoder_hidden_size,
                                                    encoder_hidden_size=decoder_hidden_size,
@@ -73,7 +73,6 @@ class HybridAttention(Attention):
         self.softmax = nn.Softmax(dim=-1)
 
     def forward(self, decoder_output, encoder_outputs, last_alignment):
-        """ """
         batch_size = decoder_output.size(0)
         hidden_size = decoder_output.size(2)
 
