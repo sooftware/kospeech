@@ -44,7 +44,7 @@ ListenAttendSpell(
   (speller): Speller(
     (rnn): GRU(512, 512, num_layers=3, batch_first=True, dropout=0.5)
     (embedding): Embedding(2040, 512)
-    (out): Linear(in_features=512, out_features=2040, bias=True)
+  
     (input_dropout): Dropout(p=0.5, inplace=False)
     (attention): Attention(
       (attention): HybridAttention(
@@ -57,6 +57,7 @@ ListenAttendSpell(
         (softmax): Softmax(dim=-1)
       )
     )
+    (out): Linear(in_features=512, out_features=2040, bias=True)
   )
 )
 ```  
@@ -260,7 +261,8 @@ CRR = (1.0 - CER) * 100.0
   
 * Reference
   + https://en.wikipedia.org/wiki/Levenshtein_distance
-  
+   
+
 ## Reference   
 [[1] 「Listen, Attend and Spell」  Paper](https://arxiv.org/abs/1508.01211)   
 [[2] 「Attention-Based Models for Speech Recognition」  Paper](https://arxiv.org/pdf/1506.07503.pdf)  
@@ -271,7 +273,7 @@ CRR = (1.0 - CER) * 100.0
 [[7]  「Voice Recognition Using MFCC Algorithm」  Paper](https://pdfs.semanticscholar.org/32d7/2b00454d5155599fb9e8e5119e16970db50d.pdf)   
 [[8] 「Deep Speech: Scaling up end-to-End Speech Recognition」  Paper](https://arxiv.org/abs/1412.5567)    
 [[9] 「Deep Speech 2: End-to-End Speech Recognition in English and Mandarin」  Paper](https://arxiv.org/abs/1512.02595)  
-[[10]   PyTorch VGG Net](https://github.com/chengyangfu/pytorch-vgg-cifar10/blob/master/vgg.py)  
+[[10]   PyTorch-VGG Net](https://github.com/chengyangfu/pytorch-vgg-cifar10/blob/master/vgg.py)  
 [[11]   Levenshtein Distance](https://en.wikipedia.org/wiki/Levenshtein_distance)   
 [[12]   librosa](https://github.com/librosa/librosa)  
    
