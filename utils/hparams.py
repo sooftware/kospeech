@@ -53,7 +53,7 @@ class HyperParams():
         self.dropout = 0.5
         self.listener_layer_size = 5
         self.speller_layer_size = 3
-        self.batch_size = 8
+        self.batch_size = 12
         self.worker_num = 1
         self.max_epochs = 40
         self.init_lr = 0.0

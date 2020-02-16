@@ -35,7 +35,7 @@ class ListenAttendSpell(nn.Module):
         self.use_pyramidal = use_pyramidal
 
     def flatten_parameters(self):
-        self.listener.flatten_paremeters()
+        self.listener.flatten_parameters()
         self.speller.rnn.flatten_parameters()
 
     def forward(self, feats, targets=None, teacher_forcing_ratio=0.99, use_beam_search = False):

@@ -26,11 +26,11 @@ class Attention(nn.Module):
     def __init__(self, score_function = 'hybrid', decoder_hidden_size = None):
         super(Attention, self).__init__()
         if score_function.lower() == 'hybrid':
-            self.attention = HybridAttention(decoder_hidden_size=decoder_hidden_size,
-                                             encoder_hidden_size=decoder_hidden_size,
-                                             context_size=decoder_hidden_size,
-                                             conv_out=10,
-                                             smoothing=True)
+            self.attention = HybridAttention(decoder_hidden_size = decoder_hidden_size,
+                                             encoder_hidden_size = decoder_hidden_size,
+                                             context_size = int(decoder_hidden_size >> 1),
+                                             k = 10,
+                                             smoothing = True)
         elif score_function.lower() == 'content-based':
             self.attention = ContentBasedAttention(decoder_hidden_size=decoder_hidden_size,
                                                    encoder_hidden_size=decoder_hidden_size,
@@ -53,19 +53,25 @@ class HybridAttention(Attention):
     '''
     Score function : Hybrid attention (Location-aware Attention)
 
+    .. math ::
+        score = w^T( tanh( Ws + Vhs + Uf + b ) )
+            => s : decoder_output
+               hs : encoder_outputs
+               f : loc_conv(last_alignment)
+               b : bias
+
     Reference:
         「Attention-Based Models for Speech Recognition」 Paper
          https://arxiv.org/pdf/1506.07503.pdf
     '''
-    def __init__(self, decoder_hidden_size, encoder_hidden_size, context_size, conv_out=10, smoothing=True):
+    def __init__(self, decoder_hidden_size, encoder_hidden_size, context_size, k = 10, smoothing=True):
         super(Attention, self).__init__()
         self.decoder_hidden_size = decoder_hidden_size
-        self.conv_out = conv_out
-        self.context_size=context_size
-        self.loc_conv = nn.Conv1d(in_channels=1, out_channels=conv_out, kernel_size=3, padding=1)
+        self.context_size = context_size
+        self.loc_conv = nn.Conv1d(in_channels=1, out_channels=k, kernel_size=3, padding=1)
         self.W = nn.Linear(decoder_hidden_size, context_size, bias=False)
         self.V = nn.Linear(encoder_hidden_size, context_size, bias=False)
-        self.U = nn.Linear(conv_out, context_size, bias=False)
+        self.U = nn.Linear(k, context_size, bias=False)
         self.b = nn.Parameter(torch.FloatTensor(context_size).uniform_(-0.1, 0.1))
         self.w = nn.Linear(context_size, 1, bias=False)
         self.smoothing = smoothing

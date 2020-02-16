@@ -97,7 +97,9 @@ class Speller(nn.Module):
         alignment = None
         if self.use_attention:
             context, alignment = self.attention(speller_output, listener_outputs, last_alignment)
-        else: context = speller_output
+        else:
+            context = speller_output
+
         predicted_softmax = function(self.out(context.contiguous().view(-1, self.hidden_size)), dim=1).view(batch_size, output_size, -1)
         return predicted_softmax, alignment
 
@@ -119,7 +121,7 @@ class Speller(nn.Module):
             if use_teacher_forcing:
                 speller_input = inputs[:, :-1]  # except </s>
                 last_alignment = None
-                """ Fix to non-parallel process even in teacher forcing to apply location-aware attention """
+                """ Fix to non-parallel process even in teacher forcing to apply hybrid attention """
                 for di in range(len(speller_input[0])):
                     predicted_softmax, last_alignment = self._forward_step(speller_input=speller_input[:, di].unsqueeze(1),
                                                                            speller_hidden=speller_hidden,
