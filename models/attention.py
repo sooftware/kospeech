@@ -57,7 +57,7 @@ class HybridAttention(Attention):
         「Attention-Based Models for Speech Recognition」 Paper
          https://arxiv.org/pdf/1506.07503.pdf
     '''
-    def __init__(self, decoder_hidden_size, encoder_hidden_size, context_size, conv_out=32, smoothing=False):
+    def __init__(self, decoder_hidden_size, encoder_hidden_size, context_size, conv_out=10, smoothing=True):
         super(Attention, self).__init__()
         self.decoder_hidden_size = decoder_hidden_size
         self.conv_out = conv_out

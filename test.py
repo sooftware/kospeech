@@ -86,7 +86,7 @@ if __name__ == '__main__':
                                bos_id=SOS_token, eos_id=EOS_token, target_dict=target_dict,
                                input_reverse=hparams.input_reverse, use_augment=False)
 
-    test_queue = queue.Queue(hparams.worker_num * 2)
+    test_queue = queue.Queue(hparams.worker_num << 1)
     test_loader = BaseDataLoader(test_dataset, test_queue, hparams.batch_size, 0)
     test_loader.start()
 

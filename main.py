@@ -75,7 +75,7 @@ if __name__ == '__main__':
                         bidirectional=hparams.use_bidirectional, rnn_cell='gru', use_pyramidal=hparams.use_pyramidal)
 
     speller = Speller(vocab_size=len(char2index), max_len=hparams.max_len, k=8,
-                      hidden_size=hparams.hidden_size * (2 if hparams.use_bidirectional else 1), batch_size=hparams.batch_size,
+                      hidden_size=hparams.hidden_size << (1 if hparams.use_bidirectional else 0), batch_size=hparams.batch_size,
                       sos_id=SOS_token, eos_id=EOS_token, layer_size = hparams.speller_layer_size, score_function=hparams.score_function,
                       rnn_cell = 'gru', dropout_p = hparams.dropout, use_attention = hparams.use_attention, device=device)
     model = ListenAttendSpell(listener=listener, speller=speller, use_pyramidal=hparams.use_pyramidal)
@@ -101,7 +101,7 @@ if __name__ == '__main__':
     train_begin = time.time()
 
     for epoch in range(hparams.max_epochs):
-        train_queue = queue.Queue(hparams.worker_num * 2)
+        train_queue = queue.Queue(hparams.worker_num << 1)
         for train_dataset in train_dataset_list:
             train_dataset.shuffle()
         train_loader = MultiLoader(train_dataset_list, train_queue, hparams.batch_size, hparams.worker_num)
@@ -113,7 +113,7 @@ if __name__ == '__main__':
                                       print_batch=10, teacher_forcing_ratio=hparams.teacher_forcing)
         logger.info('Epoch %d (Training) Loss %0.4f CER %0.4f' % (epoch, train_loss, train_cer))
         train_loader.join()
-        valid_queue = queue.Queue(hparams.worker_num * 2)
+        valid_queue = queue.Queue(hparams.worker_num << 1)
         valid_loader = BaseDataLoader(valid_dataset, valid_queue, hparams.batch_size, 0)
         valid_loader.start()
 

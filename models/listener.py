@@ -19,7 +19,7 @@ class PyramidalRNN(nn.Module):
     def __init__(self, rnn_cell, input_size, hidden_size, dropout_p):
         super(PyramidalRNN, self).__init__()
         self.rnn_cell = nn.LSTM if rnn_cell.lower() == 'lstm' else nn.GRU if rnn_cell.lower() == 'gru' else nn.RNN
-        self.rnn = self.rnn_cell(input_size = input_size * 2, hidden_size = hidden_size, num_layers=1,
+        self.rnn = self.rnn_cell(input_size = input_size << 1, hidden_size = hidden_size, num_layers=1,
                                  bidirectional = True, bias = True, batch_first = True, dropout = dropout_p)
 
     def forward(self, inputs):
@@ -58,7 +58,7 @@ class Listener(nn.Module):
          https://arxiv.org/abs/1508.01211
     """
 
-    def __init__(self, feat_size, hidden_size, dropout_p=0.5, layer_size=5, bidirectional=True, rnn_cell='gru', use_pyramidal = False):
+    def __init__(self, feat_size, hidden_size, dropout_p=0.5, layer_size=5, bidirectional=True, rnn_cell='gru', use_pyramidal = True):
         super(Listener, self).__init__()
         self.use_pyramidal = use_pyramidal
         self.rnn_cell = nn.LSTM if rnn_cell.lower() == 'lstm' else nn.GRU if rnn_cell.lower() == 'gru' else nn.RNN
@@ -84,15 +84,16 @@ class Listener(nn.Module):
 
         """ math :: feat_size = (in_channel * out_channel) / maxpool_layer_num """
         if feat_size % 2:
-            feat_size = (feat_size-1) * 64
-        else: feat_size *= 64
+            feat_size = (feat_size-1) << 6
+        else:
+            feat_size <<= 6
 
         if use_pyramidal:
             self.bottom_layer_size = layer_size - 2
             self.bottom_rnn = self.rnn_cell(input_size=feat_size, hidden_size=hidden_size, num_layers=self.bottom_layer_size,
                                             bias=True, batch_first=True, bidirectional=bidirectional, dropout=dropout_p)
-            self.middle_rnn = PyramidalRNN(rnn_cell=rnn_cell, input_size=hidden_size * 2 if bidirectional else 1, hidden_size=hidden_size, dropout_p=dropout_p)
-            self.top_rnn = PyramidalRNN(rnn_cell=rnn_cell, input_size=hidden_size * 2 if bidirectional else 1, hidden_size=hidden_size, dropout_p=dropout_p)
+            self.middle_rnn = PyramidalRNN(rnn_cell=rnn_cell, input_size=hidden_size << 1 if bidirectional else 0, hidden_size=hidden_size, dropout_p=dropout_p)
+            self.top_rnn = PyramidalRNN(rnn_cell=rnn_cell, input_size=hidden_size << 1 if bidirectional else 0, hidden_size=hidden_size, dropout_p=dropout_p)
         else:
             self.rnn = self.rnn_cell(input_size=feat_size, hidden_size=hidden_size, num_layers=layer_size,
                                      bias=True, batch_first=True, bidirectional=bidirectional, dropout=dropout_p)

@@ -59,6 +59,7 @@ class Beam:
             - **C**: number of classfication
             - **S**: sequence length
         """
+        last_alignment = None
         # get class classfication distribution (shape: BxC)
         init_step_output = self._forward_step(init_decoder_input, encoder_outputs).squeeze(1)
         # get top K probability & index (shape: BxK)
@@ -66,7 +67,6 @@ class Beam:
         decoder_input = self.beams
         # transpose (BxK) => (BxKx1)
         self.beams = self.beams.view(self.batch_size, self.k, 1)
-        last_alignment = None
         for di in range(self.max_len-1):
             if self._is_done():
                 break
@@ -112,10 +112,10 @@ class Beam:
 
     def _get_best(self):
         """ get sentences which has the highest probability at each batch, stack it, and return it as 2d torch """
-        y_hats = list()
+        y_hats = []
         # done_beams has <eos> terminate sentences during decoding process
         for batch_num, batch in enumerate(self.done_beams):
-            if batch == []:
+            if len(batch) == 0:
                 # if there is no terminated sentences, bring ongoing sentence which has the highest probability instead
                 top_beam_index = self.beam_scores[batch_num].topk(1)[1]
                 y_hats.append(*self.beams[batch_num, top_beam_index])
@@ -141,7 +141,8 @@ class Beam:
 
         if self.use_attention:
             context, alignment = self.attention(decoder_output, encoder_outputs, last_alignment)
-        else: context = decoder_output
+        else:
+            context = decoder_output
         predicted_softmax = self.decode_func(self.out(context.contiguous().view(-1, self.hidden_size)), dim=1).view(self.batch_size,output_size,-1)
         return predicted_softmax, alignment
 
