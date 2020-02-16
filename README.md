@@ -1,4 +1,5 @@
 # Korean-Speech-Recognition
+[![HitCount](http://hits.dwyl.com/sh951011/Korean-Speech-Recognition.svg)](http://hits.dwyl.com/sh951011/Korean-Speech-Recognition) ![license](https://img.shields.io/github/license/sh951011/Korean-Speech-Recognition) ![fork](https://img.shields.io/github/forks/sh951011/Korean-Speech-Recognition) ![star](	https://img.shields.io/github/stars/sh951011/Korean-Speech-Recognition)  
 Korean Speech Recognition Using PyTorch. (Korean-ASR)  
 This Project is currently in progress.  
 
