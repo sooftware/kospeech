@@ -44,7 +44,6 @@ ListenAttendSpell(
   (speller): Speller(
     (rnn): GRU(512, 512, num_layers=3, batch_first=True, dropout=0.5)
     (embedding): Embedding(2040, 512)
-    (out): Linear(in_features=512, out_features=2040, bias=True)
     (input_dropout): Dropout(p=0.5, inplace=False)
     (attention): Attention(
       (attention): HybridAttention(
@@ -57,6 +56,7 @@ ListenAttendSpell(
         (softmax): Softmax(dim=-1)
       )
     )
+    (out): Linear(in_features=512, out_features=2040, bias=True)
   )
 )
 ```  
