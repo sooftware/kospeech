@@ -44,19 +44,19 @@ ListenAttendSpell(
   (speller): Speller(
     (rnn): GRU(512, 512, num_layers=3, batch_first=True, dropout=0.5)
     (embedding): Embedding(2040, 512)
+    (out): Linear(in_features=512, out_features=2040, bias=True)
     (input_dropout): Dropout(p=0.5, inplace=False)
     (attention): Attention(
       (attention): HybridAttention(
         (loc_conv): Conv1d(1, 10, kernel_size=(3,), stride=(1,), padding=(1,))
-        (W): Linear(in_features=512, out_features=512, bias=False)
-        (V): Linear(in_features=512, out_features=512, bias=False)
-        (U): Linear(in_features=10, out_features=512, bias=False)
-        (w): Linear(in_features=512, out_features=1, bias=False)
+        (W): Linear(in_features=512, out_features=256, bias=False)
+        (V): Linear(in_features=512, out_features=256, bias=False)
+        (U): Linear(in_features=10, out_features=256, bias=False)
+        (w): Linear(in_features=256, out_features=1, bias=False)
         (tanh): Tanh()
         (softmax): Softmax(dim=-1)
       )
     )
-    (out): Linear(in_features=512, out_features=2040, bias=True)
   )
 )
 ```  
@@ -203,7 +203,8 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = False, input_re
         sig = np.array([float(x) for x in pcm])
     elif format == 'wav':
         sig, _ = librosa.core.load(filepath, sr=16000)
-    else: logger.info("%s is not Supported" % format)
+    else: 
+        raise ValueError("Invalid format !!")
 
     if del_silence:
         non_silence_indices = librosa.effects.split(sig, top_db=30)
