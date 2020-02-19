@@ -75,7 +75,6 @@ class Speller(nn.Module):
         self.sos_id = sos_id
         self.hidden_size = hidden_size
         self.embedding = nn.Embedding(self.output_size, self.hidden_size)
-        self.out = nn.Linear(self.hidden_size, self.output_size)
         self.layer_size = layer_size
         self.input_dropout = nn.Dropout(p=dropout_p)
         self.device = device
@@ -83,6 +82,7 @@ class Speller(nn.Module):
         self.k = k
         if use_attention:
             self.attention = Attention(score_function=score_function, decoder_hidden_size=hidden_size)
+        self.out = nn.Linear(self.hidden_size, self.output_size)
 
     def _forward_step(self, speller_input, speller_hidden, listener_outputs, last_alignment, function):
         """ forward one time step """
@@ -114,8 +114,14 @@ class Speller(nn.Module):
         if use_beam_search:
             """ Beam-Search Decoding """
             speller_input = inputs[:, 0].unsqueeze(1)
-            beam = Beam(k=self.k, decoder_hidden=speller_hidden, decoder=self,
-                        batch_size=batch_size, max_len=max_length, decode_func=function)
+            beam = Beam(
+                k = self.k,
+                decoder_hidden = speller_hidden,
+                decoder = self,
+                batch_size = batch_size,
+                max_len = max_length,
+                decode_func = function
+            )
             y_hats = beam.search(speller_input, listener_outputs)
         else:
             if use_teacher_forcing:
@@ -123,22 +129,26 @@ class Speller(nn.Module):
                 last_alignment = None
                 """ Fix to non-parallel process even in teacher forcing to apply hybrid attention """
                 for di in range(len(speller_input[0])):
-                    predicted_softmax, last_alignment = self._forward_step(speller_input=speller_input[:, di].unsqueeze(1),
-                                                                           speller_hidden=speller_hidden,
-                                                                           listener_outputs=listener_outputs,
-                                                                           last_alignment=last_alignment,
-                                                                           function=function)
+                    predicted_softmax, last_alignment = self._forward_step(
+                        speller_input=speller_input[:, di].unsqueeze(1),
+                        speller_hidden=speller_hidden,
+                        listener_outputs=listener_outputs,
+                        last_alignment=last_alignment,
+                        function=function
+                    )
                     step_output = predicted_softmax.squeeze(1)
                     decode_results.append(step_output)
             else:
                 speller_input = inputs[:, 0].unsqueeze(1)
                 last_alignment = None
                 for di in range(max_length):
-                    predicted_softmax, last_alignment = self._forward_step(speller_input=speller_input,
-                                                                           speller_hidden=speller_hidden,
-                                                                           listener_outputs=listener_outputs,
-                                                                           last_alignment=last_alignment,
-                                                                           function=function)
+                    predicted_softmax, last_alignment = self._forward_step(
+                        speller_input=speller_input,
+                        speller_hidden=speller_hidden,
+                        listener_outputs=listener_outputs,
+                        last_alignment=last_alignment,
+                        function=function
+                    )
                     step_output = predicted_softmax.squeeze(1)
                     decode_results.append(step_output)
                     speller_input = decode_results[-1].topk(1)[1]

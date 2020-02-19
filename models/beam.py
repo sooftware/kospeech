@@ -103,7 +103,12 @@ class Beam:
                     batch_num, beam_num = done_index[0], done_index[1]
                     self.done_beams[batch_num].append(self.beams[batch_num, beam_num])
                     self.done_beam_scores[batch_num].append(self.beam_scores[batch_num, beam_num])
-                    self._replace_beam(child_ps=child_ps, child_vs=child_vs, done_beam_index=[batch_num, beam_num], count=count[batch_num])
+                    self._replace_beam(
+                        child_ps=child_ps,
+                        child_vs=child_vs,
+                        done_beam_index=[batch_num, beam_num],
+                        count=count[batch_num]
+                    )
                     count[batch_num] += 1
             # update decoder_input by topk_child_vs
             decoder_input = topk_child_vs

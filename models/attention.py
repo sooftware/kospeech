@@ -26,17 +26,21 @@ class Attention(nn.Module):
     def __init__(self, score_function = 'hybrid', decoder_hidden_size = None):
         super(Attention, self).__init__()
         if score_function.lower() == 'hybrid':
-            self.attention = HybridAttention(decoder_hidden_size = decoder_hidden_size,
-                                             encoder_hidden_size = decoder_hidden_size,
-                                             context_size = int(decoder_hidden_size >> 1),
-                                             k = 10,
-                                             smoothing = True)
+            self.attention = HybridAttention(
+                decoder_hidden_size = decoder_hidden_size,
+                encoder_hidden_size = decoder_hidden_size,
+                context_size = int(decoder_hidden_size >> 1),
+                k = 10,
+                smoothing = True
+            )
         elif score_function.lower() == 'content-based':
-            self.attention = ContentBasedAttention(decoder_hidden_size=decoder_hidden_size,
-                                                   encoder_hidden_size=decoder_hidden_size,
-                                                   context_size=decoder_hidden_size)
+            self.attention = ContentBasedAttention(
+                decoder_hidden_size = decoder_hidden_size,
+                encoder_hidden_size = decoder_hidden_size,
+                context_size = decoder_hidden_size
+            )
         elif score_function.lower() == 'dot-product':
-            self.attention = DotProductAttention(decoder_hidden_size=decoder_hidden_size)
+            self.attention = DotProductAttention(decoder_hidden_size = decoder_hidden_size)
         else:
             raise ValueError("Invalid Score function !!")
 
@@ -83,15 +87,23 @@ class HybridAttention(Attention):
         hidden_size = decoder_output.size(2)
 
         if last_alignment is None:
-            attn_scores = self.w( self.tanh(self.W(decoder_output.reshape(-1, hidden_size)).view(batch_size, -1, self.context_size)
-                                                + self.V(encoder_outputs.reshape(-1, hidden_size)).view(batch_size, -1, self.context_size)
-                                                + self.b)).squeeze(dim=-1)
+            attn_scores = self.w(
+                self.tanh(
+                    self.W(decoder_output.reshape(-1, hidden_size)).view(batch_size, -1, self.context_size)
+                    + self.V(encoder_outputs.reshape(-1, hidden_size)).view(batch_size, -1, self.context_size)
+                    + self.b
+                )
+            ).squeeze(dim=-1)
         else:
             conv_prev_align = torch.transpose(self.loc_conv(last_alignment.unsqueeze(1)), 1, 2)
-            attn_scores = self.w(self.tanh( self.W(decoder_output.reshape(-1, hidden_size)).view(batch_size, -1, self.context_size)
-                                                + self.V(encoder_outputs.reshape(-1, hidden_size)).view(batch_size, -1, self.context_size)
-                                                + self.U(conv_prev_align)
-                                                + self.b )).squeeze(dim=-1)
+            attn_scores = self.w(
+                self.tanh(
+                    self.W(decoder_output.reshape(-1, hidden_size)).view(batch_size, -1, self.context_size)
+                    + self.V(encoder_outputs.reshape(-1, hidden_size)).view(batch_size, -1, self.context_size)
+                    + self.U(conv_prev_align)
+                    + self.b
+                )
+            ).squeeze(dim=-1)
 
         if self.smoothing:
             attn_scores = torch.sigmoid(attn_scores)
@@ -119,12 +131,16 @@ class ContentBasedAttention(Attention):
         batch_size = decoder_output.size(0)
         hidden_size = decoder_output.size(2)
 
-        attn_scores = self.w(self.tanh( self.W(decoder_output.reshape(-1, hidden_size)).view(batch_size, -1, self.context_size)
-                                        + self.V(encoder_outputs.reshape(-1, hidden_size)).view(batch_size, -1, self.context_size)
-                                        + self.b )).squeeze(dim=-1)
+        attn_scores = self.w(
+            self.tanh(
+                self.W(decoder_output.reshape(-1, hidden_size)).view(batch_size, -1, self.context_size)
+                + self.V(encoder_outputs.reshape(-1, hidden_size)).view(batch_size, -1, self.context_size)
+                + self.b
+            )
+        ).squeeze(dim=-1)
         alignment = self.softmax(attn_scores)
-
         context = torch.bmm(alignment.unsqueeze(dim=1), encoder_outputs).squeeze(dim=1)
+
         return context
 
 
