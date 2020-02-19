@@ -48,11 +48,12 @@ def test(model, queue, device):
             target = scripts[:, 1:]
 
             model.module.flatten_parameters()
-            y_hat, _ = model(feats=feats,
-                             targets=scripts,
-                             teacher_forcing_ratio=0.0,
-                             use_beam_search=True)
-
+            y_hat, _ = model(
+                feats = feats,
+                targets = scripts,
+                teacher_forcing_ratio = 0.0,
+                use_beam_search = True
+            )
             display = random.randrange(0, 100) == 0
             dist, length = get_distance(target, y_hat, display=display)
             total_dist += dist
@@ -81,10 +82,15 @@ if __name__ == '__main__':
     target_dict = load_pickle("./pickle/target_dict_test.txt", "load all target_dict using pickle complete !!")
     logger.info('start')
 
-    test_dataset = BaseDataset(audio_paths=audio_paths[:],
-                               label_paths=label_paths[:],
-                               bos_id=SOS_token, eos_id=EOS_token, target_dict=target_dict,
-                               input_reverse=hparams.input_reverse, use_augment=False)
+    test_dataset = BaseDataset(
+        audio_paths = audio_paths[:],
+        label_paths = label_paths[:],
+        sos_id = SOS_token,
+        eos_id = EOS_token,
+        target_dict = target_dict,
+        input_reverse = hparams.input_reverse,
+        use_augment = False
+    )
 
     test_queue = queue.Queue(hparams.worker_num << 1)
     test_loader = BaseDataLoader(test_dataset, test_queue, hparams.batch_size, 0)

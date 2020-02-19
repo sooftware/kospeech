@@ -37,7 +37,12 @@ def evaluate(model, queue, loss_func, device):
             target = scripts[:, 1:]
 
             model.module.flatten_parameters()
-            y_hat, logit = model(feats, feat_lengths, scripts, teacher_forcing_ratio=0.0)
+            y_hat, logit = model(
+                feats = feats,
+                targets = scripts,
+                teacher_forcing_ratio=0.0,
+                use_beam_search = False
+            )
 
             logit = torch.stack(logit, dim=1).to(device)
             y_hat = logit.max(-1)[1]

@@ -74,7 +74,7 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = False, input_re
         n_fft = sr * frame_length (16,000 * 30ms)
         hop_length = sr * stride (16,000 * 7.5ms)
     Outputs:
-        mfcc: return MFCC values of signal
+        feat: return MFCC values of signal
     """
     if format == 'pcm':
         try:
@@ -82,17 +82,24 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = False, input_re
         except: # exception handling
             logger.info("np.memmap() error in %s" % filepath)
             return None
-        sig = np.array([float(x) for x in pcm])
+        signal = np.array([float(x) for x in pcm])
     elif format == 'wav':
-        sig, _ = librosa.core.load(filepath, sr=16000)
+        signal, _ = librosa.core.load(filepath, sr=16000)
     else:
         raise ValueError("Invalid format !!")
 
     if del_silence:
-        non_silence_indices = librosa.effects.split(sig, top_db=30)
-        sig = np.concatenate([sig[start:end] for start, end in non_silence_indices])
+        non_silence_indices = librosa.effects.split(signal, top_db=30)
+        signal = np.concatenate([signal[start:end] for start, end in non_silence_indices])
 
-    feat = librosa.feature.mfcc(y=sig,sr=16000, hop_length=160, n_mfcc=n_mfcc, n_fft=400, window='hamming')
+    feat = librosa.feature.mfcc(
+        y = signal,
+        sr = 16000,
+        hop_length = 160,
+        n_mfcc = n_mfcc,
+        n_fft = 400,
+        window = 'hamming'
+    )
     if input_reverse:
         feat = feat[:,::-1]
 

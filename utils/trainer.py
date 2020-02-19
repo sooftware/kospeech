@@ -70,12 +70,13 @@ def train(model, hparams, epoch, lr_rampup, total_time_step, queue,
             epoch_elapsed = (current - epoch_begin) / 60.0
             train_elapsed = (current - train_begin) / 3600.0
 
-            logger.info('timestep: {:4d}/{:4d}, loss: {:.4f}, cer: {:.2f}, elapsed: {:.2f}s {:.2f}m {:.2f}h'
-                .format(time_step,
-                        total_time_step,
-                        total_loss / total_num,
-                        total_dist / total_length,
-                        elapsed, epoch_elapsed, train_elapsed))
+            logger.info('timestep: {:4d}/{:4d}, loss: {:.4f}, cer: {:.2f}, elapsed: {:.2f}s {:.2f}m {:.2f}h'.format(
+                time_step,
+                total_time_step,
+                total_loss / total_num,
+                total_dist / total_length,
+                elapsed, epoch_elapsed, train_elapsed)
+            )
             begin = time.time()
 
         if time_step % 1000 == 0:

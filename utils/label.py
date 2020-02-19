@@ -36,7 +36,7 @@ def load_label(label_path, encoding='utf-8'):
 
     return char2index, index2char
 
-def get_label(label_path, bos_id=2037, eos_id=2038, target_dict=None):
+def get_label(filepath, sos_id=2037, eos_id=2038, target_dict=None):
     """
     Provides specific file`s label to list format.
     Inputs: filepath, bos_id, eos_id, target_dict
@@ -50,12 +50,12 @@ def get_label(label_path, bos_id=2037, eos_id=2038, target_dict=None):
                 Format : [<s>, 5, 0, 49, 4, 0, 8, 190, 0, 78, 115, </s>]
     """
     if target_dict == None: logger.info("target_dict is None")
-    key = label_path.split('/')[-1].split('.')[0]
+    key = filepath.split('/')[-1].split('.')[0]
     script = target_dict[key]
     tokens = script.split(' ')
 
     label = list()
-    label.append(int(bos_id))
+    label.append(int(sos_id))
     for token in tokens:
         label.append(int(token))
     label.append(int(eos_id))

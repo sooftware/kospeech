@@ -34,12 +34,13 @@ class BaseDataset(Dataset):
         - **feat**: feature vector for audio
         - **label**: label for audio
     """
-    def __init__(self, audio_paths, label_paths, bos_id = 2037, eos_id = 2038,
+    def __init__(self, audio_paths, label_paths, sos_id = 2037, eos_id = 2038,
                  target_dict = None, input_reverse = True, use_augment = True,
                  augment_ratio = 0.3):
         self.audio_paths = list(audio_paths)
         self.label_paths = list(label_paths)
-        self.bos_id, self.eos_id = bos_id, eos_id
+        self.sos_id = sos_id
+        self.eos_id = eos_id
         self.target_dict = target_dict
         self.input_reverse = input_reverse
         self.augment_ratio = augment_ratio
@@ -54,13 +55,30 @@ class BaseDataset(Dataset):
         return len(self.audio_paths)
 
     def get_item(self, idx):
-        label = get_label(self.label_paths[idx], self.bos_id, self.eos_id, self.target_dict)
-        feat = get_librosa_mfcc(self.audio_paths[idx], n_mfcc=33, del_silence=False, input_reverse=self.input_reverse, format='pcm')
+        label = get_label(
+            filepath = self.label_paths[idx],
+            sos_id = self.sos_id,
+            eos_id = self.eos_id,
+            target_dict = self.target_dict
+        )
+        feat = get_librosa_mfcc(
+            filepath = self.audio_paths[idx],
+            n_mfcc = 33,
+            del_silence = False,
+            input_reverse = self.input_reverse,
+            format = 'pcm'
+        )
         # exception handling
         if feat is None:
             return None, None
         if self.is_augment[idx]:
-            feat = spec_augment(feat, T=40, F=15, time_mask_num=2, freq_mask_num=2)
+            feat = spec_augment(
+                feat = feat,
+                T=40,
+                F=15,
+                time_mask_num=2,
+                freq_mask_num=2
+            )
         return feat, label
 
     def apply_augment(self):
@@ -95,7 +113,7 @@ class BaseDataset(Dataset):
         self.audio_paths, self.label_paths, self.is_augment = zip(*tmp)
 
 
-def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_dict = dict()):
+def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_dict = None):
     """
     Dataset split into training and validation Dataset.
     Args:
@@ -143,13 +161,12 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
         train_end_index = min(train_num_per_worker * (idx + 1), train_num)
         train_dataset_list.append(BaseDataset(audio_paths=audio_paths[train_begin_index:train_end_index],
                                               label_paths=label_paths[train_begin_index:train_end_index],
-                                              bos_id=SOS_token, eos_id=EOS_token, target_dict=target_dict,
+                                              sos_id=SOS_token, eos_id=EOS_token, target_dict=target_dict,
                                               input_reverse=hparams.input_reverse, use_augment=hparams.use_augment,
                                               augment_ratio=hparams.augment_ratio))
-
     valid_dataset = BaseDataset(audio_paths=audio_paths[train_num:],
                                 label_paths=label_paths[train_num:],
-                                bos_id=SOS_token, eos_id=EOS_token,
+                                sos_id=SOS_token, eos_id=EOS_token,
                                 target_dict=target_dict, input_reverse=hparams.input_reverse, use_augment=False)
 
     #save_pickle(train_dataset_list, "./pickle/train_dataset.txt", "dump all train_dataset_list using pickle complete !!")
