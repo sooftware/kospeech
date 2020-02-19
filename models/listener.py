@@ -19,8 +19,15 @@ class PyramidalRNN(nn.Module):
     def __init__(self, rnn_cell, input_size, hidden_size, dropout_p):
         super(PyramidalRNN, self).__init__()
         self.rnn_cell = nn.LSTM if rnn_cell.lower() == 'lstm' else nn.GRU if rnn_cell.lower() == 'gru' else nn.RNN
-        self.rnn = self.rnn_cell(input_size = input_size << 1, hidden_size = hidden_size, num_layers=1,
-                                 bidirectional = True, bias = True, batch_first = True, dropout = dropout_p)
+        self.rnn = self.rnn_cell(
+            input_size=input_size << 1,
+            hidden_size=hidden_size,
+            num_layers=1,
+            bidirectional=True,
+            bias=True,
+            batch_first=True,
+            dropout=dropout_p
+        )
 
     def forward(self, inputs):
         batch_size = inputs.size(0)
@@ -63,23 +70,23 @@ class Listener(nn.Module):
         self.use_pyramidal = use_pyramidal
         self.rnn_cell = nn.LSTM if rnn_cell.lower() == 'lstm' else nn.GRU if rnn_cell.lower() == 'gru' else nn.RNN
         self.conv = nn.Sequential(
-            nn.Conv2d(1, 64, kernel_size=3, padding=1, bias=True),
-            nn.Hardtanh(0, 20, inplace=True),
-            nn.BatchNorm2d(64),
-            nn.Conv2d(64, 64, kernel_size=3, padding=1, bias=True),
-            nn.Hardtanh(0, 20, inplace=True),
-            nn.MaxPool2d(2, 2),
-            nn.BatchNorm2d(64),
-            nn.Conv2d(64, 128, kernel_size=3, padding=1, bias=True),
-            nn.Hardtanh(0, 20, inplace=True),
-            nn.BatchNorm2d(128),
-            nn.Conv2d(128, 128, kernel_size=3, padding=1, bias=True),
-            nn.Hardtanh(0, 20, inplace=True),
-            nn.BatchNorm2d(128),
-            nn.Conv2d(128, 256, kernel_size=3, padding=1, bias=True),
-            nn.Hardtanh(0, 20, inplace=True),
-            nn.BatchNorm2d(256),
-            nn.MaxPool2d(2, 2)
+            nn.Conv2d(in_channels=1, out_channels=64, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.BatchNorm2d(num_features=64),
+            nn.Conv2d(in_channels=64, out_channels=64, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.BatchNorm2d(num_features=64),
+            nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.BatchNorm2d(num_features=128),
+            nn.Conv2d(in_channels=128, out_channels=128, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.BatchNorm2d(num_features=128),
+            nn.Conv2d(in_channels=128, out_channels=256, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.BatchNorm2d(num_features=256),
+            nn.MaxPool2d(kernel_size=2, stride=2)
         )
 
         """ math :: feat_size = (in_channel * out_channel) / maxpool_layer_num """
@@ -90,13 +97,37 @@ class Listener(nn.Module):
 
         if use_pyramidal:
             self.bottom_layer_size = layer_size - 2
-            self.bottom_rnn = self.rnn_cell(input_size=feat_size, hidden_size=hidden_size, num_layers=self.bottom_layer_size,
-                                            bias=True, batch_first=True, bidirectional=bidirectional, dropout=dropout_p)
-            self.middle_rnn = PyramidalRNN(rnn_cell=rnn_cell, input_size=hidden_size << 1 if bidirectional else 0, hidden_size=hidden_size, dropout_p=dropout_p)
-            self.top_rnn = PyramidalRNN(rnn_cell=rnn_cell, input_size=hidden_size << 1 if bidirectional else 0, hidden_size=hidden_size, dropout_p=dropout_p)
+            self.bottom_rnn = self.rnn_cell(
+                input_size = feat_size,
+                hidden_size = hidden_size,
+                num_layers = self.bottom_layer_size,
+                bias = True,
+                batch_first = True,
+                bidirectional = bidirectional,
+                dropout = dropout_p
+            )
+            self.middle_rnn = PyramidalRNN(
+                rnn_cell = rnn_cell,
+                input_size = hidden_size << 1 if bidirectional else 0,
+                hidden_size = hidden_size,
+                dropout_p = dropout_p
+            )
+            self.top_rnn = PyramidalRNN(
+                rnn_cell = rnn_cell,
+                input_size = hidden_size << 1 if bidirectional else 0,
+                hidden_size = hidden_size,
+                dropout_p = dropout_p
+            )
         else:
-            self.rnn = self.rnn_cell(input_size=feat_size, hidden_size=hidden_size, num_layers=layer_size,
-                                     bias=True, batch_first=True, bidirectional=bidirectional, dropout=dropout_p)
+            self.rnn = self.rnn_cell(
+                input_size=feat_size,
+                hidden_size=hidden_size,
+                num_layers=layer_size,
+                bias=True,
+                batch_first=True,
+                bidirectional=bidirectional,
+                dropout=dropout_p
+            )
 
 
     def forward(self, inputs):
