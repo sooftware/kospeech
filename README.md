@@ -1,5 +1,5 @@
 # Korean-Speech-Recognition
-![build](https://img.shields.io/badge/build-ongoing-yellowgreen) ![license](https://img.shields.io/github/license/sh951011/Korean-Speech-Recognition) ![framework](https://img.shields.io/badge/framework-PyTorch-informational) ![fork](https://img.shields.io/github/forks/sh951011/Korean-Speech-Recognition) ![star](	https://img.shields.io/github/stars/sh951011/Korean-Speech-Recognition)  [![HitCount](http://hits.dwyl.com/sh951011/Korean-Speech-Recognition.svg)](http://hits.dwyl.com/sh951011/Korean-Speech-Recognition)  
+![build](https://img.shields.io/badge/build-ongoing-yellowgreen) ![license](https://img.shields.io/github/license/sh951011/Korean-Speech-Recognition) ![framework](https://img.shields.io/badge/framework-PyTorch-informational)   [![HitCount](http://hits.dwyl.com/sh951011/Korean-Speech-Recognition.svg)](http://hits.dwyl.com/sh951011/Korean-Speech-Recognition)  
 Korean Speech Recognition Using PyTorch. (Korean-ASR)  
 This Project is currently in progress.  
 
@@ -281,11 +281,11 @@ CRR = (1.0 - CER) * 100.0
 ## Requirements  
 Install Levenshtein  
 ```
-pip install python-levenshtein 
+conda install python-Levenshtein 
 ```
 Install PyTorch
 ```
-pip install torch
+https://pytorch.org/
 ```   
 Install librosa   
 ``` 
