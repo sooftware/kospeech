@@ -15,20 +15,20 @@ ListenAttendSpell(
   (listener): Listener(
     (conv): Sequential(
       (0): Conv2d(1, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-      (1): Hardtanh(min_val=0, max_val=20, inplace=True)
+      (1): ReLU()
       (2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
       (3): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-      (4): Hardtanh(min_val=0, max_val=20, inplace=True)
+      (4): ReLU()
       (5): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
       (6): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
       (7): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-      (8): Hardtanh(min_val=0, max_val=20, inplace=True)
+      (8): ReLU()
       (9): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
       (10): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-      (11): Hardtanh(min_val=0, max_val=20, inplace=True)
+      (11): ReLU()
       (12): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
       (13): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-      (14): Hardtanh(min_val=0, max_val=20, inplace=True)
+      (14): ReLU()
       (15): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
       (16): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
     )
@@ -43,7 +43,6 @@ ListenAttendSpell(
   (speller): Speller(
     (rnn): GRU(512, 512, num_layers=3, batch_first=True, dropout=0.5)
     (embedding): Embedding(2040, 512)
-  
     (input_dropout): Dropout(p=0.5, inplace=False)
     (attention): Attention(
       (attention): HybridAttention(
