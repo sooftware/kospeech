@@ -42,8 +42,10 @@ def train(model, hparams, epoch, lr_rampup, total_time_step, queue,
             worker_num -= 1
             logger.debug('left train_loader: %d' % (worker_num))
 
-            if worker_num == 0: break
-            else: continue
+            if worker_num == 0:
+                break
+            else:
+                continue
         optimizer.zero_grad()
 
         feats = feats.to(device)

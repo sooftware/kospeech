@@ -71,20 +71,20 @@ class Listener(nn.Module):
         self.rnn_cell = nn.LSTM if rnn_cell.lower() == 'lstm' else nn.GRU if rnn_cell.lower() == 'gru' else nn.RNN
         self.conv = nn.Sequential(
             nn.Conv2d(in_channels=1, out_channels=64, kernel_size=3, padding=1),
-            nn.ReLU(),
+            nn.Hardtanh(0, 20, inplace=True),
             nn.BatchNorm2d(num_features=64),
             nn.Conv2d(in_channels=64, out_channels=64, kernel_size=3, padding=1),
-            nn.ReLU(),
+            nn.Hardtanh(0, 20, inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2),
             nn.BatchNorm2d(num_features=64),
             nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, padding=1),
-            nn.ReLU(),
+            nn.Hardtanh(0, 20, inplace=True),
             nn.BatchNorm2d(num_features=128),
             nn.Conv2d(in_channels=128, out_channels=128, kernel_size=3, padding=1),
-            nn.ReLU(),
+            nn.Hardtanh(0, 20, inplace=True),
             nn.BatchNorm2d(num_features=128),
             nn.Conv2d(in_channels=128, out_channels=256, kernel_size=3, padding=1),
-            nn.ReLU(),
+            nn.Hardtanh(0, 20, inplace=True),
             nn.BatchNorm2d(num_features=256),
             nn.MaxPool2d(kernel_size=2, stride=2)
         )
