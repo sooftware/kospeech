@@ -38,5 +38,7 @@ PyTorch version : 1.3.1
   
 ## Feature  
   
-Activation Function : Hard tanh
+Activation Function : Hard tanh  
+Frame length : 30ms  
+Stride : 7.5ms
   
