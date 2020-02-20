@@ -34,4 +34,9 @@
 Device : GTX 1080 Ti   
 CUDA version : 10.1  
 PyTorch version : 1.3.1    
-```
+```  
+  
+## Feature  
+  
+Activation Function : Hard tanh
+  
