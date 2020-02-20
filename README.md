@@ -72,7 +72,7 @@ ListenAttendSpell(
 | [use_attention](https://blog.naver.com/sooftware/221784472231)    | flag indication whether to use attention mechanism or not|True |   
 |input_reverse|flag indication whether to reverse input feature or not|True|   
 |[use_augment](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/hparams/spec-augmentation.md)| flag indication whether to use spec-augmentation or not|True|  
-|[use_pyramidal](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/hparams/pyramidal.md)| flag indication whether to use pLSTM or not|False|  
+|[use_pyramidal](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/hparams/pyramidal.md)| flag indication whether to use pLSTM or not|True|  
 |[augment_ratio](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/hparams/spec-augmentation.md)|ratio of spec-augmentation applied data|-|   
 |listener_layer_size|number of listener`s RNN layer|5|  
 | speller_layer_size|number of speller`s RNN layer| 3|  
