@@ -1,9 +1,17 @@
-# <h1 align="center">:star2:Korean-Speech-Recognition:star2:</h1>
+# <h1 align="center">:star2: Korean-Speech-Recognition :star2:</h1>
     
 <p align=center><i> Korean Speech Recognition Using PyTorch. (Korean-ASR) </i></p>  
 <p align=center><i>This Project is currently in progress. </i></p>  
   
-![build](https://img.shields.io/badge/build-ongoing-yellowgreen) ![license](https://img.shields.io/github/license/sh951011/Korean-Speech-Recognition) ![category](https://img.shields.io/badge/category-Speech-informational) ![framework](https://img.shields.io/badge/framework-PyTorch-Red) ![language](https://img.shields.io/badge/language-Korean-lightgrey)  ![team](https://img.shields.io/badge/Team-Kai.Lib-important)   
+<p align="center">
+  <img src="https://img.shields.io/badge/build-ongoing-yellowgreen"> 
+  <img src="https://img.shields.io/github/license/sh951011/Korean-Speech-Recognition">
+  <img src="https://img.shields.io/badge/category-Speech-informational">  
+  <img src="https://img.shields.io/badge/framework-PyTorch-critical">
+  <img src="https://img.shields.io/badge/language-Korean-lightgrey"> 
+  <img src="https://img.shields.io/badge/Team-Kai.Lib-important">
+</p>
+     
   
 ## Team Member  
 [![KimSooHwan](https://postfiles.pstatic.net/MjAyMDAyMjBfMTIz/MDAxNTgyMTgzMTg0NjQ0.WkBpWhKQ8YT8Ct9BHrdD44Yn6l-1f-lCNjdIE8uU5e8g.UUvRfvxb1cfn6Ml1ZQzE_4kv6QYsvgBpuiSiTWSEZMIg.PNG.sooftware/image.png?type=w773)](https://github.com/sh951011)   [![BaeSeYoung](https://postfiles.pstatic.net/MjAyMDAyMjBfMjgx/MDAxNTgyMTgzMjA5MDM1.bUVfaKWb3MZ4eJVFawmTHVdQs1aohO4CUW7qHTC38okg.NGBQL8cunnwMnh3Pt8CWkRWlMqAHVOkNMJCowKd1wAAg.PNG.sooftware/image.png?type=w773)](https://github.com/triplet02)   [![WonCheolHwang](https://postfiles.pstatic.net/MjAyMDAyMjBfMjIg/MDAxNTgyMTgzMjIzMzcx.knqFUOpdhk1l_GLZWvz0zelNf-QJtA_yjaoYuKBJpN8g.U5EhVv_elOcufKYTOaaJof1ZqjHOaYlDHAyCBcsXjdAg.PNG.sooftware/image.png?type=w773)](https://github.com/wch18735)
