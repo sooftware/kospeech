@@ -1,7 +1,7 @@
 # <h1 align="center">:star2:Korean-Speech-Recognition:star2:</h1>
     
-<p align=center><i> Korean Speech Recognition Using *PyTorch*. (*Korean-ASR*) </i></p>  
-<p align=center><i>This Project is currently in progress.   (*Korean-ASR*) </i></p>  
+<p align=center><i> Korean Speech Recognition Using PyTorch. (Korean-ASR) </i></p>  
+<p align=center><i>This Project is currently in progress. </i></p>  
   
 ![build](https://img.shields.io/badge/build-ongoing-yellowgreen) ![license](https://img.shields.io/github/license/sh951011/Korean-Speech-Recognition) ![category](https://img.shields.io/badge/category-Speech-informational) ![framework](https://img.shields.io/badge/framework-PyTorch-Red) ![language](https://img.shields.io/badge/language-Korean-lightgrey)  ![team](https://img.shields.io/badge/Team-Kai.Lib-important) ![last-commit](https://img.shields.io/github/last-commit/sh951011/Korean-Speech-Recognition)  
   
@@ -265,8 +265,7 @@ CRR = (1.0 - CER) * 100.0
 ## Contacts  
   
 Please report bugs or provide any recommendation to us through the following email addresses.  
-* SooHwan Kim  
-  :: sh951011@gmail.com  
+* SooHwan Kim: sh951011@gmail.com  
 
 ## Reference   
 [[1] 「Listen, Attend and Spell」  Paper](https://arxiv.org/abs/1508.01211)   
