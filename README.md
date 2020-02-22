@@ -265,7 +265,7 @@ CRR = (1.0 - CER) * 100.0
 ## Contacts  
   
 Please report bugs or provide any recommendation to us through the following email addresses.  
-* SooHwan Kim: sh951011@gmail.com  
+* SooHwan Kim : sh951011@gmail.com  
 
 ## Reference   
 [[1] 「Listen, Attend and Spell」  Paper](https://arxiv.org/abs/1508.01211)   
