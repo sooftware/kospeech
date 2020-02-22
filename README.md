@@ -1,7 +1,6 @@
 # <h1 align="center">:star2:Korean-Speech-Recognition:star2:</h1>
     
-<p align=center>![build](https://img.shields.io/badge/build-ongoing-yellowgreen) ![license](https://img.shields.io/github/license/sh951011/Korean-Speech-Recognition) ![category](https://img.shields.io/badge/category-Speech-informational) ![framework](https://img.shields.io/badge/framework-PyTorch-Red) ![language](https://img.shields.io/badge/language-Korean-lightgrey) ![team](https://img.shields.io/badge/Team-Kai.Lib-important)</p>  
-    
+![build](https://img.shields.io/badge/build-ongoing-yellowgreen) ![license](https://img.shields.io/github/license/sh951011/Korean-Speech-Recognition) ![category](https://img.shields.io/badge/category-Speech-informational) ![framework](https://img.shields.io/badge/framework-PyTorch-Red) ![language](https://img.shields.io/badge/language-Korean-lightgrey) ![team](https://img.shields.io/badge/Team-Kai.Lib-important) </p>  
 <p align=center><i> Korean Speech Recognition Using *PyTorch*. (*Korean-ASR*) </i></p>  
 <p align=center><i>This Project is currently in progress.   (*Korean-ASR*) </i></p>  
   
