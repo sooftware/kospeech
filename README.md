@@ -259,7 +259,12 @@ CRR = (1.0 - CER) * 100.0
   
 * Reference
   + https://en.wikipedia.org/wiki/Levenshtein_distance
-   
+  
+## Contacts  
+  
+Please report bugs or provide any recommendation to us through the following email addresses.  
+* SooHwan Kim  
+  :: sh951011@gmail.com  
 
 ## Reference   
 [[1] 「Listen, Attend and Spell」  Paper](https://arxiv.org/abs/1508.01211)   
@@ -274,20 +279,8 @@ CRR = (1.0 - CER) * 100.0
 [[10]   PyTorch-VGG Net](https://github.com/chengyangfu/pytorch-vgg-cifar10/blob/master/vgg.py)  
 [[11]   Levenshtein Distance](https://en.wikipedia.org/wiki/Levenshtein_distance)   
 [[12]   librosa](https://github.com/librosa/librosa)  
-   
-## Requirements  
-Install Levenshtein  
-```
-conda install python-Levenshtein 
-```
-Install PyTorch
-```
-https://pytorch.org/
-```   
-Install librosa   
-``` 
-pip install librosa
-```
+
+
 ## License
 Copyright 2020 Kai.Lib
 ```
