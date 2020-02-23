@@ -18,7 +18,7 @@ from utils.lr import ramp_up, exp_decay
 from utils.save import save_step_result
 train_step_result = {'loss': [], 'cer': []}
 
-def train(model, hparams, epoch, lr_rampup, total_time_step, queue,
+def train(model, hparams, epoch, total_time_step, queue,
           criterion, optimizer, device, train_begin, worker_num,
           print_batch=5, teacher_forcing_ratio=0.99):
     total_loss = 0.
@@ -32,9 +32,9 @@ def train(model, hparams, epoch, lr_rampup, total_time_step, queue,
     begin = epoch_begin = time.time()
 
     while True:
-        if lr_rampup and epoch == 0 and time_step < 1000:
+        if hparams.use_multistep_lr and epoch == 0 and time_step < 1000:
             ramp_up(optimizer, time_step, hparams)
-        if lr_rampup and epoch == 1:
+        if hparams.use_multistep_lr and epoch == 1:
             exp_decay(optimizer, total_time_step, hparams)
         feats, targets, feat_lengths, label_lengths = queue.get()
         if feats.shape[0] == 0:

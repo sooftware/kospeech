@@ -39,37 +39,61 @@ class HyperParams():
         - **load_model**: flag indication whether to load weight file or not
         - **model_path**: path for weight file
     """
-    def __init__(self):
-        self.use_bidirectional = True
-        self.use_attention = True
-        self.input_reverse = True
-        self.use_augment = True
-        self.use_pickle = True
-        self.use_pyramidal = True
-        self.use_cuda = True
-        self.score_function = 'dot-product'
-        self.augment_ratio = 1.0
-        self.hidden_size = 256
-        self.dropout = 0.5
-        self.listener_layer_size = 6
-        self.speller_layer_size = 3
-<<<<<<< HEAD
-        self.batch_size = 6
-=======
-        self.batch_size = 8
->>>>>>> a7521f4e713443b014ff0f834edd399f3b951fdb
-        self.worker_num = 1
-        self.max_epochs = 40
-        self.init_lr = 0.0001
-        self.high_plateau_lr = 0.001
-        self.low_plateau_lr = 0.00003
-        self.teacher_forcing = 0.9
-        self.seed = 1
-        self.max_len = 120
-        self.save_name = 'model'
-        self.mode = 'train'
-        self.load_model = False
-        self.model_path = "nothing.pt"
+    def __init__(self,
+                 use_bidirectional = True,
+                 use_attention = True,
+                 input_reverse = True,
+                 use_augment = True,
+                 use_pickle = True,
+                 use_pyramidal = True,
+                 use_cuda = True,
+                 score_function = 'dot-product',
+                 augment_ratio = 1.0,
+                 hidden_size = 256,
+                 dropout = 0.5,
+                 listener_layer_size = 6,
+                 speller_layer_size = 3,
+                 batch_size = 6,
+                 worker_num = 1,
+                 max_epochs = 40,
+                 use_multistep_lr = False,
+                 init_lr = 0.0001,
+                 high_plateau_lr = 0.001,
+                 low_plateau_lr = 0.00003,
+                 teacher_forcing = 0.9,
+                 seed = 1,
+                 max_len = 120,
+                 mode = 'train',
+                 load_model = False,
+                 model_path = "nothing.pt"
+                 ):
+        self.use_bidirectional = use_bidirectional
+        self.use_attention = use_attention
+        self.input_reverse = input_reverse
+        self.use_augment = use_augment
+        self.use_pickle = use_pickle
+        self.use_pyramidal = use_pyramidal
+        self.use_cuda = use_cuda
+        self.score_function = score_function
+        self.augment_ratio = augment_ratio
+        self.hidden_size = hidden_size
+        self.dropout = dropout
+        self.listener_layer_size = listener_layer_size
+        self.speller_layer_size = speller_layer_size
+        self.batch_size = batch_size
+        self.worker_num = worker_num
+        self.max_epochs = max_epochs
+        self.use_multistep_lr = use_multistep_lr
+        self.init_lr = init_lr
+        if use_multistep_lr:
+            self.high_plateau_lr = high_plateau_lr
+            self.low_plateau_lr = low_plateau_lr
+        self.teacher_forcing = teacher_forcing
+        self.seed = seed
+        self.max_len = max_len
+        self.mode = mode
+        self.load_model = load_model
+        self.model_path = model_path
 
     def logger_hparams(self):
         logger.info("use_bidirectional : %s" % str(self.use_bidirectional))
@@ -94,5 +118,4 @@ class HyperParams():
         logger.info("seed : %d" % self.seed)
         logger.info("max_len : %d" % self.max_len)
         logger.info("use_cuda : %s" % str(self.use_cuda))
-        logger.info("save_name : %s" % self.save_name)
         logger.info("mode : %s" % self.mode)
