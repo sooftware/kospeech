@@ -98,7 +98,7 @@ ListenAttendSpell(
 Training in Progress   
 
 [AI Hub Dataset #2](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/training/AI%20Hub%20Dataset%20%232.md)
-  
+[AI Hub Dataset #3](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/training/AI%20Hub%20Dataset%20%233.md)  
 
 ## Data
 A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용 
