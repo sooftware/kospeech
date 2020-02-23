@@ -35,7 +35,7 @@ ListenAttendSpell(
     (input_dropout): Dropout(p=0.5, inplace=False)
     (attention): Attention(
       (attention): DotProductAttention(
-        (linear_out): Linear(in_features=1024, out_features=512, bias=True)
+        (W): Linear(in_features=1024, out_features=512, bias=True)
       )
     )
     (out): Linear(in_features=512, out_features=2040, bias=True)
@@ -88,7 +88,9 @@ PyTorch version : 1.4.0
 
   
 ### Training Result  
-
+   
+ Training Start Date: 2020/02/23  
+   
 |Epoch|train CRR (%)|valid CRR (%)|test CRR (%)|  
 |:-----:|:---------:|:--------:|:------:|    
 |0|-|-|-|    
