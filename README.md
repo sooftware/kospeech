@@ -11,6 +11,12 @@
   <img src="https://img.shields.io/badge/language-Korean-lightgrey"> 
   <img src="https://img.shields.io/badge/Team-Kai.Lib-important">
 </p>
+  
+<p align="center">Documents</p>
+  
+[<p align="center">Preprocess, Create label & data list](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/Preprocess.md)  
+
+[<p align="center">Ongoing Training](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/training/AI%20Hub%20Dataset%20%233.md)  
      
   
 ## Team Member  
@@ -142,6 +148,8 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 | KaiSpeech_489840.pcm | KaiSpeech_label_489840.txt  |   
   
 ### Data Preprocessing
+  
+  
 * Raw Data  
 ```
 "b/ 아/ 모+ 몬 소리야 (70%)/(칠 십 퍼센트) 확률이라니 n/"  
@@ -272,6 +280,7 @@ Please report bugs or provide any recommendation to us through the following ema
 [[10]   PyTorch-VGG Net](https://github.com/chengyangfu/pytorch-vgg-cifar10/blob/master/vgg.py)  
 [[11]   Levenshtein Distance](https://en.wikipedia.org/wiki/Levenshtein_distance)   
 [[12]   librosa](https://github.com/librosa/librosa)  
+[[13]   Preprocess, Create label & data list](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/Preprocess.md)  
 
 
 ## License
