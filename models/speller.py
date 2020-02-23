@@ -17,7 +17,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from models.beam import Beam
-from .attention import Attention
+from .attention import Attention, HybridAttention
 
 if torch.cuda.is_available():
     import torch.cuda as device
@@ -67,7 +67,8 @@ class Speller(nn.Module):
                  use_attention=True, score_function=None, device=None, k=8):
         super(Speller, self).__init__()
         self.rnn_cell = nn.LSTM if rnn_cell.lower() == 'lstm' else nn.GRU if rnn_cell.lower() == 'gru' else nn.RNN
-        self.rnn = self.rnn_cell(hidden_size , hidden_size, layer_size, batch_first=True, dropout=dropout_p)
+        self.device = device
+        self.rnn = self.rnn_cell(hidden_size , hidden_size, layer_size, batch_first=True, dropout=dropout_p).to(self.device)
         self.output_size = vocab_size
         self.max_length = max_len
         self.use_attention = use_attention
@@ -77,26 +78,30 @@ class Speller(nn.Module):
         self.embedding = nn.Embedding(self.output_size, self.hidden_size)
         self.layer_size = layer_size
         self.input_dropout = nn.Dropout(p=dropout_p)
-        self.device = device
         self.batch_size = batch_size
         self.k = k
+        self.score_function = score_function
         if use_attention:
             self.attention = Attention(score_function=score_function, decoder_hidden_size=hidden_size)
         self.out = nn.Linear(self.hidden_size, self.output_size)
 
-    def _forward_step(self, speller_input, speller_hidden, listener_outputs, last_alignment, function):
+    def _forward_step(self, speller_input, speller_hidden, listener_outputs,last_alignment, function): #last_alignment,
         """ forward one time step """
         batch_size = speller_input.size(0)
         output_size = speller_input.size(1)
-        embedded = self.embedding(speller_input)
+        embedded = self.embedding(speller_input).to(self.device)
         embedded = self.input_dropout(embedded)
+
         if self.training:
             self.rnn.flatten_parameters()
-        speller_output = self.rnn(embedded, speller_hidden)[0] # speller output BxSxH
+        speller_output = self.rnn(embedded, speller_hidden)[0]
 
         alignment = None
         if self.use_attention:
-            context, alignment = self.attention(speller_output, listener_outputs, last_alignment)
+            if self.score_function == 'hybrid':
+                context, alignment = self.attention(speller_output, listener_outputs, last_alignment)
+            else:
+                context = self.attention(speller_output, listener_outputs, last_alignment)
         else:
             context = speller_output
 
@@ -125,18 +130,17 @@ class Speller(nn.Module):
             y_hats = beam.search(speller_input, listener_outputs)
         else:
             if use_teacher_forcing:
-                speller_input = inputs[:, :-1]  # except </s>
+                speller_input = inputs[:, :-1]
                 last_alignment = None
-                """ Fix to non-parallel process even in teacher forcing to apply hybrid attention """
-                for di in range(len(speller_input[0])):
-                    predicted_softmax, last_alignment = self._forward_step(
-                        speller_input=speller_input[:, di].unsqueeze(1),
-                        speller_hidden=speller_hidden,
-                        listener_outputs=listener_outputs,
-                        last_alignment=last_alignment,
-                        function=function
-                    )
-                    step_output = predicted_softmax.squeeze(1)
+                predicted_softmax, last_alignment = self._forward_step(
+                    speller_input=speller_input,
+                    speller_hidden=speller_hidden,
+                    listener_outputs=listener_outputs,
+                    last_alignment=last_alignment,
+                    function=function
+                )
+                for di in range(predicted_softmax.size(1)):
+                    step_output = predicted_softmax[:, di, :]
                     decode_results.append(step_output)
             else:
                 speller_input = inputs[:, 0].unsqueeze(1)

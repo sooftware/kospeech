@@ -22,7 +22,7 @@ class PyramidalRNN(nn.Module):
         self.rnn = self.rnn_cell(
             input_size=input_size << 1,
             hidden_size=hidden_size,
-            num_layers=1,
+            num_layers=2,
             bidirectional=True,
             bias=True,
             batch_first=True,
@@ -34,7 +34,7 @@ class PyramidalRNN(nn.Module):
         seq_len = inputs.size(1)
         input_size = inputs.size(2)
         if seq_len % 2:
-            zeros = torch.zeros((inputs.size(0), 1, inputs.size(2)))
+            zeros = torch.zeros((inputs.size(0), 1, inputs.size(2))).cuda()
             inputs = torch.cat([inputs, zeros], dim = 1)
             seq_len += 1
         inputs = inputs.contiguous().view(batch_size, int(seq_len / 2), input_size * 2)
@@ -96,7 +96,7 @@ class Listener(nn.Module):
             feat_size <<= 6
 
         if use_pyramidal:
-            self.bottom_layer_size = layer_size - 2
+            self.bottom_layer_size = layer_size - 4
             self.bottom_rnn = self.rnn_cell(
                 input_size = feat_size,
                 hidden_size = hidden_size,

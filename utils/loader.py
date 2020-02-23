@@ -2,7 +2,8 @@ import threading
 import math
 import torch
 import random
-from utils.define import logger
+from utils.define import logger, PAD_token
+
 
 class MultiLoader():
     def __init__(self, dataset_list, queue, batch_size, worker_num):
@@ -70,7 +71,7 @@ class BaseDataLoader(threading.Thread):
         logger.debug('loader %d stop' % (self.thread_id))
 
 def _collate_fn(batch):
-    PAD = 0
+    PAD = PAD_token
     def seq_length_(p):
         return len(p[0])
 

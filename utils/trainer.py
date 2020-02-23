@@ -34,7 +34,7 @@ def train(model, hparams, epoch, lr_rampup, total_time_step, queue,
     while True:
         if lr_rampup and epoch == 0 and time_step < 1000:
             ramp_up(optimizer, time_step, hparams)
-        if epoch == 1:
+        if lr_rampup and epoch == 1:
             exp_decay(optimizer, total_time_step, hparams)
         feats, targets, feat_lengths, label_lengths = queue.get()
         if feats.shape[0] == 0:
@@ -53,8 +53,7 @@ def train(model, hparams, epoch, lr_rampup, total_time_step, queue,
         target = targets[:, 1:]
         model.module.flatten_parameters()
 
-        y_hat, logit = model(feats, targets, teacher_forcing_ratio)
-
+        y_hat, logit = model(feats=feats, targets=targets, teacher_forcing_ratio=teacher_forcing_ratio)
         loss = criterion(logit.contiguous().view(-1, logit.size(-1)), target.contiguous().view(-1))
         total_loss += loss.item()
         total_num += sum(feat_lengths)

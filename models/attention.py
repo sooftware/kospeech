@@ -29,7 +29,8 @@ class Attention(nn.Module):
             self.attention = HybridAttention(
                 decoder_hidden_size = decoder_hidden_size,
                 encoder_hidden_size = decoder_hidden_size,
-                context_size = int(decoder_hidden_size >> 1),
+                #context_size = int(decoder_hidden_size >> 1),
+                context_size=2040,
                 k = 10,
                 smoothing = True
             )

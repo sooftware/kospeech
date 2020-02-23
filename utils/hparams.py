@@ -45,18 +45,22 @@ class HyperParams():
         self.input_reverse = True
         self.use_augment = True
         self.use_pickle = True
-        self.use_pyramidal = False
+        self.use_pyramidal = True
         self.use_cuda = True
         self.score_function = 'dot-product'
         self.augment_ratio = 1.0
         self.hidden_size = 256
         self.dropout = 0.5
-        self.listener_layer_size = 5
+        self.listener_layer_size = 6
         self.speller_layer_size = 3
+<<<<<<< HEAD
         self.batch_size = 6
+=======
+        self.batch_size = 8
+>>>>>>> a7521f4e713443b014ff0f834edd399f3b951fdb
         self.worker_num = 1
         self.max_epochs = 40
-        self.init_lr = 0.0
+        self.init_lr = 0.0001
         self.high_plateau_lr = 0.001
         self.low_plateau_lr = 0.00003
         self.teacher_forcing = 0.9

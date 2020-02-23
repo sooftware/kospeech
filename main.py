@@ -79,7 +79,6 @@ if __name__ == '__main__':
         rnn_cell = 'gru',
         use_pyramidal = hparams.use_pyramidal
     )
-
     speller = Speller(
         vocab_size = len(char2index),
         max_len = hparams.max_len,
@@ -104,10 +103,13 @@ if __name__ == '__main__':
     model = nn.DataParallel(model).to(device)
 
     optimizer = optim.Adam(model.module.parameters(), lr=hparams.init_lr)
-    criterion = nn.NLLLoss(reduction='sum', ignore_index=PAD_token).to(device)
+    criterion = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_token).to(device)
 
     audio_paths, label_paths = load_data_list(data_list_path=TRAIN_LIST_PATH, dataset_path=DATASET_PATH)
+<<<<<<< HEAD
+=======
     #audio_paths, label_paths = load_data_list(data_list_path=SAMPLE_LIST_PATH, dataset_path=SAMPLE_DATASET_PATH)
+>>>>>>> a7521f4e713443b014ff0f834edd399f3b951fdb
 
     if hparams.use_pickle:
         target_dict = load_pickle(TARGET_DICT_PATH, "load all target_dict using pickle complete !!")
@@ -147,7 +149,7 @@ if __name__ == '__main__':
             epoch = epoch,
             optimizer = optimizer,
             device = device,
-            lr_rampup = True,
+            lr_rampup = False,
             train_begin = train_begin,
             worker_num = hparams.worker_num,
             print_batch = 10,

@@ -34,10 +34,6 @@ class ListenAttendSpell(nn.Module):
         self.decode_function = decode_function
         self.use_pyramidal = use_pyramidal
 
-    def flatten_parameters(self):
-        self.listener.flatten_parameters()
-        self.speller.rnn.flatten_parameters()
-
     def forward(self, feats, targets=None, teacher_forcing_ratio=0.99, use_beam_search = False):
         listener_outputs, listener_hidden = self.listener(feats)
         y_hat, logit = self.speller(
@@ -50,3 +46,10 @@ class ListenAttendSpell(nn.Module):
         )
 
         return y_hat, logit
+
+    def set_beam_size(self, k):
+        self.speller.k = k
+
+    def flatten_parameters(self):
+        self.listener.flatten_parameters()
+        self.speller.rnn.flatten_parameters()
