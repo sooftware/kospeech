@@ -168,7 +168,7 @@ class DotProductAttention(Attention):
     """
     def __init__(self, decoder_hidden_size):
         super(Attention, self).__init__()
-        self.linear_out = nn.Linear(decoder_hidden_size*2, decoder_hidden_size)
+        self.W = nn.Linear(decoder_hidden_size*2, decoder_hidden_size)
 
     def forward(self, decoder_output, encoder_outputs):
         batch_size = decoder_output.size(0)
@@ -183,5 +183,5 @@ class DotProductAttention(Attention):
         attn_val = torch.bmm(attn_distribution, encoder_outputs) # get attention value
         # concatenate attn_val & decoder_output
         combined = torch.cat((attn_val, decoder_output), dim=2)
-        context = torch.tanh(self.linear_out(combined.view(-1, 2 * hidden_size))).view(batch_size, -1, hidden_size)
+        context = torch.tanh(self.W(combined.view(-1, 2 * hidden_size))).view(batch_size, -1, hidden_size)
         return context
