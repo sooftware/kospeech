@@ -231,6 +231,7 @@ label_df.to_csv("aihub_labels.csv", encoding="utf-8", index=False)
 |\<s>|Start Of Sentence|  
 |\</s>|End Of Sentence|  
 |_|PAD|  
+  
 ( 위의 문자들은 수동으로 추가 )  
   
   
