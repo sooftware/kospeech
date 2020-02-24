@@ -17,7 +17,7 @@
 <p align=center><i> Bi-RNN · Seq2seq · Attention </i></p> 
 <p align=center><i> MFCC · Input-Reverse </i></p> 
 <p align=center><i> Label-Smoothing · Spec-Augmentation </i></p> 
-<p align=center><i> MultiStep-LR · Beam-Search </i></p> 
+<p align=center><i> Multi-Step LR · Beam-Search </i></p> 
   
 ## Documents
   
