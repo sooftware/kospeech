@@ -105,7 +105,10 @@ if __name__ == '__main__':
     model = nn.DataParallel(model).to(device)
 
     optimizer = optim.Adam(model.module.parameters(), lr=hparams.init_lr)
-    criterion = LabelSmoothingLoss(len(char2index), ignore_index=PAD_token, smoothing=0.1, dim=-1).to(device)
+    if hparams.use_label_smoothing:
+        criterion = LabelSmoothingLoss(len(char2index), ignore_index=PAD_token, smoothing=0.1, dim=-1).to(device)
+    else:
+        criterion = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_token).to(device)
 
     audio_paths, label_paths = load_data_list(data_list_path=TRAIN_LIST_PATH, dataset_path=DATASET_PATH)
 

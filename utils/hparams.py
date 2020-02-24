@@ -42,6 +42,7 @@ class HyperParams():
     def __init__(self,
                  use_bidirectional = True,
                  use_attention = True,
+                 use_label_smoothing = True,
                  input_reverse = True,
                  use_augment = True,
                  use_pickle = False,
@@ -69,6 +70,7 @@ class HyperParams():
                  ):
         self.use_bidirectional = use_bidirectional
         self.use_attention = use_attention
+        self.use_label_smoothing = use_label_smoothing
         self.input_reverse = input_reverse
         self.use_augment = use_augment
         self.use_pickle = use_pickle

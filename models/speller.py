@@ -129,7 +129,8 @@ class Speller(nn.Module):
             )
             y_hats = beam.search(speller_input, listener_outputs)
         else:
-            if use_teacher_forcing:
+            if use_teacher_forcing and self.score_function != 'hybrid':
+                """ if teacher_forcing, Infer all at once """
                 speller_input = inputs[:, :-1]
                 last_alignment = None
                 predicted_softmax, last_alignment = self._forward_step(
@@ -141,6 +142,19 @@ class Speller(nn.Module):
                 )
                 for di in range(predicted_softmax.size(1)):
                     step_output = predicted_softmax[:, di, :]
+                    decode_results.append(step_output)
+            elif use_teacher_forcing and self.score_function == 'hybrid':
+                """ Fix to non-parallel process even in teacher forcing to apply location-aware attention """
+                speller_input = inputs[:, :-1]  # except </s>
+                last_alignment = torch.FloatTensor(batch_size, listener_outputs.size(1)).uniform_(-0.1, 0.1)
+                for di in range(len(speller_input[0])):
+                    predicted_softmax, last_alignment = self._forward_step(
+                        speller_input=speller_input[:, di].unsqueeze(1),
+                        speller_hidden=speller_hidden,
+                        listener_outputs=listener_outputs,
+                        last_alignment=last_alignment,
+                        function=function)
+                    step_output = predicted_softmax.squeeze(1)
                     decode_results.append(step_output)
             else:
                 speller_input = inputs[:, 0].unsqueeze(1)
