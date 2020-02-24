@@ -12,12 +12,18 @@
   <img src="https://img.shields.io/badge/Team-Kai.Lib-important">
 </p>
   
-<p align="center">Documents</p>
+### <h1 align="center">Documents</h1>
   
 [<p align="center">Preprocess, Create label & data list](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/Preprocess.md)  
 
 [<p align="center">Ongoing Training](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/training/AI%20Hub%20Dataset%20%233.md)  
-     
+
+### <h1 align="center">Techniques</h1>
+
+<p align=center><i> Bi-RNN · Seq2seq · Attention </i></p> 
+<p align=center><i> MFCC · Input-Reverse </i></p> 
+<p align=center><i> Label-Smoothing · Spec-Augmentation </i></p> 
+<p align=center><i> MultiStep-LR · Beam-Search </i></p> 
   
 ## Team Member  
 [![KimSooHwan](https://postfiles.pstatic.net/MjAyMDAyMjBfMTIz/MDAxNTgyMTgzMTg0NjQ0.WkBpWhKQ8YT8Ct9BHrdD44Yn6l-1f-lCNjdIE8uU5e8g.UUvRfvxb1cfn6Ml1ZQzE_4kv6QYsvgBpuiSiTWSEZMIg.PNG.sooftware/image.png?type=w773)](https://github.com/sh951011)   [![BaeSeYoung](https://postfiles.pstatic.net/MjAyMDAyMjBfMjgx/MDAxNTgyMTgzMjA5MDM1.bUVfaKWb3MZ4eJVFawmTHVdQs1aohO4CUW7qHTC38okg.NGBQL8cunnwMnh3Pt8CWkRWlMqAHVOkNMJCowKd1wAAg.PNG.sooftware/image.png?type=w773)](https://github.com/triplet02)   [![WonCheolHwang](https://postfiles.pstatic.net/MjAyMDAyMjBfMjIg/MDAxNTgyMTgzMjIzMzcx.knqFUOpdhk1l_GLZWvz0zelNf-QJtA_yjaoYuKBJpN8g.U5EhVv_elOcufKYTOaaJof1ZqjHOaYlDHAyCBcsXjdAg.PNG.sooftware/image.png?type=w773)](https://github.com/wch18735)
