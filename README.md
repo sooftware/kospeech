@@ -62,7 +62,7 @@ ListenAttendSpell(
     (input_dropout): Dropout(p=0.5, inplace=False)
     (attention): Attention(
       (attention): DotProductAttention(
-        (linear_out): Linear(in_features=1024, out_features=512, bias=True)
+        (W): Linear(in_features=1024, out_features=512, bias=True)
       )
     )
     (out): Linear(in_features=512, out_features=2040, bias=True)
@@ -94,11 +94,6 @@ ListenAttendSpell(
 | lr               | learning rate|[Multi-Step](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/hparams/multi-step-lr.md)        |
 | max_epochs       | max epoch|-          |   
    
-   
-## Training List     
-  
-[AI Hub Dataset #2](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/training/AI%20Hub%20Dataset%20%232.md)   
-[AI Hub Dataset #3](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/training/AI%20Hub%20Dataset%20%233.md) (ongoing)   
 
 ## Data
 A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용 
@@ -261,6 +256,11 @@ CRR = (1.0 - CER) * 100.0
   
 * Reference
   + https://en.wikipedia.org/wiki/Levenshtein_distance
+  
+## Training List     
+  
+[AI Hub Dataset #2](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/training/AI%20Hub%20Dataset%20%232.md)   
+[AI Hub Dataset #3](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/training/AI%20Hub%20Dataset%20%233.md) (ongoing)   
   
 ## Contacts  
   
