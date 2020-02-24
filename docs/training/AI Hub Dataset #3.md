@@ -53,6 +53,7 @@ ListenAttendSpell(
 | use_bidirectional| if True, becomes a bidirectional encoder|True|  
 | use_attention    | flag indication whether to use attention mechanism or not|True |   
 | score_function    | which attention to use|dot-product |   
+| use_label_smoothing    | flag indication whether to use label smoothing or not|True |   
 |input_reverse|flag indication whether to reverse input feature or not|True|   
 |use_augment| flag indication whether to use spec-augmentation or not|True|  
 |use_pyramidal| flag indication whether to use pLSTM or not|True|  
@@ -60,7 +61,7 @@ ListenAttendSpell(
 |listener_layer_size|number of listener`s RNN layer|6|  
 | speller_layer_size|number of speller`s RNN layer| 3|  
 | hidden_size| size of hidden state of RNN|256|
-| batch_size | mini-batch size|6|
+| batch_size | mini-batch size|8|
 | dropout          | dropout probability|0.5  |
 | teacher_forcing  | The probability that teacher forcing will be used|0.90|
 | lr               | learning rate|1e-4        |

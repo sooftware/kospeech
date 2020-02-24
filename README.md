@@ -86,7 +86,8 @@ ListenAttendSpell(
 | ----------      |---|:----------:|    
 | [use_bidirectional](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/hparams/bidirectional.md)| if True, becomes a bidirectional encoder|True|  
 | [use_attention](https://blog.naver.com/sooftware/221784472231)    | flag indication whether to use attention mechanism or not|True |   
-| score_function    |which attention to use|dot-product | 
+| score_function    |which attention to use|dot-product |  
+| use_label_smoothing    | flag indication whether to use label smoothing or not|True |   
 |input_reverse|flag indication whether to reverse input feature or not|True|   
 |[use_augment](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/hparams/spec-augmentation.md)| flag indication whether to use spec-augmentation or not|True|  
 |[use_pyramidal](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/hparams/pyramidal.md)| flag indication whether to use pLSTM or not|True|  
