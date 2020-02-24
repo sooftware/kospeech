@@ -286,8 +286,13 @@ Please report bugs or provide any recommendation to us through the following ema
 [[9] 「Deep Speech 2: End-to-End Speech Recognition in English and Mandarin」  Paper](https://arxiv.org/abs/1512.02595)  
 [[10]   PyTorch-VGG Net](https://github.com/chengyangfu/pytorch-vgg-cifar10/blob/master/vgg.py)  
 [[11]   Levenshtein Distance](https://en.wikipedia.org/wiki/Levenshtein_distance)   
-[[12]   librosa](https://github.com/librosa/librosa)  
-[[13]   Preprocess, Create label & data list](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/Preprocess.md)  
+[[12]   Preprocess, Create label & data list](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/Preprocess.md)
+[[13]   Concept of Recurrent Nelral Network](https://blog.naver.com/sooftware/221750172371)  
+[[14]   Concept of LSTM & GRU](https://blog.naver.com/sooftware/221783612034)
+[[15]   Concept of Seq2seq](https://blog.naver.com/sooftware/221784419691)
+[[16]   Concept of Attention Mechanism](https://blog.naver.com/sooftware/221784472231)
+[[17]   Concept of Teacher Forcing](https://blog.naver.com/sooftware/221790750668)  
+[[18]   Concept of Beam Search](https://blog.naver.com/sooftware/221809101199)
 
 
 ## License
