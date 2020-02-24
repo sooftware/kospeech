@@ -60,7 +60,8 @@ BASE_PATH = "E:/한국어 음성데이터/KaiSpeech/"
 FNAME = 'KaiSpeech_'
 filenum = 1348
 format = '.txt'
-get_path(BASE_PATH,FNAME,file_num_padding(filenum),".txt")
+
+print(get_path(BASE_PATH,FNAME,file_num_padding(filenum),".txt"))
 ```
 **Output**
 ```python
@@ -171,7 +172,7 @@ test = "o/ 근데 (70%)/(칠십 퍼센트)가 커 보이긴 하는데 (200)/(이
 def sentence_filter(raw_sentence):
     return special_filter(bracket_filter(raw_sentence))
 
-sentence_filter(test)
+print(sentence_filter(test))
 ```
   
 **Output**
@@ -304,7 +305,7 @@ def sentence_to_target(sentence, char2id):
         target += (str(char2id[ch]) + ' ')
     return target[:-1]
 
-sentence_to_target(test, char2id)
+print(sentence_to_target(test, char2id))
 ```
 **Output**
 ```python
@@ -330,7 +331,7 @@ def target_to_sentence(target, id2char):
         sentence += id2char[int(n)]
     return sentence
 
-target_to_sentence(test, id2char)
+print(target_to_sentence(test, id2char))
 ```
 **Output**
 ```python
