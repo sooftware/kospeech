@@ -55,6 +55,7 @@ def train(model, hparams, epoch, total_time_step, queue,
 
         y_hat, logit = model(feats=feats, targets=targets, teacher_forcing_ratio=teacher_forcing_ratio)
         loss = criterion(logit.contiguous().view(-1, logit.size(-1)), target.contiguous().view(-1))
+
         total_loss += loss.item()
         total_num += sum(feat_lengths)
         display = random.randrange(0, 100) == 0

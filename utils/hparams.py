@@ -44,7 +44,7 @@ class HyperParams():
                  use_attention = True,
                  input_reverse = True,
                  use_augment = True,
-                 use_pickle = True,
+                 use_pickle = False,
                  use_pyramidal = True,
                  use_cuda = True,
                  score_function = 'dot-product',
@@ -112,8 +112,8 @@ class HyperParams():
         logger.info("worker_num : %d" % self.worker_num)
         logger.info("max_epochs : %d" % self.max_epochs)
         logger.info("initial learning rate : %0.4f" % self.init_lr)
-        logger.info("high plateau learning rate : %0.4f" % self.high_plateau_lr)
-        logger.info("low plateau learning rate : %0.4f" % self.low_plateau_lr)
+        #logger.info("high plateau learning rate : %0.4f" % self.high_plateau_lr)
+        #logger.info("low plateau learning rate : %0.4f" % self.low_plateau_lr)
         logger.info("teacher_forcing_ratio : %0.2f" % self.teacher_forcing)
         logger.info("seed : %d" % self.seed)
         logger.info("max_len : %d" % self.max_len)

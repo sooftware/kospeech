@@ -46,12 +46,14 @@ from utils.dataset import split_dataset
 from utils.hparams import HyperParams
 from utils.loader import BaseDataLoader, MultiLoader
 from utils.load import load_targets, load_data_list, load_pickle
+from utils.loss import LabelSmoothingLoss
 from utils.save import save_epoch_result, save_pickle
 from utils.evaluator import evaluate
 from utils.trainer import train
 from models.speller import Speller
 from models.listener import Listener
 from models.listenAttendSpell import ListenAttendSpell
+
 
 if __name__ == '__main__':
     os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
@@ -103,7 +105,7 @@ if __name__ == '__main__':
     model = nn.DataParallel(model).to(device)
 
     optimizer = optim.Adam(model.module.parameters(), lr=hparams.init_lr)
-    criterion = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_token).to(device)
+    criterion = LabelSmoothingLoss(len(char2index), ignore_index=PAD_token, smoothing=0.1, dim=-1).to(device)
 
     audio_paths, label_paths = load_data_list(data_list_path=TRAIN_LIST_PATH, dataset_path=DATASET_PATH)
 
