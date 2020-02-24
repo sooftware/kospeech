@@ -92,7 +92,7 @@ ListenAttendSpell(
 |[use_augment](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/hparams/spec-augmentation.md)| flag indication whether to use spec-augmentation or not|True|  
 |[use_pyramidal](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/hparams/pyramidal.md)| flag indication whether to use pLSTM or not|True|  
 |[augment_ratio](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/hparams/spec-augmentation.md)|ratio of spec-augmentation applied data|-|   
-|listener_layer_size|number of listener`s RNN layer|5|  
+|listener_layer_size|number of listener`s RNN layer|6|  
 | speller_layer_size|number of speller`s RNN layer| 3|  
 | hidden_size| size of hidden state of RNN|256|
 | batch_size | mini-batch size|12|
