@@ -1,7 +1,7 @@
 # <h1 align="center">:star2: Korean-Speech-Recognition :star2:</h1>
     
-<p align=center><i> Korean Speech Recognition Using PyTorch. (Korean-ASR) </i></p>  
-<p align=center><i>This Project is currently in progress. </i></p>  
+<p align=center> Korean Speech Recognition Using PyTorch. (Korean-ASR) </p>  
+<p align=center> This Project is currently in progress. </p>  
   
 <p align="center">
   <img src="https://img.shields.io/badge/build-ongoing-yellowgreen"> 
@@ -13,7 +13,7 @@
 </p>
   
 
-
+<p align=center><i> Listen, Attend and Spell </i></p> 
 <p align=center><i> Bi-RNN · Seq2seq · Attention </i></p> 
 <p align=center><i> MFCC · Input-Reverse </i></p> 
 <p align=center><i> Label-Smoothing · Spec-Augmentation </i></p> 
