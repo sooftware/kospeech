@@ -4,12 +4,12 @@
 <p align=center> This Project is currently in progress. </p>  
   
 <p align="center">
-  <img src="https://img.shields.io/badge/build-ongoing-yellowgreen"> 
+  <img src="https://img.shields.io/badge/build-ongoing-informational"> 
   <img src="https://img.shields.io/github/license/sh951011/Korean-Speech-Recognition">
   <img src="https://img.shields.io/badge/category-Speech-informational">  
-  <img src="https://img.shields.io/badge/framework-PyTorch-critical">
-  <img src="https://img.shields.io/badge/language-Korean-lightgrey"> 
-  <img src="https://img.shields.io/badge/Team-Kai.Lib-important">
+  <img src="https://img.shields.io/badge/framework-PyTorch-green">
+  <img src="https://img.shields.io/badge/language-Korean-informational"> 
+  <img src="https://img.shields.io/badge/Team-Kai.Lib-green">
 </p>
   
 
