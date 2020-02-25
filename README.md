@@ -4,12 +4,12 @@
 <p align=center> This Project is currently in progress. </p>  
   
 <p align="center">
-  <img src="https://img.shields.io/badge/build-ongoing-yellowgreen"> 
+  <img src="https://img.shields.io/badge/build-ongoing-informational"> 
   <img src="https://img.shields.io/github/license/sh951011/Korean-Speech-Recognition">
   <img src="https://img.shields.io/badge/category-Speech-informational">  
-  <img src="https://img.shields.io/badge/framework-PyTorch-critical">
-  <img src="https://img.shields.io/badge/language-Korean-lightgrey"> 
-  <img src="https://img.shields.io/badge/Team-Kai.Lib-important">
+  <img src="https://img.shields.io/badge/framework-PyTorch-green">
+  <img src="https://img.shields.io/badge/language-Korean-informational"> 
+  <img src="https://img.shields.io/badge/Team-Kai.Lib-green">
 </p>
   
 
@@ -17,7 +17,7 @@
 <p align=center><i> Bi-RNN · Seq2seq · Attention </i></p> 
 <p align=center><i> MFCC · Input-Reverse </i></p> 
 <p align=center><i> Label-Smoothing · Spec-Augmentation </i></p> 
-<p align=center><i> MultiStep-LR · Beam-Search </i></p> 
+<p align=center><i> Multi-Step LR · Beam-Search </i></p> 
   
 ## Documents
   
@@ -29,7 +29,7 @@
 [![KimSooHwan](https://postfiles.pstatic.net/MjAyMDAyMjBfMTIz/MDAxNTgyMTgzMTg0NjQ0.WkBpWhKQ8YT8Ct9BHrdD44Yn6l-1f-lCNjdIE8uU5e8g.UUvRfvxb1cfn6Ml1ZQzE_4kv6QYsvgBpuiSiTWSEZMIg.PNG.sooftware/image.png?type=w773)](https://github.com/sh951011)   [![BaeSeYoung](https://postfiles.pstatic.net/MjAyMDAyMjBfMjgx/MDAxNTgyMTgzMjA5MDM1.bUVfaKWb3MZ4eJVFawmTHVdQs1aohO4CUW7qHTC38okg.NGBQL8cunnwMnh3Pt8CWkRWlMqAHVOkNMJCowKd1wAAg.PNG.sooftware/image.png?type=w773)](https://github.com/triplet02)   [![WonCheolHwang](https://postfiles.pstatic.net/MjAyMDAyMjBfMjIg/MDAxNTgyMTgzMjIzMzcx.knqFUOpdhk1l_GLZWvz0zelNf-QJtA_yjaoYuKBJpN8g.U5EhVv_elOcufKYTOaaJof1ZqjHOaYlDHAyCBcsXjdAg.PNG.sooftware/image.png?type=w773)](https://github.com/wch18735)
 
 ## Model
-<img src="https://postfiles.pstatic.net/MjAyMDAyMjVfNzgg/MDAxNTgyNTcyOTYzODEw.uerOEIqrkTIpODJpM0V1aE01Z_GQgA12ys5Iysfbzb8g.p4_ZpxBETLAmm2NBrJ-53dmHqBJVoT5LMEinR2xD4jwg.PNG.sooftware/%EB%AA%A8%EB%8D%B8%EA%B5%AC%EC%A1%B0.png?type=w773" width="800"> 
+<img src="https://postfiles.pstatic.net/MjAyMDAyMjVfODIg/MDAxNTgyNjE5NzE3NjU5.51D-0F_nvBCZQ89XpgaycjPsX92z_lZK-vCQIHXfOmkg.kK0ILmnHM-LXMRxjTB5o1vJjKnhI4cw73me3LpvRkxUg.PNG.sooftware/LAS.png?type=w773" width="800"> 
   
 ### Listen, Attend and Spell Architecture 
 ```python
@@ -84,20 +84,20 @@ ListenAttendSpell(
 ## Hyperparameters  
 | Hyperparameter  |Help| Default|              
 | ----------      |---|:----------:|    
-| [use_bidirectional](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/hparams/bidirectional.md)| if True, becomes a bidirectional encoder|True|  
-| [use_attention](https://blog.naver.com/sooftware/221784472231)    | flag indication whether to use attention mechanism or not|True |   
+| use_bidirectional| if True, becomes a bidirectional encoder|True|  
+| use_attention    | flag indication whether to use attention mechanism or not|True |   
 | score_function    |which attention to use|dot-product |  
 | use_label_smoothing    | flag indication whether to use label smoothing or not|True |   
 |input_reverse|flag indication whether to reverse input feature or not|True|   
-|[use_augment](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/hparams/spec-augmentation.md)| flag indication whether to use spec-augmentation or not|True|  
-|[use_pyramidal](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/hparams/pyramidal.md)| flag indication whether to use pLSTM or not|True|  
-|[augment_ratio](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/hparams/spec-augmentation.md)|ratio of spec-augmentation applied data|-|   
+|use_augment| flag indication whether to use spec-augmentation or not|True|  
+|use_pyramidal| flag indication whether to use pLSTM or not|True|  
+|augment_ratio|ratio of spec-augmentation applied data|-|   
 |listener_layer_size|number of listener`s RNN layer|6|  
 | speller_layer_size|number of speller`s RNN layer| 3|  
 | hidden_size| size of hidden state of RNN|256|
 | batch_size | mini-batch size|12|
 | dropout          | dropout probability|0.5  |
-| [teacher_forcing](https://blog.naver.com/sooftware/221790750668)  | The probability that teacher forcing will be used|0.99|
+| teacher_forcing  | The probability that teacher forcing will be used|0.99|
 | lr               | learning rate|[Multi-Step](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/hparams/multi-step-lr.md)        |
 | max_epochs       | max epoch|-          |   
    
