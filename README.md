@@ -29,7 +29,7 @@
 [![KimSooHwan](https://postfiles.pstatic.net/MjAyMDAyMjBfMTIz/MDAxNTgyMTgzMTg0NjQ0.WkBpWhKQ8YT8Ct9BHrdD44Yn6l-1f-lCNjdIE8uU5e8g.UUvRfvxb1cfn6Ml1ZQzE_4kv6QYsvgBpuiSiTWSEZMIg.PNG.sooftware/image.png?type=w773)](https://github.com/sh951011)   [![BaeSeYoung](https://postfiles.pstatic.net/MjAyMDAyMjBfMjgx/MDAxNTgyMTgzMjA5MDM1.bUVfaKWb3MZ4eJVFawmTHVdQs1aohO4CUW7qHTC38okg.NGBQL8cunnwMnh3Pt8CWkRWlMqAHVOkNMJCowKd1wAAg.PNG.sooftware/image.png?type=w773)](https://github.com/triplet02)   [![WonCheolHwang](https://postfiles.pstatic.net/MjAyMDAyMjBfMjIg/MDAxNTgyMTgzMjIzMzcx.knqFUOpdhk1l_GLZWvz0zelNf-QJtA_yjaoYuKBJpN8g.U5EhVv_elOcufKYTOaaJof1ZqjHOaYlDHAyCBcsXjdAg.PNG.sooftware/image.png?type=w773)](https://github.com/wch18735)
 
 ## Model
-<img src="https://postfiles.pstatic.net/MjAyMDAyMjVfNzgg/MDAxNTgyNTcyOTYzODEw.uerOEIqrkTIpODJpM0V1aE01Z_GQgA12ys5Iysfbzb8g.p4_ZpxBETLAmm2NBrJ-53dmHqBJVoT5LMEinR2xD4jwg.PNG.sooftware/%EB%AA%A8%EB%8D%B8%EA%B5%AC%EC%A1%B0.png?type=w773" width="800"> 
+<img src="https://postfiles.pstatic.net/MjAyMDAyMjVfODIg/MDAxNTgyNjE5NzE3NjU5.51D-0F_nvBCZQ89XpgaycjPsX92z_lZK-vCQIHXfOmkg.kK0ILmnHM-LXMRxjTB5o1vJjKnhI4cw73me3LpvRkxUg.PNG.sooftware/LAS.png?type=w773" width="800"> 
   
 ### Listen, Attend and Spell Architecture 
 ```python
