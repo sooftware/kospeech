@@ -84,20 +84,20 @@ ListenAttendSpell(
 ## Hyperparameters  
 | Hyperparameter  |Help| Default|              
 | ----------      |---|:----------:|    
-| [use_bidirectional](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/hparams/bidirectional.md)| if True, becomes a bidirectional encoder|True|  
-| [use_attention](https://blog.naver.com/sooftware/221784472231)    | flag indication whether to use attention mechanism or not|True |   
+| use_bidirectional| if True, becomes a bidirectional encoder|True|  
+| use_attention    | flag indication whether to use attention mechanism or not|True |   
 | score_function    |which attention to use|dot-product |  
 | use_label_smoothing    | flag indication whether to use label smoothing or not|True |   
 |input_reverse|flag indication whether to reverse input feature or not|True|   
-|[use_augment](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/hparams/spec-augmentation.md)| flag indication whether to use spec-augmentation or not|True|  
-|[use_pyramidal](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/hparams/pyramidal.md)| flag indication whether to use pLSTM or not|True|  
-|[augment_ratio](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/hparams/spec-augmentation.md)|ratio of spec-augmentation applied data|-|   
+|use_augment| flag indication whether to use spec-augmentation or not|True|  
+|use_pyramidal| flag indication whether to use pLSTM or not|True|  
+|augment_ratio|ratio of spec-augmentation applied data|-|   
 |listener_layer_size|number of listener`s RNN layer|6|  
 | speller_layer_size|number of speller`s RNN layer| 3|  
 | hidden_size| size of hidden state of RNN|256|
 | batch_size | mini-batch size|12|
 | dropout          | dropout probability|0.5  |
-| [teacher_forcing](https://blog.naver.com/sooftware/221790750668)  | The probability that teacher forcing will be used|0.99|
+| teacher_forcing  | The probability that teacher forcing will be used|0.99|
 | lr               | learning rate|[Multi-Step](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/hparams/multi-step-lr.md)        |
 | max_epochs       | max epoch|-          |   
    
