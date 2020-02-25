@@ -14,8 +14,8 @@ limitations under the License.
 import time, random
 from utils.distance import get_distance
 from utils.define import logger
-from utils.lr import ramp_up, exp_decay
 from utils.save import save_step_result
+from train.lr import ramp_up, exp_decay
 train_step_result = {'loss': [], 'cer': []}
 
 def train(model, hparams, epoch, total_time_step, queue,

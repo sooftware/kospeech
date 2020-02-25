@@ -15,6 +15,7 @@ import torch
 import pickle
 import math
 import pandas as pd
+import csv
 from tqdm import trange
 from utils.define import logger, TRAIN_DATASET_PICKLE_PATH, VALID_DATASET_PICKLE_PATH, ENCODING
 
@@ -54,6 +55,28 @@ def load_data_list(data_list_path, dataset_path):
     label_paths = list(dataset_path + data_list["label"])
 
     return audio_paths, label_paths
+
+def load_label(label_path, encoding='utf-8'):
+    """
+    Provides char2index, index2char
+    Inputs: label_path
+        - **label_path**: csv file with character labels
+            Format : char | id | freq
+    Outputs: char2index, index2char
+        - **char2index**: char2index[ch] = id
+        - **index2char**: index2char[id] = ch
+    """
+    char2index = dict()
+    index2char = dict()
+    with open(label_path, 'r', encoding=encoding) as f:
+        labels = csv.reader(f, delimiter=',')
+        next(labels)
+
+        for row in labels:
+            char2index[row[1]] = row[0]
+            index2char[int(row[0])] = row[1]
+
+    return char2index, index2char
 
 def load_model(filepath):
     logger.info("Load model..")

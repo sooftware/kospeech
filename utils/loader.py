@@ -71,7 +71,6 @@ class BaseDataLoader(threading.Thread):
         logger.debug('loader %d stop' % (self.thread_id))
 
 def _collate_fn(batch):
-    PAD = PAD_token
     def seq_length_(p):
         return len(p[0])
 
@@ -93,7 +92,7 @@ def _collate_fn(batch):
     seqs = torch.zeros(batch_size, max_seq_size, feat_size)
 
     targets = torch.zeros(batch_size, max_target_size).to(torch.long)
-    targets.fill_(PAD)
+    targets.fill_(PAD_token)
 
     for x in range(batch_size):
         sample = batch[x]

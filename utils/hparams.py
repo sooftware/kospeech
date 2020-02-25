@@ -15,6 +15,7 @@ from utils.define import logger
 class HyperParams():
     """
     Set of Hyperparameters
+
     Hyperparameters:
         - **use_bidirectional**: if True, becomes a bidirectional listener
         - **use_attention**: flag indication whether to use attention mechanism or not
@@ -114,8 +115,9 @@ class HyperParams():
         logger.info("worker_num : %d" % self.worker_num)
         logger.info("max_epochs : %d" % self.max_epochs)
         logger.info("initial learning rate : %0.4f" % self.init_lr)
-        #logger.info("high plateau learning rate : %0.4f" % self.high_plateau_lr)
-        #logger.info("low plateau learning rate : %0.4f" % self.low_plateau_lr)
+        if self.use_multistep_lr:
+            logger.info("high plateau learning rate : %0.4f" % self.high_plateau_lr)
+            logger.info("low plateau learning rate : %0.4f" % self.low_plateau_lr)
         logger.info("teacher_forcing_ratio : %0.2f" % self.teacher_forcing)
         logger.info("seed : %d" % self.seed)
         logger.info("max_len : %d" % self.max_len)
