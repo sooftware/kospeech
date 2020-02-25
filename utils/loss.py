@@ -2,6 +2,12 @@ import torch
 import torch.nn as nn
 
 class LabelSmoothingLoss(nn.Module):
+    """
+    Provides Label-Smoothing loss.
+
+    Reference:
+        https://github.com/pytorch/pytorch/issues/7455
+    """
     def __init__(self, vocab_size, ignore_index, smoothing=0.1, dim=-1):
         super(LabelSmoothingLoss, self).__init__()
         self.confidence = 1.0 - smoothing
