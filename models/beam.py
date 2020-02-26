@@ -148,7 +148,8 @@ class Beam:
             context, alignment = self.attention(decoder_output, encoder_outputs, last_alignment)
         else:
             context = decoder_output
-        predicted_softmax = self.decode_func(self.out(context.contiguous().view(-1, self.hidden_size)), dim=1).view(self.batch_size,output_size,-1)
+        predicted_softmax = self.decode_func(self.out(context.contiguous().view(-1, self.hidden_size)), dim=1)
+        predicted_softmax = predicted_softmax.view(self.batch_size,output_size,-1)
         return predicted_softmax, alignment
 
     def _get_length_penalty(self, length, alpha=1.2, min_length=5):

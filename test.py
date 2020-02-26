@@ -25,6 +25,7 @@ from utils.distance import get_distance
 def test(model, queue, device):
     """
     Test for Model Performance
+
     Inputs:
         - ***model*: target model
     Outputs:
