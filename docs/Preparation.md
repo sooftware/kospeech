@@ -29,7 +29,7 @@ GitHub Repository : https://github.com/sh951011/Korean-Speech-Recognition
 
 ### **filenum_padding()**  
 ```python
-def filenum(filenum):
+def filenum_padding(filenum):
     if filenum < 10: 
         return '00000' + str(filenum)
     elif filenum < 100: 
