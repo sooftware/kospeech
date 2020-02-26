@@ -1,6 +1,6 @@
-# Preprocess, Create label & data list
+# Preparation before Training
     
-본 글은 **AI Hub**에서 제공하는 '**한국어 음성데이터**'에 대해 저희 팀이 적용한 전처리 과정을 기록한 글입니다.   
+본 글은 **AI Hub**에서 제공하는 '**한국어 음성데이터**'에 대해 학습 진행을 위한 과정을 기록한 글입니다.   
 AI Hub 음성 데이터는 다음 링크에서 신청 후 다운로드 하실 수 있습니다.  
   
 AI Hub 한국어 음성 데이터 : http://www.aihub.or.kr/aidata/105   
@@ -27,21 +27,21 @@ GitHub Repository : https://github.com/sh951011/Korean-Speech-Recognition
   
 전처리를 위해 필요한 기본 함수들을 정의해보자.  
 
-### **file_num_padding()**  
+### **filenum_padding()**  
 ```python
-def file_num_padding(file_num):
-    if file_num < 10: 
-        return '00000' + str(file_num)
-    elif file_num < 100: 
-        return '0000' + str(file_num)
-    elif file_num < 1000: 
-        return '000' + str(file_num)
-    elif file_num < 10000: 
-        return '00' + str(file_num)
-    elif file_num < 100000: 
-        return '0' + str(file_num)
+def filenum(filenum):
+    if filenum < 10: 
+        return '00000' + str(filenum)
+    elif filenum < 100: 
+        return '0000' + str(filenum)
+    elif filenum < 1000: 
+        return '000' + str(filenum)
+    elif filenum < 10000: 
+        return '00' + str(filenum)
+    elif filenum < 100000: 
+        return '0' + str(filenum)
     else: 
-        return str(file_num)
+        return str(filenum)
 ``` 
   
 AI Hub 데이터셋에서 파일 번호는 '000001', '002545', '612543' 와 같은 형식으로 이루어져 있다.   
@@ -61,7 +61,7 @@ FNAME = 'KaiSpeech_'
 filenum = 1348
 format = '.txt'
 
-print(get_path(BASE_PATH,FNAME,file_num_padding(filenum),".txt"))
+print(get_path(BASE_PATH,FNAME,filenum_padding(filenum),".txt"))
 ```
 **Output**
 ```python
@@ -203,7 +203,7 @@ label_freq = []
 
 print('started...')
 for filenum in trange(1,TOTAL_NUM):
-    f = open(get_path(BASE_PATH,FNAME,file_num_padding(filenum),".txt"))
+    f = open(get_path(BASE_PATH,FNAME,filenum_padding(filenum),".txt"))
     sentence = f.readline()
     f.close()
     for ch in sentence:
@@ -356,10 +356,10 @@ char2id, id2char = load_label("test_labels.csv")
 print('started...')
 for filenum in trange(1,TOTAL_NUM):
     sentence, target = None, None
-    with open(get_path(BASE_PATH,FNAME,file_num_padding(filenum),".txt"), "r") as f:
+    with open(get_path(BASE_PATH,FNAME,filenum_padding(filenum),".txt"), "r") as f:
         sentence = f.readline()
     
-    with open(get_path(BASE_PATH, NEW_FNAME, file_num_padding(filenum),".txt"), "w") as f:
+    with open(get_path(BASE_PATH, NEW_FNAME, filenum_padding(filenum),".txt"), "w") as f:
         target = sentence_to_target(sentence, char2id)
         f.write(target)
 ```
