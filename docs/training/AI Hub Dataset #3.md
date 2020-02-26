@@ -61,7 +61,7 @@ ListenAttendSpell(
 |listener_layer_size|number of listener`s RNN layer|6|  
 | speller_layer_size|number of speller`s RNN layer| 3|  
 | hidden_size| size of hidden state of RNN|256|
-| batch_size | mini-batch size|8|
+| batch_size | mini-batch size|12|
 | dropout          | dropout probability|0.5  |
 | teacher_forcing  | The probability that teacher forcing will be used|0.90|
 | lr               | learning rate|1e-4        |
