@@ -18,7 +18,7 @@ from utils.dataset import BaseDataset
 from utils.define import logger, TEST_LIST_PATH, DATASET_PATH
 from utils.hparams import HyperParams
 from utils.loader import BaseDataLoader
-from utils.load import load_data_list, load_model, load_pickle, load_label
+from utils.load import load_data_list, load_pickle, load_label
 from utils.distance import get_distance
 
 char2id, id2char = load_label('./data/label/test_labels.csv', encoding='utf-8')
@@ -35,7 +35,7 @@ def test(model, queue, device):
         - **CER**: Character Error Rate
     """
     logger.info('evaluate() start')
-    total_dist = 0
+    total_distance = 0
     total_length = 0
     total_sent_num = 0
 
@@ -59,12 +59,12 @@ def test(model, queue, device):
                 use_beam_search = True
             )
             EOS_TOKEN = int(id2char['</s>'])
-            dist, length = get_distance(target, y_hat, id2char, EOS_TOKEN)
-            total_dist += dist
+            distance, length = get_distance(target, y_hat, id2char, EOS_TOKEN)
+            total_distance += distance
             total_length += length
             total_sent_num += target.size(0)
 
-    CER = total_dist / total_length
+    CER = total_distance / total_length
     logger.info('test() completed')
     return CER
 
@@ -79,7 +79,8 @@ if __name__ == '__main__':
     hparams.logger_hparams()
     cuda = hparams.use_cuda and torch.cuda.is_available()
     device = torch.device('cuda' if cuda else 'cpu')
-    model = load_model(hparams.load_model)
+    model = torch.load("model_path")
+    model.set_beam_size(k = 8)
 
     audio_paths, label_paths = load_data_list(data_list_path=TEST_LIST_PATH, dataset_path=DATASET_PATH)
 

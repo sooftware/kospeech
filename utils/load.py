@@ -80,13 +80,6 @@ def load_label(label_path, encoding='utf-8'):
 
     return char2index, index2char
 
-def load_model(filepath):
-    logger.info("Load model..")
-    model = torch.load(filepath)
-    model.eval()
-    logger.info("Load model Succesfuuly completely !!")
-    return model
-
 def load_pickle(filepath, message=""):
     with open(filepath, "rb") as f:
         load_result = pickle.load(f)

@@ -66,8 +66,6 @@ class HyperParams():
                  seed = 1,
                  max_len = 120,
                  mode = 'train',
-                 load_model = False,
-                 model_path = "nothing.pt"
                  ):
         self.use_bidirectional = use_bidirectional
         self.use_attention = use_attention
@@ -95,8 +93,6 @@ class HyperParams():
         self.seed = seed
         self.max_len = max_len
         self.mode = mode
-        self.load_model = load_model
-        self.model_path = model_path
 
     def logger_hparams(self):
         logger.info("use_bidirectional : %s" % str(self.use_bidirectional))
