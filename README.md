@@ -21,7 +21,7 @@
   
 ## Documents
   
-* [Preprocess, Create label & data list](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/Preprocess.md)    
+* [Preparation before Training](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/Preparation.md)    
 * [Ongoing Training](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/training/AI%20Hub%20Dataset%20%233.md)  
 
 
@@ -297,7 +297,8 @@ Please report bugs or provide any recommendation to us through the following ema
 
 ## License
 ```
-Copyright 2020 Kai.Lib
+Copyright (c) 2020 Kai.Lib
+
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
