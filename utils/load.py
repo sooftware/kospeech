@@ -17,7 +17,9 @@ import math
 import pandas as pd
 import csv
 from tqdm import trange
-from utils.define import logger, TRAIN_DATASET_PICKLE_PATH, VALID_DATASET_PICKLE_PATH, ENCODING
+from utils.define import logger, TRAIN_DATASET_PICKLE_PATH, VALID_DATASET_PICKLE_PATH
+from utils.save import save_pickle
+
 
 def load_targets(label_paths):
     """
@@ -36,7 +38,7 @@ def load_targets(label_paths):
             label = f.readline()
             file_num = label_txt.split('/')[-1].split('.')[0].split('_')[-1]
             target_dict['KaiSpeech_label_%s' % file_num] = label
-
+    save_pickle(target_dict, "./data/pickle/target_dict.bin", message="target_dict save complete !!")
     return target_dict
 
 def load_data_list(data_list_path, dataset_path):
@@ -50,7 +52,7 @@ def load_data_list(data_list_path, dataset_path):
         - **label_paths**: set of label path
                 Format : [base_dir/KaiSpeech/KaiSpeech_label_123260.txt, ... , base_dir/KaiSpeech/KaiSpeech_label_621245.txt]
     """
-    data_list = pd.read_csv(data_list_path, "r", delimiter = ",", encoding=ENCODING)
+    data_list = pd.read_csv(data_list_path, "r", delimiter = ",", encoding="cp949")
     audio_paths = list(dataset_path + data_list["audio"])
     label_paths = list(dataset_path + data_list["label"])
 

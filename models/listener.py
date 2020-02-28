@@ -18,6 +18,7 @@ class PyramidalRNN(nn.Module):
     """ Pyramidal RNN for time resolution reduction """
     def __init__(self, rnn_cell, input_size, hidden_size, dropout_p):
         super(PyramidalRNN, self).__init__()
+        assert rnn_cell.lower() == 'lstm' or rnn_cell.lower() == 'gru' or rnn_cell.lower() == 'rnn'
         self.rnn_cell = nn.LSTM if rnn_cell.lower() == 'lstm' else nn.GRU if rnn_cell.lower() == 'gru' else nn.RNN
         self.rnn = self.rnn_cell(
             input_size=input_size << 1,
@@ -34,7 +35,7 @@ class PyramidalRNN(nn.Module):
         seq_len = inputs.size(1)
         input_size = inputs.size(2)
         if seq_len % 2:
-            zeros = torch.zeros((inputs.size(0), 1, inputs.size(2)))#.cuda()
+            zeros = torch.zeros((inputs.size(0), 1, inputs.size(2))).cuda()
             inputs = torch.cat([inputs, zeros], dim = 1)
             seq_len += 1
         inputs = inputs.contiguous().view(batch_size, int(seq_len / 2), input_size * 2)
@@ -67,6 +68,8 @@ class Listener(nn.Module):
 
     def __init__(self, feat_size, hidden_size, dropout_p=0.5, layer_size=5, bidirectional=True, rnn_cell='gru', use_pyramidal = True):
         super(Listener, self).__init__()
+        assert rnn_cell.lower() == 'lstm' or rnn_cell.lower() == 'gru' or rnn_cell.lower() == 'rnn'
+        assert layer_size > 1, "layer_size should be bigger than 1"
         self.use_pyramidal = use_pyramidal
         self.rnn_cell = nn.LSTM if rnn_cell.lower() == 'lstm' else nn.GRU if rnn_cell.lower() == 'gru' else nn.RNN
         self.conv = nn.Sequential(

@@ -31,6 +31,7 @@ class Beam:
     """
 
     def __init__(self, k, decoder_hidden, decoder, batch_size, max_len, decode_func):
+        assert k > 1, "beam size should be bigger than 1"
         self.k = k
         self.decoder_hidden = decoder_hidden
         self.batch_size = batch_size

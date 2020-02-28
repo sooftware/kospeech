@@ -13,27 +13,23 @@ limitations under the License.
 
 import Levenshtein as Lev
 from utils.label import label_to_string
-from utils.define import logger, index2char, EOS_token
 
-def char_distance(ref, hyp):
-    ref = ref.replace(' ', '')
-    hyp = hyp.replace(' ', '')
-    dist = Lev.distance(hyp, ref)
-    length = len(ref.replace(' ', ''))
+def char_distance(target, y_hat):
+    target = target.replace(' ', '')
+    y_hat = y_hat.replace(' ', '')
+    distance = Lev.distance(y_hat, target)
+    length = len(target.replace(' ', ''))
 
-    return dist, length
+    return distance, length
 
-def get_distance(ref_labels, hyp_labels, display=False):
-    total_dist = 0
+def get_distance(target, y_hat, id2char, eos_id):
+    total_distance = 0
     total_length = 0
 
-    for i in range(len(ref_labels)):
-        ref = label_to_string(ref_labels[i], index2char, EOS_token)
-        hyp = label_to_string(hyp_labels[i], index2char, EOS_token)
-        dist, length = char_distance(ref, hyp)
-        total_dist += dist
+    for i in range(len(target)):
+        target = label_to_string(target[i], id2char, eos_id)
+        y_hat = label_to_string(y_hat[i], id2char, eos_id)
+        distance, length = char_distance(target, y_hat)
+        total_distance += distance
         total_length += length
-        if display:
-            cer = total_dist / total_length
-            logger.debug('%d (%0.4f)\n(%s)\n(%s)' % (i, cer, ref, hyp))
-    return total_dist, total_length
+    return total_distance, total_length

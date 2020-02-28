@@ -82,13 +82,13 @@ if __name__ == '__main__':
         use_pyramidal = hparams.use_pyramidal
     )
     speller = Speller(
-        vocab_size = len(char2index),
+        vocab_size = len(char2id),
         max_len = hparams.max_len,
         k = 8,
         hidden_size = hparams.hidden_size << (1 if hparams.use_bidirectional else 0),
         batch_size = hparams.batch_size,
-        sos_id = SOS_token,
-        eos_id = EOS_token,
+        sos_id = SOS_TOKEN,
+        eos_id = EOS_TOKEN,
         layer_size = hparams.speller_layer_size,
         score_function = hparams.score_function,
         rnn_cell = 'gru',
@@ -106,18 +106,16 @@ if __name__ == '__main__':
 
     optimizer = optim.Adam(model.module.parameters(), lr=hparams.init_lr)
     if hparams.use_label_smoothing:
-        criterion = LabelSmoothingLoss(len(char2index), ignore_index=PAD_token, smoothing=0.1, dim=-1).to(device)
+        criterion = LabelSmoothingLoss(len(char2id), ignore_index=PAD_TOKEN, smoothing=0.1, dim=-1).to(device)
     else:
-        criterion = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_token).to(device)
+        criterion = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_TOKEN).to(device)
 
     audio_paths, label_paths = load_data_list(data_list_path=TRAIN_LIST_PATH, dataset_path=DATASET_PATH)
 
     if hparams.use_pickle:
         target_dict = load_pickle(TARGET_DICT_PATH, "load all target_dict using pickle complete !!")
     else:
-        # load all target dictionary for reducing disk I/O
         target_dict = load_targets(label_paths)
-        save_pickle(target_dict, "./data/pickle/target_dict.bin", message="target_dict save complete !!")
 
     total_time_step, train_dataset_list, valid_dataset = split_dataset(
         hparams = hparams,
@@ -155,6 +153,7 @@ if __name__ == '__main__':
             print_batch = 10,
             teacher_forcing_ratio = hparams.teacher_forcing
         )
+        torch.save(model, "./data/weight_file/epoch%s.pt" % str(epoch))
         logger.info('Epoch %d (Training) Loss %0.4f CER %0.4f' % (epoch, train_loss, train_cer))
         train_loader.join()
         valid_queue = queue.Queue(hparams.worker_num << 1)
@@ -170,7 +169,6 @@ if __name__ == '__main__':
         logger.info('Epoch %d (Evaluate) Loss %0.4f CER %0.4f' % (epoch, valid_loss, valid_cer))
 
         valid_loader.join()
-        torch.save(model, SAVE_WEIGHT_PATH % str(epoch))
 
         save_epoch_result(train_result=[train_dict, train_loss, train_cer], valid_result=[valid_dict, valid_loss, valid_cer])
         logger.info('Epoch %d Training result saved as a csv file complete !!' % epoch)

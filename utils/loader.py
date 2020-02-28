@@ -2,7 +2,7 @@ import threading
 import math
 import torch
 import random
-from utils.define import logger, PAD_token
+from utils.define import logger, PAD_TOKEN
 
 
 class MultiLoader():
@@ -92,7 +92,7 @@ def _collate_fn(batch):
     seqs = torch.zeros(batch_size, max_seq_size, feat_size)
 
     targets = torch.zeros(batch_size, max_target_size).to(torch.long)
-    targets.fill_(PAD_token)
+    targets.fill_(PAD_TOKEN)
 
     for x in range(batch_size):
         sample = batch[x]

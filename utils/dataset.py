@@ -16,7 +16,7 @@ from torch.utils.data import Dataset
 from utils.augment import spec_augment
 from utils.feature import get_librosa_mfcc
 from utils.label import get_label
-from utils.define import logger, SOS_token, EOS_token
+from utils.define import logger, SOS_TOKEN, EOS_TOKEN
 from utils.save import save_pickle
 
 
@@ -163,12 +163,12 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
         train_end_index = min(train_num_per_worker * (idx + 1), train_num)
         train_dataset_list.append(BaseDataset(audio_paths=audio_paths[train_begin_index:train_end_index],
                                               label_paths=label_paths[train_begin_index:train_end_index],
-                                              sos_id=SOS_token, eos_id=EOS_token, target_dict=target_dict,
+                                              sos_id=SOS_TOKEN, eos_id=EOS_TOKEN, target_dict=target_dict,
                                               input_reverse=hparams.input_reverse, use_augment=hparams.use_augment,
                                               augment_ratio=hparams.augment_ratio))
     valid_dataset = BaseDataset(audio_paths=audio_paths[train_num:],
                                 label_paths=label_paths[train_num:],
-                                sos_id=SOS_token, eos_id=EOS_token,
+                                sos_id=SOS_TOKEN, eos_id=EOS_TOKEN,
                                 target_dict=target_dict, input_reverse=hparams.input_reverse, use_augment=False)
 
     save_pickle(train_dataset_list, "./data/pickle/train_dataset.bin", "dump all train_dataset_list using pickle complete !!")

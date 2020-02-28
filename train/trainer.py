@@ -13,7 +13,7 @@ limitations under the License.
 
 import time, random
 from utils.distance import get_distance
-from utils.define import logger
+from utils.define import logger, id2char, EOS_TOKEN
 from utils.save import save_step_result
 from train.lr import ramp_up, exp_decay
 train_step_result = {'loss': [], 'cer': []}
@@ -58,8 +58,7 @@ def train(model, hparams, epoch, total_time_step, queue,
 
         total_loss += loss.item()
         total_num += sum(feat_lengths)
-        display = random.randrange(0, 100) == 0
-        dist, length = get_distance(target, y_hat, display=display)
+        dist, length = get_distance(target, y_hat, id2char, EOS_TOKEN)
         total_dist += dist
         total_length += length
         total_sent_num += target.size(0)

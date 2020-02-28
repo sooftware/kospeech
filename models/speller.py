@@ -66,6 +66,7 @@ class Speller(nn.Module):
                  layer_size=1, rnn_cell='gru', dropout_p=0,
                  use_attention=True, score_function=None, device=None, k=8):
         super(Speller, self).__init__()
+        assert rnn_cell.lower() == 'lstm' or rnn_cell.lower() == 'gru' or rnn_cell.lower() == 'rnn'
         self.rnn_cell = nn.LSTM if rnn_cell.lower() == 'lstm' else nn.GRU if rnn_cell.lower() == 'gru' else nn.RNN
         self.device = device
         self.rnn = self.rnn_cell(hidden_size , hidden_size, layer_size, batch_first=True, dropout=dropout_p).to(self.device)

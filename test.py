@@ -13,14 +13,17 @@ limitations under the License.
 
 import os
 import queue
-import random
 import torch
 from utils.dataset import BaseDataset
-from utils.define import *
+from utils.define import logger, TEST_LIST_PATH, DATASET_PATH
 from utils.hparams import HyperParams
 from utils.loader import BaseDataLoader
-from utils.load import load_data_list, load_model, load_pickle
+from utils.load import load_data_list, load_model, load_pickle, load_label
 from utils.distance import get_distance
+
+char2id, id2char = load_label('./data/label/test_labels.csv', encoding='utf-8')
+SOS_TOKEN = int(char2id['<s>'])
+EOS_TOKEN = int(char2id['</s>'])
 
 def test(model, queue, device):
     """
@@ -55,8 +58,8 @@ def test(model, queue, device):
                 teacher_forcing_ratio = 0.0,
                 use_beam_search = True
             )
-            display = random.randrange(0, 100) == 0
-            dist, length = get_distance(target, y_hat, display=display)
+            EOS_TOKEN = int(id2char['</s>'])
+            dist, length = get_distance(target, y_hat, id2char, EOS_TOKEN)
             total_dist += dist
             total_length += length
             total_sent_num += target.size(0)
@@ -86,8 +89,8 @@ if __name__ == '__main__':
     test_dataset = BaseDataset(
         audio_paths = audio_paths[:],
         label_paths = label_paths[:],
-        sos_id = SOS_token,
-        eos_id = EOS_token,
+        sos_id = SOS_TOKEN,
+        eos_id = EOS_TOKEN,
         target_dict = target_dict,
         input_reverse = hparams.input_reverse,
         use_augment = False
@@ -99,5 +102,4 @@ if __name__ == '__main__':
 
     CER = test(model, test_queue, device)
 
-    logger.info('200h Test Set CER : %s' % CER)
-    logger.info('200h Test Set CRR : %s' % str(1 - float(CER)))
+    logger.info('20h Test Set CER : %s' % CER)
