@@ -15,15 +15,11 @@ import os
 import queue
 import torch
 from utils.dataset import BaseDataset
-from utils.define import logger, TEST_LIST_PATH, DATASET_PATH
+from utils.define import logger, TEST_LIST_PATH, DATASET_PATH, char2id, id2char, SOS_TOKEN, EOS_TOKEN
 from utils.hparams import HyperParams
 from utils.loader import BaseDataLoader
 from utils.load import load_data_list, load_pickle, load_label
 from utils.distance import get_distance
-
-char2id, id2char = load_label('./data/label/test_labels.csv', encoding='utf-8')
-SOS_TOKEN = int(char2id['<s>'])
-EOS_TOKEN = int(char2id['</s>'])
 
 def test(model, queue, device):
     """
@@ -102,5 +98,4 @@ if __name__ == '__main__':
     test_loader.start()
 
     CER = test(model, test_queue, device)
-
     logger.info('20h Test Set CER : %s' % CER)
