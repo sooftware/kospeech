@@ -61,7 +61,7 @@ ListenAttendSpell(
 |listener_layer_size|number of listener`s RNN layer|6|  
 | speller_layer_size|number of speller`s RNN layer| 3|  
 | hidden_size| size of hidden state of RNN|256|
-| batch_size | mini-batch size|12|
+| batch_size | mini-batch size|10|
 | dropout          | dropout probability|0.5  |
 | teacher_forcing  | The probability that teacher forcing will be used|0.90|
 | lr               | learning rate|1e-4        |
@@ -90,7 +90,7 @@ PyTorch version : 1.4.0
   
 ### Training Result  
    
- Training Start Date: 2020/02/23  
+ Training Start Date: 2020/02/29  
    
 |Epoch|train CRR (%)|valid CRR (%)|test CRR (%)|  
 |:-----:|:---------:|:--------:|:------:|    
