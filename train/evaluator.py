@@ -20,9 +20,9 @@ def evaluate(model, queue, criterion, device):
     logger.info('evaluate() start')
     total_loss = 0.
     total_num = 0
-    total_dist = 0
+    total_distance = 0
     total_length = 0
-    total_sent_num = 0
+    total_sentence_num = 0
 
     model.eval()
 
@@ -37,21 +37,15 @@ def evaluate(model, queue, criterion, device):
             target = scripts[:, 1:]
 
             model.module.flatten_parameters()
-            y_hat, logit = model(
-                feats = feats,
-                targets = scripts,
-                teacher_forcing_ratio=0.0,
-                use_beam_search = False
-            )
+            y_hat, logit = model(feats, scripts, teacher_forcing_ratio=0.0, use_beam_search = False)
             loss = criterion(logit.contiguous().view(-1, logit.size(-1)), target.contiguous().view(-1))
             total_loss += loss.item()
             total_num += sum(feat_lengths)
 
-            display = random.randrange(0, 100) == 0
-            dist, length = get_distance(target, y_hat, display=display)
-            total_dist += dist
+            distance, length = get_distance(target, y_hat)
+            total_distance += distance
             total_length += length
-            total_sent_num += target.size(0)
+            total_sentence_num += target.size(0)
 
     logger.info('evaluate() completed')
-    return total_loss / total_num, total_dist / total_length
+    return total_loss / total_num, total_distance / total_length

@@ -62,16 +62,16 @@ class Speller(nn.Module):
     """
 
     def __init__(self, vocab_size, max_len, hidden_size,
-                 batch_size, sos_id, eos_id,
-                 layer_size=1, rnn_cell='gru', dropout_p=0,
-                 use_attention=True, score_function=None, device=None, k=8):
+                 sos_id, eos_id, layer_size=1,
+                 rnn_cell='gru', dropout_p=0, use_attention=True,
+                 score_function='dot-product', device=None, k=8):
         super(Speller, self).__init__()
         assert rnn_cell.lower() == 'lstm' or rnn_cell.lower() == 'gru' or rnn_cell.lower() == 'rnn'
         self.rnn_cell = nn.LSTM if rnn_cell.lower() == 'lstm' else nn.GRU if rnn_cell.lower() == 'gru' else nn.RNN
         self.device = device
         self.rnn = self.rnn_cell(hidden_size , hidden_size, layer_size, batch_first=True, dropout=dropout_p).to(self.device)
         self.output_size = vocab_size
-        self.max_length = max_len
+        self.max_len = max_len
         self.use_attention = use_attention
         self.eos_id = eos_id
         self.sos_id = sos_id
@@ -79,14 +79,13 @@ class Speller(nn.Module):
         self.embedding = nn.Embedding(self.output_size, self.hidden_size)
         self.layer_size = layer_size
         self.input_dropout = nn.Dropout(p=dropout_p)
-        self.batch_size = batch_size
         self.k = k
         self.score_function = score_function
         if use_attention:
             self.attention = Attention(score_function=score_function, decoder_hidden_size=hidden_size)
         self.out = nn.Linear(self.hidden_size, self.output_size)
 
-    def _forward_step(self, speller_input, speller_hidden, listener_outputs,last_alignment, function): #last_alignment,
+    def _forward_step(self, speller_input, speller_hidden, listener_outputs,last_align, function):
         """ forward one time step """
         batch_size = speller_input.size(0)
         output_size = speller_input.size(1)
@@ -97,80 +96,81 @@ class Speller(nn.Module):
             self.rnn.flatten_parameters()
         speller_output = self.rnn(embedded, speller_hidden)[0]
 
-        alignment = None
+        align = None
         if self.use_attention:
             if self.score_function == 'hybrid':
-                context, alignment = self.attention(speller_output, listener_outputs, last_alignment)
+                context, align = self.attention(speller_output, listener_outputs, last_align)
             else:
-                context = self.attention(speller_output, listener_outputs, last_alignment)
+                context = self.attention(speller_output, listener_outputs, last_align)
         else:
             context = speller_output
 
         predicted_softmax = function(self.out(context.contiguous().view(-1, self.hidden_size)), dim=1).view(batch_size, output_size, -1)
-        return predicted_softmax, alignment
+        return predicted_softmax, align
 
     def forward(self, inputs, listener_hidden, listener_outputs, function=F.log_softmax, teacher_forcing_ratio=0.99, use_beam_search=False):
         y_hats, logit = None, None
         decode_results = []
         batch_size = inputs.size(0)
-        max_length = inputs.size(1) - 1  # minus the start of sequence symbol
+        max_len = inputs.size(1) - 1  # minus the start of sequence symbol
         speller_hidden = torch.FloatTensor(self.layer_size, batch_size, self.hidden_size).uniform_(-0.1, 0.1).to(self.device)
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
 
         if use_beam_search:
             """ Beam-Search Decoding """
-            speller_input = inputs[:, 0].unsqueeze(1)
+            inputs = inputs[:, 0].unsqueeze(1)
             beam = Beam(
                 k = self.k,
                 decoder_hidden = speller_hidden,
                 decoder = self,
                 batch_size = batch_size,
-                max_len = max_length,
+                max_len = max_len,
                 decode_func = function
             )
-            y_hats = beam.search(speller_input, listener_outputs)
+            y_hats = beam.search(inputs, listener_outputs)
         else:
             if use_teacher_forcing and self.score_function != 'hybrid':
                 """ if teacher_forcing, Infer all at once """
-                speller_input = inputs[:, :-1]
-                last_alignment = None
-                predicted_softmax, last_alignment = self._forward_step(
-                    speller_input=speller_input,
-                    speller_hidden=speller_hidden,
-                    listener_outputs=listener_outputs,
-                    last_alignment=last_alignment,
-                    function=function
+                inputs = inputs[:, :-1]
+                last_align = None
+                predicted_softmax, last_align = self._forward_step(
+                    inputs = inputs,
+                    speller_hidden = speller_hidden,
+                    listener_outputs = listener_outputs,
+                    last_align = last_align,
+                    function = function
                 )
                 for di in range(predicted_softmax.size(1)):
                     step_output = predicted_softmax[:, di, :]
                     decode_results.append(step_output)
             elif use_teacher_forcing and self.score_function == 'hybrid':
-                """ Fix to non-parallel process even in teacher forcing to apply location-aware attention """
-                speller_input = inputs[:, :-1]  # except </s>
-                last_alignment = torch.FloatTensor(batch_size, listener_outputs.size(1)).uniform_(-0.1, 0.1)
-                for di in range(len(speller_input[0])):
-                    predicted_softmax, last_alignment = self._forward_step(
-                        speller_input=speller_input[:, di].unsqueeze(1),
+                # Fix to non-parallel process even in teacher forcing to apply hybrid attention
+                # hybrid attention needs last laignment
+                inputs = inputs[:, :-1]  # except </s>
+                last_align = torch.FloatTensor(batch_size, listener_outputs.size(1)).uniform_(-0.1, 0.1)
+                for di in range(len(inputs[0])):
+                    predicted_softmax, last_align = self._forward_step(
+                        inputs = inputs[:, di].unsqueeze(1),
                         speller_hidden=speller_hidden,
                         listener_outputs=listener_outputs,
-                        last_alignment=last_alignment,
+                        last_align=last_align,
                         function=function)
                     step_output = predicted_softmax.squeeze(1)
                     decode_results.append(step_output)
             else:
-                speller_input = inputs[:, 0].unsqueeze(1)
-                last_alignment = None
-                for di in range(max_length):
-                    predicted_softmax, last_alignment = self._forward_step(
-                        speller_input=speller_input,
-                        speller_hidden=speller_hidden,
-                        listener_outputs=listener_outputs,
-                        last_alignment=last_alignment,
-                        function=function
+                input = inputs[:, 0].unsqueeze(1)
+                last_align = None
+                for di in range(max_len):
+                    predicted_softmax, last_align = self._forward_step(
+                        inputs = input,
+                        speller_hidden = speller_hidden,
+                        listener_outputs = listener_outputs,
+                        last_align = last_align,
+                        function = function
                     )
                     step_output = predicted_softmax.squeeze(1)
                     decode_results.append(step_output)
-                    speller_input = decode_results[-1].topk(1)[1]
+                    input = decode_results[-1].topk(1)[1]
 
             logit = torch.stack(decode_results, dim=1).to(self.device)
             y_hats = logit.max(-1)[1]

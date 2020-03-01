@@ -30,13 +30,13 @@ class Beam:
         - done_beam_scores (list2d) : score of done_beams
     """
 
-    def __init__(self, k, decoder_hidden, decoder, batch_size, max_len, decode_func):
+    def __init__(self, k, decoder_hidden, decoder, batch_size, max_len, function):
         assert k > 1, "beam size should be bigger than 1"
         self.k = k
         self.decoder_hidden = decoder_hidden
         self.batch_size = batch_size
         self.max_len = max_len
-        self.decode_func = decode_func
+        self.function = function
         self.rnn = decoder.rnn
         self.embedding = decoder.embedding
         self.input_dropout = decoder.input_dropout
@@ -52,15 +52,15 @@ class Beam:
 
     def search(self, init_decoder_input, encoder_outputs):
         """
-        Provides Beam-Search
+        Beam-Search Decoding (Top-K Decoding)
 
         Comment Notation:
-            - **B**: batch_size
-            - **K**: size of beam
-            - **C**: number of classfication
-            - **S**: sequence length
+            - B: batchsize
+            - K: beam size
+            - C: classfication number
+            - S: sequence length
         """
-        last_alignment = None
+        last_align = None
         # get class classfication distribution (shape: BxC)
         init_step_output = self._forward_step(init_decoder_input, encoder_outputs).squeeze(1)
         # get top K probability & index (shape: BxK)
@@ -72,7 +72,7 @@ class Beam:
             if self._is_done():
                 break
             # For each beam, get class classfication distribution (shape: BxKxC)
-            predicted_softmax, last_alignment = self._forward_step(decoder_input, encoder_outputs, last_alignment)
+            predicted_softmax, last_align = self._forward_step(decoder_input, encoder_outputs, last_align)
             step_output = predicted_softmax.squeeze(1)
             # get top k distribution (shape: BxKxK)
             child_ps, child_vs = step_output.topk(self.k)
@@ -149,7 +149,7 @@ class Beam:
             context, alignment = self.attention(decoder_output, encoder_outputs, last_alignment)
         else:
             context = decoder_output
-        predicted_softmax = self.decode_func(self.out(context.contiguous().view(-1, self.hidden_size)), dim=1)
+        predicted_softmax = self.function(self.out(context.contiguous().view(-1, self.hidden_size)), dim=1)
         predicted_softmax = predicted_softmax.view(self.batch_size,output_size,-1)
         return predicted_softmax, alignment
 
@@ -157,7 +157,7 @@ class Beam:
         """
         Calculate length-penalty.
         because shorter sentence usually have bigger probability.
-        Using alpha = 1.2, min_length = 5 usually.
+        using alpha = 1.2, min_length = 5 usually.
         """
         return ((1+length) / (1+min_length)) ** alpha
 

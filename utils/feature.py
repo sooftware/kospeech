@@ -92,14 +92,7 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = False, input_re
         non_silence_indices = librosa.effects.split(signal, top_db=30)
         signal = np.concatenate([signal[start:end] for start, end in non_silence_indices])
 
-    feat = librosa.feature.mfcc(
-        y = signal,
-        sr = 16000,
-        hop_length = 160,
-        n_mfcc = n_mfcc,
-        n_fft = 400,
-        window = 'hamming'
-    )
+    feat = librosa.feature.mfcc(signal, 16000, hop_length = 160, n_mfcc = n_mfcc, n_fft = 400, window = 'hamming')
     if input_reverse:
         feat = feat[:,::-1]
 

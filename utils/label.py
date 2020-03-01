@@ -26,7 +26,7 @@ def get_label(filepath, sos_id=2037, eos_id=2038, target_dict=None):
         - **label**: list of bos + sequence of label + eos
                 Format : [<s>, 5, 0, 49, 4, 0, 8, 190, 0, 78, 115, </s>]
     """
-    if target_dict == None: logger.info("target_dict is None")
+    assert target_dict is not None, "target_dict is None"
     key = filepath.split('/')[-1].split('.')[0]
     script = target_dict[key]
     tokens = script.split(' ')
@@ -36,26 +36,24 @@ def get_label(filepath, sos_id=2037, eos_id=2038, target_dict=None):
     for token in tokens:
         label.append(int(token))
     label.append(int(eos_id))
-    del script, tokens # memory deallocation
-
     return label
 
-def label_to_string(labels, index2char, EOS_token):
+def label_to_string(labels, id2char, eos_id):
     if len(labels.shape) == 1:
-        sent = str()
-        for i in labels:
-            if i.item() == EOS_token:
+        sentence = str()
+        for label in labels:
+            if label.item() == eos_id:
                 break
-            sent += index2char[i.item()]
-        return sent
+            sentence += id2char[label.item()]
+        return sentence
 
     elif len(labels.shape) == 2:
-        sents = list()
-        for i in labels:
-            sent = str()
-            for j in i:
-                if j.item() == EOS_token:
+        sentences = list()
+        for batch in labels:
+            sentence = str()
+            for label in batch:
+                if label.item() == eos_id:
                     break
-                sent += index2char[j.item()]
-            sents.append(sent)
-        return sents
+                sentence += id2char[label.item()]
+            sentences.append(sentence)
+        return sentences

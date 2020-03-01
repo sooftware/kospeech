@@ -54,7 +54,7 @@ class Listener(nn.Module):
         hidden_size (int): the number of features in the hidden state `h`
         dropout_p (float, optional): dropout probability for the output sequence (default: 0)
         layer_size (int, optional): number of recurrent layers (default: 1)
-        bidirectional (bool, optional): if True, becomes a bidirectional encoder (defulat False)
+        bidirectional (bool, optional): if True, becomes a bidirectional encoder (defulat: False)
         rnn_cell (str, optional): type of RNN cell (default: gru)
 
     Outputs: output, hidden
@@ -72,7 +72,6 @@ class Listener(nn.Module):
         assert layer_size > 1, "layer_size should be bigger than 1"
         self.use_pyramidal = use_pyramidal
         self.rnn_cell = nn.LSTM if rnn_cell.lower() == 'lstm' else nn.GRU if rnn_cell.lower() == 'gru' else nn.RNN
-        """ feature extractor """
         self.conv = nn.Sequential(
             nn.Conv2d(in_channels=1, out_channels=64, kernel_size=3, padding=1),
             nn.Hardtanh(0, 20, inplace=True),

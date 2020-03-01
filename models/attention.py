@@ -83,11 +83,11 @@ class HybridAttention(Attention):
         self.tanh = nn.Tanh()
         self.softmax = nn.Softmax(dim=-1)
 
-    def forward(self, decoder_output, encoder_outputs, last_alignment):
+    def forward(self, decoder_output, encoder_outputs, last_align):
         batch_size = decoder_output.size(0)
         hidden_size = decoder_output.size(2)
 
-        if last_alignment is None:
+        if last_align is None:
             attn_scores = self.w(
                 self.tanh(
                     self.W(decoder_output.reshape(-1, hidden_size)).view(batch_size, -1, self.context_size)
@@ -96,12 +96,12 @@ class HybridAttention(Attention):
                 )
             ).squeeze(dim=-1)
         else:
-            conv_prev_align = torch.transpose(self.loc_conv(last_alignment.unsqueeze(1)), 1, 2)
+            last_align = torch.transpose(self.loc_conv(last_align.unsqueeze(1)), 1, 2)
             attn_scores = self.w(
                 self.tanh(
                     self.W(decoder_output.reshape(-1, hidden_size)).view(batch_size, -1, self.context_size)
                     + self.V(encoder_outputs.reshape(-1, hidden_size)).view(batch_size, -1, self.context_size)
-                    + self.U(conv_prev_align)
+                    + self.U(last_align)
                     + self.b
                 )
             ).squeeze(dim=-1)
@@ -161,7 +161,7 @@ class DotProductAttention(Attention):
 
     Inputs: decoder_output, encoder_output
         - **decoder_output** (batch, output_len, hidden_size): tensor containing the output features from the decoder.
-        - **encoder_output** (batch, input_len, hidden_size): tensor containing features of the encoded input sequence.
+        - **encoder_output** (batch, input_len, hidden_size): tensor containing features of the encoded input sequence.Steps to be maintained at a certain number to avoid extremely slow learning
 
     Outputs: output, attn
         - **output** (batch, output_len, dimensions): tensor containing the attended output features from the decoder.

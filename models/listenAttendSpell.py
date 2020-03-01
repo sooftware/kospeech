@@ -26,6 +26,11 @@ class ListenAttendSpell(nn.Module):
     Reference:
         「Listen, Attend and Spell」 paper
          https://arxiv.org/abs/1508.01211
+
+    How to Use:
+        >>> listener = Listener(feat_size, 256, 0.5, 6, True, 'gru', True)
+        >>> speller = Speller(vocab_size, 120, 8, 256 << (1 if use_bidirectional else 0), SOS_TOKEN, EOS_TOKEN, 3, 'gru', 0.5 ,True, device)
+        >>> model = ListenAttendSpell(listener, speller)
     """
     def __init__(self, listener, speller, decode_function = F.log_softmax, use_pyramidal = False):
         super(ListenAttendSpell, self).__init__()

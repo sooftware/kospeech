@@ -71,9 +71,8 @@ if __name__ == '__main__':
     cuda = hparams.use_cuda and torch.cuda.is_available()
     device = torch.device('cuda' if cuda else 'cpu')
 
-    feat_size = 33
     listener = Listener(
-        feat_size = feat_size,
+        feat_size = 33,
         hidden_size = hparams.hidden_size,
         dropout_p = hparams.dropout,
         layer_size = hparams.listener_layer_size,
@@ -86,7 +85,6 @@ if __name__ == '__main__':
         max_len = hparams.max_len,
         k = 8,
         hidden_size = hparams.hidden_size << (1 if hparams.use_bidirectional else 0),
-        batch_size = hparams.batch_size,
         sos_id = SOS_TOKEN,
         eos_id = EOS_TOKEN,
         layer_size = hparams.speller_layer_size,
@@ -96,16 +94,12 @@ if __name__ == '__main__':
         use_attention = hparams.use_attention,
         device = device
     )
-    model = ListenAttendSpell(
-        listener = listener,
-        speller = speller,
-        use_pyramidal = hparams.use_pyramidal
-    )
+    model = ListenAttendSpell(listener, speller, hparams.use_pyramidal)
     model.flatten_parameters()
     model = nn.DataParallel(model).to(device)
 
     optimizer = optim.Adam(model.module.parameters(), lr=hparams.init_lr)
-    if hparams.use_label_smoothing:
+    if hparams.use_label_smooth:
         criterion = LabelSmoothingLoss(len(char2id), ignore_index=PAD_TOKEN, smoothing=0.1, dim=-1).to(device)
     else:
         criterion = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_TOKEN).to(device)
@@ -117,13 +111,7 @@ if __name__ == '__main__':
     else:
         target_dict = load_targets(label_paths)
 
-    total_time_step, train_dataset_list, valid_dataset = split_dataset(
-        hparams = hparams,
-        audio_paths = audio_paths,
-        label_paths = label_paths,
-        valid_ratio=0.015,
-        target_dict=target_dict
-    )
+    total_time_step, train_dataset_list, valid_dataset = split_dataset(hparams, audio_paths, label_paths, 0.015, target_dict)
 
     logger.info('start')
     train_begin = time.time()
@@ -132,12 +120,7 @@ if __name__ == '__main__':
         train_queue = queue.Queue(hparams.worker_num << 1)
         for train_dataset in train_dataset_list:
             train_dataset.shuffle()
-        train_loader = MultiLoader(
-            dataset_list = train_dataset_list,
-            queue = train_queue,
-            batch_size = hparams.batch_size,
-            worker_num = hparams.worker_num
-        )
+        train_loader = MultiLoader(train_dataset_list, train_queue, hparams.batch_size, hparams.worker_num)
         train_loader.start()
         train_loss, train_cer = train(
             model = model,
@@ -157,12 +140,7 @@ if __name__ == '__main__':
         logger.info('Epoch %d (Training) Loss %0.4f CER %0.4f' % (epoch, train_loss, train_cer))
         train_loader.join()
         valid_queue = queue.Queue(hparams.worker_num << 1)
-        valid_loader = BaseDataLoader(
-            dataset = valid_dataset,
-            queue = valid_queue,
-            batch_size = hparams.batch_size,
-            thread_id = 0
-        )
+        valid_loader = BaseDataLoader(valid_dataset, valid_queue, hparams.batch_size, 0)
         valid_loader.start()
 
         valid_loss, valid_cer = evaluate(model, valid_queue, criterion, device)

@@ -17,33 +17,35 @@ class HyperParams():
     Set of Hyperparameters
 
     Hyperparameters:
-        - **use_bidirectional**: if True, becomes a bidirectional listener
-        - **use_attention**: flag indication whether to use attention mechanism or not
-        - **input_reverse**: flag indication whether to reverse input feature or not
-        - **use_pickle**: flag indication whether to load data from pickle or not
-        - **use_augment**: flag indication whether to use spec-augmentation or not
-        - **augment_ratio**: ratio of spec-augmentation applied data
-        - **listener_layer_size**: num of listener`s RNN cell
-        - **speller_layer_size**: num of speller`s RNN cell
-        - **hidden_size**: size of hidden state of RNN
-        - **dropout**: dropout probability
-        - **batch_size**: mini-batch size
-        - **worker_num**: num of cpu core will be used
-        - **max_epochs**: max epoch
-        - **lr**: learning rate
-        - **teacher_forcing**: The probability that teacher forcing will be used
-        - **seed**: seed for random
-        - **max_len**: a maximum allowed length for the sequence to be processed
-        - **no_cuda**: if True, don`t use CUDA
-        - **save_name**: save name of model
-        - **mode**: train or test
-        - **load_model**: flag indication whether to load weight file or not
-        - **model_path**: path for weight file
+        - use_bidirectional (bool): if True, becomes a bidirectional listener (default: True)
+        - use_attention (bool): flag indication whether to use attention mechanism or not (default: True)
+        - score_function (str): which attention to use (default: dot-product)
+        - use_label_smooth (bool): flagindication whether to use label smoothing or not (default: True)
+        - input_reverse (bool): flag indication whether to reverse input feature or not (default: True)
+        - use_pickle (bool): flag indication whether to load data from pickle or not (default: False)
+        - use_augment (bool): flag indication whether to use spec-augmentation or not (default: True)
+        - use_pyramidal (bool): flag indication whether to use pyramidal rnn in listener or not (default: True)
+        - use_multistep_lr (bool): flag indication whether to use multistep leraning rate or not (default:False)
+        - augment_ratio (float): ratio of spec-augmentation applied data (default: 1.0)
+        - listener_layer_size (int): num of listener`s RNN cell (default: 6)
+        - speller_layer_size (int): num of speller`s RNN cell (default: 3)
+        - hidden_size (int): size of hidden state of RNN (default: 256)
+        - dropout (float): dropout probability (default: 0.5)
+        - batch_size (int): mini-batch size (default: 12)
+        - worker_num (int): num of cpu core will be used (default: 1)
+        - max_epochs (int): max epoch (default: 40)
+        - init_lr (float): initial learning rate (default: 1e-4)
+        - high_plateau_lr (float): maximum learning rate after the ramp up phase (default: -)
+        - low_plateau_lr (float): Steps to be maintained at a certain number to avoid extremely slow learning (default: -)
+        - teacher_forcing (float): The probability that teacher forcing will be used (default: 0.90)
+        - seed (int): seed for random (default: 1)
+        - max_len (int): a maximum allowed length for the sequence to be processed (default: 120)
+        - use_cuda (bool): if True, use CUDA (default: True)
     """
     def __init__(self,
                  use_bidirectional = True,
                  use_attention = True,
-                 use_label_smoothing = True,
+                 use_label_smooth = True,
                  input_reverse = True,
                  use_augment = True,
                  use_pickle = False,
@@ -55,7 +57,7 @@ class HyperParams():
                  dropout = 0.5,
                  listener_layer_size = 6,
                  speller_layer_size = 3,
-                 batch_size = 8,
+                 batch_size = 12,
                  worker_num = 1,
                  max_epochs = 40,
                  use_multistep_lr = False,
@@ -64,12 +66,11 @@ class HyperParams():
                  low_plateau_lr = 0.00003,
                  teacher_forcing = 0.9,
                  seed = 1,
-                 max_len = 120,
-                 mode = 'train',
+                 max_len = 120
                  ):
         self.use_bidirectional = use_bidirectional
         self.use_attention = use_attention
-        self.use_label_smoothing = use_label_smoothing
+        self.use_label_smooth = use_label_smooth
         self.input_reverse = input_reverse
         self.use_augment = use_augment
         self.use_pickle = use_pickle
@@ -92,7 +93,6 @@ class HyperParams():
         self.teacher_forcing = teacher_forcing
         self.seed = seed
         self.max_len = max_len
-        self.mode = mode
 
     def logger_hparams(self):
         logger.info("use_bidirectional : %s" % str(self.use_bidirectional))
@@ -118,4 +118,3 @@ class HyperParams():
         logger.info("seed : %d" % self.seed)
         logger.info("max_len : %d" % self.max_len)
         logger.info("use_cuda : %s" % str(self.use_cuda))
-        logger.info("mode : %s" % self.mode)
