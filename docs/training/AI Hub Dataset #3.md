@@ -90,7 +90,7 @@ PyTorch version : 1.4.0
   
 ### Training Result  
    
- Training Start Date: 2020/02/23  
+ Training Start Date: 2020/02/29  
    
 |Epoch|train CRR (%)|valid CRR (%)|test CRR (%)|  
 |:-----:|:---------:|:--------:|:------:|    
