@@ -46,7 +46,7 @@ from utils.dataset import split_dataset
 from utils.hparams import HyperParams
 from utils.loader import BaseDataLoader, MultiLoader
 from utils.load import load_targets, load_data_list, load_pickle
-from utils.save import save_epoch_result, save_pickle
+from utils.save import save_epoch_result
 from models.speller import Speller
 from models.listener import Listener
 from models.listenAttendSpell import ListenAttendSpell

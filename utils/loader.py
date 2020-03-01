@@ -17,7 +17,6 @@ class MultiLoader():
             self.loader.append(BaseDataLoader(self.dataset_list[idx], self.queue, self.batch_size, idx))
 
     def start(self):
-        # BaseDataLoader run()을 실행!!
         for idx in range(self.worker_num):
             self.loader[idx].start()
 
@@ -39,9 +38,8 @@ class BaseDataLoader(threading.Thread):
     def count(self):
         return math.ceil(self.dataset_count / self.batch_size)
 
-    # 큐에 들어가는 batch를 만드는 함수
     def create_empty_batch(self):
-        seqs = torch.zeros(0, 0, 0)  #  3차원의 0 벡터
+        seqs = torch.zeros(0, 0, 0)
         targets = torch.zeros(0, 0).to(torch.long)
         seq_lengths = list()
         target_lengths = list()
@@ -51,7 +49,7 @@ class BaseDataLoader(threading.Thread):
         logger.debug('loader %d start' % (self.thread_id))
         while True:
             items = list()
-            for i in range(self.batch_size):
+            for _ in range(self.batch_size):
                 if self.index >= self.dataset_count:
                     break
                 feat, label = self.dataset.get_item(self.index)

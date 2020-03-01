@@ -22,13 +22,13 @@ def char_distance(target, y_hat):
 
     return distance, length
 
-def get_distance(target, y_hat, id2char, eos_id):
+def get_distance(targets, y_hats, id2char, eos_id):
     total_distance = 0
     total_length = 0
 
-    for i in range(len(target)):
-        target = label_to_string(target[i], id2char, eos_id)
-        y_hat = label_to_string(y_hat[i], id2char, eos_id)
+    for i in range(len(targets)):
+        target = label_to_string(targets[i], id2char, eos_id)
+        y_hat = label_to_string(y_hats[i], id2char, eos_id)
         distance, length = char_distance(target, y_hat)
         total_distance += distance
         total_length += length

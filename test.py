@@ -80,7 +80,7 @@ if __name__ == '__main__':
 
     audio_paths, label_paths = load_data_list(data_list_path=TEST_LIST_PATH, dataset_path=DATASET_PATH)
 
-    target_dict = load_pickle("./pickle/target_dict_test.txt", "load all target_dict using pickle complete !!")
+    target_dict = load_targets(label_paths)
     logger.info('start')
 
     test_dataset = BaseDataset(
