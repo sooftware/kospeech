@@ -14,8 +14,9 @@ import random
 import math
 from torch.utils.data import Dataset
 from utils.feature import get_librosa_mfcc, spec_augment, get_librosa_melspectrogram
-from utils.label import get_label
-from utils.define import logger, SOS_TOKEN, EOS_TOKEN
+from utils.label import get_label, label_to_string
+from utils.define import logger, SOS_TOKEN, EOS_TOKEN, id2char
+
 
 class BaseDataset(Dataset):
     """
@@ -35,7 +36,7 @@ class BaseDataset(Dataset):
     """
     def __init__(self, audio_paths, label_paths, sos_id = 2037, eos_id = 2038,
                  target_dict = None, input_reverse = True, use_augment = True,
-                 augment_ratio = 0.3):
+                 augment_ratio = 0.3, pack_by_length = True):
         self.audio_paths = list(audio_paths)
         self.label_paths = list(label_paths)
         self.sos_id = sos_id
@@ -44,6 +45,7 @@ class BaseDataset(Dataset):
         self.input_reverse = input_reverse
         self.augment_ratio = augment_ratio
         self.is_augment = [False] * len(self.audio_paths)
+        self.pack_by_length = pack_by_length
         if use_augment:
             self.apply_augment()
 
@@ -88,14 +90,17 @@ class BaseDataset(Dataset):
         random.shuffle(tmp)
         self.audio_paths, self.label_paths, self.is_augment = zip(*tmp)
 
-    def shuffle(self):
+    def shuffle(self, batch_size):
         """Shuffle Dataset"""
-        tmp = list(zip(self.audio_paths, self.label_paths, self.is_augment))
-        random.shuffle(tmp)
-        self.audio_paths, self.label_paths, self.is_augment = zip(*tmp)
+        if self.pack_by_length:
+            self.audio_paths, self.label_paths = batch_shuffle(self.audio_paths, self.label_paths, batch_size)
+        else:
+            bundle = list(zip(self.audio_paths, self.label_paths, self.is_augment))
+            random.shuffle(bundle)
+            self.audio_paths, self.label_paths, self.is_augment = zip(*bundle)
 
 
-def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_dict = None):
+def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_dict = None, pack_by_length = True):
     """
     Dataset split into training and validation Dataset.
     Args:
@@ -137,6 +142,13 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
     random.shuffle(data_paths)
     audio_paths, label_paths = zip(*data_paths)
 
+    valid_dataset = BaseDataset(audio_paths=audio_paths[train_num:],
+                                label_paths=label_paths[train_num:],
+                                sos_id=SOS_TOKEN, eos_id=EOS_TOKEN,
+                                target_dict=target_dict, input_reverse=hparams.input_reverse, use_augment=False)
+    if pack_by_length:
+        audio_paths, label_paths = sort_by_length(audio_paths[:train_num], target_dict)
+        audio_paths, label_paths = batch_shuffle(audio_paths, label_paths, hparams.batch_size)
     # seperating the train dataset by the number of workers
     for idx in range(hparams.worker_num):
         train_begin_index = train_num_per_worker * idx
@@ -145,11 +157,56 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
                                               label_paths=label_paths[train_begin_index:train_end_index],
                                               sos_id=SOS_TOKEN, eos_id=EOS_TOKEN, target_dict=target_dict,
                                               input_reverse=hparams.input_reverse, use_augment=hparams.use_augment,
-                                              augment_ratio=hparams.augment_ratio))
-    valid_dataset = BaseDataset(audio_paths=audio_paths[train_num:],
-                                label_paths=label_paths[train_num:],
-                                sos_id=SOS_TOKEN, eos_id=EOS_TOKEN,
-                                target_dict=target_dict, input_reverse=hparams.input_reverse, use_augment=False)
+                                              augment_ratio=hparams.augment_ratio, pack_by_length=pack_by_length))
 
     logger.info("split dataset complete !!")
     return train_time_step, train_dataset_list, valid_dataset
+
+def sort_by_length(audio_paths, target_dict):
+    label_paths = list(target_dict.keys())
+    targets = list(target_dict.values())
+    target_lengths = []
+
+    for idx in range(len(label_paths)):
+        target_lengths.append(len(targets[idx].split()))
+
+    bundle = list(zip(target_lengths, audio_paths, label_paths))
+    target_lengths, audio_paths, label_paths = zip(*sorted(bundle, reverse=True))
+
+    return audio_paths, label_paths
+
+def batch_shuffle(audio_paths, label_paths, batch_size, remain_drop = False):
+    total_audio_batch, total_label_batch = list(), list()
+    tmp_audio_batch, tmp_label_batch = list(), list()
+    index = 0
+
+    while True:
+        if index == len(audio_paths):
+            break
+        if len(tmp_audio_batch) == batch_size:
+            total_audio_batch.append(tmp_audio_batch)
+            total_label_batch.append(tmp_label_batch)
+            tmp_audio_batch, tmp_label_batch = list(), list()
+        tmp_audio_batch.append(audio_paths[index])
+        tmp_label_batch.append(label_paths[index])
+        index += 1
+
+    last_audio_batch, last_label_batch = total_audio_batch[-1], total_label_batch[-1]
+    total_audio_batch, total_label_batch = total_audio_batch[:-1], total_label_batch[:-1]
+
+    bundle = list(zip(total_audio_batch, total_label_batch))
+    random.shuffle(bundle)
+    total_audio_batch, total_label_batch = zip(*bundle)
+
+    audio_paths = list()
+    label_paths = list()
+
+    for (audio_batch, label_batch) in zip(total_audio_batch, total_label_batch):
+        audio_paths.extend(audio_batch)
+        label_paths.extend(label_batch)
+
+    if not remain_drop:
+        audio_paths.extend(last_audio_batch)
+        label_paths.extend(last_label_batch)
+
+    return audio_paths, label_paths

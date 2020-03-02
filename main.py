@@ -42,7 +42,7 @@ import torch
 import time
 import os
 from utils.define import *
-from utils.dataset import split_dataset
+from utils.dataset import split_dataset, sort_by_length
 from utils.hparams import HyperParams
 from utils.loader import BaseDataLoader, MultiLoader
 from utils.load import load_targets, load_data_list, load_pickle
@@ -56,11 +56,11 @@ from train.trainer import train
 
 
 if __name__ == '__main__':
-    os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
-    logger.info("device : %s" % torch.cuda.get_device_name(0))
-    logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
-    logger.info("CUDA version : %s" % (torch.version.cuda))
-    logger.info("PyTorch version : %s" % (torch.__version__))
+    #os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
+    #logger.info("device : %s" % torch.cuda.get_device_name(0))
+    #logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
+    #logger.info("CUDA version : %s" % (torch.version.cuda))
+    #logger.info("PyTorch version : %s" % (torch.__version__))
 
     hparams = HyperParams()
     hparams.logger_hparams()
@@ -104,22 +104,28 @@ if __name__ == '__main__':
     else:
         criterion = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_TOKEN).to(device)
 
-    audio_paths, label_paths = load_data_list(data_list_path=TRAIN_LIST_PATH, dataset_path=DATASET_PATH)
+    audio_paths, label_paths = load_data_list(data_list_path=SAMPLE_LIST_PATH, dataset_path=SAMPLE_DATASET_PATH)
 
     if hparams.use_pickle:
         target_dict = load_pickle(TARGET_DICT_PATH, "load all target_dict using pickle complete !!")
     else:
         target_dict = load_targets(label_paths)
 
-    total_time_step, train_dataset_list, valid_dataset = split_dataset(hparams, audio_paths, label_paths, 0.015, target_dict)
-
+    total_time_step, train_dataset_list, valid_dataset = split_dataset(
+        hparams = hparams,
+        audio_paths = audio_paths,
+        label_paths = label_paths,
+        valid_ratio = 0.015,
+        target_dict = target_dict,
+        pack_by_length = hparams.pack_by_length
+    )
     logger.info('start')
     train_begin = time.time()
 
     for epoch in range(hparams.max_epochs):
         train_queue = queue.Queue(hparams.worker_num << 1)
         for train_dataset in train_dataset_list:
-            train_dataset.shuffle()
+            train_dataset.shuffle(hparams.batch_size)
         train_loader = MultiLoader(train_dataset_list, train_queue, hparams.batch_size, hparams.worker_num)
         train_loader.start()
         train_loss, train_cer = train(

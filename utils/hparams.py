@@ -48,10 +48,11 @@ class HyperParams():
                  use_label_smooth = True,
                  input_reverse = True,
                  use_augment = True,
-                 use_pickle = False,
+                 use_pickle = True,
                  use_pyramidal = True,
                  use_cuda = True,
                  score_function = 'dot-product',
+                 pack_by_length = True,
                  augment_ratio = 1.0,
                  hidden_size = 256,
                  dropout = 0.5,
@@ -66,7 +67,7 @@ class HyperParams():
                  low_plateau_lr = 0.00003,
                  teacher_forcing = 0.9,
                  seed = 1,
-                 max_len = 120
+                 max_len = 328
                  ):
         self.use_bidirectional = use_bidirectional
         self.use_attention = use_attention
@@ -77,6 +78,7 @@ class HyperParams():
         self.use_pyramidal = use_pyramidal
         self.use_cuda = use_cuda
         self.score_function = score_function
+        self.pack_by_length = pack_by_length
         self.augment_ratio = augment_ratio
         self.hidden_size = hidden_size
         self.dropout = dropout
