@@ -138,7 +138,7 @@ class Beam:
                 return False
         return True
 
-    def _forward_step(self, decoder_input, encoder_outputs, last_alignment):
+    def _forward_step(self, decoder_input, encoder_outputs, last_align):
         """ forward one step on each decoder cell """
         output_size = decoder_input.size(1)
         embedded = self.embedding(decoder_input)
@@ -146,12 +146,12 @@ class Beam:
         decoder_output, hidden = self.rnn(embedded, self.decoder_hidden)  # decoder output
 
         if self.use_attention:
-            context, alignment = self.attention(decoder_output, encoder_outputs, last_alignment)
+            context, align = self.attention(decoder_output, encoder_outputs, last_align)
         else:
             context = decoder_output
         predicted_softmax = self.function(self.out(context.contiguous().view(-1, self.hidden_size)), dim=1)
         predicted_softmax = predicted_softmax.view(self.batch_size,output_size,-1)
-        return predicted_softmax, alignment
+        return predicted_softmax, align
 
     def _get_length_penalty(self, length, alpha=1.2, min_length=5):
         """

@@ -163,6 +163,7 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
     return train_time_step, train_dataset_list, valid_dataset
 
 def sort_by_length(audio_paths, target_dict):
+    """ descending sort by sequence length """
     label_paths = list(target_dict.keys())
     targets = list(target_dict.values())
     target_lengths = []
@@ -176,6 +177,7 @@ def sort_by_length(audio_paths, target_dict):
     return audio_paths, label_paths
 
 def batch_shuffle(audio_paths, label_paths, batch_size, remain_drop = False):
+    """ batch shuffle randomly """
     total_audio_batch, total_label_batch = list(), list()
     tmp_audio_batch, tmp_label_batch = list(), list()
     index = 0

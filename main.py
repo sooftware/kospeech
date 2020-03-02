@@ -94,13 +94,13 @@ if __name__ == '__main__':
         use_attention = hparams.use_attention,
         device = device
     )
-    model = ListenAttendSpell(listener, speller, hparams.use_pyramidal)
+    model = ListenAttendSpell(listener, speller, use_pyramidal = hparams.use_pyramidal)
     model.flatten_parameters()
     model = nn.DataParallel(model).to(device)
 
     optimizer = optim.Adam(model.module.parameters(), lr=hparams.init_lr)
     if hparams.use_label_smooth:
-        criterion = LabelSmoothingLoss(len(char2id), ignore_index=PAD_TOKEN, smoothing=0.1, dim=-1).to(device)
+        criterion = LabelSmoothingLoss(len(char2id), ignore_index = PAD_TOKEN, smoothing = 0.1, dim = -1).to(device)
     else:
         criterion = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_TOKEN).to(device)
 
@@ -142,6 +142,7 @@ if __name__ == '__main__':
             print_batch = 10,
             teacher_forcing_ratio = hparams.teacher_forcing
         )
+        torch.save(model, "model.pt")
         torch.save(model, "./data/weight_file/epoch%s.pt" % str(epoch))
         logger.info('Epoch %d (Training) Loss %0.4f CER %0.4f' % (epoch, train_loss, train_cer))
         train_loader.join()

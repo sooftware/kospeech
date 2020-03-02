@@ -104,7 +104,6 @@ class Listener(nn.Module):
                 input_size = feat_size,
                 hidden_size = hidden_size,
                 num_layers = self.bottom_layer_size,
-                bias = True,
                 batch_first = True,
                 bidirectional = bidirectional,
                 dropout = dropout_p
@@ -126,7 +125,6 @@ class Listener(nn.Module):
                 input_size=feat_size,
                 hidden_size=hidden_size,
                 num_layers=layer_size,
-                bias=True,
                 batch_first=True,
                 bidirectional=bidirectional,
                 dropout=dropout_p
