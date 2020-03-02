@@ -13,12 +13,9 @@ limitations under the License.
 import random
 import math
 from torch.utils.data import Dataset
-from utils.augment import spec_augment
-from utils.feature import get_librosa_mfcc
+from utils.feature import get_librosa_mfcc, spec_augment, get_librosa_melspectrogram
 from utils.label import get_label
 from utils.define import logger, SOS_TOKEN, EOS_TOKEN
-from utils.save import save_pickle
-
 
 class BaseDataset(Dataset):
     """
@@ -57,30 +54,13 @@ class BaseDataset(Dataset):
         return len(self.audio_paths)
 
     def get_item(self, idx):
-        label = get_label(
-            filepath = self.label_paths[idx],
-            sos_id = self.sos_id,
-            eos_id = self.eos_id,
-            target_dict = self.target_dict
-        )
-        feat = get_librosa_mfcc(
-            filepath = self.audio_paths[idx],
-            n_mfcc = 33,
-            del_silence = False,
-            input_reverse = self.input_reverse,
-            format = 'pcm'
-        )
+        label = get_label(self.label_paths[idx], sos_id = self.sos_id, eos_id = self.eos_id, target_dict = self.target_dict)
+        feat = get_librosa_melspectrogram(self.audio_paths[idx], n_mels = 128, mel_type='log_mel', input_reverse = self.input_reverse)
         # exception handling
         if feat is None:
             return None, None
         if self.is_augment[idx]:
-            feat = spec_augment(
-                feat = feat,
-                T=40,
-                F=15,
-                time_mask_num=2,
-                freq_mask_num=2
-            )
+            feat = spec_augment(feat, T = 70, F = 20, time_mask_num = 2, freq_mask_num = 2 )
         return feat, label
 
     def apply_augment(self):
