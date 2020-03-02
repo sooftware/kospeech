@@ -16,9 +16,9 @@ ListenAttendSpell(
       (10): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
       (11): Hardtanh(min_val=0, max_val=20, inplace=True)
       (12): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-      (13): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      (13): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
       (14): Hardtanh(min_val=0, max_val=20, inplace=True)
-      (15): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (15): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
       (16): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
     )
     (bottom_rnn): GRU(2048, 256, num_layers=2, batch_first=True, dropout=0.5, bidirectional=True)
@@ -57,11 +57,12 @@ ListenAttendSpell(
 |input_reverse|flag indication whether to reverse input feature or not|True|   
 |use_augment| flag indication whether to use spec-augmentation or not|True|  
 |use_pyramidal| flag indication whether to use pLSTM or not|True|  
+|pack_by_length|flag indication whether to pack batch by similar sequence lengths|True|  
 |augment_ratio|ratio of spec-augmentation applied data|1.0|   
 |listener_layer_size|number of listener`s RNN layer|6|  
 | speller_layer_size|number of speller`s RNN layer| 3|  
 | hidden_size| size of hidden state of RNN|256|
-| batch_size | mini-batch size|10|
+| batch_size | mini-batch size|8|
 | dropout          | dropout probability|0.5  |
 | teacher_forcing  | The probability that teacher forcing will be used|0.90|
 | lr               | learning rate|1e-4        |
@@ -76,7 +77,7 @@ PyTorch version : 1.4.0
   
 ## Feature  
   
-* MFCC (Mel-Frequency-Cepstral-Coefficients)  
+* Log Mel-Spectrogram    
   
 | Parameter| Use|    
 | -----|:-----:|     
@@ -84,7 +85,7 @@ PyTorch version : 1.4.0
 |Stride|10ms|
 | N_FFT | 400  |   
 | hop length | 160  |
-| n_mfcc | 33  |  
+| n_mels | 80  |  
 |window|hamming|  
 
   
