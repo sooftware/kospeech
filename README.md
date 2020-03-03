@@ -19,11 +19,7 @@
 <p align=center><i> Label-Smoothing · Spec-Augmentation </i></p> 
 <p align=center><i> Multi-Step LR · Beam-Search </i></p> 
   
-## Documents
-  
-* [Preparation before Training](https://github.com/sh951011/Korean-Speech-Recognition/wiki/Preparation-before-Training)    
-* [Weekly Reports](https://github.com/sh951011/Korean-Speech-Recognition/tree/master/docs/weekly-reports)  
-* [Ongoing Training](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/training/AI%20Hub%20Dataset%20%233.md)  
+[**Documentation**](https://sh951011.github.io/Korean-Speech-Recognition/)  
 
 
 ## Team Member  
