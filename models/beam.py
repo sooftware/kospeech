@@ -18,16 +18,16 @@ class Beam:
     Applying Beam-Search during decoding process.
 
     Args:
-        - k (int) : size of beam
-        - decoder_hidden (torch.Tensor) : hidden state of decoder
-        - batch_size (int) : mini-batch size during infer
-        - max_len (int) :  a maximum allowed length for the sequence to be processed
-        - decode_func (torch.nn.Module) : A function used to generate symbols from RNN hidden state (default : torch.nn.functional.log_softmax)
-        - decoder (torch.nn.module) : get pointer of decoder object to get multiple parameters at once
-        - beams (torch.Tensor) : ongoing beams for decoding
-        - beam_scores (torch.Tensor) : score of beams (cumulative probability)
-        - done_beams (list2d) : store beams which met <eos> token and terminated decoding process.
-        - done_beam_scores (list2d) : score of done_beams
+        - **k** (int) : size of beam
+        - **decoder_hidden** (torch.Tensor) : hidden state of decoder
+        - **batch_size** (int) : mini-batch size during infer
+        - **max_len** (int) :  a maximum allowed length for the sequence to be processed
+        - **decode_func** (torch.nn.Module) : A function used to generate symbols from RNN hidden state (default : torch.nn.functional.log_softmax)
+        - **decoder** (torch.nn.module) : get pointer of decoder object to get multiple parameters at once
+        - **beams** (torch.Tensor) : ongoing beams for decoding
+        - **beam_scores** (torch.Tensor) : score of beams (cumulative probability)
+        - **done_beams** (list2d) : store beams which met <eos> token and terminated decoding process.
+        - **done_beam_scores** (list2d) : score of done_beams
     """
 
     def __init__(self, k, decoder_hidden, decoder, batch_size, max_len, function):
@@ -55,10 +55,10 @@ class Beam:
         Beam-Search Decoding (Top-K Decoding)
 
         Comment Notation:
-            - B: batchsize
-            - K: beam size
-            - C: classfication number
-            - S: sequence length
+            - **B**: batchsize
+            - **K**: beam size
+            - **C**: classfication number
+            - **S**: sequence length
         """
         last_align = None
         # get class classfication distribution (shape: BxC)

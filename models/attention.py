@@ -20,7 +20,7 @@ class Attention(nn.Module):
     Applies an attention mechanism on the output features from the decoder.
 
     Args:
-        score_function (str) : type of Attention`s score function (default 'hybrid')
+        - **score_function** (str) : type of Attention`s score function (default 'hybrid')
             list => 'hybrid', 'content-based', 'self'
     """
     def __init__(self, score_function = 'hybrid', decoder_hidden_size = None):

@@ -43,11 +43,11 @@ class Listener(nn.Module):
     Converts low level speech signals into higher level features
 
     Args:
-        hidden_size (int): the number of features in the hidden state `h`
-        dropout_p (float, optional): dropout probability for the output sequence (default: 0)
-        layer_size (int, optional): number of recurrent layers (default: 1)
-        bidirectional (bool, optional): if True, becomes a bidirectional encoder (defulat: False)
-        rnn_cell (str, optional): type of RNN cell (default: gru)
+        - **hidden_size** (int): the number of features in the hidden state `h`
+        - **dropout_p** (float, optional): dropout probability for the output sequence (default: 0)
+        - **layer_size** (int, optional): number of recurrent layers (default: 1)
+        - **bidirectional** (bool, optional): if True, becomes a bidirectional encoder (defulat: False)
+        - **rnn_cell** (str, optional): type of RNN cell (default: gru)
 
     Outputs: output, hidden
         - **output** (batch, seq_len, hidden_size): tensor containing the encoded features of the input sequence

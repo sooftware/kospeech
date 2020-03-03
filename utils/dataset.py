@@ -21,14 +21,15 @@ from utils.define import logger, SOS_TOKEN, EOS_TOKEN
 class BaseDataset(Dataset):
     """
     Dataset for audio & label matching
+
     Args: audio_paths, label_paths, bos_id, eos_id, target_dict
-        audio_paths: set of audio path
+        - **audio_paths** (list): set of audio path
                 Format : [base_dir/KaiSpeech/KaiSpeech_123260.pcm, ... , base_dir/KaiSpeech/KaiSpeech_621245.pcm]
-        label_paths: set of label paths
+        - **label_paths** (list): set of label paths
                 Format : [base_dir/KaiSpeech/KaiSpeech_label_123260.txt, ... , base_dir/KaiSpeech/KaiSpeech_label_621245.txt]
-        bos_id: <s>`s id
-        eos_id: </s>`s id
-        target_dict: dictionary of filename and labels
+        - **bos_id** (int): <s>`s id
+        - **eos_id** (int): </s>`s id
+        - **target_dict** (dict): dictionary of filename and labels
                 Format : {KaiSpeech_label_FileNum : '5 0 49 4 0 8 190 0 78 115', ... }
     Outputs:
         - **feat**: feature vector for audio

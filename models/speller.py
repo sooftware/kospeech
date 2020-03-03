@@ -30,16 +30,16 @@ class Speller(nn.Module):
     Converts higher level features (from listener) into output utterances by specifying a probability distribution over sequences of characters.
 
     Args:
-        vocab_size (int): size of the vocabulary
-        max_len (int): a maximum allowed length for the sequence to be processed
-        hidden_size (int): the number of features in the hidden state `h`
-        sos_id (int): index of the start of sentence symbol
-        eos_id (int): index of the end of sentence symbol
-        layer_size (int, optional): number of recurrent layers (default: 1)
-        rnn_cell (str, optional): type of RNN cell (default: gru)
-        dropout_p (float, optional): dropout probability for the output sequence (default: 0)
-        use_attention(bool, optional): flag indication whether to use attention mechanism or not (default: false)
-        k (int) : size of beam
+        - **vocab_size** (int): size of the vocabulary
+        - **max_len** (int): a maximum allowed length for the sequence to be processed
+        - **hidden_size** (int): the number of features in the hidden state `h`
+        - **sos_id** (int): index of the start of sentence symbol
+        - **eos_id** (int): index of the end of sentence symbol
+        - **layer_size** (int, optional): number of recurrent layers (default: 1)
+        - **rnn_cell** (str, optional): type of RNN cell (default: gru)
+        - **dropout_p** (float, optional): dropout probability for the output sequence (default: 0)
+        - **use_attention** (bool, optional): flag indication whether to use attention mechanism or not (default: false)
+        - **k** (int) : size of beam
     Inputs: inputs, listener_hidden, listener_outputs, function, teacher_forcing_ratio
         - **inputs** (batch, seq_len, input_size): list of sequences, whose length is the batch size and within which
           each sequence is a list of token IDs.  It is used for teacher forcing when provided. (default `None`)

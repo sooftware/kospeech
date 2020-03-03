@@ -19,10 +19,8 @@ def get_label(filepath, sos_id=2037, eos_id=2038, target_dict=None):
         - **bos_id**: <s>`s id
         - **eos_id**: </s>`s id
         - **target_dict**: dictionary of filename and labels
-                Format : {KaiSpeech_label_FileNum : '5 0 49 4 0 8 190 0 78 115', ... }
     Outputs: label
         - **label**: list of bos + sequence of label + eos
-                Format : [<s>, 5, 0, 49, 4, 0, 8, 190, 0, 78, 115, </s>]
     """
     assert target_dict is not None, "target_dict is None"
     key = filepath.split('/')[-1].split('.')[0]
