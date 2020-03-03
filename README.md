@@ -50,12 +50,12 @@ ListenAttendSpell(
       (10): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
       (11): Hardtanh(min_val=0, max_val=20, inplace=True)
       (12): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-      (13): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      (13): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
       (14): Hardtanh(min_val=0, max_val=20, inplace=True)
-      (15): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (15): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
       (16): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
     )
-    (bottom_rnn): GRU(2048, 256, num_layers=2, batch_first=True, dropout=0.5, bidirectional=True)
+    (bottom_rnn): GRU(4096, 256, num_layers=2, batch_first=True, dropout=0.5, bidirectional=True)
     (middle_rnn): PyramidalRNN(
       (rnn): GRU(1024, 256, num_layers=2, batch_first=True, dropout=0.5, bidirectional=True)
     )
@@ -68,7 +68,7 @@ ListenAttendSpell(
     (embedding): Embedding(2040, 512)
     (input_dropout): Dropout(p=0.5, inplace=False)
     (attention): Attention(
-      (attention): DotProductAttention(
+      (attention): SelfAttention(
         (W): Linear(in_features=1024, out_features=512, bias=True)
       )
     )
@@ -80,6 +80,7 @@ ListenAttendSpell(
 * Reference
   + 「Listen, Attend and Spell」 Chan et al. 2015
   + 「Attention-Based Models for Speech Recognition」 Chorowski et al. 2015
+  + 「A Structured Self-attentive Sentence Embedding」 Zhouhan Lin eo al. 2017
   +  https://github.com/IBM/pytorch-seq2seq
   
 ## Hyperparameters  
@@ -282,23 +283,16 @@ Please report bugs or provide any recommendation to us through the following ema
 ## Reference   
 [[1] 「Listen, Attend and Spell」  Paper](https://arxiv.org/abs/1508.01211)   
 [[2] 「Attention-Based Models for Speech Recognition」  Paper](https://arxiv.org/pdf/1506.07503.pdf)  
-[[3]   IBM pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)   
-[[4]   A.I Hub 한국어 음성 데이터셋](http://www.aihub.or.kr/aidata/105)   
-[[5] 「A Simple Data Augmentation Method for Automatic Speech Recognition」  Paper](https://arxiv.org/abs/1904.08779)    
-[[6]   PyTorch Spec-Augmentation](https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py)     
-[[7]  「Voice Recognition Using MFCC Algorithm」  Paper](https://pdfs.semanticscholar.org/32d7/2b00454d5155599fb9e8e5119e16970db50d.pdf)   
-[[8] 「Deep Speech: Scaling up end-to-End Speech Recognition」  Paper](https://arxiv.org/abs/1412.5567)    
-[[9] 「Deep Speech 2: End-to-End Speech Recognition in English and Mandarin」  Paper](https://arxiv.org/abs/1512.02595)  
-[[10]   PyTorch-VGG Net](https://github.com/chengyangfu/pytorch-vgg-cifar10/blob/master/vgg.py)  
-[[11]   Levenshtein Distance](https://en.wikipedia.org/wiki/Levenshtein_distance)     
-[[12]   Preprocess, Create label & data list](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/Preprocess.md)  
-[[13]   Concept of Recurrent Nelral Network](https://blog.naver.com/sooftware/221750172371)  
-[[14]   Concept of LSTM & GRU](https://blog.naver.com/sooftware/221783612034)  
-[[15]   Concept of Seq2seq](https://blog.naver.com/sooftware/221784419691)  
-[[16]   Concept of Attention Mechanism](https://blog.naver.com/sooftware/221784472231)  
-[[17]   Concept of Teacher Forcing](https://blog.naver.com/sooftware/221790750668)    
-[[18]   Concept of Beam Search](https://blog.naver.com/sooftware/221809101199)  
-  
+[[3] 「A Structured Self-attentive Sentence Embedding」 Paper](https://arxiv.org/abs/1703.03130)  
+[[4]   IBM pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)   
+[[5]   A.I Hub 한국어 음성 데이터셋](http://www.aihub.or.kr/aidata/105)   
+[[6] 「A Simple Data Augmentation Method for Automatic Speech Recognition」  Paper](https://arxiv.org/abs/1904.08779)    
+[[7]   PyTorch Spec-Augmentation](https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py)     
+[[8]  「Voice Recognition Using MFCC Algorithm」  Paper](https://pdfs.semanticscholar.org/32d7/2b00454d5155599fb9e8e5119e16970db50d.pdf) 
+[[9] 「Deep Speech: Scaling up end-to-End Speech Recognition」  Paper](https://arxiv.org/abs/1412.5567)    
+[[10] 「Deep Speech 2: End-to-End Speech Recognition in English and Mandarin」  Paper](https://arxiv.org/abs/1512.02595)  
+[[11]   PyTorch-VGG Net](https://github.com/chengyangfu/pytorch-vgg-cifar10/blob/master/vgg.py)  
+[[12]   Levenshtein Distance](https://en.wikipedia.org/wiki/Levenshtein_distance)     
 
 ## License
 ```
