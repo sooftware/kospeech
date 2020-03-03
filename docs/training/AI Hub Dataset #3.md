@@ -85,13 +85,13 @@ PyTorch version : 1.4.0
 |Stride|10ms|
 | N_FFT | 400  |   
 | hop length | 160  |
-| n_mels | 80  |  
+| n_mels | 128  |  
 |window|hamming|  
 
   
 ### Training Result  
    
-Training Start Date: 2020/03/02  
+Training Start Date: 2020/03/03  
    
 |Epoch|train CRR (%)|valid CRR (%)|test CRR (%)|  
 |:-----:|:---------:|:--------:|:------:|    
