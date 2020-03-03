@@ -213,7 +213,7 @@ def get_librosa_melspectrogram(filepath, n_mels=N_MELS, del_silence=False, input
         non_silence_indices = librosa.effects.split(y=signal, top_db=30)
         signal = np.concatenate([signal[start:end] for start, end in non_silence_indices])
 
-    feat = librosa.feature.melspectrogram(signal, sr=SAMPLE_RATE, n_mels=n_mels, n_fft=N_FFT, hop_length=HOP_LENGTH, window='hamming')
+    feat = librosa.feature.melspectrogram(signal, sr=16000, n_mels=128, n_fft=400, hop_length=160, window='hamming')
 
     if mel_type == 'log_mel':
         feat = librosa.amplitude_to_db(feat, ref=np.max)
