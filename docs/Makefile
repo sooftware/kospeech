@@ -4,7 +4,7 @@
 # You can set these variables from the command line.
 SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
-SPHINXPROJ    = Korean-Speech-Recognition
+SPHINXPROJ    = pytorch-seq2seq
 SOURCEDIR     = source
 BUILDDIR      = build
 
