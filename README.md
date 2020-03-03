@@ -186,7 +186,7 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 |2039|\_|0|    
   
 ## Feature  
-* MFCC (Mel-Frequency-Cepstral-Coefficients)  
+* Log Mel-Spectrogram  
   
 | Parameter| Use|    
 | -----|:-----:|     
@@ -194,25 +194,29 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 |Stride|10ms|
 | N_FFT | 400  |   
 | hop length | 160  |
-| n_mfcc | 33  |  
+| n_mels | 128  |  
 |window|hamming|  
   
 
 * code   
 ```python
-def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = False, input_reverse = True, format='pcm'):
+def get_librosa_melspectrogram(filepath, n_mels=N_MELS, del_silence=False, input_reverse=True, mel_type='log_mel', format='pcm'):
     if format == 'pcm':
         pcm = np.memmap(filepath, dtype='h', mode='r')
-        sig = np.array([float(x) for x in pcm])
+        signal = np.array([float(x) for x in pcm])
     elif format == 'wav':
-        sig, _ = librosa.core.load(filepath, sr=16000)
-    else: 
+        signal, _ = librosa.core.load(filepath, sr=16000)
+    else:
         raise ValueError("Invalid format !!")
 
     if del_silence:
-        non_silence_indices = librosa.effects.split(sig, top_db=30)
-        sig = np.concatenate([sig[start:end] for start, end in non_silence_indices])
-    feat = librosa.feature.mfcc(y=sig,sr=16000, hop_length=160, n_mfcc=n_mfcc, n_fft=400, window='hamming')
+        non_silence_indices = librosa.effects.split(y=signal, top_db=30)
+        signal = np.concatenate([signal[start:end] for start, end in non_silence_indices])
+
+    feat = librosa.feature.melspectrogram(signal, sr=SAMPLE_RATE, n_mels=n_mels, n_fft=N_FFT, hop_length=HOP_LENGTH, window='hamming')
+
+    if mel_type == 'log_mel':
+        feat = librosa.amplitude_to_db(feat, ref=np.max)
     if input_reverse:
         feat = feat[:,::-1]
 
@@ -228,7 +232,7 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = False, input_re
 Applying Frequency Masking & Time Masking except Time Warping
 * code  
 ```python
-def spec_augment(feat, T=40, F=15, time_mask_num=2, freq_mask_num=2):
+def spec_augment(feat, T=70, F=20, time_mask_num=2, freq_mask_num=2):
     feat_size = feat.size(1)
     seq_len = feat.size(0)
 
