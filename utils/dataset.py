@@ -34,9 +34,9 @@ class BaseDataset(Dataset):
         - **feat**: feature vector for audio
         - **label**: label for audio
     """
-    def __init__(self, audio_paths, label_paths, sos_id = 2037, eos_id = 2038,
+    def __init__(self, audio_paths, label_paths, sos_id, eos_id,
                  target_dict = None, input_reverse = True, use_augment = True,
-                 batch_size = None, augment_ratio = 0.3, pack_by_length = True):
+                 batch_size = None, augment_ratio = 1.0, pack_by_length = True):
         self.audio_paths = list(audio_paths)
         self.label_paths = list(label_paths)
         self.sos_id = sos_id

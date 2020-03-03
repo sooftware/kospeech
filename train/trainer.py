@@ -20,7 +20,7 @@ train_step_result = {'loss': [], 'cer': []}
 
 def train(model, hparams, epoch, total_time_step, queue,
           criterion, optimizer, device, train_begin, worker_num,
-          print_time_step=10, teacher_forcing_ratio=0.99):
+          print_time_step=10, teacher_forcing_ratio=0.90):
     total_loss = 0.
     total_num = 0
     total_distance = 0
@@ -53,7 +53,7 @@ def train(model, hparams, epoch, total_time_step, queue,
         target = targets[:, 1:]
         model.module.flatten_parameters()
 
-        y_hat, logit = model(feats=feats, targets=targets, teacher_forcing_ratio=teacher_forcing_ratio)
+        y_hat, logit = model(feats, targets, teacher_forcing_ratio=teacher_forcing_ratio)
         loss = criterion(logit.contiguous().view(-1, logit.size(-1)), target.contiguous().view(-1))
 
         total_loss += loss.item()

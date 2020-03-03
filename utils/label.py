@@ -11,8 +11,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from utils.define import logger
-
 def get_label(filepath, sos_id=2037, eos_id=2038, target_dict=None):
     """
     Provides specific file`s label to list format.
@@ -39,6 +37,7 @@ def get_label(filepath, sos_id=2037, eos_id=2038, target_dict=None):
     return label
 
 def label_to_string(labels, id2char, eos_id):
+    """ Converts label to string (number => character) """
     if len(labels.shape) == 1:
         sentence = str()
         for label in labels:
