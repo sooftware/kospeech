@@ -200,7 +200,7 @@ A.I Hub에서 제공한 1,000시간의 한국어 음성데이터 사용
 
 * code   
 ```python
-def get_librosa_melspectrogram(filepath, n_mels=N_MELS, del_silence=False, input_reverse=True, mel_type='log_mel', format='pcm'):
+def get_librosa_melspectrogram(filepath, n_mels=128, del_silence=False, input_reverse=True, mel_type='log_mel', format='pcm'):
     if format == 'pcm':
         pcm = np.memmap(filepath, dtype='h', mode='r')
         signal = np.array([float(x) for x in pcm])
