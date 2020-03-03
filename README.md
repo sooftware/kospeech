@@ -88,7 +88,7 @@ ListenAttendSpell(
 | ----------      |---|:----------:|    
 | use_bidirectional| if True, becomes a bidirectional encoder|True|  
 | use_attention    | flag indication whether to use attention mechanism or not|True |   
-| score_function    |which attention to use|dot-product |  
+| score_function    |which attention to use|self |  
 | use_label_smoothing    | flag indication whether to use label smoothing or not|True |   
 |input_reverse|flag indication whether to reverse input feature or not|True|   
 |use_augment| flag indication whether to use spec-augmentation or not|True|  
