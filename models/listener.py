@@ -86,17 +86,17 @@ class Listener(nn.Module):
             nn.Conv2d(in_channels=128, out_channels=128, kernel_size=3, padding=1),
             nn.Hardtanh(0, 20, inplace=True),
             nn.BatchNorm2d(num_features=128),
-            nn.Conv2d(in_channels=128, out_channels=256, kernel_size=3, padding=1),
+            nn.Conv2d(in_channels=128, out_channels=128, kernel_size=3, padding=1),
             nn.Hardtanh(0, 20, inplace=True),
-            nn.BatchNorm2d(num_features=256),
+            nn.BatchNorm2d(num_features=128),
             nn.MaxPool2d(kernel_size=2, stride=2)
         )
 
         """ math :: feat_size = (in_channel * out_channel) / maxpool_layer_num """
         if feat_size % 2:
-            feat_size = (feat_size-1) << 6
+            feat_size = (feat_size-1) << 5
         else:
-            feat_size <<= 6
+            feat_size <<= 5
 
         if use_pyramidal:
             self.bottom_layer_size = layer_size - 4

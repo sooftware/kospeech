@@ -42,7 +42,7 @@ import torch
 import time
 import os
 from utils.define import *
-from utils.dataset import split_dataset, sort_by_length
+from utils.dataset import split_dataset
 from utils.hparams import HyperParams
 from utils.loader import BaseDataLoader, MultiLoader
 from utils.load import load_targets, load_data_list, load_pickle
@@ -72,7 +72,7 @@ if __name__ == '__main__':
     device = torch.device('cuda' if cuda else 'cpu')
 
     listener = Listener(
-        feat_size = 33,
+        feat_size = 128,
         hidden_size = hparams.hidden_size,
         dropout_p = hparams.dropout,
         layer_size = hparams.listener_layer_size,
@@ -104,7 +104,7 @@ if __name__ == '__main__':
     else:
         criterion = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_TOKEN).to(device)
 
-    audio_paths, label_paths = load_data_list(data_list_path=SAMPLE_LIST_PATH, dataset_path=SAMPLE_DATASET_PATH)
+    audio_paths, label_paths = load_data_list(data_list_path=TRAIN_LIST_PATH, dataset_path=DATASET_PATH)
 
     if hparams.use_pickle:
         target_dict = load_pickle(TARGET_DICT_PATH, "load all target_dict using pickle complete !!")
@@ -117,7 +117,6 @@ if __name__ == '__main__':
         label_paths = label_paths,
         valid_ratio = 0.015,
         target_dict = target_dict,
-        pack_by_length = hparams.pack_by_length
     )
     logger.info('start')
     train_begin = time.time()
@@ -125,7 +124,7 @@ if __name__ == '__main__':
     for epoch in range(hparams.max_epochs):
         train_queue = queue.Queue(hparams.worker_num << 1)
         for train_dataset in train_dataset_list:
-            train_dataset.shuffle(hparams.batch_size)
+            train_dataset.shuffle()
         train_loader = MultiLoader(train_dataset_list, train_queue, hparams.batch_size, hparams.worker_num)
         train_loader.start()
         train_loss, train_cer = train(
@@ -139,7 +138,7 @@ if __name__ == '__main__':
             device = device,
             train_begin = train_begin,
             worker_num = hparams.worker_num,
-            print_batch = 10,
+            print_time_step = 10,
             teacher_forcing_ratio = hparams.teacher_forcing
         )
         torch.save(model, "model.pt")

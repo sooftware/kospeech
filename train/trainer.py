@@ -20,7 +20,7 @@ train_step_result = {'loss': [], 'cer': []}
 
 def train(model, hparams, epoch, total_time_step, queue,
           criterion, optimizer, device, train_begin, worker_num,
-          print_batch=5, teacher_forcing_ratio=0.99):
+          print_time_step=10, teacher_forcing_ratio=0.99):
     total_loss = 0.
     total_num = 0
     total_distance = 0
