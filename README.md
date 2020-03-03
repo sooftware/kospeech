@@ -22,6 +22,7 @@
 ## Documents
   
 * [Preparation before Training](https://github.com/sh951011/Korean-Speech-Recognition/wiki/Preparation-before-Training)    
+* [Weekly Reports](https://github.com/sh951011/Korean-Speech-Recognition/tree/master/docs/weekly-reports)  
 * [Ongoing Training](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/docs/training/AI%20Hub%20Dataset%20%233.md)  
 
 
