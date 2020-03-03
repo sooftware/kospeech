@@ -1,5 +1,5 @@
 @ECHO OFF
-
+set BUILDDIR=docs
 pushd %~dp0
 
 REM Command file for Sphinx documentation
