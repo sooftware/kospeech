@@ -13,9 +13,9 @@ limitations under the License.
 import random
 import math
 from torch.utils.data import Dataset
-from utils.feature import get_librosa_mfcc, spec_augment, get_librosa_melspectrogram
-from utils.label import get_label, label_to_string
-from utils.define import logger, SOS_TOKEN, EOS_TOKEN, id2char
+from utils.feature import spec_augment, get_librosa_melspectrogram
+from utils.label import get_label
+from utils.define import logger, SOS_TOKEN, EOS_TOKEN
 
 
 class BaseDataset(Dataset):
@@ -104,38 +104,44 @@ class BaseDataset(Dataset):
 
     def batch_shuffle(self, remain_drop = False):
         """ batch shuffle """
-        total_audio_batch, total_label_batch, total_augment_flag = list(), list(), list()
-        tmp_audio_batch, tmp_label_batch, tmp_augment_flag = list(), list(), list()
+        total_audio_batch, total_label_batch, total_augment_flag = [], [], []
+        audio_paths, label_paths, augment_flags = [], [], []
         index = 0
 
         while True:
             if index == len(self.audio_paths):
-                if len(tmp_audio_batch) != 0:
-                    total_audio_batch.append(tmp_audio_batch)
-                    total_label_batch.append(tmp_label_batch)
-                    total_augment_flag.append(tmp_augment_flag)
+                if len(audio_paths) != 0:
+                    total_audio_batch.append(audio_paths)
+                    total_label_batch.append(label_paths)
+                    total_augment_flag.append(augment_flags)
                 break
-            if len(tmp_audio_batch) == self.batch_size:
-                total_audio_batch.append(tmp_audio_batch)
-                total_label_batch.append(tmp_label_batch)
-                total_augment_flag.append(tmp_augment_flag)
-                tmp_audio_batch, tmp_label_batch, tmp_augment_flag = list(), list(), list()
-            tmp_audio_batch.append(self.audio_paths[index])
-            tmp_label_batch.append(self.label_paths[index])
-            tmp_augment_flag.append(self.augment_flags[index])
+            if len(audio_paths) == self.batch_size:
+                total_audio_batch.append(audio_paths)
+                total_label_batch.append(label_paths)
+                total_augment_flag.append(augment_flags)
+                audio_paths, label_paths, augment_flags = [], [], []
+            audio_paths.append(self.audio_paths[index])
+            label_paths.append(self.label_paths[index])
+            augment_flags.append(self.augment_flags[index])
             index += 1
 
         remain_audio, remain_label, remain_augment_flag = total_audio_batch[-1], total_label_batch[-1], total_augment_flag[-1]
         total_audio_batch, total_label_batch, total_augment_flag = total_audio_batch[:-1], total_label_batch[:-1], total_augment_flag[:-1]
 
-        audio_paths = list()
-        label_paths = list()
-        augment_flags = list()
+        bundle = list(zip(total_audio_batch, total_label_batch, total_augment_flag))
+        random.shuffle(bundle)
+        total_audio_batch, total_label_batch, total_augment_flag = zip(*bundle)
+
+        audio_paths, label_paths, augment_flags = [], [], []
 
         for (audio_batch, label_batch, augment_flag) in zip(total_audio_batch, total_label_batch, total_augment_flag):
             audio_paths.extend(audio_batch)
             label_paths.extend(label_batch)
             augment_flags.extend(augment_flag)
+
+        audio_paths = list(audio_paths)
+        label_paths = list(label_paths)
+        augment_flags = list(augment_flags)
 
         if not remain_drop:
             audio_paths.extend(remain_audio)
@@ -148,6 +154,7 @@ class BaseDataset(Dataset):
 def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_dict = None):
     """
     Dataset split into training and validation Dataset.
+
     Args:
         valid_ratio: ratio for validation data
     Inputs: hparams, audio_paths, label_paths, target_dict

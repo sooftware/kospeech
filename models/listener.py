@@ -20,15 +20,7 @@ class PyramidalRNN(nn.Module):
         super(PyramidalRNN, self).__init__()
         assert rnn_cell.lower() == 'lstm' or rnn_cell.lower() == 'gru' or rnn_cell.lower() == 'rnn'
         self.rnn_cell = nn.LSTM if rnn_cell.lower() == 'lstm' else nn.GRU if rnn_cell.lower() == 'gru' else nn.RNN
-        self.rnn = self.rnn_cell(
-            input_size=input_size << 1,
-            hidden_size=hidden_size,
-            num_layers=2,
-            bidirectional=True,
-            bias=True,
-            batch_first=True,
-            dropout=dropout_p
-        )
+        self.rnn = self.rnn_cell(input_size << 1, hidden_size, 2, bidirectional=True, batch_first=True, dropout=dropout_p)
 
     def forward(self, inputs):
         batch_size = inputs.size(0)
@@ -93,43 +85,13 @@ class Listener(nn.Module):
         )
 
         """ math :: feat_size = (in_channel * out_channel) / maxpool_layer_num """
-        if feat_size % 2:
-            feat_size = (feat_size-1) << 5
-        else:
-            feat_size <<= 5
-
+        feat_size = (feat_size-1) << 5 if feat_size % 2 else feat_size << 5
         if use_pyramidal:
-            self.bottom_layer_size = layer_size - 4
-            self.bottom_rnn = self.rnn_cell(
-                input_size = feat_size,
-                hidden_size = hidden_size,
-                num_layers = self.bottom_layer_size,
-                batch_first = True,
-                bidirectional = bidirectional,
-                dropout = dropout_p
-            )
-            self.middle_rnn = PyramidalRNN(
-                rnn_cell = rnn_cell,
-                input_size = hidden_size << 1 if bidirectional else 0,
-                hidden_size = hidden_size,
-                dropout_p = dropout_p
-            )
-            self.top_rnn = PyramidalRNN(
-                rnn_cell = rnn_cell,
-                input_size = hidden_size << 1 if bidirectional else 0,
-                hidden_size = hidden_size,
-                dropout_p = dropout_p
-            )
+            self.bottom_rnn = self.rnn_cell(feat_size, hidden_size, layer_size - 4, batch_first = True, bidirectional = bidirectional, dropout = dropout_p)
+            self.middle_rnn = PyramidalRNN(rnn_cell, hidden_size << 1 if bidirectional else 0, hidden_size, dropout_p)
+            self.top_rnn = PyramidalRNN(rnn_cell, hidden_size << 1 if bidirectional else 0, hidden_size, dropout_p)
         else:
-            self.rnn = self.rnn_cell(
-                input_size=feat_size,
-                hidden_size=hidden_size,
-                num_layers=layer_size,
-                batch_first=True,
-                bidirectional=bidirectional,
-                dropout=dropout_p
-            )
-
+            self.rnn = self.rnn_cell(feat_size, hidden_size, layer_size, batch_first=True, bidirectional=bidirectional, dropout=dropout_p)
 
     def forward(self, inputs):
         """ Applies a multi-layer RNN to an input sequence. """

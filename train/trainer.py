@@ -65,7 +65,7 @@ def train(model, hparams, epoch, total_time_step, queue,
         loss.backward()
         optimizer.step()
 
-        if time_step % print_batch == 0:
+        if time_step % print_time_step == 0:
             current = time.time()
             elapsed = current - begin
             epoch_elapsed = (current - epoch_begin) / 60.0
