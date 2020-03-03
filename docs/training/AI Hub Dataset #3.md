@@ -26,7 +26,7 @@ ListenAttendSpell(
       (rnn): GRU(1024, 256, num_layers=2, batch_first=True, dropout=0.5, bidirectional=True)
     )
     (top_rnn): PyramidalRNN(
-      (rnn): GRU(1024, 256, num_layers=2, batch_first=True, dropout=0.5, bidirectional=True)
+      (rnn): GRU(1024, 256, num_layers=1, batch_first=True, dropout=0.5, bidirectional=True)
     )
   )
   (speller): Speller(
