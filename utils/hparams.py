@@ -51,7 +51,7 @@ class HyperParams():
                  use_pickle = False,
                  use_pyramidal = True,
                  use_cuda = True,
-                 score_function = 'dot-product',
+                 score_function = 'self',
                  pack_by_length = True,
                  augment_ratio = 1.0,
                  hidden_size = 256,
