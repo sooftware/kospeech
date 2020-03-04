@@ -40,9 +40,11 @@ if you want to study the feature of audio, we recommend this papers.
   
 [「Voice Recognition Using MFCC Algirithm」](https://pdfs.semanticscholar.org/32d7/2b00454d5155599fb9e8e5119e16970db50d.pdf).  
   
-Out project based on Seq2seq with Attention Architecture.  
+Our project based on Seq2seq with Attention Architecture.  
 
 Seq2seq is a fast evolving field with new techniques and architectures being published frequently.  
+  
+[More details](https://github.com/sh951011/Korean-Speech-Recognition/wiki/More-Details)
 
 ## Installation
 This package requires Python 3.5.   
