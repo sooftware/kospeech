@@ -1,0 +1,424 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>utils.dataset &mdash; Korean Speech Recognition 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Korean Speech Recognition
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../notes/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notes/Preparation.html">Preparation before Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notes/More-details.html">More Details</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Models.html">Models</a></li>
+</ul>
+<p class="caption"><span class="caption-text">train</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Evaluator.html">Evaluator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Loss.html">Loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Lr.html">Lr</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Trainer.html">Trainer</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Utils</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Dataset.html">Dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Distance.html">Distance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Feature.html">Feature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Hparams.html">Hparams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Label.html">Label</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Load.html">Load</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Loader.html">Loader</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Korean Speech Recognition</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>utils.dataset</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for utils.dataset</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="k">import</span> <span class="n">Dataset</span>
+<span class="kn">from</span> <span class="nn">utils.feature</span> <span class="k">import</span> <span class="n">spec_augment</span><span class="p">,</span> <span class="n">get_librosa_melspectrogram</span>
+<span class="kn">from</span> <span class="nn">utils.label</span> <span class="k">import</span> <span class="n">get_label</span>
+
+
+<div class="viewcode-block" id="BaseDataset"><a class="viewcode-back" href="../../Dataset.html#utils.dataset.BaseDataset">[docs]</a><span class="k">class</span> <span class="nc">BaseDataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Dataset for audio &amp; label matching</span>
+
+<span class="sd">    Args: audio_paths, label_paths, bos_id, eos_id, target_dict</span>
+<span class="sd">        - **audio_paths** (list): set of audio path</span>
+<span class="sd">        - **label_paths** (list): set of label paths</span>
+<span class="sd">        - **bos_id** (int): &lt;s&gt;`s id</span>
+<span class="sd">        - **eos_id** (int): &lt;/s&gt;`s id</span>
+<span class="sd">        - **target_dict** (dict): dictionary of filename and labels</span>
+
+<span class="sd">    Inputs:</span>
+<span class="sd">        - **index** (int): index of dataset`s</span>
+
+<span class="sd">    Outputs:</span>
+<span class="sd">        - **feat**: feature vector for audio</span>
+<span class="sd">        - **label**: label for audio</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">audio_paths</span><span class="p">,</span> <span class="n">label_paths</span><span class="p">,</span> <span class="n">sos_id</span><span class="p">,</span> <span class="n">eos_id</span><span class="p">,</span>
+                 <span class="n">target_dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">input_reverse</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">use_augment</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                 <span class="n">batch_size</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">augment_ratio</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">pack_by_length</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">audio_paths</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">audio_paths</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label_paths</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">label_paths</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sos_id</span> <span class="o">=</span> <span class="n">sos_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eos_id</span> <span class="o">=</span> <span class="n">eos_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">batch_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target_dict</span> <span class="o">=</span> <span class="n">target_dict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_reverse</span> <span class="o">=</span> <span class="n">input_reverse</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">augment_ratio</span> <span class="o">=</span> <span class="n">augment_ratio</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">augment_flags</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">audio_paths</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pack_by_length</span> <span class="o">=</span> <span class="n">pack_by_length</span>
+        <span class="k">if</span> <span class="n">use_augment</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">augmentation</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">pack_by_length</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sort_by_length</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">audio_paths</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_paths</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">augment_flags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_shuffle</span><span class="p">(</span><span class="n">remain_drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">bundle</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">audio_paths</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_paths</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">augment_flags</span><span class="p">))</span>
+            <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">bundle</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">audio_paths</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_paths</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">augment_flags</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">bundle</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">audio_paths</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">audio_paths</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">get_label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">label_paths</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">sos_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sos_id</span><span class="p">,</span> <span class="n">eos_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eos_id</span><span class="p">,</span> <span class="n">target_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_dict</span><span class="p">)</span>
+        <span class="n">feat</span> <span class="o">=</span> <span class="n">get_librosa_melspectrogram</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">audio_paths</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">n_mels</span> <span class="o">=</span> <span class="mi">128</span><span class="p">,</span> <span class="n">mel_type</span><span class="o">=</span><span class="s1">&#39;log_mel&#39;</span><span class="p">,</span> <span class="n">input_reverse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_reverse</span><span class="p">)</span>
+        <span class="c1"># exception handling</span>
+        <span class="k">if</span> <span class="n">feat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">augment_flags</span><span class="p">[</span><span class="n">index</span><span class="p">]:</span>
+            <span class="n">feat</span> <span class="o">=</span> <span class="n">spec_augment</span><span class="p">(</span><span class="n">feat</span><span class="p">,</span> <span class="n">T</span> <span class="o">=</span> <span class="mi">70</span><span class="p">,</span> <span class="n">F</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span> <span class="n">time_mask_num</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">freq_mask_num</span> <span class="o">=</span> <span class="mi">2</span> <span class="p">)</span>
+        <span class="k">return</span> <span class="n">feat</span><span class="p">,</span> <span class="n">label</span>
+
+<div class="viewcode-block" id="BaseDataset.augmentation"><a class="viewcode-back" href="../../Dataset.html#utils.dataset.BaseDataset.augmentation">[docs]</a>    <span class="k">def</span> <span class="nf">augmentation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Apply Spec-Augmentation &quot;&quot;&quot;</span>
+        <span class="n">augment_end_idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">0</span> <span class="o">+</span> <span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">audio_paths</span><span class="p">)</span> <span class="o">-</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">augment_ratio</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">augment_end_idx</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">augment_flags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">audio_paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">audio_paths</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">label_paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">label_paths</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="BaseDataset.shuffle"><a class="viewcode-back" href="../../Dataset.html#utils.dataset.BaseDataset.shuffle">[docs]</a>    <span class="k">def</span> <span class="nf">shuffle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Shuffle Dataset &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pack_by_length</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">audio_paths</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_paths</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">augment_flags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_shuffle</span><span class="p">(</span><span class="n">remain_drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">bundle</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">audio_paths</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_paths</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">augment_flags</span><span class="p">))</span>
+            <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">bundle</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">audio_paths</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_paths</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">augment_flags</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">bundle</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BaseDataset.sort_by_length"><a class="viewcode-back" href="../../Dataset.html#utils.dataset.BaseDataset.sort_by_length">[docs]</a>    <span class="k">def</span> <span class="nf">sort_by_length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; descending sort by sequence length &quot;&quot;&quot;</span>
+        <span class="n">target_lengths</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">label_path</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">label_paths</span><span class="p">):</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">label_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">target_lengths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+
+        <span class="n">bundle</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">target_lengths</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">audio_paths</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_paths</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">augment_flags</span><span class="p">))</span>
+        <span class="n">junk</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">audio_paths</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_paths</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">augment_flags</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="nb">sorted</span><span class="p">(</span><span class="n">bundle</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="BaseDataset.batch_shuffle"><a class="viewcode-back" href="../../Dataset.html#utils.dataset.BaseDataset.batch_shuffle">[docs]</a>    <span class="k">def</span> <span class="nf">batch_shuffle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">remain_drop</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; batch shuffle &quot;&quot;&quot;</span>
+        <span class="n">total_audio_batch</span><span class="p">,</span> <span class="n">total_label_batch</span><span class="p">,</span> <span class="n">total_augment_flag</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+        <span class="n">audio_paths</span><span class="p">,</span> <span class="n">label_paths</span><span class="p">,</span> <span class="n">augment_flags</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">audio_paths</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">audio_paths</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">total_audio_batch</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">audio_paths</span><span class="p">)</span>
+                    <span class="n">total_label_batch</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label_paths</span><span class="p">)</span>
+                    <span class="n">total_augment_flag</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">augment_flags</span><span class="p">)</span>
+                <span class="k">break</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">audio_paths</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">:</span>
+                <span class="n">total_audio_batch</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">audio_paths</span><span class="p">)</span>
+                <span class="n">total_label_batch</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label_paths</span><span class="p">)</span>
+                <span class="n">total_augment_flag</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">augment_flags</span><span class="p">)</span>
+                <span class="n">audio_paths</span><span class="p">,</span> <span class="n">label_paths</span><span class="p">,</span> <span class="n">augment_flags</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+            <span class="n">audio_paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">audio_paths</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+            <span class="n">label_paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">label_paths</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+            <span class="n">augment_flags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">augment_flags</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+            <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">remain_audio</span><span class="p">,</span> <span class="n">remain_label</span><span class="p">,</span> <span class="n">remain_augment_flag</span> <span class="o">=</span> <span class="n">total_audio_batch</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">total_label_batch</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">total_augment_flag</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">total_audio_batch</span><span class="p">,</span> <span class="n">total_label_batch</span><span class="p">,</span> <span class="n">total_augment_flag</span> <span class="o">=</span> <span class="n">total_audio_batch</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">total_label_batch</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">total_augment_flag</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">bundle</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">total_audio_batch</span><span class="p">,</span> <span class="n">total_label_batch</span><span class="p">,</span> <span class="n">total_augment_flag</span><span class="p">))</span>
+        <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">bundle</span><span class="p">)</span>
+        <span class="n">total_audio_batch</span><span class="p">,</span> <span class="n">total_label_batch</span><span class="p">,</span> <span class="n">total_augment_flag</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">bundle</span><span class="p">)</span>
+
+        <span class="n">audio_paths</span><span class="p">,</span> <span class="n">label_paths</span><span class="p">,</span> <span class="n">augment_flags</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="p">(</span><span class="n">audio_batch</span><span class="p">,</span> <span class="n">label_batch</span><span class="p">,</span> <span class="n">augment_flag</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">total_audio_batch</span><span class="p">,</span> <span class="n">total_label_batch</span><span class="p">,</span> <span class="n">total_augment_flag</span><span class="p">):</span>
+            <span class="n">audio_paths</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">audio_batch</span><span class="p">)</span>
+            <span class="n">label_paths</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">label_batch</span><span class="p">)</span>
+            <span class="n">augment_flags</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">augment_flag</span><span class="p">)</span>
+
+        <span class="n">audio_paths</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">audio_paths</span><span class="p">)</span>
+        <span class="n">label_paths</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">label_paths</span><span class="p">)</span>
+        <span class="n">augment_flags</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">augment_flags</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">remain_drop</span><span class="p">:</span>
+            <span class="n">audio_paths</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">remain_audio</span><span class="p">)</span>
+            <span class="n">label_paths</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">remain_label</span><span class="p">)</span>
+            <span class="n">augment_flags</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">remain_augment_flag</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">audio_paths</span><span class="p">,</span> <span class="n">label_paths</span><span class="p">,</span> <span class="n">augment_flags</span></div></div>
+
+
+<div class="viewcode-block" id="split_dataset"><a class="viewcode-back" href="../../Dataset.html#utils.dataset.split_dataset">[docs]</a><span class="k">def</span> <span class="nf">split_dataset</span><span class="p">(</span><span class="n">hparams</span><span class="p">,</span> <span class="n">audio_paths</span><span class="p">,</span> <span class="n">label_paths</span><span class="p">,</span> <span class="n">valid_ratio</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">target_dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Dataset split into training and validation Dataset.</span>
+
+<span class="sd">    Inputs: hparams, audio_paths, label_paths, target_dict</span>
+<span class="sd">        - **valid_ratio** (float): ratio for validation data</span>
+<span class="sd">        - **hparams** (HyperParams): set of hyper parameters</span>
+<span class="sd">        - **audio_paths** (list): set of audio path</span>
+<span class="sd">        - **label_paths** (list): set of label path</span>
+<span class="sd">        - **target_dict** (dict): dictionary of filename and labels</span>
+
+<span class="sd">    Local Variables:</span>
+<span class="sd">        - **train_num** (int): num of training data</span>
+<span class="sd">        - **batch_num** (int): total num of batch</span>
+<span class="sd">        - **valid_batch_num** (int): num of batch for validation</span>
+<span class="sd">        - **train_num_per_worker** (int): num of train data per CPU core</span>
+<span class="sd">        - **data_paths** (list): temp variables for audio_paths and label_paths to be shuffled in the same order</span>
+<span class="sd">        - **train_begin_idx** (int): begin index of worker`s training dataset</span>
+<span class="sd">        - **train_end_idx** (int): end index of worker`s training dataset</span>
+
+<span class="sd">    Outputs: train_batch_num, train_dataset_list, valid_dataset</span>
+<span class="sd">        - **train_batch_num** (int): num of batch for training</span>
+<span class="sd">        - **train_dataset_list** (list): list of training data</span>
+<span class="sd">        - **valid_dataset** (BaseDataset): list of validation data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">train_dataset_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">train_num</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">audio_paths</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">valid_ratio</span><span class="p">))</span>
+    <span class="n">total_time_step</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">audio_paths</span><span class="p">)</span> <span class="o">/</span> <span class="n">hparams</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
+    <span class="n">valid_time_step</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">total_time_step</span> <span class="o">*</span> <span class="n">valid_ratio</span><span class="p">)</span>
+    <span class="n">train_time_step</span> <span class="o">=</span> <span class="n">total_time_step</span> <span class="o">-</span> <span class="n">valid_time_step</span>
+    <span class="k">if</span> <span class="n">hparams</span><span class="o">.</span><span class="n">use_augment</span><span class="p">:</span>
+        <span class="n">train_time_step</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span> <span class="n">train_time_step</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">hparams</span><span class="o">.</span><span class="n">augment_ratio</span><span class="p">))</span>
+    <span class="n">train_num_per_worker</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">train_num</span> <span class="o">/</span> <span class="n">hparams</span><span class="o">.</span><span class="n">worker_num</span><span class="p">)</span>
+
+    <span class="c1"># audio_paths &amp; label_paths shuffled in the same order</span>
+    <span class="c1"># for seperating train &amp; validation</span>
+    <span class="n">data_paths</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">audio_paths</span><span class="p">,</span> <span class="n">label_paths</span><span class="p">))</span>
+    <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">data_paths</span><span class="p">)</span>
+    <span class="n">audio_paths</span><span class="p">,</span> <span class="n">label_paths</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">data_paths</span><span class="p">)</span>
+
+    <span class="c1"># seperating the train dataset by the number of workers</span>
+    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">hparams</span><span class="o">.</span><span class="n">worker_num</span><span class="p">):</span>
+        <span class="n">train_begin_index</span> <span class="o">=</span> <span class="n">train_num_per_worker</span> <span class="o">*</span> <span class="n">idx</span>
+        <span class="n">train_end_index</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">train_num_per_worker</span> <span class="o">*</span> <span class="p">(</span><span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">train_num</span><span class="p">)</span>
+        <span class="n">train_dataset_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BaseDataset</span><span class="p">(</span>
+                                    <span class="n">audio_paths</span><span class="o">=</span><span class="n">audio_paths</span><span class="p">[</span><span class="n">train_begin_index</span><span class="p">:</span><span class="n">train_end_index</span><span class="p">],</span>
+                                    <span class="n">label_paths</span><span class="o">=</span><span class="n">label_paths</span><span class="p">[</span><span class="n">train_begin_index</span><span class="p">:</span><span class="n">train_end_index</span><span class="p">],</span>
+                                    <span class="n">sos_id</span><span class="o">=</span><span class="mi">2037</span><span class="p">,</span> <span class="n">eos_id</span><span class="o">=</span><span class="mi">2038</span><span class="p">,</span>
+                                    <span class="n">target_dict</span><span class="o">=</span><span class="n">target_dict</span><span class="p">,</span>
+                                    <span class="n">input_reverse</span><span class="o">=</span><span class="n">hparams</span><span class="o">.</span><span class="n">input_reverse</span><span class="p">,</span>
+                                    <span class="n">use_augment</span><span class="o">=</span><span class="n">hparams</span><span class="o">.</span><span class="n">use_augment</span><span class="p">,</span>
+                                    <span class="n">batch_size</span><span class="o">=</span><span class="n">hparams</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
+                                    <span class="n">augment_ratio</span><span class="o">=</span><span class="n">hparams</span><span class="o">.</span><span class="n">augment_ratio</span><span class="p">,</span>
+                                    <span class="n">pack_by_length</span><span class="o">=</span><span class="n">hparams</span><span class="o">.</span><span class="n">pack_by_length</span>
+                                <span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="n">valid_dataset</span> <span class="o">=</span> <span class="n">BaseDataset</span><span class="p">(</span>
+                        <span class="n">audio_paths</span><span class="o">=</span><span class="n">audio_paths</span><span class="p">[</span><span class="n">train_num</span><span class="p">:],</span>
+                        <span class="n">label_paths</span><span class="o">=</span><span class="n">label_paths</span><span class="p">[</span><span class="n">train_num</span><span class="p">:],</span>
+                        <span class="n">sos_id</span><span class="o">=</span><span class="mi">2037</span><span class="p">,</span> <span class="n">eos_id</span><span class="o">=</span><span class="mi">2038</span><span class="p">,</span>
+                        <span class="n">batch_size</span><span class="o">=</span><span class="n">hparams</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
+                        <span class="n">target_dict</span><span class="o">=</span><span class="n">target_dict</span><span class="p">,</span>
+                        <span class="n">input_reverse</span><span class="o">=</span><span class="n">hparams</span><span class="o">.</span><span class="n">input_reverse</span><span class="p">,</span>
+                        <span class="n">use_augment</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                        <span class="n">pack_by_length</span><span class="o">=</span><span class="n">hparams</span><span class="o">.</span><span class="n">pack_by_length</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">train_time_step</span><span class="p">,</span> <span class="n">train_dataset_list</span><span class="p">,</span> <span class="n">valid_dataset</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, SooHwan Kim
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

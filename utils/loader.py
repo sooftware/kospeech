@@ -6,6 +6,15 @@ from utils.define import logger, PAD_TOKEN
 
 
 class MultiLoader():
+    """
+    Multi Data Loader using Threads.
+
+    Args:
+        - **dataset**: object of BaseDataset
+        - **queue**: queue for threading
+        - **batch_size**: size of batch
+        - **worker_num**: the number of cpu cores used
+    """
     def __init__(self, dataset_list, queue, batch_size, worker_num):
         self.dataset_list = dataset_list
         self.queue = queue
@@ -25,6 +34,15 @@ class MultiLoader():
             self.loader[idx].join()
 
 class BaseDataLoader(threading.Thread):
+    """
+    Base Data Loader
+
+    Args:
+        - **dataset**: object of BaseDataset
+        - **queue**: queue for threading
+        - **batch_size**: size of batch
+        - **thread_id**: identification of thread
+    """
     def __init__(self, dataset, queue, batch_size, thread_id):
         threading.Thread.__init__(self)
         self.collate_fn = _collate_fn

@@ -12,11 +12,21 @@ limitations under the License.
 """
 
 import torch
-import random
 from utils.distance import get_distance
 from utils.define import logger
 
 def evaluate(model, queue, criterion, device):
+    """
+    Args:
+        - **model**: Model to be evaluated
+        - **queue**: queue for threading
+        - **criterion**: loss function ex) nn.CrossEntropyLoss, LabelSmoothingLoss etc ..
+        - **device**: device used ('cuda' or 'cpu')
+
+    Outputs:
+        - **loss**: loss of evalution
+        - **cer**: character error rate of evaluation
+    """
     logger.info('evaluate() start')
     total_loss = 0.
     total_num = 0

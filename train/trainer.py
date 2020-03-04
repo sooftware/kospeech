@@ -22,6 +22,16 @@ def train(model, hparams, epoch, total_time_step, queue,
           criterion, optimizer, device, train_begin, worker_num,
           print_time_step=10, teacher_forcing_ratio=0.90):
     """
+    Args:
+        - **model**: Model to be trained
+        - **optimizer**: optimizer for training
+        - **teacher_forcing_ratio**:  The probability that teacher forcing will be used (default: 0.90)
+        - **print_time_step**: Parameters to determine how many steps to output
+        - **queue**: queue for threading
+        - **criterion**: loss function ex) nn.CrossEntropyLoss, LabelSmoothingLoss etc ..
+        - **device**: device used ('cuda' or 'cpu')
+        - **worker_num**: the number of cpu cores used
+
     Outputs:
         - **error_rate** (float): error rate of present epoch
         - **loss** (float): loss of present epoch
