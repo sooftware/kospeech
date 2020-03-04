@@ -1,3 +1,6 @@
+from utils.define import logger
+
+
 class HyperParams():
     """
     Set of Hyperparameters
@@ -78,7 +81,7 @@ class HyperParams():
         self.teacher_forcing = teacher_forcing
         self.seed = seed
         self.max_len = max_len
-"""
+
     def logger_hparams(self):
         logger.info("use_bidirectional : %s" % str(self.use_bidirectional))
         logger.info("use_attention : %s" % str(self.use_attention))
@@ -103,4 +106,3 @@ class HyperParams():
         logger.info("seed : %d" % self.seed)
         logger.info("max_len : %d" % self.max_len)
         logger.info("use_cuda : %s" % str(self.use_cuda))
-"""

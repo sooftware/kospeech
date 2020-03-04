@@ -4,6 +4,8 @@ import numpy as np
 import random
 
 # feature parameters
+from utils.define import logger
+
 N_FFT = 400
 HOP_LENGTH = 160
 N_MELS = 128
@@ -38,6 +40,7 @@ def get_librosa_melspectrogram(filepath, n_mels=N_MELS, del_silence=False, input
         try:
             pcm = np.memmap(filepath, dtype='h', mode='r')
         except:  # exception handling
+            logger.info("%s Error Occur !!" % filepath)
             return None
         signal = np.array([float(x) for x in pcm])
     elif format == 'wav':
@@ -86,6 +89,7 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = False, input_re
         try:
             pcm = np.memmap(filepath, dtype='h', mode='r')
         except: # exception handling
+            logger.info("%s Error Occur !!" % filepath)
             return None
         signal = np.array([float(x) for x in pcm])
     elif format == 'wav':
