@@ -1,0 +1,543 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Models &mdash; Korean Speech Recognition 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Evaluator" href="Evaluator.html" />
+    <link rel="prev" title="More Details" href="notes/More-details.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Korean Speech Recognition
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">Preparation before Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/More-details.html">More Details</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Architecture</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-models.listenAttendSpell">ListenAttendSpell</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-models.listener">Listener</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-models.speller">Speller</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-models.beam">Beam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-models.attention">Attention</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">train</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Lr.html">Lr</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Utils</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Dataset.html">Dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Distance.html">Distance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Feature.html">Feature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Hparams.html">Hparams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Label.html">Label</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Load.html">Load</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Loader.html">Loader</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Korean Speech Recognition</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Models</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Models.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="models">
+<h1>Models<a class="headerlink" href="#models" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-models.listenAttendSpell">
+<span id="listenattendspell"></span><h2>ListenAttendSpell<a class="headerlink" href="#module-models.listenAttendSpell" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="models.listenAttendSpell.ListenAttendSpell">
+<em class="property">class </em><code class="descclassname">models.listenAttendSpell.</code><code class="descname">ListenAttendSpell</code><span class="sig-paren">(</span><em>listener</em>, <em>speller</em>, <em>decode_function=&lt;function log_softmax&gt;</em>, <em>use_pyramidal=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/listenAttendSpell.html#ListenAttendSpell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.listenAttendSpell.ListenAttendSpell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Listen, Attend and Spell (LAS) Model</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>listener</strong> (<em>-</em>) – encoder of seq2seq</li>
+<li><strong>speller</strong> (<em>-</em>) – decoder of seq2seq</li>
+<li><strong>decode_function</strong> (<em>-</em>) – A function used to generate symbols from RNN hidden state</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Reference:</dt>
+<dd><dl class="first last docutils">
+<dt>「Listen, Attend and Spell」 paper</dt>
+<dd><a class="reference external" href="https://arxiv.org/abs/1508.01211">https://arxiv.org/abs/1508.01211</a></dd>
+</dl>
+</dd>
+<dt>How to Use:</dt>
+<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">listener</span> <span class="o">=</span> <span class="n">Listener</span><span class="p">(</span><span class="n">feat_size</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;gru&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">speller</span> <span class="o">=</span> <span class="n">Speller</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">256</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="n">use_bidirectional</span> <span class="k">else</span> <span class="mi">0</span><span class="p">),</span> <span class="n">SOS_TOKEN</span><span class="p">,</span> <span class="n">EOS_TOKEN</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;gru&#39;</span><span class="p">,</span> <span class="mf">0.5</span> <span class="p">,</span><span class="kc">True</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">ListenAttendSpell</span><span class="p">(</span><span class="n">listener</span><span class="p">,</span> <span class="n">speller</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<dl class="method">
+<dt id="models.listenAttendSpell.ListenAttendSpell.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>feats</em>, <em>targets=None</em>, <em>teacher_forcing_ratio=0.9</em>, <em>use_beam_search=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/listenAttendSpell.html#ListenAttendSpell.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.listenAttendSpell.ListenAttendSpell.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-models.listener">
+<span id="listener"></span><h2>Listener<a class="headerlink" href="#module-models.listener" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="models.listener.Listener">
+<em class="property">class </em><code class="descclassname">models.listener.</code><code class="descname">Listener</code><span class="sig-paren">(</span><em>feat_size</em>, <em>hidden_size</em>, <em>dropout_p=0.5</em>, <em>layer_size=5</em>, <em>bidirectional=True</em>, <em>rnn_cell='gru'</em>, <em>use_pyramidal=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/listener.html#Listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.listener.Listener" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts low level speech signals into higher level features</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>hidden_size</strong> (<em>-</em>) – the number of features in the hidden state <cite>h</cite></li>
+<li><strong>dropout_p</strong> (<em>-</em>) – dropout probability for the output sequence (default: 0)</li>
+<li><strong>layer_size</strong> (<em>-</em>) – number of recurrent layers (default: 1)</li>
+<li><strong>bidirectional</strong> (<em>-</em>) – if True, becomes a bidirectional encoder (defulat: False)</li>
+<li><strong>rnn_cell</strong> (<em>-</em>) – type of RNN cell (default: gru)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Inputs: inputs</dt>
+<dd><ul class="first last simple">
+<li><strong>inputs</strong>: list of sequences, whose length is the batch size and within which each sequence is a list of token IDs.</li>
+</ul>
+</dd>
+<dt>Outputs: output, hidden</dt>
+<dd><ul class="first last simple">
+<li><strong>output</strong> (batch, seq_len, hidden_size): tensor containing the encoded features of the input sequence</li>
+<li><strong>hidden</strong> (num_layers * num_directions, batch, hidden_size): tensor containing the features in the hidden state <cite>h</cite></li>
+</ul>
+</dd>
+<dt>Reference:</dt>
+<dd><dl class="first last docutils">
+<dt>「Listen, Attend and Spell」 paper</dt>
+<dd><a class="reference external" href="https://arxiv.org/abs/1508.01211">https://arxiv.org/abs/1508.01211</a></dd>
+</dl>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="models.listener.Listener.conv">
+<code class="descname">conv</code><em class="property"> = None</em><a class="headerlink" href="#models.listener.Listener.conv" title="Permalink to this definition">¶</a></dt>
+<dd><p>math :: feat_size = (in_channel * out_channel) / maxpool_layer_num</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="models.listener.Listener.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/listener.html#Listener.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.listener.Listener.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies a multi-layer RNN to an input sequence.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="models.listener.PyramidalRNN">
+<em class="property">class </em><code class="descclassname">models.listener.</code><code class="descname">PyramidalRNN</code><span class="sig-paren">(</span><em>rnn_cell</em>, <em>input_size</em>, <em>hidden_size</em>, <em>dropout_p</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/listener.html#PyramidalRNN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.listener.PyramidalRNN" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pyramidal RNN for time resolution reduction</p>
+<dl class="method">
+<dt id="models.listener.PyramidalRNN.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/listener.html#PyramidalRNN.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.listener.PyramidalRNN.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-models.speller">
+<span id="speller"></span><h2>Speller<a class="headerlink" href="#module-models.speller" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="models.speller.Speller">
+<em class="property">class </em><code class="descclassname">models.speller.</code><code class="descname">Speller</code><span class="sig-paren">(</span><em>vocab_size</em>, <em>max_len</em>, <em>hidden_size</em>, <em>sos_id</em>, <em>eos_id</em>, <em>layer_size=1</em>, <em>rnn_cell='gru'</em>, <em>dropout_p=0</em>, <em>use_attention=True</em>, <em>device=None</em>, <em>k=8</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/speller.html#Speller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.speller.Speller" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts higher level features (from listener) into output utterances by specifying a probability distribution over sequences of characters.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>vocab_size</strong> (<em>-</em>) – size of the vocabulary</li>
+<li><strong>max_len</strong> (<em>-</em>) – a maximum allowed length for the sequence to be processed</li>
+<li><strong>hidden_size</strong> (<em>-</em>) – the number of features in the hidden state <cite>h</cite></li>
+<li><strong>sos_id</strong> (<em>-</em>) – index of the start of sentence symbol</li>
+<li><strong>eos_id</strong> (<em>-</em>) – index of the end of sentence symbol</li>
+<li><strong>layer_size</strong> (<em>-</em>) – number of recurrent layers (default: 1)</li>
+<li><strong>rnn_cell</strong> (<em>-</em>) – type of RNN cell (default: gru)</li>
+<li><strong>dropout_p</strong> (<em>-</em>) – dropout probability for the output sequence (default: 0)</li>
+<li><strong>use_attention</strong> (<em>-</em>) – flag indication whether to use attention mechanism or not (default: false)</li>
+<li><strong>k</strong> (<em>-</em>) – size of beam</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Inputs: inputs, listener_hidden, listener_outputs, function, teacher_forcing_ratio</dt>
+<dd><ul class="first last simple">
+<li><strong>inputs</strong> (batch, seq_len, input_size): list of sequences, whose length is the batch size and within which
+each sequence is a list of token IDs.  It is used for teacher forcing when provided. (default <cite>None</cite>)</li>
+<li><strong>listener_hidden</strong> (num_layers * num_directions, batch_size, hidden_size): tensor containing the features in the
+hidden state <cite>h</cite> of listener. Used as the initial hidden state of the decoder. (default <cite>None</cite>)</li>
+<li><strong>listener_outputs</strong> (batch, seq_len, hidden_size): tensor with containing the outputs of the listener.
+Used for attention mechanism (default is <cite>None</cite>).</li>
+<li><strong>function</strong> (torch.nn.Module): A function used to generate symbols from RNN hidden state
+(default is <cite>torch.nn.functional.log_softmax</cite>).</li>
+<li><strong>teacher_forcing_ratio</strong> (float): The probability that teacher forcing will be used. A random number is
+drawn uniformly from 0-1 for every decoding token, and if the sample is smaller than the given value,
+teacher forcing would be used (default is 0).</li>
+</ul>
+</dd>
+<dt>Outputs: speller_outputs, speller_hidden, ret_dict</dt>
+<dd><ul class="first last simple">
+<li><strong>speller_outputs</strong> (seq_len, batch, vocab_size): list of tensors with size (batch_size, vocab_size) containing
+the outputs of the decoding function.</li>
+</ul>
+</dd>
+<dt>Reference:</dt>
+<dd><dl class="first last docutils">
+<dt>「Listen, Attend and Spell」 paper</dt>
+<dd><a class="reference external" href="https://arxiv.org/abs/1508.01211">https://arxiv.org/abs/1508.01211</a></dd>
+</dl>
+</dd>
+</dl>
+<dl class="method">
+<dt id="models.speller.Speller.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs</em>, <em>listener_hidden</em>, <em>listener_outputs</em>, <em>function=&lt;function log_softmax&gt;</em>, <em>teacher_forcing_ratio=0.99</em>, <em>use_beam_search=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/speller.html#Speller.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.speller.Speller.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-models.beam">
+<span id="beam"></span><h2>Beam<a class="headerlink" href="#module-models.beam" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="models.beam.Beam">
+<em class="property">class </em><code class="descclassname">models.beam.</code><code class="descname">Beam</code><span class="sig-paren">(</span><em>k</em>, <em>decoder_hidden</em>, <em>decoder</em>, <em>batch_size</em>, <em>max_len</em>, <em>function</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/beam.html#Beam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.beam.Beam" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applying Beam-Search during decoding process.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>k</strong> (<em>-</em>) – size of beam</li>
+<li><strong>decoder_hidden</strong> (<em>-</em>) – hidden state of decoder</li>
+<li><strong>batch_size</strong> (<em>-</em>) – mini-batch size during infer</li>
+<li><strong>max_len</strong> (<em>-</em>) – a maximum allowed length for the sequence to be processed</li>
+<li><strong>function</strong> (<em>-</em>) – A function used to generate symbols from RNN hidden state (default : torch.nn.functional.log_softmax)</li>
+<li><strong>decoder</strong> (<em>-</em>) – get pointer of decoder object to get multiple parameters at once</li>
+<li><strong>beams</strong> (<em>-</em>) – ongoing beams for decoding</li>
+<li><strong>beam_scores</strong> (<em>-</em>) – score of beams (cumulative probability)</li>
+<li><strong>done_beams</strong> (<em>-</em>) – store beams which met &lt;eos&gt; token and terminated decoding process.</li>
+<li><strong>done_beam_scores</strong> (<em>-</em>) – score of done_beams</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Inputs: init_decoder_input, encoder_outputs</dt>
+<dd><ul class="first last simple">
+<li><strong>init_decoder_input</strong> (torch.Tensor): initial input of decoder - &lt;eos&gt;</li>
+<li><strong>encoder_outputs</strong> (torch.Tensor): tensor with containing the outputs of the encoder.</li>
+</ul>
+</dd>
+<dt>Outputs: y_hats</dt>
+<dd><ul class="first last simple">
+<li><strong>y_hats</strong> (torch.Tensor): result of infer</li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="models.beam.Beam.search">
+<code class="descname">search</code><span class="sig-paren">(</span><em>init_decoder_input</em>, <em>encoder_outputs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/beam.html#Beam.search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.beam.Beam.search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Beam-Search Decoding (Top-K Decoding)</p>
+<dl class="docutils">
+<dt>Comment Notation:</dt>
+<dd><ul class="first last simple">
+<li><strong>B</strong>: batchsize</li>
+<li><strong>K</strong>: beam size</li>
+<li><strong>C</strong>: classfication number</li>
+<li><strong>S</strong>: sequence length</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-models.attention">
+<span id="attention"></span><h2>Attention<a class="headerlink" href="#module-models.attention" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="models.attention.Attention">
+<em class="property">class </em><code class="descclassname">models.attention.</code><code class="descname">Attention</code><span class="sig-paren">(</span><em>decoder_hidden_size</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/attention.html#Attention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.attention.Attention" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies an self attention mechanism on the output features from the decoder.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dim</strong> (<em>-</em>) – The number of expected features in the output</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Inputs: decoder_output, encoder_output</dt>
+<dd><ul class="first last simple">
+<li><strong>decoder_output</strong> (batch, output_len, hidden_size): tensor containing the output features from the decoder.</li>
+<li><strong>encoder_output</strong> (batch, input_len, hidden_size): tensor containing features of the encoded input sequence.Steps to be maintained at a certain number to avoid extremely slow learning</li>
+</ul>
+</dd>
+<dt>Outputs: output</dt>
+<dd><ul class="first last simple">
+<li><strong>math</strong>: output = tanh(W{concat(attn * encoder_output, decoder_output)} + b)</li>
+<li><strong>output</strong> (batch, output_len, dimensions): tensor containing the attended output features from the decoder.</li>
+</ul>
+</dd>
+<dt>Reference:</dt>
+<dd><dl class="first last docutils">
+<dt>「A Structured Self-Attentive Sentence Embedding」</dt>
+<dd><a class="reference external" href="https://arxiv.org/abs/1703.03130">https://arxiv.org/abs/1703.03130</a></dd>
+</dl>
+</dd>
+</dl>
+<dl class="method">
+<dt id="models.attention.Attention.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>decoder_output</em>, <em>encoder_outputs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/attention.html#Attention.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.attention.Attention.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Evaluator.html" class="btn btn-neutral float-right" title="Evaluator" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="notes/More-details.html" class="btn btn-neutral float-left" title="More Details" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, SooHwan Kim
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
