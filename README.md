@@ -93,13 +93,13 @@ We follow [Google Python Style Guide](https://google.github.io/styleguide/pyguid
 [[5]   A.I Hub Korean Voice Dataset](http://www.aihub.or.kr/aidata/105)   
 [[6] 「A Simple Data Augmentation Method for Automatic Speech Recognition」  Paper](https://arxiv.org/abs/1904.08779)    
 [[7]   PyTorch Spec-Augmentation](https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py)     
-[[8]  「Voice Recognition Using MFCC Algorithm」  Paper](https://pdfs.semanticscholar.org/32d7/2b00454d5155599fb9e8e5119e16970db50d.pdf) 
+[[8]  「Voice Recognition Using MFCC Algorithm」  Paper](https://pdfs.semanticscholar.org/32d7/2b00454d5155599fb9e8e5119e16970db50d.pdf)   
 [[9] 「Deep Speech: Scaling up end-to-End Speech Recognition」  Paper](https://arxiv.org/abs/1412.5567)    
-[[10] 「Deep Speech 2: End-to-End Speech Recognition in English and Mandarin」  Paper](https://arxiv.org/abs/1512.02595)  
-[[11]   PyTorch-VGG Net](https://github.com/chengyangfu/pytorch-vgg-cifar10/blob/master/vgg.py)  
-[[12]   Levenshtein Distance](https://en.wikipedia.org/wiki/Levenshtein_distance)     
-[[13]   Documentation](https://sh951011.github.io/Korean-Speech-Recognition/)  
-
+[[10] 「Deep Speech 2: End-to-End Speech Recognition in English and Mandarin」  Paper](https://arxiv.org/abs/1512.02595)   
+[[11]   PyTorch-VGG Net](https://github.com/chengyangfu/pytorch-vgg-cifar10/blob/master/vgg.py)   
+[[12]   Levenshtein Distance](https://en.wikipedia.org/wiki/Levenshtein_distance)      
+[[13]   Documentation](https://sh951011.github.io/Korean-Speech-Recognition/)   
+  
 ## License
 ```
 Copyright (c) 2020 Kai.Lib
@@ -115,7 +115,4 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-```
-```
-※ Data : Copyright 2019 AI Hub Inc.
 ```
