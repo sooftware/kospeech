@@ -1,15 +1,3 @@
-"""
-Copyright 2020- Kai.Lib
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-      http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
 
 import torch.nn as nn
 import torch
@@ -48,6 +36,9 @@ class Listener(nn.Module):
         - **layer_size** (int, optional): number of recurrent layers (default: 1)
         - **bidirectional** (bool, optional): if True, becomes a bidirectional encoder (defulat: False)
         - **rnn_cell** (str, optional): type of RNN cell (default: gru)
+
+    Inputs: inputs
+        - **inputs**: list of sequences, whose length is the batch size and within which each sequence is a list of token IDs.
 
     Outputs: output, hidden
         - **output** (batch, seq_len, hidden_size): tensor containing the encoded features of the input sequence

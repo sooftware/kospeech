@@ -2,15 +2,13 @@
 Copyright 2020- Kai.Lib
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-      http://www.apache.org/licenses/LICENSE-2.0
+You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-from utils.define import logger
 
 class HyperParams():
     """
@@ -19,7 +17,6 @@ class HyperParams():
     Hyperparameters:
         - **use_bidirectional** (bool): if True, becomes a bidirectional listener (default: True)
         - **use_attention** (bool): flag indication whether to use attention mechanism or not (default: True)
-        - **score_function** (str): which attention to use (default: dot-product)
         - **use_label_smooth** (bool): flagindication whether to use label smoothing or not (default: True)
         - **input_reverse** (bool): flag indication whether to reverse input feature or not (default: True)
         - **use_pickle** (bool): flag indication whether to load data from pickle or not (default: False)
@@ -51,7 +48,6 @@ class HyperParams():
                  use_pickle = False,
                  use_pyramidal = True,
                  use_cuda = True,
-                 score_function = 'self',
                  pack_by_length = True,
                  augment_ratio = 1.0,
                  hidden_size = 256,
@@ -77,7 +73,6 @@ class HyperParams():
         self.use_pickle = use_pickle
         self.use_pyramidal = use_pyramidal
         self.use_cuda = use_cuda
-        self.score_function = score_function
         self.pack_by_length = pack_by_length
         self.augment_ratio = augment_ratio
         self.hidden_size = hidden_size
@@ -95,7 +90,7 @@ class HyperParams():
         self.teacher_forcing = teacher_forcing
         self.seed = seed
         self.max_len = max_len
-
+"""
     def logger_hparams(self):
         logger.info("use_bidirectional : %s" % str(self.use_bidirectional))
         logger.info("use_attention : %s" % str(self.use_attention))
@@ -120,3 +115,4 @@ class HyperParams():
         logger.info("seed : %d" % self.seed)
         logger.info("max_len : %d" % self.max_len)
         logger.info("use_cuda : %s" % str(self.use_cuda))
+"""
