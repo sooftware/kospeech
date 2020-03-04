@@ -14,7 +14,14 @@ Welcome to Korean Speech Recognition's documentation!
    notes/Preparation
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
+   :caption: Architecture
+
+
+   Models
+
+.. toctree::
+   :maxdepth: 1
    :caption: Package Reference
 
 
@@ -22,4 +29,3 @@ Welcome to Korean Speech Recognition's documentation!
    Dataset
    Loss
    Hparams
-   Models
