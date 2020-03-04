@@ -59,7 +59,7 @@ ListenAttendSpell(
 |use_pyramidal| flag indication whether to use pLSTM or not|True|  
 |pack_by_length|flag indication whether to pack batch by similar sequence lengths|True|  
 |augment_ratio|ratio of spec-augmentation applied data|1.0|   
-|listener_layer_size|number of listener`s RNN layer|6|  
+|listener_layer_size|number of listener`s RNN layer|5|  
 | speller_layer_size|number of speller`s RNN layer| 3|  
 | hidden_size| size of hidden state of RNN|256|
 | batch_size | mini-batch size|8|
@@ -85,7 +85,7 @@ PyTorch version : 1.4.0
 |Stride|10ms|
 | N_FFT | 400  |   
 | hop length | 160  |
-| n_mels | 128  |  
+| n_mels | 80  |  
 |window|hamming|  
 
   
