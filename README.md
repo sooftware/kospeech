@@ -1,25 +1,8 @@
-# <h1 align="center">:star2: Korean-Speech-Recognition :star2:</h1>
-    
-<p align=center> Korean Speech Recognition Using PyTorch. (Korean-ASR) </p>  
-<p align=center> This Project is currently in progress. </p>  
-  
-<p align="center">
-  <img src="https://img.shields.io/badge/build-ongoing-critical"> 
-  <img src="https://img.shields.io/badge/license-Apache--2.0-informational">
-  <img src="https://img.shields.io/badge/category-Speech-critical">  
-  <img src="https://img.shields.io/badge/framework-PyTorch-informational">
-  <img src="https://img.shields.io/badge/language-Korean-critical"> 
-  <img src="https://img.shields.io/badge/Team-Kai.Lib-informational">
-</p>
-  
+# Korean-Speech-Recognition  
 
-<p align=center><i> Listen, Attend and Spell </i></p> 
-<p align=center><i> Bi-RNN · Seq2seq · Attention </i></p> 
-<p align=center><i> MFCC · Input-Reverse </i></p> 
-<p align=center><i> Label-Smoothing · Spec-Augmentation </i></p> 
-<p align=center><i> Multi-Step LR · Beam-Search </i></p> 
+![build](https://img.shields.io/badge/build-Passing-83b6fa) ![license](https://img.shields.io/badge/license-Apache--2.0-cba5b6) ![language](https://img.shields.io/badge/language-Python--3.7-8ea5b6) ![framework](https://img.shields.io/badge/framework-PyTorch-729afa) ![team](https://img.shields.io/badge/Team-Kai.Lib-ab6d7b)     
   
-[**Documentation**](https://sh951011.github.io/Korean-Speech-Recognition/)  
+### [**Documentation**](https://sh951011.github.io/Korean-Speech-Recognition/)  
 
 # Introduction
 
