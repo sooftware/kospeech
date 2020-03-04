@@ -1,3 +1,2 @@
-web/dist/* linguist-vendored
-web/template/* linguist-vendored
-web/vendor/* linguist-vendored
+docs/* linguist-vendored
+sphinx/* linguist-vendored
