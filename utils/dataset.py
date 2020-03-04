@@ -2,7 +2,7 @@ import random
 import math
 from torch.utils.data import Dataset
 
-from utils.define import logger, SOS_TOKEN, EOS_TOKEN
+#from utils.define import logger, SOS_TOKEN, EOS_TOKEN
 from utils.feature import spec_augment, get_librosa_melspectrogram
 from utils.label import get_label
 
@@ -67,7 +67,7 @@ class BaseDataset(Dataset):
     def augmentation(self):
         """ Apply Spec-Augmentation """
         augment_end_idx = int(0 + ((len(self.audio_paths) - 0) * self.augment_ratio))
-        logger.info("Applying Augmentation...")
+        #logger.info("Applying Augmentation...")
 
         for idx in range(augment_end_idx):
             self.augment_flags.append(True)
@@ -167,7 +167,7 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
         - **train_dataset_list** (list): list of training data
         - **valid_dataset** (BaseDataset): list of validation data
     """
-    logger.info("split dataset start !!")
+    #logger.info("split dataset start !!")
     train_dataset_list = list()
     train_num = math.ceil(len(audio_paths) * (1 - valid_ratio))
     total_time_step = math.ceil(len(audio_paths) / hparams.batch_size)
@@ -190,7 +190,7 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
         train_dataset_list.append(BaseDataset(
                                     audio_paths=audio_paths[train_begin_index:train_end_index],
                                     label_paths=label_paths[train_begin_index:train_end_index],
-                                    sos_id=SOS_TOKEN, eos_id=EOS_TOKEN, # modify
+                                    sos_id=2037, eos_id=2038,
                                     target_dict=target_dict,
                                     input_reverse=hparams.input_reverse,
                                     use_augment=hparams.use_augment,
@@ -203,7 +203,7 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
     valid_dataset = BaseDataset(
                         audio_paths=audio_paths[train_num:],
                         label_paths=label_paths[train_num:],
-                        sos_id=SOS_TOKEN, eos_id=EOS_TOKEN,
+                        sos_id=2037, eos_id=2038,
                         batch_size=hparams.batch_size,
                         target_dict=target_dict,
                         input_reverse=hparams.input_reverse,
@@ -211,5 +211,5 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
                         pack_by_length=hparams.pack_by_length
     )
 
-    logger.info("split dataset complete !!")
+    #logger.info("split dataset complete !!")
     return train_time_step, train_dataset_list, valid_dataset

@@ -12,6 +12,7 @@ Welcome to Korean Speech Recognition's documentation!
 
    notes/intro
    notes/Preparation
+   notes/More-details
 
 .. toctree::
    :maxdepth: 1

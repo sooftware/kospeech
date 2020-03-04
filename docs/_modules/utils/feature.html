@@ -85,6 +85,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../notes/intro.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../notes/Preparation.html">Preparation before Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notes/More-details.html">More Details</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Architecture</span></p>
 <ul>
@@ -163,8 +164,10 @@
 <span class="kn">import</span> <span class="nn">librosa</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">random</span>
+<span class="c1">#from utils.define import logger</span>
 
 <span class="c1"># feature parameters</span>
+
 <span class="n">N_FFT</span> <span class="o">=</span> <span class="mi">400</span>
 <span class="n">HOP_LENGTH</span> <span class="o">=</span> <span class="mi">160</span>
 <span class="n">N_MELS</span> <span class="o">=</span> <span class="mi">128</span>
@@ -199,6 +202,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">pcm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">memmap</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
         <span class="k">except</span><span class="p">:</span>  <span class="c1"># exception handling</span>
+            <span class="c1">#logger.info(&quot;%s Error Occur !!&quot; % filepath)</span>
             <span class="k">return</span> <span class="kc">None</span>
         <span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pcm</span><span class="p">])</span>
     <span class="k">elif</span> <span class="nb">format</span> <span class="o">==</span> <span class="s1">&#39;wav&#39;</span><span class="p">:</span>
@@ -247,6 +251,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">pcm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">memmap</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
         <span class="k">except</span><span class="p">:</span> <span class="c1"># exception handling</span>
+            <span class="c1">#logger.info(&quot;%s Error Occur !!&quot; % filepath)</span>
             <span class="k">return</span> <span class="kc">None</span>
         <span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pcm</span><span class="p">])</span>
     <span class="k">elif</span> <span class="nb">format</span> <span class="o">==</span> <span class="s1">&#39;wav&#39;</span><span class="p">:</span>

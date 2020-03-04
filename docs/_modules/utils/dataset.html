@@ -85,6 +85,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../notes/intro.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../notes/Preparation.html">Preparation before Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notes/More-details.html">More Details</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Architecture</span></p>
 <ul>
@@ -162,6 +163,8 @@
 <span></span><span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="k">import</span> <span class="n">Dataset</span>
+
+<span class="c1">#from utils.define import logger, SOS_TOKEN, EOS_TOKEN</span>
 <span class="kn">from</span> <span class="nn">utils.feature</span> <span class="k">import</span> <span class="n">spec_augment</span><span class="p">,</span> <span class="n">get_librosa_melspectrogram</span>
 <span class="kn">from</span> <span class="nn">utils.label</span> <span class="k">import</span> <span class="n">get_label</span>
 
@@ -349,7 +352,7 @@
         <span class="n">train_dataset_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BaseDataset</span><span class="p">(</span>
                                     <span class="n">audio_paths</span><span class="o">=</span><span class="n">audio_paths</span><span class="p">[</span><span class="n">train_begin_index</span><span class="p">:</span><span class="n">train_end_index</span><span class="p">],</span>
                                     <span class="n">label_paths</span><span class="o">=</span><span class="n">label_paths</span><span class="p">[</span><span class="n">train_begin_index</span><span class="p">:</span><span class="n">train_end_index</span><span class="p">],</span>
-                                    <span class="n">sos_id</span><span class="o">=</span><span class="mi">2037</span><span class="p">,</span> <span class="n">eos_id</span><span class="o">=</span><span class="mi">2038</span><span class="p">,</span> <span class="c1"># modify</span>
+                                    <span class="n">sos_id</span><span class="o">=</span><span class="mi">2037</span><span class="p">,</span> <span class="n">eos_id</span><span class="o">=</span><span class="mi">2038</span><span class="p">,</span>
                                     <span class="n">target_dict</span><span class="o">=</span><span class="n">target_dict</span><span class="p">,</span>
                                     <span class="n">input_reverse</span><span class="o">=</span><span class="n">hparams</span><span class="o">.</span><span class="n">input_reverse</span><span class="p">,</span>
                                     <span class="n">use_augment</span><span class="o">=</span><span class="n">hparams</span><span class="o">.</span><span class="n">use_augment</span><span class="p">,</span>

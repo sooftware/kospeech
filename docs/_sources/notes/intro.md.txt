@@ -18,8 +18,10 @@ if you want to study the feature of audio, we recommend this papers.
   
 Out project based on Seq2seq with Attention Architecture.  
 
-Seq2seq is a fast evolving field with new techniques and architectures being published frequently.  
-  
+Seq2seq is a fast evolving field with new techniques and architectures being published frequently.
+
+[More details](https://github.com/sh951011/Korean-Speech-Recognition/wiki/More-Details)
+
   
 ## Installation
 This package requires Python 3.5.   
