@@ -1,0 +1,283 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Introduction &mdash; Korean Speech Recognition 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Preparation before Training" href="Preparation.html" />
+    <link rel="prev" title="Welcome to Korean Speech Recognition’s documentation!" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Korean Speech Recognition
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Notes</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#roadmap">Roadmap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#get-started">Get Started</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#preparation-before-training">Preparation before Training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#train-and-test">Train and Test</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#troubleshoots-and-contributing">Troubleshoots and Contributing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#code-style">Code Style</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Preparation.html">Preparation before Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="More-details.html">More Details</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../Models.html">Models</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Package Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../Feature.html">Feature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Dataset.html">Dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Loss.html">Loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Hparams.html">Hparams</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Korean Speech Recognition</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Introduction</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/notes/intro.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<p>This is project for Korean Speech Recognition Using LAS (Listen, Attend and Spell) models implemented in <a class="reference external" href="http://pytorch.org">PyTorch</a>.<br />We appreciate any kind of feedback or contribution.</p>
+<div class="section" id="roadmap">
+<h2>Roadmap<a class="headerlink" href="#roadmap" title="Permalink to this headline">¶</a></h2>
+<p>Speech recognition is an interdisciplinary subfield of computational linguistics that develops methodologies and technologies that enables the recognition and translation of spoken language into text by computers.</p>
+<p>We mainly referred to following papers.</p>
+<p><a class="reference external" href="https://arxiv.org/abs/1508.01211">「Listen, Attend and Spell」</a><br /><a class="reference external" href="https://arxiv.org/abs/1904.08779">「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」</a>.</p>
+<p>if you want to study the feature of audio, we recommend this papers.</p>
+<p><a class="reference external" href="https://pdfs.semanticscholar.org/32d7/2b00454d5155599fb9e8e5119e16970db50d.pdf">「Voice Recognition Using MFCC Algirithm」</a>.</p>
+<p>Out project based on Seq2seq with Attention Architecture.</p>
+<p>Seq2seq is a fast evolving field with new techniques and architectures being published frequently.</p>
+<p><a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/wiki/More-Details">More details</a></p>
+</div>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>This package requires Python 3.5.<br />We recommend creating a new virtual environment for this project (using virtualenv or conda).</p>
+<div class="section" id="prerequisites">
+<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Numpy: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">numpy</span></code> (Refer <a class="reference external" href="https://github.com/numpy/numpy">here</a> for problem installing Numpy).</li>
+<li>PyTorch: Refer to <a class="reference external" href="http://pytorch.org/">PyTorch website</a> to install the version w.r.t. your environment.</li>
+<li>Pandas: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pandas</span></code> (Refer <a class="reference external" href="https://github.com/pandas-dev/pandas">here</a> for problem installing Pandas)</li>
+<li>librosa: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">librosa</span></code> (Refer <a class="reference external" href="https://github.com/librosa/librosa">here</a> for problem installing librosa)</li>
+<li>tqdm: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">tqdm</span></code> (Refer <a class="reference external" href="https://github.com/tqdm/tqdm">here</a> for problem installing tqdm)</li>
+</ul>
+</div>
+</div>
+<div class="section" id="get-started">
+<h2>Get Started<a class="headerlink" href="#get-started" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="preparation-before-training">
+<h3>Preparation before Training<a class="headerlink" href="#preparation-before-training" title="Permalink to this headline">¶</a></h3>
+<p>Refer <a class="reference external" href="https://sh951011.github.io/Korean-Speech-Recognition/notes/Preparation.html">here</a> before Training.<br />The above document is written in Korean.<br />We will also write a document in English as soon as possible, so please wait a little bit.</p>
+<p>If you already have another dataset, please modify the data set path to <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/blob/master/utils/define.py">define.py</a> as appropriate.</p>
+</div>
+<div class="section" id="train-and-test">
+<h3>Train and Test<a class="headerlink" href="#train-and-test" title="Permalink to this headline">¶</a></h3>
+<p>if you want to start training, you should run <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/blob/master/main.py">main.py</a>.<br />or after training, you want to start testing, you should run <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/blob/master/test.py">test.py</a>.</p>
+<p>you can set up a hyperparameters <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/blob/master/utils/hparams.py">hparams.py</a>.<br />An explanation of hparams is <a class="reference external" href="https://sh951011.github.io/Korean-Speech-Recognition/Hparams.html">here</a>.</p>
+</div>
+</div>
+<div class="section" id="troubleshoots-and-contributing">
+<h2>Troubleshoots and Contributing<a class="headerlink" href="#troubleshoots-and-contributing" title="Permalink to this headline">¶</a></h2>
+<p>If you have any questions, bug reports, and feature requests, please <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/issues">open an issue</a> on Github.<br />or Contacts sh951011&#64;gmail.com please.</p>
+<p>We appreciate any kind of feedback or contribution.  Feel free to proceed with small issues like bug fixes, documentation improvement.  For major contributions and new features, please discuss with the collaborators in corresponding issues.</p>
+<div class="section" id="code-style">
+<h3>Code Style<a class="headerlink" href="#code-style" title="Permalink to this headline">¶</a></h3>
+<p>We follow <a class="reference external" href="https://google.github.io/styleguide/pyguide.html">Google Python Style Guide</a> for code style.  Especially the style of docstrings is important to generate documentation.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Preparation.html" class="btn btn-neutral float-right" title="Preparation before Training" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../index.html" class="btn btn-neutral float-left" title="Welcome to Korean Speech Recognition’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, SooHwan Kim
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
