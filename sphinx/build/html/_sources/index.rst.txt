@@ -14,7 +14,7 @@ Welcome to Korean Speech Recognition's documentation!
    notes/Preparation
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: Package Reference
 
    Models
