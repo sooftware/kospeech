@@ -68,29 +68,15 @@ We appreciate any kind of feedback or contribution.  Feel free to proceed with s
 ### Code Style
 We follow [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html) for code style.  Especially the style of docstrings is important to generate documentation.
   
-## Reference   
-  
-### Paper
+### Reference   
 [[1] 「Listen, Attend and Spell」  Paper](https://arxiv.org/abs/1508.01211)   
-[[2] 「Attention-Based Models for Speech Recognition」  Paper](https://arxiv.org/pdf/1506.07503.pdf)   
-[[3] 「A Structured Self-attentive Sentence Embedding」 Paper](https://arxiv.org/abs/1703.03130)  
-[[4] 「A Simple Data Augmentation Method for Automatic Speech Recognition」  Paper](https://arxiv.org/abs/1904.08779)     
-[[5] 「Voice Recognition Using MFCC Algorithm」  Paper](https://pdfs.semanticscholar.org/32d7/2b00454d5155599fb9e8e5119e16970db50d.pdf)     
-[[6] 「Deep Speech: Scaling up end-to-End Speech Recognition」  Paper](https://arxiv.org/abs/1412.5567)    
-[[7] 「Deep Speech 2: End-to-End Speech Recognition in English and Mandarin」  Paper](https://arxiv.org/abs/1512.02595)    
-
-### Code  
+[[2] 「A Structured Self-attentive Sentence Embedding」 Paper](https://arxiv.org/abs/1703.03130)  
+[[3] 「A Simple Data Augmentation Method for Automatic Speech Recognition」  Paper](https://arxiv.org/abs/1904.08779)     
+[[4] 「Voice Recognition Using MFCC Algorithm」  Paper](https://pdfs.semanticscholar.org/32d7/2b00454d5155599fb9e8e5119e16970db50d.pdf)        
+[[5]   IBM pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)   
+[[6]   A.I Hub Korean Voice Dataset](http://www.aihub.or.kr/aidata/105)   
   
-[[1]   IBM pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)   
-[[2]   PyTorch Spec-Augmentation](https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py)     
-[[3]   PyTorch-VGG Net](https://github.com/chengyangfu/pytorch-vgg-cifar10/blob/master/vgg.py)  
-  
-### else
-[[1]   A.I Hub Korean Voice Dataset](http://www.aihub.or.kr/aidata/105)   
-[[2]   Levenshtein Distance](https://en.wikipedia.org/wiki/Levenshtein_distance)      
-[[3]   Documentation](https://sh951011.github.io/Korean-Speech-Recognition/)   
-  
-## License
+### License
 ```
 Copyright (c) 2020 Kai.Lib
 
