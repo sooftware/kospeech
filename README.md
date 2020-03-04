@@ -5,7 +5,7 @@
   
 <p align="center">
   <img src="https://img.shields.io/badge/build-ongoing-critical"> 
-  <img src="https://img.shields.io/badge/license-Apache-2.0-informational">
+  <img src="https://img.shields.io/badge/license-Apache--2.0-informational">
   <img src="https://img.shields.io/badge/category-Speech-critical">  
   <img src="https://img.shields.io/badge/framework-PyTorch-informational">
   <img src="https://img.shields.io/badge/language-Korean-critical"> 
