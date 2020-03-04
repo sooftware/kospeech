@@ -34,8 +34,8 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Dataset" href="Dataset.html" />
-    <link rel="prev" title="Models" href="Models.html" /> 
+    <link rel="next" title="Hparams" href="Hparams.html" />
+    <link rel="prev" title="Distance" href="Distance.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -93,12 +93,22 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Models.html">Models</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Package Reference</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Feature</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Dataset.html">Dataset</a></li>
+<p class="caption"><span class="caption-text">train</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Lr.html">Lr</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Utils</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Dataset.html">Dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Distance.html">Distance</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Feature</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Hparams.html">Hparams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Label.html">Label</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Load.html">Load</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Loader.html">Loader</a></li>
 </ul>
 
             
@@ -167,7 +177,7 @@
 <span id="feature"></span><h1>Feature<a class="headerlink" href="#module-utils.feature" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="utils.feature.get_librosa_melspectrogram">
-<code class="descclassname">utils.feature.</code><code class="descname">get_librosa_melspectrogram</code><span class="sig-paren">(</span><em>filepath</em>, <em>n_mels=128</em>, <em>del_silence=False</em>, <em>input_reverse=True</em>, <em>mel_type='log_mel'</em>, <em>format='pcm'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/feature.html#get_librosa_melspectrogram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.feature.get_librosa_melspectrogram" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">utils.feature.</code><code class="descname">get_librosa_melspectrogram</code><span class="sig-paren">(</span><em>filepath</em>, <em>n_mels=80</em>, <em>del_silence=False</em>, <em>input_reverse=True</em>, <em>mel_type='log_mel'</em>, <em>format='pcm'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/feature.html#get_librosa_melspectrogram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.feature.get_librosa_melspectrogram" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provides Mel-Spectrogram (or Log-Mel) for Audio</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -286,10 +296,10 @@ Provides Mel Frequency Cepstral Coefficient (MFCC) for Audio</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="Dataset.html" class="btn btn-neutral float-right" title="Dataset" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="Hparams.html" class="btn btn-neutral float-right" title="Hparams" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="Models.html" class="btn btn-neutral float-left" title="Models" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="Distance.html" class="btn btn-neutral float-left" title="Distance" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

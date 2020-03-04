@@ -92,12 +92,22 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Models.html">Models</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Package Reference</span></p>
+<p class="caption"><span class="caption-text">train</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Feature.html">Feature</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Dataset.html">Dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Lr.html">Lr</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Utils</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Dataset.html">Dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Distance.html">Distance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Feature.html">Feature</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Hparams.html">Hparams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Label.html">Label</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Load.html">Load</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Loader.html">Loader</a></li>
 </ul>
 
             
@@ -167,12 +177,14 @@
  <a href="#A"><strong>A</strong></a>
  | <a href="#B"><strong>B</strong></a>
  | <a href="#C"><strong>C</strong></a>
+ | <a href="#E"><strong>E</strong></a>
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
  | <a href="#H"><strong>H</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#P"><strong>P</strong></a>
+ | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
  | <a href="#U"><strong>U</strong></a>
@@ -193,6 +205,8 @@
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Loader.html#utils.loader.BaseDataLoader">BaseDataLoader (class in utils.loader)</a>
+</li>
       <li><a href="Dataset.html#utils.dataset.BaseDataset">BaseDataset (class in utils.dataset)</a>
 </li>
   </ul></td>
@@ -207,7 +221,23 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Distance.html#utils.distance.char_distance">char_distance() (in module utils.distance)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="Models.html#models.listener.Listener.conv">conv (models.listener.Listener attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="E">E</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Evaluator.html#train.evaluator.evaluate">evaluate() (in module train.evaluator)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Lr.html#train.lr.exp_decay">exp_decay() (in module train.lr)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -235,11 +265,17 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Feature.html#utils.feature.get_librosa_melspectrogram">get_librosa_melspectrogram() (in module utils.feature)</a>
+      <li><a href="Distance.html#utils.distance.get_distance">get_distance() (in module utils.distance)</a>
+</li>
+      <li><a href="Label.html#utils.label.get_label">get_label() (in module utils.label)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Feature.html#utils.feature.get_librosa_melspectrogram">get_librosa_melspectrogram() (in module utils.feature)</a>
+</li>
       <li><a href="Feature.html#utils.feature.get_librosa_mfcc">get_librosa_mfcc() (in module utils.feature)</a>
+</li>
+      <li><a href="Lr.html#train.lr.get_lr">get_lr() (in module train.lr)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -255,13 +291,23 @@
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Label.html#utils.label.label_to_string">label_to_string() (in module utils.label)</a>
+</li>
       <li><a href="Loss.html#train.loss.LabelSmoothingLoss">LabelSmoothingLoss (class in train.loss)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="Models.html#models.listenAttendSpell.ListenAttendSpell">ListenAttendSpell (class in models.listenAttendSpell)</a>
 </li>
       <li><a href="Models.html#models.listener.Listener">Listener (class in models.listener)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Load.html#utils.load.load_data_list">load_data_list() (in module utils.load)</a>
+</li>
+      <li><a href="Load.html#utils.load.load_label">load_label() (in module utils.load)</a>
+</li>
+      <li><a href="Load.html#utils.load.load_pickle">load_pickle() (in module utils.load)</a>
+</li>
+      <li><a href="Load.html#utils.load.load_targets">load_targets() (in module utils.load)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -273,13 +319,15 @@
 </li>
       <li><a href="Models.html#module-models.beam">models.beam (module)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="Models.html#module-models.listenAttendSpell">models.listenAttendSpell (module)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="Models.html#module-models.listener">models.listener (module)</a>
 </li>
       <li><a href="Models.html#module-models.speller">models.speller (module)</a>
+</li>
+      <li><a href="Loader.html#utils.loader.MultiLoader">MultiLoader (class in utils.loader)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -292,17 +340,31 @@
   </ul></td>
 </tr></table>
 
+<h2 id="R">R</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Lr.html#train.lr.ramp_up">ramp_up() (in module train.lr)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Loader.html#utils.loader.BaseDataLoader.run">run() (utils.loader.BaseDataLoader method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="Models.html#models.beam.Beam.search">search() (models.beam.Beam method)</a>
 </li>
-      <li><a href="Dataset.html#utils.dataset.BaseDataset.shuffle">shuffle() (utils.dataset.BaseDataset method)</a>
+      <li><a href="Lr.html#train.lr.set_lr">set_lr() (in module train.lr)</a>
 </li>
-      <li><a href="Dataset.html#utils.dataset.BaseDataset.sort_by_length">sort_by_length() (utils.dataset.BaseDataset method)</a>
+      <li><a href="Dataset.html#utils.dataset.BaseDataset.shuffle">shuffle() (utils.dataset.BaseDataset method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Dataset.html#utils.dataset.BaseDataset.sort_by_length">sort_by_length() (utils.dataset.BaseDataset method)</a>
+</li>
       <li><a href="Feature.html#utils.feature.spec_augment">spec_augment() (in module utils.feature)</a>
 </li>
       <li><a href="Models.html#models.speller.Speller">Speller (class in models.speller)</a>
@@ -315,7 +377,17 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Trainer.html#train.trainer.train">train() (in module train.trainer)</a>
+</li>
+      <li><a href="Evaluator.html#module-train.evaluator">train.evaluator (module)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="Loss.html#module-train.loss">train.loss (module)</a>
+</li>
+      <li><a href="Lr.html#module-train.lr">train.lr (module)</a>
+</li>
+      <li><a href="Trainer.html#module-train.trainer">train.trainer (module)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -325,11 +397,19 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="Dataset.html#module-utils.dataset">utils.dataset (module)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Distance.html#module-utils.distance">utils.distance (module)</a>
+</li>
       <li><a href="Feature.html#module-utils.feature">utils.feature (module)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="Hparams.html#module-utils.hparams">utils.hparams (module)</a>
+</li>
+      <li><a href="Label.html#module-utils.label">utils.label (module)</a>
+</li>
+      <li><a href="Load.html#module-utils.load">utils.load (module)</a>
+</li>
+      <li><a href="Loader.html#module-utils.loader">utils.loader (module)</a>
 </li>
   </ul></td>
 </tr></table>

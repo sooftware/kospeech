@@ -20,14 +20,14 @@ Speller
 .. automodule:: models.speller
     :members:
 
-Attention
---------------------------------------------
-
-.. automodule:: models.attention
-    :members:
-
 Beam
 --------------------------------------------
 
 .. automodule:: models.beam
+    :members:
+
+Attention
+--------------------------------------------
+
+.. automodule:: models.attention
     :members:

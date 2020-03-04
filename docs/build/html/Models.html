@@ -34,8 +34,8 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Feature" href="Feature.html" />
-    <link rel="prev" title="Preparation before Training" href="notes/Preparation.html" /> 
+    <link rel="next" title="Evaluator" href="Evaluator.html" />
+    <link rel="prev" title="More Details" href="notes/More-details.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -87,6 +87,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">Preparation before Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/More-details.html">More Details</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Architecture</span></p>
 <ul class="current">
@@ -94,17 +95,27 @@
 <li class="toctree-l2"><a class="reference internal" href="#module-models.listenAttendSpell">ListenAttendSpell</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-models.listener">Listener</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-models.speller">Speller</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-models.attention">Attention</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-models.beam">Beam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-models.attention">Attention</a></li>
 </ul>
 </li>
 </ul>
-<p class="caption"><span class="caption-text">Package Reference</span></p>
+<p class="caption"><span class="caption-text">train</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Feature.html">Feature</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Dataset.html">Dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Lr.html">Lr</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Utils</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Dataset.html">Dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Distance.html">Distance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Feature.html">Feature</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Hparams.html">Hparams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Label.html">Label</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Load.html">Load</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Loader.html">Loader</a></li>
 </ul>
 
             
@@ -369,57 +380,6 @@ registered hooks while the latter silently ignores them.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-models.attention">
-<span id="attention"></span><h2>Attention<a class="headerlink" href="#module-models.attention" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="models.attention.Attention">
-<em class="property">class </em><code class="descclassname">models.attention.</code><code class="descname">Attention</code><span class="sig-paren">(</span><em>decoder_hidden_size</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/attention.html#Attention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.attention.Attention" title="Permalink to this definition">¶</a></dt>
-<dd><p>Applies an self attention mechanism on the output features from the decoder.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dim</strong> (<em>-</em>) – The number of expected features in the output</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Inputs: decoder_output, encoder_output</dt>
-<dd><ul class="first last simple">
-<li><strong>decoder_output</strong> (batch, output_len, hidden_size): tensor containing the output features from the decoder.</li>
-<li><strong>encoder_output</strong> (batch, input_len, hidden_size): tensor containing features of the encoded input sequence.Steps to be maintained at a certain number to avoid extremely slow learning</li>
-</ul>
-</dd>
-<dt>Outputs: output</dt>
-<dd><ul class="first last simple">
-<li><strong>math</strong>: output = tanh(W{concat(attn * encoder_output, decoder_output)} + b)</li>
-<li><strong>output</strong> (batch, output_len, dimensions): tensor containing the attended output features from the decoder.</li>
-</ul>
-</dd>
-<dt>Reference:</dt>
-<dd><dl class="first last docutils">
-<dt>「A Structured Self-Attentive Sentence Embedding」</dt>
-<dd><a class="reference external" href="https://arxiv.org/abs/1703.03130">https://arxiv.org/abs/1703.03130</a></dd>
-</dl>
-</dd>
-</dl>
-<dl class="method">
-<dt id="models.attention.Attention.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>decoder_output</em>, <em>encoder_outputs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/attention.html#Attention.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.attention.Attention.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Although the recipe for forward pass needs to be defined within
-this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
-instead of this since the former takes care of running the
-registered hooks while the latter silently ignores them.</p>
-</div>
-</dd></dl>
-
-</dd></dl>
-
-</div>
 <div class="section" id="module-models.beam">
 <span id="beam"></span><h2>Beam<a class="headerlink" href="#module-models.beam" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
@@ -478,6 +438,57 @@ registered hooks while the latter silently ignores them.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-models.attention">
+<span id="attention"></span><h2>Attention<a class="headerlink" href="#module-models.attention" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="models.attention.Attention">
+<em class="property">class </em><code class="descclassname">models.attention.</code><code class="descname">Attention</code><span class="sig-paren">(</span><em>decoder_hidden_size</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/attention.html#Attention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.attention.Attention" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies an self attention mechanism on the output features from the decoder.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dim</strong> (<em>-</em>) – The number of expected features in the output</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Inputs: decoder_output, encoder_output</dt>
+<dd><ul class="first last simple">
+<li><strong>decoder_output</strong> (batch, output_len, hidden_size): tensor containing the output features from the decoder.</li>
+<li><strong>encoder_output</strong> (batch, input_len, hidden_size): tensor containing features of the encoded input sequence.Steps to be maintained at a certain number to avoid extremely slow learning</li>
+</ul>
+</dd>
+<dt>Outputs: output</dt>
+<dd><ul class="first last simple">
+<li><strong>math</strong>: output = tanh(W{concat(attn * encoder_output, decoder_output)} + b)</li>
+<li><strong>output</strong> (batch, output_len, dimensions): tensor containing the attended output features from the decoder.</li>
+</ul>
+</dd>
+<dt>Reference:</dt>
+<dd><dl class="first last docutils">
+<dt>「A Structured Self-Attentive Sentence Embedding」</dt>
+<dd><a class="reference external" href="https://arxiv.org/abs/1703.03130">https://arxiv.org/abs/1703.03130</a></dd>
+</dl>
+</dd>
+</dl>
+<dl class="method">
+<dt id="models.attention.Attention.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>decoder_output</em>, <em>encoder_outputs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/attention.html#Attention.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.attention.Attention.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -488,10 +499,10 @@ registered hooks while the latter silently ignores them.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="Feature.html" class="btn btn-neutral float-right" title="Feature" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="Evaluator.html" class="btn btn-neutral float-right" title="Evaluator" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="notes/Preparation.html" class="btn btn-neutral float-left" title="Preparation before Training" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="notes/More-details.html" class="btn btn-neutral float-left" title="More Details" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
