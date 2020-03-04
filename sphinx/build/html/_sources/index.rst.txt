@@ -17,8 +17,9 @@ Welcome to Korean Speech Recognition's documentation!
    :maxdepth: 2
    :caption: Package Reference
 
-   Models
+
    Feature
    Dataset
    Loss
    Hparams
+   Models
