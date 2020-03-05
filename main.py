@@ -55,7 +55,7 @@ from train.trainer import train
 
 
 if __name__ == '__main__':
-    os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
+    os.environ["CUDA_LAUNCH_BLOCKING"] = "1" # if you use Multi-GPU, delete this line
     logger.info("device : %s" % torch.cuda.get_device_name(0))
     logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
     logger.info("CUDA version : %s" % (torch.version.cuda))
@@ -120,15 +120,11 @@ if __name__ == '__main__':
     train_begin = time.time()
 
     for epoch in range(hparams.max_epochs):
-        print("1")
         train_queue = queue.Queue(hparams.worker_num << 1)
         for train_dataset in train_dataset_list:
             train_dataset.shuffle()
-        print("2")
         train_loader = MultiLoader(train_dataset_list, train_queue, hparams.batch_size, hparams.worker_num)
-        print("3")
         train_loader.start()
-        print("4")
         train_loss, train_cer = train(
             model = model,
             total_time_step = total_time_step,
@@ -143,7 +139,6 @@ if __name__ == '__main__':
             print_time_step = 10,
             teacher_forcing_ratio = hparams.teacher_forcing
         )
-        print("5")
         torch.save(model, "model.pt")
         torch.save(model, "./data/weight_file/epoch%s.pt" % str(epoch))
         logger.info('Epoch %d (Training) Loss %0.4f CER %0.4f' % (epoch, train_loss, train_cer))
