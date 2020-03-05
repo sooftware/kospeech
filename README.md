@@ -41,6 +41,16 @@ We recommend creating a new virtual environment for this project (using virtuale
 * Pandas: `pip install pandas` (Refer [here](https://github.com/pandas-dev/pandas) for problem installing Pandas)  
 * librosa: `pip install librosa` (Refer [here](https://github.com/librosa/librosa) for problem installing librosa)
 * tqdm: `pip install tqdm` (Refer [here](https://github.com/tqdm/tqdm) for problem installing tqdm)  
+* python-levenshtein: `conda install python-levenshtein` (Refer [here](https://github.com/miohtama/python-Levenshtein) for problem installing python-levenshtein)  
+  
+### Install from source  
+  
+Currently we only support installation from source code using setuptools. Checkout the source code and run the following   
+commands:
+```
+$ python setup.py build
+$ python setup.py install
+```
   
 ## Get Started
 ### Preparation before Training
