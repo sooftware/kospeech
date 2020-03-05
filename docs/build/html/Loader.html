@@ -172,58 +172,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-utils.loader">
-<span id="loader"></span><h1>Loader<a class="headerlink" href="#module-utils.loader" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="utils.loader.BaseDataLoader">
-<em class="property">class </em><code class="descclassname">utils.loader.</code><code class="descname">BaseDataLoader</code><span class="sig-paren">(</span><em>dataset</em>, <em>queue</em>, <em>batch_size</em>, <em>thread_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/loader.html#BaseDataLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.loader.BaseDataLoader" title="Permalink to this definition">¶</a></dt>
-<dd><p>Base Data Loader</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dataset</strong> (<em>-</em>) – object of BaseDataset</li>
-<li><strong>queue</strong> (<em>-</em>) – queue for threading</li>
-<li><strong>batch_size</strong> (<em>-</em>) – size of batch</li>
-<li><strong>thread_id</strong> (<em>-</em>) – identification of thread</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="utils.loader.BaseDataLoader.run">
-<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/loader.html#BaseDataLoader.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.loader.BaseDataLoader.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method representing the thread’s activity.</p>
-<p>You may override this method in a subclass. The standard run() method
-invokes the callable object passed to the object’s constructor as the
-target argument, if any, with sequential and keyword arguments taken
-from the args and kwargs arguments, respectively.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="utils.loader.MultiLoader">
-<em class="property">class </em><code class="descclassname">utils.loader.</code><code class="descname">MultiLoader</code><span class="sig-paren">(</span><em>dataset_list</em>, <em>queue</em>, <em>batch_size</em>, <em>worker_num</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/loader.html#MultiLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.loader.MultiLoader" title="Permalink to this definition">¶</a></dt>
-<dd><p>Multi Data Loader using Threads.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dataset</strong> (<em>-</em>) – object of BaseDataset</li>
-<li><strong>queue</strong> (<em>-</em>) – queue for threading</li>
-<li><strong>batch_size</strong> (<em>-</em>) – size of batch</li>
-<li><strong>worker_num</strong> (<em>-</em>) – the number of cpu cores used</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
+  <div class="section" id="loader">
+<h1>Loader<a class="headerlink" href="#loader" title="Permalink to this headline">¶</a></h1>
 </div>
 
 

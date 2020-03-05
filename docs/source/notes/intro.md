@@ -1,4 +1,4 @@
-# Introduction
+﻿# Introduction
 
 This is project for Korean Speech Recognition Using LAS (Listen, Attend and Spell) models implemented in [PyTorch](http://pytorch.org).  
  We appreciate any kind of feedback or contribution.
@@ -36,7 +36,15 @@ We recommend creating a new virtual environment for this project (using virtuale
 * librosa: `pip install librosa` (Refer [here](https://github.com/librosa/librosa) for problem installing librosa)
 * tqdm: `pip install tqdm` (Refer [here](https://github.com/tqdm/tqdm) for problem installing tqdm)  
   
-
+### Install from source  
+  
+Currently we only support installation from source code using setuptools. Checkout the source code and run the following   
+commands:
+```
+$ python setup.py build
+$ python setup.py install
+```
+  
 ## Get Started
 ### Preparation before Training
 
