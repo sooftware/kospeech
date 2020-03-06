@@ -56,7 +56,6 @@ class Beam:
             - **C**: classfication number
             - **S**: sequence length
         """
-        last_align = None
         # get class classfication distribution (shape: BxC)
         init_step_output = self._forward_step(init_decoder_input, encoder_outputs).squeeze(1)
         # get top K probability & index (shape: BxK)
@@ -68,7 +67,7 @@ class Beam:
             if self._is_done():
                 break
             # For each beam, get class classfication distribution (shape: BxKxC)
-            predicted_softmax, last_align = self._forward_step(decoder_input, encoder_outputs, last_align)
+            predicted_softmax = self._forward_step(decoder_input, encoder_outputs)
             step_output = predicted_softmax.squeeze(1)
             # get top k distribution (shape: BxKxK)
             child_ps, child_vs = step_output.topk(self.k)
@@ -134,7 +133,7 @@ class Beam:
                 return False
         return True
 
-    def _forward_step(self, decoder_input, encoder_outputs, last_align):
+    def _forward_step(self, decoder_input, encoder_outputs):
         """ forward one step on each decoder cell """
         output_size = decoder_input.size(1)
         embedded = self.embedding(decoder_input)
@@ -142,12 +141,12 @@ class Beam:
         decoder_output, hidden = self.rnn(embedded, self.decoder_hidden)  # decoder output
 
         if self.use_attention:
-            context, align = self.attention(decoder_output, encoder_outputs, last_align)
+            context = self.attention(decoder_output, encoder_outputs)
         else:
             context = decoder_output
         predicted_softmax = self.function(self.out(context.contiguous().view(-1, self.hidden_size)), dim=1)
         predicted_softmax = predicted_softmax.view(self.batch_size,output_size,-1)
-        return predicted_softmax, align
+        return predicted_softmax
 
     def _get_length_penalty(self, length, alpha=1.2, min_length=5):
         """

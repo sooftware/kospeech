@@ -72,7 +72,7 @@ class Speller(nn.Module):
             self.attention = Attention(decoder_hidden_size=hidden_size)
         self.out = nn.Linear(self.hidden_size, self.output_size)
 
-    def _forward_step(self, input, speller_hidden, listener_outputs, last_align, function):
+    def _forward_step(self, input, speller_hidden, listener_outputs, function):
         """ forward one time step """
         batch_size = input.size(0)
         output_size = input.size(1)
@@ -83,17 +83,13 @@ class Speller(nn.Module):
             self.rnn.flatten_parameters()
         speller_output = self.rnn(embedded, speller_hidden)[0]
 
-        align = None
         if self.use_attention:
-            if self.score_function == 'hybrid':
-                context, align = self.attention(speller_output, listener_outputs, last_align)
-            else:
-                context = self.attention(speller_output, listener_outputs, last_align)
+            context = self.attention(speller_output, listener_outputs)
         else:
             context = speller_output
 
         predicted_softmax = function(self.out(context.contiguous().view(-1, self.hidden_size)), dim=1).view(batch_size, output_size, -1)
-        return predicted_softmax, align
+        return predicted_softmax
 
     def forward(self, inputs, listener_hidden, listener_outputs, function=F.log_softmax, teacher_forcing_ratio=0.99, use_beam_search=False):
         y_hats, logit = None, None
@@ -119,12 +115,10 @@ class Speller(nn.Module):
             if use_teacher_forcing:
                 """ if teacher_forcing, Infer all at once """
                 inputs = inputs[:, :-1]
-                last_align = None
-                predicted_softmax, last_align = self._forward_step(
+                predicted_softmax = self._forward_step(
                     input = inputs,
                     speller_hidden = speller_hidden,
                     listener_outputs = listener_outputs,
-                    last_align = last_align,
                     function = function
                 )
                 for di in range(predicted_softmax.size(1)):
@@ -132,13 +126,11 @@ class Speller(nn.Module):
                     decode_results.append(step_output)
             else:
                 input = inputs[:, 0].unsqueeze(1)
-                last_align = None
                 for di in range(max_len):
-                    predicted_softmax, last_align = self._forward_step(
+                    predicted_softmax = self._forward_step(
                         input = input,
                         speller_hidden = speller_hidden,
                         listener_outputs = listener_outputs,
-                        last_align = last_align,
                         function = function
                     )
                     step_output = predicted_softmax.squeeze(1)

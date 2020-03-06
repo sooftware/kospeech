@@ -88,7 +88,6 @@ class HyperParams():
         logger.info("use_pickle : %s" % str(self.use_pickle))
         logger.info("use_augment : %s" % str(self.use_augment))
         logger.info("use_pyramidal : %s" % str(self.use_pyramidal))
-        logger.info("attention : %s" % self.score_function)
         logger.info("augment_ratio : %0.2f" % self.augment_ratio)
         logger.info("input_reverse : %s" % str(self.input_reverse))
         logger.info("hidden_size : %d" % self.hidden_size)
