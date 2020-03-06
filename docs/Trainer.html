@@ -93,7 +93,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Models.html">Models</a></li>
 </ul>
-<p class="caption"><span class="caption-text">train</span></p>
+<p class="caption"><span class="caption-text">Train</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
@@ -109,6 +109,7 @@
 <li class="toctree-l1"><a class="reference internal" href="Label.html">Label</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Load.html">Load</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loader.html">Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Save.html">Save</a></li>
 </ul>
 
             
@@ -182,28 +183,27 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>model</strong> (<em>-</em>) – Model to be trained</li>
-<li><strong>optimizer</strong> (<em>-</em>) – optimizer for training</li>
-<li><strong>teacher_forcing_ratio</strong> (<em>-</em>) – The probability that teacher forcing will be used (default: 0.90)</li>
-<li><strong>print_time_step</strong> (<em>-</em>) – Parameters to determine how many steps to output</li>
-<li><strong>queue</strong> (<em>-</em>) – queue for threading</li>
-<li><strong>criterion</strong> (<em>-</em>) – loss function ex) nn.CrossEntropyLoss, LabelSmoothingLoss etc ..</li>
-<li><strong>device</strong> (<em>-</em>) – device used (‘cuda’ or ‘cpu’)</li>
-<li><strong>worker_num</strong> (<em>-</em>) – the number of cpu cores used</li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>model</strong><strong> (</strong><strong>torch.nn</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>optimizer</strong><strong> (</strong><strong>torch.optim</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>teacher_forcing_ratio</strong><strong> (</strong><strong>float</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>print_time_step</strong><strong> (</strong><strong>int</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>queue</strong><strong> (</strong><strong>queue</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>criterion</strong><strong> (</strong><strong>torch.nn</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>device</strong><strong> (</strong><strong>torch.cuda</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>worker_num</strong><strong> (</strong><strong>int</strong><strong>)</strong> (<em>-</em>) – </li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>- **cer</strong> (float)** (<em>character error rate</em>)</li>
+<li><strong>- **loss</strong> (float)** (<em>loss of present epoch</em>)</li>
+</ul>
+</p>
 </td>
 </tr>
 </tbody>
 </table>
-<dl class="docutils">
-<dt>Outputs:</dt>
-<dd><ul class="first last simple">
-<li><strong>error_rate</strong> (float): error rate of present epoch</li>
-<li><strong>loss</strong> (float): loss of present epoch</li>
-</ul>
-</dd>
-</dl>
 </dd></dl>
 
 </div>

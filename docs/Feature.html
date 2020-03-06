@@ -93,7 +93,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Models.html">Models</a></li>
 </ul>
-<p class="caption"><span class="caption-text">train</span></p>
+<p class="caption"><span class="caption-text">Train</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
@@ -109,6 +109,7 @@
 <li class="toctree-l1"><a class="reference internal" href="Label.html">Label</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Load.html">Load</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loader.html">Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Save.html">Save</a></li>
 </ul>
 
             
@@ -175,29 +176,29 @@
             
   <div class="section" id="module-utils.feature">
 <span id="feature"></span><h1>Feature<a class="headerlink" href="#module-utils.feature" title="Permalink to this headline">¶</a></h1>
+<p>Provides feature extraction &amp; SpecAugment</p>
 <dl class="function">
 <dt id="utils.feature.get_librosa_melspectrogram">
-<code class="descclassname">utils.feature.</code><code class="descname">get_librosa_melspectrogram</code><span class="sig-paren">(</span><em>filepath</em>, <em>n_mels=80</em>, <em>del_silence=False</em>, <em>input_reverse=True</em>, <em>mel_type='log_mel'</em>, <em>format='pcm'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/feature.html#get_librosa_melspectrogram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.feature.get_librosa_melspectrogram" title="Permalink to this definition">¶</a></dt>
-<dd><p>Provides Mel-Spectrogram (or Log-Mel) for Audio</p>
+<code class="descclassname">utils.feature.</code><code class="descname">get_librosa_melspectrogram</code><span class="sig-paren">(</span><em>filepath</em>, <em>n_mels=128</em>, <em>del_silence=False</em>, <em>input_reverse=True</em>, <em>mel_type='log_mel'</em>, <em>format='pcm'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/feature.html#get_librosa_melspectrogram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.feature.get_librosa_melspectrogram" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute a mel-scaled soectrigram (or Log-Mel).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>filepath</strong> (<em>-</em>) – specific path of audio file</li>
-<li><strong>n_mels</strong> (<em>-</em>) – number of mel filter</li>
-<li><strong>del_silence</strong> (<em>-</em>) – flag indication whether to delete silence or not (default: True)</li>
-<li><strong>mel_type</strong> (<em>-</em>) – if ‘log_mel’ return log-mel (default: ‘log_mel’)</li>
-<li><strong>input_reverse</strong> (<em>-</em>) – flag indication whether to reverse input or not (default: True)</li>
-<li><strong>format</strong> (<em>-</em>) – file format ex) pcm, wav (default: pcm)</li>
+<li><strong>filepath</strong><strong> (</strong><strong>str</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>n_mels</strong><strong> (</strong><strong>int</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>del_silence</strong><strong> (</strong><strong>bool</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>mel_type</strong><strong> (</strong><strong>str</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>input_reverse</strong><strong> (</strong><strong>bool</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>format</strong><strong> (</strong><strong>str</strong><strong>)</strong> (<em>-</em>) – </li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
-<dl class="docutils">
-<dt>Feature Parameters:</dt>
-<dd><ul class="first last simple">
+<blockquote>
+<div><ul class="simple">
 <li><strong>sample rate</strong>: A.I Hub dataset`s sample rate is 16,000</li>
 <li><strong>frame length</strong>: 25ms</li>
 <li><strong>stride</strong>: 10ms</li>
@@ -206,35 +207,41 @@
 <li><strong>n_fft</strong>: sr * frame_length (16,000 * 30ms)</li>
 <li><strong>hop_length</strong>: sr * stride (16,000 * 7.5ms)</li>
 </ul>
-</dd>
-<dt>Outputs:</dt>
-<dd>feat: return Mel-Spectrogram (or Log-Mel)</dd>
-</dl>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>- **feat</strong> (torch.Tensor)**</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">return Mel-Spectrogram (or Log-Mel)</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="utils.feature.get_librosa_mfcc">
 <code class="descclassname">utils.feature.</code><code class="descname">get_librosa_mfcc</code><span class="sig-paren">(</span><em>filepath=None</em>, <em>n_mfcc=33</em>, <em>del_silence=False</em>, <em>input_reverse=True</em>, <em>format='pcm'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/feature.html#get_librosa_mfcc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.feature.get_librosa_mfcc" title="Permalink to this definition">¶</a></dt>
 <dd><p>:
-Provides Mel Frequency Cepstral Coefficient (MFCC) for Audio</p>
+Mel-frequency cepstral coefficients (MFCCs)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>filepath</strong> (<em>-</em>) – specific path of audio file</li>
-<li><strong>n_mfcc</strong> (<em>-</em>) – number of mel filter</li>
-<li><strong>del_silence</strong> (<em>-</em>) – flag indication whether to delete silence or not (default: True)</li>
-<li><strong>input_reverse</strong> (<em>-</em>) – flag indication whether to reverse input or not (default: True)</li>
-<li><strong>format</strong> (<em>-</em>) – file format ex) pcm, wav (default: pcm)</li>
+<li><strong>filepath</strong><strong> (</strong><strong>str</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>n_mfcc</strong><strong> (</strong><strong>int</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>del_silence</strong><strong> (</strong><strong>bool</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>input_reverse</strong><strong> (</strong><strong>bool</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>format</strong><strong> (</strong><strong>str</strong><strong>)</strong> (<em>-</em>) – </li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
-<dl class="docutils">
-<dt>Feature Parameters:</dt>
-<dd><ul class="first last simple">
+<blockquote>
+<div><ul class="simple">
 <li><strong>sample rate</strong>: A.I Hub dataset`s sample rate is 16,000</li>
 <li><strong>frame length</strong>: 25ms</li>
 <li><strong>stride</strong>: 10ms</li>
@@ -243,13 +250,17 @@ Provides Mel Frequency Cepstral Coefficient (MFCC) for Audio</p>
 <li><strong>n_fft</strong>: sr * frame_length (16,000 * 30ms)</li>
 <li><strong>hop_length</strong>: sr * stride (16,000 * 7.5ms)</li>
 </ul>
-</dd>
-<dt>Outputs</dt>
-<dd><ul class="first last simple">
-<li><strong>feat</strong> (torch.Tensor): MFCC values of signal</li>
-</ul>
-</dd>
-</dl>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>- **feat</strong> (torch.Tensor)**</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">MFCC values of signal</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -260,30 +271,29 @@ Provides Mel Frequency Cepstral Coefficient (MFCC) for Audio</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>feat</strong> (<em>-</em>) – input data feature</li>
-<li><strong>T</strong> (<em>-</em>) – Hyper Parameter for Time Masking to limit time masking length</li>
-<li><strong>F</strong> (<em>-</em>) – Hyper Parameter for Freq Masking to limit freq masking length</li>
-<li><strong>time_mask_num</strong> (<em>-</em>) – how many time-masked area to make</li>
-<li><strong>freq_mask_num</strong> (<em>-</em>) – how many freq-masked area to make</li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>feat</strong><strong> (</strong><strong>torch.Tensor</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>T</strong><strong> (</strong><strong>int</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>F</strong><strong> (</strong><strong>int</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>time_mask_num</strong><strong> (</strong><strong>int</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>freq_mask_num</strong><strong> (</strong><strong>int</strong><strong>)</strong> (<em>-</em>) – </li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>- **feat**</strong></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Augmented feature</p>
 </td>
 </tr>
 </tbody>
 </table>
-<dl class="docutils">
-<dt>Outputs:</dt>
-<dd><ul class="first last simple">
-<li><strong>feat</strong>: Augmented feature</li>
-</ul>
-</dd>
-<dt>Reference :</dt>
-<dd><dl class="first last docutils">
+<blockquote>
+<div><dl class="docutils">
 <dt>「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」Google Brain Team. 2019.</dt>
 <dd><a class="reference external" href="https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py">https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py</a></dd>
 </dl>
-</dd>
-</dl>
+</div></blockquote>
 </dd></dl>
 
 </div>

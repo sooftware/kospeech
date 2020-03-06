@@ -93,7 +93,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Models.html">Models</a></li>
 </ul>
-<p class="caption"><span class="caption-text">train</span></p>
+<p class="caption"><span class="caption-text">Train</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
@@ -109,6 +109,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Label</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Load.html">Load</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loader.html">Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Save.html">Save</a></li>
 </ul>
 
             
@@ -179,27 +180,51 @@
 <dt id="utils.label.get_label">
 <code class="descclassname">utils.label.</code><code class="descname">get_label</code><span class="sig-paren">(</span><em>filepath</em>, <em>sos_id=2037</em>, <em>eos_id=2038</em>, <em>target_dict=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/label.html#get_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.label.get_label" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provides specific file`s label to list format.</p>
-<dl class="docutils">
-<dt>Inputs: filepath, bos_id, eos_id, target_dict</dt>
-<dd><ul class="first last simple">
-<li><strong>filepath</strong>: specific path of label file</li>
-<li><strong>bos_id</strong>: &lt;s&gt;`s id</li>
-<li><strong>eos_id</strong>: &lt;/s&gt;`s id</li>
-<li><strong>target_dict</strong>: dictionary of filename and labels</li>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filepath</strong><strong> (</strong><strong>str</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>bos_id</strong><strong> (</strong><strong>int</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>eos_id</strong><strong> (</strong><strong>int</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>target_dict</strong><strong> (</strong><strong>dict</strong><strong>)</strong> (<em>-</em>) – </li>
 </ul>
-</dd>
-<dt>Outputs: label</dt>
-<dd><ul class="first last simple">
-<li><strong>label</strong>: list of bos + sequence of label + eos</li>
-</ul>
-</dd>
-</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>- **label</strong> (list)**</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list of bos + sequence of label + eos</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="utils.label.label_to_string">
 <code class="descclassname">utils.label.</code><code class="descname">label_to_string</code><span class="sig-paren">(</span><em>labels</em>, <em>id2char</em>, <em>eos_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/label.html#label_to_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.label.label_to_string" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts label to string (number =&gt; character)</p>
+<dd><p>Converts label to string (number =&gt; Hangeul)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>labels</strong> (<em>-</em>) – </li>
+<li><strong>id2char</strong> (<em>-</em>) – </li>
+<li><strong>eos_id</strong> (<em>-</em>) – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>- **sentence</strong> (str or list)**</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Hangeul representation of labels</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>

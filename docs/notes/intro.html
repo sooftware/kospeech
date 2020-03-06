@@ -89,6 +89,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#roadmap">Roadmap</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#install-from-source">Install from source</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#get-started">Get Started</a><ul>
@@ -98,6 +99,8 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#troubleshoots-and-contributing">Troubleshoots and Contributing</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#code-style">Code Style</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reference">Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#license">License</a></li>
 </ul>
 </li>
 </ul>
@@ -109,7 +112,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../Models.html">Models</a></li>
 </ul>
-<p class="caption"><span class="caption-text">train</span></p>
+<p class="caption"><span class="caption-text">Train</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Loss.html">Loss</a></li>
@@ -125,6 +128,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../Label.html">Label</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Load.html">Load</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Loader.html">Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Save.html">Save</a></li>
 </ul>
 
             
@@ -191,7 +195,9 @@
             
   <div class="section" id="introduction">
 <h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
-<p>This is project for Korean Speech Recognition Using LAS (Listen, Attend and Spell) models implemented in <a class="reference external" href="http://pytorch.org">PyTorch</a>.<br />We appreciate any kind of feedback or contribution.</p>
+<p>This is project for Korean Speech Recognition using LAS (Listen, Attend and Spell) models
+implemented in <a class="reference external" href="http://pytorch.org">PyTorch</a>.
+We appreciate any kind of feedback or contribution.</p>
 <div class="section" id="roadmap">
 <h2>Roadmap<a class="headerlink" href="#roadmap" title="Permalink to this headline">¶</a></h2>
 <p>Speech recognition is an interdisciplinary subfield of computational linguistics that develops methodologies and technologies that enables the recognition and translation of spoken language into text by computers.</p>
@@ -206,7 +212,8 @@
 </div>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
-<p>This package requires Python 3.5.<br />We recommend creating a new virtual environment for this project (using virtualenv or conda).</p>
+<p>This package requires Python 3.5.
+We recommend creating a new virtual environment for this project (using virtualenv or conda).</p>
 <div class="section" id="prerequisites">
 <h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
@@ -215,29 +222,68 @@
 <li>Pandas: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pandas</span></code> (Refer <a class="reference external" href="https://github.com/pandas-dev/pandas">here</a> for problem installing Pandas)</li>
 <li>librosa: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">librosa</span></code> (Refer <a class="reference external" href="https://github.com/librosa/librosa">here</a> for problem installing librosa)</li>
 <li>tqdm: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">tqdm</span></code> (Refer <a class="reference external" href="https://github.com/tqdm/tqdm">here</a> for problem installing tqdm)</li>
+<li>python-levenshtein: <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">install</span> <span class="pre">python-levenshtein</span></code> (Refer <a class="reference external" href="https://github.com/miohtama/python-Levenshtein">here</a> for problem installing python-levenshtein)</li>
 </ul>
+</div>
+<div class="section" id="install-from-source">
+<h3>Install from source<a class="headerlink" href="#install-from-source" title="Permalink to this headline">¶</a></h3>
+<p>Currently we only support installation from source code using setuptools. Checkout the source code and run the following
+commands:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python setup.py build
+$ python setup.py install
+</pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="get-started">
 <h2>Get Started<a class="headerlink" href="#get-started" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="preparation-before-training">
 <h3>Preparation before Training<a class="headerlink" href="#preparation-before-training" title="Permalink to this headline">¶</a></h3>
-<p>Refer <a class="reference external" href="https://sh951011.github.io/Korean-Speech-Recognition/notes/Preparation.html">here</a> before Training.<br />The above document is written in Korean.<br />We will also write a document in English as soon as possible, so please wait a little bit.</p>
+<p>Refer <a class="reference external" href="https://sh951011.github.io/Korean-Speech-Recognition/notes/Preparation.html">here</a> before Training.
+The above document is written in Korean.
+We will also write a document in English as soon as possible, so please wait a little bit.</p>
 <p>If you already have another dataset, please modify the data set path to <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/blob/master/utils/define.py">define.py</a> as appropriate.</p>
 </div>
 <div class="section" id="train-and-test">
 <h3>Train and Test<a class="headerlink" href="#train-and-test" title="Permalink to this headline">¶</a></h3>
-<p>if you want to start training, you should run <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/blob/master/main.py">main.py</a>.<br />or after training, you want to start testing, you should run <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/blob/master/test.py">test.py</a>.</p>
-<p>you can set up a hyperparameters <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/blob/master/utils/hparams.py">hparams.py</a>.<br />An explanation of hparams is <a class="reference external" href="https://sh951011.github.io/Korean-Speech-Recognition/Hparams.html">here</a>.</p>
+<p>if you want to start training, you should run <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/blob/master/main.py">main.py</a>.
+or after training, you want to start testing, you should run <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/blob/master/test.py">test.py</a>.</p>
+<p>you can set up a hyperparameters <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/blob/master/utils/hparams.py">hparams.py</a>.
+An explanation of hparams is <a class="reference external" href="https://sh951011.github.io/Korean-Speech-Recognition/Hparams.html">here</a>.</p>
 </div>
 </div>
 <div class="section" id="troubleshoots-and-contributing">
 <h2>Troubleshoots and Contributing<a class="headerlink" href="#troubleshoots-and-contributing" title="Permalink to this headline">¶</a></h2>
-<p>If you have any questions, bug reports, and feature requests, please <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/issues">open an issue</a> on Github.<br />or Contacts sh951011&#64;gmail.com please.</p>
+<p>If you have any questions, bug reports, and feature requests, please <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/issues">open an issue</a> on Github.
+or Contacts sh951011&#64;gmail.com please.</p>
 <p>We appreciate any kind of feedback or contribution.  Feel free to proceed with small issues like bug fixes, documentation improvement.  For major contributions and new features, please discuss with the collaborators in corresponding issues.</p>
 <div class="section" id="code-style">
 <h3>Code Style<a class="headerlink" href="#code-style" title="Permalink to this headline">¶</a></h3>
 <p>We follow <a class="reference external" href="https://google.github.io/styleguide/pyguide.html">Google Python Style Guide</a> for code style.  Especially the style of docstrings is important to generate documentation.</p>
+</div>
+<div class="section" id="reference">
+<h3>Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="https://arxiv.org/abs/1508.01211">[1] 「Listen, Attend and Spell」  Paper</a>
+<a class="reference external" href="https://arxiv.org/abs/1703.03130">[2] 「A Structured Self-attentive Sentence Embedding」 Paper</a>
+<a class="reference external" href="https://arxiv.org/abs/1904.08779">[3] 「A Simple Data Augmentation Method for Automatic Speech Recognition」  Paper</a>
+<a class="reference external" href="https://pdfs.semanticscholar.org/32d7/2b00454d5155599fb9e8e5119e16970db50d.pdf">[4] 「Voice Recognition Using MFCC Algorithm」  Paper</a>
+<a class="reference external" href="https://github.com/IBM/pytorch-seq2seq">[5]   IBM pytorch-seq2seq</a>
+<a class="reference external" href="http://www.aihub.or.kr/aidata/105">[6]   A.I Hub Korean Voice Dataset</a></p>
+</div>
+<div class="section" id="license">
+<h3>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Copyright</span> <span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="mi">2020</span> <span class="n">Kai</span><span class="o">.</span><span class="n">Lib</span>
+
+<span class="n">Licensed</span> <span class="n">under</span> <span class="n">the</span> <span class="n">Apache</span> <span class="n">License</span><span class="p">,</span> <span class="n">Version</span> <span class="mf">2.0</span> <span class="p">(</span><span class="n">the</span> <span class="s2">&quot;License&quot;</span><span class="p">);</span>
+<span class="n">you</span> <span class="n">may</span> <span class="ow">not</span> <span class="n">use</span> <span class="n">this</span> <span class="n">file</span> <span class="k">except</span> <span class="ow">in</span> <span class="n">compliance</span> <span class="k">with</span> <span class="n">the</span> <span class="n">License</span><span class="o">.</span>
+<span class="n">You</span> <span class="n">may</span> <span class="n">obtain</span> <span class="n">a</span> <span class="n">copy</span> <span class="n">of</span> <span class="n">the</span> <span class="n">License</span> <span class="n">at</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">licenses</span><span class="o">/</span><span class="n">LICENSE</span><span class="o">-</span><span class="mf">2.0</span>
+<span class="n">Unless</span> <span class="n">required</span> <span class="n">by</span> <span class="n">applicable</span> <span class="n">law</span> <span class="ow">or</span> <span class="n">agreed</span> <span class="n">to</span> <span class="ow">in</span> <span class="n">writing</span><span class="p">,</span> <span class="n">software</span>
+<span class="n">distributed</span> <span class="n">under</span> <span class="n">the</span> <span class="n">License</span> <span class="ow">is</span> <span class="n">distributed</span> <span class="n">on</span> <span class="n">an</span> <span class="s2">&quot;AS IS&quot;</span> <span class="n">BASIS</span><span class="p">,</span>
+<span class="n">WITHOUT</span> <span class="n">WARRANTIES</span> <span class="n">OR</span> <span class="n">CONDITIONS</span> <span class="n">OF</span> <span class="n">ANY</span> <span class="n">KIND</span><span class="p">,</span> <span class="n">either</span> <span class="n">express</span> <span class="ow">or</span> <span class="n">implied</span><span class="o">.</span>
+<span class="n">See</span> <span class="n">the</span> <span class="n">License</span> <span class="k">for</span> <span class="n">the</span> <span class="n">specific</span> <span class="n">language</span> <span class="n">governing</span> <span class="n">permissions</span> <span class="ow">and</span>
+<span class="n">limitations</span> <span class="n">under</span> <span class="n">the</span> <span class="n">License</span><span class="o">.</span>
+</pre></div>
+</div>
 </div>
 </div>
 </div>

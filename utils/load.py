@@ -1,3 +1,15 @@
+"""
+Copyright 2020- Kai.Lib
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+"""
 
 import pickle
 import math
@@ -12,11 +24,13 @@ def load_targets(label_paths):
     """
     Provides dictionary of filename and labels
 
-    Inputs: label_paths
-        - **label_paths**: set of label paths
+    Parameters
+    -----------
+        - **label_paths** (list): set of label paths
 
-    Outputs: target_dict
-        - **target_dict**: dictionary of filename and labels
+    Returns
+    ---------
+        - **target_dict** (dict): dictionary of filename and labels
     """
     target_dict = dict()
     for idx in trange(len(label_paths)):
@@ -32,12 +46,14 @@ def load_data_list(data_list_path, dataset_path):
     """
     Provides set of audio path & label path
 
-    Inputs: data_list_path
-        - **data_list_path**: csv file with training or test data list
+    Parameters
+    -----------
+        - **data_list_path** (list): csv file with training or test data list
 
-    Outputs: audio_paths, label_paths
-        - **audio_paths**: set of audio path
-        - **label_paths**: set of label path
+    Returns
+    --------
+        - **audio_paths** (list): set of audio path
+        - **label_paths** (list): set of label path
     """
     data_list = pd.read_csv(data_list_path, "r", delimiter = ",", encoding="cp949")
     audio_paths = list(dataset_path + data_list["audio"])
@@ -47,29 +63,41 @@ def load_data_list(data_list_path, dataset_path):
 
 def load_label(label_path, encoding='utf-8'):
     """
-    Provides char2index, index2char
+    Provides char2id, id2char
 
-    Inputs: label_path
-        - **label_path**: csv file with character labels
+    Parameters
+    -----------
+        - **label_path** (list): csv file with character labels
 
-    Outputs: char2index, index2char
-        - **char2index**: char2index[ch] = id
-        - **index2char**: index2char[id] = ch
+    Returns
+    --------
+        - **char2id** (dict): char2id[ch] = id
+        - **id2char** (dict): id2char[id] = ch
     """
-    char2index = dict()
-    index2char = dict()
+    char2id = dict()
+    id2char = dict()
     with open(label_path, 'r', encoding=encoding) as f:
         labels = csv.reader(f, delimiter=',')
         next(labels)
 
         for row in labels:
-            char2index[row[1]] = row[0]
-            index2char[int(row[0])] = row[1]
+            char2id[row[1]] = row[0]
+            id2char[int(row[0])] = row[1]
 
-    return char2index, index2char
+    return char2id, id2char
 
 def load_pickle(filepath, message=""):
-    """ load pickle file """
+    """
+    load pickle file
+
+    Parameters
+    -----------
+        - **filepath** (str): Path to pickle file to load
+
+    Returns
+    --------
+        -**load_result** : load result of pickle
+    """
     with open(filepath, "rb") as f:
         load_result = pickle.load(f)
         logger.info(message)

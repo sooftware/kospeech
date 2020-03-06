@@ -1,9 +1,44 @@
+"""
+Copyright 2020- Kai.Lib
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+"""
 
 import torch.nn as nn
 import torch
 
 class PyramidalRNN(nn.Module):
-    """ Pyramidal RNN for time resolution reduction """
+    """
+    Pyramidal RNN for time resolution reduction
+
+    Parameters
+    -----------
+        - **rnn_cell** (str, optional): type of RNN cell (default: gru)
+        - **hidden_size** (int): the number of features in the hidden state `h`
+        - **input_size** (int): size of input
+        - **dropout_p** (float, optional): dropout probability for the output sequence (default: 0)
+
+    Inputs
+    --------
+        - **inputs**: list of sequences, whose length is the batch size and within which each sequence is a list of token IDs.
+
+    Returns
+    ---------
+        - **output** (batch, seq_len, hidden_size): tensor containing the encoded features of the input sequence
+        - **hidden** (num_layers * num_directions, batch, hidden_size): tensor containing the features in the hidden state `h`
+
+    Reference
+    -----------
+        「Listen, Attend and Spell」 paper
+         https://arxiv.org/abs/1508.01211
+    """
     def __init__(self, rnn_cell, input_size, hidden_size, dropout_p):
         super(PyramidalRNN, self).__init__()
         assert rnn_cell.lower() == 'lstm' or rnn_cell.lower() == 'gru' or rnn_cell.lower() == 'rnn'
@@ -30,21 +65,26 @@ class Listener(nn.Module):
     """
     Converts low level speech signals into higher level features
 
-    Args:
+    Parameters
+    ------------
+        - **rnn_cell** (str, optional): type of RNN cell (default: gru)
         - **hidden_size** (int): the number of features in the hidden state `h`
-        - **dropout_p** (float, optional): dropout probability for the output sequence (default: 0)
         - **layer_size** (int, optional): number of recurrent layers (default: 1)
         - **bidirectional** (bool, optional): if True, becomes a bidirectional encoder (defulat: False)
-        - **rnn_cell** (str, optional): type of RNN cell (default: gru)
+        - **use_pyramidal** (bool): flag indication whether to use pyramidal rnn for time resolution (default: True)
+        - **dropout_p** (float, optional): dropout probability for the output sequence (default: 0)
 
-    Inputs: inputs
+    Inputs
+    --------
         - **inputs**: list of sequences, whose length is the batch size and within which each sequence is a list of token IDs.
 
-    Outputs: output, hidden
+    Returns
+    ---------
         - **output** (batch, seq_len, hidden_size): tensor containing the encoded features of the input sequence
         - **hidden** (num_layers * num_directions, batch, hidden_size): tensor containing the features in the hidden state `h`
 
-    Reference:
+    Reference
+    -----------
         「Listen, Attend and Spell」 paper
          https://arxiv.org/abs/1508.01211
     """
@@ -103,6 +143,7 @@ class Listener(nn.Module):
         return output, hidden
 
     def flatten_parameters(self):
+        """ flatten parameters for fast training """
         if self.use_pyramidal:
             self.bottom_rnn.flatten_parameters()
             self.middle_rnn.flatten_parameters()

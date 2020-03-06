@@ -1,15 +1,16 @@
 """
 Copyright 2020- Kai.Lib
+
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-      http://www.apache.org/licenses/LICENSE-2.0
+You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+
 import random
 import math
 from torch.utils.data import Dataset
@@ -21,18 +22,19 @@ from utils.define import logger, SOS_TOKEN, EOS_TOKEN, id2char
 class BaseDataset(Dataset):
     """
     Dataset for audio & label matching
-    Args: audio_paths, label_paths, bos_id, eos_id, target_dict
-        audio_paths: set of audio path
-                Format : [base_dir/KaiSpeech/KaiSpeech_123260.pcm, ... , base_dir/KaiSpeech/KaiSpeech_621245.pcm]
-        label_paths: set of label paths
-                Format : [base_dir/KaiSpeech/KaiSpeech_label_123260.txt, ... , base_dir/KaiSpeech/KaiSpeech_label_621245.txt]
-        bos_id: <s>`s id
-        eos_id: </s>`s id
-        target_dict: dictionary of filename and labels
-                Format : {KaiSpeech_label_FileNum : '5 0 49 4 0 8 190 0 78 115', ... }
-    Outputs:
-        - **feat**: feature vector for audio
-        - **label**: label for audio
+
+    Parameters
+    -----------
+        - **audio_paths** (list): set of audio path
+        - **label_paths** (list): set of label paths
+        - **bos_id** (int): <s>`s id
+        - **eos_id** (int): </s>`s id
+        - **target_dict** (dict): dictionary of filename and labels
+        - **input_reverse** (bool): flag indication whether to reverse input feature or not (default: True)
+        - **use_augment** (bool): flag indication whether to use spec-augmentation or not (default: True)
+        - **augment_ratio** (float): ratio of spec-augmentation applied data (default: 1.0)
+        - **pack_by_length** (bool): pack by similar sequence length
+        - **batch_size** (int): mini batch size
     """
     def __init__(self, audio_paths, label_paths, sos_id = 2037, eos_id = 2038,
                  target_dict = None, input_reverse = True, use_augment = True,
@@ -157,28 +159,20 @@ class BaseDataset(Dataset):
 def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_dict = None):
     """
     Dataset split into training and validation Dataset.
-    Args:
-        valid_ratio: ratio for validation data
-    Inputs: hparams, audio_paths, label_paths, target_dict
-        - **hparams**: set of hyper parameters
-        - **audio_paths**: set of audio path
-                Format : [base_dir/KaiSpeech/KaiSpeech_123260.pcm, ... , base_dir/KaiSpeech/KaiSpeech_621245.pcm]
-        - **label_paths**: set of label path
-                Format : [base_dir/KaiSpeech/KaiSpeech_label_123260.txt, ... , base_dir/KaiSpeech/KaiSpeech_label_621245.txt]
-        - **target_dict**: dictionary of filename and labels
-                {KaiSpeech_label_FileNum : '5 0 49 4 0 8 190 0 78 115', ... }
-    Local Variables:
-        - **train_num**: num of training data
-        - **batch_num**: total num of batch
-        - **valid_batch_num**: num of batch for validation
-        - **train_num_per_worker**: num of train data per CPU core
-        - **data_paths**: temp variables for audio_paths and label_paths to be shuffled in the same order
-        - **train_begin_idx**: begin index of worker`s training dataset
-        - **train_end_idx**: end index of worker`s training dataset
-    Outputs: train_batch_num, train_dataset_list, valid_dataset
-        - **train_batch_num**: num of batch for training
-        - **train_dataset_list**: list of training data
-        - **valid_dataset**: list of validation data
+
+
+    Parameters
+    ------------
+        - **hparams** (utils.HyperParams): set of hyper parameters
+        - **audio_paths** (list): set of audio path
+        - **label_paths** (list): set of label path
+        - **target_dict** (dict): dictionary of filename and labels
+
+    Returns
+    --------
+        - **train_batch_num** (int): num of batch for training
+        - **train_dataset_list** (list): list of training dataset
+        - **valid_dataset** (utils.BaseDataset): validation dataset
     """
     logger.info("split dataset start !!")
     train_dataset_list = list()

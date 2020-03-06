@@ -93,7 +93,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Models.html">Models</a></li>
 </ul>
-<p class="caption"><span class="caption-text">train</span></p>
+<p class="caption"><span class="caption-text">Train</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
@@ -109,6 +109,7 @@
 <li class="toctree-l1"><a class="reference internal" href="Label.html">Label</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Load.html">Load</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loader.html">Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Save.html">Save</a></li>
 </ul>
 
             
@@ -173,8 +174,34 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="evaluator">
-<h1>Evaluator<a class="headerlink" href="#evaluator" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-train.evaluator">
+<span id="evaluator"></span><h1>Evaluator<a class="headerlink" href="#module-train.evaluator" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="train.evaluator.evaluate">
+<code class="descclassname">train.evaluator.</code><code class="descname">evaluate</code><span class="sig-paren">(</span><em>model</em>, <em>queue</em>, <em>criterion</em>, <em>device</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/train/evaluator.html#evaluate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#train.evaluator.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>model</strong><strong> (</strong><strong>torch.nn</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>queue</strong><strong> (</strong><strong>queue</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>criterion</strong><strong> (</strong><strong>torch.nn</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>device</strong><strong> (</strong><strong>torch.cuda</strong><strong>)</strong> (<em>-</em>) – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>- **loss</strong> (float)** (<em>loss of evalution</em>)</li>
+<li><strong>- **cer</strong> (float)** (<em>character error rate</em>)</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 
 

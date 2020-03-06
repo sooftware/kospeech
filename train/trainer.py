@@ -1,16 +1,15 @@
 """
 Copyright 2020- Kai.Lib
+
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-      http://www.apache.org/licenses/LICENSE-2.0
+You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-
 import time
 from utils.distance import get_distance
 from utils.define import logger, id2char, EOS_TOKEN
@@ -22,18 +21,20 @@ def train(model, hparams, epoch, total_time_step, queue,
           criterion, optimizer, device, train_begin, worker_num,
           print_time_step=10, teacher_forcing_ratio=0.90):
     """
-    Args:
-        - **model**: Model to be trained
-        - **optimizer**: optimizer for training
-        - **teacher_forcing_ratio**:  The probability that teacher forcing will be used (default: 0.90)
-        - **print_time_step**: Parameters to determine how many steps to output
-        - **queue**: queue for threading
-        - **criterion**: loss function ex) nn.CrossEntropyLoss, LabelSmoothingLoss etc ..
-        - **device**: device used ('cuda' or 'cpu')
-        - **worker_num**: the number of cpu cores used
+    Parameters
+    ------------
+        - **model** (torch.nn): Model to be trained
+        - **optimizer** (torch.optim): optimizer for training
+        - **teacher_forcing_ratio** (float):  The probability that teacher forcing will be used (default: 0.90)
+        - **print_time_step** (int): Parameters to determine how many steps to output
+        - **queue** (queue): queue for threading
+        - **criterion** (torch.nn): loss function ex) nn.CrossEntropyLoss, LabelSmoothingLoss etc ..
+        - **device** (torch.cuda): device used ('cuda' or 'cpu')
+        - **worker_num** (int): the number of cpu cores used
 
-    Outputs:
-        - **error_rate** (float): error rate of present epoch
+    Returns
+    --------
+        - **cer** (float): character error rate
         - **loss** (float): loss of present epoch
     """
     total_loss = 0.
@@ -102,8 +103,8 @@ def train(model, hparams, epoch, total_time_step, queue,
         train.cumulative_batch_count += 1
 
     loss = total_loss / total_num
-    error_rate = total_distance / total_length
+    cer = total_distance / total_length
     logger.info('train() completed')
-    return loss, error_rate
+    return loss, cer
 
 train.cumulative_batch_count = 0

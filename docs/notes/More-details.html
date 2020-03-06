@@ -112,7 +112,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../Models.html">Models</a></li>
 </ul>
-<p class="caption"><span class="caption-text">train</span></p>
+<p class="caption"><span class="caption-text">Train</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Loss.html">Loss</a></li>
@@ -128,6 +128,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../Label.html">Label</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Load.html">Load</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Loader.html">Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Save.html">Save</a></li>
 </ul>
 
             
@@ -258,7 +259,8 @@
 </div>
 <div class="section" id="hyperparameters">
 <h2>Hyperparameters<a class="headerlink" href="#hyperparameters" title="Permalink to this headline">¶</a></h2>
-<p>| Hyperparameter  |Help| Default|<br />| ———-      |—|:———-:|<br />| use_bidirectional| if True, becomes a bidirectional encoder|True|<br />| use_attention    | flag indication whether to use attention mechanism or not|True |<br />| score_function    |which attention to use|self |<br />| use_label_smoothing    | flag indication whether to use label smoothing or not|True |<br />|input_reverse|flag indication whether to reverse input feature or not|True|<br />|use_augment| flag indication whether to use spec-augmentation or not|True|<br />|use_pyramidal| flag indication whether to use pLSTM or not|True|<br />|augment_ratio|ratio of spec-augmentation applied data|-|<br />|listener_layer_size|number of listener<code class="docutils literal notranslate"><span class="pre">s</span> <span class="pre">RNN</span> <span class="pre">layer|6|</span>&#160;&#160; <span class="pre">|</span> <span class="pre">speller_layer_size|number</span> <span class="pre">of</span> <span class="pre">speller</span></code>s RNN layer| 3|<br />| hidden_size| size of hidden state of RNN|256|
+<p>| Hyperparameter  |Help| Default|<br />| ———-      |—|:———-:|<br />| use_bidirectional| if True, becomes a bidirectional encoder|True|<br />| use_attention    | flag indication whether to use attention mechanism or not|True |
+| use_label_smoothing    | flag indication whether to use label smoothing or not|True |<br />|input_reverse|flag indication whether to reverse input feature or not|True|<br />|use_augment| flag indication whether to use spec-augmentation or not|True|<br />|use_pyramidal| flag indication whether to use pLSTM or not|True|<br />|augment_ratio|ratio of spec-augmentation applied data|-|<br />|listener_layer_size|number of listener<code class="docutils literal notranslate"><span class="pre">s</span> <span class="pre">RNN</span> <span class="pre">layer|6|</span>&#160;&#160; <span class="pre">|</span> <span class="pre">speller_layer_size|number</span> <span class="pre">of</span> <span class="pre">speller</span></code>s RNN layer| 3|<br />| hidden_size| size of hidden state of RNN|256|
 | batch_size | mini-batch size|12|
 | dropout          | dropout probability|0.5  |
 | teacher_forcing  | The probability that teacher forcing will be used|0.99|

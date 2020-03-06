@@ -1,3 +1,16 @@
+"""
+Copyright 2020- Kai.Lib
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+"""
+
 import threading
 import math
 import torch
@@ -9,7 +22,8 @@ class MultiLoader():
     """
     Multi Data Loader using Threads.
 
-    Args:
+    Parameters
+    -----------
         - **dataset**: object of BaseDataset
         - **queue**: queue for threading
         - **batch_size**: size of batch
@@ -37,7 +51,8 @@ class BaseDataLoader(threading.Thread):
     """
     Base Data Loader
 
-    Args:
+    Parameters
+    -----------
         - **dataset**: object of BaseDataset
         - **queue**: queue for threading
         - **batch_size**: size of batch
@@ -87,6 +102,9 @@ class BaseDataLoader(threading.Thread):
         logger.debug('loader %d stop' % (self.thread_id))
 
 def _collate_fn(batch):
+    """
+    functions that pad to the maximum sequence length
+    """
     def seq_length_(p):
         return len(p[0])
 

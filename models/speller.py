@@ -1,3 +1,16 @@
+"""
+Copyright 2020- Kai.Lib
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+"""
+
 import random
 import torch
 import torch.nn as nn
@@ -16,7 +29,8 @@ class Speller(nn.Module):
     """
     Converts higher level features (from listener) into output utterances by specifying a probability distribution over sequences of characters.
 
-    Args:
+    Parameters
+    ------------
         - **vocab_size** (int): size of the vocabulary
         - **max_len** (int): a maximum allowed length for the sequence to be processed
         - **hidden_size** (int): the number of features in the hidden state `h`
@@ -28,7 +42,8 @@ class Speller(nn.Module):
         - **use_attention** (bool, optional): flag indication whether to use attention mechanism or not (default: false)
         - **k** (int) : size of beam
 
-    Inputs: inputs, listener_hidden, listener_outputs, function, teacher_forcing_ratio
+    Inputs
+    --------
         - **inputs** (batch, seq_len, input_size): list of sequences, whose length is the batch size and within which
           each sequence is a list of token IDs.  It is used for teacher forcing when provided. (default `None`)
         - **listener_hidden** (num_layers * num_directions, batch_size, hidden_size): tensor containing the features in the
@@ -41,11 +56,12 @@ class Speller(nn.Module):
           drawn uniformly from 0-1 for every decoding token, and if the sample is smaller than the given value,
           teacher forcing would be used (default is 0).
 
-    Outputs: speller_outputs, speller_hidden, ret_dict
-        - **speller_outputs** (seq_len, batch, vocab_size): list of tensors with size (batch_size, vocab_size) containing
-          the outputs of the decoding function.
+    Returns
+    ---------
+        - **speller_outputs** (seq_len, batch, vocab_size): list of tensors with size (batch_size, vocab_size) containing the outputs of the decoding function.
 
-    Reference:
+    Reference
+    -----------
         「Listen, Attend and Spell」 paper
          https://arxiv.org/abs/1508.01211
     """

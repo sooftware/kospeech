@@ -93,7 +93,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Models.html">Models</a></li>
 </ul>
-<p class="caption"><span class="caption-text">train</span></p>
+<p class="caption"><span class="caption-text">Train</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
@@ -109,6 +109,7 @@
 <li class="toctree-l1"><a class="reference internal" href="Label.html">Label</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Load.html">Load</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loader.html">Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Save.html">Save</a></li>
 </ul>
 
             
@@ -173,8 +174,86 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="dataset">
-<h1>Dataset<a class="headerlink" href="#dataset" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-utils.dataset">
+<span id="dataset"></span><h1>Dataset<a class="headerlink" href="#module-utils.dataset" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="utils.dataset.BaseDataset">
+<em class="property">class </em><code class="descclassname">utils.dataset.</code><code class="descname">BaseDataset</code><span class="sig-paren">(</span><em>audio_paths</em>, <em>label_paths</em>, <em>sos_id=2037</em>, <em>eos_id=2038</em>, <em>target_dict=None</em>, <em>input_reverse=True</em>, <em>use_augment=True</em>, <em>batch_size=None</em>, <em>augment_ratio=0.3</em>, <em>pack_by_length=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/dataset.html#BaseDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.dataset.BaseDataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dataset for audio &amp; label matching</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>audio_paths</strong><strong> (</strong><strong>list</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>label_paths</strong><strong> (</strong><strong>list</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>bos_id</strong><strong> (</strong><strong>int</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>eos_id</strong><strong> (</strong><strong>int</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>target_dict</strong><strong> (</strong><strong>dict</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>input_reverse</strong><strong> (</strong><strong>bool</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>use_augment</strong><strong> (</strong><strong>bool</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>augment_ratio</strong><strong> (</strong><strong>float</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>pack_by_length</strong><strong> (</strong><strong>bool</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>batch_size</strong><strong> (</strong><strong>int</strong><strong>)</strong> (<em>-</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="utils.dataset.BaseDataset.augmentation">
+<code class="descname">augmentation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/dataset.html#BaseDataset.augmentation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.dataset.BaseDataset.augmentation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply Spec-Augmentation</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="utils.dataset.BaseDataset.batch_shuffle">
+<code class="descname">batch_shuffle</code><span class="sig-paren">(</span><em>remain_drop=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/dataset.html#BaseDataset.batch_shuffle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.dataset.BaseDataset.batch_shuffle" title="Permalink to this definition">¶</a></dt>
+<dd><p>batch shuffle</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="utils.dataset.BaseDataset.shuffle">
+<code class="descname">shuffle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/dataset.html#BaseDataset.shuffle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.dataset.BaseDataset.shuffle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shuffle Dataset</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="utils.dataset.BaseDataset.sort_by_length">
+<code class="descname">sort_by_length</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/dataset.html#BaseDataset.sort_by_length"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.dataset.BaseDataset.sort_by_length" title="Permalink to this definition">¶</a></dt>
+<dd><p>descending sort by sequence length</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.dataset.split_dataset">
+<code class="descclassname">utils.dataset.</code><code class="descname">split_dataset</code><span class="sig-paren">(</span><em>hparams</em>, <em>audio_paths</em>, <em>label_paths</em>, <em>valid_ratio=0.05</em>, <em>target_dict=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/dataset.html#split_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.dataset.split_dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dataset split into training and validation Dataset.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>hparams</strong><strong> (</strong><strong>utils.HyperParams</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>audio_paths</strong><strong> (</strong><strong>list</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>label_paths</strong><strong> (</strong><strong>list</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>target_dict</strong><strong> (</strong><strong>dict</strong><strong>)</strong> (<em>-</em>) – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>- **train_batch_num</strong> (int)** (<em>num of batch for training</em>)</li>
+<li><strong>- **train_dataset_list</strong> (list)** (<em>list of training dataset</em>)</li>
+<li><strong>- **valid_dataset</strong> (utils.BaseDataset)** (<em>validation dataset</em>)</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 
 

@@ -91,7 +91,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Models.html">Models</a></li>
 </ul>
-<p class="caption"><span class="caption-text">train</span></p>
+<p class="caption"><span class="caption-text">Train</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Loss.html">Loss</a></li>
@@ -107,6 +107,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../Label.html">Label</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Load.html">Load</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Loader.html">Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Save.html">Save</a></li>
 </ul>
 
             
@@ -170,24 +171,14 @@
            <div itemprop="articleBody">
             
   <h1>Source code for train.lr</h1><div class="highlight"><pre>
-<span></span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module of learning rate</span>
+
+<span class="sd">Reference</span>
+<span class="sd">----------</span>
+<span class="sd">    「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」Google Brain Team. 2019.</span>
+<span class="sd">    https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Multi-Step Learning Rate</span>
-
-<span class="sd">Reference:</span>
-<span class="sd">    SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition</span>
-<span class="sd">    https://arxiv.org/abs/1904.08779</span>
-<span class="sd">&quot;&quot;&quot;</span>
-
-<div class="viewcode-block" id="set_lr"><a class="viewcode-back" href="../../Lr.html#train.lr.set_lr">[docs]</a><span class="k">def</span> <span class="nf">set_lr</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">lr</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; set learning rate &quot;&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">param_groups</span><span class="p">:</span>
-        <span class="n">g</span><span class="p">[</span><span class="s1">&#39;lr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lr</span></div>
-
-<div class="viewcode-block" id="get_lr"><a class="viewcode-back" href="../../Lr.html#train.lr.get_lr">[docs]</a><span class="k">def</span> <span class="nf">get_lr</span><span class="p">(</span><span class="n">optimizer</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; get learning rate &quot;&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">param_groups</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">g</span><span class="p">[</span><span class="s1">&#39;lr&#39;</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="ramp_up"><a class="viewcode-back" href="../../Lr.html#train.lr.ramp_up">[docs]</a><span class="k">def</span> <span class="nf">ramp_up</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">time_step</span><span class="p">,</span> <span class="n">hparams</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; rampup learning rate &quot;&quot;&quot;</span>
@@ -201,6 +192,16 @@
     <span class="n">decay_speed</span> <span class="o">=</span> <span class="n">decay_rate</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">total_time_step</span><span class="p">)</span>
     <span class="n">lr</span> <span class="o">=</span> <span class="n">get_lr</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span>
     <span class="n">set_lr</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">lr</span> <span class="o">*</span> <span class="n">decay_speed</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="set_lr"><a class="viewcode-back" href="../../Lr.html#train.lr.set_lr">[docs]</a><span class="k">def</span> <span class="nf">set_lr</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">lr</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; set learning rate &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">param_groups</span><span class="p">:</span>
+        <span class="n">g</span><span class="p">[</span><span class="s1">&#39;lr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lr</span></div>
+
+<div class="viewcode-block" id="get_lr"><a class="viewcode-back" href="../../Lr.html#train.lr.get_lr">[docs]</a><span class="k">def</span> <span class="nf">get_lr</span><span class="p">(</span><span class="n">optimizer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; get learning rate &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">param_groups</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">g</span><span class="p">[</span><span class="s1">&#39;lr&#39;</span><span class="p">]</span></div>
 </pre></div>
 
            </div>

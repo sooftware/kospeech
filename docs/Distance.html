@@ -93,7 +93,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Models.html">Models</a></li>
 </ul>
-<p class="caption"><span class="caption-text">train</span></p>
+<p class="caption"><span class="caption-text">Train</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
@@ -109,6 +109,7 @@
 <li class="toctree-l1"><a class="reference internal" href="Label.html">Label</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Load.html">Load</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loader.html">Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Save.html">Save</a></li>
 </ul>
 
             
@@ -178,13 +179,52 @@
 <dl class="function">
 <dt id="utils.distance.char_distance">
 <code class="descclassname">utils.distance.</code><code class="descname">char_distance</code><span class="sig-paren">(</span><em>target</em>, <em>y_hat</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/distance.html#char_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.distance.char_distance" title="Permalink to this definition">¶</a></dt>
-<dd><p>get Levenshtein distance</p>
+<dd><p>Calculating charater distance between target &amp; y_hat</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>target</strong> (<em>-</em>) – </li>
+<li><strong>y_hat</strong> (<em>-</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<div><ul class="simple">
+<li><strong>distance</strong>: distance between target &amp; y_hat</li>
+<li><strong>length</strong>: length of target sequence</li>
+</ul>
+</div></blockquote>
 </dd></dl>
 
 <dl class="function">
 <dt id="utils.distance.get_distance">
 <code class="descclassname">utils.distance.</code><code class="descname">get_distance</code><span class="sig-paren">(</span><em>targets</em>, <em>y_hats</em>, <em>id2char</em>, <em>eos_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/distance.html#get_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.distance.get_distance" title="Permalink to this definition">¶</a></dt>
-<dd><p>get character distance</p>
+<dd><p>Provides total character distance between targets &amp; y_hats</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>targets</strong> (<em>-</em>) – </li>
+<li><strong>y_hats</strong> (<em>-</em>) – </li>
+<li><strong>id2char</strong> (<em>-</em>) – </li>
+<li><strong>eos_id</strong> (<em>-</em>) – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>- **total_distance**</strong> (<em>total distance between targets &amp; y_hats</em>)</li>
+<li><strong>- **total_length**</strong> (<em>total length of targets sequence</em>)</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>

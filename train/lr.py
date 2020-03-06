@@ -1,25 +1,22 @@
 """
 Copyright 2020- Kai.Lib
+
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-      http://www.apache.org/licenses/LICENSE-2.0
+You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+Module of learning rate
+
+Reference
+----------
+    「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」Google Brain Team. 2019.
+     https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py
 """
-
-def set_lr(optimizer, lr):
-    """ set learning rate """
-    for g in optimizer.param_groups:
-        g['lr'] = lr
-
-def get_lr(optimizer):
-    """ get learning rate """
-    for g in optimizer.param_groups:
-        return g['lr']
 
 def ramp_up(optimizer, time_step, hparams):
     """ rampup learning rate """
@@ -33,3 +30,13 @@ def exp_decay(optimizer, total_time_step, hparams):
     decay_speed = decay_rate ** (1/total_time_step)
     lr = get_lr(optimizer)
     set_lr(optimizer, lr * decay_speed)
+
+def set_lr(optimizer, lr):
+    """ set learning rate """
+    for g in optimizer.param_groups:
+        g['lr'] = lr
+
+def get_lr(optimizer):
+    """ get learning rate """
+    for g in optimizer.param_groups:
+        return g['lr']

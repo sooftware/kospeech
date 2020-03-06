@@ -1,20 +1,34 @@
-from utils.define import logger
+"""
+Copyright 2020- Kai.Lib
 
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+"""
+
+from utils.define import logger
 
 class HyperParams():
     """
     Set of Hyperparameters
 
-    Hyperparameters:
+    Hyperparameters
+    ----------------
         - **use_bidirectional** (bool): if True, becomes a bidirectional listener (default: True)
         - **use_attention** (bool): flag indication whether to use attention mechanism or not (default: True)
-        - **use_label_smooth** (bool): flagindication whether to use label smoothing or not (default: True)
+        - **use_label_smooth** (bool): flag indication whether to use label smoothing or not (default: True)
         - **input_reverse** (bool): flag indication whether to reverse input feature or not (default: True)
         - **use_pickle** (bool): flag indication whether to load data from pickle or not (default: False)
         - **use_augment** (bool): flag indication whether to use spec-augmentation or not (default: True)
         - **use_pyramidal** (bool): flag indication whether to use pyramidal rnn in listener or not (default: True)
         - **use_multistep_lr** (bool): flag indication whether to use multistep leraning rate or not (default:False)
         - **augment_ratio** (float): ratio of spec-augmentation applied data (default: 1.0)
+        - **pack_by_length** (bool): pack by similar sequence length
         - **listener_layer_size** (int): num of listener`s RNN cell (default: 6)
         - **speller_layer_size** (int): num of speller`s RNN cell (default: 3)
         - **hidden_size** (int): size of hidden state of RNN (default: 256)

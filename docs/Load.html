@@ -93,7 +93,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Models.html">Models</a></li>
 </ul>
-<p class="caption"><span class="caption-text">train</span></p>
+<p class="caption"><span class="caption-text">Train</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
@@ -109,6 +109,7 @@
 <li class="toctree-l1"><a class="reference internal" href="Label.html">Label</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Load</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loader.html">Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Save.html">Save</a></li>
 </ul>
 
             
@@ -179,62 +180,76 @@
 <dt id="utils.load.load_data_list">
 <code class="descclassname">utils.load.</code><code class="descname">load_data_list</code><span class="sig-paren">(</span><em>data_list_path</em>, <em>dataset_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/load.html#load_data_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.load.load_data_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provides set of audio path &amp; label path</p>
-<dl class="docutils">
-<dt>Inputs: data_list_path</dt>
-<dd><ul class="first last simple">
-<li><strong>data_list_path</strong>: csv file with training or test data list</li>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data_list_path</strong><strong> (</strong><strong>list</strong><strong>)</strong> (<em>-</em>) – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
+<li><strong>- **audio_paths</strong> (list)** (<em>set of audio path</em>)</li>
+<li><strong>- **label_paths</strong> (list)** (<em>set of label path</em>)</li>
 </ul>
-</dd>
-<dt>Outputs: audio_paths, label_paths</dt>
-<dd><ul class="first last simple">
-<li><strong>audio_paths</strong>: set of audio path</li>
-<li><strong>label_paths</strong>: set of label path</li>
-</ul>
-</dd>
-</dl>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="utils.load.load_label">
 <code class="descclassname">utils.load.</code><code class="descname">load_label</code><span class="sig-paren">(</span><em>label_path</em>, <em>encoding='utf-8'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/load.html#load_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.load.load_label" title="Permalink to this definition">¶</a></dt>
-<dd><p>Provides char2index, index2char</p>
-<dl class="docutils">
-<dt>Inputs: label_path</dt>
-<dd><ul class="first last simple">
-<li><strong>label_path</strong>: csv file with character labels</li>
+<dd><p>Provides char2id, id2char</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>label_path</strong><strong> (</strong><strong>list</strong><strong>)</strong> (<em>-</em>) – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
+<li><strong>- **char2id</strong> (dict)** (<em>char2id[ch] = id</em>)</li>
+<li><strong>- **id2char</strong> (dict)** (<em>id2char[id] = ch</em>)</li>
 </ul>
-</dd>
-<dt>Outputs: char2index, index2char</dt>
-<dd><ul class="first last simple">
-<li><strong>char2index</strong>: char2index[ch] = id</li>
-<li><strong>index2char</strong>: index2char[id] = ch</li>
-</ul>
-</dd>
-</dl>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="utils.load.load_pickle">
 <code class="descclassname">utils.load.</code><code class="descname">load_pickle</code><span class="sig-paren">(</span><em>filepath</em>, <em>message=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/load.html#load_pickle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.load.load_pickle" title="Permalink to this definition">¶</a></dt>
 <dd><p>load pickle file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filepath</strong><strong> (</strong><strong>str</strong><strong>)</strong> (<em>-</em>) – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>-**load_result**</strong></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">load result of pickle</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="utils.load.load_targets">
 <code class="descclassname">utils.load.</code><code class="descname">load_targets</code><span class="sig-paren">(</span><em>label_paths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/load.html#load_targets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.load.load_targets" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provides dictionary of filename and labels</p>
-<dl class="docutils">
-<dt>Inputs: label_paths</dt>
-<dd><ul class="first last simple">
-<li><strong>label_paths</strong>: set of label paths</li>
-</ul>
-</dd>
-<dt>Outputs: target_dict</dt>
-<dd><ul class="first last simple">
-<li><strong>target_dict</strong>: dictionary of filename and labels</li>
-</ul>
-</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>label_paths</strong><strong> (</strong><strong>list</strong><strong>)</strong> (<em>-</em>) – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>- **target_dict</strong> (dict)**</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dictionary of filename and labels</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>

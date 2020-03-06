@@ -34,6 +34,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Save" href="Save.html" />
     <link rel="prev" title="Load" href="Load.html" /> 
 </head>
 
@@ -92,7 +93,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Models.html">Models</a></li>
 </ul>
-<p class="caption"><span class="caption-text">train</span></p>
+<p class="caption"><span class="caption-text">Train</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
@@ -108,6 +109,7 @@
 <li class="toctree-l1"><a class="reference internal" href="Label.html">Label</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Load.html">Load</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Save.html">Save</a></li>
 </ul>
 
             
@@ -172,8 +174,58 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="loader">
-<h1>Loader<a class="headerlink" href="#loader" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-utils.loader">
+<span id="loader"></span><h1>Loader<a class="headerlink" href="#module-utils.loader" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="utils.loader.BaseDataLoader">
+<em class="property">class </em><code class="descclassname">utils.loader.</code><code class="descname">BaseDataLoader</code><span class="sig-paren">(</span><em>dataset</em>, <em>queue</em>, <em>batch_size</em>, <em>thread_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/loader.html#BaseDataLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.loader.BaseDataLoader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base Data Loader</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dataset</strong> (<em>-</em>) – </li>
+<li><strong>queue</strong> (<em>-</em>) – </li>
+<li><strong>batch_size</strong> (<em>-</em>) – </li>
+<li><strong>thread_id</strong> (<em>-</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="utils.loader.BaseDataLoader.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/loader.html#BaseDataLoader.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.loader.BaseDataLoader.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method representing the thread’s activity.</p>
+<p>You may override this method in a subclass. The standard run() method
+invokes the callable object passed to the object’s constructor as the
+target argument, if any, with sequential and keyword arguments taken
+from the args and kwargs arguments, respectively.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="utils.loader.MultiLoader">
+<em class="property">class </em><code class="descclassname">utils.loader.</code><code class="descname">MultiLoader</code><span class="sig-paren">(</span><em>dataset_list</em>, <em>queue</em>, <em>batch_size</em>, <em>worker_num</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/loader.html#MultiLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.loader.MultiLoader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Multi Data Loader using Threads.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dataset</strong> (<em>-</em>) – </li>
+<li><strong>queue</strong> (<em>-</em>) – </li>
+<li><strong>batch_size</strong> (<em>-</em>) – </li>
+<li><strong>worker_num</strong> (<em>-</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 
 
@@ -183,6 +235,8 @@
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Save.html" class="btn btn-neutral float-right" title="Save" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="Load.html" class="btn btn-neutral float-left" title="Load" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

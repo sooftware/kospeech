@@ -91,7 +91,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Models.html">Models</a></li>
 </ul>
-<p class="caption"><span class="caption-text">train</span></p>
+<p class="caption"><span class="caption-text">Train</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Loss.html">Loss</a></li>
@@ -107,6 +107,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../Label.html">Label</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Load.html">Load</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Loader.html">Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Save.html">Save</a></li>
 </ul>
 
             
@@ -170,21 +171,24 @@
            <div itemprop="articleBody">
             
   <h1>Source code for utils.hparams</h1><div class="highlight"><pre>
-<span></span>
+<span></span><span class="c1">#from utils.define import logger</span>
+
 <div class="viewcode-block" id="HyperParams"><a class="viewcode-back" href="../../Hparams.html#utils.hparams.HyperParams">[docs]</a><span class="k">class</span> <span class="nc">HyperParams</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Set of Hyperparameters</span>
 
-<span class="sd">    Hyperparameters:</span>
+<span class="sd">    Hyperparameters</span>
+<span class="sd">    ----------------</span>
 <span class="sd">        - **use_bidirectional** (bool): if True, becomes a bidirectional listener (default: True)</span>
 <span class="sd">        - **use_attention** (bool): flag indication whether to use attention mechanism or not (default: True)</span>
-<span class="sd">        - **use_label_smooth** (bool): flagindication whether to use label smoothing or not (default: True)</span>
+<span class="sd">        - **use_label_smooth** (bool): flag indication whether to use label smoothing or not (default: True)</span>
 <span class="sd">        - **input_reverse** (bool): flag indication whether to reverse input feature or not (default: True)</span>
 <span class="sd">        - **use_pickle** (bool): flag indication whether to load data from pickle or not (default: False)</span>
 <span class="sd">        - **use_augment** (bool): flag indication whether to use spec-augmentation or not (default: True)</span>
 <span class="sd">        - **use_pyramidal** (bool): flag indication whether to use pyramidal rnn in listener or not (default: True)</span>
 <span class="sd">        - **use_multistep_lr** (bool): flag indication whether to use multistep leraning rate or not (default:False)</span>
 <span class="sd">        - **augment_ratio** (float): ratio of spec-augmentation applied data (default: 1.0)</span>
+<span class="sd">        - **pack_by_length** (bool): pack by similar sequence length</span>
 <span class="sd">        - **listener_layer_size** (int): num of listener`s RNN cell (default: 6)</span>
 <span class="sd">        - **speller_layer_size** (int): num of speller`s RNN cell (default: 3)</span>
 <span class="sd">        - **hidden_size** (int): size of hidden state of RNN (default: 256)</span>
@@ -251,6 +255,31 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">teacher_forcing</span> <span class="o">=</span> <span class="n">teacher_forcing</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">seed</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_len</span> <span class="o">=</span> <span class="n">max_len</span></div>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    def logger_hparams(self):</span>
+<span class="sd">        logger.info(&quot;use_bidirectional : %s&quot; % str(self.use_bidirectional))</span>
+<span class="sd">        logger.info(&quot;use_attention : %s&quot; % str(self.use_attention))</span>
+<span class="sd">        logger.info(&quot;use_pickle : %s&quot; % str(self.use_pickle))</span>
+<span class="sd">        logger.info(&quot;use_augment : %s&quot; % str(self.use_augment))</span>
+<span class="sd">        logger.info(&quot;use_pyramidal : %s&quot; % str(self.use_pyramidal))</span>
+<span class="sd">        logger.info(&quot;augment_ratio : %0.2f&quot; % self.augment_ratio)</span>
+<span class="sd">        logger.info(&quot;input_reverse : %s&quot; % str(self.input_reverse))</span>
+<span class="sd">        logger.info(&quot;hidden_size : %d&quot; % self.hidden_size)</span>
+<span class="sd">        logger.info(&quot;listener_layer_size : %d&quot; % self.listener_layer_size)</span>
+<span class="sd">        logger.info(&quot;speller_layer_size : %d&quot; % self.speller_layer_size)</span>
+<span class="sd">        logger.info(&quot;dropout : %0.2f&quot; % self.dropout)</span>
+<span class="sd">        logger.info(&quot;batch_size : %d&quot; % self.batch_size)</span>
+<span class="sd">        logger.info(&quot;worker_num : %d&quot; % self.worker_num)</span>
+<span class="sd">        logger.info(&quot;max_epochs : %d&quot; % self.max_epochs)</span>
+<span class="sd">        logger.info(&quot;initial learning rate : %0.4f&quot; % self.init_lr)</span>
+<span class="sd">        if self.use_multistep_lr:</span>
+<span class="sd">            logger.info(&quot;high plateau learning rate : %0.4f&quot; % self.high_plateau_lr)</span>
+<span class="sd">            logger.info(&quot;low plateau learning rate : %0.4f&quot; % self.low_plateau_lr)</span>
+<span class="sd">        logger.info(&quot;teacher_forcing_ratio : %0.2f&quot; % self.teacher_forcing)</span>
+<span class="sd">        logger.info(&quot;seed : %d&quot; % self.seed)</span>
+<span class="sd">        logger.info(&quot;max_len : %d&quot; % self.max_len)</span>
+<span class="sd">        logger.info(&quot;use_cuda : %s&quot; % str(self.use_cuda))</span>
+<span class="sd">&quot;&quot;&quot;</span>
 </pre></div>
 
            </div>

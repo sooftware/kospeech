@@ -91,7 +91,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Models.html">Models</a></li>
 </ul>
-<p class="caption"><span class="caption-text">train</span></p>
+<p class="caption"><span class="caption-text">Train</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Loss.html">Loss</a></li>
@@ -107,6 +107,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../Label.html">Label</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Load.html">Load</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Loader.html">Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Save.html">Save</a></li>
 </ul>
 
             
@@ -177,16 +178,19 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Listen, Attend and Spell (LAS) Model</span>
 
-<span class="sd">    Args:</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    -----------</span>
 <span class="sd">        - listener (nn.Module): encoder of seq2seq</span>
 <span class="sd">        - speller (nn.Module): decoder of seq2seq</span>
 <span class="sd">        - decode_function (nn.functional): A function used to generate symbols from RNN hidden state</span>
 
-<span class="sd">    Reference:</span>
+<span class="sd">    Reference</span>
+<span class="sd">    ----------</span>
 <span class="sd">        「Listen, Attend and Spell」 paper</span>
 <span class="sd">         https://arxiv.org/abs/1508.01211</span>
 
-<span class="sd">    How to Use:</span>
+<span class="sd">    How to Use</span>
+<span class="sd">    -------------</span>
 <span class="sd">        &gt;&gt;&gt; listener = Listener(feat_size, 256, 0.5, 6, True, &#39;gru&#39;, True)</span>
 <span class="sd">        &gt;&gt;&gt; speller = Speller(vocab_size, 120, 8, 256 &lt;&lt; (1 if use_bidirectional else 0), SOS_TOKEN, EOS_TOKEN, 3, &#39;gru&#39;, 0.5 ,True, device)</span>
 <span class="sd">        &gt;&gt;&gt; model = ListenAttendSpell(listener, speller)</span>

@@ -1,9 +1,9 @@
 """
 Copyright 2020- Kai.Lib
+
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-      http://www.apache.org/licenses/LICENSE-2.0
+You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,15 +17,17 @@ from utils.define import logger
 
 def evaluate(model, queue, criterion, device):
     """
-    Args:
-        - **model**: Model to be evaluated
-        - **queue**: queue for threading
-        - **criterion**: loss function ex) nn.CrossEntropyLoss, LabelSmoothingLoss etc ..
-        - **device**: device used ('cuda' or 'cpu')
+    Parameters
+    -----------
+        - **model** (torch.nn): Model to be evaluated
+        - **queue** (queue): queue for threading
+        - **criterion** (torch.nn): loss function ex) nn.CrossEntropyLoss, LabelSmoothingLoss etc ..
+        - **device** (torch.cuda): device used ('cuda' or 'cpu')
 
-    Outputs:
-        - **loss**: loss of evalution
-        - **cer**: character error rate of evaluation
+    Returns
+    --------
+        - **loss** (float): loss of evalution
+        - **cer** (float): character error rate
     """
     logger.info('evaluate() start')
     total_loss = 0.

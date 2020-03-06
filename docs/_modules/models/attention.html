@@ -91,7 +91,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Models.html">Models</a></li>
 </ul>
-<p class="caption"><span class="caption-text">train</span></p>
+<p class="caption"><span class="caption-text">Train</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Loss.html">Loss</a></li>
@@ -107,6 +107,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../Label.html">Label</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Load.html">Load</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Loader.html">Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Save.html">Save</a></li>
 </ul>
 
             
@@ -177,19 +178,23 @@
 <div class="viewcode-block" id="Attention"><a class="viewcode-back" href="../../Models.html#models.attention.Attention">[docs]</a><span class="k">class</span> <span class="nc">Attention</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Applies an self attention mechanism on the output features from the decoder.</span>
+<span class="sd">    output = tanh(W{concat(attn * encoder_output, decoder_output)} + b)</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        - dim(int): The number of expected features in the output</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    -----------</span>
+<span class="sd">        - decoder_hidden_size(int): The number of expected features in the output</span>
 
-<span class="sd">    Inputs: decoder_output, encoder_output</span>
+<span class="sd">    Inputs</span>
+<span class="sd">    --------</span>
 <span class="sd">        - **decoder_output** (batch, output_len, hidden_size): tensor containing the output features from the decoder.</span>
 <span class="sd">        - **encoder_output** (batch, input_len, hidden_size): tensor containing features of the encoded input sequence.Steps to be maintained at a certain number to avoid extremely slow learning</span>
 
-<span class="sd">    Outputs: output</span>
-<span class="sd">        - **math**: output = tanh(W{concat(attn * encoder_output, decoder_output)} + b)</span>
+<span class="sd">    Returns</span>
+<span class="sd">    ---------</span>
 <span class="sd">        - **output** (batch, output_len, dimensions): tensor containing the attended output features from the decoder.</span>
 
-<span class="sd">    Reference:</span>
+<span class="sd">    Reference</span>
+<span class="sd">    ----------</span>
 <span class="sd">        「A Structured Self-Attentive Sentence Embedding」</span>
 <span class="sd">         https://arxiv.org/abs/1703.03130</span>
 <span class="sd">    &quot;&quot;&quot;</span>
