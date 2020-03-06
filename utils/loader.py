@@ -3,7 +3,7 @@ import threading
 import math
 import torch
 import random
-from utils.define import logger, PAD_TOKEN
+#from utils.define import logger, PAD_TOKEN
 
 
 class MultiLoader():

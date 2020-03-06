@@ -3,7 +3,7 @@ import math
 import pandas as pd
 import csv
 from tqdm import trange
-from utils.define import logger, TRAIN_DATASET_PICKLE_PATH, VALID_DATASET_PICKLE_PATH
+#from utils.define import logger, TRAIN_DATASET_PICKLE_PATH, VALID_DATASET_PICKLE_PATH
 from utils.save import save_pickle
 
 

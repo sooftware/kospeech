@@ -3,7 +3,7 @@ import math
 from torch.utils.data import Dataset
 from utils.feature import get_librosa_mfcc, spec_augment, get_librosa_melspectrogram
 from utils.label import get_label, label_to_string
-from utils.define import logger, SOS_TOKEN, EOS_TOKEN, id2char
+#from utils.define import logger, SOS_TOKEN, EOS_TOKEN, id2char
 
 
 class BaseDataset(Dataset):

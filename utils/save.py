@@ -1,7 +1,7 @@
 
 import pandas as pd
 import pickle
-from utils.define import TRAIN_RESULT_PATH, VALID_RESULT_PATH, TRAIN_STEP_RESULT_PATH, logger
+#from utils.define import TRAIN_RESULT_PATH, VALID_RESULT_PATH, TRAIN_STEP_RESULT_PATH, logger
 
 def save_epoch_result(train_result, valid_result):
     """ save result of training (unit : epoch) """

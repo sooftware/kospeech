@@ -1,6 +1,6 @@
 import time
 from utils.distance import get_distance
-from utils.define import logger, id2char, EOS_TOKEN
+#from utils.define import logger, id2char, EOS_TOKEN
 from utils.save import save_step_result
 from train.lr import ramp_up, exp_decay
 train_step_result = {'loss': [], 'cer': []}

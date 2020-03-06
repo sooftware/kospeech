@@ -1,7 +1,7 @@
 
 import torch
 from utils.distance import get_distance
-from utils.define import logger
+#from utils.define import logger
 
 def evaluate(model, queue, criterion, device):
     r"""
