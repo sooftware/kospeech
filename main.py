@@ -1,36 +1,34 @@
+# -*- coding: utf-8 -*-
 """
--*- coding: utf-8 -*-
+Copyright 2020- Kai.Lib
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
 - Korean Speech Recognition
-Team: Kai.Lib (KwangWoon A.I Library)
+Team: Kai.Lib
     ● Team Member
         ○ Kim-Soo-Hwan: KW University elcomm. senior
         ○ Bae-Se-Young: KW University elcomm. senior
         ○ Won-Cheol-Hwang: KW University elcomm. senior
+
 Model Architecture:
     ● Listen, Attend and Spell (Seq2seq with Attention)
+
 Data:
-    ● Using A.I Hub Dataset
+    ● A.I Hub Dataset
+
 Score:
     ● CRR: Character Recognition Rate
     ● CER: Character Error Rate based on Edit Distance
-Reference:
-    ● Model
-        ○ IBM PyTorch-seq2seq : https://github.com/IBM/pytorch-seq2seq
-    ● Dataset
-        ○ A.I Hub Korean Voice Dataset : http://www.aihub.or.kr/aidata/105
 
-gitHub repository : https://github.com/sh951011/Korean-ASR
-
-License:
-    Copyright 2020- Kai.Lib
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+GitHub repository : https://github.com/sh951011/Korean-ASR
+Documentation : https://sh951011.github.io/Korean-Speech-Recognition/index.html
 """
 
 import queue

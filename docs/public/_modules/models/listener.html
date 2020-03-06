@@ -24,6 +24,7 @@
         <script type="text/javascript" src="../../_static/jquery.js"></script>
         <script type="text/javascript" src="../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -91,7 +92,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Models.html">Models</a></li>
 </ul>
-<p class="caption"><span class="caption-text">train</span></p>
+<p class="caption"><span class="caption-text">Train</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Loss.html">Loss</a></li>
@@ -107,6 +108,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../Label.html">Label</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Load.html">Load</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Loader.html">Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Save.html">Save</a></li>
 </ul>
 
             
@@ -175,7 +177,26 @@
 <span class="kn">import</span> <span class="nn">torch</span>
 
 <div class="viewcode-block" id="PyramidalRNN"><a class="viewcode-back" href="../../Models.html#models.listener.PyramidalRNN">[docs]</a><span class="k">class</span> <span class="nc">PyramidalRNN</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Pyramidal RNN for time resolution reduction &quot;&quot;&quot;</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pyramidal RNN for time resolution reduction</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        - **rnn_cell** (str, optional): type of RNN cell (default: gru)</span>
+<span class="sd">        - **hidden_size** (int): the number of features in the hidden state `h`</span>
+<span class="sd">        - **input_size** (int): size of input</span>
+<span class="sd">        - **dropout_p** (float, optional): dropout probability for the output sequence (default: 0)</span>
+
+<span class="sd">    Inputs:</span>
+<span class="sd">        - **inputs**: list of sequences, whose length is the batch size and within which each sequence is a list of token IDs.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        - **output** (batch, seq_len, hidden_size): tensor containing the encoded features of the input sequence</span>
+<span class="sd">        - **hidden** (num_layers * num_directions, batch, hidden_size): tensor containing the features in the hidden state `h`</span>
+
+<span class="sd">    Reference:</span>
+<span class="sd">        「Listen, Attend and Spell」 paper</span>
+<span class="sd">         https://arxiv.org/abs/1508.01211</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rnn_cell</span><span class="p">,</span> <span class="n">input_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="n">dropout_p</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">PyramidalRNN</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="k">assert</span> <span class="n">rnn_cell</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;lstm&#39;</span> <span class="ow">or</span> <span class="n">rnn_cell</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;gru&#39;</span> <span class="ow">or</span> <span class="n">rnn_cell</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;rnn&#39;</span>
@@ -202,17 +223,18 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts low level speech signals into higher level features</span>
 
-<span class="sd">    Args:</span>
+<span class="sd">    Parameters:</span>
+<span class="sd">        - **rnn_cell** (str, optional): type of RNN cell (default: gru)</span>
 <span class="sd">        - **hidden_size** (int): the number of features in the hidden state `h`</span>
-<span class="sd">        - **dropout_p** (float, optional): dropout probability for the output sequence (default: 0)</span>
 <span class="sd">        - **layer_size** (int, optional): number of recurrent layers (default: 1)</span>
 <span class="sd">        - **bidirectional** (bool, optional): if True, becomes a bidirectional encoder (defulat: False)</span>
-<span class="sd">        - **rnn_cell** (str, optional): type of RNN cell (default: gru)</span>
+<span class="sd">        - **use_pyramidal** (bool): flag indication whether to use pyramidal rnn for time resolution (default: True)</span>
+<span class="sd">        - **dropout_p** (float, optional): dropout probability for the output sequence (default: 0)</span>
 
-<span class="sd">    Inputs: inputs</span>
+<span class="sd">    Inputs:</span>
 <span class="sd">        - **inputs**: list of sequences, whose length is the batch size and within which each sequence is a list of token IDs.</span>
 
-<span class="sd">    Outputs: output, hidden</span>
+<span class="sd">    Returns:</span>
 <span class="sd">        - **output** (batch, seq_len, hidden_size): tensor containing the encoded features of the input sequence</span>
 <span class="sd">        - **hidden** (num_layers * num_directions, batch, hidden_size): tensor containing the features in the hidden state `h`</span>
 
@@ -274,13 +296,14 @@
 
         <span class="k">return</span> <span class="n">output</span><span class="p">,</span> <span class="n">hidden</span></div>
 
-    <span class="k">def</span> <span class="nf">flatten_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Listener.flatten_parameters"><a class="viewcode-back" href="../../Models.html#models.listener.Listener.flatten_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">flatten_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; flatten parameters for fast training &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_pyramidal</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">bottom_rnn</span><span class="o">.</span><span class="n">flatten_parameters</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">middle_rnn</span><span class="o">.</span><span class="n">flatten_parameters</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">top_rnn</span><span class="o">.</span><span class="n">flatten_parameters</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">rnn</span><span class="o">.</span><span class="n">flatten_parameters</span><span class="p">()</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rnn</span><span class="o">.</span><span class="n">flatten_parameters</span><span class="p">()</span></div></div>
 </pre></div>
 
            </div>

@@ -24,6 +24,7 @@
         <script type="text/javascript" src="_static/jquery.js"></script>
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -184,11 +185,13 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data_list_path</strong><strong> (</strong><strong>list</strong><strong>)</strong> (<em>-</em>) – </td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data_list_path</strong> (<em>-</em>) – csv file with training or test data list</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
-<li><strong>- **audio_paths</strong> (list)** (<em>set of audio path</em>)</li>
-<li><strong>- **label_paths</strong> (list)** (<em>set of label path</em>)</li>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">set of audio path
+- <strong>label_paths</strong> (list): set of label path</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><ul class="simple">
+<li><strong>audio_paths</strong> (list)</li>
 </ul>
 </td>
 </tr>
@@ -204,11 +207,13 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>label_path</strong><strong> (</strong><strong>list</strong><strong>)</strong> (<em>-</em>) – </td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>label_path</strong> (<em>-</em>) – csv file with character labels</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
-<li><strong>- **char2id</strong> (dict)** (<em>char2id[ch] = id</em>)</li>
-<li><strong>- **id2char</strong> (dict)** (<em>id2char[id] = ch</em>)</li>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">char2id[ch] = id
+- <strong>id2char</strong> (dict): id2char[id] = ch</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><ul class="simple">
+<li><strong>char2id</strong> (dict)</li>
 </ul>
 </td>
 </tr>
@@ -224,11 +229,11 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filepath</strong><strong> (</strong><strong>str</strong><strong>)</strong> (<em>-</em>) – </td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filepath</strong> (<em>-</em>) – Path to pickle file to load</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>-**load_result**</strong></td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">load result of pickle</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">load result of pickle</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">-<strong>load_result</strong></td>
 </tr>
 </tbody>
 </table>
@@ -242,11 +247,14 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>label_paths</strong><strong> (</strong><strong>list</strong><strong>)</strong> (<em>-</em>) – </td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>label_paths</strong> (<em>-</em>) – set of label paths</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>- **target_dict</strong> (dict)**</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">dictionary of filename and labels</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dictionary of filename and labels</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><ul class="simple">
+<li><strong>target_dict</strong> (dict)</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>

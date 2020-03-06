@@ -16,25 +16,27 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 class Attention(nn.Module):
-    """
+    r"""
     Applies an self attention mechanism on the output features from the decoder.
-    output = tanh(W{concat(attn * encoder_output, decoder_output)} + b)
 
-    Parameters
-    -----------
+    .. math::
+        \begin{array}{ll}
+        x = context*output \\
+        attn = exp(x_i) / sum_j exp(x_j) \\
+        output = \tanh(w * (attn * context) + b * output)
+        \end{array}
+
+    Parameters:
         - decoder_hidden_size(int): The number of expected features in the output
 
-    Inputs
-    --------
+    Inputs:
         - **decoder_output** (batch, output_len, hidden_size): tensor containing the output features from the decoder.
         - **encoder_output** (batch, input_len, hidden_size): tensor containing features of the encoded input sequence.Steps to be maintained at a certain number to avoid extremely slow learning
 
-    Returns
-    ---------
+    Returns:
         - **output** (batch, output_len, dimensions): tensor containing the attended output features from the decoder.
 
-    Reference
-    ----------
+    Reference:
         「A Structured Self-Attentive Sentence Embedding」
          https://arxiv.org/abs/1703.03130
     """

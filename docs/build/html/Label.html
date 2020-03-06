@@ -24,6 +24,7 @@
         <script type="text/javascript" src="_static/jquery.js"></script>
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -185,17 +186,20 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>filepath</strong><strong> (</strong><strong>str</strong><strong>)</strong> (<em>-</em>) – </li>
-<li><strong>bos_id</strong><strong> (</strong><strong>int</strong><strong>)</strong> (<em>-</em>) – </li>
-<li><strong>eos_id</strong><strong> (</strong><strong>int</strong><strong>)</strong> (<em>-</em>) – </li>
-<li><strong>target_dict</strong><strong> (</strong><strong>dict</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>filepath</strong> (<em>-</em>) – specific path of label file</li>
+<li><strong>bos_id</strong> (<em>-</em>) – identification of &lt;start of sequence&gt;</li>
+<li><strong>eos_id</strong> (<em>-</em>) – identification of &lt;end of sequence&gt;</li>
+<li><strong>target_dict</strong> (<em>-</em>) – dictionary of filename and labels</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>- **label</strong> (list)**</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">list of bos + sequence of label + eos</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list of bos + sequence of label + eos</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>label</strong> (list)</li>
+</ul>
+</p>
 </td>
 </tr>
 </tbody>
@@ -211,16 +215,19 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>labels</strong> (<em>-</em>) – </li>
-<li><strong>id2char</strong> (<em>-</em>) – </li>
-<li><strong>eos_id</strong> (<em>-</em>) – </li>
+<li><strong>labels</strong> (<em>-</em>) – number label</li>
+<li><strong>id2char</strong> (<em>-</em>) – id2char[id] = ch</li>
+<li><strong>eos_id</strong> (<em>-</em>) – identification of &lt;end of sequence&gt;</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>- **sentence</strong> (str or list)**</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Hangeul representation of labels</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Hangeul representation of labels</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>sentence</strong> (str or list)</li>
+</ul>
+</p>
 </td>
 </tr>
 </tbody>

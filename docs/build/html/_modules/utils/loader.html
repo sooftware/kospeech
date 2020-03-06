@@ -24,6 +24,7 @@
         <script type="text/javascript" src="../../_static/jquery.js"></script>
         <script type="text/javascript" src="../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -171,7 +172,8 @@
            <div itemprop="articleBody">
             
   <h1>Source code for utils.loader</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">threading</span>
+<span></span>
+<span class="kn">import</span> <span class="nn">threading</span>
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">random</span>
@@ -182,8 +184,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Multi Data Loader using Threads.</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    -----------</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        - **dataset**: object of BaseDataset</span>
 <span class="sd">        - **queue**: queue for threading</span>
 <span class="sd">        - **batch_size**: size of batch</span>
@@ -211,8 +212,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base Data Loader</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    -----------</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        - **dataset**: object of BaseDataset</span>
 <span class="sd">        - **queue**: queue for threading</span>
 <span class="sd">        - **batch_size**: size of batch</span>
@@ -262,9 +262,7 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;loader </span><span class="si">%d</span><span class="s1"> stop&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">thread_id</span><span class="p">))</span></div></div>
 
 <span class="k">def</span> <span class="nf">_collate_fn</span><span class="p">(</span><span class="n">batch</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    functions that pad to the maximum sequence length</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot; functions that pad to the maximum sequence length &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">seq_length_</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 

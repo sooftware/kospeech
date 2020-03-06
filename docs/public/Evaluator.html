@@ -24,6 +24,7 @@
         <script type="text/javascript" src="_static/jquery.js"></script>
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -93,7 +94,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Models.html">Models</a></li>
 </ul>
-<p class="caption"><span class="caption-text">train</span></p>
+<p class="caption"><span class="caption-text">Train</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
@@ -109,6 +110,7 @@
 <li class="toctree-l1"><a class="reference internal" href="Label.html">Label</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Load.html">Load</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loader.html">Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Save.html">Save</a></li>
 </ul>
 
             
@@ -182,7 +184,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>model</strong> (<em>-</em>) – Model to be evaluated</li>
 <li><strong>queue</strong> (<em>-</em>) – queue for threading</li>
 <li><strong>criterion</strong> (<em>-</em>) – loss function ex) nn.CrossEntropyLoss, LabelSmoothingLoss etc ..</li>
@@ -190,16 +192,18 @@
 </ul>
 </td>
 </tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">loss of evalution
+- <strong>cer</strong> (float): character error rate</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>loss</strong> (float)</li>
+</ul>
+</p>
+</td>
+</tr>
 </tbody>
 </table>
-<dl class="docutils">
-<dt>Outputs:</dt>
-<dd><ul class="first last simple">
-<li><strong>loss</strong>: loss of evalution</li>
-<li><strong>cer</strong>: character error rate of evaluation</li>
-</ul>
-</dd>
-</dl>
 </dd></dl>
 
 </div>

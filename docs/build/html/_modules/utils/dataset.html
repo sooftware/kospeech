@@ -24,6 +24,7 @@
         <script type="text/javascript" src="../../_static/jquery.js"></script>
         <script type="text/javascript" src="../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -171,8 +172,7 @@
            <div itemprop="articleBody">
             
   <h1>Source code for utils.dataset</h1><div class="highlight"><pre>
-<span></span>
-<span class="kn">import</span> <span class="nn">random</span>
+<span></span><span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="k">import</span> <span class="n">Dataset</span>
 <span class="kn">from</span> <span class="nn">utils.feature</span> <span class="k">import</span> <span class="n">get_librosa_mfcc</span><span class="p">,</span> <span class="n">spec_augment</span><span class="p">,</span> <span class="n">get_librosa_melspectrogram</span>
@@ -184,8 +184,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Dataset for audio &amp; label matching</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    -----------</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        - **audio_paths** (list): set of audio path</span>
 <span class="sd">        - **label_paths** (list): set of label paths</span>
 <span class="sd">        - **bos_id** (int): &lt;s&gt;`s id</span>
@@ -322,15 +321,13 @@
 <span class="sd">    Dataset split into training and validation Dataset.</span>
 
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ------------</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        - **hparams** (utils.HyperParams): set of hyper parameters</span>
 <span class="sd">        - **audio_paths** (list): set of audio path</span>
 <span class="sd">        - **label_paths** (list): set of label path</span>
 <span class="sd">        - **target_dict** (dict): dictionary of filename and labels</span>
 
-<span class="sd">    Returns</span>
-<span class="sd">    --------</span>
+<span class="sd">    Returns:</span>
 <span class="sd">        - **train_batch_num** (int): num of batch for training</span>
 <span class="sd">        - **train_dataset_list** (list): list of training dataset</span>
 <span class="sd">        - **valid_dataset** (utils.BaseDataset): validation dataset</span>

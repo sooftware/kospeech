@@ -24,6 +24,7 @@
         <script type="text/javascript" src="../../_static/jquery.js"></script>
         <script type="text/javascript" src="../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -186,11 +187,10 @@
 
 
 <div class="viewcode-block" id="Speller"><a class="viewcode-back" href="../../Models.html#models.speller.Speller">[docs]</a><span class="k">class</span> <span class="nc">Speller</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts higher level features (from listener) into output utterances by specifying a probability distribution over sequences of characters.</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ------------</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        - **vocab_size** (int): size of the vocabulary</span>
 <span class="sd">        - **max_len** (int): a maximum allowed length for the sequence to be processed</span>
 <span class="sd">        - **hidden_size** (int): the number of features in the hidden state `h`</span>
@@ -202,8 +202,7 @@
 <span class="sd">        - **use_attention** (bool, optional): flag indication whether to use attention mechanism or not (default: false)</span>
 <span class="sd">        - **k** (int) : size of beam</span>
 
-<span class="sd">    Inputs</span>
-<span class="sd">    --------</span>
+<span class="sd">    Inputs:</span>
 <span class="sd">        - **inputs** (batch, seq_len, input_size): list of sequences, whose length is the batch size and within which</span>
 <span class="sd">          each sequence is a list of token IDs.  It is used for teacher forcing when provided. (default `None`)</span>
 <span class="sd">        - **listener_hidden** (num_layers * num_directions, batch_size, hidden_size): tensor containing the features in the</span>
@@ -216,12 +215,10 @@
 <span class="sd">          drawn uniformly from 0-1 for every decoding token, and if the sample is smaller than the given value,</span>
 <span class="sd">          teacher forcing would be used (default is 0).</span>
 
-<span class="sd">    Returns</span>
-<span class="sd">    ---------</span>
+<span class="sd">    Returns:</span>
 <span class="sd">        - **speller_outputs** (seq_len, batch, vocab_size): list of tensors with size (batch_size, vocab_size) containing the outputs of the decoding function.</span>
 
-<span class="sd">    Reference</span>
-<span class="sd">    -----------</span>
+<span class="sd">    Reference:</span>
 <span class="sd">        「Listen, Attend and Spell」 paper</span>
 <span class="sd">         https://arxiv.org/abs/1508.01211</span>
 <span class="sd">    &quot;&quot;&quot;</span>

@@ -24,6 +24,7 @@
         <script type="text/javascript" src="_static/jquery.js"></script>
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -185,19 +186,21 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>target</strong> (<em>-</em>) – </li>
-<li><strong>y_hat</strong> (<em>-</em>) – </li>
+<li><strong>target</strong> (<em>-</em>) – sequence of target</li>
+<li><strong>y_hat</strong> (<em>-</em>) – sequence of y_Hat</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
-<blockquote>
-<div><ul class="simple">
+<dl class="docutils">
+<dt>Result:</dt>
+<dd><ul class="first last simple">
 <li><strong>distance</strong>: distance between target &amp; y_hat</li>
 <li><strong>length</strong>: length of target sequence</li>
 </ul>
-</div></blockquote>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
@@ -209,16 +212,19 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>targets</strong> (<em>-</em>) – </li>
-<li><strong>y_hats</strong> (<em>-</em>) – </li>
-<li><strong>id2char</strong> (<em>-</em>) – </li>
-<li><strong>eos_id</strong> (<em>-</em>) – </li>
+<li><strong>targets</strong> (<em>-</em>) – set of target</li>
+<li><strong>y_hats</strong> (<em>-</em>) – set of y_hat</li>
+<li><strong>id2char</strong> (<em>-</em>) – id2char[id] = ch</li>
+<li><strong>eos_id</strong> (<em>-</em>) – identification of &lt;end of sequence&gt;</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
-<li><strong>- **total_distance**</strong> (<em>total distance between targets &amp; y_hats</em>)</li>
-<li><strong>- **total_length**</strong> (<em>total length of targets sequence</em>)</li>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">total distance between targets &amp; y_hats
+- <strong>total_length</strong>: total length of targets sequence</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>total_distance</strong></li>
 </ul>
 </p>
 </td>

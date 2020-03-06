@@ -1,30 +1,14 @@
-"""
-Copyright 2020- Kai.Lib
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
-
 import torch
 import librosa
 import numpy as np
 import random
 from utils.define import logger
 
-# feature parameters
-
 def get_librosa_melspectrogram(filepath, n_mels=128, del_silence=False, input_reverse=True, mel_type='log_mel', format='pcm'):
     """
     Compute a mel-scaled soectrigram (or Log-Mel).
 
-    Parameters
-    ----------
+    Parameters:
         - **filepath** (str): specific path of audio file
         - **n_mels** (int): number of mel filter
         - **del_silence** (bool): flag indication whether to delete silence or not (default: True)
@@ -32,8 +16,7 @@ def get_librosa_melspectrogram(filepath, n_mels=128, del_silence=False, input_re
         - **input_reverse** (bool): flag indication whether to reverse input or not (default: True)
         - **format** (str): file format ex) pcm, wav (default: pcm)
 
-    Feature Parameters
-    -------------------
+    Feature Parameters:
         - **sample rate**: A.I Hub dataset`s sample rate is 16,000
         - **frame length**: 25ms
         - **stride**: 10ms
@@ -42,8 +25,7 @@ def get_librosa_melspectrogram(filepath, n_mels=128, del_silence=False, input_re
         - **n_fft**: sr * frame_length (16,000 * 30ms)
         - **hop_length**: sr * stride (16,000 * 7.5ms)
 
-    Returns
-    ----------
+    Returns:
         - **feat** (torch.Tensor): return Mel-Spectrogram (or Log-Mel)
     """
     if format == 'pcm':
@@ -76,16 +58,14 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = False, input_re
     """:
     Mel-frequency cepstral coefficients (MFCCs)
 
-    Parameters
-    -----------
+    Parameters:
         - **filepath** (str): specific path of audio file
         - **n_mfcc** (int): number of mel filter
         - **del_silence** (bool): flag indication whether to delete silence or not (default: True)
         - **input_reverse** (bool): flag indication whether to reverse input or not (default: True)
         - **format** (str): file format ex) pcm, wav (default: pcm)
 
-    Feature Parameters
-    --------------------
+    Feature Parameters:
         - **sample rate**: A.I Hub dataset`s sample rate is 16,000
         - **frame length**: 25ms
         - **stride**: 10ms
@@ -94,8 +74,7 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = False, input_re
         - **n_fft**: sr * frame_length (16,000 * 30ms)
         - **hop_length**: sr * stride (16,000 * 7.5ms)
 
-    Returns
-    --------
+    Returns:
         - **feat** (torch.Tensor): MFCC values of signal
     """
     if format == 'pcm':
@@ -124,20 +103,17 @@ def spec_augment(feat, T = 70, F = 20, time_mask_num = 2, freq_mask_num = 2):
     """
     Provides Augmentation for audio
 
-    Parameters
-    -----------
+    Parameters:
         - **feat** (torch.Tensor): input data feature
         - **T** (int): Hyper Parameter for Time Masking to limit time masking length
         - **F** (int): Hyper Parameter for Freq Masking to limit freq masking length
         - **time_mask_num** (int): how many time-masked area to make
         - **freq_mask_num** (int): how many freq-masked area to make
 
-    Returns
-    --------
+    Returns:
         - **feat**: Augmented feature
 
-    Reference
-    ----------
+    Reference:
         「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」Google Brain Team. 2019.
          https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py
     """

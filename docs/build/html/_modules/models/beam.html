@@ -24,6 +24,7 @@
         <script type="text/javascript" src="../../_static/jquery.js"></script>
         <script type="text/javascript" src="../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -171,16 +172,14 @@
            <div itemprop="articleBody">
             
   <h1>Source code for models.beam</h1><div class="highlight"><pre>
-<span></span>
-<span class="kn">import</span> <span class="nn">torch</span>
+<span></span><span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <div class="viewcode-block" id="Beam"><a class="viewcode-back" href="../../Models.html#models.beam.Beam">[docs]</a><span class="k">class</span> <span class="nc">Beam</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Applying Beam-Search during decoding process.</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    -----------</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        - **k** (int) : size of beam</span>
 <span class="sd">        - **decoder_hidden** (torch.Tensor) : hidden state of decoder</span>
 <span class="sd">        - **batch_size** (int) : mini-batch size during infer</span>
@@ -192,13 +191,11 @@
 <span class="sd">        - **done_beams** (list2d) : store beams which met &lt;eos&gt; token and terminated decoding process.</span>
 <span class="sd">        - **done_beam_scores** (list2d) : score of done_beams</span>
 
-<span class="sd">    Inputs</span>
-<span class="sd">    --------</span>
+<span class="sd">    Inputs:</span>
 <span class="sd">        - **init_decoder_input** (torch.Tensor): initial input of decoder - &lt;eos&gt;</span>
 <span class="sd">        - **encoder_outputs** (torch.Tensor): tensor with containing the outputs of the encoder.</span>
 
-<span class="sd">    Returns</span>
-<span class="sd">    ---------</span>
+<span class="sd">    Returns:</span>
 <span class="sd">        - **y_hats** (torch.Tensor): result of inference</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 

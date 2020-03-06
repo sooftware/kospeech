@@ -24,6 +24,7 @@
         <script type="text/javascript" src="../../_static/jquery.js"></script>
         <script type="text/javascript" src="../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -171,21 +172,17 @@
            <div itemprop="articleBody">
             
   <h1>Source code for utils.label</h1><div class="highlight"><pre>
-<span></span>
-
-<div class="viewcode-block" id="get_label"><a class="viewcode-back" href="../../Label.html#utils.label.get_label">[docs]</a><span class="k">def</span> <span class="nf">get_label</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">sos_id</span><span class="o">=</span><span class="mi">2037</span><span class="p">,</span> <span class="n">eos_id</span><span class="o">=</span><span class="mi">2038</span><span class="p">,</span> <span class="n">target_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="get_label"><a class="viewcode-back" href="../../Label.html#utils.label.get_label">[docs]</a><span></span><span class="k">def</span> <span class="nf">get_label</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">sos_id</span><span class="o">=</span><span class="mi">2037</span><span class="p">,</span> <span class="n">eos_id</span><span class="o">=</span><span class="mi">2038</span><span class="p">,</span> <span class="n">target_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Provides specific file`s label to list format.</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    -----------</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        - **filepath** (str): specific path of label file</span>
 <span class="sd">        - **bos_id** (int): identification of &lt;start of sequence&gt;</span>
 <span class="sd">        - **eos_id** (int): identification of &lt;end of sequence&gt;</span>
 <span class="sd">        - **target_dict** (dict): dictionary of filename and labels</span>
 
-<span class="sd">    Returns</span>
-<span class="sd">    --------</span>
+<span class="sd">    Returns:</span>
 <span class="sd">        - **label** (list): list of bos + sequence of label + eos</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="n">target_dict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;target_dict is None&quot;</span>
@@ -204,14 +201,12 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts label to string (number =&gt; Hangeul)</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    -----------</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        - **labels**: number label</span>
 <span class="sd">        - **id2char**: id2char[id] = ch</span>
 <span class="sd">        - **eos_id**: identification of &lt;end of sequence&gt;</span>
 
-<span class="sd">    Returns</span>
-<span class="sd">    --------</span>
+<span class="sd">    Returns:</span>
 <span class="sd">        - **sentence** (str or list): Hangeul representation of labels</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>

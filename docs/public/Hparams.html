@@ -24,6 +24,7 @@
         <script type="text/javascript" src="_static/jquery.js"></script>
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -93,7 +94,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Models.html">Models</a></li>
 </ul>
-<p class="caption"><span class="caption-text">train</span></p>
+<p class="caption"><span class="caption-text">Train</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
@@ -109,6 +110,7 @@
 <li class="toctree-l1"><a class="reference internal" href="Label.html">Label</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Load.html">Load</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loader.html">Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Save.html">Save</a></li>
 </ul>
 
             
@@ -184,13 +186,14 @@
 <dd><ul class="first last simple">
 <li><strong>use_bidirectional</strong> (bool): if True, becomes a bidirectional listener (default: True)</li>
 <li><strong>use_attention</strong> (bool): flag indication whether to use attention mechanism or not (default: True)</li>
-<li><strong>use_label_smooth</strong> (bool): flagindication whether to use label smoothing or not (default: True)</li>
+<li><strong>use_label_smooth</strong> (bool): flag indication whether to use label smoothing or not (default: True)</li>
 <li><strong>input_reverse</strong> (bool): flag indication whether to reverse input feature or not (default: True)</li>
 <li><strong>use_pickle</strong> (bool): flag indication whether to load data from pickle or not (default: False)</li>
 <li><strong>use_augment</strong> (bool): flag indication whether to use spec-augmentation or not (default: True)</li>
 <li><strong>use_pyramidal</strong> (bool): flag indication whether to use pyramidal rnn in listener or not (default: True)</li>
 <li><strong>use_multistep_lr</strong> (bool): flag indication whether to use multistep leraning rate or not (default:False)</li>
 <li><strong>augment_ratio</strong> (float): ratio of spec-augmentation applied data (default: 1.0)</li>
+<li><strong>pack_by_length</strong> (bool): pack by similar sequence length</li>
 <li><strong>listener_layer_size</strong> (int): num of listener`s RNN cell (default: 6)</li>
 <li><strong>speller_layer_size</strong> (int): num of speller`s RNN cell (default: 3)</li>
 <li><strong>hidden_size</strong> (int): size of hidden state of RNN (default: 256)</li>

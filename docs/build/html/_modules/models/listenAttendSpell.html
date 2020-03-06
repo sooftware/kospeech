@@ -24,6 +24,7 @@
         <script type="text/javascript" src="../../_static/jquery.js"></script>
         <script type="text/javascript" src="../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -175,22 +176,20 @@
 <span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
 
 <div class="viewcode-block" id="ListenAttendSpell"><a class="viewcode-back" href="../../Models.html#models.listenAttendSpell.ListenAttendSpell">[docs]</a><span class="k">class</span> <span class="nc">ListenAttendSpell</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Listen, Attend and Spell (LAS) Model</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    -----------</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        - listener (nn.Module): encoder of seq2seq</span>
 <span class="sd">        - speller (nn.Module): decoder of seq2seq</span>
 <span class="sd">        - decode_function (nn.functional): A function used to generate symbols from RNN hidden state</span>
 
-<span class="sd">    Reference</span>
-<span class="sd">    ----------</span>
+<span class="sd">    Reference:</span>
 <span class="sd">        「Listen, Attend and Spell」 paper</span>
 <span class="sd">         https://arxiv.org/abs/1508.01211</span>
 
-<span class="sd">    How to Use</span>
-<span class="sd">    -------------</span>
+<span class="sd">    Examples::</span>
+
 <span class="sd">        &gt;&gt;&gt; listener = Listener(feat_size, 256, 0.5, 6, True, &#39;gru&#39;, True)</span>
 <span class="sd">        &gt;&gt;&gt; speller = Speller(vocab_size, 120, 8, 256 &lt;&lt; (1 if use_bidirectional else 0), SOS_TOKEN, EOS_TOKEN, 3, &#39;gru&#39;, 0.5 ,True, device)</span>
 <span class="sd">        &gt;&gt;&gt; model = ListenAttendSpell(listener, speller)</span>

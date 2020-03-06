@@ -24,6 +24,7 @@
         <script type="text/javascript" src="../../_static/jquery.js"></script>
         <script type="text/javascript" src="../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -91,7 +92,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Models.html">Models</a></li>
 </ul>
-<p class="caption"><span class="caption-text">train</span></p>
+<p class="caption"><span class="caption-text">Train</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Loss.html">Loss</a></li>
@@ -107,6 +108,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../Label.html">Label</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Load.html">Load</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Loader.html">Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Save.html">Save</a></li>
 </ul>
 
             
@@ -170,9 +172,10 @@
            <div itemprop="articleBody">
             
   <h1>Source code for train.trainer</h1><div class="highlight"><pre>
-<span></span>
-<span class="kn">import</span> <span class="nn">time</span>
+<span></span><span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">utils.distance</span> <span class="k">import</span> <span class="n">get_distance</span>
+<span class="c1">#from utils.define import logger, id2char, EOS_TOKEN</span>
+<span class="kn">from</span> <span class="nn">utils.save</span> <span class="k">import</span> <span class="n">save_step_result</span>
 <span class="kn">from</span> <span class="nn">train.lr</span> <span class="k">import</span> <span class="n">ramp_up</span><span class="p">,</span> <span class="n">exp_decay</span>
 <span class="n">train_step_result</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;loss&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;cer&#39;</span><span class="p">:</span> <span class="p">[]}</span>
 
@@ -180,18 +183,18 @@
           <span class="n">criterion</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">train_begin</span><span class="p">,</span> <span class="n">worker_num</span><span class="p">,</span>
           <span class="n">print_time_step</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="mf">0.90</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Args:</span>
-<span class="sd">        - **model**: Model to be trained</span>
-<span class="sd">        - **optimizer**: optimizer for training</span>
-<span class="sd">        - **teacher_forcing_ratio**:  The probability that teacher forcing will be used (default: 0.90)</span>
-<span class="sd">        - **print_time_step**: Parameters to determine how many steps to output</span>
-<span class="sd">        - **queue**: queue for threading</span>
-<span class="sd">        - **criterion**: loss function ex) nn.CrossEntropyLoss, LabelSmoothingLoss etc ..</span>
-<span class="sd">        - **device**: device used (&#39;cuda&#39; or &#39;cpu&#39;)</span>
-<span class="sd">        - **worker_num**: the number of cpu cores used</span>
+<span class="sd">    Parameters:</span>
+<span class="sd">        - **model** (torch.nn): Model to be trained</span>
+<span class="sd">        - **optimizer** (torch.optim): optimizer for training</span>
+<span class="sd">        - **teacher_forcing_ratio** (float):  The probability that teacher forcing will be used (default: 0.90)</span>
+<span class="sd">        - **print_time_step** (int): Parameters to determine how many steps to output</span>
+<span class="sd">        - **queue** (queue): queue for threading</span>
+<span class="sd">        - **criterion** (torch.nn): loss function ex) nn.CrossEntropyLoss, LabelSmoothingLoss etc ..</span>
+<span class="sd">        - **device** (torch.cuda): device used (&#39;cuda&#39; or &#39;cpu&#39;)</span>
+<span class="sd">        - **worker_num** (int): the number of cpu cores used</span>
 
-<span class="sd">    Outputs:</span>
-<span class="sd">        - **error_rate** (float): error rate of present epoch</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        - **cer** (float): character error rate</span>
 <span class="sd">        - **loss** (float): loss of present epoch</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">total_loss</span> <span class="o">=</span> <span class="mf">0.</span>
@@ -213,6 +216,7 @@
         <span class="k">if</span> <span class="n">feats</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="c1"># empty feats means closing one loader</span>
             <span class="n">worker_num</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;left train_loader: </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">worker_num</span><span class="p">))</span>
 
             <span class="k">if</span> <span class="n">worker_num</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">break</span>
@@ -243,6 +247,13 @@
             <span class="n">epoch_elapsed</span> <span class="o">=</span> <span class="p">(</span><span class="n">current</span> <span class="o">-</span> <span class="n">epoch_begin</span><span class="p">)</span> <span class="o">/</span> <span class="mf">60.0</span>
             <span class="n">train_elapsed</span> <span class="o">=</span> <span class="p">(</span><span class="n">current</span> <span class="o">-</span> <span class="n">train_begin</span><span class="p">)</span> <span class="o">/</span> <span class="mf">3600.0</span>
 
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;timestep: </span><span class="si">{:4d}</span><span class="s1">/</span><span class="si">{:4d}</span><span class="s1">, loss: </span><span class="si">{:.4f}</span><span class="s1">, cer: </span><span class="si">{:.2f}</span><span class="s1">, elapsed: </span><span class="si">{:.2f}</span><span class="s1">s </span><span class="si">{:.2f}</span><span class="s1">m </span><span class="si">{:.2f}</span><span class="s1">h&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">time_step</span><span class="p">,</span>
+                <span class="n">total_time_step</span><span class="p">,</span>
+                <span class="n">total_loss</span> <span class="o">/</span> <span class="n">total_num</span><span class="p">,</span>
+                <span class="n">total_distance</span> <span class="o">/</span> <span class="n">total_length</span><span class="p">,</span>
+                <span class="n">elapsed</span><span class="p">,</span> <span class="n">epoch_elapsed</span><span class="p">,</span> <span class="n">train_elapsed</span><span class="p">)</span>
+            <span class="p">)</span>
             <span class="n">begin</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">time_step</span> <span class="o">%</span> <span class="mi">1000</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -252,8 +263,9 @@
         <span class="n">train</span><span class="o">.</span><span class="n">cumulative_batch_count</span> <span class="o">+=</span> <span class="mi">1</span>
 
     <span class="n">loss</span> <span class="o">=</span> <span class="n">total_loss</span> <span class="o">/</span> <span class="n">total_num</span>
-    <span class="n">error_rate</span> <span class="o">=</span> <span class="n">total_distance</span> <span class="o">/</span> <span class="n">total_length</span>
-    <span class="k">return</span> <span class="n">loss</span><span class="p">,</span> <span class="n">error_rate</span></div>
+    <span class="n">cer</span> <span class="o">=</span> <span class="n">total_distance</span> <span class="o">/</span> <span class="n">total_length</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;train() completed&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">loss</span><span class="p">,</span> <span class="n">cer</span></div>
 
 <span class="n">train</span><span class="o">.</span><span class="n">cumulative_batch_count</span> <span class="o">=</span> <span class="mi">0</span>
 </pre></div>

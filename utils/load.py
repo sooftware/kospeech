@@ -1,16 +1,3 @@
-"""
-Copyright 2020- Kai.Lib
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
-
 import pickle
 import math
 import pandas as pd
@@ -24,12 +11,10 @@ def load_targets(label_paths):
     """
     Provides dictionary of filename and labels
 
-    Parameters
-    -----------
+    Parameters:
         - **label_paths** (list): set of label paths
 
-    Returns
-    ---------
+    Returns:
         - **target_dict** (dict): dictionary of filename and labels
     """
     target_dict = dict()
@@ -46,12 +31,10 @@ def load_data_list(data_list_path, dataset_path):
     """
     Provides set of audio path & label path
 
-    Parameters
-    -----------
+    Parameters:
         - **data_list_path** (list): csv file with training or test data list
 
-    Returns
-    --------
+    Returns:
         - **audio_paths** (list): set of audio path
         - **label_paths** (list): set of label path
     """
@@ -65,12 +48,10 @@ def load_label(label_path, encoding='utf-8'):
     """
     Provides char2id, id2char
 
-    Parameters
-    -----------
+    Parameters:
         - **label_path** (list): csv file with character labels
 
-    Returns
-    --------
+    Returns:
         - **char2id** (dict): char2id[ch] = id
         - **id2char** (dict): id2char[id] = ch
     """
@@ -90,12 +71,10 @@ def load_pickle(filepath, message=""):
     """
     load pickle file
 
-    Parameters
-    -----------
+    Parameters:
         - **filepath** (str): Path to pickle file to load
 
-    Returns
-    --------
+    Returns:
         -**load_result** : load result of pickle
     """
     with open(filepath, "rb") as f:

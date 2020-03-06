@@ -24,6 +24,7 @@
         <script type="text/javascript" src="../../_static/jquery.js"></script>
         <script type="text/javascript" src="../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -176,27 +177,23 @@
 <span class="kn">import</span> <span class="nn">torch</span>
 
 <div class="viewcode-block" id="PyramidalRNN"><a class="viewcode-back" href="../../Models.html#models.listener.PyramidalRNN">[docs]</a><span class="k">class</span> <span class="nc">PyramidalRNN</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Pyramidal RNN for time resolution reduction</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    -----------</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        - **rnn_cell** (str, optional): type of RNN cell (default: gru)</span>
 <span class="sd">        - **hidden_size** (int): the number of features in the hidden state `h`</span>
 <span class="sd">        - **input_size** (int): size of input</span>
 <span class="sd">        - **dropout_p** (float, optional): dropout probability for the output sequence (default: 0)</span>
 
-<span class="sd">    Inputs</span>
-<span class="sd">    --------</span>
+<span class="sd">    Inputs:</span>
 <span class="sd">        - **inputs**: list of sequences, whose length is the batch size and within which each sequence is a list of token IDs.</span>
 
-<span class="sd">    Returns</span>
-<span class="sd">    ---------</span>
+<span class="sd">    Returns:</span>
 <span class="sd">        - **output** (batch, seq_len, hidden_size): tensor containing the encoded features of the input sequence</span>
 <span class="sd">        - **hidden** (num_layers * num_directions, batch, hidden_size): tensor containing the features in the hidden state `h`</span>
 
-<span class="sd">    Reference</span>
-<span class="sd">    -----------</span>
+<span class="sd">    Reference:</span>
 <span class="sd">        「Listen, Attend and Spell」 paper</span>
 <span class="sd">         https://arxiv.org/abs/1508.01211</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -226,8 +223,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts low level speech signals into higher level features</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ------------</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        - **rnn_cell** (str, optional): type of RNN cell (default: gru)</span>
 <span class="sd">        - **hidden_size** (int): the number of features in the hidden state `h`</span>
 <span class="sd">        - **layer_size** (int, optional): number of recurrent layers (default: 1)</span>
@@ -235,17 +231,14 @@
 <span class="sd">        - **use_pyramidal** (bool): flag indication whether to use pyramidal rnn for time resolution (default: True)</span>
 <span class="sd">        - **dropout_p** (float, optional): dropout probability for the output sequence (default: 0)</span>
 
-<span class="sd">    Inputs</span>
-<span class="sd">    --------</span>
+<span class="sd">    Inputs:</span>
 <span class="sd">        - **inputs**: list of sequences, whose length is the batch size and within which each sequence is a list of token IDs.</span>
 
-<span class="sd">    Returns</span>
-<span class="sd">    ---------</span>
+<span class="sd">    Returns:</span>
 <span class="sd">        - **output** (batch, seq_len, hidden_size): tensor containing the encoded features of the input sequence</span>
 <span class="sd">        - **hidden** (num_layers * num_directions, batch, hidden_size): tensor containing the features in the hidden state `h`</span>
 
-<span class="sd">    Reference</span>
-<span class="sd">    -----------</span>
+<span class="sd">    Reference:</span>
 <span class="sd">        「Listen, Attend and Spell」 paper</span>
 <span class="sd">         https://arxiv.org/abs/1508.01211</span>
 <span class="sd">    &quot;&quot;&quot;</span>

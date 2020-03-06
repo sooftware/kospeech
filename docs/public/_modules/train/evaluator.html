@@ -24,6 +24,7 @@
         <script type="text/javascript" src="../../_static/jquery.js"></script>
         <script type="text/javascript" src="../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -91,7 +92,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Models.html">Models</a></li>
 </ul>
-<p class="caption"><span class="caption-text">train</span></p>
+<p class="caption"><span class="caption-text">Train</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Loss.html">Loss</a></li>
@@ -107,6 +108,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../Label.html">Label</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Load.html">Load</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Loader.html">Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Save.html">Save</a></li>
 </ul>
 
             
@@ -170,21 +172,24 @@
            <div itemprop="articleBody">
             
   <h1>Source code for train.evaluator</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span></span>
+<span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">utils.distance</span> <span class="k">import</span> <span class="n">get_distance</span>
+<span class="c1">#from utils.define import logger</span>
 
 <div class="viewcode-block" id="evaluate"><a class="viewcode-back" href="../../Evaluator.html#train.evaluator.evaluate">[docs]</a><span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">queue</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Args:</span>
-<span class="sd">        - **model**: Model to be evaluated</span>
-<span class="sd">        - **queue**: queue for threading</span>
-<span class="sd">        - **criterion**: loss function ex) nn.CrossEntropyLoss, LabelSmoothingLoss etc ..</span>
-<span class="sd">        - **device**: device used (&#39;cuda&#39; or &#39;cpu&#39;)</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parameters:</span>
+<span class="sd">        - **model** (torch.nn): Model to be evaluated</span>
+<span class="sd">        - **queue** (queue): queue for threading</span>
+<span class="sd">        - **criterion** (torch.nn): loss function ex) nn.CrossEntropyLoss, LabelSmoothingLoss etc ..</span>
+<span class="sd">        - **device** (torch.cuda): device used (&#39;cuda&#39; or &#39;cpu&#39;)</span>
 
-<span class="sd">    Outputs:</span>
-<span class="sd">        - **loss**: loss of evalution</span>
-<span class="sd">        - **cer**: character error rate of evaluation</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        - **loss** (float): loss of evalution</span>
+<span class="sd">        - **cer** (float): character error rate</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;evaluate() start&#39;</span><span class="p">)</span>
     <span class="n">total_loss</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="n">total_num</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">total_distance</span> <span class="o">=</span> <span class="mi">0</span>
@@ -214,6 +219,7 @@
             <span class="n">total_length</span> <span class="o">+=</span> <span class="n">length</span>
             <span class="n">total_sentence_num</span> <span class="o">+=</span> <span class="n">target</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;evaluate() completed&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">total_loss</span> <span class="o">/</span> <span class="n">total_num</span><span class="p">,</span> <span class="n">total_distance</span> <span class="o">/</span> <span class="n">total_length</span></div>
 </pre></div>
 

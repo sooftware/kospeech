@@ -24,6 +24,7 @@
         <script type="text/javascript" src="../_static/jquery.js"></script>
         <script type="text/javascript" src="../_static/underscore.js"></script>
         <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -119,7 +120,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../Models.html">Models</a></li>
 </ul>
-<p class="caption"><span class="caption-text">train</span></p>
+<p class="caption"><span class="caption-text">Train</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Loss.html">Loss</a></li>
@@ -135,6 +136,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../Label.html">Label</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Load.html">Load</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Loader.html">Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Save.html">Save</a></li>
 </ul>
 
             
@@ -419,11 +421,11 @@
 <p>수동으로 추가해 준 3개의 레이블을 포함하여 총 <strong>2,337</strong>개의 문자 레이블이 완성되었다.<br />우리 팀은 위의 레이블 리스트 중 1번씩 등장한 문자에 주목했다.</p>
 <p>‘갗’, ‘괞’, ‘긃’ 등의 생소한 문자가 약 300개 정도를 차지했는데   우리 팀은 이러한 레이블은 노이즈가 될 것이라고 생각했고, 이에 대한 처리를 고민했다. 1번씩 등장한 파일들을 확인해서 하나하나 수작업으로 레이블을 바꿔주려 했지만, 실제로 음성 파일을 들어보게 되면 바꿔주기가 상당히 애매했다.</p>
 <p>|id|char|freq|<br />|:–:|:—-:|:—-:|<br />|0| |5774462|<br />|1|.|640924|<br />|2|그|556373|<br />|3|이|509291|<br />|.|.|.|<br />|.|.|.|<br />|2037|&lt;s&gt;|0|<br />|2038|&lt;/s&gt;|0|<br />|2039|_|0|</p>
-<p>그래서 우리는 이렇게 1번씩 등장한 문자가 포함된 파일은 <strong>테스트 데이터</strong>로 사용하고, 2번 이상 등장한 문자들만 있는 파일들로만 <strong>트레이닝 데이터</strong>를 구성했다. 이렇게 1번씩 등장한 300여개의 문자들이 포함된 파일들을 제외를 해서, 위의 표처럼 <strong>2,040</strong>개의 문자로만 트레이닝을 시킬 수 있었다.</p>
+<p>확인해본 결과, 1번만 등장한 문자가 포함된 파일은 총 297개로, 60만개가 넘는 파일 중 297개는 무시하고 2,040개의 문자 레이블로 학습하는 것이 더 나을 것이라고 판단했다. 그래서 2번 이상 등장한 문자들만 있는 파일들로만 <strong>트레이닝 데이터</strong>를 구성했다. 이렇게 1번씩 등장한 300여개의 문자들이 포함된 파일들을 제외를 해서, 위의 표처럼 <strong>2,040</strong>개의 문자로만 트레이닝을 시킬 수 있었다.</p>
 <ul class="simple">
 <li>train_labels.csv : 1번씩 등장한 문자를 제외한 <strong>2,040</strong>개의 문자 레이블</li>
-<li>test_labels.csv : 데이터셋에서 등장한 <strong>2,337</strong>개의 문자 레이블<br />링크 : https://github.com/sh951011/Korean-Speech-Recognition/tree/master/data/label</li>
 </ul>
+<p>링크 : https://github.com/sh951011/Korean-Speech-Recognition/tree/master/data/label</p>
 </div>
 </div>
 <div class="section" id="create-target-text">

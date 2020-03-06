@@ -24,6 +24,7 @@
         <script type="text/javascript" src="../../_static/jquery.js"></script>
         <script type="text/javascript" src="../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -91,7 +92,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Models.html">Models</a></li>
 </ul>
-<p class="caption"><span class="caption-text">train</span></p>
+<p class="caption"><span class="caption-text">Train</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Loss.html">Loss</a></li>
@@ -107,6 +108,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../Label.html">Label</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Load.html">Load</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Loader.html">Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Save.html">Save</a></li>
 </ul>
 
             
@@ -170,23 +172,24 @@
            <div itemprop="articleBody">
             
   <h1>Source code for utils.load</h1><div class="highlight"><pre>
-<span></span>
-<span class="kn">import</span> <span class="nn">pickle</span>
+<span></span><span class="kn">import</span> <span class="nn">pickle</span>
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">csv</span>
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="k">import</span> <span class="n">trange</span>
+<span class="c1">#from utils.define import logger, TRAIN_DATASET_PICKLE_PATH, VALID_DATASET_PICKLE_PATH</span>
+<span class="kn">from</span> <span class="nn">utils.save</span> <span class="k">import</span> <span class="n">save_pickle</span>
 
 
 <div class="viewcode-block" id="load_targets"><a class="viewcode-back" href="../../Load.html#utils.load.load_targets">[docs]</a><span class="k">def</span> <span class="nf">load_targets</span><span class="p">(</span><span class="n">label_paths</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Provides dictionary of filename and labels</span>
 
-<span class="sd">    Inputs: label_paths</span>
-<span class="sd">        - **label_paths**: set of label paths</span>
+<span class="sd">    Parameters:</span>
+<span class="sd">        - **label_paths** (list): set of label paths</span>
 
-<span class="sd">    Outputs: target_dict</span>
-<span class="sd">        - **target_dict**: dictionary of filename and labels</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        - **target_dict** (dict): dictionary of filename and labels</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">target_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">trange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">label_paths</span><span class="p">)):</span>
@@ -195,18 +198,19 @@
             <span class="n">label</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
             <span class="n">file_num</span> <span class="o">=</span> <span class="n">label_txt</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
             <span class="n">target_dict</span><span class="p">[</span><span class="s1">&#39;KaiSpeech_label_</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">file_num</span><span class="p">]</span> <span class="o">=</span> <span class="n">label</span>
+    <span class="n">save_pickle</span><span class="p">(</span><span class="n">target_dict</span><span class="p">,</span> <span class="s2">&quot;./data/pickle/target_dict.bin&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;target_dict save complete !!&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">target_dict</span></div>
 
 <div class="viewcode-block" id="load_data_list"><a class="viewcode-back" href="../../Load.html#utils.load.load_data_list">[docs]</a><span class="k">def</span> <span class="nf">load_data_list</span><span class="p">(</span><span class="n">data_list_path</span><span class="p">,</span> <span class="n">dataset_path</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Provides set of audio path &amp; label path</span>
 
-<span class="sd">    Inputs: data_list_path</span>
-<span class="sd">        - **data_list_path**: csv file with training or test data list</span>
+<span class="sd">    Parameters:</span>
+<span class="sd">        - **data_list_path** (list): csv file with training or test data list</span>
 
-<span class="sd">    Outputs: audio_paths, label_paths</span>
-<span class="sd">        - **audio_paths**: set of audio path</span>
-<span class="sd">        - **label_paths**: set of label path</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        - **audio_paths** (list): set of audio path</span>
+<span class="sd">        - **label_paths** (list): set of label path</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">data_list</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">data_list_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">delimiter</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;cp949&quot;</span><span class="p">)</span>
     <span class="n">audio_paths</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dataset_path</span> <span class="o">+</span> <span class="n">data_list</span><span class="p">[</span><span class="s2">&quot;audio&quot;</span><span class="p">])</span>
@@ -216,32 +220,55 @@
 
 <div class="viewcode-block" id="load_label"><a class="viewcode-back" href="../../Load.html#utils.load.load_label">[docs]</a><span class="k">def</span> <span class="nf">load_label</span><span class="p">(</span><span class="n">label_path</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Provides char2index, index2char</span>
+<span class="sd">    Provides char2id, id2char</span>
 
-<span class="sd">    Inputs: label_path</span>
-<span class="sd">        - **label_path**: csv file with character labels</span>
+<span class="sd">    Parameters:</span>
+<span class="sd">        - **label_path** (list): csv file with character labels</span>
 
-<span class="sd">    Outputs: char2index, index2char</span>
-<span class="sd">        - **char2index**: char2index[ch] = id</span>
-<span class="sd">        - **index2char**: index2char[id] = ch</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        - **char2id** (dict): char2id[ch] = id</span>
+<span class="sd">        - **id2char** (dict): id2char[id] = ch</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">char2index</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-    <span class="n">index2char</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="n">char2id</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="n">id2char</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">label_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">labels</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
         <span class="nb">next</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">:</span>
-            <span class="n">char2index</span><span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">index2char</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">char2id</span><span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">id2char</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
-    <span class="k">return</span> <span class="n">char2index</span><span class="p">,</span> <span class="n">index2char</span></div>
+    <span class="k">return</span> <span class="n">char2id</span><span class="p">,</span> <span class="n">id2char</span></div>
 
 <div class="viewcode-block" id="load_pickle"><a class="viewcode-back" href="../../Load.html#utils.load.load_pickle">[docs]</a><span class="k">def</span> <span class="nf">load_pickle</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; load pickle file &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    load pickle file</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        - **filepath** (str): Path to pickle file to load</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        -**load_result** : load result of pickle</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">load_result</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">load_result</span></div>
+
+<span class="k">def</span> <span class="nf">load_dataset</span><span class="p">(</span><span class="n">hparams</span><span class="p">,</span> <span class="n">audio_paths</span><span class="p">,</span> <span class="n">valid_ratio</span><span class="o">=</span><span class="mf">0.05</span><span class="p">):</span>
+    <span class="n">batch_num</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">audio_paths</span><span class="p">)</span> <span class="o">/</span> <span class="n">hparams</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
+    <span class="n">valid_batch_num</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">batch_num</span> <span class="o">*</span> <span class="n">valid_ratio</span><span class="p">)</span>
+    <span class="n">train_batch_num</span> <span class="o">=</span> <span class="n">batch_num</span> <span class="o">-</span> <span class="n">valid_batch_num</span>
+    <span class="k">if</span> <span class="n">hparams</span><span class="o">.</span><span class="n">use_augmentation</span><span class="p">:</span> <span class="n">train_batch_num</span> <span class="o">*=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">hparams</span><span class="o">.</span><span class="n">augment_ratio</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">TRAIN_DATASET_PICKLE_PATH</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">train_dataset</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">VALID_DATASET_PICKLE_PATH</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">valid_dataset</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">train_batch_num</span><span class="p">,</span> <span class="n">train_dataset</span><span class="p">,</span> <span class="n">valid_dataset</span>
 </pre></div>
 
            </div>

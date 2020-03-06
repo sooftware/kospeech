@@ -24,6 +24,7 @@
         <script type="text/javascript" src="../../_static/jquery.js"></script>
         <script type="text/javascript" src="../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -171,8 +172,7 @@
            <div itemprop="articleBody">
             
   <h1>Source code for utils.load</h1><div class="highlight"><pre>
-<span></span>
-<span class="kn">import</span> <span class="nn">pickle</span>
+<span></span><span class="kn">import</span> <span class="nn">pickle</span>
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">csv</span>
@@ -185,12 +185,10 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Provides dictionary of filename and labels</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    -----------</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        - **label_paths** (list): set of label paths</span>
 
-<span class="sd">    Returns</span>
-<span class="sd">    ---------</span>
+<span class="sd">    Returns:</span>
 <span class="sd">        - **target_dict** (dict): dictionary of filename and labels</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">target_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
@@ -207,12 +205,10 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Provides set of audio path &amp; label path</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    -----------</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        - **data_list_path** (list): csv file with training or test data list</span>
 
-<span class="sd">    Returns</span>
-<span class="sd">    --------</span>
+<span class="sd">    Returns:</span>
 <span class="sd">        - **audio_paths** (list): set of audio path</span>
 <span class="sd">        - **label_paths** (list): set of label path</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -226,12 +222,10 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Provides char2id, id2char</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    -----------</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        - **label_path** (list): csv file with character labels</span>
 
-<span class="sd">    Returns</span>
-<span class="sd">    --------</span>
+<span class="sd">    Returns:</span>
 <span class="sd">        - **char2id** (dict): char2id[ch] = id</span>
 <span class="sd">        - **id2char** (dict): id2char[id] = ch</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -251,12 +245,10 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    load pickle file</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    -----------</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        - **filepath** (str): Path to pickle file to load</span>
 
-<span class="sd">    Returns</span>
-<span class="sd">    --------</span>
+<span class="sd">    Returns:</span>
 <span class="sd">        -**load_result** : load result of pickle</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>

@@ -24,6 +24,7 @@
         <script type="text/javascript" src="_static/jquery.js"></script>
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -185,25 +186,30 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>vocab_size</strong><strong> (</strong><strong>int</strong><strong>)</strong> (<em>-</em>) – </li>
-<li><strong>ignore_index</strong><strong> (</strong><strong>int</strong><strong>)</strong> (<em>-</em>) – </li>
-<li><strong>smoothing</strong><strong> (</strong><strong>float</strong><strong>)</strong> (<em>-</em>) – </li>
-<li><strong>dim</strong><strong> (</strong><strong>int</strong><strong>)</strong> (<em>-</em>) – </li>
-<li><strong>logit</strong><strong> (</strong><strong>torch.Tensor</strong><strong>)</strong> (<em>-</em>) – </li>
-<li><strong>target</strong><strong> (</strong><strong>torch.Tensor</strong><strong>)</strong> (<em>-</em>) – </li>
+<li><strong>vocab_size</strong> (<em>-</em>) – the number of classfication</li>
+<li><strong>ignore_index</strong> (<em>-</em>) – Indexes that are ignored when calculating loss</li>
+<li><strong>smoothing</strong> (<em>-</em>) – ratio of smoothing (confidence = 1.0 - smoothing)</li>
+<li><strong>dim</strong> (<em>-</em>) – dimention of calculation loss</li>
+<li><strong>logit</strong> (<em>-</em>) – probability distribution value from model and it has a logarithm shape</li>
+<li><strong>target</strong> (<em>-</em>) – ground-thruth encoded to integers which directly point a word in label</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>- **label_smoothed</strong> (float)**</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">sum of loss</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">sum of loss</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>label_smoothed</strong> (float)</li>
+</ul>
+</p>
 </td>
 </tr>
 </tbody>
 </table>
-<blockquote>
-<div><a class="reference external" href="https://github.com/pytorch/pytorch/issues/7455">https://github.com/pytorch/pytorch/issues/7455</a></div></blockquote>
+<dl class="docutils">
+<dt>Reference:</dt>
+<dd><a class="reference external" href="https://github.com/pytorch/pytorch/issues/7455">https://github.com/pytorch/pytorch/issues/7455</a></dd>
+</dl>
 <dl class="method">
 <dt id="train.loss.LabelSmoothingLoss.forward">
 <code class="descname">forward</code><span class="sig-paren">(</span><em>logit</em>, <em>target</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/train/loss.html#LabelSmoothingLoss.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#train.loss.LabelSmoothingLoss.forward" title="Permalink to this definition">¶</a></dt>

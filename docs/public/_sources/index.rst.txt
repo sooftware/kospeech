@@ -23,7 +23,7 @@ Welcome to Korean Speech Recognition's documentation!
 
 .. toctree::
    :maxdepth: 1
-   :caption: train
+   :caption: Train
 
    Evaluator
    Loss
@@ -41,3 +41,4 @@ Welcome to Korean Speech Recognition's documentation!
    Label
    Load
    Loader
+   Save

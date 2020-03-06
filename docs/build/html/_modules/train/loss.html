@@ -24,6 +24,7 @@
         <script type="text/javascript" src="../../_static/jquery.js"></script>
         <script type="text/javascript" src="../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -178,8 +179,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Provides Label-Smoothing loss.</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    -----------</span>
+<span class="sd">    Parameters:</span>
 <span class="sd">        - **vocab_size** (int): the number of classfication</span>
 <span class="sd">        - **ignore_index** (int): Indexes that are ignored when calculating loss</span>
 <span class="sd">        - **smoothing** (float): ratio of smoothing (confidence = 1.0 - smoothing)</span>
@@ -187,12 +187,10 @@
 <span class="sd">        - **logit** (torch.Tensor): probability distribution value from model and it has a logarithm shape</span>
 <span class="sd">        - **target** (torch.Tensor): ground-thruth encoded to integers which directly point a word in label</span>
 
-<span class="sd">    Returns</span>
-<span class="sd">    --------</span>
+<span class="sd">    Returns:</span>
 <span class="sd">        - **label_smoothed** (float): sum of loss</span>
 
-<span class="sd">    Reference</span>
-<span class="sd">    ----------</span>
+<span class="sd">    Reference:</span>
 <span class="sd">        https://github.com/pytorch/pytorch/issues/7455</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vocab_size</span><span class="p">,</span> <span class="n">ignore_index</span><span class="p">,</span> <span class="n">smoothing</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
