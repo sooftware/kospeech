@@ -185,14 +185,14 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>model</strong> (<em>-</em>) – Model to be trained</li>
-<li><strong>optimizer</strong> (<em>-</em>) – optimizer for training</li>
-<li><strong>teacher_forcing_ratio</strong> (<em>-</em>) – The probability that teacher forcing will be used (default: 0.90)</li>
-<li><strong>print_time_step</strong> (<em>-</em>) – Parameters to determine how many steps to output</li>
-<li><strong>queue</strong> (<em>-</em>) – queue for threading</li>
-<li><strong>criterion</strong> (<em>-</em>) – loss function ex) nn.CrossEntropyLoss, LabelSmoothingLoss etc ..</li>
-<li><strong>device</strong> (<em>-</em>) – device used (‘cuda’ or ‘cpu’)</li>
-<li><strong>worker_num</strong> (<em>-</em>) – the number of cpu cores used</li>
+<li><strong>model</strong> (<em>torch.nn</em>) – Model to be trained</li>
+<li><strong>optimizer</strong> (<em>torch.optim</em>) – optimizer for training</li>
+<li><strong>teacher_forcing_ratio</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – The probability that teacher forcing will be used (default: 0.90)</li>
+<li><strong>print_time_step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Parameters to determine how many steps to output</li>
+<li><strong>queue</strong> (<em>queue</em>) – queue for threading</li>
+<li><strong>criterion</strong> (<em>torch.nn</em>) – loss function ex) nn.CrossEntropyLoss, LabelSmoothingLoss etc ..</li>
+<li><strong>device</strong> (<em>torch.cuda</em>) – device used (‘cuda’ or ‘cpu’)</li>
+<li><strong>worker_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – the number of cpu cores used</li>
 </ul>
 </td>
 </tr>

@@ -190,17 +190,17 @@
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts higher level features (from listener) into output utterances by specifying a probability distribution over sequences of characters.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">        - **vocab_size** (int): size of the vocabulary</span>
-<span class="sd">        - **max_len** (int): a maximum allowed length for the sequence to be processed</span>
-<span class="sd">        - **hidden_size** (int): the number of features in the hidden state `h`</span>
-<span class="sd">        - **sos_id** (int): index of the start of sentence symbol</span>
-<span class="sd">        - **eos_id** (int): index of the end of sentence symbol</span>
-<span class="sd">        - **layer_size** (int, optional): number of recurrent layers (default: 1)</span>
-<span class="sd">        - **rnn_cell** (str, optional): type of RNN cell (default: gru)</span>
-<span class="sd">        - **dropout_p** (float, optional): dropout probability for the output sequence (default: 0)</span>
-<span class="sd">        - **use_attention** (bool, optional): flag indication whether to use attention mechanism or not (default: false)</span>
-<span class="sd">        - **k** (int) : size of beam</span>
+<span class="sd">    Args:</span>
+<span class="sd">        vocab_size (int): size of the vocabulary</span>
+<span class="sd">        max_len (int): a maximum allowed length for the sequence to be processed</span>
+<span class="sd">        hidden_size (int): the number of features in the hidden state `h`</span>
+<span class="sd">        sos_id (int): index of the start of sentence symbol</span>
+<span class="sd">        eos_id (int): index of the end of sentence symbol</span>
+<span class="sd">        layer_size (int, optional): number of recurrent layers (default: 1)</span>
+<span class="sd">        rnn_cell (str, optional): type of RNN cell (default: gru)</span>
+<span class="sd">        dropout_p (float, optional): dropout probability for the output sequence (default: 0)</span>
+<span class="sd">        use_attention (bool, optional): flag indication whether to use attention mechanism or not (default: false)</span>
+<span class="sd">        k (int) : size of beam</span>
 
 <span class="sd">    Inputs:</span>
 <span class="sd">        - **inputs** (batch, seq_len, input_size): list of sequences, whose length is the batch size and within which</span>

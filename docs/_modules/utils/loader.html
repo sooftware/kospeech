@@ -184,11 +184,11 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Multi Data Loader using Threads.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">        - **dataset**: object of BaseDataset</span>
-<span class="sd">        - **queue**: queue for threading</span>
-<span class="sd">        - **batch_size**: size of batch</span>
-<span class="sd">        - **worker_num**: the number of cpu cores used</span>
+<span class="sd">    Args:</span>
+<span class="sd">        dataset: object of BaseDataset</span>
+<span class="sd">        queue: queue for threading</span>
+<span class="sd">        batch_size: size of batch</span>
+<span class="sd">        worker_num: the number of cpu cores used</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_list</span><span class="p">,</span> <span class="n">queue</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">worker_num</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dataset_list</span> <span class="o">=</span> <span class="n">dataset_list</span>
@@ -212,11 +212,11 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base Data Loader</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">        - **dataset**: object of BaseDataset</span>
-<span class="sd">        - **queue**: queue for threading</span>
-<span class="sd">        - **batch_size**: size of batch</span>
-<span class="sd">        - **thread_id**: identification of thread</span>
+<span class="sd">    Args:</span>
+<span class="sd">        dataset (utils.dataset.BaseDataset): object of BaseDataset</span>
+<span class="sd">        queue (queue): queue for threading</span>
+<span class="sd">        batch_size (int): size of batch</span>
+<span class="sd">        thread_id (int): identification of thread</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">queue</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">thread_id</span><span class="p">):</span>
         <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>

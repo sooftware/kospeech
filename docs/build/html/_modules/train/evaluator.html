@@ -179,11 +179,11 @@
 
 <div class="viewcode-block" id="evaluate"><a class="viewcode-back" href="../../Evaluator.html#train.evaluator.evaluate">[docs]</a><span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">queue</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Parameters:</span>
-<span class="sd">        - **model** (torch.nn): Model to be evaluated</span>
-<span class="sd">        - **queue** (queue): queue for threading</span>
-<span class="sd">        - **criterion** (torch.nn): loss function ex) nn.CrossEntropyLoss, LabelSmoothingLoss etc ..</span>
-<span class="sd">        - **device** (torch.cuda): device used (&#39;cuda&#39; or &#39;cpu&#39;)</span>
+<span class="sd">    Args:</span>
+<span class="sd">        model (torch.nn): Model to be evaluated</span>
+<span class="sd">        queue (queue): queue for threading</span>
+<span class="sd">        criterion (torch.nn): loss function ex) nn.CrossEntropyLoss, LabelSmoothingLoss etc ..</span>
+<span class="sd">        device (torch.cuda): device used (&#39;cuda&#39; or &#39;cpu&#39;)</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        - **loss** (float): loss of evalution</span>

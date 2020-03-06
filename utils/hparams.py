@@ -1,35 +1,46 @@
+"""
+Copyright 2020- Kai.Lib
 
-#from utils.define import logger
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+"""
+from utils.define import logger
 
 class HyperParams():
     """
     Set of Hyperparameters
 
-    Hyperparameters:
-        - **use_bidirectional** (bool): if True, becomes a bidirectional listener (default: True)
-        - **use_attention** (bool): flag indication whether to use attention mechanism or not (default: True)
-        - **use_label_smooth** (bool): flag indication whether to use label smoothing or not (default: True)
-        - **input_reverse** (bool): flag indication whether to reverse input feature or not (default: True)
-        - **use_pickle** (bool): flag indication whether to load data from pickle or not (default: False)
-        - **use_augment** (bool): flag indication whether to use spec-augmentation or not (default: True)
-        - **use_pyramidal** (bool): flag indication whether to use pyramidal rnn in listener or not (default: True)
-        - **use_multistep_lr** (bool): flag indication whether to use multistep leraning rate or not (default:False)
-        - **augment_ratio** (float): ratio of spec-augmentation applied data (default: 1.0)
-        - **pack_by_length** (bool): pack by similar sequence length
-        - **listener_layer_size** (int): num of listener`s RNN cell (default: 6)
-        - **speller_layer_size** (int): num of speller`s RNN cell (default: 3)
-        - **hidden_size** (int): size of hidden state of RNN (default: 256)
-        - **dropout** (float): dropout probability (default: 0.5)
-        - **batch_size** (int): mini-batch size (default: 12)
-        - **worker_num** (int): num of cpu core will be used (default: 1)
-        - **max_epochs** (int): max epoch (default: 40)
-        - **init_lr** (float): initial learning rate (default: 1e-4)
-        - **high_plateau_lr** (float): maximum learning rate after the ramp up phase (default: -)
-        - **low_plateau_lr** (float): Steps to be maintained at a certain number to avoid extremely slow learning (default: -)
-        - **teacher_forcing** (float): The probability that teacher forcing will be used (default: 0.90)
-        - **seed** (int): seed for random (default: 1)
-        - **max_len** (int): a maximum allowed length for the sequence to be processed (default: 120)
-        - **use_cuda** (bool): if True, use CUDA (default: True)
+    Args:
+        use_bidirectional (bool): if True, becomes a bidirectional listener (default: True)
+        use_attention (bool): flag indication whether to use attention mechanism or not (default: True)
+        use_label_smooth (bool): flag indication whether to use label smoothing or not (default: True)
+        input_reverse (bool): flag indication whether to reverse input feature or not (default: True)
+        use_pickle (bool): flag indication whether to load data from pickle or not (default: False)
+        use_augment (bool): flag indication whether to use spec-augmentation or not (default: True)
+        use_pyramidal (bool): flag indication whether to use pyramidal rnn in listener or not (default: True)
+        use_multistep_lr (bool): flag indication whether to use multistep leraning rate or not (default:False)
+        augment_ratio (float): ratio of spec-augmentation applied data (default: 1.0)
+        pack_by_length (bool): pack by similar sequence length
+        listener_layer_size (int): num of listener`s RNN cell (default: 6)
+        speller_layer_size (int): num of speller`s RNN cell (default: 3)
+        hidden_size (int): size of hidden state of RNN (default: 256)
+        dropout (float): dropout probability (default: 0.5)
+        batch_size (int): mini-batch size (default: 12)
+        worker_num (int): num of cpu core will be used (default: 1)
+        max_epochs (int): max epoch (default: 40)
+        init_lr (float): initial learning rate (default: 1e-4)
+        high_plateau_lr (float): maximum learning rate after the ramp up phase (default: -)
+        low_plateau_lr (float): Steps to be maintained at a certain number to avoid extremely slow learning (default: -)
+        teacher_forcing (float): The probability that teacher forcing will be used (default: 0.90)
+        seed (int): seed for random (default: 1)
+        max_len (int): a maximum allowed length for the sequence to be processed (default: 120)
+        use_cuda (bool): if True, use CUDA (default: True)
     """
     def __init__(self,
                  use_bidirectional = True,

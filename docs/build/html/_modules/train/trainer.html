@@ -183,15 +183,15 @@
           <span class="n">criterion</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">train_begin</span><span class="p">,</span> <span class="n">worker_num</span><span class="p">,</span>
           <span class="n">print_time_step</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="mf">0.90</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Parameters:</span>
-<span class="sd">        - **model** (torch.nn): Model to be trained</span>
-<span class="sd">        - **optimizer** (torch.optim): optimizer for training</span>
-<span class="sd">        - **teacher_forcing_ratio** (float):  The probability that teacher forcing will be used (default: 0.90)</span>
-<span class="sd">        - **print_time_step** (int): Parameters to determine how many steps to output</span>
-<span class="sd">        - **queue** (queue): queue for threading</span>
-<span class="sd">        - **criterion** (torch.nn): loss function ex) nn.CrossEntropyLoss, LabelSmoothingLoss etc ..</span>
-<span class="sd">        - **device** (torch.cuda): device used (&#39;cuda&#39; or &#39;cpu&#39;)</span>
-<span class="sd">        - **worker_num** (int): the number of cpu cores used</span>
+<span class="sd">    Args:</span>
+<span class="sd">        model (torch.nn): Model to be trained</span>
+<span class="sd">        optimizer (torch.optim): optimizer for training</span>
+<span class="sd">        teacher_forcing_ratio (float):  The probability that teacher forcing will be used (default: 0.90)</span>
+<span class="sd">        print_time_step (int): Parameters to determine how many steps to output</span>
+<span class="sd">        queue (queue): queue for threading</span>
+<span class="sd">        criterion (torch.nn): loss function ex) nn.CrossEntropyLoss, LabelSmoothingLoss etc ..</span>
+<span class="sd">        device (torch.cuda): device used (&#39;cuda&#39; or &#39;cpu&#39;)</span>
+<span class="sd">        worker_num (int): the number of cpu cores used</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        - **cer** (float): character error rate</span>

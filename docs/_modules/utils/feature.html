@@ -182,13 +182,13 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute a mel-scaled soectrigram (or Log-Mel).</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">        - **filepath** (str): specific path of audio file</span>
-<span class="sd">        - **n_mels** (int): number of mel filter</span>
-<span class="sd">        - **del_silence** (bool): flag indication whether to delete silence or not (default: True)</span>
-<span class="sd">        - **mel_type** (str): if &#39;log_mel&#39; return log-mel (default: &#39;log_mel&#39;)</span>
-<span class="sd">        - **input_reverse** (bool): flag indication whether to reverse input or not (default: True)</span>
-<span class="sd">        - **format** (str): file format ex) pcm, wav (default: pcm)</span>
+<span class="sd">    Args:</span>
+<span class="sd">        filepath (str): specific path of audio file</span>
+<span class="sd">        n_mels (int): number of mel filter</span>
+<span class="sd">        del_silence (bool): flag indication whether to delete silence or not (default: True)</span>
+<span class="sd">        mel_type (str): if &#39;log_mel&#39; return log-mel (default: &#39;log_mel&#39;)</span>
+<span class="sd">        input_reverse (bool): flag indication whether to reverse input or not (default: True)</span>
+<span class="sd">        format (str): file format ex) pcm, wav (default: pcm)</span>
 
 <span class="sd">    Feature Parameters:</span>
 <span class="sd">        - **sample rate**: A.I Hub dataset`s sample rate is 16,000</span>
@@ -196,8 +196,12 @@
 <span class="sd">        - **stride**: 10ms</span>
 <span class="sd">        - **overlap**: 15ms</span>
 <span class="sd">        - **window**: Hamming Window</span>
-<span class="sd">        - **n_fft**: sr * frame_length (16,000 * 30ms)</span>
-<span class="sd">        - **hop_length**: sr * stride (16,000 * 7.5ms)</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            \begin{array}{ll}</span>
+<span class="sd">            n_fft = sr * frame_length \\</span>
+<span class="sd">            hop_length = sr * stride \\</span>
+<span class="sd">            \end{array}</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        - **feat** (torch.Tensor): return Mel-Spectrogram (or Log-Mel)</span>
@@ -232,12 +236,12 @@
     <span class="sd">&quot;&quot;&quot;:</span>
 <span class="sd">    Mel-frequency cepstral coefficients (MFCCs)</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">        - **filepath** (str): specific path of audio file</span>
-<span class="sd">        - **n_mfcc** (int): number of mel filter</span>
-<span class="sd">        - **del_silence** (bool): flag indication whether to delete silence or not (default: True)</span>
-<span class="sd">        - **input_reverse** (bool): flag indication whether to reverse input or not (default: True)</span>
-<span class="sd">        - **format** (str): file format ex) pcm, wav (default: pcm)</span>
+<span class="sd">    Args:</span>
+<span class="sd">        filepath (str): specific path of audio file</span>
+<span class="sd">        n_mfcc (int): number of mel filter</span>
+<span class="sd">        del_silence (bool): flag indication whether to delete silence or not (default: True)</span>
+<span class="sd">        input_reverse (bool): flag indication whether to reverse input or not (default: True)</span>
+<span class="sd">        format (str): file format ex) pcm, wav (default: pcm)</span>
 
 <span class="sd">    Feature Parameters:</span>
 <span class="sd">        - **sample rate**: A.I Hub dataset`s sample rate is 16,000</span>
@@ -245,8 +249,12 @@
 <span class="sd">        - **stride**: 10ms</span>
 <span class="sd">        - **overlap**: 15ms</span>
 <span class="sd">        - **window**: Hamming Window</span>
-<span class="sd">        - **n_fft**: sr * frame_length (16,000 * 30ms)</span>
-<span class="sd">        - **hop_length**: sr * stride (16,000 * 7.5ms)</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            \begin{array}{ll}</span>
+<span class="sd">            n_fft = sr * frame_length \\</span>
+<span class="sd">            hop_length = sr * stride \\</span>
+<span class="sd">            \end{array}</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        - **feat** (torch.Tensor): MFCC values of signal</span>
@@ -277,12 +285,12 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Provides Augmentation for audio</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">        - **feat** (torch.Tensor): input data feature</span>
-<span class="sd">        - **T** (int): Hyper Parameter for Time Masking to limit time masking length</span>
-<span class="sd">        - **F** (int): Hyper Parameter for Freq Masking to limit freq masking length</span>
-<span class="sd">        - **time_mask_num** (int): how many time-masked area to make</span>
-<span class="sd">        - **freq_mask_num** (int): how many freq-masked area to make</span>
+<span class="sd">    Args:</span>
+<span class="sd">        feat (torch.Tensor): input data feature</span>
+<span class="sd">        T (int): Hyper Parameter for Time Masking to limit time masking length</span>
+<span class="sd">        F (int): Hyper Parameter for Freq Masking to limit freq masking length</span>
+<span class="sd">        time_mask_num (int): how many time-masked area to make</span>
+<span class="sd">        freq_mask_num (int): how many freq-masked area to make</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        - **feat**: Augmented feature</span>

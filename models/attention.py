@@ -10,7 +10,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -26,8 +25,8 @@ class Attention(nn.Module):
         output = \tanh(w * (attn * context) + b * output)
         \end{array}
 
-    Parameters:
-        - decoder_hidden_size(int): The number of expected features in the output
+    Args:
+        decoder_hidden_size (int): The number of expected features in the output
 
     Inputs:
         - **decoder_output** (batch, output_len, hidden_size): tensor containing the output features from the decoder.

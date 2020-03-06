@@ -179,17 +179,17 @@
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Applying Beam-Search during decoding process.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">        - **k** (int) : size of beam</span>
-<span class="sd">        - **decoder_hidden** (torch.Tensor) : hidden state of decoder</span>
-<span class="sd">        - **batch_size** (int) : mini-batch size during infer</span>
-<span class="sd">        - **max_len** (int) :  a maximum allowed length for the sequence to be processed</span>
-<span class="sd">        - **function** (torch.nn.Module) : A function used to generate symbols from RNN hidden state (default : torch.nn.functional.log_softmax)</span>
-<span class="sd">        - **decoder** (torch.nn.module) : get pointer of decoder object to get multiple parameters at once</span>
-<span class="sd">        - **beams** (torch.Tensor) : ongoing beams for decoding</span>
-<span class="sd">        - **beam_scores** (torch.Tensor) : score of beams (cumulative probability)</span>
-<span class="sd">        - **done_beams** (list2d) : store beams which met &lt;eos&gt; token and terminated decoding process.</span>
-<span class="sd">        - **done_beam_scores** (list2d) : score of done_beams</span>
+<span class="sd">    Args:</span>
+<span class="sd">        k (int) : size of beam</span>
+<span class="sd">        decoder_hidden (torch.Tensor) : hidden state of decoder</span>
+<span class="sd">        batch_size (int) : mini-batch size during infer</span>
+<span class="sd">        max_len (int) :  a maximum allowed length for the sequence to be processed</span>
+<span class="sd">        function (torch.nn) : A function used to generate symbols from RNN hidden state (default : torch.nn.functional.log_softmax)</span>
+<span class="sd">        decoder (torch.nn) : get pointer of decoder object to get multiple parameters at once</span>
+<span class="sd">        beams (torch.Tensor) : ongoing beams for decoding</span>
+<span class="sd">        beam_scores (torch.Tensor) : score of beams (cumulative probability)</span>
+<span class="sd">        done_beams (list) : store beams which met &lt;eos&gt; token and terminated decoding process.</span>
+<span class="sd">        done_beam_scores (list) : score of done_beams</span>
 
 <span class="sd">    Inputs:</span>
 <span class="sd">        - **init_decoder_input** (torch.Tensor): initial input of decoder - &lt;eos&gt;</span>

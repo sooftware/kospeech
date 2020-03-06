@@ -23,8 +23,6 @@ TARGET_DICT_PATH = "./data/pickle/target_dict.bin"
 TRAIN_RESULT_PATH = "./data/train_result/train_result.csv"
 VALID_RESULT_PATH = "./data/train_result/eval_result.csv"
 TRAIN_STEP_RESULT_PATH = "./data/train_result/train_step_result.csv"
-TRAIN_DATASET_PICKLE_PATH = "./data/pickle/train_dataset.txt"
-VALID_DATASET_PICKLE_PATH = "./data/pickle/valid_dataset.txt"
 import logging, sys
 logger = logging.getLogger('root')
 FORMAT = "[%(asctime)s %(filename)s:%(lineno)s - %(funcName)s()] %(message)s"

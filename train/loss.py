@@ -1,3 +1,15 @@
+"""
+Copyright 2020- Kai.Lib
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+"""
 import torch
 import torch.nn as nn
 
@@ -5,13 +17,13 @@ class LabelSmoothingLoss(nn.Module):
     """
     Provides Label-Smoothing loss.
 
-    Parameters:
-        - **vocab_size** (int): the number of classfication
-        - **ignore_index** (int): Indexes that are ignored when calculating loss
-        - **smoothing** (float): ratio of smoothing (confidence = 1.0 - smoothing)
-        - **dim** (int): dimention of calculation loss
-        - **logit** (torch.Tensor): probability distribution value from model and it has a logarithm shape
-        - **target** (torch.Tensor): ground-thruth encoded to integers which directly point a word in label
+    Args:
+        vocab_size (int): the number of classfication
+        ignore_index (int): Indexes that are ignored when calculating loss
+        smoothing (float): ratio of smoothing (confidence = 1.0 - smoothing)
+        dim (int): dimention of calculation loss
+        logit (torch.Tensor): probability distribution value from model and it has a logarithm shape
+        target (torch.Tensor): ground-thruth encoded to integers which directly point a word in label
 
     Returns:
         - **label_smoothed** (float): sum of loss

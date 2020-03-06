@@ -180,11 +180,11 @@
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Pyramidal RNN for time resolution reduction</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">        - **rnn_cell** (str, optional): type of RNN cell (default: gru)</span>
-<span class="sd">        - **hidden_size** (int): the number of features in the hidden state `h`</span>
-<span class="sd">        - **input_size** (int): size of input</span>
-<span class="sd">        - **dropout_p** (float, optional): dropout probability for the output sequence (default: 0)</span>
+<span class="sd">    Args:</span>
+<span class="sd">        rnn_cell (str, optional): type of RNN cell (default: gru)</span>
+<span class="sd">        hidden_size (int): the number of features in the hidden state `h`</span>
+<span class="sd">        input_size (int): size of input</span>
+<span class="sd">        dropout_p (float, optional): dropout probability for the output sequence (default: 0)</span>
 
 <span class="sd">    Inputs:</span>
 <span class="sd">        - **inputs**: list of sequences, whose length is the batch size and within which each sequence is a list of token IDs.</span>
@@ -223,13 +223,13 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts low level speech signals into higher level features</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">        - **rnn_cell** (str, optional): type of RNN cell (default: gru)</span>
-<span class="sd">        - **hidden_size** (int): the number of features in the hidden state `h`</span>
-<span class="sd">        - **layer_size** (int, optional): number of recurrent layers (default: 1)</span>
-<span class="sd">        - **bidirectional** (bool, optional): if True, becomes a bidirectional encoder (defulat: False)</span>
-<span class="sd">        - **use_pyramidal** (bool): flag indication whether to use pyramidal rnn for time resolution (default: True)</span>
-<span class="sd">        - **dropout_p** (float, optional): dropout probability for the output sequence (default: 0)</span>
+<span class="sd">    Args:</span>
+<span class="sd">        rnn_cell (str, optional): type of RNN cell (default: gru)</span>
+<span class="sd">        hidden_size (int): the number of features in the hidden state `h`</span>
+<span class="sd">        layer_size (int, optional): number of recurrent layers (default: 1)</span>
+<span class="sd">        bidirectional (bool, optional): if True, becomes a bidirectional encoder (defulat: False)</span>
+<span class="sd">        use_pyramidal (bool): flag indication whether to use pyramidal rnn for time resolution (default: True)</span>
+<span class="sd">        dropout_p (float, optional): dropout probability for the output sequence (default: 0)</span>
 
 <span class="sd">    Inputs:</span>
 <span class="sd">        - **inputs**: list of sequences, whose length is the batch size and within which each sequence is a list of token IDs.</span>

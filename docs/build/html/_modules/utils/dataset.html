@@ -184,17 +184,17 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Dataset for audio &amp; label matching</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">        - **audio_paths** (list): set of audio path</span>
-<span class="sd">        - **label_paths** (list): set of label paths</span>
-<span class="sd">        - **bos_id** (int): &lt;s&gt;`s id</span>
-<span class="sd">        - **eos_id** (int): &lt;/s&gt;`s id</span>
-<span class="sd">        - **target_dict** (dict): dictionary of filename and labels</span>
-<span class="sd">        - **input_reverse** (bool): flag indication whether to reverse input feature or not (default: True)</span>
-<span class="sd">        - **use_augment** (bool): flag indication whether to use spec-augmentation or not (default: True)</span>
-<span class="sd">        - **augment_ratio** (float): ratio of spec-augmentation applied data (default: 1.0)</span>
-<span class="sd">        - **pack_by_length** (bool): pack by similar sequence length</span>
-<span class="sd">        - **batch_size** (int): mini batch size</span>
+<span class="sd">    Args:</span>
+<span class="sd">        audio_paths (list): set of audio path</span>
+<span class="sd">        label_paths (list): set of label paths</span>
+<span class="sd">        bos_id (int): &lt;s&gt;`s id</span>
+<span class="sd">        eos_id (int): &lt;/s&gt;`s id</span>
+<span class="sd">        target_dict (dict): dictionary of filename and labels</span>
+<span class="sd">        input_reverse (bool): flag indication whether to reverse input feature or not (default: True)</span>
+<span class="sd">        use_augment (bool): flag indication whether to use spec-augmentation or not (default: True)</span>
+<span class="sd">        augment_ratio (float): ratio of spec-augmentation applied data (default: 1.0)</span>
+<span class="sd">        pack_by_length (bool): pack by similar sequence length</span>
+<span class="sd">        batch_size (int): mini batch size</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">audio_paths</span><span class="p">,</span> <span class="n">label_paths</span><span class="p">,</span> <span class="n">sos_id</span> <span class="o">=</span> <span class="mi">2037</span><span class="p">,</span> <span class="n">eos_id</span> <span class="o">=</span> <span class="mi">2038</span><span class="p">,</span>
                  <span class="n">target_dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">input_reverse</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">use_augment</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -320,12 +320,11 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Dataset split into training and validation Dataset.</span>
 
-
-<span class="sd">    Parameters:</span>
-<span class="sd">        - **hparams** (utils.HyperParams): set of hyper parameters</span>
-<span class="sd">        - **audio_paths** (list): set of audio path</span>
-<span class="sd">        - **label_paths** (list): set of label path</span>
-<span class="sd">        - **target_dict** (dict): dictionary of filename and labels</span>
+<span class="sd">    Args:</span>
+<span class="sd">        hparams (utils.HyperParams): set of hyper parameters</span>
+<span class="sd">        audio_paths (list): set of audio path</span>
+<span class="sd">        label_paths (list): set of label path</span>
+<span class="sd">        target_dict (dict): dictionary of filename and labels</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        - **train_batch_num** (int): num of batch for training</span>

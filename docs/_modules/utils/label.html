@@ -176,11 +176,11 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Provides specific file`s label to list format.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">        - **filepath** (str): specific path of label file</span>
-<span class="sd">        - **bos_id** (int): identification of &lt;start of sequence&gt;</span>
-<span class="sd">        - **eos_id** (int): identification of &lt;end of sequence&gt;</span>
-<span class="sd">        - **target_dict** (dict): dictionary of filename and labels</span>
+<span class="sd">    Args:</span>
+<span class="sd">        filepath (str): specific path of label file</span>
+<span class="sd">        bos_id (int): identification of &lt;start of sequence&gt;</span>
+<span class="sd">        eos_id (int): identification of &lt;end of sequence&gt;</span>
+<span class="sd">        target_dict (dict): dictionary of filename and labels</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        - **label** (list): list of bos + sequence of label + eos</span>
@@ -201,10 +201,10 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts label to string (number =&gt; Hangeul)</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">        - **labels**: number label</span>
-<span class="sd">        - **id2char**: id2char[id] = ch</span>
-<span class="sd">        - **eos_id**: identification of &lt;end of sequence&gt;</span>
+<span class="sd">    Args:</span>
+<span class="sd">        labels: number label</span>
+<span class="sd">        id2char: id2char[id] = ch</span>
+<span class="sd">        eos_id: identification of &lt;end of sequence&gt;</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        - **sentence** (str or list): Hangeul representation of labels</span>

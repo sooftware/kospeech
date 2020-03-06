@@ -1,4 +1,15 @@
+"""
+Copyright 2020- Kai.Lib
 
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+"""
 import torch.nn as nn
 import torch
 
@@ -6,11 +17,11 @@ class PyramidalRNN(nn.Module):
     r"""
     Pyramidal RNN for time resolution reduction
 
-    Parameters:
-        - **rnn_cell** (str, optional): type of RNN cell (default: gru)
-        - **hidden_size** (int): the number of features in the hidden state `h`
-        - **input_size** (int): size of input
-        - **dropout_p** (float, optional): dropout probability for the output sequence (default: 0)
+    Args:
+        rnn_cell (str, optional): type of RNN cell (default: gru)
+        hidden_size (int): the number of features in the hidden state `h`
+        input_size (int): size of input
+        dropout_p (float, optional): dropout probability for the output sequence (default: 0)
 
     Inputs:
         - **inputs**: list of sequences, whose length is the batch size and within which each sequence is a list of token IDs.
@@ -49,13 +60,13 @@ class Listener(nn.Module):
     """
     Converts low level speech signals into higher level features
 
-    Parameters:
-        - **rnn_cell** (str, optional): type of RNN cell (default: gru)
-        - **hidden_size** (int): the number of features in the hidden state `h`
-        - **layer_size** (int, optional): number of recurrent layers (default: 1)
-        - **bidirectional** (bool, optional): if True, becomes a bidirectional encoder (defulat: False)
-        - **use_pyramidal** (bool): flag indication whether to use pyramidal rnn for time resolution (default: True)
-        - **dropout_p** (float, optional): dropout probability for the output sequence (default: 0)
+    Args:
+        rnn_cell (str, optional): type of RNN cell (default: gru)
+        hidden_size (int): the number of features in the hidden state `h`
+        layer_size (int, optional): number of recurrent layers (default: 1)
+        bidirectional (bool, optional): if True, becomes a bidirectional encoder (defulat: False)
+        use_pyramidal (bool): flag indication whether to use pyramidal rnn for time resolution (default: True)
+        dropout_p (float, optional): dropout probability for the output sequence (default: 0)
 
     Inputs:
         - **inputs**: list of sequences, whose length is the batch size and within which each sequence is a list of token IDs.

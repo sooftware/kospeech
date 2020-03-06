@@ -1,3 +1,15 @@
+"""
+Copyright 2020- Kai.Lib
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+"""
 import torch
 import numpy as np
 
@@ -5,17 +17,17 @@ class Beam:
     r"""
     Applying Beam-Search during decoding process.
 
-    Parameters:
-        - **k** (int) : size of beam
-        - **decoder_hidden** (torch.Tensor) : hidden state of decoder
-        - **batch_size** (int) : mini-batch size during infer
-        - **max_len** (int) :  a maximum allowed length for the sequence to be processed
-        - **function** (torch.nn.Module) : A function used to generate symbols from RNN hidden state (default : torch.nn.functional.log_softmax)
-        - **decoder** (torch.nn.module) : get pointer of decoder object to get multiple parameters at once
-        - **beams** (torch.Tensor) : ongoing beams for decoding
-        - **beam_scores** (torch.Tensor) : score of beams (cumulative probability)
-        - **done_beams** (list2d) : store beams which met <eos> token and terminated decoding process.
-        - **done_beam_scores** (list2d) : score of done_beams
+    Args:
+        k (int) : size of beam
+        decoder_hidden (torch.Tensor) : hidden state of decoder
+        batch_size (int) : mini-batch size during infer
+        max_len (int) :  a maximum allowed length for the sequence to be processed
+        function (torch.nn) : A function used to generate symbols from RNN hidden state (default : torch.nn.functional.log_softmax)
+        decoder (torch.nn) : get pointer of decoder object to get multiple parameters at once
+        beams (torch.Tensor) : ongoing beams for decoding
+        beam_scores (torch.Tensor) : score of beams (cumulative probability)
+        done_beams (list) : store beams which met <eos> token and terminated decoding process.
+        done_beam_scores (list) : score of done_beams
 
     Inputs:
         - **init_decoder_input** (torch.Tensor): initial input of decoder - <eos>

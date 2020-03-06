@@ -186,12 +186,12 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>filepath</strong> (<em>-</em>) – specific path of audio file</li>
-<li><strong>n_mels</strong> (<em>-</em>) – number of mel filter</li>
-<li><strong>del_silence</strong> (<em>-</em>) – flag indication whether to delete silence or not (default: True)</li>
-<li><strong>mel_type</strong> (<em>-</em>) – if ‘log_mel’ return log-mel (default: ‘log_mel’)</li>
-<li><strong>input_reverse</strong> (<em>-</em>) – flag indication whether to reverse input or not (default: True)</li>
-<li><strong>format</strong> (<em>-</em>) – file format ex) pcm, wav (default: pcm)</li>
+<li><strong>filepath</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – specific path of audio file</li>
+<li><strong>n_mels</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of mel filter</li>
+<li><strong>del_silence</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – flag indication whether to delete silence or not (default: True)</li>
+<li><strong>mel_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – if ‘log_mel’ return log-mel (default: ‘log_mel’)</li>
+<li><strong>input_reverse</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – flag indication whether to reverse input or not (default: True)</li>
+<li><strong>format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – file format ex) pcm, wav (default: pcm)</li>
 </ul>
 </td>
 </tr>
@@ -199,15 +199,18 @@
 </table>
 <dl class="docutils">
 <dt>Feature Parameters:</dt>
-<dd><ul class="first last simple">
+<dd><ul class="first simple">
 <li><strong>sample rate</strong>: A.I Hub dataset`s sample rate is 16,000</li>
 <li><strong>frame length</strong>: 25ms</li>
 <li><strong>stride</strong>: 10ms</li>
 <li><strong>overlap</strong>: 15ms</li>
 <li><strong>window</strong>: Hamming Window</li>
-<li><strong>n_fft</strong>: sr * frame_length (16,000 * 30ms)</li>
-<li><strong>hop_length</strong>: sr * stride (16,000 * 7.5ms)</li>
 </ul>
+<div class="last math notranslate nohighlight">
+\[egin{array}{ll}
+n_fft = sr * frame_length \
+hop_length = sr * stride \
+\end{array}\]</div>
 </dd>
 </dl>
 <table class="docutils field-list" frame="void" rules="none">
@@ -235,11 +238,11 @@ Mel-frequency cepstral coefficients (MFCCs)</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>filepath</strong> (<em>-</em>) – specific path of audio file</li>
-<li><strong>n_mfcc</strong> (<em>-</em>) – number of mel filter</li>
-<li><strong>del_silence</strong> (<em>-</em>) – flag indication whether to delete silence or not (default: True)</li>
-<li><strong>input_reverse</strong> (<em>-</em>) – flag indication whether to reverse input or not (default: True)</li>
-<li><strong>format</strong> (<em>-</em>) – file format ex) pcm, wav (default: pcm)</li>
+<li><strong>filepath</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – specific path of audio file</li>
+<li><strong>n_mfcc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of mel filter</li>
+<li><strong>del_silence</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – flag indication whether to delete silence or not (default: True)</li>
+<li><strong>input_reverse</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – flag indication whether to reverse input or not (default: True)</li>
+<li><strong>format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – file format ex) pcm, wav (default: pcm)</li>
 </ul>
 </td>
 </tr>
@@ -247,15 +250,18 @@ Mel-frequency cepstral coefficients (MFCCs)</p>
 </table>
 <dl class="docutils">
 <dt>Feature Parameters:</dt>
-<dd><ul class="first last simple">
+<dd><ul class="first simple">
 <li><strong>sample rate</strong>: A.I Hub dataset`s sample rate is 16,000</li>
 <li><strong>frame length</strong>: 25ms</li>
 <li><strong>stride</strong>: 10ms</li>
 <li><strong>overlap</strong>: 15ms</li>
 <li><strong>window</strong>: Hamming Window</li>
-<li><strong>n_fft</strong>: sr * frame_length (16,000 * 30ms)</li>
-<li><strong>hop_length</strong>: sr * stride (16,000 * 7.5ms)</li>
 </ul>
+<div class="last math notranslate nohighlight">
+\[egin{array}{ll}
+n_fft = sr * frame_length \
+hop_length = sr * stride \
+\end{array}\]</div>
 </dd>
 </dl>
 <table class="docutils field-list" frame="void" rules="none">
@@ -282,11 +288,11 @@ Mel-frequency cepstral coefficients (MFCCs)</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>feat</strong> (<em>-</em>) – input data feature</li>
-<li><strong>T</strong> (<em>-</em>) – Hyper Parameter for Time Masking to limit time masking length</li>
-<li><strong>F</strong> (<em>-</em>) – Hyper Parameter for Freq Masking to limit freq masking length</li>
-<li><strong>time_mask_num</strong> (<em>-</em>) – how many time-masked area to make</li>
-<li><strong>freq_mask_num</strong> (<em>-</em>) – how many freq-masked area to make</li>
+<li><strong>feat</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.5.0a0+2b79bab ))"><em>torch.Tensor</em></a>) – input data feature</li>
+<li><strong>T</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Hyper Parameter for Time Masking to limit time masking length</li>
+<li><strong>F</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Hyper Parameter for Freq Masking to limit freq masking length</li>
+<li><strong>time_mask_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – how many time-masked area to make</li>
+<li><strong>freq_mask_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – how many freq-masked area to make</li>
 </ul>
 </td>
 </tr>
