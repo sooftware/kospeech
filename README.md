@@ -28,7 +28,7 @@ Our project based on Seq2seq with Attention Architecture.
 
 Seq2seq is a fast evolving field with new techniques and architectures being published frequently.  
   
-[More details](https://github.com/sh951011/Korean-Speech-Recognition/wiki/More-Details)
+[More details](https://sh951011.github.io/Korean-Speech-Recognition/notes/More-details.html)
 
 ## Installation
 This package requires Python 3.5.   
@@ -36,12 +36,12 @@ We recommend creating a new virtual environment for this project (using virtuale
 
 ### Prerequisites
   
-* Numpy: `pip install numpy` (Refer [here](https://github.com/numpy/numpy) for problem installing Numpy).
-* PyTorch: Refer to [PyTorch website](http://pytorch.org/) to install the version w.r.t. your environment.
-* Pandas: `pip install pandas` (Refer [here](https://github.com/pandas-dev/pandas) for problem installing Pandas)  
-* librosa: `pip install librosa` (Refer [here](https://github.com/librosa/librosa) for problem installing librosa)
-* tqdm: `pip install tqdm` (Refer [here](https://github.com/tqdm/tqdm) for problem installing tqdm)  
-* python-levenshtein: `conda install python-levenshtein` (Refer [here](https://github.com/miohtama/python-Levenshtein) for problem installing python-levenshtein)  
+* Numpy:  `pip install numpy` (Refer [here](https://github.com/numpy/numpy) for problem installing Numpy).
+* PyTorch:  Refer to [PyTorch website](http://pytorch.org/) to install the version w.r.t. your environment.
+* Pandas:  `pip install pandas` (Refer [here](https://github.com/pandas-dev/pandas) for problem installing Pandas)  
+* librosa:  `pip install librosa` (Refer [here](https://github.com/librosa/librosa) for problem installing librosa)
+* tqdm:  `pip install tqdm` (Refer [here](https://github.com/tqdm/tqdm) for problem installing tqdm)  
+* python-levenshtein:  `conda install python-levenshtein` (Refer [here](https://github.com/miohtama/python-Levenshtein) for problem installing python-levenshtein)  
   
 ### Install from source  
   
