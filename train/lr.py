@@ -1,8 +1,7 @@
 """
 Module of learning rate
 
-Reference
-----------
+Reference:
     「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」Google Brain Team. 2019.
      https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py
 """

@@ -172,8 +172,7 @@
            <div itemprop="articleBody">
             
   <h1>Source code for utils.loader</h1><div class="highlight"><pre>
-<span></span>
-<span class="kn">import</span> <span class="nn">threading</span>
+<span></span><span class="kn">import</span> <span class="nn">threading</span>
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">random</span>
@@ -185,10 +184,10 @@
 <span class="sd">    Multi Data Loader using Threads.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        dataset: object of BaseDataset</span>
-<span class="sd">        queue: queue for threading</span>
-<span class="sd">        batch_size: size of batch</span>
-<span class="sd">        worker_num: the number of cpu cores used</span>
+<span class="sd">        dataset (utils.dataset.BaseDataset): object of BaseDataset</span>
+<span class="sd">        queue (Queue.queue): queue for threading</span>
+<span class="sd">        batch_size (int): size of batch</span>
+<span class="sd">        worker_num (int): the number of cpu cores used</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_list</span><span class="p">,</span> <span class="n">queue</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">worker_num</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dataset_list</span> <span class="o">=</span> <span class="n">dataset_list</span>
@@ -214,7 +213,7 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        dataset (utils.dataset.BaseDataset): object of BaseDataset</span>
-<span class="sd">        queue (queue): queue for threading</span>
+<span class="sd">        queue (Queue.queue): queue for threading</span>
 <span class="sd">        batch_size (int): size of batch</span>
 <span class="sd">        thread_id (int): identification of thread</span>
 <span class="sd">    &quot;&quot;&quot;</span>

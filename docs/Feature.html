@@ -199,20 +199,20 @@
 </table>
 <dl class="docutils">
 <dt>Feature Parameters:</dt>
-<dd><ul class="first simple">
+<dd><ul class="first last simple">
 <li><strong>sample rate</strong>: A.I Hub dataset`s sample rate is 16,000</li>
 <li><strong>frame length</strong>: 25ms</li>
 <li><strong>stride</strong>: 10ms</li>
 <li><strong>overlap</strong>: 15ms</li>
 <li><strong>window</strong>: Hamming Window</li>
 </ul>
-<div class="last math notranslate nohighlight">
-\[egin{array}{ll}
-n_fft = sr * frame_length \
-hop_length = sr * stride \
-\end{array}\]</div>
 </dd>
 </dl>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}{ll}
+NFFT = sr * frame_length \\
+HopLength = sr * stride \\
+\end{array}\end{split}\]</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -226,6 +226,18 @@ hop_length = sr * stride \
 </tr>
 </tbody>
 </table>
+<dl class="docutils">
+<dt>Examples::</dt>
+<dd>Generate mel spectrogram from a time series</dd>
+</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_librosa_melspectrogram</span><span class="p">(</span><span class="s2">&quot;KaiSpeech_021458.pcm&quot;</span><span class="p">,</span> <span class="n">n_mels</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">input_reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;pcm&#39;</span><span class="p">)</span>
+<span class="go">Tensor([[  2.891e-07,   2.548e-03, ...,   8.116e-09,   5.633e-09],</span>
+<span class="go">        [  1.986e-07,   1.162e-02, ...,   9.332e-08,   6.716e-09],</span>
+<span class="go">        ...,</span>
+<span class="go">        [  3.668e-09,   2.029e-08, ...,   3.208e-09,   2.864e-09],</span>
+<span class="go">        [  2.561e-10,   2.096e-09, ...,   7.543e-10,   6.101e-10]])</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -250,20 +262,20 @@ Mel-frequency cepstral coefficients (MFCCs)</p>
 </table>
 <dl class="docutils">
 <dt>Feature Parameters:</dt>
-<dd><ul class="first simple">
+<dd><ul class="first last simple">
 <li><strong>sample rate</strong>: A.I Hub dataset`s sample rate is 16,000</li>
 <li><strong>frame length</strong>: 25ms</li>
 <li><strong>stride</strong>: 10ms</li>
 <li><strong>overlap</strong>: 15ms</li>
 <li><strong>window</strong>: Hamming Window</li>
 </ul>
-<div class="last math notranslate nohighlight">
-\[egin{array}{ll}
-n_fft = sr * frame_length \
-hop_length = sr * stride \
-\end{array}\]</div>
 </dd>
 </dl>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}{ll}
+NFFT = sr * frame_length \\
+HopLength = sr * stride \\
+\end{array}\end{split}\]</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -277,6 +289,19 @@ hop_length = sr * stride \
 </tr>
 </tbody>
 </table>
+<dl class="docutils">
+<dt>Examples::</dt>
+<dd><p class="first">Generate mfccs from a time series</p>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_librosa_mfcc</span><span class="p">(</span><span class="s2">&quot;KaiSpeech_021458.pcm&quot;</span><span class="p">,</span> <span class="n">n_mfcc</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">input_reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;pcm&#39;</span><span class="p">)</span>
+<span class="go">Tensor([[ -5.229e+02,  -4.944e+02, ...,  -5.229e+02,  -5.229e+02],</span>
+<span class="go">        [  7.105e-15,   3.787e+01, ...,  -7.105e-15,  -7.105e-15],</span>
+<span class="go">        ...,</span>
+<span class="go">        [  1.066e-14,  -7.500e+00, ...,   1.421e-14,   1.421e-14],</span>
+<span class="go">        [  3.109e-14,  -5.058e+00, ...,   2.931e-14,   2.931e-14]])</span>
+</pre></div>
+</div>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
@@ -313,6 +338,17 @@ hop_length = sr * stride \
 <dt>「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」Google Brain Team. 2019.</dt>
 <dd><a class="reference external" href="https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py">https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py</a></dd>
 </dl>
+</dd>
+<dt>Examples::</dt>
+<dd><p class="first">Generate spec augmentation from a feature</p>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">spec_augment</span><span class="p">(</span><span class="n">feat</span><span class="p">,</span> <span class="n">T</span> <span class="o">=</span> <span class="mi">70</span><span class="p">,</span> <span class="n">F</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span> <span class="n">time_mask_num</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">freq_mask_num</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">Tensor([[ -5.229e+02,  0, ...,  -5.229e+02,  -5.229e+02],</span>
+<span class="go">        [  7.105e-15,  0, ...,  -7.105e-15,  -7.105e-15],</span>
+<span class="go">        ...,</span>
+<span class="go">        [          0,  0, ...,           0,           0],</span>
+<span class="go">        [  3.109e-14,  0, ...,   2.931e-14,   2.931e-14]])</span>
+</pre></div>
+</div>
 </dd>
 </dl>
 </dd></dl>

@@ -1,15 +1,3 @@
-"""
-Copyright 2020- Kai.Lib
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
 import threading
 import math
 import torch
@@ -22,10 +10,10 @@ class MultiLoader():
     Multi Data Loader using Threads.
 
     Args:
-        dataset: object of BaseDataset
-        queue: queue for threading
-        batch_size: size of batch
-        worker_num: the number of cpu cores used
+        dataset (utils.dataset.BaseDataset): object of BaseDataset
+        queue (Queue.queue): queue for threading
+        batch_size (int): size of batch
+        worker_num (int): the number of cpu cores used
     """
     def __init__(self, dataset_list, queue, batch_size, worker_num):
         self.dataset_list = dataset_list
@@ -51,7 +39,7 @@ class BaseDataLoader(threading.Thread):
 
     Args:
         dataset (utils.dataset.BaseDataset): object of BaseDataset
-        queue (queue): queue for threading
+        queue (Queue.queue): queue for threading
         batch_size (int): size of batch
         thread_id (int): identification of thread
     """

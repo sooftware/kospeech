@@ -187,8 +187,8 @@
 <span class="sd">    Args:</span>
 <span class="sd">        audio_paths (list): set of audio path</span>
 <span class="sd">        label_paths (list): set of label paths</span>
-<span class="sd">        bos_id (int): &lt;s&gt;`s id</span>
-<span class="sd">        eos_id (int): &lt;/s&gt;`s id</span>
+<span class="sd">        sos_id (int): identification of &lt;start of sequence&gt;</span>
+<span class="sd">        eos_id (int): identification of &lt;end of sequence&gt;</span>
 <span class="sd">        target_dict (dict): dictionary of filename and labels</span>
 <span class="sd">        input_reverse (bool): flag indication whether to reverse input feature or not (default: True)</span>
 <span class="sd">        use_augment (bool): flag indication whether to use spec-augmentation or not (default: True)</span>
@@ -321,7 +321,7 @@
 <span class="sd">    Dataset split into training and validation Dataset.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        hparams (utils.HyperParams): set of hyper parameters</span>
+<span class="sd">        hparams (utils.hparams.HyperParams): set of hyper parameters</span>
 <span class="sd">        audio_paths (list): set of audio path</span>
 <span class="sd">        label_paths (list): set of label path</span>
 <span class="sd">        target_dict (dict): dictionary of filename and labels</span>

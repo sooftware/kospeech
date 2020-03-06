@@ -175,8 +175,41 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="trainer">
-<h1>Trainer<a class="headerlink" href="#trainer" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-train.trainer">
+<span id="trainer"></span><h1>Trainer<a class="headerlink" href="#module-train.trainer" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="train.trainer.train">
+<code class="descclassname">train.trainer.</code><code class="descname">train</code><span class="sig-paren">(</span><em>model</em>, <em>hparams</em>, <em>epoch</em>, <em>total_time_step</em>, <em>queue</em>, <em>criterion</em>, <em>optimizer</em>, <em>device</em>, <em>train_begin</em>, <em>worker_num</em>, <em>print_time_step=10</em>, <em>teacher_forcing_ratio=0.9</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/train/trainer.html#train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#train.trainer.train" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>model</strong> (<a class="reference external" href="https://pytorch.org/docs/master/nn.html#torch.nn.Module" title="(in PyTorch vmaster (1.5.0a0+2b79bab ))"><em>torch.nn.Module</em></a>) – Model to be trained</li>
+<li><strong>optimizer</strong> (<em>torch.optim</em>) – optimizer for training</li>
+<li><strong>teacher_forcing_ratio</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – The probability that teacher forcing will be used (default: 0.90)</li>
+<li><strong>print_time_step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Parameters to determine how many steps to output</li>
+<li><strong>queue</strong> (<em>Queue.queue</em>) – queue for threading</li>
+<li><strong>criterion</strong> (<em>torch.nn</em>) – loss function ex) nn.CrossEntropyLoss, LabelSmoothingLoss etc ..</li>
+<li><strong>device</strong> (<em>torch.cuda</em>) – device used (‘cuda’ or ‘cpu’)</li>
+<li><strong>worker_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – the number of cpu cores used</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">character error rate
+- <strong>loss</strong> (float): loss of present epoch</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>cer</strong> (float)</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 
 

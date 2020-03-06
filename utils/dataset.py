@@ -1,16 +1,3 @@
-"""
-Copyright 2020- Kai.Lib
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
-
 import random
 import math
 from torch.utils.data import Dataset
@@ -26,8 +13,8 @@ class BaseDataset(Dataset):
     Args:
         audio_paths (list): set of audio path
         label_paths (list): set of label paths
-        bos_id (int): <s>`s id
-        eos_id (int): </s>`s id
+        sos_id (int): identification of <start of sequence>
+        eos_id (int): identification of <end of sequence>
         target_dict (dict): dictionary of filename and labels
         input_reverse (bool): flag indication whether to reverse input feature or not (default: True)
         use_augment (bool): flag indication whether to use spec-augmentation or not (default: True)
@@ -160,7 +147,7 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
     Dataset split into training and validation Dataset.
 
     Args:
-        hparams (utils.HyperParams): set of hyper parameters
+        hparams (utils.hparams.HyperParams): set of hyper parameters
         audio_paths (list): set of audio path
         label_paths (list): set of label path
         target_dict (dict): dictionary of filename and labels

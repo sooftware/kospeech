@@ -179,7 +179,7 @@
 <span class="c1">#from utils.define import logger</span>
 
 <div class="viewcode-block" id="get_librosa_melspectrogram"><a class="viewcode-back" href="../../Feature.html#utils.feature.get_librosa_melspectrogram">[docs]</a><span class="k">def</span> <span class="nf">get_librosa_melspectrogram</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">n_mels</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">del_silence</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">input_reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mel_type</span><span class="o">=</span><span class="s1">&#39;log_mel&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;pcm&#39;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute a mel-scaled soectrigram (or Log-Mel).</span>
 
 <span class="sd">    Args:</span>
@@ -197,14 +197,24 @@
 <span class="sd">        - **overlap**: 15ms</span>
 <span class="sd">        - **window**: Hamming Window</span>
 
-<span class="sd">        .. math::</span>
-<span class="sd">            \begin{array}{ll}</span>
-<span class="sd">            n_fft = sr * frame_length \\</span>
-<span class="sd">            hop_length = sr * stride \\</span>
-<span class="sd">            \end{array}</span>
+<span class="sd">    .. math::</span>
+<span class="sd">        \begin{array}{ll}</span>
+<span class="sd">        NFFT = sr * frame_length \\</span>
+<span class="sd">        HopLength = sr * stride \\</span>
+<span class="sd">        \end{array}</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        - **feat** (torch.Tensor): return Mel-Spectrogram (or Log-Mel)</span>
+
+<span class="sd">    Examples::</span>
+<span class="sd">        Generate mel spectrogram from a time series</span>
+
+<span class="sd">    &gt;&gt;&gt; get_librosa_melspectrogram(&quot;KaiSpeech_021458.pcm&quot;, n_mels=128, input_reverse=True, format=&#39;pcm&#39;)</span>
+<span class="sd">    Tensor([[  2.891e-07,   2.548e-03, ...,   8.116e-09,   5.633e-09],</span>
+<span class="sd">            [  1.986e-07,   1.162e-02, ...,   9.332e-08,   6.716e-09],</span>
+<span class="sd">            ...,</span>
+<span class="sd">            [  3.668e-09,   2.029e-08, ...,   3.208e-09,   2.864e-09],</span>
+<span class="sd">            [  2.561e-10,   2.096e-09, ...,   7.543e-10,   6.101e-10]])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="s1">&#39;pcm&#39;</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
@@ -233,7 +243,7 @@
 
 
 <div class="viewcode-block" id="get_librosa_mfcc"><a class="viewcode-back" href="../../Feature.html#utils.feature.get_librosa_mfcc">[docs]</a><span class="k">def</span> <span class="nf">get_librosa_mfcc</span><span class="p">(</span><span class="n">filepath</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">n_mfcc</span> <span class="o">=</span> <span class="mi">33</span><span class="p">,</span> <span class="n">del_silence</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">input_reverse</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;pcm&#39;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;:</span>
 <span class="sd">    Mel-frequency cepstral coefficients (MFCCs)</span>
 
 <span class="sd">    Args:</span>
@@ -250,14 +260,24 @@
 <span class="sd">        - **overlap**: 15ms</span>
 <span class="sd">        - **window**: Hamming Window</span>
 
-<span class="sd">        .. math::</span>
-<span class="sd">            \begin{array}{ll}</span>
-<span class="sd">            n_fft = sr * frame_length \\</span>
-<span class="sd">            hop_length = sr * stride \\</span>
-<span class="sd">            \end{array}</span>
+<span class="sd">    .. math::</span>
+<span class="sd">        \begin{array}{ll}</span>
+<span class="sd">        NFFT = sr * frame_length \\</span>
+<span class="sd">        HopLength = sr * stride \\</span>
+<span class="sd">        \end{array}</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        - **feat** (torch.Tensor): MFCC values of signal</span>
+
+<span class="sd">    Examples::</span>
+<span class="sd">        Generate mfccs from a time series</span>
+
+<span class="sd">        &gt;&gt;&gt; get_librosa_mfcc(&quot;KaiSpeech_021458.pcm&quot;, n_mfcc=40, input_reverse=True, format=&#39;pcm&#39;)</span>
+<span class="sd">        Tensor([[ -5.229e+02,  -4.944e+02, ...,  -5.229e+02,  -5.229e+02],</span>
+<span class="sd">                [  7.105e-15,   3.787e+01, ...,  -7.105e-15,  -7.105e-15],</span>
+<span class="sd">                ...,</span>
+<span class="sd">                [  1.066e-14,  -7.500e+00, ...,   1.421e-14,   1.421e-14],</span>
+<span class="sd">                [  3.109e-14,  -5.058e+00, ...,   2.931e-14,   2.931e-14]])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="s1">&#39;pcm&#39;</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
@@ -275,7 +295,7 @@
         <span class="n">non_silence_indices</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">effects</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">top_db</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
         <span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">signal</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span> <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="ow">in</span> <span class="n">non_silence_indices</span><span class="p">])</span>
 
-    <span class="n">feat</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">mfcc</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="mi">16000</span><span class="p">,</span> <span class="n">hop_length</span> <span class="o">=</span> <span class="mi">160</span><span class="p">,</span> <span class="n">n_mfcc</span> <span class="o">=</span> <span class="mi">33</span><span class="p">,</span> <span class="n">n_fft</span> <span class="o">=</span> <span class="mi">400</span><span class="p">,</span> <span class="n">window</span> <span class="o">=</span> <span class="s1">&#39;hamming&#39;</span><span class="p">)</span>
+    <span class="n">feat</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">mfcc</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="mi">16000</span><span class="p">,</span> <span class="n">hop_length</span> <span class="o">=</span> <span class="mi">160</span><span class="p">,</span> <span class="n">n_mfcc</span> <span class="o">=</span> <span class="n">n_mfcc</span><span class="p">,</span> <span class="n">n_fft</span> <span class="o">=</span> <span class="mi">400</span><span class="p">,</span> <span class="n">window</span> <span class="o">=</span> <span class="s1">&#39;hamming&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">input_reverse</span><span class="p">:</span>
         <span class="n">feat</span> <span class="o">=</span> <span class="n">feat</span><span class="p">[:,::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
@@ -298,6 +318,16 @@
 <span class="sd">    Reference:</span>
 <span class="sd">        「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」Google Brain Team. 2019.</span>
 <span class="sd">         https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py</span>
+
+<span class="sd">    Examples::</span>
+<span class="sd">        Generate spec augmentation from a feature</span>
+
+<span class="sd">        &gt;&gt;&gt; spec_augment(feat, T = 70, F = 20, time_mask_num = 2, freq_mask_num = 2)</span>
+<span class="sd">        Tensor([[ -5.229e+02,  0, ...,  -5.229e+02,  -5.229e+02],</span>
+<span class="sd">                [  7.105e-15,  0, ...,  -7.105e-15,  -7.105e-15],</span>
+<span class="sd">                ...,</span>
+<span class="sd">                [          0,  0, ...,           0,           0],</span>
+<span class="sd">                [  3.109e-14,  0, ...,   2.931e-14,   2.931e-14]])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">feat_size</span> <span class="o">=</span> <span class="n">feat</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">seq_len</span> <span class="o">=</span> <span class="n">feat</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>

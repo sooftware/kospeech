@@ -1,15 +1,3 @@
-"""
-Copyright 2020- Kai.Lib
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
 import torch
 import librosa
 import numpy as np
@@ -17,7 +5,7 @@ import random
 from utils.define import logger
 
 def get_librosa_melspectrogram(filepath, n_mels=128, del_silence=False, input_reverse=True, mel_type='log_mel', format='pcm'):
-    """
+    r"""
     Compute a mel-scaled soectrigram (or Log-Mel).
 
     Args:
@@ -35,14 +23,24 @@ def get_librosa_melspectrogram(filepath, n_mels=128, del_silence=False, input_re
         - **overlap**: 15ms
         - **window**: Hamming Window
 
-        .. math::
-            \begin{array}{ll}
-            n_fft = sr * frame_length \\
-            hop_length = sr * stride \\
-            \end{array}
+    .. math::
+        \begin{array}{ll}
+        NFFT = sr * frame_length \\
+        HopLength = sr * stride \\
+        \end{array}
 
     Returns:
         - **feat** (torch.Tensor): return Mel-Spectrogram (or Log-Mel)
+
+    Examples::
+        Generate mel spectrogram from a time series
+
+    >>> get_librosa_melspectrogram("KaiSpeech_021458.pcm", n_mels=128, input_reverse=True, format='pcm')
+    Tensor([[  2.891e-07,   2.548e-03, ...,   8.116e-09,   5.633e-09],
+            [  1.986e-07,   1.162e-02, ...,   9.332e-08,   6.716e-09],
+            ...,
+            [  3.668e-09,   2.029e-08, ...,   3.208e-09,   2.864e-09],
+            [  2.561e-10,   2.096e-09, ...,   7.543e-10,   6.101e-10]])
     """
     if format == 'pcm':
         try:
@@ -71,7 +69,7 @@ def get_librosa_melspectrogram(filepath, n_mels=128, del_silence=False, input_re
 
 
 def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = False, input_reverse = True, format='pcm'):
-    """:
+    r""":
     Mel-frequency cepstral coefficients (MFCCs)
 
     Args:
@@ -88,14 +86,24 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = False, input_re
         - **overlap**: 15ms
         - **window**: Hamming Window
 
-        .. math::
-            \begin{array}{ll}
-            n_fft = sr * frame_length \\
-            hop_length = sr * stride \\
-            \end{array}
+    .. math::
+        \begin{array}{ll}
+        NFFT = sr * frame_length \\
+        HopLength = sr * stride \\
+        \end{array}
 
     Returns:
         - **feat** (torch.Tensor): MFCC values of signal
+
+    Examples::
+        Generate mfccs from a time series
+
+        >>> get_librosa_mfcc("KaiSpeech_021458.pcm", n_mfcc=40, input_reverse=True, format='pcm')
+        Tensor([[ -5.229e+02,  -4.944e+02, ...,  -5.229e+02,  -5.229e+02],
+                [  7.105e-15,   3.787e+01, ...,  -7.105e-15,  -7.105e-15],
+                ...,
+                [  1.066e-14,  -7.500e+00, ...,   1.421e-14,   1.421e-14],
+                [  3.109e-14,  -5.058e+00, ...,   2.931e-14,   2.931e-14]])
     """
     if format == 'pcm':
         try:
@@ -113,7 +121,7 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = False, input_re
         non_silence_indices = librosa.effects.split(signal, top_db=30)
         signal = np.concatenate([signal[start:end] for start, end in non_silence_indices])
 
-    feat = librosa.feature.mfcc(signal, 16000, hop_length = 160, n_mfcc = 33, n_fft = 400, window = 'hamming')
+    feat = librosa.feature.mfcc(signal, 16000, hop_length = 160, n_mfcc = n_mfcc, n_fft = 400, window = 'hamming')
     if input_reverse:
         feat = feat[:,::-1]
 
@@ -136,6 +144,16 @@ def spec_augment(feat, T = 70, F = 20, time_mask_num = 2, freq_mask_num = 2):
     Reference:
         「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」Google Brain Team. 2019.
          https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py
+
+    Examples::
+        Generate spec augmentation from a feature
+
+        >>> spec_augment(feat, T = 70, F = 20, time_mask_num = 2, freq_mask_num = 2)
+        Tensor([[ -5.229e+02,  0, ...,  -5.229e+02,  -5.229e+02],
+                [  7.105e-15,  0, ...,  -7.105e-15,  -7.105e-15],
+                ...,
+                [          0,  0, ...,           0,           0],
+                [  3.109e-14,  0, ...,   2.931e-14,   2.931e-14]])
     """
     feat_size = feat.size(1)
     seq_len = feat.size(0)
