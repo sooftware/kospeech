@@ -1,33 +1,42 @@
+"""
+Copyright 2020- Kai.Lib
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+      http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+"""
 import random
 import math
 from torch.utils.data import Dataset
-
-from utils.define import logger, SOS_TOKEN, EOS_TOKEN
-from utils.feature import spec_augment, get_librosa_melspectrogram
-from utils.label import get_label
+from utils.feature import get_librosa_mfcc, spec_augment, get_librosa_melspectrogram
+from utils.label import get_label, label_to_string
+from utils.define import logger, SOS_TOKEN, EOS_TOKEN, id2char
 
 
 class BaseDataset(Dataset):
     """
     Dataset for audio & label matching
-
     Args: audio_paths, label_paths, bos_id, eos_id, target_dict
-        - **audio_paths** (list): set of audio path
-        - **label_paths** (list): set of label paths
-        - **bos_id** (int): <s>`s id
-        - **eos_id** (int): </s>`s id
-        - **target_dict** (dict): dictionary of filename and labels
-
-    Inputs:
-        - **index** (int): index of dataset`s
-
+        audio_paths: set of audio path
+                Format : [base_dir/KaiSpeech/KaiSpeech_123260.pcm, ... , base_dir/KaiSpeech/KaiSpeech_621245.pcm]
+        label_paths: set of label paths
+                Format : [base_dir/KaiSpeech/KaiSpeech_label_123260.txt, ... , base_dir/KaiSpeech/KaiSpeech_label_621245.txt]
+        bos_id: <s>`s id
+        eos_id: </s>`s id
+        target_dict: dictionary of filename and labels
+                Format : {KaiSpeech_label_FileNum : '5 0 49 4 0 8 190 0 78 115', ... }
     Outputs:
         - **feat**: feature vector for audio
         - **label**: label for audio
     """
-    def __init__(self, audio_paths, label_paths, sos_id, eos_id,
+    def __init__(self, audio_paths, label_paths, sos_id = 2037, eos_id = 2038,
                  target_dict = None, input_reverse = True, use_augment = True,
-                 batch_size = None, augment_ratio = 1.0, pack_by_length = True):
+                 batch_size = None, augment_ratio = 0.3, pack_by_length = True):
         self.audio_paths = list(audio_paths)
         self.label_paths = list(label_paths)
         self.sos_id = sos_id
@@ -54,13 +63,13 @@ class BaseDataset(Dataset):
     def count(self):
         return len(self.audio_paths)
 
-    def get_item(self, index):
-        label = get_label(self.label_paths[index], sos_id = self.sos_id, eos_id = self.eos_id, target_dict = self.target_dict)
-        feat = get_librosa_melspectrogram(self.audio_paths[index], n_mels = 128, mel_type='log_mel', input_reverse = self.input_reverse)
+    def get_item(self, idx):
+        label = get_label(self.label_paths[idx], sos_id = self.sos_id, eos_id = self.eos_id, target_dict = self.target_dict)
+        feat = get_librosa_melspectrogram(self.audio_paths[idx], n_mels = 128, mel_type='log_mel', input_reverse = self.input_reverse)
         # exception handling
         if feat is None:
             return None, None
-        if self.augment_flags[index]:
+        if self.augment_flags[idx]:
             feat = spec_augment(feat, T = 70, F = 20, time_mask_num = 2, freq_mask_num = 2 )
         return feat, label
 
@@ -93,27 +102,28 @@ class BaseDataset(Dataset):
         bundle = list(zip(target_lengths, self.audio_paths, self.label_paths, self.augment_flags))
         junk, self.audio_paths, self.label_paths, self.augment_flags = zip(*sorted(bundle, reverse=True))
 
+
     def batch_shuffle(self, remain_drop = False):
         """ batch shuffle """
-        total_audio_batch, total_label_batch, total_augment_flag = [], [], []
-        audio_paths, label_paths, augment_flags = [], [], []
+        total_audio_batch, total_label_batch, total_augment_flag = list(), list(), list()
+        tmp_audio_batch, tmp_label_batch, tmp_augment_flag = list(), list(), list()
         index = 0
 
         while True:
             if index == len(self.audio_paths):
-                if len(audio_paths) != 0:
-                    total_audio_batch.append(audio_paths)
-                    total_label_batch.append(label_paths)
-                    total_augment_flag.append(augment_flags)
+                if len(tmp_audio_batch) != 0:
+                    total_audio_batch.append(tmp_audio_batch)
+                    total_label_batch.append(tmp_label_batch)
+                    total_augment_flag.append(tmp_augment_flag)
                 break
-            if len(audio_paths) == self.batch_size:
-                total_audio_batch.append(audio_paths)
-                total_label_batch.append(label_paths)
-                total_augment_flag.append(augment_flags)
-                audio_paths, label_paths, augment_flags = [], [], []
-            audio_paths.append(self.audio_paths[index])
-            label_paths.append(self.label_paths[index])
-            augment_flags.append(self.augment_flags[index])
+            if len(tmp_audio_batch) == self.batch_size:
+                total_audio_batch.append(tmp_audio_batch)
+                total_label_batch.append(tmp_label_batch)
+                total_augment_flag.append(tmp_augment_flag)
+                tmp_audio_batch, tmp_label_batch, tmp_augment_flag = list(), list(), list()
+            tmp_audio_batch.append(self.audio_paths[index])
+            tmp_label_batch.append(self.label_paths[index])
+            tmp_augment_flag.append(self.augment_flags[index])
             index += 1
 
         remain_audio, remain_label, remain_augment_flag = total_audio_batch[-1], total_label_batch[-1], total_augment_flag[-1]
@@ -123,7 +133,9 @@ class BaseDataset(Dataset):
         random.shuffle(bundle)
         total_audio_batch, total_label_batch, total_augment_flag = zip(*bundle)
 
-        audio_paths, label_paths, augment_flags = [], [], []
+        audio_paths = list()
+        label_paths = list()
+        augment_flags = list()
 
         for (audio_batch, label_batch, augment_flag) in zip(total_audio_batch, total_label_batch, total_augment_flag):
             audio_paths.extend(audio_batch)
@@ -145,27 +157,28 @@ class BaseDataset(Dataset):
 def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_dict = None):
     """
     Dataset split into training and validation Dataset.
-
+    Args:
+        valid_ratio: ratio for validation data
     Inputs: hparams, audio_paths, label_paths, target_dict
-        - **valid_ratio** (float): ratio for validation data
-        - **hparams** (HyperParams): set of hyper parameters
-        - **audio_paths** (list): set of audio path
-        - **label_paths** (list): set of label path
-        - **target_dict** (dict): dictionary of filename and labels
-
+        - **hparams**: set of hyper parameters
+        - **audio_paths**: set of audio path
+                Format : [base_dir/KaiSpeech/KaiSpeech_123260.pcm, ... , base_dir/KaiSpeech/KaiSpeech_621245.pcm]
+        - **label_paths**: set of label path
+                Format : [base_dir/KaiSpeech/KaiSpeech_label_123260.txt, ... , base_dir/KaiSpeech/KaiSpeech_label_621245.txt]
+        - **target_dict**: dictionary of filename and labels
+                {KaiSpeech_label_FileNum : '5 0 49 4 0 8 190 0 78 115', ... }
     Local Variables:
-        - **train_num** (int): num of training data
-        - **batch_num** (int): total num of batch
-        - **valid_batch_num** (int): num of batch for validation
-        - **train_num_per_worker** (int): num of train data per CPU core
-        - **data_paths** (list): temp variables for audio_paths and label_paths to be shuffled in the same order
-        - **train_begin_idx** (int): begin index of worker`s training dataset
-        - **train_end_idx** (int): end index of worker`s training dataset
-
+        - **train_num**: num of training data
+        - **batch_num**: total num of batch
+        - **valid_batch_num**: num of batch for validation
+        - **train_num_per_worker**: num of train data per CPU core
+        - **data_paths**: temp variables for audio_paths and label_paths to be shuffled in the same order
+        - **train_begin_idx**: begin index of worker`s training dataset
+        - **train_end_idx**: end index of worker`s training dataset
     Outputs: train_batch_num, train_dataset_list, valid_dataset
-        - **train_batch_num** (int): num of batch for training
-        - **train_dataset_list** (list): list of training data
-        - **valid_dataset** (BaseDataset): list of validation data
+        - **train_batch_num**: num of batch for training
+        - **train_dataset_list**: list of training data
+        - **valid_dataset**: list of validation data
     """
     logger.info("split dataset start !!")
     train_dataset_list = list()
