@@ -28,7 +28,7 @@ Our project based on Seq2seq with Attention Architecture.
 
 Seq2seq is a fast evolving field with new techniques and architectures being published frequently.  
   
-[More details](https://github.com/sh951011/Korean-Speech-Recognition/wiki/More-Details)
+[More details](https://sh951011.github.io/Korean-Speech-Recognition/notes/More-details.html)
 
 ## Installation
 This package requires Python 3.5.   
