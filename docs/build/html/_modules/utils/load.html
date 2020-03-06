@@ -172,12 +172,24 @@
            <div itemprop="articleBody">
             
   <h1>Source code for utils.load</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">pickle</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Copyright 2020- Kai.Lib</span>
+
+<span class="sd">Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="sd">you may not use this file except in compliance with the License.</span>
+<span class="sd">You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="sd">Unless required by applicable law or agreed to in writing, software</span>
+<span class="sd">distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="sd">WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="sd">See the License for the specific language governing permissions and</span>
+<span class="sd">limitations under the License.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">csv</span>
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="k">import</span> <span class="n">trange</span>
-<span class="c1">#from utils.define import logger</span>
+<span class="kn">from</span> <span class="nn">utils.define</span> <span class="k">import</span> <span class="n">logger</span>
 <span class="kn">from</span> <span class="nn">utils.save</span> <span class="k">import</span> <span class="n">save_pickle</span>
 
 
