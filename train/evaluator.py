@@ -5,12 +5,12 @@ from utils.define import logger
 def evaluate(model, queue, criterion, device):
     r"""
     Args:
-        model (torch.nn): Model to be evaluated
+        model (torch.nn.Module): Model to be evaluated
         queue (queue): queue for threading
         criterion (torch.nn): loss function ex) nn.CrossEntropyLoss, LabelSmoothingLoss etc ..
         device (torch.cuda): device used ('cuda' or 'cpu')
 
-    Returns:
+    Returns: loss, cer
         - **loss** (float): loss of evalution
         - **cer** (float): character error rate
     """

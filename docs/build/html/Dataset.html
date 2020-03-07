@@ -235,7 +235,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>hparams</strong> (<a class="reference internal" href="Hparams.html#utils.hparams.HyperParams" title="utils.hparams.HyperParams"><em>utils.hparams.HyperParams</em></a>) – set of hyper parameters</li>
 <li><strong>audio_paths</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – set of audio path</li>
 <li><strong>label_paths</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – set of label path</li>
@@ -243,19 +243,17 @@
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">num of batch for training
-- <strong>train_dataset_list</strong> (list): list of training dataset
-- <strong>valid_dataset</strong> (utils.BaseDataset): validation dataset</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><ul class="simple">
-<li><strong>train_batch_num</strong> (int)</li>
-</ul>
-</p>
-</td>
-</tr>
 </tbody>
 </table>
+<dl class="docutils">
+<dt>Returns: train_batch_num, train_dataset_list, valid_dataset</dt>
+<dd><ul class="first last simple">
+<li><strong>train_batch_num</strong> (int): num of batch for training</li>
+<li><strong>train_dataset_list</strong> (list): list of training dataset</li>
+<li><strong>valid_dataset</strong> (utils.dataset.BaseDataset): validation dataset</li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </div>

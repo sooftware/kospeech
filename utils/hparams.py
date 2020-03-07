@@ -35,16 +35,16 @@ class HyperParams():
                  use_attention = True,
                  use_label_smooth = True,
                  input_reverse = True,
-                 use_augment = True,
+                 use_augment = False,
                  use_pickle = False,
                  use_pyramidal = True,
                  use_cuda = True,
-                 pack_by_length = True,
+                 pack_by_length = False,
                  augment_ratio = 1.0,
                  hidden_size = 256,
                  dropout = 0.5,
-                 listener_layer_size = 6,
-                 speller_layer_size = 3,
+                 listener_layer_size = 5,
+                 speller_layer_size = 2,
                  batch_size = 8,
                  worker_num = 1,
                  max_epochs = 40,
@@ -81,6 +81,7 @@ class HyperParams():
         self.teacher_forcing = teacher_forcing
         self.seed = seed
         self.max_len = max_len
+        self.logger_hparams()
 
     def logger_hparams(self):
         """ print information of hyperparameters """

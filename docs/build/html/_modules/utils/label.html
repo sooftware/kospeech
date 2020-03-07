@@ -184,7 +184,7 @@
 <span class="sd">        eos_id (int): identification of &lt;end of sequence&gt;</span>
 <span class="sd">        target_dict (dict): dictionary of filename and labels</span>
 
-<span class="sd">    Returns:</span>
+<span class="sd">    Returns: label</span>
 <span class="sd">        - **label** (list): list of bos + sequence of label + eos</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="n">target_dict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;target_dict is None&quot;</span>
@@ -204,11 +204,11 @@
 <span class="sd">    Converts label to string (number =&gt; Hangeul)</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        labels: number label</span>
-<span class="sd">        id2char: id2char[id] = ch</span>
-<span class="sd">        eos_id: identification of &lt;end of sequence&gt;</span>
+<span class="sd">        labels (list): number label</span>
+<span class="sd">        id2char (dict): id2char[id] = ch</span>
+<span class="sd">        eos_id (int): identification of &lt;end of sequence&gt;</span>
 
-<span class="sd">    Returns:</span>
+<span class="sd">    Returns: sentence</span>
 <span class="sd">        - **sentence** (str or list): Hangeul representation of labels</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>

@@ -1,5 +1,4 @@
 import pickle
-import math
 import pandas as pd
 import csv
 from tqdm import trange
@@ -14,7 +13,7 @@ def load_targets(label_paths):
     Args:
         label_paths (list): set of label paths
 
-    Returns:
+    Returns: target_dict
         - **target_dict** (dict): dictionary of filename and labels
     """
     target_dict = dict()
@@ -34,7 +33,7 @@ def load_data_list(data_list_path, dataset_path):
     Args:
         data_list_path (list): csv file with training or test data list
 
-    Returns:
+    Returns: audio_paths, label_paths
         - **audio_paths** (list): set of audio path
         - **label_paths** (list): set of label path
     """
@@ -51,7 +50,7 @@ def load_label(label_path, encoding='utf-8'):
     Args:
         label_path (list): csv file with character labels
 
-    Returns:
+    Returns: char2id, id2char
         - **char2id** (dict): char2id[ch] = id
         - **id2char** (dict): id2char[id] = ch
     """
@@ -74,7 +73,7 @@ def load_pickle(filepath, message=""):
     Args:
         filepath (str): Path to pickle file to load
 
-    Returns:
+    Returns: load_result
         -**load_result** : load result of pickle
     """
     with open(filepath, "rb") as f:

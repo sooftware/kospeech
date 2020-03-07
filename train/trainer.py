@@ -19,9 +19,9 @@ def train(model, hparams, epoch, total_time_step, queue,
         device (torch.cuda): device used ('cuda' or 'cpu')
         worker_num (int): the number of cpu cores used
 
-    Returns:
-        - **cer** (float): character error rate
+    Returns: loss, cer
         - **loss** (float): loss of present epoch
+        - **cer** (float): character error rate
     """
     total_loss = 0.
     total_num = 0

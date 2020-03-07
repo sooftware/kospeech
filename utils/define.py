@@ -18,7 +18,8 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format=FORMAT)
 logger.setLevel(logging.INFO)
 from utils.load import load_label
 char2id, id2char = load_label('./data/label/train_labels.csv', encoding='utf-8')
-# => char2id, id2char = load_label('./data/label/test_labels.csv', encoding='utf-8')
+# if you want to use total character label
+# change => char2id, id2char = load_label('./data/label/test_labels.csv', encoding='utf-8')
 SOS_TOKEN = int(char2id['<s>'])
 EOS_TOKEN = int(char2id['</s>'])
 PAD_TOKEN = int(char2id['_'])

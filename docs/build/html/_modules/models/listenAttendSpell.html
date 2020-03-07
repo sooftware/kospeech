@@ -172,19 +172,7 @@
            <div itemprop="articleBody">
             
   <h1>Source code for models.listenAttendSpell</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Copyright 2020- Kai.Lib</span>
-
-<span class="sd">Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
-<span class="sd">you may not use this file except in compliance with the License.</span>
-<span class="sd">You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0</span>
-<span class="sd">Unless required by applicable law or agreed to in writing, software</span>
-<span class="sd">distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
-<span class="sd">WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
-<span class="sd">See the License for the specific language governing permissions and</span>
-<span class="sd">limitations under the License.</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span></span><span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
 <span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
 
 <div class="viewcode-block" id="ListenAttendSpell"><a class="viewcode-back" href="../../Models.html#models.listenAttendSpell.ListenAttendSpell">[docs]</a><span class="k">class</span> <span class="nc">ListenAttendSpell</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -192,13 +180,23 @@
 <span class="sd">    Listen, Attend and Spell (LAS) Model</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        listener (nn.Module): encoder of seq2seq</span>
-<span class="sd">        speller (nn.Module): decoder of seq2seq</span>
-<span class="sd">        decode_function (nn.functional): A function used to generate symbols from RNN hidden state</span>
+<span class="sd">        listener (torch.nn.Module): encoder of seq2seq</span>
+<span class="sd">        speller (torch.nn.Module): decoder of seq2seq</span>
+<span class="sd">        decode_function (torch.nn.functional): A function used to generate symbols from RNN hidden state</span>
 
-<span class="sd">    Reference:</span>
-<span class="sd">        「Listen, Attend and Spell」 paper</span>
-<span class="sd">         https://arxiv.org/abs/1508.01211</span>
+<span class="sd">    Inputs: feats, targets, teacher_forcing_ratio, use_beam_search</span>
+<span class="sd">        - **feats** (torch.Tensor): tensor of sequences, whose length is the batch size and within which</span>
+<span class="sd">          each sequence is a list of token IDs. This information is forwarded to the encoder.</span>
+<span class="sd">        - **targets** (torch.Tensor): tensor of sequences, whose length is the batch size and within which</span>
+<span class="sd">          each sequence is a list of token IDs. This information is forwarded to the decoder.</span>
+<span class="sd">        - **teacher_forcing_ratio** (float): The probability that teacher forcing will be used. A random number</span>
+<span class="sd">          is drawn uniformly from 0-1 for every decoding token, and if the sample is smaller than the given value,</span>
+<span class="sd">          teacher forcing would be used (default is 0.90)</span>
+<span class="sd">        - **use_beam_search** (bool): flag indication whether to use beam-search or not (default: false)</span>
+
+<span class="sd">    Returns: y_hats, logits</span>
+<span class="sd">        - **y_hats** (batch, seq_len): predicted y values (y_hat) by the model</span>
+<span class="sd">        - **logits** (batch, seq_len, vocab_size): logit values by the model</span>
 
 <span class="sd">    Examples::</span>
 
@@ -206,25 +204,25 @@
 <span class="sd">        &gt;&gt;&gt; speller = Speller(vocab_size, 120, 8, 256 &lt;&lt; (1 if use_bidirectional else 0), SOS_TOKEN, EOS_TOKEN, 3, &#39;gru&#39;, 0.5 ,True, device)</span>
 <span class="sd">        &gt;&gt;&gt; model = ListenAttendSpell(listener, speller)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">listener</span><span class="p">,</span> <span class="n">speller</span><span class="p">,</span> <span class="n">decode_function</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">log_softmax</span><span class="p">,</span> <span class="n">use_pyramidal</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">listener</span><span class="p">,</span> <span class="n">speller</span><span class="p">,</span> <span class="n">decode_function</span><span class="o">=</span><span class="n">F</span><span class="o">.</span><span class="n">log_softmax</span><span class="p">,</span> <span class="n">use_pyramidal</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">ListenAttendSpell</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">listener</span> <span class="o">=</span> <span class="n">listener</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">speller</span> <span class="o">=</span> <span class="n">speller</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">decode_function</span> <span class="o">=</span> <span class="n">decode_function</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">use_pyramidal</span> <span class="o">=</span> <span class="n">use_pyramidal</span>
 
-<div class="viewcode-block" id="ListenAttendSpell.forward"><a class="viewcode-back" href="../../Models.html#models.listenAttendSpell.ListenAttendSpell.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feats</span><span class="p">,</span> <span class="n">targets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="mf">0.90</span><span class="p">,</span> <span class="n">use_beam_search</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-        <span class="n">listener_outputs</span><span class="p">,</span> <span class="n">listener_hidden</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">listener</span><span class="p">(</span><span class="n">feats</span><span class="p">)</span>
-        <span class="n">y_hat</span><span class="p">,</span> <span class="n">logit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">speller</span><span class="p">(</span>
+<div class="viewcode-block" id="ListenAttendSpell.forward"><a class="viewcode-back" href="../../Models.html#models.listenAttendSpell.ListenAttendSpell.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feats</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="mf">0.90</span><span class="p">,</span> <span class="n">use_beam_search</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">contexts</span><span class="p">,</span> <span class="n">listener_hidden</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">listener</span><span class="p">(</span><span class="n">feats</span><span class="p">)</span>
+        <span class="n">y_hats</span><span class="p">,</span> <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">speller</span><span class="p">(</span>
             <span class="n">inputs</span><span class="o">=</span><span class="n">targets</span><span class="p">,</span>
             <span class="n">listener_hidden</span><span class="o">=</span><span class="n">listener_hidden</span><span class="p">,</span>
-            <span class="n">listener_outputs</span><span class="o">=</span><span class="n">listener_outputs</span><span class="p">,</span>
+            <span class="n">contexts</span><span class="o">=</span><span class="n">contexts</span><span class="p">,</span>
             <span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">decode_function</span><span class="p">,</span>
             <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="n">teacher_forcing_ratio</span><span class="p">,</span>
             <span class="n">use_beam_search</span><span class="o">=</span><span class="n">use_beam_search</span>
         <span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">y_hat</span><span class="p">,</span> <span class="n">logit</span></div>
+        <span class="k">return</span> <span class="n">y_hats</span><span class="p">,</span> <span class="n">logits</span></div>
 
     <span class="k">def</span> <span class="nf">set_beam_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">speller</span><span class="o">.</span><span class="n">k</span> <span class="o">=</span> <span class="n">k</span>

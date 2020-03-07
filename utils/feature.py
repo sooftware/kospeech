@@ -25,11 +25,11 @@ def get_librosa_melspectrogram(filepath, n_mels=128, del_silence=False, input_re
 
     .. math::
         \begin{array}{ll}
-        NFFT = sr * frame_length \\
-        HopLength = sr * stride \\
+        NFFT = sr * frame length \\
+        Hop Length = sr * stride \\
         \end{array}
 
-    Returns:
+    Returns: feat
         - **feat** (torch.Tensor): return Mel-Spectrogram (or Log-Mel)
 
     Examples::
@@ -92,7 +92,7 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = False, input_re
         HopLength = sr * stride \\
         \end{array}
 
-    Returns:
+    Returns: feat
         - **feat** (torch.Tensor): MFCC values of signal
 
     Examples::
@@ -138,7 +138,7 @@ def spec_augment(feat, T = 70, F = 20, time_mask_num = 2, freq_mask_num = 2):
         time_mask_num (int): how many time-masked area to make
         freq_mask_num (int): how many freq-masked area to make
 
-    Returns:
+    Returns: feat
         - **feat**: Augmented feature
 
     Reference:

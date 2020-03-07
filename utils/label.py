@@ -10,7 +10,7 @@ def get_label(filepath, sos_id=2037, eos_id=2038, target_dict=None):
         eos_id (int): identification of <end of sequence>
         target_dict (dict): dictionary of filename and labels
 
-    Returns:
+    Returns: label
         - **label** (list): list of bos + sequence of label + eos
     """
     assert target_dict is not None, "target_dict is None"
@@ -30,11 +30,11 @@ def label_to_string(labels, id2char, eos_id):
     Converts label to string (number => Hangeul)
 
     Args:
-        labels: number label
-        id2char: id2char[id] = ch
-        eos_id: identification of <end of sequence>
+        labels (list): number label
+        id2char (dict): id2char[id] = ch
+        eos_id (int): identification of <end of sequence>
 
-    Returns:
+    Returns: sentence
         - **sentence** (str or list): Hangeul representation of labels
     """
     if len(labels.shape) == 1:

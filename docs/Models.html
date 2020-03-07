@@ -186,15 +186,6 @@
 <h1>Models<a class="headerlink" href="#models" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="module-models.listenAttendSpell">
 <span id="listenattendspell"></span><h2>ListenAttendSpell<a class="headerlink" href="#module-models.listenAttendSpell" title="Permalink to this headline">¶</a></h2>
-<p>Copyright 2020- Kai.Lib</p>
-<p>Licensed under the Apache License, Version 2.0 (the “License”);
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at <a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a>
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an “AS IS” BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.</p>
 <dl class="class">
 <dt id="models.listenAttendSpell.ListenAttendSpell">
 <em class="property">class </em><code class="descclassname">models.listenAttendSpell.</code><code class="descname">ListenAttendSpell</code><span class="sig-paren">(</span><em>listener</em>, <em>speller</em>, <em>decode_function=&lt;function log_softmax&gt;</em>, <em>use_pyramidal=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/listenAttendSpell.html#ListenAttendSpell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.listenAttendSpell.ListenAttendSpell" title="Permalink to this definition">¶</a></dt>
@@ -204,20 +195,32 @@ limitations under the License.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>listener</strong> (<em>nn.Module</em>) – encoder of seq2seq</li>
-<li><strong>speller</strong> (<em>nn.Module</em>) – decoder of seq2seq</li>
-<li><strong>decode_function</strong> (<em>nn.functional</em>) – A function used to generate symbols from RNN hidden state</li>
+<li><strong>listener</strong> (<a class="reference external" href="https://pytorch.org/docs/master/nn.html#torch.nn.Module" title="(in PyTorch vmaster (1.5.0a0+2b79bab ))"><em>torch.nn.Module</em></a>) – encoder of seq2seq</li>
+<li><strong>speller</strong> (<a class="reference external" href="https://pytorch.org/docs/master/nn.html#torch.nn.Module" title="(in PyTorch vmaster (1.5.0a0+2b79bab ))"><em>torch.nn.Module</em></a>) – decoder of seq2seq</li>
+<li><strong>decode_function</strong> (<em>torch.nn.functional</em>) – A function used to generate symbols from RNN hidden state</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
 <dl class="docutils">
-<dt>Reference:</dt>
-<dd><dl class="first last docutils">
-<dt>「Listen, Attend and Spell」 paper</dt>
-<dd><a class="reference external" href="https://arxiv.org/abs/1508.01211">https://arxiv.org/abs/1508.01211</a></dd>
-</dl>
+<dt>Inputs: feats, targets, teacher_forcing_ratio, use_beam_search</dt>
+<dd><ul class="first last simple">
+<li><strong>feats</strong> (torch.Tensor): tensor of sequences, whose length is the batch size and within which
+each sequence is a list of token IDs. This information is forwarded to the encoder.</li>
+<li><strong>targets</strong> (torch.Tensor): tensor of sequences, whose length is the batch size and within which
+each sequence is a list of token IDs. This information is forwarded to the decoder.</li>
+<li><strong>teacher_forcing_ratio</strong> (float): The probability that teacher forcing will be used. A random number
+is drawn uniformly from 0-1 for every decoding token, and if the sample is smaller than the given value,
+teacher forcing would be used (default is 0.90)</li>
+<li><strong>use_beam_search</strong> (bool): flag indication whether to use beam-search or not (default: false)</li>
+</ul>
+</dd>
+<dt>Returns: y_hats, logits</dt>
+<dd><ul class="first last simple">
+<li><strong>y_hats</strong> (batch, seq_len): predicted y values (y_hat) by the model</li>
+<li><strong>logits</strong> (batch, seq_len, vocab_size): logit values by the model</li>
+</ul>
 </dd>
 </dl>
 <p>Examples:</p>
@@ -228,7 +231,7 @@ limitations under the License.</p>
 </div>
 <dl class="method">
 <dt id="models.listenAttendSpell.ListenAttendSpell.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>feats</em>, <em>targets=None</em>, <em>teacher_forcing_ratio=0.9</em>, <em>use_beam_search=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/listenAttendSpell.html#ListenAttendSpell.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.listenAttendSpell.ListenAttendSpell.forward" title="Permalink to this definition">¶</a></dt>
+<code class="descname">forward</code><span class="sig-paren">(</span><em>feats</em>, <em>targets</em>, <em>teacher_forcing_ratio=0.9</em>, <em>use_beam_search=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/listenAttendSpell.html#ListenAttendSpell.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.listenAttendSpell.ListenAttendSpell.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -245,15 +248,6 @@ registered hooks while the latter silently ignores them.</p>
 </div>
 <div class="section" id="module-models.listener">
 <span id="listener"></span><h2>Listener<a class="headerlink" href="#module-models.listener" title="Permalink to this headline">¶</a></h2>
-<p>Copyright 2020- Kai.Lib</p>
-<p>Licensed under the Apache License, Version 2.0 (the “License”);
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at <a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a>
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an “AS IS” BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.</p>
 <dl class="class">
 <dt id="models.listener.Listener">
 <em class="property">class </em><code class="descclassname">models.listener.</code><code class="descname">Listener</code><span class="sig-paren">(</span><em>feat_size</em>, <em>hidden_size</em>, <em>dropout_p=0.5</em>, <em>layer_size=5</em>, <em>bidirectional=True</em>, <em>rnn_cell='gru'</em>, <em>use_pyramidal=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/listener.html#Listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.listener.Listener" title="Permalink to this definition">¶</a></dt>
@@ -275,34 +269,23 @@ limitations under the License.</p>
 </tbody>
 </table>
 <dl class="docutils">
-<dt>Inputs:</dt>
+<dt>Inputs: inputs</dt>
 <dd><ul class="first last simple">
 <li><strong>inputs</strong>: list of sequences, whose length is the batch size and within which each sequence is a list of token IDs.</li>
 </ul>
 </dd>
-</dl>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">tensor containing the encoded features of the input sequence
-- <strong>hidden</strong> (num_layers * num_directions, batch, hidden_size): tensor containing the features in the hidden state <cite>h</cite></td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><ul class="simple">
-<li><strong>output</strong> (batch, seq_len, hidden_size)</li>
+<dt>Returns: output, hidden</dt>
+<dd><ul class="first last simple">
+<li><strong>output</strong> (batch, seq_len, hidden_size): tensor containing the encoded features of the input sequence</li>
+<li><strong>hidden</strong> (num_layers * num_directions, batch, hidden_size): tensor containing the features in the hidden state <cite>h</cite></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Reference:</dt>
-<dd><dl class="first last docutils">
-<dt>「Listen, Attend and Spell」 paper</dt>
-<dd><a class="reference external" href="https://arxiv.org/abs/1508.01211">https://arxiv.org/abs/1508.01211</a></dd>
-</dl>
 </dd>
 </dl>
+<p>Examples:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">listener</span> <span class="o">=</span> <span class="n">Listener</span><span class="p">(</span><span class="n">feat_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="n">dropout_p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">layer_size</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">output</span><span class="p">,</span> <span class="n">hidden</span> <span class="o">=</span> <span class="n">listener</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+</pre></div>
+</div>
 <dl class="attribute">
 <dt id="models.listener.Listener.conv">
 <code class="descname">conv</code><em class="property"> = None</em><a class="headerlink" href="#models.listener.Listener.conv" title="Permalink to this definition">¶</a></dt>
@@ -319,6 +302,22 @@ limitations under the License.</p>
 <dt id="models.listener.Listener.forward">
 <code class="descname">forward</code><span class="sig-paren">(</span><em>inputs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/listener.html#Listener.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.listener.Listener.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Applies a multi-layer RNN to an input sequence.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>inputs</strong> (<em>batch</em><em>, </em><em>seq_len</em>) – tensor containing the features of the input sequence.</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Returns: output, hidden</dt>
+<dd><ul class="first last simple">
+<li><strong>output</strong> (batch, seq_len, hidden_size): variable containing the encoded features of the input sequence</li>
+<li><strong>hidden</strong> (num_layers * num_directions, batch, hidden_size): variable containing the features in the hidden state h</li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -342,46 +341,44 @@ limitations under the License.</p>
 </tbody>
 </table>
 <dl class="docutils">
-<dt>Inputs:</dt>
+<dt>Inputs: inputs</dt>
 <dd><ul class="first last simple">
 <li><strong>inputs</strong>: list of sequences, whose length is the batch size and within which each sequence is a list of token IDs.</li>
 </ul>
 </dd>
-</dl>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">tensor containing the encoded features of the input sequence
-- <strong>hidden</strong> (num_layers * num_directions, batch, hidden_size): tensor containing the features in the hidden state <cite>h</cite></td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><ul class="simple">
-<li><strong>output</strong> (batch, seq_len, hidden_size)</li>
+<dt>Returns: output, hidden</dt>
+<dd><ul class="first last simple">
+<li><strong>output</strong> (batch, seq_len, hidden_size): tensor containing the encoded features of the input sequence</li>
+<li><strong>hidden</strong> (num_layers * num_directions, batch, hidden_size): tensor containing the features in the hidden state <cite>h</cite></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Reference:</dt>
-<dd><dl class="first last docutils">
-<dt>「Listen, Attend and Spell」 paper</dt>
-<dd><a class="reference external" href="https://arxiv.org/abs/1508.01211">https://arxiv.org/abs/1508.01211</a></dd>
-</dl>
+</dd>
+<dt>Examples::</dt>
+<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rnn</span> <span class="o">=</span> <span class="n">PyramidalRNN</span><span class="p">(</span><span class="n">rnn_cell</span><span class="p">,</span> <span class="n">input_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="n">dropout_p</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">output</span><span class="p">,</span> <span class="n">hidden</span> <span class="o">=</span> <span class="n">rnn</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd>
 </dl>
 <dl class="method">
 <dt id="models.listener.PyramidalRNN.forward">
 <code class="descname">forward</code><span class="sig-paren">(</span><em>inputs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/listener.html#PyramidalRNN.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.listener.PyramidalRNN.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Although the recipe for forward pass needs to be defined within
-this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
-instead of this since the former takes care of running the
-registered hooks while the latter silently ignores them.</p>
-</div>
+<dd><p>Applies a multi-layer RNN to an input sequence.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>inputs</strong> (<em>batch</em><em>, </em><em>seq_len</em>) – tensor containing the features of the input sequence.</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Returns: output, hidden</dt>
+<dd><ul class="first last simple">
+<li><strong>output</strong> (batch, seq_len, hidden_size): variable containing the encoded features of the input sequence</li>
+<li><strong>hidden</strong> (num_layers * num_directions, batch, hidden_size): variable containing the features in the hidden state h</li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -389,15 +386,6 @@ registered hooks while the latter silently ignores them.</p>
 </div>
 <div class="section" id="module-models.speller">
 <span id="speller"></span><h2>Speller<a class="headerlink" href="#module-models.speller" title="Permalink to this headline">¶</a></h2>
-<p>Copyright 2020- Kai.Lib</p>
-<p>Licensed under the Apache License, Version 2.0 (the “License”);
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at <a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a>
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an “AS IS” BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.</p>
 <dl class="class">
 <dt id="models.speller.Speller">
 <em class="property">class </em><code class="descclassname">models.speller.</code><code class="descname">Speller</code><span class="sig-paren">(</span><em>vocab_size</em>, <em>max_len</em>, <em>hidden_size</em>, <em>sos_id</em>, <em>eos_id</em>, <em>layer_size=1</em>, <em>rnn_cell='gru'</em>, <em>dropout_p=0</em>, <em>use_attention=True</em>, <em>device=None</em>, <em>k=8</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/speller.html#Speller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.speller.Speller" title="Permalink to this definition">¶</a></dt>
@@ -423,13 +411,13 @@ limitations under the License.</p>
 </tbody>
 </table>
 <dl class="docutils">
-<dt>Inputs:</dt>
+<dt>Inputs: inputs, listener_hidden, contexts, function, teacher_forcing_ratio</dt>
 <dd><ul class="first last simple">
 <li><strong>inputs</strong> (batch, seq_len, input_size): list of sequences, whose length is the batch size and within which
 each sequence is a list of token IDs.  It is used for teacher forcing when provided. (default <cite>None</cite>)</li>
 <li><strong>listener_hidden</strong> (num_layers * num_directions, batch_size, hidden_size): tensor containing the features in the
 hidden state <cite>h</cite> of listener. Used as the initial hidden state of the decoder. (default <cite>None</cite>)</li>
-<li><strong>listener_outputs</strong> (batch, seq_len, hidden_size): tensor with containing the outputs of the listener.
+<li><strong>contexts</strong> (batch, seq_len, hidden_size): tensor with containing the outputs of the listener.
 Used for attention mechanism (default is <cite>None</cite>).</li>
 <li><strong>function</strong> (torch.nn.Module): A function used to generate symbols from RNN hidden state
 (default is <cite>torch.nn.functional.log_softmax</cite>).</li>
@@ -438,31 +426,21 @@ drawn uniformly from 0-1 for every decoding token, and if the sample is smaller 
 teacher forcing would be used (default is 0).</li>
 </ul>
 </dd>
-</dl>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">list of tensors with size (batch_size, vocab_size) containing the outputs of the decoding function.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><ul class="simple">
-<li><strong>speller_outputs</strong> (seq_len, batch, vocab_size)</li>
+<dt>Returns: y_hats, logits</dt>
+<dd><ul class="first last simple">
+<li><strong>y_hats</strong> (batch, seq_len): predicted y values (y_hat) by the model</li>
+<li><strong>logits</strong> (batch, seq_len, vocab_size): logit values by the model</li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Reference:</dt>
-<dd><dl class="first last docutils">
-<dt>「Listen, Attend and Spell」 paper</dt>
-<dd><a class="reference external" href="https://arxiv.org/abs/1508.01211">https://arxiv.org/abs/1508.01211</a></dd>
-</dl>
 </dd>
 </dl>
+<p>Examples:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">speller</span> <span class="o">=</span> <span class="n">Speller</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">max_len</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="n">sos_id</span><span class="p">,</span> <span class="n">eos_id</span><span class="p">,</span> <span class="n">layer_size</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y_hats</span><span class="p">,</span> <span class="n">logits</span> <span class="o">=</span> <span class="n">speller</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">listener_hidden</span><span class="p">,</span> <span class="n">contexts</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="mf">0.90</span><span class="p">)</span>
+</pre></div>
+</div>
 <dl class="method">
 <dt id="models.speller.Speller.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs</em>, <em>listener_hidden</em>, <em>listener_outputs</em>, <em>function=&lt;function log_softmax&gt;</em>, <em>teacher_forcing_ratio=0.99</em>, <em>use_beam_search=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/speller.html#Speller.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.speller.Speller.forward" title="Permalink to this definition">¶</a></dt>
+<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs</em>, <em>listener_hidden</em>, <em>contexts</em>, <em>function=&lt;function log_softmax&gt;</em>, <em>teacher_forcing_ratio=0.99</em>, <em>use_beam_search=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/speller.html#Speller.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.speller.Speller.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -479,15 +457,6 @@ registered hooks while the latter silently ignores them.</p>
 </div>
 <div class="section" id="module-models.beam">
 <span id="beam"></span><h2>Beam<a class="headerlink" href="#module-models.beam" title="Permalink to this headline">¶</a></h2>
-<p>Copyright 2020- Kai.Lib</p>
-<p>Licensed under the Apache License, Version 2.0 (the “License”);
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at <a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a>
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an “AS IS” BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.</p>
 <dl class="class">
 <dt id="models.beam.Beam">
 <em class="property">class </em><code class="descclassname">models.beam.</code><code class="descname">Beam</code><span class="sig-paren">(</span><em>k</em>, <em>decoder_hidden</em>, <em>decoder</em>, <em>batch_size</em>, <em>max_len</em>, <em>function</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/beam.html#Beam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.beam.Beam" title="Permalink to this definition">¶</a></dt>
@@ -513,40 +482,27 @@ limitations under the License.</p>
 </tbody>
 </table>
 <dl class="docutils">
-<dt>Inputs:</dt>
+<dt>Inputs: decoder_input, contexts</dt>
 <dd><ul class="first last simple">
-<li><strong>init_decoder_input</strong> (torch.Tensor): initial input of decoder - &lt;eos&gt;</li>
-<li><strong>encoder_outputs</strong> (torch.Tensor): tensor with containing the outputs of the encoder.</li>
+<li><strong>decoder_input</strong> (torch.Tensor): initial input of decoder - &lt;sos&gt;</li>
+<li><strong>contexts</strong> (torch.Tensor): tensor with containing the outputs of the encoder.</li>
+</ul>
+</dd>
+<dt>Returns: y_hats</dt>
+<dd><ul class="first last simple">
+<li><strong>y_hats</strong> (batch, seq_len): predicted y values (y_hat) by the model</li>
 </ul>
 </dd>
 </dl>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">result of inference</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><ul class="simple">
-<li><strong>y_hats</strong> (torch.Tensor)</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
+<p>Examples:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">beam</span> <span class="o">=</span> <span class="n">Beam</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">decoder_hidden</span><span class="p">,</span> <span class="n">decoder</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">max_len</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">log_softmax</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y_hats</span> <span class="o">=</span> <span class="n">beam</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">contexts</span><span class="p">)</span>
+</pre></div>
+</div>
 <dl class="method">
 <dt id="models.beam.Beam.search">
-<code class="descname">search</code><span class="sig-paren">(</span><em>init_decoder_input</em>, <em>encoder_outputs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/beam.html#Beam.search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.beam.Beam.search" title="Permalink to this definition">¶</a></dt>
+<code class="descname">search</code><span class="sig-paren">(</span><em>decoder_input</em>, <em>contexts</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/beam.html#Beam.search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.beam.Beam.search" title="Permalink to this definition">¶</a></dt>
 <dd><p>Beam-Search Decoding (Top-K Decoding)</p>
-<dl class="docutils">
-<dt>Comment Notation:</dt>
-<dd><ul class="first last simple">
-<li><strong>B</strong>: batchsize</li>
-<li><strong>K</strong>: beam size</li>
-<li><strong>C</strong>: classfication number</li>
-<li><strong>S</strong>: sequence length</li>
-</ul>
-</dd>
-</dl>
 </dd></dl>
 
 </dd></dl>
@@ -554,24 +510,17 @@ limitations under the License.</p>
 </div>
 <div class="section" id="module-models.attention">
 <span id="attention"></span><h2>Attention<a class="headerlink" href="#module-models.attention" title="Permalink to this headline">¶</a></h2>
-<p>Copyright 2020- Kai.Lib</p>
-<p>Licensed under the Apache License, Version 2.0 (the “License”);
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at <a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a>
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an “AS IS” BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.</p>
 <dl class="class">
 <dt id="models.attention.Attention">
 <em class="property">class </em><code class="descclassname">models.attention.</code><code class="descname">Attention</code><span class="sig-paren">(</span><em>decoder_hidden_size</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/attention.html#Attention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.attention.Attention" title="Permalink to this definition">¶</a></dt>
-<dd><p>Applies an self attention mechanism on the output features from the decoder.</p>
+<dd><p>Applies an self attention mechanism on the output features from the decoder.
+「A Structured Self-Attentive Sentence Embedding」 Paper
+<a class="reference external" href="https://arxiv.org/abs/1703.03130">https://arxiv.org/abs/1703.03130</a></p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{ll}
-x = context*output \\
+x = contexts*output \\
 attn = exp(x_i) / sum_j exp(x_j) \\
-output = \tanh(w * (attn * context) + b * output)
+output = \tanh(w * (attn * contexts) + b * output)
 \end{array}\end{split}\]</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -582,37 +531,26 @@ output = \tanh(w * (attn * context) + b * output)
 </tbody>
 </table>
 <dl class="docutils">
-<dt>Inputs:</dt>
+<dt>Inputs: decoder_output, contexts</dt>
 <dd><ul class="first last simple">
-<li><strong>decoder_output</strong> (batch, output_len, hidden_size): tensor containing the output features from the decoder.</li>
-<li><strong>encoder_output</strong> (batch, input_len, hidden_size): tensor containing features of the encoded input sequence.Steps to be maintained at a certain number to avoid extremely slow learning</li>
+<li><strong>decoder_output</strong> (batch, output_len, dimensions): tensor containing the output features from the decoder.</li>
+<li><strong>contexts</strong> (batch, input_len, dimensions): tensor containing features of the encoded input sequence.</li>
+</ul>
+</dd>
+<dt>Returns: output</dt>
+<dd><ul class="first last simple">
+<li><strong>output</strong> (batch, output_len, dimensions): tensor containing the attended output features from the decoder.</li>
 </ul>
 </dd>
 </dl>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">tensor containing the attended output features from the decoder.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><ul class="simple">
-<li><strong>output</strong> (batch, output_len, dimensions)</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Reference:</dt>
-<dd><dl class="first last docutils">
-<dt>「A Structured Self-Attentive Sentence Embedding」</dt>
-<dd><a class="reference external" href="https://arxiv.org/abs/1703.03130">https://arxiv.org/abs/1703.03130</a></dd>
-</dl>
-</dd>
-</dl>
+<p>Examples:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">attention</span> <span class="o">=</span> <span class="n">Attention</span><span class="p">(</span><span class="n">hidden_size</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">contexts</span> <span class="o">=</span> <span class="n">attention</span><span class="p">(</span><span class="n">decoder_output</span><span class="p">,</span> <span class="n">contexts</span><span class="p">)</span>
+</pre></div>
+</div>
 <dl class="method">
 <dt id="models.attention.Attention.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>decoder_output</em>, <em>encoder_outputs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/attention.html#Attention.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.attention.Attention.forward" title="Permalink to this definition">¶</a></dt>
+<code class="descname">forward</code><span class="sig-paren">(</span><em>decoder_output</em>, <em>contexts</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/attention.html#Attention.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.attention.Attention.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">

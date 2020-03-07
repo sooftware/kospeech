@@ -193,9 +193,9 @@
 <span class="sd">        device (torch.cuda): device used (&#39;cuda&#39; or &#39;cpu&#39;)</span>
 <span class="sd">        worker_num (int): the number of cpu cores used</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        - **cer** (float): character error rate</span>
+<span class="sd">    Returns: loss, cer</span>
 <span class="sd">        - **loss** (float): loss of present epoch</span>
+<span class="sd">        - **cer** (float): character error rate</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">total_loss</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="n">total_num</span> <span class="o">=</span> <span class="mi">0</span>

@@ -13,7 +13,7 @@ class LabelSmoothingLoss(nn.Module):
         logit (torch.Tensor): probability distribution value from model and it has a logarithm shape
         target (torch.Tensor): ground-thruth encoded to integers which directly point a word in label
 
-    Returns:
+    Returns: label_smoothed
         - **label_smoothed** (float): sum of loss
 
     Reference:

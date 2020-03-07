@@ -1,15 +1,3 @@
-"""
-Copyright 2020- Kai.Lib
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
 import torch
 import numpy as np
 
@@ -29,12 +17,17 @@ class Beam:
         done_beams (list) : store beams which met <eos> token and terminated decoding process.
         done_beam_scores (list) : score of done_beams
 
-    Inputs:
-        - **init_decoder_input** (torch.Tensor): initial input of decoder - <eos>
-        - **encoder_outputs** (torch.Tensor): tensor with containing the outputs of the encoder.
+    Inputs: decoder_input, contexts
+        - **decoder_input** (torch.Tensor): initial input of decoder - <sos>
+        - **contexts** (torch.Tensor): tensor with containing the outputs of the encoder.
 
-    Returns:
-        - **y_hats** (torch.Tensor): result of inference
+    Returns: y_hats
+        - **y_hats** (batch, seq_len): predicted y values (y_hat) by the model
+
+    Examples::
+
+        >>> beam = Beam(k, decoder_hidden, decoder, batch_size, max_len, F.log_softmax)
+        >>> y_hats = beam.search(inputs, contexts)
     """
 
     def __init__(self, k, decoder_hidden, decoder, batch_size, max_len, function):
@@ -57,20 +50,17 @@ class Beam:
         self.done_beams = [[] for _ in range(self.batch_size)]
         self.done_beam_scores = [[] for _ in range(self.batch_size)]
 
-    def search(self, init_decoder_input, encoder_outputs):
-        """
-        Beam-Search Decoding (Top-K Decoding)
-
-        Comment Notation:
-            - **B**: batchsize
-            - **K**: beam size
-            - **C**: classfication number
-            - **S**: sequence length
-        """
+    def search(self, decoder_input, contexts):
+        """ Beam-Search Decoding (Top-K Decoding) """
+        # Comment Notation
+        # B : batch size
+        # K : beam size
+        # C : classfication number
+        # S : sequence length
         # get class classfication distribution (shape: BxC)
-        init_step_output = self._forward_step(init_decoder_input, encoder_outputs).squeeze(1)
+        step_outputs = self._forward_step(decoder_input, contexts).squeeze(1)
         # get top K probability & index (shape: BxK)
-        self.beam_scores, self.beams = init_step_output.topk(self.k)
+        self.beam_scores, self.beams = step_outputs.topk(self.k)
         decoder_input = self.beams
         # transpose (BxK) => (BxKx1)
         self.beams = self.beams.view(self.batch_size, self.k, 1)
@@ -78,7 +68,7 @@ class Beam:
             if self._is_done():
                 break
             # For each beam, get class classfication distribution (shape: BxKxC)
-            predicted_softmax = self._forward_step(decoder_input, encoder_outputs)
+            predicted_softmax = self._forward_step(decoder_input, contexts)
             step_output = predicted_softmax.squeeze(1)
             # get top k distribution (shape: BxKxK)
             child_ps, child_vs = step_output.topk(self.k)
@@ -144,7 +134,7 @@ class Beam:
                 return False
         return True
 
-    def _forward_step(self, decoder_input, encoder_outputs):
+    def _forward_step(self, decoder_input, contexts):
         """ forward one step on each decoder cell """
         output_size = decoder_input.size(1)
         embedded = self.embedding(decoder_input)
@@ -152,10 +142,10 @@ class Beam:
         decoder_output, hidden = self.rnn(embedded, self.decoder_hidden)  # decoder output
 
         if self.use_attention:
-            context = self.attention(decoder_output, encoder_outputs)
+            contexts = self.attention(decoder_output, contexts)
         else:
-            context = decoder_output
-        predicted_softmax = self.function(self.out(context.contiguous().view(-1, self.hidden_size)), dim=1)
+            contexts = decoder_output
+        predicted_softmax = self.function(self.out(contexts.contiguous().view(-1, self.hidden_size)), dim=1)
         predicted_softmax = predicted_softmax.view(self.batch_size,output_size,-1)
         return predicted_softmax
 

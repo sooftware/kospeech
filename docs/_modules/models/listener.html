@@ -172,19 +172,7 @@
            <div itemprop="articleBody">
             
   <h1>Source code for models.listener</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Copyright 2020- Kai.Lib</span>
-
-<span class="sd">Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
-<span class="sd">you may not use this file except in compliance with the License.</span>
-<span class="sd">You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0</span>
-<span class="sd">Unless required by applicable law or agreed to in writing, software</span>
-<span class="sd">distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
-<span class="sd">WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
-<span class="sd">See the License for the specific language governing permissions and</span>
-<span class="sd">limitations under the License.</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span></span><span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 
 <div class="viewcode-block" id="PyramidalRNN"><a class="viewcode-back" href="../../Models.html#models.listener.PyramidalRNN">[docs]</a><span class="k">class</span> <span class="nc">PyramidalRNN</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -197,16 +185,16 @@
 <span class="sd">        input_size (int): size of input</span>
 <span class="sd">        dropout_p (float, optional): dropout probability for the output sequence (default: 0)</span>
 
-<span class="sd">    Inputs:</span>
+<span class="sd">    Inputs: inputs</span>
 <span class="sd">        - **inputs**: list of sequences, whose length is the batch size and within which each sequence is a list of token IDs.</span>
 
-<span class="sd">    Returns:</span>
+<span class="sd">    Returns: output, hidden</span>
 <span class="sd">        - **output** (batch, seq_len, hidden_size): tensor containing the encoded features of the input sequence</span>
 <span class="sd">        - **hidden** (num_layers * num_directions, batch, hidden_size): tensor containing the features in the hidden state `h`</span>
 
-<span class="sd">    Reference:</span>
-<span class="sd">        「Listen, Attend and Spell」 paper</span>
-<span class="sd">         https://arxiv.org/abs/1508.01211</span>
+<span class="sd">    Examples::</span>
+<span class="sd">        &gt;&gt;&gt; rnn = PyramidalRNN(rnn_cell, input_size, hidden_size, dropout_p)</span>
+<span class="sd">        &gt;&gt;&gt; output, hidden = rnn(inputs)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rnn_cell</span><span class="p">,</span> <span class="n">input_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="n">dropout_p</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">PyramidalRNN</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -215,6 +203,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">rnn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rnn_cell</span><span class="p">(</span><span class="n">input_size</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="n">dropout_p</span><span class="p">)</span>
 
 <div class="viewcode-block" id="PyramidalRNN.forward"><a class="viewcode-back" href="../../Models.html#models.listener.PyramidalRNN.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Applies a multi-layer RNN to an input sequence.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            inputs (batch, seq_len): tensor containing the features of the input sequence.</span>
+
+<span class="sd">        Returns: output, hidden</span>
+<span class="sd">            - **output** (batch, seq_len, hidden_size): variable containing the encoded features of the input sequence</span>
+<span class="sd">            - **hidden** (num_layers * num_directions, batch, hidden_size): variable containing the features in the hidden state h</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">batch_size</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">seq_len</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">input_size</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
@@ -231,7 +229,7 @@
 
 
 <div class="viewcode-block" id="Listener"><a class="viewcode-back" href="../../Models.html#models.listener.Listener">[docs]</a><span class="k">class</span> <span class="nc">Listener</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts low level speech signals into higher level features</span>
 
 <span class="sd">    Args:</span>
@@ -242,16 +240,17 @@
 <span class="sd">        use_pyramidal (bool): flag indication whether to use pyramidal rnn for time resolution (default: True)</span>
 <span class="sd">        dropout_p (float, optional): dropout probability for the output sequence (default: 0)</span>
 
-<span class="sd">    Inputs:</span>
+<span class="sd">    Inputs: inputs</span>
 <span class="sd">        - **inputs**: list of sequences, whose length is the batch size and within which each sequence is a list of token IDs.</span>
 
-<span class="sd">    Returns:</span>
+<span class="sd">    Returns: output, hidden</span>
 <span class="sd">        - **output** (batch, seq_len, hidden_size): tensor containing the encoded features of the input sequence</span>
 <span class="sd">        - **hidden** (num_layers * num_directions, batch, hidden_size): tensor containing the features in the hidden state `h`</span>
 
-<span class="sd">    Reference:</span>
-<span class="sd">        「Listen, Attend and Spell」 paper</span>
-<span class="sd">         https://arxiv.org/abs/1508.01211</span>
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; listener = Listener(feat_size, hidden_size, dropout_p=0.5, layer_size=5)</span>
+<span class="sd">        &gt;&gt;&gt; output, hidden = listener(inputs)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feat_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="n">dropout_p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">layer_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rnn_cell</span><span class="o">=</span><span class="s1">&#39;gru&#39;</span><span class="p">,</span> <span class="n">use_pyramidal</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
@@ -290,7 +289,16 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">rnn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rnn_cell</span><span class="p">(</span><span class="n">feat_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="n">layer_size</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">bidirectional</span><span class="o">=</span><span class="n">bidirectional</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="n">dropout_p</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Listener.forward"><a class="viewcode-back" href="../../Models.html#models.listener.Listener.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Applies a multi-layer RNN to an input sequence. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Applies a multi-layer RNN to an input sequence.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            inputs (batch, seq_len): tensor containing the features of the input sequence.</span>
+
+<span class="sd">        Returns: output, hidden</span>
+<span class="sd">            - **output** (batch, seq_len, hidden_size): variable containing the encoded features of the input sequence</span>
+<span class="sd">            - **hidden** (num_layers * num_directions, batch, hidden_size): variable containing the features in the hidden state h</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>

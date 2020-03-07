@@ -187,16 +187,16 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data_list_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – csv file with training or test data list</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">set of audio path
-- <strong>label_paths</strong> (list): set of label path</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><ul class="simple">
-<li><strong>audio_paths</strong> (list)</li>
-</ul>
-</td>
-</tr>
 </tbody>
 </table>
+<dl class="docutils">
+<dt>Returns: audio_paths, label_paths</dt>
+<dd><ul class="first last simple">
+<li><strong>audio_paths</strong> (list): set of audio path</li>
+<li><strong>label_paths</strong> (list): set of label path</li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
@@ -209,16 +209,16 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>label_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – csv file with character labels</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">char2id[ch] = id
-- <strong>id2char</strong> (dict): id2char[id] = ch</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><ul class="simple">
-<li><strong>char2id</strong> (dict)</li>
-</ul>
-</td>
-</tr>
 </tbody>
 </table>
+<dl class="docutils">
+<dt>Returns: char2id, id2char</dt>
+<dd><ul class="first last simple">
+<li><strong>char2id</strong> (dict): char2id[ch] = id</li>
+<li><strong>id2char</strong> (dict): id2char[id] = ch</li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
@@ -231,12 +231,12 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filepath</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Path to pickle file to load</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">load result of pickle</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">-<strong>load_result</strong></td>
-</tr>
 </tbody>
 </table>
+<dl class="docutils">
+<dt>Returns: load_result</dt>
+<dd>-<strong>load_result</strong> : load result of pickle</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
@@ -249,15 +249,15 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>label_paths</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – set of label paths</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">dictionary of filename and labels</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><ul class="simple">
-<li><strong>target_dict</strong> (dict)</li>
-</ul>
-</td>
-</tr>
 </tbody>
 </table>
+<dl class="docutils">
+<dt>Returns: target_dict</dt>
+<dd><ul class="first last simple">
+<li><strong>target_dict</strong> (dict): dictionary of filename and labels</li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </div>

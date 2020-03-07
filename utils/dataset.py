@@ -3,7 +3,7 @@ import math
 from torch.utils.data import Dataset
 from utils.feature import get_librosa_mfcc, spec_augment, get_librosa_melspectrogram
 from utils.label import get_label, label_to_string
-from utils.define import logger, SOS_TOKEN, EOS_TOKEN, id2char
+from utils.define import logger, SOS_TOKEN, EOS_TOKEN
 
 
 class BaseDataset(Dataset):
@@ -152,10 +152,10 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
         label_paths (list): set of label path
         target_dict (dict): dictionary of filename and labels
 
-    Returns:
+    Returns: train_batch_num, train_dataset_list, valid_dataset
         - **train_batch_num** (int): num of batch for training
         - **train_dataset_list** (list): list of training dataset
-        - **valid_dataset** (utils.BaseDataset): validation dataset
+        - **valid_dataset** (utils.dataset.BaseDataset): validation dataset
     """
     logger.info("split dataset start !!")
     train_dataset_list = list()

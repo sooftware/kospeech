@@ -9,7 +9,7 @@ def char_distance(target, y_hat):
         target: sequence of target
         y_hat: sequence of y_Hat
 
-    Returns:
+    Returns: distance, length
         - **distance**: distance between target & y_hat
         - **length**: length of target sequence
     """
@@ -30,7 +30,7 @@ def get_distance(targets, y_hats, id2char, eos_id):
         id2char: id2char[id] = ch
         eos_id: identification of <end of sequence>
 
-    Returns:
+    Returns: total_distance, total_length
         - **total_distance**: total distance between targets & y_hats
         - **total_length**: total length of targets sequence
     """

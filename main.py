@@ -64,7 +64,6 @@ if __name__ == '__main__':
     logger.info("PyTorch version : %s" % (torch.__version__))
 
     hparams = HyperParams()
-    hparams.logger_hparams()
 
     random.seed(hparams.seed)
     torch.manual_seed(hparams.seed)

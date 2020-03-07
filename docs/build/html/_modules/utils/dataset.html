@@ -177,7 +177,7 @@
 <span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="k">import</span> <span class="n">Dataset</span>
 <span class="kn">from</span> <span class="nn">utils.feature</span> <span class="k">import</span> <span class="n">get_librosa_mfcc</span><span class="p">,</span> <span class="n">spec_augment</span><span class="p">,</span> <span class="n">get_librosa_melspectrogram</span>
 <span class="kn">from</span> <span class="nn">utils.label</span> <span class="k">import</span> <span class="n">get_label</span><span class="p">,</span> <span class="n">label_to_string</span>
-<span class="c1">#from utils.define import logger, SOS_TOKEN, EOS_TOKEN, id2char</span>
+<span class="c1">#from utils.define import logger, SOS_TOKEN, EOS_TOKEN</span>
 
 
 <div class="viewcode-block" id="BaseDataset"><a class="viewcode-back" href="../../Dataset.html#utils.dataset.BaseDataset">[docs]</a><span class="k">class</span> <span class="nc">BaseDataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
@@ -326,10 +326,10 @@
 <span class="sd">        label_paths (list): set of label path</span>
 <span class="sd">        target_dict (dict): dictionary of filename and labels</span>
 
-<span class="sd">    Returns:</span>
+<span class="sd">    Returns: train_batch_num, train_dataset_list, valid_dataset</span>
 <span class="sd">        - **train_batch_num** (int): num of batch for training</span>
 <span class="sd">        - **train_dataset_list** (list): list of training dataset</span>
-<span class="sd">        - **valid_dataset** (utils.BaseDataset): validation dataset</span>
+<span class="sd">        - **valid_dataset** (utils.dataset.BaseDataset): validation dataset</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;split dataset start !!&quot;</span><span class="p">)</span>
     <span class="n">train_dataset_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
