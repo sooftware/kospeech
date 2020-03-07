@@ -52,13 +52,13 @@ class BaseDataset(Dataset):
         return len(self.audio_paths)
 
     def get_item(self, idx):
-        label = get_label(self.label_paths[idx], sos_id = self.sos_id, eos_id = self.eos_id, target_dict = self.target_dict)
-        feat = get_librosa_melspectrogram(self.audio_paths[idx], n_mels = 128, mel_type='log_mel', input_reverse = self.input_reverse)
+        label = get_label(self.label_paths[idx], sos_id=self.sos_id, eos_id=self.eos_id, target_dict=self.target_dict)
+        feat = get_librosa_melspectrogram(self.audio_paths[idx], n_mels=128, mel_type='log_mel', input_reverse=self.input_reverse)
         # exception handling
         if feat is None:
             return None, None
         if self.augment_flags[idx]:
-            feat = spec_augment(feat, T = 70, F = 20, time_mask_num = 2, freq_mask_num = 2 )
+            feat = spec_augment(feat, T=70, F=20, time_mask_num=2, freq_mask_num=2)
         return feat, label
 
     def augmentation(self):
@@ -88,44 +88,42 @@ class BaseDataset(Dataset):
             target_lengths.append(len(self.target_dict[key].split()))
 
         bundle = list(zip(target_lengths, self.audio_paths, self.label_paths, self.augment_flags))
-        junk, self.audio_paths, self.label_paths, self.augment_flags = zip(*sorted(bundle, reverse=True))
+        _, self.audio_paths, self.label_paths, self.augment_flags = zip(*sorted(bundle, reverse=True))
 
 
     def batch_shuffle(self, remain_drop = False):
         """ batch shuffle """
-        total_audio_batch, total_label_batch, total_augment_flag = list(), list(), list()
-        tmp_audio_batch, tmp_label_batch, tmp_augment_flag = list(), list(), list()
+        audio_batches, label_batches, flag_batches = [], [], []
+        tmp_audio_paths, tmp_label_paths, tmp_augment_flags = [], [], []
         index = 0
 
         while True:
             if index == len(self.audio_paths):
-                if len(tmp_audio_batch) != 0:
-                    total_audio_batch.append(tmp_audio_batch)
-                    total_label_batch.append(tmp_label_batch)
-                    total_augment_flag.append(tmp_augment_flag)
+                if len(tmp_audio_paths) != 0:
+                    audio_batches.append(tmp_audio_paths)
+                    label_batches.append(tmp_label_paths)
+                    flag_batches.append(tmp_augment_flags)
                 break
-            if len(tmp_audio_batch) == self.batch_size:
-                total_audio_batch.append(tmp_audio_batch)
-                total_label_batch.append(tmp_label_batch)
-                total_augment_flag.append(tmp_augment_flag)
-                tmp_audio_batch, tmp_label_batch, tmp_augment_flag = list(), list(), list()
-            tmp_audio_batch.append(self.audio_paths[index])
-            tmp_label_batch.append(self.label_paths[index])
-            tmp_augment_flag.append(self.augment_flags[index])
+            if len(tmp_audio_paths) == self.batch_size:
+                audio_batches.append(tmp_audio_paths)
+                label_batches.append(tmp_label_paths)
+                flag_batches.append(tmp_augment_flags)
+                tmp_audio_paths, tmp_label_paths, tmp_augment_flags = [], [], []
+            tmp_audio_paths.append(self.audio_paths[index])
+            tmp_label_paths.append(self.label_paths[index])
+            tmp_augment_flags.append(self.augment_flags[index])
             index += 1
 
-        remain_audio, remain_label, remain_augment_flag = total_audio_batch[-1], total_label_batch[-1], total_augment_flag[-1]
-        total_audio_batch, total_label_batch, total_augment_flag = total_audio_batch[:-1], total_label_batch[:-1], total_augment_flag[:-1]
+        remain_audio, remain_label, remain_flag = audio_batches[-1], label_batches[-1], flag_batches[-1]
+        audio_batches, label_batches, flag_batches = audio_batches[:-1], label_batches[:-1], flag_batches[:-1]
 
-        bundle = list(zip(total_audio_batch, total_label_batch, total_augment_flag))
+        bundle = list(zip(audio_batches, label_batches, flag_batches))
         random.shuffle(bundle)
-        total_audio_batch, total_label_batch, total_augment_flag = zip(*bundle)
+        audio_batches, label_batches, flag_batches = zip(*bundle)
 
-        audio_paths = list()
-        label_paths = list()
-        augment_flags = list()
+        audio_paths, label_paths, augment_flags = [], [], []
 
-        for (audio_batch, label_batch, augment_flag) in zip(total_audio_batch, total_label_batch, total_augment_flag):
+        for (audio_batch, label_batch, augment_flag) in zip(audio_batches, label_batches, flag_batches):
             audio_paths.extend(audio_batch)
             label_paths.extend(label_batch)
             augment_flags.extend(augment_flag)
@@ -137,7 +135,7 @@ class BaseDataset(Dataset):
         if not remain_drop:
             audio_paths.extend(remain_audio)
             label_paths.extend(remain_label)
-            augment_flags.extend(remain_augment_flag)
+            augment_flags.extend(remain_flag)
 
         return audio_paths, label_paths, augment_flags
 

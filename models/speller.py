@@ -28,11 +28,9 @@ class Speller(nn.Module):
         use_attention (bool, optional): flag indication whether to use attention mechanism or not (default: false)
         k (int) : size of beam
 
-    Inputs: inputs, listener_hidden, contexts, function, teacher_forcing_ratio
+    Inputs: inputs, contexts, function, teacher_forcing_ratio
         - **inputs** (batch, seq_len, input_size): list of sequences, whose length is the batch size and within which
           each sequence is a list of token IDs.  It is used for teacher forcing when provided. (default `None`)
-        - **listener_hidden** (num_layers * num_directions, batch_size, hidden_size): tensor containing the features in the
-          hidden state `h` of listener. Used as the initial hidden state of the decoder. (default `None`)
         - **contexts** (batch, seq_len, hidden_size): tensor with containing the outputs of the listener.
           Used for attention mechanism (default is `None`).
         - **function** (torch.nn.Module): A function used to generate symbols from RNN hidden state
@@ -48,7 +46,7 @@ class Speller(nn.Module):
     Examples::
 
         >>> speller = Speller(vocab_size, max_len, hidden_size, sos_id, eos_id, layer_size)
-        >>> y_hats, logits = speller(inputs, listener_hidden, contexts, teacher_forcing_ratio=0.90)
+        >>> y_hats, logits = speller(inputs, contexts, teacher_forcing_ratio=0.90)
     """
 
     def __init__(self, vocab_size, max_len, hidden_size,
@@ -73,7 +71,7 @@ class Speller(nn.Module):
             self.attention = Attention(decoder_hidden_size=hidden_size)
         self.out = nn.Linear(self.hidden_size, self.vocab_size)
 
-    def _forward_step(self, input, speller_hidden, contexts=None, function=F.log_softmax):
+    def _forward_step(self, input, hidden, contexts=None, function=F.log_softmax):
         """ forward one time step """
         batch_size = input.size(0)
         output_size = input.size(1)
@@ -82,7 +80,7 @@ class Speller(nn.Module):
 
         if self.training:
             self.rnn.flatten_parameters()
-        speller_output = self.rnn(embedded, speller_hidden)[0]
+        speller_output = self.rnn(embedded, hidden)[0]
 
         if self.use_attention:
             contexts = self.attention(speller_output, contexts)
@@ -92,12 +90,12 @@ class Speller(nn.Module):
         predicted_softmax = function(self.out(contexts.contiguous().view(-1, self.hidden_size)), dim=1).view(batch_size, output_size, -1)
         return predicted_softmax
 
-    def forward(self, inputs, listener_hidden, contexts, function=F.log_softmax, teacher_forcing_ratio=0.99, use_beam_search=False):
+    def forward(self, inputs, contexts, function=F.log_softmax, teacher_forcing_ratio=0.99, use_beam_search=False):
         y_hats, logits = None, None
         decode_results = []
         batch_size = inputs.size(0)
         max_len = inputs.size(1) - 1  # minus the start of sequence symbol
-        speller_hidden = torch.FloatTensor(self.layer_size, batch_size, self.hidden_size).uniform_(-0.1, 0.1).to(self.device)
+        hidden = torch.FloatTensor(self.layer_size, batch_size, self.hidden_size).uniform_(-0.1, 0.1).to(self.device)
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
 
         if use_beam_search:
@@ -105,7 +103,7 @@ class Speller(nn.Module):
             inputs = inputs[:, 0].unsqueeze(1)
             beam = Beam(
                 k = self.k,
-                decoder_hidden = speller_hidden,
+                decoder_hidden = hidden,
                 decoder = self,
                 batch_size = batch_size,
                 max_len = max_len,
@@ -118,7 +116,7 @@ class Speller(nn.Module):
                 inputs = inputs[:, :-1]
                 predicted_softmax = self._forward_step(
                     input = inputs,
-                    speller_hidden = speller_hidden,
+                    hidden = hidden,
                     contexts = contexts,
                     function = function
                 )
@@ -130,7 +128,7 @@ class Speller(nn.Module):
                 for di in range(max_len):
                     predicted_softmax = self._forward_step(
                         input = input,
-                        speller_hidden = speller_hidden,
+                        hidden = hidden,
                         contexts = contexts,
                         function = function
                     )

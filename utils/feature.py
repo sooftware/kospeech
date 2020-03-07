@@ -4,7 +4,7 @@ import numpy as np
 import random
 from utils.define import logger
 
-def get_librosa_melspectrogram(filepath, n_mels=128, del_silence=False, input_reverse=True, mel_type='log_mel', format='pcm'):
+def get_librosa_melspectrogram(filepath, n_mels=128, del_silence=False, input_reverse=True, mel_type='log_mel'):
     r"""
     Compute a mel-scaled soectrigram (or Log-Mel).
 
@@ -35,21 +35,21 @@ def get_librosa_melspectrogram(filepath, n_mels=128, del_silence=False, input_re
     Examples::
         Generate mel spectrogram from a time series
 
-    >>> get_librosa_melspectrogram("KaiSpeech_021458.pcm", n_mels=128, input_reverse=True, format='pcm')
+    >>> get_librosa_melspectrogram("KaiSpeech_021458.pcm", n_mels=128, input_reverse=True)
     Tensor([[  2.891e-07,   2.548e-03, ...,   8.116e-09,   5.633e-09],
             [  1.986e-07,   1.162e-02, ...,   9.332e-08,   6.716e-09],
             ...,
             [  3.668e-09,   2.029e-08, ...,   3.208e-09,   2.864e-09],
             [  2.561e-10,   2.096e-09, ...,   7.543e-10,   6.101e-10]])
     """
-    if format == 'pcm':
+    if filepath.split('.')[-1] == 'pcm':
         try:
             pcm = np.memmap(filepath, dtype='h', mode='r')
         except:  # exception handling
             logger.info("%s Error Occur !!" % filepath)
             return None
         signal = np.array([float(x) for x in pcm])
-    elif format == 'wav':
+    elif filepath.split('.')[-1] == 'wav':
         signal, _ = librosa.core.load(filepath, sr=16000)
     else:
         raise ValueError("Invalid format !!")
@@ -68,7 +68,7 @@ def get_librosa_melspectrogram(filepath, n_mels=128, del_silence=False, input_re
     return torch.FloatTensor( np.ascontiguousarray( np.swapaxes(feat, 0, 1) ) )
 
 
-def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = False, input_reverse = True, format='pcm'):
+def get_librosa_mfcc(filepath, n_mfcc = 40, del_silence = False, input_reverse = True):
     r""":
     Mel-frequency cepstral coefficients (MFCCs)
 
@@ -98,21 +98,21 @@ def get_librosa_mfcc(filepath = None, n_mfcc = 33, del_silence = False, input_re
     Examples::
         Generate mfccs from a time series
 
-        >>> get_librosa_mfcc("KaiSpeech_021458.pcm", n_mfcc=40, input_reverse=True, format='pcm')
+        >>> get_librosa_mfcc("KaiSpeech_021458.pcm", n_mfcc=40, input_reverse=True)
         Tensor([[ -5.229e+02,  -4.944e+02, ...,  -5.229e+02,  -5.229e+02],
                 [  7.105e-15,   3.787e+01, ...,  -7.105e-15,  -7.105e-15],
                 ...,
                 [  1.066e-14,  -7.500e+00, ...,   1.421e-14,   1.421e-14],
                 [  3.109e-14,  -5.058e+00, ...,   2.931e-14,   2.931e-14]])
     """
-    if format == 'pcm':
+    if filepath.split('.')[-1] == 'pcm':
         try:
             pcm = np.memmap(filepath, dtype='h', mode='r')
         except: # exception handling
             logger.info("%s Error Occur !!" % filepath)
             return None
         signal = np.array([float(x) for x in pcm])
-    elif format == 'wav':
+    elif filepath.split('.')[-1] == 'wav':
         signal, _ = librosa.core.load(filepath, sr=16000)
     else:
         raise ValueError("Invalid format !!")

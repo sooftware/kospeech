@@ -15,21 +15,14 @@ import os
 import queue
 import torch
 from utils.dataset import BaseDataset
-from utils.define import logger, TEST_LIST_PATH, DATASET_PATH, char2id, id2char, SOS_TOKEN, EOS_TOKEN
+from utils.define import logger, TEST_LIST_PATH, DATASET_PATH, id2char, SOS_TOKEN, EOS_TOKEN
 from utils.hparams import HyperParams
 from utils.loader import BaseDataLoader
-from utils.load import load_data_list, load_pickle, load_label
+from utils.load import load_data_list, load_targets
 from utils.distance import get_distance
 
 def test(model, queue, device):
-    """
-    Test for Model Performance
-
-    Inputs:
-        - ***model*: target model
-    Outputs:
-        - **CER**: Character Error Rate
-    """
+    """ Test for Model Performance """
     logger.info('evaluate() start')
     total_distance = 0
     total_length = 0
@@ -39,22 +32,21 @@ def test(model, queue, device):
 
     with torch.no_grad():
         while True:
-            feats, scripts, feat_lengths, script_lengths = queue.get()
+            feats, targets, feat_lengths, script_lengths = queue.get()
             if feats.shape[0] == 0:
                 break
 
             feats = feats.to(device)
-            scripts = scripts.to(device)
-            target = scripts[:, 1:]
+            targets = targets.to(device)
+            target = targets[:, 1:]
 
             model.module.flatten_parameters()
             y_hat, _ = model(
                 feats = feats,
-                targets = scripts,
+                targets = targets,
                 teacher_forcing_ratio = 0.0,
                 use_beam_search = True
             )
-            EOS_TOKEN = int(id2char['</s>'])
             distance, length = get_distance(target, y_hat, id2char, EOS_TOKEN)
             total_distance += distance
             total_length += length
