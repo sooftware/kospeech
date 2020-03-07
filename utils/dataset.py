@@ -1,8 +1,8 @@
 import random
 import math
 from torch.utils.data import Dataset
-from utils.feature import get_librosa_mfcc, spec_augment, get_librosa_melspectrogram
-from utils.label import get_label, label_to_string
+from utils.feature import spec_augment, get_librosa_melspectrogram
+from utils.label import get_label
 from utils.define import logger, SOS_TOKEN, EOS_TOKEN
 
 
