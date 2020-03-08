@@ -86,7 +86,8 @@
             
               <p class="caption"><span class="caption-text">Notes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Intro</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Korean-Speech-Recognition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#intro">Intro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">Preparation before Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/More-details.html">More Details</a></li>
 </ul>
@@ -168,141 +169,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-package.loader">
-<span id="loader"></span><h1>Loader<a class="headerlink" href="#module-package.loader" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="package.loader.BaseDataLoader">
-<em class="property">class </em><code class="descclassname">package.loader.</code><code class="descname">BaseDataLoader</code><span class="sig-paren">(</span><em>dataset</em>, <em>queue</em>, <em>batch_size</em>, <em>thread_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/loader.html#BaseDataLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.loader.BaseDataLoader" title="Permalink to this definition">¶</a></dt>
-<dd><p>Base Data Loader</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dataset</strong> (<a class="reference internal" href="Dataset.html#package.dataset.BaseDataset" title="package.dataset.BaseDataset"><em>package.dataset.BaseDataset</em></a>) – object of BaseDataset</li>
-<li><strong>queue</strong> (<em>Queue.queue</em>) – queue for threading</li>
-<li><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – size of batch</li>
-<li><strong>thread_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of thread</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="package.loader.BaseDataLoader.run">
-<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/loader.html#BaseDataLoader.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.loader.BaseDataLoader.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method representing the thread’s activity.</p>
-<p>You may override this method in a subclass. The standard run() method
-invokes the callable object passed to the object’s constructor as the
-target argument, if any, with sequential and keyword arguments taken
-from the args and kwargs arguments, respectively.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="package.loader.MultiLoader">
-<em class="property">class </em><code class="descclassname">package.loader.</code><code class="descname">MultiLoader</code><span class="sig-paren">(</span><em>dataset_list</em>, <em>queue</em>, <em>batch_size</em>, <em>worker_num</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/loader.html#MultiLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.loader.MultiLoader" title="Permalink to this definition">¶</a></dt>
-<dd><p>Multi Data Loader using Threads.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dataset</strong> (<a class="reference internal" href="Dataset.html#package.dataset.BaseDataset" title="package.dataset.BaseDataset"><em>package.dataset.BaseDataset</em></a>) – object of BaseDataset</li>
-<li><strong>queue</strong> (<em>Queue.queue</em>) – queue for threading</li>
-<li><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – size of batch</li>
-<li><strong>worker_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – the number of cpu cores used</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="package.loader.load_data_list">
-<code class="descclassname">package.loader.</code><code class="descname">load_data_list</code><span class="sig-paren">(</span><em>data_list_path</em>, <em>dataset_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/loader.html#load_data_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.loader.load_data_list" title="Permalink to this definition">¶</a></dt>
-<dd><p>Provides set of audio path &amp; label path</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data_list_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – csv file with training or test data list</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Returns: audio_paths, label_paths</dt>
-<dd><ul class="first last simple">
-<li><strong>audio_paths</strong> (list): set of audio path</li>
-<li><strong>label_paths</strong> (list): set of label path</li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="package.loader.load_label">
-<code class="descclassname">package.loader.</code><code class="descname">load_label</code><span class="sig-paren">(</span><em>label_path</em>, <em>encoding='utf-8'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/loader.html#load_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.loader.load_label" title="Permalink to this definition">¶</a></dt>
-<dd><p>Provides char2id, id2char</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>label_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – csv file with character labels</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Returns: char2id, id2char</dt>
-<dd><ul class="first last simple">
-<li><strong>char2id</strong> (dict): char2id[ch] = id</li>
-<li><strong>id2char</strong> (dict): id2char[id] = ch</li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="package.loader.load_pickle">
-<code class="descclassname">package.loader.</code><code class="descname">load_pickle</code><span class="sig-paren">(</span><em>filepath</em>, <em>message=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/loader.html#load_pickle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.loader.load_pickle" title="Permalink to this definition">¶</a></dt>
-<dd><p>load pickle file</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filepath</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Path to pickle file to load</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Returns: load_result</dt>
-<dd>-<strong>load_result</strong> : load result of pickle</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="package.loader.load_targets">
-<code class="descclassname">package.loader.</code><code class="descname">load_targets</code><span class="sig-paren">(</span><em>label_paths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/loader.html#load_targets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.loader.load_targets" title="Permalink to this definition">¶</a></dt>
-<dd><p>Provides dictionary of filename and labels</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>label_paths</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – set of label paths</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Returns: target_dict</dt>
-<dd><ul class="first last simple">
-<li><strong>target_dict</strong> (dict): dictionary of filename and labels</li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
+  <div class="section" id="loader">
+<h1>Loader<a class="headerlink" href="#loader" title="Permalink to this headline">¶</a></h1>
 </div>
 
 

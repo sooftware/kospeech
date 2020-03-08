@@ -86,7 +86,8 @@
             
               <p class="caption"><span class="caption-text">Notes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Intro</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Korean-Speech-Recognition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#intro">Intro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">Preparation before Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/More-details.html">More Details</a></li>
 </ul>
@@ -243,7 +244,7 @@ registered hooks while the latter silently ignores them.</p>
 <span id="listener"></span><h2>Listener<a class="headerlink" href="#module-model.listener" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="model.listener.Listener">
-<em class="property">class </em><code class="descclassname">model.listener.</code><code class="descname">Listener</code><span class="sig-paren">(</span><em>feat_size</em>, <em>hidden_size</em>, <em>dropout_p=0.5</em>, <em>layer_size=5</em>, <em>bidirectional=True</em>, <em>rnn_cell='gru'</em>, <em>use_pyramidal=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/listener.html#Listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.listener.Listener" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">model.listener.</code><code class="descname">Listener</code><span class="sig-paren">(</span><em>feat_size</em>, <em>hidden_size</em>, <em>dropout_p=0.5</em>, <em>n_layers=5</em>, <em>bidirectional=True</em>, <em>rnn_cell='gru'</em>, <em>use_pyramidal=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/listener.html#Listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.listener.Listener" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts low level speech signals into higher level features</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -252,7 +253,7 @@ registered hooks while the latter silently ignores them.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>rnn_cell</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – type of RNN cell (default: gru)</li>
 <li><strong>hidden_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – the number of features in the hidden state <cite>h</cite></li>
-<li><strong>layer_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – number of recurrent layers (default: 1)</li>
+<li><strong>n_layers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – number of recurrent layers (default: 1)</li>
 <li><strong>bidirectional</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – if True, becomes a bidirectional encoder (defulat: False)</li>
 <li><strong>use_pyramidal</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – flag indication whether to use pyramidal rnn for time resolution (default: True)</li>
 <li><strong>dropout_p</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em>) – dropout probability for the output sequence (default: 0)</li>
@@ -275,7 +276,7 @@ registered hooks while the latter silently ignores them.</p>
 </dd>
 </dl>
 <p>Examples:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">listener</span> <span class="o">=</span> <span class="n">Listener</span><span class="p">(</span><span class="n">feat_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="n">dropout_p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">layer_size</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">listener</span> <span class="o">=</span> <span class="n">Listener</span><span class="p">(</span><span class="n">feat_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="n">dropout_p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">output</span><span class="p">,</span> <span class="n">hidden</span> <span class="o">=</span> <span class="n">listener</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -317,7 +318,7 @@ registered hooks while the latter silently ignores them.</p>
 
 <dl class="class">
 <dt id="model.listener.PyramidalRNN">
-<em class="property">class </em><code class="descclassname">model.listener.</code><code class="descname">PyramidalRNN</code><span class="sig-paren">(</span><em>rnn_cell</em>, <em>input_size</em>, <em>hidden_size</em>, <em>dropout_p</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/listener.html#PyramidalRNN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.listener.PyramidalRNN" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">model.listener.</code><code class="descname">PyramidalRNN</code><span class="sig-paren">(</span><em>rnn_cell</em>, <em>input_size</em>, <em>hidden_size</em>, <em>dropout_p</em>, <em>n_layers=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/listener.html#PyramidalRNN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.listener.PyramidalRNN" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pyramidal RNN for time resolution reduction</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -326,6 +327,7 @@ registered hooks while the latter silently ignores them.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>rnn_cell</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – type of RNN cell (default: gru)</li>
 <li><strong>hidden_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – the number of features in the hidden state <cite>h</cite></li>
+<li><strong>n_layers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – number of recurrent layers (default: 1)</li>
 <li><strong>input_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – size of input</li>
 <li><strong>dropout_p</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em>) – dropout probability for the output sequence (default: 0)</li>
 </ul>
@@ -381,7 +383,7 @@ registered hooks while the latter silently ignores them.</p>
 <span id="speller"></span><h2>Speller<a class="headerlink" href="#module-model.speller" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="model.speller.Speller">
-<em class="property">class </em><code class="descclassname">model.speller.</code><code class="descname">Speller</code><span class="sig-paren">(</span><em>vocab_size</em>, <em>max_len</em>, <em>hidden_size</em>, <em>sos_id</em>, <em>eos_id</em>, <em>layer_size=1</em>, <em>rnn_cell='gru'</em>, <em>dropout_p=0</em>, <em>use_attention=True</em>, <em>device=None</em>, <em>k=8</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/speller.html#Speller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.speller.Speller" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">model.speller.</code><code class="descname">Speller</code><span class="sig-paren">(</span><em>vocab_size</em>, <em>max_len</em>, <em>hidden_size</em>, <em>sos_id</em>, <em>eos_id</em>, <em>n_layers=1</em>, <em>rnn_cell='gru'</em>, <em>dropout_p=0</em>, <em>use_attention=True</em>, <em>device=None</em>, <em>k=8</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/speller.html#Speller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.speller.Speller" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts higher level features (from listener) into output utterances by specifying a probability distribution over sequences of characters.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -425,7 +427,7 @@ teacher forcing would be used (default is 0).</li>
 </dd>
 </dl>
 <p>Examples:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">speller</span> <span class="o">=</span> <span class="n">Speller</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">max_len</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="n">sos_id</span><span class="p">,</span> <span class="n">eos_id</span><span class="p">,</span> <span class="n">layer_size</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">speller</span> <span class="o">=</span> <span class="n">Speller</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">max_len</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="n">sos_id</span><span class="p">,</span> <span class="n">eos_id</span><span class="p">,</span> <span class="n">n_layers</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y_hats</span><span class="p">,</span> <span class="n">logits</span> <span class="o">=</span> <span class="n">speller</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">listener_outputs</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="mf">0.90</span><span class="p">)</span>
 </pre></div>
 </div>

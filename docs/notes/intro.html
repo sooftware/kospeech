@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Intro &mdash; Korean Speech Recognition 1.0 documentation</title>
+  <title>Korean-Speech-Recognition &mdash; Korean Speech Recognition 1.0 documentation</title>
   
 
   
@@ -86,10 +86,15 @@
             
               <p class="caption"><span class="caption-text">Notes</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Intro</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Korean-Speech-Recognition</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#documentation"><strong>Documentation</strong></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#intro">Intro</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#roadmap">Roadmap</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#install-from-source">Install from source</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#get-started">Get Started</a><ul>
@@ -167,7 +172,7 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-      <li>Intro</li>
+      <li>Korean-Speech-Recognition</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -186,12 +191,17 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="intro">
+  <div class="section" id="korean-speech-recognition">
+<h1>Korean-Speech-Recognition<a class="headerlink" href="#korean-speech-recognition" title="Permalink to this headline">¶</a></h1>
+<p><img alt="build" src="https://img.shields.io/badge/build-Passing-83b6fa" /> <img alt="license" src="https://img.shields.io/badge/license-Apache--2.0-cba5b6" /> <img alt="language" src="https://img.shields.io/badge/language-Python--3.7-8ea5b6" /> <img alt="framework" src="https://img.shields.io/badge/framework-PyTorch-729afa" /> <img alt="team" src="https://img.shields.io/badge/Team-Kai.Lib-ab6d7b" /></p>
+<div class="section" id="documentation">
+<h2><a class="reference external" href="https://sh951011.github.io/Korean-Speech-Recognition/"><strong>Documentation</strong></a><a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+<div class="section" id="intro">
 <h1>Intro<a class="headerlink" href="#intro" title="Permalink to this headline">¶</a></h1>
-<p>This is project for Korean Speech Recognition using LAS (Listen, Attend and Spell) models
-implemented in <a class="reference external" href="http://pytorch.org">PyTorch</a>.
-We appreciate any kind of feedback or contribution.</p>
-<img src="https://postfiles.pstatic.net/MjAyMDAyMjVfODIg/MDAxNTgyNjE5NzE3NjU5.51D-0F_nvBCZQ89XpgaycjPsX92z_lZK-vCQIHXfOmkg.kK0ILmnHM-LXMRxjTB5o1vJjKnhI4cw73me3LpvRkxUg.PNG.sooftware/LAS.png?type=w773" width=500><div class="section" id="roadmap">
+<p>This is project for Korean Speech Recognition using LAS (Listen, Attend and Spell) models<br />implemented in <a class="reference external" href="http://pytorch.org">PyTorch</a>.<br />We appreciate any kind of feedback or contribution.</p>
+<img src="https://postfiles.pstatic.net/MjAyMDAyMjVfODIg/MDAxNTgyNjE5NzE3NjU5.51D-0F_nvBCZQ89XpgaycjPsX92z_lZK-vCQIHXfOmkg.kK0ILmnHM-LXMRxjTB5o1vJjKnhI4cw73me3LpvRkxUg.PNG.sooftware/LAS.png?type=w773" width=500> <div class="section" id="roadmap">
 <h2>Roadmap<a class="headerlink" href="#roadmap" title="Permalink to this headline">¶</a></h2>
 <p>Speech recognition is an interdisciplinary subfield of computational linguistics that develops methodologies and technologies that enables the recognition and translation of spoken language into text by computers.</p>
 <p>We mainly referred to following papers.</p>
@@ -202,15 +212,12 @@ We appreciate any kind of feedback or contribution.</p>
 <p>Our project based on Seq2seq with Attention Architecture.</p>
 <p>Seq2seq is a fast evolving field with new techniques and architectures being published frequently.</p>
 <p>and We use <a class="reference external" href="http://www.aihub.or.kr/aidata/105">AI Hub Dataset</a> which contains 1,000 hours korean voice data.</p>
-<p>And, our project is currently in progress.
-At present our top model has recorded an <strong>80% CRR</strong>, and we are working for a higher recognition rate.
-( <strong>CRR</strong> : Character Recognition Rate )</p>
+<p>And, our project is currently in progress.<br />At present our top model has recorded an <strong>80% CRR</strong>, and we are working for a higher recognition rate.<br />( <strong>CRR</strong> : Character Recognition Rate )</p>
 <p><a class="reference external" href="https://sh951011.github.io/Korean-Speech-Recognition/notes/More-details.html">More details</a></p>
 </div>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
-<p>This project recommends Python 3.7 or higher.
-We recommend creating a new virtual environment for this project (using virtualenv or conda).</p>
+<p>This project recommends Python 3.7 or higher.<br />We recommend creating a new virtual environment for this project (using virtualenv or conda).</p>
 <div class="section" id="prerequisites">
 <h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
@@ -221,32 +228,38 @@ We recommend creating a new virtual environment for this project (using virtuale
 <li>tqdm: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">tqdm</span></code> (Refer <a class="reference external" href="https://github.com/tqdm/tqdm">here</a> for problem installing tqdm)</li>
 </ul>
 </div>
+<div class="section" id="install-from-source">
+<h3>Install from source<a class="headerlink" href="#install-from-source" title="Permalink to this headline">¶</a></h3>
+<p>Currently we only support installation from source code using setuptools. Checkout the source code and run the<br />following commands:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">build</span>
+<span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">install</span>
+</pre></div>
+</div>
+</div>
 </div>
 <div class="section" id="get-started">
 <h2>Get Started<a class="headerlink" href="#get-started" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="preparation-before-training">
 <h3>Preparation before Training<a class="headerlink" href="#preparation-before-training" title="Permalink to this headline">¶</a></h3>
-<p>Refer <a class="reference external" href="https://sh951011.github.io/Korean-Speech-Recognition/notes/Preparation.html">here</a> before Training.
-The above document is written in Korean.
-We will also write a document in English as soon as possible, so please wait a little bit.</p>
+<p>Refer <a class="reference external" href="https://sh951011.github.io/Korean-Speech-Recognition/notes/Preparation.html">here</a> before Training.<br />The above document is written in Korean.<br />We will also write a document in English as soon as possible, so please wait a little bit.</p>
 <p>If you already have another dataset, please modify the data set path to <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/blob/master/package/definition.py">definition.py</a> as appropriate.</p>
 </div>
 <div class="section" id="train-and-test">
 <h3>Train and Test<a class="headerlink" href="#train-and-test" title="Permalink to this headline">¶</a></h3>
-<p>if you want to start training, you should run <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/blob/master/train.py">train.py</a>.
-or after training, you want to start testing, you should run <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/blob/master/test.py">test.py</a>.</p>
-<p>you can set up a hyperparameters <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/blob/master/utils/hparams.py">hparams.py</a>.
-An explanation of hparams is <a class="reference external" href="https://sh951011.github.io/Korean-Speech-Recognition/Hparams.html">here</a>.</p>
+<p>if you want to start training, you should run <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/blob/master/train.py">train.py</a>.<br />or after training, you want to start testing, you should run <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/blob/master/test.py">test.py</a>.</p>
+<p>you can set up a hyperparameters <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/blob/master/utils/hparams.py">hparams.py</a>.<br />An explanation of hparams is <a class="reference external" href="https://sh951011.github.io/Korean-Speech-Recognition/Hparams.html">here</a>.</p>
 </div>
 </div>
 <div class="section" id="troubleshoots-and-contributing">
 <h2>Troubleshoots and Contributing<a class="headerlink" href="#troubleshoots-and-contributing" title="Permalink to this headline">¶</a></h2>
-<p>If you have any questions, bug reports, and feature requests, please <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/issues">open an issue</a> on Github.
-or Contacts sh951011&#64;gmail.com please.</p>
+<p>If you have any questions, bug reports, and feature requests, please <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/issues">open an issue</a> on Github.<br />or Contacts sh951011&#64;gmail.com please.</p>
 <p>We appreciate any kind of feedback or contribution.  Feel free to proceed with small issues like bug fixes, documentation improvement.  For major contributions and new features, please discuss with the collaborators in corresponding issues.</p>
 <div class="section" id="code-style">
 <h3>Code Style<a class="headerlink" href="#code-style" title="Permalink to this headline">¶</a></h3>
-<p>We follow <a class="reference external" href="https://google.github.io/styleguide/pyguide.html">Google Python Style Guide</a> for code style.  Especially the style of docstrings is important to generate documentation.</p>
+<p>We follow <a class="reference external" href="https://www.python.org/dev/peps/pep-0008/">PEP8</a> for code style. Especially the style of docstrings is important to generate documentation.</p>
 </div>
 <div class="section" id="reference">
 <h3>Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h3>

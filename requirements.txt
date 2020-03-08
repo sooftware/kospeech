@@ -1,0 +1,6 @@
+torch
+numpy
+pandas
+tqdm
+librosa
+python-Levenshtein
