@@ -2,5 +2,5 @@
 Dataset
 =====================================================
 
-.. automodule:: utils.dataset
+.. automodule:: package.dataset
     :members:

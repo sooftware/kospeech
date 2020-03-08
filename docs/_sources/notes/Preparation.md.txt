@@ -270,7 +270,9 @@ label_df.to_csv("aihub_labels.csv", encoding="utf-8", index=False)
 * train_labels.csv : 1번씩 등장한 문자를 제외한 **2,040**개의 문자 레이블
 
 링크 : https://github.com/sh951011/Korean-Speech-Recognition/tree/master/data/label
-   
+
+위의 과정 때문에 생겼던 [Issue](https://github.com/sh951011/Korean-Speech-Recognition/issues/2)가 있으므로 꼭 해당 링크를 참고바랍니다.
+
 
 ## *Create target text*
   

@@ -1,15 +1,17 @@
-# Korean Speech Recognition  
+# Korean-Speech-Recognition  
 
-![build](https://img.shields.io/badge/build-Passing-83b6fa) ![license](https://img.shields.io/badge/license-Apache--2.0-cba5b6) ![language](https://img.shields.io/badge/version-Python--3.7-8ea5b6) ![framework](https://img.shields.io/badge/framework-PyTorch-729afa) ![team](https://img.shields.io/badge/Team-Kai.Lib-ab6d7b)     
+![build](https://img.shields.io/badge/build-Passing-83b6fa) ![license](https://img.shields.io/badge/license-Apache--2.0-cba5b6) ![language](https://img.shields.io/badge/language-Python--3.7-8ea5b6) ![framework](https://img.shields.io/badge/framework-PyTorch-729afa) ![team](https://img.shields.io/badge/Team-Kai.Lib-ab6d7b)     
   
 ### [**Documentation**](https://sh951011.github.io/Korean-Speech-Recognition/)  
 
-# Introduction
+# Intro
 
 This is project for Korean Speech Recognition using LAS (Listen, Attend and Spell) models   
 implemented in [PyTorch](http://pytorch.org).  
 We appreciate any kind of feedback or contribution.
-
+  
+<img src="https://postfiles.pstatic.net/MjAyMDAyMjVfODIg/MDAxNTgyNjE5NzE3NjU5.51D-0F_nvBCZQ89XpgaycjPsX92z_lZK-vCQIHXfOmkg.kK0ILmnHM-LXMRxjTB5o1vJjKnhI4cw73me3LpvRkxUg.PNG.sooftware/LAS.png?type=w773" width=500> 
+  
 ## Roadmap
   
 Speech recognition is an interdisciplinary subfield of computational linguistics that develops methodologies and technologies that enables the recognition and translation of spoken language into text by computers.  
@@ -28,29 +30,25 @@ Our project based on Seq2seq with Attention Architecture.
 
 Seq2seq is a fast evolving field with new techniques and architectures being published frequently.  
   
+and We use [AI Hub Dataset](http://www.aihub.or.kr/aidata/105) which contains 1,000 hours korean voice data.  
+    
+And, our project is currently in progress.  
+At present our top model has recorded an **80% CRR**, and we are working for a higher recognition rate.  
+( **CRR** : Character Recognition Rate )  
+
 [More details](https://sh951011.github.io/Korean-Speech-Recognition/notes/More-details.html)
 
 ## Installation
-This package requires Python 3.5.   
+This project recommends Python 3.7 or higher.   
 We recommend creating a new virtual environment for this project (using virtualenv or conda).  
 
 ### Prerequisites
   
-* Numpy:  `pip install numpy` (Refer [here](https://github.com/numpy/numpy) for problem installing Numpy).
-* PyTorch:  Refer to [PyTorch website](http://pytorch.org/) to install the version w.r.t. your environment.
-* Pandas:  `pip install pandas` (Refer [here](https://github.com/pandas-dev/pandas) for problem installing Pandas)  
-* librosa:  `pip install librosa` (Refer [here](https://github.com/librosa/librosa) for problem installing librosa)
-* tqdm:  `pip install tqdm` (Refer [here](https://github.com/tqdm/tqdm) for problem installing tqdm)  
-* python-levenshtein:  `conda install python-levenshtein` (Refer [here](https://github.com/miohtama/python-Levenshtein) for problem installing python-levenshtein)  
-  
-### Install from source  
-  
-Currently we only support installation from source code using setuptools. Checkout the source code and run the following   
-commands:
-```
-$ python setup.py build
-$ python setup.py install
-```
+* Numpy: `pip install numpy` (Refer [here](https://github.com/numpy/numpy) for problem installing Numpy).
+* PyTorch: Refer to [PyTorch website](http://pytorch.org/) to install the version w.r.t. your environment.
+* Pandas: `pip install pandas` (Refer [here](https://github.com/pandas-dev/pandas) for problem installing Pandas)  
+* librosa: `pip install librosa` (Refer [here](https://github.com/librosa/librosa) for problem installing librosa)
+* tqdm: `pip install tqdm` (Refer [here](https://github.com/tqdm/tqdm) for problem installing tqdm)  
   
 ## Get Started
 ### Preparation before Training
@@ -59,10 +57,10 @@ Refer [here](https://sh951011.github.io/Korean-Speech-Recognition/notes/Preparat
 The above document is written in Korean.  
 We will also write a document in English as soon as possible, so please wait a little bit.  
   
-If you already have another dataset, please modify the data set path to [define.py](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/utils/define.py) as appropriate.  
+If you already have another dataset, please modify the data set path to [definition.py](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/package/definition.py) as appropriate.  
 
 ### Train and Test
-if you want to start training, you should run [main.py](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/main.py).    
+if you want to start training, you should run [train.py](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/train.py).    
 or after training, you want to start testing, you should run [test.py](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/test.py).  
   
 you can set up a hyperparameters [hparams.py](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/utils/hparams.py).  

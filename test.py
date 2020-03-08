@@ -14,12 +14,12 @@ limitations under the License.
 import os
 import queue
 import torch
-from utils.dataset import BaseDataset
-from utils.define import logger, TEST_LIST_PATH, DATASET_PATH, id2char, SOS_TOKEN, EOS_TOKEN
-from utils.hparams import HyperParams
-from utils.loader import BaseDataLoader
-from utils.load import load_data_list, load_targets
-from utils.distance import get_distance
+from package.dataset import BaseDataset
+from package.definition import *
+from package.hparams import HyperParams
+from package.loader import BaseDataLoader, load_data_list, load_targets
+from package.utils import get_distance
+
 
 def test(model, queue, device):
     """ Test for Model Performance """

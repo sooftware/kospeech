@@ -2,5 +2,5 @@
 Hparams
 =====================================================
 
-.. automodule:: utils.hparams
+.. automodule:: package.hparams
     :members:

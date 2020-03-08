@@ -2,5 +2,5 @@
 Loss
 =====================================================
 
-.. automodule:: train.loss
+.. automodule:: package.loss
     :members:

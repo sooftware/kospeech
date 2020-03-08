@@ -1,8 +1,10 @@
-﻿# Introduction
+﻿# Intro
 
 This is project for Korean Speech Recognition using LAS (Listen, Attend and Spell) models
 implemented in [PyTorch](http://pytorch.org).
 We appreciate any kind of feedback or contribution.
+
+<img src="https://postfiles.pstatic.net/MjAyMDAyMjVfODIg/MDAxNTgyNjE5NzE3NjU5.51D-0F_nvBCZQ89XpgaycjPsX92z_lZK-vCQIHXfOmkg.kK0ILmnHM-LXMRxjTB5o1vJjKnhI4cw73me3LpvRkxUg.PNG.sooftware/LAS.png?type=w773" width=500>
 
 ## Roadmap
 
@@ -22,10 +24,16 @@ Our project based on Seq2seq with Attention Architecture.
 
 Seq2seq is a fast evolving field with new techniques and architectures being published frequently.
 
-[More details](https://github.com/sh951011/Korean-Speech-Recognition/wiki/More-Details)
+and We use [AI Hub Dataset](http://www.aihub.or.kr/aidata/105) which contains 1,000 hours korean voice data.
+
+And, our project is currently in progress.
+At present our top model has recorded an **80% CRR**, and we are working for a higher recognition rate.
+( **CRR** : Character Recognition Rate )
+
+[More details](https://sh951011.github.io/Korean-Speech-Recognition/notes/More-details.html)
 
 ## Installation
-This package requires Python 3.5.
+This project recommends Python 3.7 or higher.
 We recommend creating a new virtual environment for this project (using virtualenv or conda).
 
 ### Prerequisites
@@ -35,16 +43,6 @@ We recommend creating a new virtual environment for this project (using virtuale
 * Pandas: `pip install pandas` (Refer [here](https://github.com/pandas-dev/pandas) for problem installing Pandas)
 * librosa: `pip install librosa` (Refer [here](https://github.com/librosa/librosa) for problem installing librosa)
 * tqdm: `pip install tqdm` (Refer [here](https://github.com/tqdm/tqdm) for problem installing tqdm)
-* python-levenshtein: `conda install python-levenshtein` (Refer [here](https://github.com/miohtama/python-Levenshtein) for problem installing python-levenshtein)
-
-### Install from source
-
-Currently we only support installation from source code using setuptools. Checkout the source code and run the following
-commands:
-```
-$ python setup.py build
-$ python setup.py install
-```
 
 ## Get Started
 ### Preparation before Training
@@ -53,10 +51,10 @@ Refer [here](https://sh951011.github.io/Korean-Speech-Recognition/notes/Preparat
 The above document is written in Korean.
 We will also write a document in English as soon as possible, so please wait a little bit.
 
-If you already have another dataset, please modify the data set path to [define.py](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/utils/define.py) as appropriate.
+If you already have another dataset, please modify the data set path to [definition.py](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/package/definition.py) as appropriate.
 
 ### Train and Test
-if you want to start training, you should run [main.py](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/main.py).
+if you want to start training, you should run [train.py](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/train.py).
 or after training, you want to start testing, you should run [test.py](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/test.py).
 
 you can set up a hyperparameters [hparams.py](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/utils/hparams.py).
@@ -73,14 +71,13 @@ We appreciate any kind of feedback or contribution.  Feel free to proceed with s
 We follow [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html) for code style.  Especially the style of docstrings is important to generate documentation.
 
 ### Reference
-  
-[[1] 「Listen, Attend and Spell」  Paper](https://arxiv.org/abs/1508.01211)  
-[[2] 「A Structured Self-attentive Sentence Embedding」 Paper](https://arxiv.org/abs/1703.03130)  
-[[3] 「A Simple Data Augmentation Method for Automatic Speech Recognition」  Paper](https://arxiv.org/abs/1904.08779)  
-[[4] 「Voice Recognition Using MFCC Algorithm」  Paper](https://pdfs.semanticscholar.org/32d7/2b00454d5155599fb9e8e5119e16970db50d.pdf)  
-[[5]   IBM pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)  
-[[6]   A.I Hub Korean Voice Dataset](http://www.aihub.or.kr/aidata/105)  
-  
+[[1] 「Listen, Attend and Spell」  Paper](https://arxiv.org/abs/1508.01211)
+[[2] 「A Structured Self-attentive Sentence Embedding」 Paper](https://arxiv.org/abs/1703.03130)
+[[3] 「A Simple Data Augmentation Method for Automatic Speech Recognition」  Paper](https://arxiv.org/abs/1904.08779)
+[[4] 「Voice Recognition Using MFCC Algorithm」  Paper](https://pdfs.semanticscholar.org/32d7/2b00454d5155599fb9e8e5119e16970db50d.pdf)
+[[5]   IBM pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)
+[[6]   A.I Hub Korean Voice Dataset](http://www.aihub.or.kr/aidata/105)
+
 ### License
 ```
 Copyright (c) 2020 Kai.Lib

@@ -23,22 +23,13 @@ Welcome to Korean Speech Recognition's documentation!
 
 .. toctree::
    :maxdepth: 1
-   :caption: Train
-
-   Evaluator
-   Loss
-   Lr
-   Trainer
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Utils
+   :caption: PACKAGE REFERENCE
 
    Dataset
-   Distance
+   Evaluator
    Feature
    Hparams
-   Label
-   Load
    Loader
-   Save
+   Loss
+   Trainer
+   Utils

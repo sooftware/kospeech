@@ -2,5 +2,5 @@
 Loader
 =====================================================
 
-.. automodule:: utils.loader
+.. automodule:: package.loader
     :members:

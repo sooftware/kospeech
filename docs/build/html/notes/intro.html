@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Introduction &mdash; Korean Speech Recognition 1.0 documentation</title>
+  <title>Intro &mdash; Korean Speech Recognition 1.0 documentation</title>
   
 
   
@@ -86,11 +86,10 @@
             
               <p class="caption"><span class="caption-text">Notes</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Intro</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#roadmap">Roadmap</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#install-from-source">Install from source</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#get-started">Get Started</a><ul>
@@ -113,23 +112,16 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../Models.html">Models</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Train</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../Evaluator.html">Evaluator</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../Loss.html">Loss</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../Lr.html">Lr</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../Trainer.html">Trainer</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Utils</span></p>
+<p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../Dataset.html">Dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../Distance.html">Distance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Feature.html">Feature</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Hparams.html">Hparams</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../Label.html">Label</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../Load.html">Load</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Loader.html">Loader</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../Save.html">Save</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Loss.html">Loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Utils.html">Utils</a></li>
 </ul>
 
             
@@ -175,7 +167,7 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-      <li>Introduction</li>
+      <li>Intro</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -194,12 +186,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="introduction">
-<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="intro">
+<h1>Intro<a class="headerlink" href="#intro" title="Permalink to this headline">¶</a></h1>
 <p>This is project for Korean Speech Recognition using LAS (Listen, Attend and Spell) models
 implemented in <a class="reference external" href="http://pytorch.org">PyTorch</a>.
 We appreciate any kind of feedback or contribution.</p>
-<div class="section" id="roadmap">
+<img src="https://postfiles.pstatic.net/MjAyMDAyMjVfODIg/MDAxNTgyNjE5NzE3NjU5.51D-0F_nvBCZQ89XpgaycjPsX92z_lZK-vCQIHXfOmkg.kK0ILmnHM-LXMRxjTB5o1vJjKnhI4cw73me3LpvRkxUg.PNG.sooftware/LAS.png?type=w773" width=500><div class="section" id="roadmap">
 <h2>Roadmap<a class="headerlink" href="#roadmap" title="Permalink to this headline">¶</a></h2>
 <p>Speech recognition is an interdisciplinary subfield of computational linguistics that develops methodologies and technologies that enables the recognition and translation of spoken language into text by computers.</p>
 <p>We mainly referred to following papers.</p>
@@ -209,11 +201,15 @@ We appreciate any kind of feedback or contribution.</p>
 <p><a class="reference external" href="https://pdfs.semanticscholar.org/32d7/2b00454d5155599fb9e8e5119e16970db50d.pdf">「Voice Recognition Using MFCC Algirithm」</a>.</p>
 <p>Our project based on Seq2seq with Attention Architecture.</p>
 <p>Seq2seq is a fast evolving field with new techniques and architectures being published frequently.</p>
-<p><a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/wiki/More-Details">More details</a></p>
+<p>and We use <a class="reference external" href="http://www.aihub.or.kr/aidata/105">AI Hub Dataset</a> which contains 1,000 hours korean voice data.</p>
+<p>And, our project is currently in progress.
+At present our top model has recorded an <strong>80% CRR</strong>, and we are working for a higher recognition rate.
+( <strong>CRR</strong> : Character Recognition Rate )</p>
+<p><a class="reference external" href="https://sh951011.github.io/Korean-Speech-Recognition/notes/More-details.html">More details</a></p>
 </div>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
-<p>This package requires Python 3.5.
+<p>This project recommends Python 3.7 or higher.
 We recommend creating a new virtual environment for this project (using virtualenv or conda).</p>
 <div class="section" id="prerequisites">
 <h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h3>
@@ -223,17 +219,7 @@ We recommend creating a new virtual environment for this project (using virtuale
 <li>Pandas: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pandas</span></code> (Refer <a class="reference external" href="https://github.com/pandas-dev/pandas">here</a> for problem installing Pandas)</li>
 <li>librosa: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">librosa</span></code> (Refer <a class="reference external" href="https://github.com/librosa/librosa">here</a> for problem installing librosa)</li>
 <li>tqdm: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">tqdm</span></code> (Refer <a class="reference external" href="https://github.com/tqdm/tqdm">here</a> for problem installing tqdm)</li>
-<li>python-levenshtein: <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">install</span> <span class="pre">python-levenshtein</span></code> (Refer <a class="reference external" href="https://github.com/miohtama/python-Levenshtein">here</a> for problem installing python-levenshtein)</li>
 </ul>
-</div>
-<div class="section" id="install-from-source">
-<h3>Install from source<a class="headerlink" href="#install-from-source" title="Permalink to this headline">¶</a></h3>
-<p>Currently we only support installation from source code using setuptools. Checkout the source code and run the following
-commands:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python setup.py build
-$ python setup.py install
-</pre></div>
-</div>
 </div>
 </div>
 <div class="section" id="get-started">
@@ -243,11 +229,11 @@ $ python setup.py install
 <p>Refer <a class="reference external" href="https://sh951011.github.io/Korean-Speech-Recognition/notes/Preparation.html">here</a> before Training.
 The above document is written in Korean.
 We will also write a document in English as soon as possible, so please wait a little bit.</p>
-<p>If you already have another dataset, please modify the data set path to <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/blob/master/utils/define.py">define.py</a> as appropriate.</p>
+<p>If you already have another dataset, please modify the data set path to <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/blob/master/package/definition.py">definition.py</a> as appropriate.</p>
 </div>
 <div class="section" id="train-and-test">
 <h3>Train and Test<a class="headerlink" href="#train-and-test" title="Permalink to this headline">¶</a></h3>
-<p>if you want to start training, you should run <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/blob/master/main.py">main.py</a>.
+<p>if you want to start training, you should run <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/blob/master/train.py">train.py</a>.
 or after training, you want to start testing, you should run <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/blob/master/test.py">test.py</a>.</p>
 <p>you can set up a hyperparameters <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/blob/master/utils/hparams.py">hparams.py</a>.
 An explanation of hparams is <a class="reference external" href="https://sh951011.github.io/Korean-Speech-Recognition/Hparams.html">here</a>.</p>
@@ -264,7 +250,12 @@ or Contacts sh951011&#64;gmail.com please.</p>
 </div>
 <div class="section" id="reference">
 <h3>Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h3>
-<p><a class="reference external" href="https://arxiv.org/abs/1508.01211">[1] 「Listen, Attend and Spell」  Paper</a><br /><a class="reference external" href="https://arxiv.org/abs/1703.03130">[2] 「A Structured Self-attentive Sentence Embedding」 Paper</a><br /><a class="reference external" href="https://arxiv.org/abs/1904.08779">[3] 「A Simple Data Augmentation Method for Automatic Speech Recognition」  Paper</a><br /><a class="reference external" href="https://pdfs.semanticscholar.org/32d7/2b00454d5155599fb9e8e5119e16970db50d.pdf">[4] 「Voice Recognition Using MFCC Algorithm」  Paper</a><br /><a class="reference external" href="https://github.com/IBM/pytorch-seq2seq">[5]   IBM pytorch-seq2seq</a><br /><a class="reference external" href="http://www.aihub.or.kr/aidata/105">[6]   A.I Hub Korean Voice Dataset</a></p>
+<p><a class="reference external" href="https://arxiv.org/abs/1508.01211">[1] 「Listen, Attend and Spell」  Paper</a>
+<a class="reference external" href="https://arxiv.org/abs/1703.03130">[2] 「A Structured Self-attentive Sentence Embedding」 Paper</a>
+<a class="reference external" href="https://arxiv.org/abs/1904.08779">[3] 「A Simple Data Augmentation Method for Automatic Speech Recognition」  Paper</a>
+<a class="reference external" href="https://pdfs.semanticscholar.org/32d7/2b00454d5155599fb9e8e5119e16970db50d.pdf">[4] 「Voice Recognition Using MFCC Algorithm」  Paper</a>
+<a class="reference external" href="https://github.com/IBM/pytorch-seq2seq">[5]   IBM pytorch-seq2seq</a>
+<a class="reference external" href="http://www.aihub.or.kr/aidata/105">[6]   A.I Hub Korean Voice Dataset</a></p>
 </div>
 <div class="section" id="license">
 <h3>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h3>

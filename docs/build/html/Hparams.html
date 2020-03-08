@@ -35,7 +35,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Label" href="Label.html" />
+    <link rel="next" title="Loader" href="Loader.html" />
     <link rel="prev" title="Feature" href="Feature.html" /> 
 </head>
 
@@ -86,7 +86,8 @@
             
               <p class="caption"><span class="caption-text">Notes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Korean-Speech-Recognition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#introduction">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">Preparation before Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/More-details.html">More Details</a></li>
 </ul>
@@ -94,23 +95,16 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Models.html">Models</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Train</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Lr.html">Lr</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Utils</span></p>
+<p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Dataset.html">Dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Distance.html">Distance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Feature.html">Feature</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Hparams</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Label.html">Label</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Load.html">Load</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loader.html">Loader</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Save.html">Save</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Utils.html">Utils</a></li>
 </ul>
 
             
@@ -175,12 +169,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-utils.hparams">
-<span id="hparams"></span><h1>Hparams<a class="headerlink" href="#module-utils.hparams" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-package.hparams">
+<span id="hparams"></span><h1>Hparams<a class="headerlink" href="#module-package.hparams" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
-<dt id="utils.hparams.HyperParams">
-<em class="property">class </em><code class="descclassname">utils.hparams.</code><code class="descname">HyperParams</code><span class="sig-paren">(</span><em>use_bidirectional=True</em>, <em>use_attention=True</em>, <em>use_label_smooth=True</em>, <em>input_reverse=True</em>, <em>use_augment=False</em>, <em>use_pickle=False</em>, <em>use_pyramidal=True</em>, <em>use_cuda=True</em>, <em>pack_by_length=False</em>, <em>augment_ratio=1.0</em>, <em>hidden_size=256</em>, <em>dropout=0.5</em>, <em>listener_layer_size=5</em>, <em>speller_layer_size=2</em>, <em>batch_size=8</em>, <em>worker_num=1</em>, <em>max_epochs=40</em>, <em>use_multistep_lr=False</em>, <em>init_lr=0.0001</em>, <em>high_plateau_lr=0.001</em>, <em>low_plateau_lr=3e-05</em>, <em>teacher_forcing=0.9</em>, <em>seed=1</em>, <em>max_len=328</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/hparams.html#HyperParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.hparams.HyperParams" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set of Hyperparameters</p>
+<dt id="package.hparams.HyperParams">
+<em class="property">class </em><code class="descclassname">package.hparams.</code><code class="descname">HyperParams</code><span class="sig-paren">(</span><em>use_bidirectional=True</em>, <em>use_attention=True</em>, <em>use_label_smooth=True</em>, <em>input_reverse=True</em>, <em>use_augment=True</em>, <em>use_pickle=False</em>, <em>use_pyramidal=True</em>, <em>use_cuda=True</em>, <em>pack_by_length=True</em>, <em>augment_ratio=1.0</em>, <em>hidden_size=256</em>, <em>dropout=0.5</em>, <em>listener_layer_size=6</em>, <em>speller_layer_size=3</em>, <em>batch_size=8</em>, <em>worker_num=1</em>, <em>max_epochs=40</em>, <em>use_multistep_lr=False</em>, <em>init_lr=0.0001</em>, <em>high_plateau_lr=0.001</em>, <em>low_plateau_lr=3e-05</em>, <em>teacher_forcing=0.9</em>, <em>seed=1</em>, <em>max_len=328</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/hparams.html#HyperParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.hparams.HyperParams" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hyperparameters</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -216,8 +210,8 @@
 </tbody>
 </table>
 <dl class="method">
-<dt id="utils.hparams.HyperParams.logger_hparams">
-<code class="descname">logger_hparams</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/hparams.html#HyperParams.logger_hparams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.hparams.HyperParams.logger_hparams" title="Permalink to this definition">¶</a></dt>
+<dt id="package.hparams.HyperParams.logger_hparams">
+<code class="descname">logger_hparams</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/hparams.html#HyperParams.logger_hparams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.hparams.HyperParams.logger_hparams" title="Permalink to this definition">¶</a></dt>
 <dd><p>print information of hyperparameters</p>
 </dd></dl>
 
@@ -233,7 +227,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="Label.html" class="btn btn-neutral float-right" title="Label" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="Loader.html" class="btn btn-neutral float-right" title="Loader" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="Feature.html" class="btn btn-neutral float-left" title="Feature" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

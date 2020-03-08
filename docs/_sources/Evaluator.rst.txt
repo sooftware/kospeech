@@ -2,5 +2,5 @@
 Evaluator
 =====================================================
 
-.. automodule:: train.evaluator
+.. automodule:: package.evaluator
     :members:

@@ -5,29 +5,29 @@ Models
 ListenAttendSpell
 --------------------------------------------
 
-.. automodule:: models.listenAttendSpell
+.. automodule:: model.listenAttendSpell
     :members:
 
 Listener
 --------------------------------------------
 
-.. automodule:: models.listener
+.. automodule:: model.listener
     :members:
 
 Speller
 --------------------------------------------
 
-.. automodule:: models.speller
+.. automodule:: model.speller
     :members:
 
 Beam
 --------------------------------------------
 
-.. automodule:: models.beam
+.. automodule:: model.beam
     :members:
 
 Attention
 --------------------------------------------
 
-.. automodule:: models.attention
+.. automodule:: model.attention
     :members:

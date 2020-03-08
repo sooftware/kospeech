@@ -2,5 +2,5 @@
 Trainer
 =====================================================
 
-.. automodule:: train.trainer
+.. automodule:: package.trainer
     :members:

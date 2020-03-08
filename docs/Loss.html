@@ -35,8 +35,8 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Lr" href="Lr.html" />
-    <link rel="prev" title="Evaluator" href="Evaluator.html" /> 
+    <link rel="next" title="Trainer" href="Trainer.html" />
+    <link rel="prev" title="Loader" href="Loader.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -86,7 +86,8 @@
             
               <p class="caption"><span class="caption-text">Notes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Korean-Speech-Recognition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#introduction">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">Preparation before Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/More-details.html">More Details</a></li>
 </ul>
@@ -94,23 +95,16 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Models.html">Models</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Train</span></p>
+<p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Loss</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Lr.html">Lr</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Utils</span></p>
-<ul>
 <li class="toctree-l1"><a class="reference internal" href="Dataset.html">Dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Distance.html">Distance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Feature.html">Feature</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Hparams.html">Hparams</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Label.html">Label</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Load.html">Load</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loader.html">Loader</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Save.html">Save</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Utils.html">Utils</a></li>
 </ul>
 
             
@@ -175,11 +169,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-train.loss">
-<span id="loss"></span><h1>Loss<a class="headerlink" href="#module-train.loss" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-package.loss">
+<span id="loss"></span><h1>Loss<a class="headerlink" href="#module-package.loss" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
-<dt id="train.loss.LabelSmoothingLoss">
-<em class="property">class </em><code class="descclassname">train.loss.</code><code class="descname">LabelSmoothingLoss</code><span class="sig-paren">(</span><em>vocab_size</em>, <em>ignore_index</em>, <em>smoothing=0.1</em>, <em>dim=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/train/loss.html#LabelSmoothingLoss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#train.loss.LabelSmoothingLoss" title="Permalink to this definition">¶</a></dt>
+<dt id="package.loss.LabelSmoothingLoss">
+<em class="property">class </em><code class="descclassname">package.loss.</code><code class="descname">LabelSmoothingLoss</code><span class="sig-paren">(</span><em>vocab_size</em>, <em>ignore_index</em>, <em>smoothing=0.1</em>, <em>dim=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/loss.html#LabelSmoothingLoss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.loss.LabelSmoothingLoss" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provides Label-Smoothing loss.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -207,8 +201,8 @@
 <dd><a class="reference external" href="https://github.com/pytorch/pytorch/issues/7455">https://github.com/pytorch/pytorch/issues/7455</a></dd>
 </dl>
 <dl class="method">
-<dt id="train.loss.LabelSmoothingLoss.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>logit</em>, <em>target</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/train/loss.html#LabelSmoothingLoss.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#train.loss.LabelSmoothingLoss.forward" title="Permalink to this definition">¶</a></dt>
+<dt id="package.loss.LabelSmoothingLoss.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>logit</em>, <em>target</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/loss.html#LabelSmoothingLoss.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.loss.LabelSmoothingLoss.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -232,10 +226,10 @@ registered hooks while the latter silently ignores them.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="Lr.html" class="btn btn-neutral float-right" title="Lr" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="Trainer.html" class="btn btn-neutral float-right" title="Trainer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="Evaluator.html" class="btn btn-neutral float-left" title="Evaluator" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="Loader.html" class="btn btn-neutral float-left" title="Loader" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
