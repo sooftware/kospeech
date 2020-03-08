@@ -50,6 +50,17 @@ We recommend creating a new virtual environment for this project (using virtuale
 * librosa: `pip install librosa` (Refer [here](https://github.com/librosa/librosa) for problem installing librosa)
 * tqdm: `pip install tqdm` (Refer [here](https://github.com/tqdm/tqdm) for problem installing tqdm)  
   
+### Install from source
+Currently we only support installation from source code using setuptools. Checkout the source code and run the   
+following commands:  
+```
+pip install -r requirements.txt
+```
+```
+python setup.py build
+python setup.py install
+```
+  
 ## Get Started
 ### Preparation before Training
 
@@ -74,8 +85,8 @@ or Contacts sh951011@gmail.com please.
 We appreciate any kind of feedback or contribution.  Feel free to proceed with small issues like bug fixes, documentation improvement.  For major contributions and new features, please discuss with the collaborators in corresponding issues.  
 
 ### Code Style
-We follow [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html) for code style.  Especially the style of docstrings is important to generate documentation.
-  
+We follow [PEP8](https://www.python.org/dev/peps/pep-0008/) for code style. Especially the style of docstrings is important to generate documentation.  
+    
 ### Reference   
 [[1] 「Listen, Attend and Spell」  Paper](https://arxiv.org/abs/1508.01211)   
 [[2] 「A Structured Self-attentive Sentence Embedding」 Paper](https://arxiv.org/abs/1703.03130)  
