@@ -55,6 +55,8 @@ Currently we only support installation from source code using setuptools. Checko
 following commands:  
 ```
 pip install -r requirements.txt
+```
+```
 python setup.py build
 python setup.py install
 ```
