@@ -75,7 +75,7 @@ if __name__ == '__main__':
         feat_size = 128,
         hidden_size = hparams.hidden_size,
         dropout_p = hparams.dropout,
-        layer_size = hparams.listener_layer_size,
+        n_layers = hparams.listener_layer_size,
         bidirectional = hparams.use_bidirectional,
         rnn_cell = 'gru',
         use_pyramidal = hparams.use_pyramidal
@@ -87,7 +87,7 @@ if __name__ == '__main__':
         hidden_size = hparams.hidden_size << (1 if hparams.use_bidirectional else 0),
         sos_id = SOS_TOKEN,
         eos_id = EOS_TOKEN,
-        layer_size = hparams.speller_layer_size,
+        n_layers = hparams.speller_layer_size,
         rnn_cell = 'gru',
         dropout_p = hparams.dropout,
         use_attention = hparams.use_attention,

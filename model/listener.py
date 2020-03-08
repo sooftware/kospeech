@@ -8,6 +8,7 @@ class PyramidalRNN(nn.Module):
     Args:
         rnn_cell (str, optional): type of RNN cell (default: gru)
         hidden_size (int): the number of features in the hidden state `h`
+        n_layers (int, optional): number of recurrent layers (default: 1)
         input_size (int): size of input
         dropout_p (float, optional): dropout probability for the output sequence (default: 0)
 
@@ -22,11 +23,11 @@ class PyramidalRNN(nn.Module):
         >>> rnn = PyramidalRNN(rnn_cell, input_size, hidden_size, dropout_p)
         >>> output, hidden = rnn(inputs)
     """
-    def __init__(self, rnn_cell, input_size, hidden_size, dropout_p):
+    def __init__(self, rnn_cell, input_size, hidden_size, dropout_p, n_layers=2):
         super(PyramidalRNN, self).__init__()
         assert rnn_cell.lower() == 'lstm' or rnn_cell.lower() == 'gru' or rnn_cell.lower() == 'rnn'
         self.rnn_cell = nn.LSTM if rnn_cell.lower() == 'lstm' else nn.GRU if rnn_cell.lower() == 'gru' else nn.RNN
-        self.rnn = self.rnn_cell(input_size << 1, hidden_size, 2, bidirectional=True, batch_first=True, dropout=dropout_p)
+        self.rnn = self.rnn_cell(input_size << 1, hidden_size, n_layers, bidirectional=True, batch_first=True, dropout=dropout_p)
 
     def forward(self, inputs):
         """
@@ -61,7 +62,7 @@ class Listener(nn.Module):
     Args:
         rnn_cell (str, optional): type of RNN cell (default: gru)
         hidden_size (int): the number of features in the hidden state `h`
-        layer_size (int, optional): number of recurrent layers (default: 1)
+        n_layers (int, optional): number of recurrent layers (default: 1)
         bidirectional (bool, optional): if True, becomes a bidirectional encoder (defulat: False)
         use_pyramidal (bool): flag indication whether to use pyramidal rnn for time resolution (default: True)
         dropout_p (float, optional): dropout probability for the output sequence (default: 0)
@@ -75,14 +76,16 @@ class Listener(nn.Module):
 
     Examples::
 
-        >>> listener = Listener(feat_size, hidden_size, dropout_p=0.5, layer_size=5)
+        >>> listener = Listener(feat_size, hidden_size, dropout_p=0.5, n_layers=5)
         >>> output, hidden = listener(inputs)
     """
 
-    def __init__(self, feat_size, hidden_size, dropout_p=0.5, layer_size=5, bidirectional=True, rnn_cell='gru', use_pyramidal = True):
+    def __init__(self, feat_size, hidden_size, dropout_p=0.5, n_layers=5, bidirectional=True, rnn_cell='gru', use_pyramidal = True):
         super(Listener, self).__init__()
         assert rnn_cell.lower() == 'lstm' or rnn_cell.lower() == 'gru' or rnn_cell.lower() == 'rnn'
-        assert layer_size > 1, "layer_size should be bigger than 1"
+        assert n_layers > 1, "n_layers should be bigger than 1"
+        if use_pyramidal:
+            assert n_layers > 4, "Pyramidal Listener`s n_layers should be bigger than 4"
         self.use_pyramidal = use_pyramidal
         self.rnn_cell = nn.LSTM if rnn_cell.lower() == 'lstm' else nn.GRU if rnn_cell.lower() == 'gru' else nn.RNN
         self.conv = nn.Sequential(
@@ -108,11 +111,11 @@ class Listener(nn.Module):
         """ math :: feat_size = (in_channel * out_channel) / maxpool_layer_num """
         feat_size = (feat_size-1) << 5 if feat_size % 2 else feat_size << 5
         if use_pyramidal:
-            self.bottom_rnn = self.rnn_cell(feat_size, hidden_size, layer_size - 4, batch_first = True, bidirectional = bidirectional, dropout = dropout_p)
-            self.middle_rnn = PyramidalRNN(rnn_cell, hidden_size << 1 if bidirectional else 0, hidden_size, dropout_p)
-            self.top_rnn = PyramidalRNN(rnn_cell, hidden_size << 1 if bidirectional else 0, hidden_size, dropout_p)
+            self.bottom_rnn = self.rnn_cell(feat_size, hidden_size, n_layers - 4, batch_first = True, bidirectional = bidirectional, dropout = dropout_p)
+            self.middle_rnn = PyramidalRNN(rnn_cell, hidden_size << 1 if bidirectional else 0, hidden_size, dropout_p, n_layers=2)
+            self.top_rnn = PyramidalRNN(rnn_cell, hidden_size << 1 if bidirectional else 0, hidden_size, dropout_p, n_layers=2)
         else:
-            self.rnn = self.rnn_cell(feat_size, hidden_size, layer_size, batch_first=True, bidirectional=bidirectional, dropout=dropout_p)
+            self.rnn = self.rnn_cell(feat_size, hidden_size, n_layers, batch_first=True, bidirectional=bidirectional, dropout=dropout_p)
 
     def forward(self, inputs):
         """
