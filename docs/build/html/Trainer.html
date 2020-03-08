@@ -86,8 +86,7 @@
             
               <p class="caption"><span class="caption-text">Notes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Korean-Speech-Recognition</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#introduction">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Intro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">Preparation before Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/More-details.html">More Details</a></li>
 </ul>
@@ -169,73 +168,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-package.trainer">
-<span id="trainer"></span><h1>Trainer<a class="headerlink" href="#module-package.trainer" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
-<dt id="package.trainer.exp_decay">
-<code class="descclassname">package.trainer.</code><code class="descname">exp_decay</code><span class="sig-paren">(</span><em>optimizer</em>, <em>total_time_step</em>, <em>hparams</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/trainer.html#exp_decay"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.trainer.exp_decay" title="Permalink to this definition">¶</a></dt>
-<dd><p>a gradual decrease in learning rates</p>
-<dl class="docutils">
-<dt>Reference:</dt>
-<dd>「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」Google Brain Team. 2019.
-<a class="reference external" href="https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py">https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py</a></dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="package.trainer.get_lr">
-<code class="descclassname">package.trainer.</code><code class="descname">get_lr</code><span class="sig-paren">(</span><em>optimizer</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/trainer.html#get_lr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.trainer.get_lr" title="Permalink to this definition">¶</a></dt>
-<dd><p>get learning rate</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="package.trainer.ramp_up">
-<code class="descclassname">package.trainer.</code><code class="descname">ramp_up</code><span class="sig-paren">(</span><em>optimizer</em>, <em>time_step</em>, <em>hparams</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/trainer.html#ramp_up"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.trainer.ramp_up" title="Permalink to this definition">¶</a></dt>
-<dd><p>Steps to gradually increase the learing rate</p>
-<dl class="docutils">
-<dt>Reference:</dt>
-<dd>「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」Google Brain Team. 2019.
-<a class="reference external" href="https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py">https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py</a></dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="package.trainer.set_lr">
-<code class="descclassname">package.trainer.</code><code class="descname">set_lr</code><span class="sig-paren">(</span><em>optimizer</em>, <em>lr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/trainer.html#set_lr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.trainer.set_lr" title="Permalink to this definition">¶</a></dt>
-<dd><p>set learning rate</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="package.trainer.supervised_train">
-<code class="descclassname">package.trainer.</code><code class="descname">supervised_train</code><span class="sig-paren">(</span><em>model</em>, <em>hparams</em>, <em>epoch</em>, <em>total_time_step</em>, <em>queue</em>, <em>criterion</em>, <em>optimizer</em>, <em>device</em>, <em>train_begin</em>, <em>worker_num</em>, <em>print_time_step=10</em>, <em>teacher_forcing_ratio=0.9</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/trainer.html#supervised_train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.trainer.supervised_train" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>model</strong> (<a class="reference external" href="https://pytorch.org/docs/master/nn.html#torch.nn.Module" title="(in PyTorch vmaster (1.5.0a0+2b79bab ))"><em>torch.nn.Module</em></a>) – Model to be trained</li>
-<li><strong>optimizer</strong> (<em>torch.optim</em>) – optimizer for training</li>
-<li><strong>teacher_forcing_ratio</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – The probability that teacher forcing will be used (default: 0.90)</li>
-<li><strong>print_time_step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Parameters to determine how many steps to output</li>
-<li><strong>queue</strong> (<em>Queue.queue</em>) – queue for threading</li>
-<li><strong>criterion</strong> (<em>torch.nn</em>) – one of PyTorch’s loss function. Refer to <a class="reference external" href="http://pytorch.org/docs/master/nn.html#loss-functions">http://pytorch.org/docs/master/nn.html#loss-functions</a> for a list of them.</li>
-<li><strong>device</strong> (<em>torch.cuda</em>) – device used (‘cuda’ or ‘cpu’)</li>
-<li><strong>worker_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – the number of cpu cores used</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Returns: loss, cer</dt>
-<dd><ul class="first last simple">
-<li><strong>loss</strong> (float): loss of present epoch</li>
-<li><strong>cer</strong> (float): character error rate</li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
+  <div class="section" id="trainer">
+<h1>Trainer<a class="headerlink" href="#trainer" title="Permalink to this headline">¶</a></h1>
 </div>
 
 

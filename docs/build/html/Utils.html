@@ -85,8 +85,7 @@
             
               <p class="caption"><span class="caption-text">Notes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Korean-Speech-Recognition</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#introduction">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Intro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">Preparation before Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/More-details.html">More Details</a></li>
 </ul>
@@ -168,133 +167,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-package.utils">
-<span id="utils"></span><h1>Utils<a class="headerlink" href="#module-package.utils" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
-<dt id="package.utils.char_distance">
-<code class="descclassname">package.utils.</code><code class="descname">char_distance</code><span class="sig-paren">(</span><em>target</em>, <em>y_hat</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/utils.html#char_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.utils.char_distance" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculating charater distance between target &amp; y_hat</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>target</strong> – sequence of target</li>
-<li><strong>y_hat</strong> – sequence of y_Hat</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Returns: distance, length</dt>
-<dd><ul class="first last simple">
-<li><strong>distance</strong>: distance between target &amp; y_hat</li>
-<li><strong>length</strong>: length of target sequence</li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="package.utils.get_distance">
-<code class="descclassname">package.utils.</code><code class="descname">get_distance</code><span class="sig-paren">(</span><em>targets</em>, <em>y_hats</em>, <em>id2char</em>, <em>eos_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/utils.html#get_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.utils.get_distance" title="Permalink to this definition">¶</a></dt>
-<dd><p>Provides total character distance between targets &amp; y_hats</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>targets</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.5.0a0+2b79bab ))"><em>torch.Tensor</em></a>) – set of ground truth</li>
-<li><strong>y_hats</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.5.0a0+2b79bab ))"><em>torch.Tensor</em></a>) – predicted y values (y_hat) by the model</li>
-<li><strong>id2char</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – id2char[id] = ch</li>
-<li><strong>eos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of &lt;end of sequence&gt;</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Returns: total_distance, total_length</dt>
-<dd><ul class="first last simple">
-<li><strong>total_distance</strong>: total distance between targets &amp; y_hats</li>
-<li><strong>total_length</strong>: total length of targets sequence</li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="package.utils.get_label">
-<code class="descclassname">package.utils.</code><code class="descname">get_label</code><span class="sig-paren">(</span><em>filepath</em>, <em>sos_id</em>, <em>eos_id</em>, <em>target_dict=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/utils.html#get_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.utils.get_label" title="Permalink to this definition">¶</a></dt>
-<dd><p>Provides specific file`s label to list format.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>filepath</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – specific path of label file</li>
-<li><strong>bos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of &lt;start of sequence&gt;</li>
-<li><strong>eos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of &lt;end of sequence&gt;</li>
-<li><strong>target_dict</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – dictionary of filename and labels</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Returns: label</dt>
-<dd><ul class="first last simple">
-<li><strong>label</strong> (list): list of bos + sequence of label + eos</li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="package.utils.label_to_string">
-<code class="descclassname">package.utils.</code><code class="descname">label_to_string</code><span class="sig-paren">(</span><em>labels</em>, <em>id2char</em>, <em>eos_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/utils.html#label_to_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.utils.label_to_string" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts label to string (number =&gt; Hangeul)</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>labels</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – number label</li>
-<li><strong>id2char</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – id2char[id] = ch</li>
-<li><strong>eos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of &lt;end of sequence&gt;</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Returns: sentence</dt>
-<dd><ul class="first last simple">
-<li><strong>sentence</strong> (str or list): Hangeul representation of labels</li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="package.utils.save_epoch_result">
-<code class="descclassname">package.utils.</code><code class="descname">save_epoch_result</code><span class="sig-paren">(</span><em>train_result</em>, <em>valid_result</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/utils.html#save_epoch_result"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.utils.save_epoch_result" title="Permalink to this definition">¶</a></dt>
-<dd><p>save result of training (unit : epoch)</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="package.utils.save_pickle">
-<code class="descclassname">package.utils.</code><code class="descname">save_pickle</code><span class="sig-paren">(</span><em>save_var</em>, <em>savepath</em>, <em>message=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/utils.html#save_pickle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.utils.save_pickle" title="Permalink to this definition">¶</a></dt>
-<dd><p>save pickle file</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="package.utils.save_step_result">
-<code class="descclassname">package.utils.</code><code class="descname">save_step_result</code><span class="sig-paren">(</span><em>train_step_result</em>, <em>loss</em>, <em>cer</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/utils.html#save_step_result"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.utils.save_step_result" title="Permalink to this definition">¶</a></dt>
-<dd><p>save result of training (unit : K time step)</p>
-</dd></dl>
-
+  <div class="section" id="utils">
+<h1>Utils<a class="headerlink" href="#utils" title="Permalink to this headline">¶</a></h1>
 </div>
 
 
