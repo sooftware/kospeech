@@ -168,8 +168,35 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="evaluator">
-<h1>Evaluator<a class="headerlink" href="#evaluator" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-package.evaluator">
+<span id="evaluator"></span><h1>Evaluator<a class="headerlink" href="#module-package.evaluator" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="package.evaluator.evaluate">
+<code class="descclassname">package.evaluator.</code><code class="descname">evaluate</code><span class="sig-paren">(</span><em>model</em>, <em>queue</em>, <em>criterion</em>, <em>device</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/evaluator.html#evaluate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.evaluator.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>model</strong> (<a class="reference external" href="https://pytorch.org/docs/master/nn.html#torch.nn.Module" title="(in PyTorch vmaster (1.5.0a0+2b79bab ))"><em>torch.nn.Module</em></a>) – Model to be evaluated</li>
+<li><strong>queue</strong> (<em>queue</em>) – queue for threading</li>
+<li><strong>criterion</strong> (<em>torch.nn</em>) – one of PyTorch’s loss function. Refer to <a class="reference external" href="http://pytorch.org/docs/master/nn.html#loss-functions">http://pytorch.org/docs/master/nn.html#loss-functions</a> for a list of them.</li>
+<li><strong>device</strong> (<em>torch.cuda</em>) – device used (‘cuda’ or ‘cpu’)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Returns: loss, cer</dt>
+<dd><ul class="first last simple">
+<li><strong>loss</strong> (float): loss of evalution</li>
+<li><strong>cer</strong> (float): character error rate</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 
 

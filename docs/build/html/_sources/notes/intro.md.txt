@@ -69,7 +69,7 @@ We appreciate any kind of feedback or contribution.  Feel free to proceed with s
 
 ### Code Style
 We follow [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html) for code style.  Especially the style of docstrings is important to generate documentation.
-
+  
 ### Reference
 [[1] 「Listen, Attend and Spell」  Paper](https://arxiv.org/abs/1508.01211)  
 [[2] 「A Structured Self-attentive Sentence Embedding」 Paper](https://arxiv.org/abs/1703.03130)  
@@ -77,7 +77,7 @@ We follow [Google Python Style Guide](https://google.github.io/styleguide/pyguid
 [[4] 「Voice Recognition Using MFCC Algorithm」  Paper](https://pdfs.semanticscholar.org/32d7/2b00454d5155599fb9e8e5119e16970db50d.pdf)  
 [[5]   IBM pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)  
 [[6]   A.I Hub Korean Voice Dataset](http://www.aihub.or.kr/aidata/105)  
-  
+
 ### License
 ```
 Copyright (c) 2020 Kai.Lib
