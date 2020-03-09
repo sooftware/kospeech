@@ -85,8 +85,7 @@
             
               <p class="caption"><span class="caption-text">Notes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Korean-Speech-Recognition</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#intro">Intro</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Intro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">Preparation before Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/More-details.html">More Details</a></li>
 </ul>
@@ -94,7 +93,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Models.html">Models</a></li>
 </ul>
-<p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
+<p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Dataset.html">Dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
@@ -173,17 +172,25 @@
  <a href="#A"><strong>A</strong></a>
  | <a href="#B"><strong>B</strong></a>
  | <a href="#C"><strong>C</strong></a>
+ | <a href="#E"><strong>E</strong></a>
  | <a href="#F"><strong>F</strong></a>
+ | <a href="#G"><strong>G</strong></a>
+ | <a href="#H"><strong>H</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#P"><strong>P</strong></a>
+ | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  
 </div>
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Models.html#model.attention.Attention">Attention (class in model.attention)</a>
+      <li><a href="Models.html#models.attention.Attention">Attention (class in models.attention)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Dataset.html#package.dataset.BaseDataset.augmentation">augmentation() (package.dataset.BaseDataset method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -191,7 +198,15 @@
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Models.html#model.beam.Beam">Beam (class in model.beam)</a>
+      <li><a href="Loader.html#package.loader.BaseDataLoader">BaseDataLoader (class in package.loader)</a>
+</li>
+      <li><a href="Dataset.html#package.dataset.BaseDataset">BaseDataset (class in package.dataset)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Dataset.html#package.dataset.BaseDataset.batch_shuffle">batch_shuffle() (package.dataset.BaseDataset method)</a>
+</li>
+      <li><a href="Models.html#models.beam.Beam">Beam (class in models.beam)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -199,7 +214,23 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Models.html#model.listener.Listener.conv">conv (model.listener.Listener attribute)</a>
+      <li><a href="Utils.html#package.utils.char_distance">char_distance() (in module package.utils)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Models.html#models.listener.Listener.conv">conv (models.listener.Listener attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="E">E</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Evaluator.html#package.evaluator.evaluate">evaluate() (in module package.evaluator)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Trainer.html#package.trainer.exp_decay">exp_decay() (in module package.trainer)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -207,18 +238,18 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Models.html#model.listener.Listener.flatten_parameters">flatten_parameters() (model.listener.Listener method)</a>
+      <li><a href="Models.html#models.listener.Listener.flatten_parameters">flatten_parameters() (models.listener.Listener method)</a>
 </li>
-      <li><a href="Models.html#model.attention.Attention.forward">forward() (model.attention.Attention method)</a>
+      <li><a href="Models.html#models.attention.Attention.forward">forward() (models.attention.Attention method)</a>
 
       <ul>
-        <li><a href="Models.html#model.listenAttendSpell.ListenAttendSpell.forward">(model.listenAttendSpell.ListenAttendSpell method)</a>
+        <li><a href="Models.html#models.listenAttendSpell.ListenAttendSpell.forward">(models.listenAttendSpell.ListenAttendSpell method)</a>
 </li>
-        <li><a href="Models.html#model.listener.Listener.forward">(model.listener.Listener method)</a>
+        <li><a href="Models.html#models.listener.Listener.forward">(models.listener.Listener method)</a>
 </li>
-        <li><a href="Models.html#model.listener.PyramidalRNN.forward">(model.listener.PyramidalRNN method)</a>
+        <li><a href="Models.html#models.listener.PyramidalRNN.forward">(models.listener.PyramidalRNN method)</a>
 </li>
-        <li><a href="Models.html#model.speller.Speller.forward">(model.speller.Speller method)</a>
+        <li><a href="Models.html#models.speller.Speller.forward">(models.speller.Speller method)</a>
 </li>
         <li><a href="Loss.html#package.loss.LabelSmoothingLoss.forward">(package.loss.LabelSmoothingLoss method)</a>
 </li>
@@ -226,16 +257,54 @@
   </ul></td>
 </tr></table>
 
-<h2 id="L">L</h2>
+<h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Loss.html#package.loss.LabelSmoothingLoss">LabelSmoothingLoss (class in package.loss)</a>
+      <li><a href="Utils.html#package.utils.get_distance">get_distance() (in module package.utils)</a>
+</li>
+      <li><a href="Utils.html#package.utils.get_label">get_label() (in module package.utils)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Models.html#model.listenAttendSpell.ListenAttendSpell">ListenAttendSpell (class in model.listenAttendSpell)</a>
+      <li><a href="Feature.html#package.feature.get_librosa_melspectrogram">get_librosa_melspectrogram() (in module package.feature)</a>
 </li>
-      <li><a href="Models.html#model.listener.Listener">Listener (class in model.listener)</a>
+      <li><a href="Feature.html#package.feature.get_librosa_mfcc">get_librosa_mfcc() (in module package.feature)</a>
+</li>
+      <li><a href="Trainer.html#package.trainer.get_lr">get_lr() (in module package.trainer)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="H">H</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Hparams.html#package.hparams.HyperParams">HyperParams (class in package.hparams)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="L">L</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Utils.html#package.utils.label_to_string">label_to_string() (in module package.utils)</a>
+</li>
+      <li><a href="Loss.html#package.loss.LabelSmoothingLoss">LabelSmoothingLoss (class in package.loss)</a>
+</li>
+      <li><a href="Models.html#models.listenAttendSpell.ListenAttendSpell">ListenAttendSpell (class in models.listenAttendSpell)</a>
+</li>
+      <li><a href="Models.html#models.listener.Listener">Listener (class in models.listener)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Loader.html#package.loader.load_data_list">load_data_list() (in module package.loader)</a>
+</li>
+      <li><a href="Loader.html#package.loader.load_label">load_label() (in module package.loader)</a>
+</li>
+      <li><a href="Loader.html#package.loader.load_pickle">load_pickle() (in module package.loader)</a>
+</li>
+      <li><a href="Loader.html#package.loader.load_targets">load_targets() (in module package.loader)</a>
+</li>
+      <li><a href="Hparams.html#package.hparams.HyperParams.logger_hparams">logger_hparams() (package.hparams.HyperParams method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -243,17 +312,19 @@
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Models.html#module-model.attention">model.attention (module)</a>
+      <li><a href="Models.html#module-models.attention">models.attention (module)</a>
 </li>
-      <li><a href="Models.html#module-model.beam">model.beam (module)</a>
+      <li><a href="Models.html#module-models.beam">models.beam (module)</a>
+</li>
+      <li><a href="Models.html#module-models.listenAttendSpell">models.listenAttendSpell (module)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Models.html#module-model.listenAttendSpell">model.listenAttendSpell (module)</a>
+      <li><a href="Models.html#module-models.listener">models.listener (module)</a>
 </li>
-      <li><a href="Models.html#module-model.listener">model.listener (module)</a>
+      <li><a href="Models.html#module-models.speller">models.speller (module)</a>
 </li>
-      <li><a href="Models.html#module-model.speller">model.speller (module)</a>
+      <li><a href="Loader.html#package.loader.MultiLoader">MultiLoader (class in package.loader)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -261,11 +332,37 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Loss.html#module-package.loss">package.loss (module)</a>
+      <li><a href="Dataset.html#module-package.dataset">package.dataset (module)</a>
+</li>
+      <li><a href="Evaluator.html#module-package.evaluator">package.evaluator (module)</a>
+</li>
+      <li><a href="Feature.html#module-package.feature">package.feature (module)</a>
+</li>
+      <li><a href="Hparams.html#module-package.hparams">package.hparams (module)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Models.html#model.listener.PyramidalRNN">PyramidalRNN (class in model.listener)</a>
+      <li><a href="Loader.html#module-package.loader">package.loader (module)</a>
+</li>
+      <li><a href="Loss.html#module-package.loss">package.loss (module)</a>
+</li>
+      <li><a href="Trainer.html#module-package.trainer">package.trainer (module)</a>
+</li>
+      <li><a href="Utils.html#module-package.utils">package.utils (module)</a>
+</li>
+      <li><a href="Models.html#models.listener.PyramidalRNN">PyramidalRNN (class in models.listener)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="R">R</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Trainer.html#package.trainer.ramp_up">ramp_up() (in module package.trainer)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Loader.html#package.loader.BaseDataLoader.run">run() (package.loader.BaseDataLoader method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -273,11 +370,29 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Models.html#model.beam.Beam.search">search() (model.beam.Beam method)</a>
+      <li><a href="Utils.html#package.utils.save_epoch_result">save_epoch_result() (in module package.utils)</a>
+</li>
+      <li><a href="Utils.html#package.utils.save_pickle">save_pickle() (in module package.utils)</a>
+</li>
+      <li><a href="Utils.html#package.utils.save_step_result">save_step_result() (in module package.utils)</a>
+</li>
+      <li><a href="Models.html#models.beam.Beam.search">search() (models.beam.Beam method)</a>
+</li>
+      <li><a href="Trainer.html#package.trainer.set_lr">set_lr() (in module package.trainer)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Models.html#model.speller.Speller">Speller (class in model.speller)</a>
+      <li><a href="Dataset.html#package.dataset.BaseDataset.shuffle">shuffle() (package.dataset.BaseDataset method)</a>
+</li>
+      <li><a href="Dataset.html#package.dataset.BaseDataset.sort_by_length">sort_by_length() (package.dataset.BaseDataset method)</a>
+</li>
+      <li><a href="Feature.html#package.feature.spec_augment">spec_augment() (in module package.feature)</a>
+</li>
+      <li><a href="Models.html#models.speller.Speller">Speller (class in models.speller)</a>
+</li>
+      <li><a href="Dataset.html#package.dataset.split_dataset">split_dataset() (in module package.dataset)</a>
+</li>
+      <li><a href="Trainer.html#package.trainer.supervised_train">supervised_train() (in module package.trainer)</a>
 </li>
   </ul></td>
 </tr></table>

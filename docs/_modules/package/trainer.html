@@ -92,7 +92,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Models.html">Models</a></li>
 </ul>
-<p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
+<p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Dataset.html">Dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Evaluator.html">Evaluator</a></li>
@@ -166,6 +166,7 @@
             
   <h1>Source code for package.trainer</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">torch</span>
 <span class="c1">#from package.definition import logger, id2char, EOS_TOKEN</span>
 <span class="kn">from</span> <span class="nn">package.utils</span> <span class="k">import</span> <span class="n">get_distance</span><span class="p">,</span> <span class="n">save_step_result</span>
 
@@ -191,7 +192,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">total_loss</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="n">total_num</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">total_distance</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">total_dist</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">total_length</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">total_sent_num</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">time_step</span> <span class="o">=</span> <span class="mi">0</span>
@@ -226,8 +227,8 @@
 
         <span class="n">total_loss</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
         <span class="n">total_num</span> <span class="o">+=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">feat_lengths</span><span class="p">)</span>
-        <span class="n">distance</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="n">get_distance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">y_hat</span><span class="p">,</span> <span class="n">id2char</span><span class="p">,</span> <span class="n">EOS_TOKEN</span><span class="p">)</span>
-        <span class="n">total_distance</span> <span class="o">+=</span> <span class="n">distance</span>
+        <span class="n">dist</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="n">get_distance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">y_hat</span><span class="p">,</span> <span class="n">id2char</span><span class="p">,</span> <span class="n">EOS_TOKEN</span><span class="p">)</span>
+        <span class="n">total_dist</span> <span class="o">+=</span> <span class="n">dist</span>
         <span class="n">total_length</span> <span class="o">+=</span> <span class="n">length</span>
         <span class="n">total_sent_num</span> <span class="o">+=</span> <span class="n">target</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
@@ -243,19 +244,24 @@
                 <span class="n">time_step</span><span class="p">,</span>
                 <span class="n">total_time_step</span><span class="p">,</span>
                 <span class="n">total_loss</span> <span class="o">/</span> <span class="n">total_num</span><span class="p">,</span>
-                <span class="n">total_distance</span> <span class="o">/</span> <span class="n">total_length</span><span class="p">,</span>
+                <span class="n">total_dist</span> <span class="o">/</span> <span class="n">total_length</span><span class="p">,</span>
                 <span class="n">elapsed</span><span class="p">,</span> <span class="n">epoch_elapsed</span><span class="p">,</span> <span class="n">train_elapsed</span><span class="p">)</span>
             <span class="p">)</span>
             <span class="n">begin</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">time_step</span> <span class="o">%</span> <span class="mi">1000</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">save_step_result</span><span class="p">(</span><span class="n">train_step_result</span><span class="p">,</span> <span class="n">total_loss</span> <span class="o">/</span> <span class="n">total_num</span><span class="p">,</span> <span class="n">total_distance</span> <span class="o">/</span> <span class="n">total_length</span><span class="p">)</span>
+            <span class="n">save_step_result</span><span class="p">(</span><span class="n">train_step_result</span><span class="p">,</span> <span class="n">total_loss</span> <span class="o">/</span> <span class="n">total_num</span><span class="p">,</span> <span class="n">total_dist</span> <span class="o">/</span> <span class="n">total_length</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">time_step</span> <span class="o">%</span> <span class="mi">10000</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s2">&quot;model.pt&quot;</span><span class="p">)</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s2">&quot;./data/weight_file/epoch_</span><span class="si">%s</span><span class="s2">_step_</span><span class="si">%s</span><span class="s2">.pt&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">epoch</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">time_step</span><span class="p">)))</span>
 
         <span class="n">time_step</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="n">supervised_train</span><span class="o">.</span><span class="n">cumulative_batch_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">empty_cache</span><span class="p">()</span> <span class="c1"># GPU memory free. if you have enough GPU memory, delete this line</span>
 
     <span class="n">loss</span> <span class="o">=</span> <span class="n">total_loss</span> <span class="o">/</span> <span class="n">total_num</span>
-    <span class="n">cer</span> <span class="o">=</span> <span class="n">total_distance</span> <span class="o">/</span> <span class="n">total_length</span>
+    <span class="n">cer</span> <span class="o">=</span> <span class="n">total_dist</span> <span class="o">/</span> <span class="n">total_length</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;train() completed&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">loss</span><span class="p">,</span> <span class="n">cer</span></div>
 

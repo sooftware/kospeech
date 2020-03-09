@@ -23,7 +23,7 @@ Welcome to Korean Speech Recognition's documentation!
 
 .. toctree::
    :maxdepth: 1
-   :caption: PACKAGE REFERENCE
+   :caption: Package Reference
 
    Dataset
    Evaluator

@@ -94,15 +94,15 @@
 <p class="caption"><span class="caption-text">Architecture</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Models</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-model.listenAttendSpell">ListenAttendSpell</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-model.listener">Listener</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-model.speller">Speller</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-model.beam">Beam</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-model.attention">Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-models.listenAttendSpell">ListenAttendSpell</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-models.listener">Listener</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-models.speller">Speller</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-models.beam">Beam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-models.attention">Attention</a></li>
 </ul>
 </li>
 </ul>
-<p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
+<p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Dataset.html">Dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
@@ -178,11 +178,11 @@
             
   <div class="section" id="models">
 <h1>Models<a class="headerlink" href="#models" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-model.listenAttendSpell">
-<span id="listenattendspell"></span><h2>ListenAttendSpell<a class="headerlink" href="#module-model.listenAttendSpell" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-models.listenAttendSpell">
+<span id="listenattendspell"></span><h2>ListenAttendSpell<a class="headerlink" href="#module-models.listenAttendSpell" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="model.listenAttendSpell.ListenAttendSpell">
-<em class="property">class </em><code class="descclassname">model.listenAttendSpell.</code><code class="descname">ListenAttendSpell</code><span class="sig-paren">(</span><em>listener</em>, <em>speller</em>, <em>decode_function=&lt;function log_softmax&gt;</em>, <em>use_pyramidal=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/listenAttendSpell.html#ListenAttendSpell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.listenAttendSpell.ListenAttendSpell" title="Permalink to this definition">¶</a></dt>
+<dt id="models.listenAttendSpell.ListenAttendSpell">
+<em class="property">class </em><code class="descclassname">models.listenAttendSpell.</code><code class="descname">ListenAttendSpell</code><span class="sig-paren">(</span><em>listener</em>, <em>speller</em>, <em>function=&lt;function log_softmax&gt;</em>, <em>use_pyramidal=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/listenAttendSpell.html#ListenAttendSpell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.listenAttendSpell.ListenAttendSpell" title="Permalink to this definition">¶</a></dt>
 <dd><p>Listen, Attend and Spell (LAS) Model</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -191,7 +191,7 @@
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>listener</strong> (<a class="reference external" href="https://pytorch.org/docs/master/nn.html#torch.nn.Module" title="(in PyTorch vmaster (1.5.0a0+2b79bab ))"><em>torch.nn.Module</em></a>) – encoder of seq2seq</li>
 <li><strong>speller</strong> (<a class="reference external" href="https://pytorch.org/docs/master/nn.html#torch.nn.Module" title="(in PyTorch vmaster (1.5.0a0+2b79bab ))"><em>torch.nn.Module</em></a>) – decoder of seq2seq</li>
-<li><strong>decode_function</strong> (<em>torch.nn.functional</em>) – A function used to generate symbols from RNN hidden state</li>
+<li><strong>function</strong> (<em>torch.nn.functional</em>) – A function used to generate symbols from RNN hidden state</li>
 </ul>
 </td>
 </tr>
@@ -221,11 +221,12 @@ teacher forcing would be used (default is 0.90)</li>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">listener</span> <span class="o">=</span> <span class="n">Listener</span><span class="p">(</span><span class="n">feat_size</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;gru&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">speller</span> <span class="o">=</span> <span class="n">Speller</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">256</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="n">use_bidirectional</span> <span class="k">else</span> <span class="mi">0</span><span class="p">),</span> <span class="n">SOS_TOKEN</span><span class="p">,</span> <span class="n">EOS_TOKEN</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;gru&#39;</span><span class="p">,</span> <span class="mf">0.5</span> <span class="p">,</span><span class="kc">True</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">ListenAttendSpell</span><span class="p">(</span><span class="n">listener</span><span class="p">,</span> <span class="n">speller</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y_hats</span><span class="p">,</span> <span class="n">logits</span> <span class="o">=</span> <span class="n">model</span><span class="p">()</span>
 </pre></div>
 </div>
 <dl class="method">
-<dt id="model.listenAttendSpell.ListenAttendSpell.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>feats</em>, <em>targets</em>, <em>teacher_forcing_ratio=0.9</em>, <em>use_beam_search=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/listenAttendSpell.html#ListenAttendSpell.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.listenAttendSpell.ListenAttendSpell.forward" title="Permalink to this definition">¶</a></dt>
+<dt id="models.listenAttendSpell.ListenAttendSpell.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>feats</em>, <em>targets</em>, <em>teacher_forcing_ratio=0.9</em>, <em>use_beam_search=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/listenAttendSpell.html#ListenAttendSpell.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.listenAttendSpell.ListenAttendSpell.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -240,11 +241,11 @@ registered hooks while the latter silently ignores them.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-model.listener">
-<span id="listener"></span><h2>Listener<a class="headerlink" href="#module-model.listener" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-models.listener">
+<span id="listener"></span><h2>Listener<a class="headerlink" href="#module-models.listener" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="model.listener.Listener">
-<em class="property">class </em><code class="descclassname">model.listener.</code><code class="descname">Listener</code><span class="sig-paren">(</span><em>feat_size</em>, <em>hidden_size</em>, <em>dropout_p=0.5</em>, <em>n_layers=5</em>, <em>bidirectional=True</em>, <em>rnn_cell='gru'</em>, <em>use_pyramidal=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/listener.html#Listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.listener.Listener" title="Permalink to this definition">¶</a></dt>
+<dt id="models.listener.Listener">
+<em class="property">class </em><code class="descclassname">models.listener.</code><code class="descname">Listener</code><span class="sig-paren">(</span><em>feat_size</em>, <em>hidden_size</em>, <em>device</em>, <em>dropout_p=0.5</em>, <em>n_layers=5</em>, <em>bidirectional=True</em>, <em>rnn_cell='gru'</em>, <em>use_pyramidal=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/listener.html#Listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.listener.Listener" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts low level speech signals into higher level features</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -268,33 +269,32 @@ registered hooks while the latter silently ignores them.</p>
 <li><strong>inputs</strong>: list of sequences, whose length is the batch size and within which each sequence is a list of token IDs.</li>
 </ul>
 </dd>
-<dt>Returns: output, hidden</dt>
+<dt>Returns: output</dt>
 <dd><ul class="first last simple">
 <li><strong>output</strong> (batch, seq_len, hidden_size): tensor containing the encoded features of the input sequence</li>
-<li><strong>hidden</strong> (num_layers * num_directions, batch, hidden_size): tensor containing the features in the hidden state <cite>h</cite></li>
 </ul>
 </dd>
 </dl>
 <p>Examples:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">listener</span> <span class="o">=</span> <span class="n">Listener</span><span class="p">(</span><span class="n">feat_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="n">dropout_p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">output</span><span class="p">,</span> <span class="n">hidden</span> <span class="o">=</span> <span class="n">listener</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">output</span> <span class="o">=</span> <span class="n">listener</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="attribute">
-<dt id="model.listener.Listener.conv">
-<code class="descname">conv</code><em class="property"> = None</em><a class="headerlink" href="#model.listener.Listener.conv" title="Permalink to this definition">¶</a></dt>
+<dt id="models.listener.Listener.conv">
+<code class="descname">conv</code><em class="property"> = None</em><a class="headerlink" href="#models.listener.Listener.conv" title="Permalink to this definition">¶</a></dt>
 <dd><p>math :: feat_size = (in_channel * out_channel) / maxpool_layer_num</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="model.listener.Listener.flatten_parameters">
-<code class="descname">flatten_parameters</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/listener.html#Listener.flatten_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.listener.Listener.flatten_parameters" title="Permalink to this definition">¶</a></dt>
+<dt id="models.listener.Listener.flatten_parameters">
+<code class="descname">flatten_parameters</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/listener.html#Listener.flatten_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.listener.Listener.flatten_parameters" title="Permalink to this definition">¶</a></dt>
 <dd><p>flatten parameters for fast training</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="model.listener.Listener.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/listener.html#Listener.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.listener.Listener.forward" title="Permalink to this definition">¶</a></dt>
+<dt id="models.listener.Listener.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/listener.html#Listener.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.listener.Listener.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Applies a multi-layer RNN to an input sequence.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -317,8 +317,8 @@ registered hooks while the latter silently ignores them.</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="model.listener.PyramidalRNN">
-<em class="property">class </em><code class="descclassname">model.listener.</code><code class="descname">PyramidalRNN</code><span class="sig-paren">(</span><em>rnn_cell</em>, <em>input_size</em>, <em>hidden_size</em>, <em>dropout_p</em>, <em>n_layers=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/listener.html#PyramidalRNN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.listener.PyramidalRNN" title="Permalink to this definition">¶</a></dt>
+<dt id="models.listener.PyramidalRNN">
+<em class="property">class </em><code class="descclassname">models.listener.</code><code class="descname">PyramidalRNN</code><span class="sig-paren">(</span><em>rnn_cell</em>, <em>input_size</em>, <em>hidden_size</em>, <em>dropout_p</em>, <em>device</em>, <em>n_layers=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/listener.html#PyramidalRNN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.listener.PyramidalRNN" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pyramidal RNN for time resolution reduction</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -355,8 +355,8 @@ registered hooks while the latter silently ignores them.</p>
 </dd>
 </dl>
 <dl class="method">
-<dt id="model.listener.PyramidalRNN.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/listener.html#PyramidalRNN.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.listener.PyramidalRNN.forward" title="Permalink to this definition">¶</a></dt>
+<dt id="models.listener.PyramidalRNN.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/listener.html#PyramidalRNN.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.listener.PyramidalRNN.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Applies a multi-layer RNN to an input sequence.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -367,10 +367,9 @@ registered hooks while the latter silently ignores them.</p>
 </tbody>
 </table>
 <dl class="docutils">
-<dt>Returns: output, hidden</dt>
+<dt>Returns: output</dt>
 <dd><ul class="first last simple">
 <li><strong>output</strong> (batch, seq_len, hidden_size): variable containing the encoded features of the input sequence</li>
-<li><strong>hidden</strong> (num_layers * num_directions, batch, hidden_size): variable containing the features in the hidden state h</li>
 </ul>
 </dd>
 </dl>
@@ -379,11 +378,11 @@ registered hooks while the latter silently ignores them.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-model.speller">
-<span id="speller"></span><h2>Speller<a class="headerlink" href="#module-model.speller" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-models.speller">
+<span id="speller"></span><h2>Speller<a class="headerlink" href="#module-models.speller" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="model.speller.Speller">
-<em class="property">class </em><code class="descclassname">model.speller.</code><code class="descname">Speller</code><span class="sig-paren">(</span><em>vocab_size</em>, <em>max_len</em>, <em>hidden_size</em>, <em>sos_id</em>, <em>eos_id</em>, <em>n_layers=1</em>, <em>rnn_cell='gru'</em>, <em>dropout_p=0</em>, <em>use_attention=True</em>, <em>device=None</em>, <em>k=8</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/speller.html#Speller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.speller.Speller" title="Permalink to this definition">¶</a></dt>
+<dt id="models.speller.Speller">
+<em class="property">class </em><code class="descclassname">models.speller.</code><code class="descname">Speller</code><span class="sig-paren">(</span><em>vocab_size</em>, <em>max_len</em>, <em>hidden_size</em>, <em>sos_id</em>, <em>eos_id</em>, <em>n_layers=1</em>, <em>rnn_cell='gru'</em>, <em>dropout_p=0</em>, <em>use_attention=True</em>, <em>device=None</em>, <em>k=8</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/speller.html#Speller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.speller.Speller" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts higher level features (from listener) into output utterances by specifying a probability distribution over sequences of characters.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -432,8 +431,8 @@ teacher forcing would be used (default is 0).</li>
 </pre></div>
 </div>
 <dl class="method">
-<dt id="model.speller.Speller.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs</em>, <em>listener_outputs</em>, <em>function=&lt;function log_softmax&gt;</em>, <em>teacher_forcing_ratio=0.99</em>, <em>use_beam_search=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/speller.html#Speller.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.speller.Speller.forward" title="Permalink to this definition">¶</a></dt>
+<dt id="models.speller.Speller.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs</em>, <em>listener_outputs</em>, <em>function=&lt;function log_softmax&gt;</em>, <em>teacher_forcing_ratio=0.99</em>, <em>use_beam_search=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/speller.html#Speller.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.speller.Speller.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -448,11 +447,11 @@ registered hooks while the latter silently ignores them.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-model.beam">
-<span id="beam"></span><h2>Beam<a class="headerlink" href="#module-model.beam" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-models.beam">
+<span id="beam"></span><h2>Beam<a class="headerlink" href="#module-models.beam" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="model.beam.Beam">
-<em class="property">class </em><code class="descclassname">model.beam.</code><code class="descname">Beam</code><span class="sig-paren">(</span><em>k</em>, <em>decoder_hidden</em>, <em>decoder</em>, <em>batch_size</em>, <em>max_len</em>, <em>function</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/beam.html#Beam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.beam.Beam" title="Permalink to this definition">¶</a></dt>
+<dt id="models.beam.Beam">
+<em class="property">class </em><code class="descclassname">models.beam.</code><code class="descname">Beam</code><span class="sig-paren">(</span><em>k</em>, <em>decoder_hidden</em>, <em>decoder</em>, <em>batch_size</em>, <em>max_len</em>, <em>function</em>, <em>device</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/beam.html#Beam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.beam.Beam" title="Permalink to this definition">¶</a></dt>
 <dd><p>Applying Beam-Search during decoding process.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -463,12 +462,12 @@ registered hooks while the latter silently ignores them.</p>
 <li><strong>decoder_hidden</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.5.0a0+2b79bab ))"><em>torch.Tensor</em></a>) – hidden state of decoder</li>
 <li><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – mini-batch size during infer</li>
 <li><strong>max_len</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – a maximum allowed length for the sequence to be processed</li>
-<li><strong>function</strong> (<em>torch.nn</em>) – A function used to generate symbols from RNN hidden state (default : torch.nn.functional.log_softmax)</li>
-<li><strong>decoder</strong> (<em>torch.nn</em>) – get pointer of decoder object to get multiple parameters at once</li>
+<li><strong>function</strong> (<a class="reference external" href="https://pytorch.org/docs/master/nn.html#torch.nn.Module" title="(in PyTorch vmaster (1.5.0a0+2b79bab ))"><em>torch.nn.Module</em></a>) – A function used to generate symbols from RNN hidden state (default : torch.nn.functional.log_softmax)</li>
+<li><strong>decoder</strong> (<a class="reference external" href="https://pytorch.org/docs/master/nn.html#torch.nn.Module" title="(in PyTorch vmaster (1.5.0a0+2b79bab ))"><em>torch.nn.Module</em></a>) – get pointer of decoder object to get multiple parameters at once</li>
 <li><strong>beams</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.5.0a0+2b79bab ))"><em>torch.Tensor</em></a>) – ongoing beams for decoding</li>
-<li><strong>beam_scores</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.5.0a0+2b79bab ))"><em>torch.Tensor</em></a>) – score of beams (cumulative probability)</li>
-<li><strong>done_beams</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – store beams which met &lt;eos&gt; token and terminated decoding process.</li>
-<li><strong>done_beam_scores</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – score of done_beams</li>
+<li><strong>probs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.5.0a0+2b79bab ))"><em>torch.Tensor</em></a>) – cumulative probability of beams (score of beams)</li>
+<li><strong>sentences</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – store beams which met &lt;eos&gt; token and terminated decoding process.</li>
+<li><strong>sentence_probs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – score of sentences</li>
 </ul>
 </td>
 </tr>
@@ -493,27 +492,32 @@ registered hooks while the latter silently ignores them.</p>
 </pre></div>
 </div>
 <dl class="method">
-<dt id="model.beam.Beam.search">
-<code class="descname">search</code><span class="sig-paren">(</span><em>decoder_input</em>, <em>encoder_outputs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/beam.html#Beam.search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.beam.Beam.search" title="Permalink to this definition">¶</a></dt>
+<dt id="models.beam.Beam.search">
+<code class="descname">search</code><span class="sig-paren">(</span><em>decoder_input</em>, <em>encoder_outputs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/beam.html#Beam.search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.beam.Beam.search" title="Permalink to this definition">¶</a></dt>
 <dd><p>Beam-Search Decoding (Top-K Decoding)</p>
+<p>Examples:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">beam</span> <span class="o">=</span> <span class="n">Beam</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">decoder_hidden</span><span class="p">,</span> <span class="n">decoder</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">max_len</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">log_softmax</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y_hats</span> <span class="o">=</span> <span class="n">beam</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">encoder_outputs</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </dd></dl>
 
 </div>
-<div class="section" id="module-model.attention">
-<span id="attention"></span><h2>Attention<a class="headerlink" href="#module-model.attention" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-models.attention">
+<span id="attention"></span><h2>Attention<a class="headerlink" href="#module-models.attention" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="model.attention.Attention">
-<em class="property">class </em><code class="descclassname">model.attention.</code><code class="descname">Attention</code><span class="sig-paren">(</span><em>decoder_hidden_size</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/attention.html#Attention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.attention.Attention" title="Permalink to this definition">¶</a></dt>
+<dt id="models.attention.Attention">
+<em class="property">class </em><code class="descclassname">models.attention.</code><code class="descname">Attention</code><span class="sig-paren">(</span><em>decoder_hidden_size</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/attention.html#Attention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.attention.Attention" title="Permalink to this definition">¶</a></dt>
 <dd><p>Applies an self attention mechanism on the output features from the decoder.
 「A Structured Self-Attentive Sentence Embedding」 Paper
 <a class="reference external" href="https://arxiv.org/abs/1703.03130">https://arxiv.org/abs/1703.03130</a></p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{ll}
-x = encoder_outputs*decoder_output \\
-attn_score = exp(x_i) / sum_j exp(x_j) \\
-output = \tanh(w * (attn_score * encoder_outputs) + b * output)
+x = encoder outputs*decoder output \\
+attn score = exp(x_i) / sum_j exp(x_j) \\
+output = \tanh(w * (attn score * encoder outputs) + b * output)
 \end{array}\end{split}\]</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -542,8 +546,8 @@ output = \tanh(w * (attn_score * encoder_outputs) + b * output)
 </pre></div>
 </div>
 <dl class="method">
-<dt id="model.attention.Attention.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>decoder_output</em>, <em>encoder_outputs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/attention.html#Attention.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.attention.Attention.forward" title="Permalink to this definition">¶</a></dt>
+<dt id="models.attention.Attention.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>decoder_output</em>, <em>encoder_outputs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/attention.html#Attention.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.attention.Attention.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">

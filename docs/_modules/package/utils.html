@@ -92,7 +92,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Models.html">Models</a></li>
 </ul>
-<p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
+<p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Dataset.html">Dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Evaluator.html">Evaluator</a></li>
@@ -180,15 +180,15 @@
 <span class="sd">        y_hat: sequence of y_Hat</span>
 
 <span class="sd">    Returns: distance, length</span>
-<span class="sd">        - **distance**: distance between target &amp; y_hat</span>
+<span class="sd">        - **dist**: distance between target &amp; y_hat</span>
 <span class="sd">        - **length**: length of target sequence</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
     <span class="n">y_hat</span> <span class="o">=</span> <span class="n">y_hat</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-    <span class="n">distance</span> <span class="o">=</span> <span class="n">Lev</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">y_hat</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+    <span class="n">dist</span> <span class="o">=</span> <span class="n">Lev</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">y_hat</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
     <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
 
-    <span class="k">return</span> <span class="n">distance</span><span class="p">,</span> <span class="n">length</span></div>
+    <span class="k">return</span> <span class="n">dist</span><span class="p">,</span> <span class="n">length</span></div>
 
 <div class="viewcode-block" id="get_distance"><a class="viewcode-back" href="../../Utils.html#package.utils.get_distance">[docs]</a><span class="k">def</span> <span class="nf">get_distance</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">y_hats</span><span class="p">,</span> <span class="n">id2char</span><span class="p">,</span> <span class="n">eos_id</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -200,20 +200,20 @@
 <span class="sd">        id2char (dict): id2char[id] = ch</span>
 <span class="sd">        eos_id (int): identification of &lt;end of sequence&gt;</span>
 
-<span class="sd">    Returns: total_distance, total_length</span>
-<span class="sd">        - **total_distance**: total distance between targets &amp; y_hats</span>
+<span class="sd">    Returns: total_dist, total_length</span>
+<span class="sd">        - **total_dist**: total distance between targets &amp; y_hats</span>
 <span class="sd">        - **total_length**: total length of targets sequence</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">total_distance</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">total_dist</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">total_length</span> <span class="o">=</span> <span class="mi">0</span>
 
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">targets</span><span class="p">)):</span>
         <span class="n">target</span> <span class="o">=</span> <span class="n">label_to_string</span><span class="p">(</span><span class="n">targets</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">id2char</span><span class="p">,</span> <span class="n">eos_id</span><span class="p">)</span>
         <span class="n">y_hat</span> <span class="o">=</span> <span class="n">label_to_string</span><span class="p">(</span><span class="n">y_hats</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">id2char</span><span class="p">,</span> <span class="n">eos_id</span><span class="p">)</span>
-        <span class="n">distance</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="n">char_distance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">y_hat</span><span class="p">)</span>
-        <span class="n">total_distance</span> <span class="o">+=</span> <span class="n">distance</span>
+        <span class="n">dist</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="n">char_distance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">y_hat</span><span class="p">)</span>
+        <span class="n">total_dist</span> <span class="o">+=</span> <span class="n">dist</span>
         <span class="n">total_length</span> <span class="o">+=</span> <span class="n">length</span>
-    <span class="k">return</span> <span class="n">total_distance</span><span class="p">,</span> <span class="n">total_length</span></div>
+    <span class="k">return</span> <span class="n">total_dist</span><span class="p">,</span> <span class="n">total_length</span></div>
 
 
 <div class="viewcode-block" id="get_label"><a class="viewcode-back" href="../../Utils.html#package.utils.get_label">[docs]</a><span class="k">def</span> <span class="nf">get_label</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">sos_id</span><span class="p">,</span> <span class="n">eos_id</span><span class="p">,</span> <span class="n">target_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

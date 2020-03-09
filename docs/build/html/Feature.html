@@ -95,7 +95,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Models.html">Models</a></li>
 </ul>
-<p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
+<p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Dataset.html">Dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
@@ -169,8 +169,162 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="feature">
-<h1>Feature<a class="headerlink" href="#feature" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-package.feature">
+<span id="feature"></span><h1>Feature<a class="headerlink" href="#module-package.feature" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="package.feature.get_librosa_melspectrogram">
+<code class="descclassname">package.feature.</code><code class="descname">get_librosa_melspectrogram</code><span class="sig-paren">(</span><em>filepath</em>, <em>n_mels=128</em>, <em>del_silence=False</em>, <em>input_reverse=True</em>, <em>mel_type='log_mel'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/feature.html#get_librosa_melspectrogram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.feature.get_librosa_melspectrogram" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute a mel-scaled soectrigram (or Log-Mel).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filepath</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – specific path of audio file</li>
+<li><strong>n_mels</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of mel filter</li>
+<li><strong>del_silence</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – flag indication whether to delete silence or not (default: True)</li>
+<li><strong>mel_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – if ‘log_mel’ return log-mel (default: ‘log_mel’)</li>
+<li><strong>input_reverse</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – flag indication whether to reverse input or not (default: True)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Feature Parameters:</dt>
+<dd><ul class="first last simple">
+<li><strong>sample rate</strong>: A.I Hub dataset`s sample rate is 16,000</li>
+<li><strong>frame length</strong>: 25ms</li>
+<li><strong>stride</strong>: 10ms</li>
+<li><strong>overlap</strong>: 15ms</li>
+<li><strong>window</strong>: Hamming Window</li>
+</ul>
+</dd>
+</dl>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}{ll}
+NFFT = sr * frame length \\
+Hop Length = sr * stride \\
+\end{array}\end{split}\]</div>
+<dl class="docutils">
+<dt>Returns: mel_spectrogram</dt>
+<dd><ul class="first last simple">
+<li><strong>mel_spectrogram</strong> (torch.Tensor): return Mel-Spectrogram (or Log-Mel) feature</li>
+</ul>
+</dd>
+<dt>Examples::</dt>
+<dd>Generate mel spectrogram from a time series</dd>
+</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_librosa_melspectrogram</span><span class="p">(</span><span class="s2">&quot;KaiSpeech_021458.pcm&quot;</span><span class="p">,</span> <span class="n">n_mels</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">input_reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">Tensor([[  2.891e-07,   2.548e-03, ...,   8.116e-09,   5.633e-09],</span>
+<span class="go">        [  1.986e-07,   1.162e-02, ...,   9.332e-08,   6.716e-09],</span>
+<span class="go">        ...,</span>
+<span class="go">        [  3.668e-09,   2.029e-08, ...,   3.208e-09,   2.864e-09],</span>
+<span class="go">        [  2.561e-10,   2.096e-09, ...,   7.543e-10,   6.101e-10]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="package.feature.get_librosa_mfcc">
+<code class="descclassname">package.feature.</code><code class="descname">get_librosa_mfcc</code><span class="sig-paren">(</span><em>filepath</em>, <em>n_mfcc=40</em>, <em>del_silence=False</em>, <em>input_reverse=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/feature.html#get_librosa_mfcc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.feature.get_librosa_mfcc" title="Permalink to this definition">¶</a></dt>
+<dd><p>:
+Mel-frequency cepstral coefficients (MFCCs)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filepath</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – specific path of audio file</li>
+<li><strong>n_mfcc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of mel filter</li>
+<li><strong>del_silence</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – flag indication whether to delete silence or not (default: True)</li>
+<li><strong>input_reverse</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – flag indication whether to reverse input or not (default: True)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Feature Parameters:</dt>
+<dd><ul class="first last simple">
+<li><strong>sample rate</strong>: A.I Hub dataset`s sample rate is 16,000</li>
+<li><strong>frame length</strong>: 25ms</li>
+<li><strong>stride</strong>: 10ms</li>
+<li><strong>overlap</strong>: 15ms</li>
+<li><strong>window</strong>: Hamming Window</li>
+</ul>
+</dd>
+</dl>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}{ll}
+NFFT = sr * frame length \\
+HopLength = sr * stride \\
+\end{array}\end{split}\]</div>
+<dl class="docutils">
+<dt>Returns: mfcc</dt>
+<dd><ul class="first last simple">
+<li><strong>mfcc</strong> (torch.Tensor): return mel frequency cepstral coefficient feature</li>
+</ul>
+</dd>
+<dt>Examples::</dt>
+<dd><p class="first">Generate mfccs from a time series</p>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_librosa_mfcc</span><span class="p">(</span><span class="s2">&quot;KaiSpeech_021458.pcm&quot;</span><span class="p">,</span> <span class="n">n_mfcc</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">input_reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">Tensor([[ -5.229e+02,  -4.944e+02, ...,  -5.229e+02,  -5.229e+02],</span>
+<span class="go">        [  7.105e-15,   3.787e+01, ...,  -7.105e-15,  -7.105e-15],</span>
+<span class="go">        ...,</span>
+<span class="go">        [  1.066e-14,  -7.500e+00, ...,   1.421e-14,   1.421e-14],</span>
+<span class="go">        [  3.109e-14,  -5.058e+00, ...,   2.931e-14,   2.931e-14]])</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="package.feature.spec_augment">
+<code class="descclassname">package.feature.</code><code class="descname">spec_augment</code><span class="sig-paren">(</span><em>feat</em>, <em>T=70</em>, <em>F=20</em>, <em>time_mask_num=2</em>, <em>freq_mask_num=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/feature.html#spec_augment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.feature.spec_augment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides Augmentation for audio</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>feat</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.5.0a0+2b79bab ))"><em>torch.Tensor</em></a>) – input data feature</li>
+<li><strong>T</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Hyper Parameter for Time Masking to limit time masking length</li>
+<li><strong>F</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Hyper Parameter for Freq Masking to limit freq masking length</li>
+<li><strong>time_mask_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – how many time-masked area to make</li>
+<li><strong>freq_mask_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – how many freq-masked area to make</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Returns: feat</dt>
+<dd><ul class="first last simple">
+<li><strong>feat</strong>: Augmented feature</li>
+</ul>
+</dd>
+<dt>Reference:</dt>
+<dd><dl class="first last docutils">
+<dt>「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」Google Brain Team. 2019.</dt>
+<dd><a class="reference external" href="https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py">https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py</a></dd>
+</dl>
+</dd>
+<dt>Examples::</dt>
+<dd><p class="first">Generate spec augmentation from a feature</p>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">spec_augment</span><span class="p">(</span><span class="n">feat</span><span class="p">,</span> <span class="n">T</span> <span class="o">=</span> <span class="mi">70</span><span class="p">,</span> <span class="n">F</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span> <span class="n">time_mask_num</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">freq_mask_num</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">Tensor([[ -5.229e+02,  0, ...,  -5.229e+02,  -5.229e+02],</span>
+<span class="go">        [  7.105e-15,  0, ...,  -7.105e-15,  -7.105e-15],</span>
+<span class="go">        ...,</span>
+<span class="go">        [          0,  0, ...,           0,           0],</span>
+<span class="go">        [  3.109e-14,  0, ...,   2.931e-14,   2.931e-14]])</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 
 

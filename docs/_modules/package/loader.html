@@ -92,7 +92,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Models.html">Models</a></li>
 </ul>
-<p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
+<p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Dataset.html">Dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Evaluator.html">Evaluator</a></li>
@@ -173,7 +173,7 @@
 <span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="k">import</span> <span class="n">trange</span>
-<span class="c1">#from package.definition import logger, PAD_TOKEN</span>
+<span class="c1">#from package.definition import logger</span>
 <span class="kn">from</span> <span class="nn">package.utils</span> <span class="k">import</span> <span class="n">save_pickle</span>
 
 
@@ -182,7 +182,7 @@
 <span class="sd">    Multi Data Loader using Threads.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        dataset (package.dataset.BaseDataset): object of BaseDataset</span>
+<span class="sd">        dataset_list (list): list of BaseDataset</span>
 <span class="sd">        queue (Queue.queue): queue for threading</span>
 <span class="sd">        batch_size (int): size of batch</span>
 <span class="sd">        worker_num (int): the number of cpu cores used</span>
@@ -221,7 +221,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">collate_fn</span> <span class="o">=</span> <span class="n">_collate_fn</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">queue</span> <span class="o">=</span> <span class="n">queue</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">batch_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dataset_count</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">thread_id</span> <span class="o">=</span> <span class="n">thread_id</span>
@@ -241,12 +241,12 @@
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">items</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">):</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset_count</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">idx</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset_count</span><span class="p">:</span>
                     <span class="k">break</span>
-                <span class="n">feat</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">get_item</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+                <span class="n">feat</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">get_item</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">idx</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">feat</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">feat</span><span class="p">,</span> <span class="n">label</span><span class="p">))</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">idx</span> <span class="o">+=</span> <span class="mi">1</span>
 
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_empty_batch</span><span class="p">()</span>
@@ -282,6 +282,7 @@
     <span class="n">seqs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">max_seq_size</span><span class="p">,</span> <span class="n">feat_size</span><span class="p">)</span>
 
     <span class="n">targets</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">max_target_size</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
+    <span class="kn">from</span> <span class="nn">package.definition</span> <span class="k">import</span> <span class="n">PAD_TOKEN</span>
     <span class="n">targets</span><span class="o">.</span><span class="n">fill_</span><span class="p">(</span><span class="n">PAD_TOKEN</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">batch_size</span><span class="p">):</span>
@@ -320,7 +321,8 @@
 <span class="sd">    Provides set of audio path &amp; label path</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        data_list_path (list): csv file with training or test data list</span>
+<span class="sd">        data_list_path (str): csv file with training or test data list path.</span>
+<span class="sd">        dataset_path (str): dataset path.</span>
 
 <span class="sd">    Returns: audio_paths, label_paths</span>
 <span class="sd">        - **audio_paths** (list): set of audio path</span>
@@ -339,6 +341,7 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        label_path (list): csv file with character labels</span>
+<span class="sd">        encoding (str): encoding method</span>
 
 <span class="sd">    Returns: char2id, id2char</span>
 <span class="sd">        - **char2id** (dict): char2id[ch] = id</span>
@@ -363,6 +366,7 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        filepath (str): Path to pickle file to load</span>
+<span class="sd">        message (str): message to print</span>
 
 <span class="sd">    Returns: load_result</span>
 <span class="sd">        -**load_result** : load result of pickle</span>

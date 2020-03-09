@@ -1,10 +1,4 @@
-﻿# Korean-Speech-Recognition  
-
-![build](https://img.shields.io/badge/build-Passing-83b6fa) ![license](https://img.shields.io/badge/license-Apache--2.0-cba5b6) ![language](https://img.shields.io/badge/language-Python--3.7-8ea5b6) ![framework](https://img.shields.io/badge/framework-PyTorch-729afa) ![team](https://img.shields.io/badge/Team-Kai.Lib-ab6d7b)     
-  
-### [**Documentation**](https://sh951011.github.io/Korean-Speech-Recognition/)  
-
-# Intro
+﻿# Intro
 
 This is project for Korean Speech Recognition using LAS (Listen, Attend and Spell) models   
 implemented in [PyTorch](http://pytorch.org).  

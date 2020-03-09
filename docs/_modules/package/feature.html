@@ -92,7 +92,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Models.html">Models</a></li>
 </ul>
-<p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
+<p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Dataset.html">Dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Evaluator.html">Evaluator</a></li>
@@ -221,8 +221,8 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid format !!&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">del_silence</span><span class="p">:</span>
-        <span class="n">non_silence_indices</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">effects</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">signal</span><span class="p">,</span> <span class="n">top_db</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
-        <span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">signal</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span> <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="ow">in</span> <span class="n">non_silence_indices</span><span class="p">])</span>
+        <span class="n">non_silence_ids</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">effects</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">signal</span><span class="p">,</span> <span class="n">top_db</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+        <span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">signal</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span> <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="ow">in</span> <span class="n">non_silence_ids</span><span class="p">])</span>
 
     <span class="n">mel_spectrogram</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">melspectrogram</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="mi">16000</span><span class="p">,</span> <span class="n">n_mels</span><span class="o">=</span><span class="n">n_mels</span><span class="p">,</span> <span class="n">n_fft</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">hop_length</span><span class="o">=</span><span class="mi">160</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="s1">&#39;hamming&#39;</span><span class="p">)</span>
 
@@ -253,7 +253,7 @@
 
 <span class="sd">    .. math::</span>
 <span class="sd">        \begin{array}{ll}</span>
-<span class="sd">        NFFT = sr * frame_length \\</span>
+<span class="sd">        NFFT = sr * frame length \\</span>
 <span class="sd">        HopLength = sr * stride \\</span>
 <span class="sd">        \end{array}</span>
 
@@ -283,8 +283,8 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid format !!&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">del_silence</span><span class="p">:</span>
-        <span class="n">non_silence_indices</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">effects</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">top_db</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
-        <span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">signal</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span> <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="ow">in</span> <span class="n">non_silence_indices</span><span class="p">])</span>
+        <span class="n">non_silence_ids</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">effects</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">top_db</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+        <span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">signal</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span> <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="ow">in</span> <span class="n">non_silence_ids</span><span class="p">])</span>
 
     <span class="n">mfcc</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">mfcc</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="mi">16000</span><span class="p">,</span> <span class="n">hop_length</span> <span class="o">=</span> <span class="mi">160</span><span class="p">,</span> <span class="n">n_mfcc</span> <span class="o">=</span> <span class="n">n_mfcc</span><span class="p">,</span> <span class="n">n_fft</span> <span class="o">=</span> <span class="mi">400</span><span class="p">,</span> <span class="n">window</span> <span class="o">=</span> <span class="s1">&#39;hamming&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">input_reverse</span><span class="p">:</span>

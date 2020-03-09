@@ -92,7 +92,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Models.html">Models</a></li>
 </ul>
-<p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
+<p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Dataset.html">Dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Evaluator.html">Evaluator</a></li>
@@ -175,7 +175,7 @@
 <span class="sd">    Args:</span>
 <span class="sd">        listener (torch.nn.Module): encoder of seq2seq</span>
 <span class="sd">        speller (torch.nn.Module): decoder of seq2seq</span>
-<span class="sd">        decode_function (torch.nn.functional): A function used to generate symbols from RNN hidden state</span>
+<span class="sd">        function (torch.nn.functional): A function used to generate symbols from RNN hidden state</span>
 
 <span class="sd">    Inputs: feats, targets, teacher_forcing_ratio, use_beam_search</span>
 <span class="sd">        - **feats** (torch.Tensor): tensor of sequences, whose length is the batch size and within which</span>
@@ -196,21 +196,21 @@
 <span class="sd">        &gt;&gt;&gt; listener = Listener(feat_size, 256, 0.5, 6, True, &#39;gru&#39;, True)</span>
 <span class="sd">        &gt;&gt;&gt; speller = Speller(vocab_size, 120, 8, 256 &lt;&lt; (1 if use_bidirectional else 0), SOS_TOKEN, EOS_TOKEN, 3, &#39;gru&#39;, 0.5 ,True, device)</span>
 <span class="sd">        &gt;&gt;&gt; model = ListenAttendSpell(listener, speller)</span>
+<span class="sd">        &gt;&gt;&gt; y_hats, logits = model()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">listener</span><span class="p">,</span> <span class="n">speller</span><span class="p">,</span> <span class="n">decode_function</span><span class="o">=</span><span class="n">F</span><span class="o">.</span><span class="n">log_softmax</span><span class="p">,</span> <span class="n">use_pyramidal</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">listener</span><span class="p">,</span> <span class="n">speller</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="n">F</span><span class="o">.</span><span class="n">log_softmax</span><span class="p">,</span> <span class="n">use_pyramidal</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">ListenAttendSpell</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">listener</span> <span class="o">=</span> <span class="n">listener</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">speller</span> <span class="o">=</span> <span class="n">speller</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">decode_function</span> <span class="o">=</span> <span class="n">decode_function</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">function</span> <span class="o">=</span> <span class="n">function</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">use_pyramidal</span> <span class="o">=</span> <span class="n">use_pyramidal</span>
 
 <div class="viewcode-block" id="ListenAttendSpell.forward"><a class="viewcode-back" href="../../Models.html#models.listenAttendSpell.ListenAttendSpell.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feats</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="mf">0.90</span><span class="p">,</span> <span class="n">use_beam_search</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="n">contexts</span><span class="p">,</span> <span class="n">listener_hidden</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">listener</span><span class="p">(</span><span class="n">feats</span><span class="p">)</span>
+        <span class="n">listener_outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">listener</span><span class="p">(</span><span class="n">feats</span><span class="p">)</span>
         <span class="n">y_hats</span><span class="p">,</span> <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">speller</span><span class="p">(</span>
             <span class="n">inputs</span><span class="o">=</span><span class="n">targets</span><span class="p">,</span>
-            <span class="n">listener_hidden</span><span class="o">=</span><span class="n">listener_hidden</span><span class="p">,</span>
-            <span class="n">contexts</span><span class="o">=</span><span class="n">contexts</span><span class="p">,</span>
-            <span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">decode_function</span><span class="p">,</span>
+            <span class="n">listener_outputs</span><span class="o">=</span><span class="n">listener_outputs</span><span class="p">,</span>
+            <span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">function</span><span class="p">,</span>
             <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="n">teacher_forcing_ratio</span><span class="p">,</span>
             <span class="n">use_beam_search</span><span class="o">=</span><span class="n">use_beam_search</span>
         <span class="p">)</span>

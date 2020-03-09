@@ -92,7 +92,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Models.html">Models</a></li>
 </ul>
-<p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
+<p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Dataset.html">Dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Evaluator.html">Evaluator</a></li>
@@ -177,17 +177,17 @@
 
 <span class="sd">    .. math::</span>
 <span class="sd">        \begin{array}{ll}</span>
-<span class="sd">        x = contexts*output \\</span>
-<span class="sd">        attn = exp(x_i) / sum_j exp(x_j) \\</span>
-<span class="sd">        output = \tanh(w * (attn * contexts) + b * output)</span>
+<span class="sd">        x = encoder outputs*decoder output \\</span>
+<span class="sd">        attn score = exp(x_i) / sum_j exp(x_j) \\</span>
+<span class="sd">        output = \tanh(w * (attn score * encoder outputs) + b * output)</span>
 <span class="sd">        \end{array}</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        decoder_hidden_size (int): The number of expected features in the output</span>
 
-<span class="sd">    Inputs: decoder_output, contexts</span>
+<span class="sd">    Inputs: decoder_output, encoder_outputs</span>
 <span class="sd">        - **decoder_output** (batch, output_len, dimensions): tensor containing the output features from the decoder.</span>
-<span class="sd">        - **contexts** (batch, input_len, dimensions): tensor containing features of the encoded input sequence.</span>
+<span class="sd">        - **encoder_outputs** (batch, input_len, dimensions): tensor containing features of the encoded input sequence.</span>
 
 <span class="sd">    Returns: output</span>
 <span class="sd">        - **output** (batch, output_len, dimensions): tensor containing the attended output features from the decoder.</span>
@@ -195,26 +195,26 @@
 <span class="sd">    Examples::</span>
 
 <span class="sd">        &gt;&gt;&gt; attention = Attention(hidden_size)</span>
-<span class="sd">        &gt;&gt;&gt; contexts = attention(decoder_output, contexts)</span>
+<span class="sd">        &gt;&gt;&gt; output = attention(decoder_output, encoder_outputs)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">decoder_hidden_size</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Attention</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">decoder_hidden_size</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">decoder_hidden_size</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Attention.forward"><a class="viewcode-back" href="../../Models.html#models.attention.Attention.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">decoder_output</span><span class="p">,</span> <span class="n">contexts</span><span class="p">):</span>
+<div class="viewcode-block" id="Attention.forward"><a class="viewcode-back" href="../../Models.html#models.attention.Attention.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">decoder_output</span><span class="p">,</span> <span class="n">encoder_outputs</span><span class="p">):</span>
         <span class="n">batch_size</span> <span class="o">=</span> <span class="n">decoder_output</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">input_size</span> <span class="o">=</span> <span class="n">encoder_outputs</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">hidden_size</span> <span class="o">=</span> <span class="n">decoder_output</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">input_size</span> <span class="o">=</span> <span class="n">contexts</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="c1"># get attention score</span>
-        <span class="n">attn_score</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">bmm</span><span class="p">(</span><span class="n">decoder_output</span><span class="p">,</span> <span class="n">contexts</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="n">attn_score</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">bmm</span><span class="p">(</span><span class="n">decoder_output</span><span class="p">,</span> <span class="n">encoder_outputs</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
         <span class="c1"># get attention distribution</span>
         <span class="n">attn_distribution</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">attn_score</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">input_size</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">input_size</span><span class="p">)</span>
-        <span class="c1"># get attention value</span>
-        <span class="n">attn_val</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">bmm</span><span class="p">(</span><span class="n">attn_distribution</span><span class="p">,</span> <span class="n">contexts</span><span class="p">)</span>
+        <span class="c1"># get context vector</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">bmm</span><span class="p">(</span><span class="n">attn_distribution</span><span class="p">,</span> <span class="n">encoder_outputs</span><span class="p">)</span>
         <span class="c1"># concatenate attn_val &amp; decoder_output</span>
-        <span class="n">combined</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">attn_val</span><span class="p">,</span> <span class="n">decoder_output</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">output</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">(</span><span class="n">combined</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">hidden_size</span><span class="p">)))</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">)</span>
+        <span class="n">combined</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">context</span><span class="p">,</span> <span class="n">decoder_output</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">(</span><span class="n">combined</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">hidden_size</span><span class="p">)))</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">output</span></div></div>
 </pre></div>
 
