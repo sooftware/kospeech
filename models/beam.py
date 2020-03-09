@@ -1,6 +1,7 @@
 import torch
 import numpy as np
 
+
 class Beam:
     r"""
     Applying Beam-Search during decoding process.
@@ -13,9 +14,9 @@ class Beam:
         function (torch.nn) : A function used to generate symbols from RNN hidden state (default : torch.nn.functional.log_softmax)
         decoder (torch.nn) : get pointer of decoder object to get multiple parameters at once
         beams (torch.Tensor) : ongoing beams for decoding
-        beam_scores (torch.Tensor) : score of beams (cumulative probability)
-        done_beams (list) : store beams which met <eos> token and terminated decoding process.
-        done_beam_scores (list) : score of done_beams
+        probs (torch.Tensor) : cumulative probability of beams (score of beams)
+        sentences (list) : store beams which met <eos> token and terminated decoding process.
+        sentence_probs (list) : score of sentences
 
     Inputs: decoder_input, encoder_outputs
         - **decoder_input** (torch.Tensor): initial input of decoder - <sos>
@@ -27,7 +28,6 @@ class Beam:
     Examples::
 
         >>> beam = Beam(k, decoder_hidden, decoder, batch_size, max_len, F.log_softmax)
-        >>> y_hats = beam.search(inputs, encoder_outputs)
     """
 
     def __init__(self, k, decoder_hidden, decoder, batch_size, max_len, function, device):
@@ -46,13 +46,20 @@ class Beam:
         self.out = decoder.out
         self.eos_id = decoder.eos_id
         self.beams = None
-        self.beam_scores = None
-        self.done_beams = [[] for _ in range(self.batch_size)]
-        self.done_beam_scores = [[] for _ in range(self.batch_size)]
+        self.probs = None
+        self.sentences = [[] for _ in range(self.batch_size)]
+        self.sentence_probs = [[] for _ in range(self.batch_size)]
         self.device = device
 
     def search(self, decoder_input, encoder_outputs):
-        """ Beam-Search Decoding (Top-K Decoding) """
+        """
+        Beam-Search Decoding (Top-K Decoding)
+
+        Examples::
+
+            >>> beam = Beam(k, decoder_hidden, decoder, batch_size, max_len, F.log_softmax)
+            >>> y_hats = beam.search(inputs, encoder_outputs)
+        """
         # Comment Notation
         # B : batch size
         # K : beam size
@@ -61,7 +68,7 @@ class Beam:
         # get class classfication distribution (shape: BxC)
         step_outputs = self._forward_step(decoder_input, encoder_outputs).squeeze(1)
         # get top K probability & idx (shape: BxK)
-        self.beam_scores, self.beams = step_outputs.topk(self.k)
+        self.probs, self.beams = step_outputs.topk(self.k)
         decoder_input = self.beams
         # transpose (BxK) => (BxKx1)
         self.beams = self.beams.view(self.batch_size, self.k, 1)
@@ -75,7 +82,7 @@ class Beam:
             # get top k distribution (shape: BxKxK)
             child_ps, child_vs = step_output.topk(self.k)
             # get child probability (applying length penalty)
-            child_ps = (self.beam_scores.view(self.batch_size, 1, self.k) + child_ps) / self._get_length_penalty(length=di+1, alpha=1.2, min_length=5)
+            child_ps = (self.probs.view(self.batch_size, 1, self.k) + child_ps) / self._get_length_penalty(length=di+1, alpha=1.2, min_length=5)
             # Transpose (BxKxK) => (BxK^2)
             child_ps, child_vs = child_ps.view(self.batch_size, self.k * self.k), child_vs.view(self.batch_size, self.k * self.k)
             # Select Top k in K^2 (shape: BxK)
@@ -93,14 +100,14 @@ class Beam:
                     parent_beams[batch_num, beam_num] = self.beams[batch_num, parent_beams_ids[batch_num, beam_num]]
             # append new_topk_child (shape: BxKx(S) => BxKx(S+1))
             self.beams = torch.cat([parent_beams, topk_child_vs.view(self.batch_size, self.k, 1)], dim=2).to(self.device)
-            self.beam_scores = topk_child_ps.to(self.device)
+            self.probs = topk_child_ps.to(self.device)
 
             if torch.any(topk_child_vs == self.eos_id):
                 done_ids = torch.where(topk_child_vs == self.eos_id)
                 count = [1] * self.batch_size # count done beams
                 for (batch_num, beam_num) in zip(*done_ids):
-                    self.done_beams[batch_num].append(self.beams[batch_num, beam_num])
-                    self.done_beam_scores[batch_num].append(self.beam_scores[batch_num, beam_num])
+                    self.sentences[batch_num].append(self.beams[batch_num, beam_num])
+                    self.sentence_probs[batch_num].append(self.probs[batch_num, beam_num])
                     self._replace_beam(
                         child_ps=child_ps,
                         child_vs=child_vs,
@@ -116,18 +123,18 @@ class Beam:
     def _get_best(self):
         """ get sentences which has the highest probability at each batch, stack it, and return it as 2d torch """
         y_hats = []
-        # done_beams has <eos> terminate sentences during decoding process
+        # sentences has <eos> terminate sentences during decoding process
 
-        for batch_num, batch in enumerate(self.done_beams):
+        for batch_num, batch in enumerate(self.sentences):
             if len(batch) == 0:
                 # if there is no terminated sentences, bring ongoing sentence which has the highest probability instead
-                beam_scores = torch.FloatTensor(self.beam_scores[batch_num]).to(self.device)
+                beam_scores = torch.FloatTensor(self.probs[batch_num]).to(self.device)
                 top_beam_idx = int(torch.FloatTensor(beam_scores).topk(1)[1])
                 y_hats.append(self.beams[batch_num, top_beam_idx])
             else:
                 # bring highest probability sentence
-                top_beam_idx = int(torch.FloatTensor(self.done_beam_scores[batch_num]).topk(1)[1])
-                y_hats.append(self.done_beams[batch_num][top_beam_idx])
+                top_beam_idx = int(torch.FloatTensor(self.sentence_probs[batch_num]).topk(1)[1])
+                y_hats.append(self.sentences[batch_num][top_beam_idx])
         y_hats = self._match_len(y_hats).to(self.device)
         return y_hats
 
@@ -146,7 +153,7 @@ class Beam:
 
     def _is_done(self):
         """ check if all beam search process has terminated """
-        for done in self.done_beams:
+        for done in self.sentences:
             if len(done) < self.k:
                 return False
         return True
@@ -187,4 +194,4 @@ class Beam:
         parent_beam = parent_beam[:-1]
         new_beam = torch.cat([parent_beam, new_child_v.view(1)])
         self.beams[done_batch_num, done_beam_num] = new_beam
-        self.beam_scores[done_batch_num, done_beam_num] = new_child_p
+        self.probs[done_batch_num, done_beam_num] = new_child_p
