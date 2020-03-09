@@ -10,9 +10,9 @@ class Attention(nn.Module):
 
     .. math::
         \begin{array}{ll}
-        x = encoder_outputs*decoder_output \\
-        attn_score = exp(x_i) / sum_j exp(x_j) \\
-        output = \tanh(w * (attn_score * encoder_outputs) + b * output)
+        x = encoder outputs*decoder output \\
+        attn score = exp(x_i) / sum_j exp(x_j) \\
+        output = \tanh(w * (attn score * encoder outputs) + b * output)
         \end{array}
 
     Args:
@@ -36,8 +36,8 @@ class Attention(nn.Module):
 
     def forward(self, decoder_output, encoder_outputs):
         batch_size = decoder_output.size(0)
-        hidden_size = decoder_output.size(2)
         input_size = encoder_outputs.size(1)
+        hidden_size = decoder_output.size(2)
 
         # get attention score
         attn_score = torch.bmm(decoder_output, encoder_outputs.transpose(1, 2))

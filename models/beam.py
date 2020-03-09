@@ -11,8 +11,8 @@ class Beam:
         decoder_hidden (torch.Tensor) : hidden state of decoder
         batch_size (int) : mini-batch size during infer
         max_len (int) :  a maximum allowed length for the sequence to be processed
-        function (torch.nn) : A function used to generate symbols from RNN hidden state (default : torch.nn.functional.log_softmax)
-        decoder (torch.nn) : get pointer of decoder object to get multiple parameters at once
+        function (torch.nn.Module) : A function used to generate symbols from RNN hidden state (default : torch.nn.functional.log_softmax)
+        decoder (torch.nn.Module) : get pointer of decoder object to get multiple parameters at once
         beams (torch.Tensor) : ongoing beams for decoding
         probs (torch.Tensor) : cumulative probability of beams (score of beams)
         sentences (list) : store beams which met <eos> token and terminated decoding process.
@@ -28,6 +28,7 @@ class Beam:
     Examples::
 
         >>> beam = Beam(k, decoder_hidden, decoder, batch_size, max_len, F.log_softmax)
+        >>> y_hats = beam.search(inputs, encoder_outputs)
     """
 
     def __init__(self, k, decoder_hidden, decoder, batch_size, max_len, function, device):
@@ -167,10 +168,10 @@ class Beam:
         decoder_output, hidden = self.rnn(embedded, self.decoder_hidden)  # decoder output
 
         if self.use_attention:
-            context = self.attention(decoder_output, encoder_outputs)
+            output = self.attention(decoder_output, encoder_outputs)
         else:
-            context = decoder_output
-        predicted_softmax = self.function(self.out(context.contiguous().view(-1, self.hidden_size)), dim=1)
+            output = decoder_output
+        predicted_softmax = self.function(self.out(output.contiguous().view(-1, self.hidden_size)), dim=1)
         predicted_softmax = predicted_softmax.view(self.batch_size,output_size,-1)
         return predicted_softmax
 

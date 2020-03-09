@@ -15,7 +15,7 @@ class MultiLoader():
     Multi Data Loader using Threads.
 
     Args:
-        dataset (package.dataset.BaseDataset): object of BaseDataset
+        dataset_list (list): list of BaseDataset
         queue (Queue.queue): queue for threading
         batch_size (int): size of batch
         worker_num (int): the number of cpu cores used
@@ -154,7 +154,8 @@ def load_data_list(data_list_path, dataset_path):
     Provides set of audio path & label path
 
     Args:
-        data_list_path (list): csv file with training or test data list
+        data_list_path (str): csv file with training or test data list path.
+        dataset_path (str): dataset path.
 
     Returns: audio_paths, label_paths
         - **audio_paths** (list): set of audio path
@@ -173,6 +174,7 @@ def load_label(label_path, encoding='utf-8'):
 
     Args:
         label_path (list): csv file with character labels
+        encoding (str): encoding method
 
     Returns: char2id, id2char
         - **char2id** (dict): char2id[ch] = id
@@ -197,6 +199,7 @@ def load_pickle(filepath, message=""):
 
     Args:
         filepath (str): Path to pickle file to load
+        message (str): message to print
 
     Returns: load_result
         -**load_result** : load result of pickle

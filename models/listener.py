@@ -27,7 +27,14 @@ class PyramidalRNN(nn.Module):
         super(PyramidalRNN, self).__init__()
         assert rnn_cell.lower() == 'lstm' or rnn_cell.lower() == 'gru' or rnn_cell.lower() == 'rnn'
         self.rnn_cell = nn.LSTM if rnn_cell.lower() == 'lstm' else nn.GRU if rnn_cell.lower() == 'gru' else nn.RNN
-        self.rnn = self.rnn_cell(input_size << 1, hidden_size, n_layers, bidirectional=True, batch_first=True, dropout=dropout_p)
+        self.rnn = self.rnn_cell(
+            input_size=input_size << 1,
+            hidden_size=hidden_size,
+            num_layers=n_layers,
+            bidirectional=True,
+            batch_first=True,
+            dropout=dropout_p
+        )
         self.device = device
 
     def forward(self, inputs):
@@ -37,9 +44,8 @@ class PyramidalRNN(nn.Module):
         Args:
             inputs (batch, seq_len): tensor containing the features of the input sequence.
 
-        Returns: output, hidden
+        Returns: output
             - **output** (batch, seq_len, hidden_size): variable containing the encoded features of the input sequence
-            - **hidden** (num_layers * num_directions, batch, hidden_size): variable containing the features in the hidden state h
         """
         batch_size = inputs.size(0)
         seq_len = inputs.size(1)
@@ -49,8 +55,8 @@ class PyramidalRNN(nn.Module):
             inputs = torch.cat([inputs, zeros], dim = 1)
             seq_len += 1
         inputs = inputs.contiguous().view(batch_size, int(seq_len / 2), input_size * 2)
-        output, hidden = self.rnn(inputs)
-        return output, hidden
+        output = self.rnn(inputs)[0]
+        return output
 
     def flatten_parameters(self):
         self.rnn.flatten_parameters()
@@ -71,14 +77,13 @@ class Listener(nn.Module):
     Inputs: inputs
         - **inputs**: list of sequences, whose length is the batch size and within which each sequence is a list of token IDs.
 
-    Returns: output, hidden
+    Returns: output
         - **output** (batch, seq_len, hidden_size): tensor containing the encoded features of the input sequence
-        - **hidden** (num_layers * num_directions, batch, hidden_size): tensor containing the features in the hidden state `h`
 
     Examples::
 
         >>> listener = Listener(feat_size, hidden_size, dropout_p=0.5, n_layers=5)
-        >>> output, hidden = listener(inputs)
+        >>> output = listener(inputs)
     """
 
     def __init__(self, feat_size, hidden_size, device, dropout_p=0.5, n_layers=5, bidirectional=True, rnn_cell='gru', use_pyramidal = True):
@@ -166,9 +171,9 @@ class Listener(nn.Module):
             self.flatten_parameters()
 
         if self.use_pyramidal:
-            bottom_output = self.bottom_rnn(x)[0] # 0 : output, 1 : hidden
-            middle_output = self.middle_rnn(bottom_output)[0]
-            output = self.top_rnn(middle_output)[0]
+            bottom_output = self.bottom_rnn(x)
+            middle_output = self.middle_rnn(bottom_output)
+            output = self.top_rnn(middle_output)
         else:
             output = self.rnn(x)[0]
 

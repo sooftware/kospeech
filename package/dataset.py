@@ -88,7 +88,7 @@ class BaseDataset(Dataset):
             target_lengths.append(len(self.target_dict[key].split()))
 
         bundle = list(zip(target_lengths, self.audio_paths, self.label_paths, self.augment_flags))
-        _, self.audio_paths, self.label_paths, self.augment_flags = zip(*sorted(bundle, reverse=True))
+        no_use, self.audio_paths, self.label_paths, self.augment_flags = zip(*sorted(bundle, reverse=True))
 
 
     def batch_shuffle(self, remain_drop = False):

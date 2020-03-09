@@ -18,7 +18,7 @@ def evaluate(model, queue, criterion, device):
     logger.info('evaluate() start')
     total_loss = 0.
     total_num = 0
-    total_distance = 0
+    total_dist = 0
     total_length = 0
     total_sentence_num = 0
 
@@ -40,10 +40,10 @@ def evaluate(model, queue, criterion, device):
             total_loss += loss.item()
             total_num += sum(feat_lengths)
 
-            distance, length = get_distance(target, y_hat, id2char, EOS_TOKEN)
-            total_distance += distance
+            dist, length = get_distance(target, y_hat, id2char, EOS_TOKEN)
+            total_dist += dist
             total_length += length
             total_sentence_num += target.size(0)
 
     logger.info('evaluate() completed')
-    return total_loss / total_num, total_distance / total_length
+    return total_loss / total_num, total_dist / total_length

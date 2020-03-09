@@ -86,7 +86,7 @@ def get_librosa_mfcc(filepath, n_mfcc = 40, del_silence = False, input_reverse =
 
     .. math::
         \begin{array}{ll}
-        NFFT = sr * frame_length \\
+        NFFT = sr * frame length \\
         HopLength = sr * stride \\
         \end{array}
 

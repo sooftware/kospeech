@@ -33,7 +33,7 @@ def get_distance(targets, y_hats, id2char, eos_id):
         id2char (dict): id2char[id] = ch
         eos_id (int): identification of <end of sequence>
 
-    Returns: total_distance, total_length
+    Returns: total_dist, total_length
         - **total_dist**: total distance between targets & y_hats
         - **total_length**: total length of targets sequence
     """

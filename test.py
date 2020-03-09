@@ -24,7 +24,7 @@ from package.utils import get_distance
 def test(model, queue, device):
     """ Test for Model Performance """
     logger.info('test() start')
-    total_distance = 0
+    total_dist = 0
     total_length = 0
     total_sent_num = 0
 
@@ -47,12 +47,12 @@ def test(model, queue, device):
                 teacher_forcing_ratio = 0.0,
                 use_beam_search = True
             )
-            distance, length = get_distance(target, y_hat, id2char, EOS_TOKEN)
-            total_distance += distance
+            dist, length = get_distance(target, y_hat, id2char, EOS_TOKEN)
+            total_dist += dist
             total_length += length
             total_sent_num += target.size(0)
 
-    CER = total_distance / total_length
+    CER = total_dist / total_length
     logger.info('test() completed')
     return CER
 
