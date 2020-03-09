@@ -111,7 +111,7 @@ class Beam:
                     self._replace_beam(
                         child_ps=child_ps,
                         child_vs=child_vs,
-                        done_beam_idx=[batch_num, beam_num],
+                        done_ids=(batch_num, beam_num),
                         count=count[batch_num]
                     )
                     count[batch_num] += 1
@@ -182,9 +182,9 @@ class Beam:
         """
         return ((min_length + length) / (min_length + 1)) ** alpha
 
-    def _replace_beam(self, child_ps, child_vs, done_beam_idx, count):
+    def _replace_beam(self, child_ps, child_vs, done_ids, count):
         """ Replaces a beam that ends with <eos> with a beam with the next higher probability. """
-        done_batch_num, done_beam_num = done_beam_idx[0], done_beam_idx[1]
+        done_batch_num, done_beam_num = done_ids[0], done_ids[1]
         tmp_ids = child_ps.topk(self.k + count)[1]
         new_child_idx = tmp_ids[done_batch_num, -1]
         new_child_p = child_ps[done_batch_num, new_child_idx].to(self.device)
