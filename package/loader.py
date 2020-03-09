@@ -54,7 +54,7 @@ class BaseDataLoader(threading.Thread):
         self.collate_fn = _collate_fn
         self.dataset = dataset
         self.queue = queue
-        self.index = 0
+        self.idx = 0
         self.batch_size = batch_size
         self.dataset_count = dataset.count()
         self.thread_id = thread_id
@@ -74,12 +74,12 @@ class BaseDataLoader(threading.Thread):
         while True:
             items = list()
             for _ in range(self.batch_size):
-                if self.index >= self.dataset_count:
+                if self.idx >= self.dataset_count:
                     break
-                feat, label = self.dataset.get_item(self.index)
+                feat, label = self.dataset.get_item(self.idx)
                 if feat is not None:
                     items.append((feat, label))
-                self.index += 1
+                self.idx += 1
 
             if len(items) == 0:
                 batch = self.create_empty_batch()

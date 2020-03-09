@@ -95,10 +95,10 @@ class BaseDataset(Dataset):
         """ batch shuffle """
         audio_batches, label_batches, flag_batches = [], [], []
         tmp_audio_paths, tmp_label_paths, tmp_augment_flags = [], [], []
-        index = 0
+        idx = 0
 
         while True:
-            if index == len(self.audio_paths):
+            if idx == len(self.audio_paths):
                 if len(tmp_audio_paths) != 0:
                     audio_batches.append(tmp_audio_paths)
                     label_batches.append(tmp_label_paths)
@@ -109,10 +109,10 @@ class BaseDataset(Dataset):
                 label_batches.append(tmp_label_paths)
                 flag_batches.append(tmp_augment_flags)
                 tmp_audio_paths, tmp_label_paths, tmp_augment_flags = [], [], []
-            tmp_audio_paths.append(self.audio_paths[index])
-            tmp_label_paths.append(self.label_paths[index])
-            tmp_augment_flags.append(self.augment_flags[index])
-            index += 1
+            tmp_audio_paths.append(self.audio_paths[idx])
+            tmp_label_paths.append(self.label_paths[idx])
+            tmp_augment_flags.append(self.augment_flags[idx])
+            idx += 1
 
         remain_audio, remain_label, remain_flag = audio_batches[-1], label_batches[-1], flag_batches[-1]
         audio_batches, label_batches, flag_batches = audio_batches[:-1], label_batches[:-1], flag_batches[:-1]
@@ -173,11 +173,11 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
 
     # seperating the train dataset by the number of workers
     for idx in range(hparams.worker_num):
-        train_begin_index = train_num_per_worker * idx
-        train_end_index = min(train_num_per_worker * (idx + 1), train_num)
+        train_begin_idx = train_num_per_worker * idx
+        train_end_idx = min(train_num_per_worker * (idx + 1), train_num)
         train_dataset_list.append(BaseDataset(
-                                    audio_paths=audio_paths[train_begin_index:train_end_index],
-                                    label_paths=label_paths[train_begin_index:train_end_index],
+                                    audio_paths=audio_paths[train_begin_idx:train_end_idx],
+                                    label_paths=label_paths[train_begin_idx:train_end_idx],
                                     sos_id=SOS_TOKEN, eos_id=EOS_TOKEN,
                                     target_dict=target_dict,
                                     input_reverse=hparams.input_reverse,

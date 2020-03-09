@@ -54,8 +54,8 @@ def get_librosa_melspectrogram(filepath, n_mels=128, del_silence=False, input_re
         raise ValueError("Invalid format !!")
 
     if del_silence:
-        non_silence_indices = librosa.effects.split(y=signal, top_db=30)
-        signal = np.concatenate([signal[start:end] for start, end in non_silence_indices])
+        non_silence_ids = librosa.effects.split(y=signal, top_db=30)
+        signal = np.concatenate([signal[start:end] for start, end in non_silence_ids])
 
     mel_spectrogram = librosa.feature.melspectrogram(signal, sr=16000, n_mels=n_mels, n_fft=400, hop_length=160, window='hamming')
 
@@ -116,8 +116,8 @@ def get_librosa_mfcc(filepath, n_mfcc = 40, del_silence = False, input_reverse =
         raise ValueError("Invalid format !!")
 
     if del_silence:
-        non_silence_indices = librosa.effects.split(signal, top_db=30)
-        signal = np.concatenate([signal[start:end] for start, end in non_silence_indices])
+        non_silence_ids = librosa.effects.split(signal, top_db=30)
+        signal = np.concatenate([signal[start:end] for start, end in non_silence_ids])
 
     mfcc = librosa.feature.mfcc(signal, 16000, hop_length = 160, n_mfcc = n_mfcc, n_fft = 400, window = 'hamming')
     if input_reverse:
