@@ -117,16 +117,9 @@ class BaseDataset(Dataset):
         remain_audio, remain_label, remain_flag = audio_batches[-1], label_batches[-1], flag_batches[-1]
         audio_batches, label_batches, flag_batches = audio_batches[:-1], label_batches[:-1], flag_batches[:-1]
 
-        print(audio_batches)
-        print(label_batches)
-        print(flag_batches)
         bundle = list(zip(audio_batches, label_batches, flag_batches))
         random.shuffle(bundle)
         audio_batches, label_batches, flag_batches = zip(*bundle)
-
-        print(audio_batches)
-        print(label_batches)
-        print(flag_batches)
 
         audio_paths, label_paths, augment_flags = [], [], []
 

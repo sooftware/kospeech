@@ -117,7 +117,7 @@ class Speller(nn.Module):
                 inputs = inputs[:, :-1]
                 predicted_softmax = self._forward_step(
                     input = inputs,
-                    hidden = speller_hidden,
+                    speller_hidden = speller_hidden,
                     listener_outputs = listener_outputs,
                     function = function
                 )
@@ -129,7 +129,7 @@ class Speller(nn.Module):
                 for di in range(max_len):
                     predicted_softmax = self._forward_step(
                         input = input,
-                        hidden = speller_hidden,
+                        speller_hidden = speller_hidden,
                         listener_outputs = listener_outputs,
                         function = function
                     )
