@@ -1,4 +1,5 @@
 import time
+import torch
 from package.definition import logger, id2char, EOS_TOKEN
 from package.utils import get_distance, save_step_result
 
@@ -83,6 +84,10 @@ def supervised_train(model, hparams, epoch, total_time_step, queue,
 
         if time_step % 1000 == 0:
             save_step_result(train_step_result, total_loss / total_num, total_distance / total_length)
+
+        if time_step % 10000 == 0:
+            torch.save(model, "model.pt")
+            torch.save(model, "./data/weight_file/epoch_%s_step_%s.pt" % (str(epoch), str(time_step)))
 
         time_step += 1
         supervised_train.cumulative_batch_count += 1

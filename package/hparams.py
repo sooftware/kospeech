@@ -43,7 +43,7 @@ class HyperParams():
                  augment_ratio = 1.0,
                  hidden_size = 256,
                  dropout = 0.5,
-                 listener_layer_size = 6,
+                 listener_layer_size = 5,
                  speller_layer_size = 3,
                  batch_size = 12,
                  worker_num = 1,

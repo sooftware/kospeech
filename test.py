@@ -23,7 +23,7 @@ from package.utils import get_distance
 
 def test(model, queue, device):
     """ Test for Model Performance """
-    logger.info('evaluate() start')
+    logger.info('test() start')
     total_distance = 0
     total_length = 0
     total_sent_num = 0

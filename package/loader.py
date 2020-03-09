@@ -6,7 +6,7 @@ import math
 import random
 import pandas as pd
 from tqdm import trange
-from package.definition import logger, PAD_TOKEN
+from package.definition import logger
 from package.utils import save_pickle
 
 
@@ -115,6 +115,7 @@ def _collate_fn(batch):
     seqs = torch.zeros(batch_size, max_seq_size, feat_size)
 
     targets = torch.zeros(batch_size, max_target_size).to(torch.long)
+    from package.definition import PAD_TOKEN
     targets.fill_(PAD_TOKEN)
 
     for x in range(batch_size):

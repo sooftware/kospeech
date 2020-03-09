@@ -107,7 +107,8 @@ class Speller(nn.Module):
                 decoder = self,
                 batch_size = batch_size,
                 max_len = max_len,
-                function = function
+                function = function,
+                device = self.device
             )
             y_hats = beam.search(inputs, listener_outputs)
         else:

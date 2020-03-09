@@ -57,11 +57,11 @@ else:
 
 
 if __name__ == '__main__':
-    os.environ["CUDA_LAUNCH_BLOCKING"] = "1" # if you use Multi-GPU, delete this line
-    logger.info("device : %s" % torch.cuda.get_device_name(0))
-    logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
-    logger.info("CUDA version : %s" % (torch.version.cuda))
-    logger.info("PyTorch version : %s" % (torch.__version__))
+    #os.environ["CUDA_LAUNCH_BLOCKING"] = "1" # if you use Multi-GPU, delete this line
+    #logger.info("device : %s" % torch.cuda.get_device_name(0))
+    #logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
+    #logger.info("CUDA version : %s" % (torch.version.cuda))
+    #logger.info("PyTorch version : %s" % (torch.__version__))
 
     hparams = HyperParams()
 
@@ -78,7 +78,8 @@ if __name__ == '__main__':
         n_layers = hparams.listener_layer_size,
         bidirectional = hparams.use_bidirectional,
         rnn_cell = 'gru',
-        use_pyramidal = hparams.use_pyramidal
+        use_pyramidal = hparams.use_pyramidal,
+        device=device
     )
     speller = Speller(
         vocab_size = len(char2id),

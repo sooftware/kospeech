@@ -23,11 +23,12 @@ class PyramidalRNN(nn.Module):
         >>> rnn = PyramidalRNN(rnn_cell, input_size, hidden_size, dropout_p)
         >>> output, hidden = rnn(inputs)
     """
-    def __init__(self, rnn_cell, input_size, hidden_size, dropout_p, n_layers=2):
+    def __init__(self, rnn_cell, input_size, hidden_size, dropout_p, device, n_layers=2):
         super(PyramidalRNN, self).__init__()
         assert rnn_cell.lower() == 'lstm' or rnn_cell.lower() == 'gru' or rnn_cell.lower() == 'rnn'
         self.rnn_cell = nn.LSTM if rnn_cell.lower() == 'lstm' else nn.GRU if rnn_cell.lower() == 'gru' else nn.RNN
         self.rnn = self.rnn_cell(input_size << 1, hidden_size, n_layers, bidirectional=True, batch_first=True, dropout=dropout_p)
+        self.device = device
 
     def forward(self, inputs):
         """
@@ -44,7 +45,7 @@ class PyramidalRNN(nn.Module):
         seq_len = inputs.size(1)
         input_size = inputs.size(2)
         if seq_len % 2:
-            zeros = torch.zeros((inputs.size(0), 1, inputs.size(2))).cuda()
+            zeros = torch.zeros((inputs.size(0), 1, inputs.size(2))).to(self.device)
             inputs = torch.cat([inputs, zeros], dim = 1)
             seq_len += 1
         inputs = inputs.contiguous().view(batch_size, int(seq_len / 2), input_size * 2)
@@ -80,12 +81,13 @@ class Listener(nn.Module):
         >>> output, hidden = listener(inputs)
     """
 
-    def __init__(self, feat_size, hidden_size, dropout_p=0.5, n_layers=5, bidirectional=True, rnn_cell='gru', use_pyramidal = True):
+    def __init__(self, feat_size, hidden_size, device, dropout_p=0.5, n_layers=5, bidirectional=True, rnn_cell='gru', use_pyramidal = True):
         super(Listener, self).__init__()
         assert rnn_cell.lower() == 'lstm' or rnn_cell.lower() == 'gru' or rnn_cell.lower() == 'rnn'
         assert n_layers > 1, "n_layers should be bigger than 1"
         if use_pyramidal:
             assert n_layers > 4, "Pyramidal Listener`s n_layers should be bigger than 4"
+        self.device = device
         self.use_pyramidal = use_pyramidal
         self.rnn_cell = nn.LSTM if rnn_cell.lower() == 'lstm' else nn.GRU if rnn_cell.lower() == 'gru' else nn.RNN
         self.conv = nn.Sequential(
@@ -111,11 +113,39 @@ class Listener(nn.Module):
         """ math :: feat_size = (in_channel * out_channel) / maxpool_layer_num """
         feat_size = (feat_size-1) << 5 if feat_size % 2 else feat_size << 5
         if use_pyramidal:
-            self.bottom_rnn = self.rnn_cell(feat_size, hidden_size, n_layers - 4, batch_first = True, bidirectional = bidirectional, dropout = dropout_p)
-            self.middle_rnn = PyramidalRNN(rnn_cell, hidden_size << 1 if bidirectional else 0, hidden_size, dropout_p, n_layers=2)
-            self.top_rnn = PyramidalRNN(rnn_cell, hidden_size << 1 if bidirectional else 0, hidden_size, dropout_p, n_layers=2)
+            self.bottom_rnn = self.rnn_cell(
+                input_size=feat_size,
+                hidden_size=hidden_size,
+                num_layers=n_layers - 4,
+                batch_first = True,
+                bidirectional = bidirectional,
+                dropout = dropout_p
+            )
+            self.middle_rnn = PyramidalRNN(
+                rnn_cell=rnn_cell,
+                input_size=hidden_size << 1 if bidirectional else 0,
+                hidden_size=hidden_size,
+                dropout_p=dropout_p,
+                n_layers=2,
+                device=device
+            )
+            self.top_rnn = PyramidalRNN(
+                rnn_cell=rnn_cell,
+                input_size=hidden_size << 1 if bidirectional else 0,
+                hidden_size=hidden_size,
+                dropout_p=dropout_p,
+                n_layers=2,
+                device=device
+            )
         else:
-            self.rnn = self.rnn_cell(feat_size, hidden_size, n_layers, batch_first=True, bidirectional=bidirectional, dropout=dropout_p)
+            self.rnn = self.rnn_cell(
+                input_size=feat_size,
+                hidden_size=hidden_size,
+                num_layers=n_layers,
+                batch_first=True,
+                bidirectional=bidirectional,
+                dropout=dropout_p
+            )
 
     def forward(self, inputs):
         """
@@ -128,9 +158,9 @@ class Listener(nn.Module):
             - **output** (batch, seq_len, hidden_size): variable containing the encoded features of the input sequence
             - **hidden** (num_layers * num_directions, batch, hidden_size): variable containing the features in the hidden state h
         """
-        x = self.conv(inputs.unsqueeze(1))
+        x = self.conv(inputs.unsqueeze(1)).to(self.device)
         x = x.transpose(1, 2)
-        x = x.contiguous().view(x.size(0), x.size(1), x.size(2) * x.size(3))
+        x = x.contiguous().view(x.size(0), x.size(1), x.size(2) * x.size(3)).to(self.device)
 
         if self.training:
             self.flatten_parameters()

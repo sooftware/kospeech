@@ -117,9 +117,16 @@ class BaseDataset(Dataset):
         remain_audio, remain_label, remain_flag = audio_batches[-1], label_batches[-1], flag_batches[-1]
         audio_batches, label_batches, flag_batches = audio_batches[:-1], label_batches[:-1], flag_batches[:-1]
 
+        print(audio_batches)
+        print(label_batches)
+        print(flag_batches)
         bundle = list(zip(audio_batches, label_batches, flag_batches))
         random.shuffle(bundle)
         audio_batches, label_batches, flag_batches = zip(*bundle)
+
+        print(audio_batches)
+        print(label_batches)
+        print(flag_batches)
 
         audio_paths, label_paths, augment_flags = [], [], []
 
@@ -196,7 +203,7 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
                         target_dict=target_dict,
                         input_reverse=hparams.input_reverse,
                         use_augment=False,
-                        pack_by_length=hparams.pack_by_length
+                        pack_by_length=False
     )
 
     logger.info("split dataset complete !!")

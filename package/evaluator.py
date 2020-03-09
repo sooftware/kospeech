@@ -1,5 +1,5 @@
 import torch
-from package.definition import logger
+from package.definition import logger, id2char, EOS_TOKEN
 from package.utils import get_distance
 
 
@@ -40,7 +40,7 @@ def evaluate(model, queue, criterion, device):
             total_loss += loss.item()
             total_num += sum(feat_lengths)
 
-            distance, length = get_distance(target, y_hat)
+            distance, length = get_distance(target, y_hat, id2char, EOS_TOKEN)
             total_distance += distance
             total_length += length
             total_sentence_num += target.size(0)
