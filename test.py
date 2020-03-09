@@ -57,27 +57,26 @@ def test(model, queue, device):
     return CER
 
 if __name__ == '__main__':
-    os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
-    logger.info("device : %s" % torch.cuda.get_device_name(0))
-    logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
-    logger.info("CUDA version : %s" % (torch.version.cuda))
-    logger.info("PyTorch version : %s" % (torch.__version__))
+    #os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
+    #logger.info("device : %s" % torch.cuda.get_device_name(0))
+    #logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
+    #logger.info("CUDA version : %s" % (torch.version.cuda))
+    #logger.info("PyTorch version : %s" % (torch.__version__))
 
     hparams = HyperParams()
     hparams.logger_hparams()
     cuda = hparams.use_cuda and torch.cuda.is_available()
     device = torch.device('cuda' if cuda else 'cpu')
-    model = torch.load("model_path")
-    model.set_beam_size(k = 8)
+    model = torch.load("./data/weight_file/log_mel_80_epoch0.pt", map_location=torch.device('cpu'))
 
-    audio_paths, label_paths = load_data_list(data_list_path=TEST_LIST_PATH, dataset_path=DATASET_PATH)
+    audio_paths, label_paths = load_data_list(data_list_path=SAMPLE_LIST_PATH, dataset_path=SAMPLE_DATASET_PATH)
 
     target_dict = load_targets(label_paths)
     logger.info('start')
 
     test_dataset = BaseDataset(
-        audio_paths = audio_paths[:],
-        label_paths = label_paths[:],
+        audio_paths = audio_paths,
+        label_paths = label_paths,
         sos_id = SOS_TOKEN,
         eos_id = EOS_TOKEN,
         target_dict = target_dict,
