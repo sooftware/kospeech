@@ -33,7 +33,9 @@ Seq2seq is a fast evolving field with new techniques and architectures being pub
 and We use [AI Hub 1000h](http://www.aihub.or.kr/aidata/105) dataset which contains 1,000 hours korean voice data.  
     
 And, our project is currently in progress.  
+  
 At present our top model has recorded an **80% CRR**, and we are working for a higher recognition rate.  
+  
 ( **CRR** : Character Recognition Rate )  
 
 [More details](https://sh951011.github.io/Korean-Speech-Recognition/notes/More-details.html)
