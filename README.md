@@ -16,7 +16,9 @@ We appreciate any kind of feedback or contribution.
   
 Speech recognition is an interdisciplinary subfield of computational linguistics that develops methodologies and technologies that enables the recognition and translation of spoken language into text by computers.  
   
-We mainly referred to following papers.  
+We apply SpecAugment on Listen, Attend and Spell networks for end-to-end speech recognition tasks.  
+  
+to apply it, We mainly referred to following papers.  
   
  [「Listen, Attend and Spell」](https://arxiv.org/abs/1508.01211)  
    
