@@ -32,7 +32,7 @@ Our project based on Seq2seq with Attention Architecture.
 
 Seq2seq is a fast evolving field with new techniques and architectures being published frequently.  
   
-and We use [AI Hub Dataset](http://www.aihub.or.kr/aidata/105) which contains 1,000 hours korean voice data.  
+and We use [AI Hub 1000h](http://www.aihub.or.kr/aidata/105) dataset which contains 1,000 hours korean voice data.  
     
 And, our project is currently in progress.  
 At present our top model has recorded an **80% CRR**, and we are working for a higher recognition rate.  
