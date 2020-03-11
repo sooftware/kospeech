@@ -27,15 +27,11 @@ if you want to study the feature of audio, we recommend this papers.
 [「Voice Recognition Using MFCC Algirithm」](https://pdfs.semanticscholar.org/32d7/2b00454d5155599fb9e8e5119e16970db50d.pdf).  
   
 Our project based on Seq2seq with Attention Architecture.  
-
 Seq2seq is a fast evolving field with new techniques and architectures being published frequently.  
   
-and We use [AI Hub 1000h](http://www.aihub.or.kr/aidata/105) dataset which contains 1,000 hours korean voice data.  
-    
+We use [AI Hub 1000h](http://www.aihub.or.kr/aidata/105) dataset which contains 1,000 hours korean voice data.    
 And, our project is currently in progress.  
-  
 At present our top model has recorded an **80% CRR**, and we are working for a higher recognition rate.  
-  
 ###### ( **CRR** : Character Recognition Rate )  
   
 We are constantly updating the progress of the project on the [Wiki page](https://github.com/sh951011/Korean-Speech-Recognition/wiki).  Please check this page.  
