@@ -25,7 +25,7 @@ def supervised_train(model, hparams, epoch, total_time_step, queue,
     """
     total_loss = 0.
     total_num = 0
-    total_dist = 0
+    total_distance = 0
     total_length = 0
     total_sent_num = 0
     time_step = 0
@@ -61,8 +61,8 @@ def supervised_train(model, hparams, epoch, total_time_step, queue,
 
         total_loss += loss.item()
         total_num += sum(feat_lengths)
-        dist, length = get_distance(target, y_hat, id2char, EOS_TOKEN)
-        total_dist += dist
+        distance, length = get_distance(target, y_hat, id2char, EOS_TOKEN)
+        total_distance += distance
         total_length += length
         total_sent_num += target.size(0)
         loss.backward()
@@ -78,27 +78,24 @@ def supervised_train(model, hparams, epoch, total_time_step, queue,
                 time_step,
                 total_time_step,
                 total_loss / total_num,
-                total_dist / total_length,
+                total_distance / total_length,
                 elapsed, epoch_elapsed, train_elapsed)
             )
             begin = time.time()
 
         if time_step % 1000 == 0:
-            save_step_result(train_step_result, total_loss / total_num, total_dist / total_length)
+            save_step_result(train_step_result, total_loss / total_num, total_distance / total_length)
 
         if time_step % 10000 == 0:
             torch.save(model, "model.pt")
             torch.save(model, "./data/weight_file/epoch_%s_step_%s.pt" % (str(epoch), str(time_step)))
+
         time_step += 1
         supervised_train.cumulative_batch_count += 1
-        torch.cuda.empty_cache() # GPU memory free. if you have enough GPU memory, delete this line
+        torch.cuda.empty_cache()
 
     loss = total_loss / total_num
-    cer = total_dist / total_length
-
-    torch.save(model, "model.pt")
-    torch.save(model, "./data/weight_file/epoch%s.pt" % str(epoch))
-
+    cer = total_distance / total_length
     logger.info('train() completed')
     return loss, cer
 
@@ -138,4 +135,3 @@ def get_lr(optimizer):
     """ get learning rate """
     for g in optimizer.param_groups:
         return g['lr']
-

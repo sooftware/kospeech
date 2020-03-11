@@ -1,5 +1,15 @@
 # -*- coding: utf-8 -*-
 """
+Copyright 2020- Kai.Lib
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
 - Korean Speech Recognition
 Team: Kai.Lib
     ● Team Member
@@ -19,16 +29,6 @@ Score:
 
 GitHub repository : https://github.com/sh951011/Korean-ASR
 Documentation : https://sh951011.github.io/Korean-Speech-Recognition/index.html
-
-Copyright 2020- Kai.Lib
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
 """
 
 import queue
@@ -64,6 +64,7 @@ if __name__ == '__main__':
     logger.info("PyTorch version : %s" % (torch.__version__))
 
     hparams = HyperParams()
+
     random.seed(hparams.seed)
     torch.manual_seed(hparams.seed)
     torch.cuda.manual_seed_all(hparams.seed)
@@ -139,14 +140,16 @@ if __name__ == '__main__':
             train_begin = train_begin,
             worker_num = hparams.worker_num,
             print_time_step = 10,
-            teacher_forcing_ratio = hparams.teacher_forcing,
+            teacher_forcing_ratio = hparams.teacher_forcing
         )
+        torch.save(model, "model.pt")
+        torch.save(model, "./data/weight_file/epoch%s.pt" % str(epoch))
         logger.info('Epoch %d (Training) Loss %0.4f CER %0.4f' % (epoch, train_loss, train_cer))
         train_loader.join()
-
         valid_queue = queue.Queue(hparams.worker_num << 1)
         valid_loader = BaseDataLoader(valid_dataset, valid_queue, hparams.batch_size, 0)
         valid_loader.start()
+
         valid_loss, valid_cer = evaluate(model, valid_queue, criterion, device)
         logger.info('Epoch %d (Evaluate) Loss %0.4f CER %0.4f' % (epoch, valid_loss, valid_cer))
 

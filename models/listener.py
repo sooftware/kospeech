@@ -56,6 +56,7 @@ class PyramidalRNN(nn.Module):
             seq_len += 1
         inputs = inputs.contiguous().view(batch_size, int(seq_len / 2), input_size * 2)
         output, hidden = self.rnn(inputs)[0]
+        output, hidden = self.rnn(inputs)
         return output, hidden
 
     def flatten_parameters(self):
@@ -121,7 +122,7 @@ class Listener(nn.Module):
             self.bottom_rnn = self.rnn_cell(
                 input_size=feat_size,
                 hidden_size=hidden_size,
-                num_layers=n_layers - 4,
+                num_layers=2,
                 batch_first = True,
                 bidirectional = bidirectional,
                 dropout = dropout_p
@@ -139,7 +140,7 @@ class Listener(nn.Module):
                 input_size=hidden_size << 1 if bidirectional else 0,
                 hidden_size=hidden_size,
                 dropout_p=dropout_p,
-                n_layers=2,
+                n_layers=1,
                 device=device
             )
         else:
@@ -172,6 +173,7 @@ class Listener(nn.Module):
 
         if self.use_pyramidal:
             bottom_output = self.bottom_rnn(x)[0] # 0: output, 1 : hidden
+            bottom_output = self.bottom_rnn(x)[0] # 0 : output, 1 : hidden
             middle_output = self.middle_rnn(bottom_output)[0]
             output = self.top_rnn(middle_output)[0]
         else:
