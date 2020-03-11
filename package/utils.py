@@ -67,12 +67,12 @@ def get_label(filepath, sos_id, eos_id, target_dict=None):
     script = target_dict[key]
     tokens = script.split(' ')
 
-    label = list()
-    label.append(int(sos_id))
+    labels = list()
+    labels.append(int(sos_id))
     for token in tokens:
-        label.append(int(token))
-    label.append(int(eos_id))
-    return label
+        labels.append(int(token))
+    labels.append(int(eos_id))
+    return labels
 
 def label_to_string(labels, id2char, eos_id):
     """
@@ -128,6 +128,6 @@ def save_step_result(train_step_result, loss, cer):
 
 def save_pickle(save_var, savepath, message=""):
     """ save pickle file """
-    with open(savepath, "wb") as f:
+    with open(savepath + '.bin', "wb") as f:
         pickle.dump(save_var, f)
     logger.info(message)

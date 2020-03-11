@@ -88,13 +88,16 @@ def supervised_train(model, hparams, epoch, total_time_step, queue,
         if time_step % 10000 == 0:
             torch.save(model, "model.pt")
             torch.save(model, "./data/weight_file/epoch_%s_step_%s.pt" % (str(epoch), str(time_step)))
-
         time_step += 1
         supervised_train.cumulative_batch_count += 1
         torch.cuda.empty_cache() # GPU memory free. if you have enough GPU memory, delete this line
 
     loss = total_loss / total_num
     cer = total_dist / total_length
+
+    torch.save(model, "model.pt")
+    torch.save(model, "./data/weight_file/epoch%s.pt" % str(epoch))
+
     logger.info('train() completed')
     return loss, cer
 
@@ -134,3 +137,4 @@ def get_lr(optimizer):
     """ get learning rate """
     for g in optimizer.param_groups:
         return g['lr']
+

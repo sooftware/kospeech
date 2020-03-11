@@ -54,7 +54,7 @@ class HyperParams():
                  low_plateau_lr = 0.00003,
                  teacher_forcing = 0.9,
                  seed = 1,
-                 max_len = 328
+                 max_len = 151
                  ):
         self.use_bidirectional = use_bidirectional
         self.use_attention = use_attention
