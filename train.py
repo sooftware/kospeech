@@ -118,10 +118,7 @@ if __name__ == '__main__':
         valid_ratio = 0.015,
         target_dict = target_dict,
     )
-<<<<<<< HEAD
 
-=======
->>>>>>> 7e3992bcf91930694d24ebe9d3d19e7695e904b7
     logger.info('start')
     train_begin = time.time()
 
