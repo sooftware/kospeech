@@ -29,9 +29,7 @@ if you want to study the feature of audio, we recommend this papers.
 Our project based on Seq2seq with Attention Architecture.  
 Seq2seq is a fast evolving field with new techniques and architectures being published frequently.  
   
-We use [AI Hub 1000h](http://www.aihub.or.kr/aidata/105) dataset which contains 1,000 hours korean voice data.    
-And, our project is currently in progress.  
-At present our top model has recorded an **80% CRR**, and we are working for a higher recognition rate.  
+We use [AI Hub 1000h](http://www.aihub.or.kr/aidata/105) dataset which contains 1,000 hours korean voice data. and, our project is currently in progress. At present our top model has recorded an **80% CRR**, and we are working for a higher recognition rate.  
 ###### ( **CRR** : Character Recognition Rate )  
   
 We are constantly updating the progress of the project on the [Wiki page](https://github.com/sh951011/Korean-Speech-Recognition/wiki).  Please check this page.  
