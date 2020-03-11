@@ -4,7 +4,7 @@
   
 ### [**Documentation**](https://sh951011.github.io/Korean-Speech-Recognition/)  
 
-# Intro
+## Intro
 
 This is project for Korean Speech Recognition using LAS (Listen, Attend and Spell) models   
 implemented in [PyTorch](http://pytorch.org).  
@@ -27,15 +27,14 @@ if you want to study the feature of audio, we recommend this papers.
 [「Voice Recognition Using MFCC Algirithm」](https://pdfs.semanticscholar.org/32d7/2b00454d5155599fb9e8e5119e16970db50d.pdf).  
   
 Our project based on Seq2seq with Attention Architecture.  
-
 Seq2seq is a fast evolving field with new techniques and architectures being published frequently.  
   
-and We use [AI Hub Dataset](http://www.aihub.or.kr/aidata/105) which contains 1,000 hours korean voice data.  
-    
-And, our project is currently in progress.  
+We use [AI Hub 1000h](http://www.aihub.or.kr/aidata/105) dataset which contains 1,000 hours korean voice data. and, our project is currently in progress.   
 At present our top model has recorded an **80% CRR**, and we are working for a higher recognition rate.  
-( **CRR** : Character Recognition Rate )  
-
+###### ( **CRR** : Character Recognition Rate )  
+  
+We are constantly updating the progress of the project on the [Wiki page](https://github.com/sh951011/Korean-Speech-Recognition/wiki).  Please check this page.  
+  
 [More details](https://sh951011.github.io/Korean-Speech-Recognition/notes/More-details.html)
 
 ## Installation
@@ -85,7 +84,7 @@ or Contacts sh951011@gmail.com please.
 We appreciate any kind of feedback or contribution.  Feel free to proceed with small issues like bug fixes, documentation improvement.  For major contributions and new features, please discuss with the collaborators in corresponding issues.  
 
 ### Code Style
-We follow [PEP8](https://www.python.org/dev/peps/pep-0008/) for code style. Especially the style of docstrings is important to generate documentation.  
+We follow [PEP-8](https://www.python.org/dev/peps/pep-0008/) for code style. Especially the style of docstrings is important to generate documentation.  
     
 ### Reference   
 [[1] 「Listen, Attend and Spell」  Paper](https://arxiv.org/abs/1508.01211)   
