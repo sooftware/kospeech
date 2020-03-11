@@ -4,7 +4,7 @@
   
 ### [**Documentation**](https://sh951011.github.io/Korean-Speech-Recognition/)  
 
-# Intro
+## Intro
 
 This is project for Korean Speech Recognition using LAS (Listen, Attend and Spell) models   
 implemented in [PyTorch](http://pytorch.org).  
