@@ -37,7 +37,9 @@ And, our project is currently in progress.
 At present our top model has recorded an **80% CRR**, and we are working for a higher recognition rate.  
   
 ###### ( **CRR** : Character Recognition Rate )  
-
+  
+We are constantly updating the progress of the project on the [Wiki page](https://github.com/sh951011/Korean-Speech-Recognition/wiki).  Please check this page.  
+  
 [More details](https://sh951011.github.io/Korean-Speech-Recognition/notes/More-details.html)
 
 ## Installation
