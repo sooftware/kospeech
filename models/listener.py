@@ -55,8 +55,8 @@ class PyramidalRNN(nn.Module):
             inputs = torch.cat([inputs, zeros], dim = 1)
             seq_len += 1
         inputs = inputs.contiguous().view(batch_size, int(seq_len / 2), input_size * 2)
-        output = self.rnn(inputs)[0]
-        return output
+        output, hidden = self.rnn(inputs)[0]
+        return output, hidden
 
     def flatten_parameters(self):
         self.rnn.flatten_parameters()
@@ -171,9 +171,9 @@ class Listener(nn.Module):
             self.flatten_parameters()
 
         if self.use_pyramidal:
-            bottom_output = self.bottom_rnn(x)
-            middle_output = self.middle_rnn(bottom_output)
-            output = self.top_rnn(middle_output)
+            bottom_output = self.bottom_rnn(x)[0] # 0: output, 1 : hidden
+            middle_output = self.middle_rnn(bottom_output)[0]
+            output = self.top_rnn(middle_output)[0]
         else:
             output = self.rnn(x)[0]
 

@@ -41,7 +41,6 @@ import os
 from models.speller import Speller
 from models.listener import Listener
 from models.listenAttendSpell import ListenAttendSpell
-from package.checkpoint import CheckPoint
 from package.dataset import split_dataset
 from package.definition import *
 from package.evaluator import evaluate
@@ -117,15 +116,6 @@ if __name__ == '__main__':
         label_paths = label_paths,
         valid_ratio = 0.015,
         target_dict = target_dict,
-    )
-
-    checkpoint = CheckPoint(
-        train_dataset_list=train_dataset_list ,
-        valid_dataset=valid_dataset,
-        hparams=hparams,
-        optimizer=optimizer,
-        criterion=criterion,
-        batch_size=hparams.batch_size
     )
 
     logger.info('start')
