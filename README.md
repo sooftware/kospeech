@@ -1,6 +1,6 @@
 # Korean-Speech-Recognition  
   
-![build](https://img.shields.io/badge/build-passing-blue) ![license](https://img.shields.io/github/license/sh951011/Korean-Speech-Recognition) ![code-quality](https://img.shields.io/badge/code%20quality-A-brightgreen) ![issue-close](https://img.shields.io/github/issues-closed/sh951011/Korean-Speech-Recognition) ![commit-activity](https://img.shields.io/github/last-commit/sh951011/Korean-Speech-Recognition)   
+![build](https://img.shields.io/badge/build-passing-blue) ![license](https://img.shields.io/github/license/sh951011/Korean-Speech-Recognition) ![code-quality](https://img.shields.io/badge/code%20quality-A-brightgreen) ![commit-activity](https://img.shields.io/github/last-commit/sh951011/Korean-Speech-Recognition) ![issue-open](https://img.shields.io/github/issues-raw/sh951011/Korean-Speech-Recognition) ![issue-close](https://img.shields.io/github/issues-closed/sh951011/Korean-Speech-Recognition)    
   
 ### [**Documentation**](https://sh951011.github.io/Korean-Speech-Recognition/)  
 
