@@ -4,7 +4,7 @@ import torch.nn.functional as F
 
 class Attention(nn.Module):
     r"""
-    Applies an self attention mechanism on the output features from the decoder.
+    Applies an attention mechanism on the output features from the decoder.
     「A Structured Self-Attentive Sentence Embedding」 Paper
     https://arxiv.org/abs/1703.03130
 
