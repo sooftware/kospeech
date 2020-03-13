@@ -72,7 +72,7 @@ if __name__ == '__main__':
     device = torch.device('cuda' if cuda else 'cpu')
 
     listener = Listener(
-        feat_size = 128,
+        feat_size = 80,
         hidden_size = hparams.hidden_size,
         dropout_p = hparams.dropout,
         n_layers = hparams.listener_layer_size,
