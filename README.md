@@ -1,10 +1,10 @@
 # Korean-Speech-Recognition  
   
-![build](https://img.shields.io/badge/build-passing-blue) ![license](https://img.shields.io/github/license/sh951011/Korean-Speech-Recognition) ![code-quality](https://img.shields.io/badge/code%20quality-A-brightgreen) ![commit-activity](https://img.shields.io/github/last-commit/sh951011/Korean-Speech-Recognition) ![docs](https://img.shields.io/badge/docs-94%25-green) ![download](https://img.shields.io/github/downloads/sh951011/Korean-Speech-Recognition/total)   
-![recommend](https://img.shields.io/badge/python-3.7%2B-green) ![code-size](https://img.shields.io/github/languages/code-size/sh951011/Korean-Speech-Recognition) ![issue-open](https://img.shields.io/github/issues-raw/sh951011/Korean-Speech-Recognition) ![issue-close](https://img.shields.io/github/issues-closed/sh951011/Korean-Speech-Recognition) ![fork](https://img.shields.io/github/forks/sh951011/Korean-Speech-Recognition) ![star](https://img.shields.io/github/stars/sh951011/Korean-Speech-Recognition)   
+![build](https://img.shields.io/badge/build-passing-blue) ![license](https://img.shields.io/github/license/sh951011/Korean-Speech-Recognition) ![code-quality](https://img.shields.io/badge/code%20quality-A-brightgreen) ![commit-activity](https://img.shields.io/github/last-commit/sh951011/Korean-Speech-Recognition) ![docs](https://img.shields.io/badge/docs-94%25-green)    
+![recommend](https://img.shields.io/badge/python->=3.7-4fb99a) ![code-size](https://img.shields.io/github/languages/code-size/sh951011/Korean-Speech-Recognition) ![issue-open](https://img.shields.io/github/issues-raw/sh951011/Korean-Speech-Recognition) ![issue-close](https://img.shields.io/github/issues-closed/sh951011/Korean-Speech-Recognition) ![fork](https://img.shields.io/github/forks/sh951011/Korean-Speech-Recognition) ![star](https://img.shields.io/github/stars/sh951011/Korean-Speech-Recognition) [<img src="https://img.shields.io/badge/chat-on%20gitter-4fb99a">](https://gitter.im/Korean-Speech-Recognition/community)
   
-### [**Documentation**](https://sh951011.github.io/Korean-Speech-Recognition/)  
-
+### [**Documentation**](https://sh951011.github.io/Korean-Speech-Recognition/)   
+  
 ## Intro
 
 This is project for Korean Speech Recognition using LAS (Listen, Attend and Spell) models   
