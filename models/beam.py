@@ -83,7 +83,7 @@ class Beam:
             # get top k distribution (shape: BxKxK)
             child_ps, child_vs = step_output.topk(self.k)
             # get child probability (applying length penalty)
-            child_ps = (self.probs.view(self.batch_size, 1, self.k) + child_ps)
+            child_ps = self.probs.view(self.batch_size, 1, self.k) + child_ps
             child_ps /= self._get_length_penalty(length=di+1, alpha=1.2, min_length=5)
             # Transpose (BxKxK) => (BxK^2)
             child_ps = child_ps.view(self.batch_size, self.k * self.k)

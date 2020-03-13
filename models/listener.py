@@ -110,14 +110,14 @@ class Listener(nn.Module):
             nn.Conv2d(in_channels=128, out_channels=128, kernel_size=3, padding=1),
             nn.Hardtanh(0, 20, inplace=True),
             nn.BatchNorm2d(num_features=128),
-            nn.Conv2d(in_channels=128, out_channels=128, kernel_size=3, padding=1),
+            nn.Conv2d(in_channels=128, out_channels=256, kernel_size=3, padding=1),
             nn.Hardtanh(0, 20, inplace=True),
-            nn.BatchNorm2d(num_features=128),
+            nn.BatchNorm2d(num_features=256),
             nn.MaxPool2d(kernel_size=2, stride=2)
         )
 
         """ math :: feat_size = (in_channel * out_channel) / maxpool_layer_num """
-        feat_size = (feat_size-1) << 5 if feat_size % 2 else feat_size << 5
+        feat_size = (feat_size-1) << 6 if feat_size % 2 else feat_size << 6
         if use_pyramidal:
             self.bottom_rnn = self.rnn_cell(
                 input_size=feat_size,
@@ -140,7 +140,7 @@ class Listener(nn.Module):
                 input_size=hidden_size << 1 if bidirectional else 0,
                 hidden_size=hidden_size,
                 dropout_p=dropout_p,
-                n_layers=1,
+                n_layers=n_layers-4,
                 device=device
             )
         else:

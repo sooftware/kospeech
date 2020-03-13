@@ -35,8 +35,7 @@ def supervised_train(model, hparams, epoch, total_time_step, queue,
 
     while True:
         if hparams.use_multistep_lr and epoch == 0 and time_step < 1000:
-            ramp_up(optimizer
-                    , time_step, hparams)
+            ramp_up(optimizer, time_step, hparams)
         if hparams.use_multistep_lr and epoch == 1:
             exp_decay(optimizer, total_time_step, hparams)
         feats, targets, feat_lengths, label_lengths = queue.get()
@@ -51,12 +50,12 @@ def supervised_train(model, hparams, epoch, total_time_step, queue,
                 continue
         optimizer.zero_grad()
 
-        feats = feats.to(device)
+        inputs = feats.to(device)
         targets = targets.to(device)
         target = targets[:, 1:]
         model.module.flatten_parameters()
 
-        y_hat, logit = model(feats, targets, teacher_forcing_ratio=teacher_forcing_ratio)
+        y_hat, logit = model(inputs, targets, teacher_forcing_ratio=teacher_forcing_ratio)
         loss = criterion(logit.contiguous().view(-1, logit.size(-1)), target.contiguous().view(-1))
 
         total_loss += loss.item()
