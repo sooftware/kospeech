@@ -27,6 +27,7 @@ def test(model, queue, device):
     total_dist = 0
     total_length = 0
     total_sent_num = 0
+    time_step = 0
 
     model.eval()
 
@@ -51,6 +52,9 @@ def test(model, queue, device):
             total_dist += dist
             total_length += length
             total_sent_num += target.size(0)
+            if time_step % 100 == 0:
+                logger.info('cer: {:.2f}'.format(total_dist / total_length))
+            time_step += 1
 
     CER = total_dist / total_length
     logger.info('test() completed')

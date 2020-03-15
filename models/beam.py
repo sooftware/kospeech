@@ -1,6 +1,4 @@
 import torch
-import numpy as np
-
 
 class Beam:
     r"""
@@ -11,7 +9,8 @@ class Beam:
         decoder_hidden (torch.Tensor) : hidden state of decoder
         batch_size (int) : mini-batch size during infer
         max_len (int) :  a maximum allowed length for the sequence to be processed
-        function (torch.nn.Module) : A function used to generate symbols from RNN hidden state (default : torch.nn.functional.log_softmax)
+        function (torch.nn.Module) : A function used to generate symbols from RNN hidden state
+        (default : torch.nn.functional.log_softmax)
         decoder (torch.nn.Module) : get pointer of decoder object to get multiple parameters at once
         beams (torch.Tensor) : ongoing beams for decoding
         probs (torch.Tensor) : cumulative probability of beams (score of beams)
