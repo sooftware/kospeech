@@ -67,8 +67,8 @@ if __name__ == '__main__':
     hparams.logger_hparams()
     cuda = hparams.use_cuda and torch.cuda.is_available()
     device = torch.device('cuda' if cuda else 'cpu')
-    model = torch.load("model.pt", map_location=torch.device('cpu'))
-
+    model = torch.load("model.pt")
+    model.module.set_beam_size(k = 8)
     audio_paths, label_paths = load_data_list(data_list_path=TEST_LIST_PATH, dataset_path=DATASET_PATH)
 
     target_dict = load_targets(label_paths)
@@ -81,7 +81,8 @@ if __name__ == '__main__':
         eos_id = EOS_TOKEN,
         target_dict = target_dict,
         input_reverse = hparams.input_reverse,
-        use_augment = False
+        use_augment = False,
+        pack_by_length = False
     )
 
     test_queue = queue.Queue(hparams.worker_num << 1)

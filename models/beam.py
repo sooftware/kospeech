@@ -44,7 +44,7 @@ class Beam:
         self.use_attention = decoder.use_attention
         self.attention = decoder.attention
         self.hidden_size = decoder.hidden_size
-        self.out = decoder.out
+        self.w = decoder.w
         self.eos_id = decoder.eos_id
         self.beams = None
         self.probs = None
@@ -130,8 +130,8 @@ class Beam:
         for batch_num, batch in enumerate(self.sentences):
             if len(batch) == 0:
                 # if there is no terminated sentences, bring ongoing sentence which has the highest probability instead
-                beam_scores = torch.FloatTensor(self.probs[batch_num]).to(self.device)
-                top_beam_idx = int(torch.FloatTensor(beam_scores).topk(1)[1])
+                prob_batch = self.probs[batch_num].to(self.device)
+                top_beam_idx = int(prob_batch.topk(1)[1])
                 y_hats.append(self.beams[batch_num, top_beam_idx])
             else:
                 # bring highest probability sentence
@@ -172,7 +172,7 @@ class Beam:
             output = self.attention(decoder_output, encoder_outputs)
         else:
             output = decoder_output
-        predicted_softmax = self.function(self.out(output.contiguous().view(-1, self.hidden_size)), dim=1)
+        predicted_softmax = self.function(self.w(output.contiguous().view(-1, self.hidden_size)), dim=1)
         predicted_softmax = predicted_softmax.view(self.batch_size,output_size,-1)
         return predicted_softmax
 
