@@ -33,16 +33,14 @@ def supervised_train(model, hparams, epoch, total_time_step, queue,
     begin = epoch_begin = time.time()
 
     while True:
-        """  
-        time-step       0  ~  5000       : wamp-up
-        time-step    5000  ~  148152     : high-plateau
-        time-step  148152  ~  148152 * 4 : exponential-decay 
-        time-step          ~             : low-plateau
-        """
+        # Learning Rate Scheduling =======
         if hparams.use_multistep_lr and epoch == 0 and time_step < 5000:
             ramp_up(optimizer, time_step, hparams)
         if hparams.use_multistep_lr and (epoch == 1 or epoch == 2 or epoch == 3):
             exp_decay(optimizer, 148152 * 3, hparams) # 배치 8로 수행시, 한 에폭당 148152 스텝
+        # ===================================================================
+
+        # Get item from Queue ============
         feats, scripts, feat_lens, target_lens = queue.get()
         if feats.shape[0] == 0:
             # empty feats means closing one loader
@@ -53,16 +51,19 @@ def supervised_train(model, hparams, epoch, total_time_step, queue,
                 break
             else:
                 continue
-        optimizer.zero_grad()
+        # ===================================================================
 
+        # Inference =======================
+        optimizer.zero_grad()
         inputs = feats.to(device)
         scripts = scripts.to(device)
         targets = scripts[:, 1:]
         model.module.flatten_parameters()
-
         y_hat, logit = model(inputs, scripts, teacher_forcing_ratio=teacher_forcing_ratio)
-        loss = criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
+        # ===================================================================
 
+        # Calculate loss & Back-prop ======
+        loss = criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
         total_loss += loss.item()
         total_num += sum(feat_lens)
         dist, length = get_distance(targets, y_hat, id2char, EOS_TOKEN)
@@ -71,6 +72,11 @@ def supervised_train(model, hparams, epoch, total_time_step, queue,
         loss.backward()
         optimizer.step()
 
+        time_step += 1
+        torch.cuda.empty_cache()
+        # ===================================================================
+
+        # Show Learning Progress & Save Model ========
         if time_step % print_time_step == 0:
             current = time.time()
             elapsed = current - begin
@@ -92,9 +98,7 @@ def supervised_train(model, hparams, epoch, total_time_step, queue,
         if time_step % 10000 == 0:
             torch.save(model, "model.pt")
             torch.save(model, "./data/weight_file/epoch_%s_step_%s.pt" % (str(epoch), str(time_step)))
-
-        time_step += 1
-        torch.cuda.empty_cache()
+        # ===================================================================
 
     logger.info('train() completed')
     return total_loss / total_num, total_dist / total_length

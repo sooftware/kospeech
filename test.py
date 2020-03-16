@@ -56,12 +56,15 @@ def test(model, queue, device):
     return CER
 
 if __name__ == '__main__':
+    # Check Envirionment ===================
     os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
     logger.info("device : %s" % torch.cuda.get_device_name(0))
     logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
     logger.info("CUDA version : %s" % (torch.version.cuda))
     logger.info("PyTorch version : %s" % (torch.__version__))
+    # ==============================================================
 
+    # Basic Setting ========================
     hparams = HyperParams()
     hparams.logger_hparams()
     cuda = hparams.use_cuda and torch.cuda.is_available()
@@ -69,10 +72,9 @@ if __name__ == '__main__':
     model = torch.load("model.pt",  map_location=torch.device('cpu'))
     model.module.set_beam_size(k = 8)
     audio_paths, label_paths = load_data_list(data_list_path=SAMPLE_LIST_PATH, dataset_path=SAMPLE_DATASET_PATH)
+    # ==============================================================
 
     target_dict = load_targets(label_paths)
-    logger.info('start')
-
     test_dataset = BaseDataset(
         audio_paths = audio_paths,
         label_paths = label_paths,
@@ -83,10 +85,8 @@ if __name__ == '__main__':
         use_augment = False,
         pack_by_length = False
     )
-
     test_queue = queue.Queue(hparams.worker_num << 1)
     test_loader = BaseDataLoader(test_dataset, test_queue, hparams.batch_size, 0)
     test_loader.start()
-
     CER = test(model, test_queue, device)
     logger.info('20h Test Set CER : %s' % CER)

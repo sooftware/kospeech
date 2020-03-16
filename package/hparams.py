@@ -50,7 +50,7 @@ class HyperParams():
                  max_epochs = 40,
                  use_multistep_lr = True,
                  init_lr = 0.0001,
-                 high_plateau_lr = 0.001,
+                 high_plateau_lr = 0.0003,
                  low_plateau_lr = 0.00001,
                  teacher_forcing = 0.90,
                  seed = 1,

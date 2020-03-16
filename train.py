@@ -57,20 +57,24 @@ else:
 
 
 if __name__ == '__main__':
-    #os.environ["CUDA_LAUNCH_BLOCKING"] = "1" # if you use Multi-GPU, delete this line
-    #logger.info("device : %s" % torch.cuda.get_device_name(0))
-    #logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
-    #logger.info("CUDA version : %s" % (torch.version.cuda))
-    #logger.info("PyTorch version : %s" % (torch.__version__))
+    # Check Envirionment ===================
+    os.environ["CUDA_LAUNCH_BLOCKING"] = "1" # if you use Multi-GPU, delete this line
+    logger.info("device : %s" % torch.cuda.get_device_name(0))
+    logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
+    logger.info("CUDA version : %s" % (torch.version.cuda))
+    logger.info("PyTorch version : %s" % (torch.__version__))
+    # ==============================================================
 
+    # Basic Setting ========================
     hparams = HyperParams()
-
     random.seed(hparams.seed)
     torch.manual_seed(hparams.seed)
     torch.cuda.manual_seed_all(hparams.seed)
     cuda = hparams.use_cuda and torch.cuda.is_available()
     device = torch.device('cuda' if cuda else 'cpu')
+    # ==============================================================
 
+    # Model Setting ========================
     listener = Listener(
         feat_size = 80,
         hidden_size = hparams.hidden_size,
@@ -97,13 +101,17 @@ if __name__ == '__main__':
     model = ListenAttendSpell(listener, speller, use_pyramidal = hparams.use_pyramidal)
     model.flatten_parameters()
     model = nn.DataParallel(model).to(device)
+    # ==============================================================
 
+    # Optim & Criterion =====================
     optimizer = optim.Adam(model.module.parameters(), lr=hparams.init_lr)
     if hparams.use_label_smooth:
         criterion = LabelSmoothingLoss(len(char2id), ignore_index = PAD_TOKEN, smoothing = 0.1, dim = -1).to(device)
     else:
         criterion = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_TOKEN).to(device)
+    # ==============================================================
 
+    # load & split Dataset ==================
     audio_paths, label_paths = load_data_list(data_list_path=TRAIN_LIST_PATH, dataset_path=DATASET_PATH)
 
     if hparams.use_pickle:
@@ -118,7 +126,9 @@ if __name__ == '__main__':
         valid_ratio = 0.015,
         target_dict = target_dict,
     )
+    # ==============================================================
 
+    # Train Get Started ======================
     logger.info('start')
     train_begin = time.time()
 
@@ -157,3 +167,4 @@ if __name__ == '__main__':
 
         save_epoch_result(train_result=[train_dict, train_loss, train_cer], valid_result=[valid_dict, valid_loss, valid_cer])
         logger.info('Epoch %d Training result saved as a csv file complete !!' % epoch)
+    # ==============================================================
