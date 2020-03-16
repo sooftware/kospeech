@@ -66,7 +66,6 @@ if __name__ == '__main__':
 
     # Basic Setting ========================
     hparams = HyperParams()
-    hparams.logger_hparams()
     cuda = hparams.use_cuda and torch.cuda.is_available()
     device = torch.device('cuda' if cuda else 'cpu')
     model = torch.load("model.pt",  map_location=torch.device('cpu'))

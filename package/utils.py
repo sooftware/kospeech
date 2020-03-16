@@ -41,10 +41,12 @@ def get_distance(targets, y_hats, id2char, eos_id):
     total_dist = 0
     total_length = 0
 
-    for i in range(len(targets)):
-        target = label_to_string(targets[i], id2char, eos_id)
-        y_hat = label_to_string(y_hats[i], id2char, eos_id)
+    for idx in range(len(targets)):
+        target = label_to_string(targets[idx], id2char, eos_id)
+        y_hat = label_to_string(y_hats[idx], id2char, eos_id)
+
         dist, length = char_distance(target, y_hat)
+
         total_dist += dist
         total_length += length
 
@@ -67,6 +69,7 @@ def get_label(filepath, sos_id, eos_id, target_dict=None):
     assert target_dict is not None, "target_dict is None"
 
     key = filepath.split('/')[-1].split('.')[0]
+
     script = target_dict[key]
     tokens = script.split(' ')
 
@@ -77,6 +80,7 @@ def get_label(filepath, sos_id, eos_id, target_dict=None):
     labels.append(int(eos_id))
 
     return labels
+
 
 def label_to_string(labels, id2char, eos_id):
     """

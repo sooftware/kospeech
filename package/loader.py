@@ -65,20 +65,26 @@ class BaseDataLoader(threading.Thread):
     def create_empty_batch(self):
         seqs = torch.zeros(0, 0, 0)
         targets = torch.zeros(0, 0).to(torch.long)
+
         seq_lengths = list()
         target_lengths = list()
+
         return seqs, targets, seq_lengths, target_lengths
 
     def run(self):
         logger.debug('loader %d start' % (self.thread_id))
         while True:
             items = list()
+
             for _ in range(self.batch_size):
                 if self.idx >= self.dataset_count:
                     break
+
                 feat, label = self.dataset.get_item(self.idx)
+
                 if feat is not None:
                     items.append((feat, label))
+
                 self.idx += 1
 
             if len(items) == 0:
@@ -90,7 +96,9 @@ class BaseDataLoader(threading.Thread):
 
             batch = self.collate_fn(items)
             self.queue.put(batch)
+
         logger.debug('loader %d stop' % (self.thread_id))
+
 
 def _collate_fn(batch):
     """ functions that pad to the maximum sequence length """
@@ -139,6 +147,7 @@ def load_targets(label_paths):
         - **target_dict** (dict): dictionary of filename and labels
     """
     target_dict = dict()
+
     for idx in trange(len(label_paths)):
         label_txt = label_paths[idx]
         with open(file=label_txt, mode="r") as f:
@@ -183,6 +192,7 @@ def load_label(label_path, encoding='utf-8'):
     """
     char2id = dict()
     id2char = dict()
+
     with open(label_path, 'r', encoding=encoding) as f:
         labels = csv.reader(f, delimiter=',')
         next(labels)

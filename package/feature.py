@@ -155,21 +155,21 @@ def spec_augment(feat, T = 70, F = 20, time_mask_num = 2, freq_mask_num = 2):
                 [          0,  0, ...,           0,           0],
                 [  3.109e-14,  0, ...,   2.931e-14,   2.931e-14]])
     """
-    feat_size = feat.size(1)
-    seq_len = feat.size(0)
+    freq_range = feat.size(1)
+    time_length = feat.size(0)
 
     # time mask
     for _ in range(time_mask_num):
         t = np.random.uniform(low=0.0, high=T)
         t = int(t)
-        t0 = random.randint(0, seq_len - t)
+        t0 = random.randint(0, time_length - t)
         feat[t0 : t0 + t, :] = 0
 
     # freq mask
     for _ in range(freq_mask_num):
         f = np.random.uniform(low=0.0, high=F)
         f = int(f)
-        f0 = random.randint(0, feat_size - f)
+        f0 = random.randint(0, freq_range - f)
         feat[:, f0 : f0 + f] = 0
 
     return feat

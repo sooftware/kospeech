@@ -6,8 +6,8 @@ from package.utils import get_distance, save_step_result
 train_step_result = {'loss': [], 'cer': []}
 
 def supervised_train(model, hparams, epoch, total_time_step, queue,
-          criterion, optimizer, device, train_begin, worker_num,
-          print_time_step=10, teacher_forcing_ratio=0.90):
+                     criterion, optimizer, device, train_begin, worker_num,
+                     print_time_step=10, teacher_forcing_ratio=0.90):
     """
     Args:
         model (torch.nn.Module): Model to be trained
@@ -47,7 +47,7 @@ def supervised_train(model, hparams, epoch, total_time_step, queue,
             decay_speed *= decay_rate ** (1 / (total_time_step * 3))
             set_lr(optimizer, hparams.high_plateau_lr * decay_speed)
 
-        # Get item from Queue ============
+        # Get item from Queue =======
         feats, scripts, feat_lens, target_lens = queue.get()
         if feats.shape[0] == 0:
             # empty feats means closing one loader
@@ -58,30 +58,33 @@ def supervised_train(model, hparams, epoch, total_time_step, queue,
                 break
             else:
                 continue
-        # ===================================================================
+        # ==============================================
 
-        # Inference =======================
-        optimizer.zero_grad()
+        # Inference ========
         inputs = feats.to(device)
         scripts = scripts.to(device)
         targets = scripts[:, 1:]
+
         model.module.flatten_parameters()
         y_hat, logit = model(inputs, scripts, teacher_forcing_ratio=teacher_forcing_ratio)
-        # ===================================================================
+        # ===================================================
 
         # Calculate loss & Back-prop ======
         loss = criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
         total_loss += loss.item()
+
         total_num += sum(feat_lens)
         dist, length = get_distance(targets, y_hat, id2char, EOS_TOKEN)
         total_dist += dist
         total_length += length
+
+        optimizer.zero_grad()
         loss.backward()
         optimizer.step()
 
         time_step += 1
         torch.cuda.empty_cache()
-        # ===================================================================
+        # ====================================================
 
         # Show Learning Progress & Save Model ========
         if time_step % print_time_step == 0:
