@@ -42,17 +42,12 @@ def test(model, queue, device):
             target = targets[:, 1:]
 
             model.module.flatten_parameters()
-            y_hat, _ = model(
-                feats = feats,
-                targets = targets,
-                teacher_forcing_ratio = 0.0,
-                use_beam_search = True
-            )
+            y_hat, _ = model(feats, targets, teacher_forcing_ratio = 0.0, use_beam_search = True)
             dist, length = get_distance(target, y_hat, id2char, EOS_TOKEN)
             total_dist += dist
             total_length += length
             total_sent_num += target.size(0)
-            if time_step % 100 == 0:
+            if time_step % 10 == 0:
                 logger.info('cer: {:.2f}'.format(total_dist / total_length))
             time_step += 1
 
@@ -71,9 +66,9 @@ if __name__ == '__main__':
     hparams.logger_hparams()
     cuda = hparams.use_cuda and torch.cuda.is_available()
     device = torch.device('cuda' if cuda else 'cpu')
-    model = torch.load("model.pt")
+    model = torch.load("model.pt",  map_location=torch.device('cpu'))
     model.module.set_beam_size(k = 8)
-    audio_paths, label_paths = load_data_list(data_list_path=TEST_LIST_PATH, dataset_path=DATASET_PATH)
+    audio_paths, label_paths = load_data_list(data_list_path=SAMPLE_LIST_PATH, dataset_path=SAMPLE_DATASET_PATH)
 
     target_dict = load_targets(label_paths)
     logger.info('start')

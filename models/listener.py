@@ -172,13 +172,13 @@ class Listener(nn.Module):
             self.flatten_parameters()
 
         if self.use_pyramidal:
-            bottom_output = self.bottom_rnn(x)[0] # 0 : output, 1 : hidden
-            middle_output = self.middle_rnn(bottom_output)[0]
-            output = self.top_rnn(middle_output)[0]
+            bottom_output, bottom_hidden = self.bottom_rnn(x)
+            middle_output, middle_hidden = self.middle_rnn(bottom_output)
+            output, hidden = self.top_rnn(middle_output)
         else:
-            output = self.rnn(x)[0]
+            output, hidden = self.rnn(x)
 
-        return output
+        return output, hidden
 
     def flatten_parameters(self):
         """ flatten parameters for fast training """

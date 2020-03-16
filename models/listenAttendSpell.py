@@ -39,7 +39,7 @@ class ListenAttendSpell(nn.Module):
         self.use_pyramidal = use_pyramidal
 
     def forward(self, inputs, targets, teacher_forcing_ratio=0.90, use_beam_search=False):
-        listener_outputs = self.listener(inputs)
+        listener_outputs, listener_hidden = self.listener(inputs)
         y_hats, logits = self.speller(
             inputs=targets,
             listener_outputs=listener_outputs,

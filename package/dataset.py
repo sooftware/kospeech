@@ -3,7 +3,7 @@ import random
 from torch.utils.data import Dataset
 from package.definition import EOS_TOKEN, logger, SOS_TOKEN
 from package.feature import spec_augment, get_librosa_melspectrogram
-from package.utils import get_label
+from package.utils import get_label, save_pickle
 
 
 class BaseDataset(Dataset):
@@ -199,5 +199,7 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
                         pack_by_length=False
     )
 
+    save_pickle(train_dataset_list, './data/pickle/train_dataset_list.bin', message="")
+    save_pickle(valid_dataset, './data/pickle/valid_dataset.bin', message="")
     logger.info("split dataset complete !!")
     return train_time_step, train_dataset_list, valid_dataset
