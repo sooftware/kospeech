@@ -35,7 +35,7 @@ def supervised_train(model, hparams, epoch, total_time_step, queue,
     while True:
         if hparams.use_multistep_lr and epoch == 0 and time_step < 1000:
             ramp_up(optimizer, time_step, hparams)
-        if hparams.use_multistep_lr and epoch == 0 and time_step > 40000:
+        if hparams.use_multistep_lr and epoch == 1:
             exp_decay(optimizer, 140000, hparams)
         feats, scripts, feat_lens, target_lens = queue.get()
         if feats.shape[0] == 0:
