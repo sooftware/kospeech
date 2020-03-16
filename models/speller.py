@@ -54,31 +54,32 @@ class Speller(nn.Module):
         super(Speller, self).__init__()
         assert rnn_cell.lower() == 'lstm' or rnn_cell.lower() == 'gru' or rnn_cell.lower() == 'rnn'
         self.rnn_cell = nn.LSTM if rnn_cell.lower() == 'lstm' else nn.GRU if rnn_cell.lower() == 'gru' else nn.RNN
-        self.device = device
-        self.rnn = self.rnn_cell(hidden_size , hidden_size, n_layers, batch_first=True, dropout=dropout_p).to(self.device)
-        self.vocab_size = vocab_size
+        self.rnn = self.rnn_cell(hidden_size , hidden_size, n_layers, batch_first=True, dropout=dropout_p).to(device)
         self.max_len = max_len
-        self.use_attention = use_attention
         self.eos_id = eos_id
         self.sos_id = sos_id
         self.hidden_size = hidden_size
-        self.embedding = nn.Embedding(self.vocab_size, self.hidden_size)
+        self.embedding = nn.Embedding(vocab_size, self.hidden_size)
         self.n_layers = n_layers
         self.input_dropout = nn.Dropout(p=dropout_p)
         self.k = k
+        self.use_attention = use_attention
         if use_attention:
             self.attention = Attention(decoder_hidden_size=hidden_size)
-        self.w = nn.Linear(self.hidden_size, self.vocab_size)
+        self.w = nn.Linear(self.hidden_size, vocab_size)
+        self.device = device
 
     def _forward_step(self, input, speller_hidden, listener_outputs=None, function=F.log_softmax):
         """ forward one time step """
         batch_size = input.size(0)
         output_size = input.size(1)
+
         embedded = self.embedding(input).to(self.device)
         embedded = self.input_dropout(embedded)
 
         if self.training:
             self.rnn.flatten_parameters()
+
         speller_output = self.rnn(embedded, speller_hidden)[0]
 
         if self.use_attention:
@@ -90,15 +91,15 @@ class Speller(nn.Module):
         return predicted_softmax
 
     def forward(self, inputs, listener_outputs, function=F.log_softmax, teacher_forcing_ratio=0.99, use_beam_search=False):
-        y_hats, logits = None, None
-        decode_results = []
+        decode_results = list()
         batch_size = inputs.size(0)
         max_len = inputs.size(1) - 1  # minus the start of sequence symbol
-        speller_hidden = torch.FloatTensor(self.n_layers, batch_size, self.hidden_size).uniform_(-0.1, 0.1).to(self.device)
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
 
-        if use_beam_search:
-            """ Beam-Search Decoding """
+        # uniformly init hidden state from -0.1 to +0.1
+        speller_hidden = torch.FloatTensor(self.n_layers, batch_size, self.hidden_size).uniform_(-0.1, 0.1).to(self.device)
+
+        if use_beam_search: # TopK Decoding
             inputs = inputs[:, 0].unsqueeze(1)
             beam = Beam(
                 k = self.k,
@@ -109,7 +110,9 @@ class Speller(nn.Module):
                 function = function,
                 device = self.device
             )
+            logits = None
             y_hats = beam.search(inputs, listener_outputs)
+
         else:
             if use_teacher_forcing:
                 """ if teacher_forcing, Infer all at once """
@@ -120,11 +123,14 @@ class Speller(nn.Module):
                     listener_outputs = listener_outputs,
                     function = function
                 )
+
                 for di in range(predicted_softmax.size(1)):
                     step_output = predicted_softmax[:, di, :]
                     decode_results.append(step_output)
+
             else:
                 input = inputs[:, 0].unsqueeze(1)
+
                 for di in range(max_len):
                     predicted_softmax = self._forward_step(
                         input = input,
@@ -138,4 +144,5 @@ class Speller(nn.Module):
 
             logits = torch.stack(decode_results, dim=1).to(self.device)
             y_hats = logits.max(-1)[1]
+
         return y_hats, logits

@@ -47,24 +47,25 @@ def get_librosa_melspectrogram(filepath, n_mels=128, del_silence=False, input_re
         except:  # exception handling
             logger.info("%s Error Occur !!" % filepath)
             return None
-        signal = np.array([float(x) for x in pcm])
+        sig = np.array([float(x) for x in pcm])
     elif filepath.split('.')[-1] == 'wav':
-        signal, _ = librosa.core.load(filepath, sr=16000)
+        sig, _ = librosa.core.load(filepath, sr=16000)
     else:
         raise ValueError("Invalid format !!")
 
     if del_silence:
-        non_silence_ids = librosa.effects.split(y=signal, top_db=30)
-        signal = np.concatenate([signal[start:end] for start, end in non_silence_ids])
+        non_silence_ids = librosa.effects.split(y=sig, top_db=30)
+        sig = np.concatenate([sig[start:end] for start, end in non_silence_ids])
 
-    mel_spectrogram = librosa.feature.melspectrogram(signal, sr=16000, n_mels=n_mels, n_fft=400, hop_length=160, window='hamming')
+    mel_spectrogram = librosa.feature.melspectrogram(sig, sr=16000, n_mels=n_mels, n_fft=400, hop_length=160, window='hamming')
 
     if mel_type == 'log_mel':
         mel_spectrogram = librosa.amplitude_to_db(mel_spectrogram, ref=np.max)
+
     if input_reverse:
         mel_spectrogram = mel_spectrogram[:,::-1]
-    mel_spectrogram = torch.FloatTensor( np.ascontiguousarray( np.swapaxes(mel_spectrogram, 0, 1) ) )
-    return mel_spectrogram
+
+    return torch.FloatTensor( np.ascontiguousarray( np.swapaxes(mel_spectrogram, 0, 1) ) )
 
 
 def get_librosa_mfcc(filepath, n_mfcc = 40, del_silence = False, input_reverse = True):
@@ -109,21 +110,22 @@ def get_librosa_mfcc(filepath, n_mfcc = 40, del_silence = False, input_reverse =
         except: # exception handling
             logger.info("%s Error Occur !!" % filepath)
             return None
-        signal = np.array([float(x) for x in pcm])
+        sig = np.array([float(x) for x in pcm])
     elif filepath.split('.')[-1] == 'wav':
-        signal, _ = librosa.core.load(filepath, sr=16000)
+        sig, _ = librosa.core.load(filepath, sr=16000)
     else:
         raise ValueError("Invalid format !!")
 
     if del_silence:
-        non_silence_ids = librosa.effects.split(signal, top_db=30)
-        signal = np.concatenate([signal[start:end] for start, end in non_silence_ids])
+        non_silence_ids = librosa.effects.split(sig, top_db=30)
+        sig = np.concatenate([sig[start:end] for start, end in non_silence_ids])
 
-    mfcc = librosa.feature.mfcc(signal, 16000, hop_length = 160, n_mfcc = n_mfcc, n_fft = 400, window = 'hamming')
+    mfcc = librosa.feature.mfcc(sig, sr=16000, hop_length=160, n_mfcc=n_mfcc, n_fft=400, window='hamming')
+
     if input_reverse:
         mfcc = mfcc[:,::-1]
-    mfcc = torch.FloatTensor( np.ascontiguousarray( np.swapaxes(mfcc, 0, 1) ) )
-    return mfcc
+
+    return torch.FloatTensor( np.ascontiguousarray( np.swapaxes(mfcc, 0, 1) ) )
 
 def spec_augment(feat, T = 70, F = 20, time_mask_num = 2, freq_mask_num = 2):
     """

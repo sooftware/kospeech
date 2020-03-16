@@ -45,18 +45,13 @@ class BaseDataset(Dataset):
             random.shuffle(bundle)
             self.audio_paths, self.label_paths, self.augment_flags = zip(*bundle)
 
-    def __len__(self):
-        return len(self.audio_paths)
-
-    def count(self):
-        return len(self.audio_paths)
-
     def get_item(self, idx):
         label = get_label(self.label_paths[idx], sos_id=self.sos_id, eos_id=self.eos_id, target_dict=self.target_dict)
         feat = get_librosa_melspectrogram(self.audio_paths[idx], n_mels=80, mel_type='log_mel', input_reverse=self.input_reverse)
-        # exception handling
-        if feat is None:
+
+        if feat is None: # exception handling
             return None, None
+
         if self.augment_flags[idx]:
             feat = spec_augment(feat, T=70, F=15, time_mask_num=2, freq_mask_num=2)
         return feat, label
@@ -104,14 +99,17 @@ class BaseDataset(Dataset):
                     label_batches.append(tmp_label_paths)
                     flag_batches.append(tmp_augment_flags)
                 break
+
             if len(tmp_audio_paths) == self.batch_size:
                 audio_batches.append(tmp_audio_paths)
                 label_batches.append(tmp_label_paths)
                 flag_batches.append(tmp_augment_flags)
                 tmp_audio_paths, tmp_label_paths, tmp_augment_flags = [], [], []
+
             tmp_audio_paths.append(self.audio_paths[idx])
             tmp_label_paths.append(self.label_paths[idx])
             tmp_augment_flags.append(self.augment_flags[idx])
+
             idx += 1
 
         remain_audio, remain_label, remain_flag = audio_batches[-1], label_batches[-1], flag_batches[-1]
@@ -128,9 +126,7 @@ class BaseDataset(Dataset):
             label_paths.extend(label_batch)
             augment_flags.extend(augment_flag)
 
-        audio_paths = list(audio_paths)
-        label_paths = list(label_paths)
-        augment_flags = list(augment_flags)
+        audio_paths, label_paths, augment_flags = list(audio_paths), list(label_paths), list(augment_flags)
 
         if not remain_drop:
             audio_paths.extend(remain_audio)
@@ -138,6 +134,13 @@ class BaseDataset(Dataset):
             augment_flags.extend(remain_flag)
 
         return audio_paths, label_paths, augment_flags
+
+    def __len__(self):
+        return len(self.audio_paths)
+
+    def count(self):
+        return len(self.audio_paths)
+
 
 
 def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_dict = None):
@@ -175,6 +178,7 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
     for idx in range(hparams.worker_num):
         train_begin_idx = train_num_per_worker * idx
         train_end_idx = min(train_num_per_worker * (idx + 1), train_num)
+
         train_dataset_list.append(BaseDataset(
                                     audio_paths=audio_paths[train_begin_idx:train_end_idx],
                                     label_paths=label_paths[train_begin_idx:train_end_idx],

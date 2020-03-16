@@ -104,6 +104,7 @@ class Beam:
             self.beams = torch.cat([parent_beams, topk_child_vs.view(self.batch_size, self.k, 1)], dim=2).to(self.device)
             self.probs = topk_child_ps.to(self.device)
 
+            # if any beam encounter eos_id
             if torch.any(topk_child_vs == self.eos_id):
                 done_ids = torch.where(topk_child_vs == self.eos_id)
                 count = [1] * self.batch_size # count done beams
@@ -119,6 +120,7 @@ class Beam:
                     count[batch_num] += 1
             # update decoder_input by topk_child_vs
             decoder_input = topk_child_vs
+
         y_hats = self._get_best()
         return y_hats
 

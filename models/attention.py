@@ -39,13 +39,11 @@ class Attention(nn.Module):
         input_size = encoder_outputs.size(1)
         hidden_size = decoder_output.size(2)
 
-        # get attention score
         attn_score = torch.bmm(decoder_output, encoder_outputs.transpose(1, 2))
-        # get attention distribution
         attn_distribution = F.softmax(attn_score.view(-1, input_size), dim=1).view(batch_size, -1, input_size)
-        # get context vector
         context = torch.bmm(attn_distribution, encoder_outputs)
-        # concatenate attn_val & decoder_output
+
         combined = torch.cat((context, decoder_output), dim=2)
         output = torch.tanh(self.w(combined.view(-1, 2 * hidden_size))).view(batch_size, -1, hidden_size)
+
         return output

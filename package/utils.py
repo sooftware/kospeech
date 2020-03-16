@@ -18,6 +18,7 @@ def char_distance(target, y_hat):
     """
     target = target.replace(' ', '')
     y_hat = y_hat.replace(' ', '')
+
     dist = Lev.distance(y_hat, target)
     length = len(target.replace(' ', ''))
 
@@ -46,6 +47,7 @@ def get_distance(targets, y_hats, id2char, eos_id):
         dist, length = char_distance(target, y_hat)
         total_dist += dist
         total_length += length
+
     return total_dist, total_length
 
 
@@ -63,6 +65,7 @@ def get_label(filepath, sos_id, eos_id, target_dict=None):
         - **label** (list): list of bos + sequence of label + eos
     """
     assert target_dict is not None, "target_dict is None"
+
     key = filepath.split('/')[-1].split('.')[0]
     script = target_dict[key]
     tokens = script.split(' ')
@@ -72,6 +75,7 @@ def get_label(filepath, sos_id, eos_id, target_dict=None):
     for token in tokens:
         labels.append(int(token))
     labels.append(int(eos_id))
+
     return labels
 
 def label_to_string(labels, id2char, eos_id):
@@ -109,6 +113,7 @@ def save_epoch_result(train_result, valid_result):
     """ save result of training (unit : epoch) """
     train_dict, train_loss, train_cer = train_result
     valid_dict, valid_loss, valid_cer = valid_result
+
     train_dict["loss"].append(train_loss)
     train_dict["cer"].append(train_cer)
     valid_dict["loss"].append(valid_loss)
@@ -116,6 +121,7 @@ def save_epoch_result(train_result, valid_result):
 
     train_df = pd.DataFrame(train_dict)
     valid_df = pd.DataFrame(valid_dict)
+
     train_df.to_csv(TRAIN_RESULT_PATH, encoding="cp949", index=False)
     valid_df.to_csv(VALID_RESULT_PATH, encoding="cp949", index=False)
 

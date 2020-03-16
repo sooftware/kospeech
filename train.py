@@ -136,6 +136,7 @@ if __name__ == '__main__':
         train_queue = queue.Queue(hparams.worker_num << 1)
         for train_dataset in train_dataset_list:
             train_dataset.shuffle()
+
         train_loader = MultiLoader(train_dataset_list, train_queue, hparams.batch_size, hparams.worker_num)
         train_loader.start()
         train_loss, train_cer = supervised_train(
@@ -152,19 +153,20 @@ if __name__ == '__main__':
             print_time_step = 10,
             teacher_forcing_ratio = hparams.teacher_forcing
         )
-        torch.save(model, "model.pt")
+        train_loader.join()
+
         torch.save(model, "./data/weight_file/epoch%s.pt" % str(epoch))
         logger.info('Epoch %d (Training) Loss %0.4f CER %0.4f' % (epoch, train_loss, train_cer))
-        train_loader.join()
+
         valid_queue = queue.Queue(hparams.worker_num << 1)
         valid_loader = BaseDataLoader(valid_dataset, valid_queue, hparams.batch_size, 0)
         valid_loader.start()
 
         valid_loss, valid_cer = evaluate(model, valid_queue, criterion, device)
-        logger.info('Epoch %d (Evaluate) Loss %0.4f CER %0.4f' % (epoch, valid_loss, valid_cer))
-
         valid_loader.join()
 
-        save_epoch_result(train_result=[train_dict, train_loss, train_cer], valid_result=[valid_dict, valid_loss, valid_cer])
+        logger.info('Epoch %d (Evaluate) Loss %0.4f CER %0.4f' % (epoch, valid_loss, valid_cer))
         logger.info('Epoch %d Training result saved as a csv file complete !!' % epoch)
+
+        save_epoch_result(train_result=[train_dict, train_loss, train_cer], valid_result=[valid_dict, valid_loss, valid_cer])
     # ==============================================================

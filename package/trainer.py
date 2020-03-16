@@ -28,17 +28,24 @@ def supervised_train(model, hparams, epoch, total_time_step, queue,
     total_dist = 0
     total_length = 0
     time_step = 0
+    decay_speed = 1.0
+
+    RANMPUP_PERIOD = 8152
+    RAMPUP_POWER = 3
 
     model.train()
     begin = epoch_begin = time.time()
 
     while True:
-        # Learning Rate Scheduling =======
-        if hparams.use_multistep_lr and epoch == 0 and time_step < 5000:
-            ramp_up(optimizer, time_step, hparams)
+        # LR Wamp-Up
+        if hparams.use_multistep_lr and epoch == 0 and time_step < RANMPUP_PERIOD:
+            set_lr(optimizer, lr=hparams.high_plateau_lr * ((time_step + 1) / RANMPUP_PERIOD) ** RAMPUP_POWER)
+
+        # LR Exponential-Decay
         if hparams.use_multistep_lr and (epoch == 1 or epoch == 2 or epoch == 3):
-            exp_decay(optimizer, 148152 * 3, hparams) # 배치 8로 수행시, 한 에폭당 148152 스텝
-        # ===================================================================
+            decay_rate = hparams.low_plateau_lr / hparams.high_plateau_lr
+            decay_speed *= decay_rate ** (1 / (total_time_step * 3))
+            set_lr(optimizer, hparams.high_plateau_lr * decay_speed)
 
         # Get item from Queue ============
         feats, scripts, feat_lens, target_lens = queue.get()
@@ -96,7 +103,6 @@ def supervised_train(model, hparams, epoch, total_time_step, queue,
             save_step_result(train_step_result, total_loss / total_num, total_dist / total_length)
 
         if time_step % 10000 == 0:
-            torch.save(model, "model.pt")
             torch.save(model, "./data/weight_file/epoch_%s_step_%s.pt" % (str(epoch), str(time_step)))
         # ===================================================================
 
@@ -104,35 +110,11 @@ def supervised_train(model, hparams, epoch, total_time_step, queue,
     return total_loss / total_num, total_dist / total_length
 
 
-def ramp_up(optimizer, time_step, hparams):
-    """
-    Steps to gradually increase the learing rate
-
-    Reference:
-        「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」Google Brain Team. 2019.
-        https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py
-    """
-    power = 3
-    lr = hparams.high_plateau_lr * (time_step / 1000) ** power
-    set_lr(optimizer, lr)
-
-def exp_decay(optimizer, total_time_step, hparams):
-    """
-    a gradual decrease in learning rates
-
-    Reference:
-        「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」Google Brain Team. 2019.
-        https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py
-    """
-    decay_rate = hparams.low_plateau_lr / hparams.high_plateau_lr
-    decay_speed = decay_rate ** (1/total_time_step)
-    lr = get_lr(optimizer)
-    set_lr(optimizer, lr * decay_speed)
-
 def set_lr(optimizer, lr):
     """ set learning rate """
     for g in optimizer.param_groups:
         g['lr'] = lr
+
 
 def get_lr(optimizer):
     """ get learning rate """

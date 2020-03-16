@@ -89,13 +89,14 @@ class Listener(nn.Module):
 
     def __init__(self, feat_size, hidden_size, device, dropout_p=0.5, n_layers=5, bidirectional=True, rnn_cell='gru', use_pyramidal = True):
         super(Listener, self).__init__()
+
         assert rnn_cell.lower() == 'lstm' or rnn_cell.lower() == 'gru' or rnn_cell.lower() == 'rnn'
         assert n_layers > 1, "n_layers should be bigger than 1"
-        if use_pyramidal:
-            assert n_layers > 4, "Pyramidal Listener`s n_layers should be bigger than 4"
-        self.device = device
+        assert use_pyramidal and n_layers > 4, "Pyramidal Listener`s n_layers should be bigger than 4"
+
         self.use_pyramidal = use_pyramidal
         self.rnn_cell = nn.LSTM if rnn_cell.lower() == 'lstm' else nn.GRU if rnn_cell.lower() == 'gru' else nn.RNN
+        self.device = device
         self.conv = nn.Sequential(
             nn.Conv2d(in_channels=1, out_channels=64, kernel_size=3, padding=1),
             nn.Hardtanh(0, 20, inplace=True),
@@ -116,8 +117,8 @@ class Listener(nn.Module):
             nn.MaxPool2d(kernel_size=2, stride=2)
         )
 
-        """ math :: feat_size = (in_channel * out_channel) / maxpool_layer_num """
         feat_size = (feat_size-1) << 6 if feat_size % 2 else feat_size << 6
+
         if use_pyramidal:
             self.bottom_rnn = self.rnn_cell(
                 input_size=feat_size,
@@ -143,6 +144,7 @@ class Listener(nn.Module):
                 n_layers=n_layers-4,
                 device=device
             )
+
         else:
             self.rnn = self.rnn_cell(
                 input_size=feat_size,
