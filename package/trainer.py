@@ -33,10 +33,16 @@ def supervised_train(model, hparams, epoch, total_time_step, queue,
     begin = epoch_begin = time.time()
 
     while True:
-        if hparams.use_multistep_lr and epoch == 0 and time_step < 1000:
+        """  
+        time-step       0  ~  5000       : wamp-up
+        time-step    5000  ~  148152     : high-plateau
+        time-step  148152  ~  148152 * 4 : exponential-decay 
+        time-step          ~             : low-plateau
+        """
+        if hparams.use_multistep_lr and epoch == 0 and time_step < 5000:
             ramp_up(optimizer, time_step, hparams)
-        if hparams.use_multistep_lr and epoch == 1:
-            exp_decay(optimizer, 140000, hparams)
+        if hparams.use_multistep_lr and (epoch == 1 or epoch == 2 or epoch == 3):
+            exp_decay(optimizer, 148152 * 3, hparams) # 배치 8로 수행시, 한 에폭당 148152 스텝
         feats, scripts, feat_lens, target_lens = queue.get()
         if feats.shape[0] == 0:
             # empty feats means closing one loader
