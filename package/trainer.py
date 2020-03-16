@@ -27,7 +27,6 @@ def supervised_train(model, hparams, epoch, total_time_step, queue,
     total_num = 0
     total_dist = 0
     total_length = 0
-    total_sent_num = 0
     time_step = 0
 
     model.train()
@@ -38,7 +37,7 @@ def supervised_train(model, hparams, epoch, total_time_step, queue,
             ramp_up(optimizer, time_step, hparams)
         if hparams.use_multistep_lr and epoch == 1:
             exp_decay(optimizer, total_time_step, hparams)
-        feats, targets, feat_lens, target_lens = queue.get()
+        feats, scripts, feat_lens, target_lens = queue.get()
         if feats.shape[0] == 0:
             # empty feats means closing one loader
             worker_num -= 1
@@ -51,19 +50,18 @@ def supervised_train(model, hparams, epoch, total_time_step, queue,
         optimizer.zero_grad()
 
         inputs = feats.to(device)
-        targets = targets.to(device)
-        target = targets[:, 1:]
+        scripts = scripts.to(device)
+        targets = scripts[:, 1:]
         model.module.flatten_parameters()
 
-        y_hat, logit = model(inputs, targets, teacher_forcing_ratio=teacher_forcing_ratio)
-        loss = criterion(logit.contiguous().view(-1, logit.size(-1)), target.contiguous().view(-1))
+        y_hat, logit = model(inputs, scripts, teacher_forcing_ratio=teacher_forcing_ratio)
+        loss = criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
 
         total_loss += loss.item()
         total_num += sum(feat_lens)
-        dist, length = get_distance(target, y_hat, id2char, EOS_TOKEN)
+        dist, length = get_distance(targets, y_hat, id2char, EOS_TOKEN)
         total_dist += dist
         total_length += length
-        total_sent_num += target.size(0)
         loss.backward()
         optimizer.step()
 
@@ -90,13 +88,11 @@ def supervised_train(model, hparams, epoch, total_time_step, queue,
             torch.save(model, "./data/weight_file/epoch_%s_step_%s.pt" % (str(epoch), str(time_step)))
 
         time_step += 1
-        supervised_train.cumulative_batch_count += 1
         torch.cuda.empty_cache()
 
     logger.info('train() completed')
     return total_loss / total_num, total_dist / total_length
 
-supervised_train.cumulative_batch_count = 0
 
 def ramp_up(optimizer, time_step, hparams):
     """
