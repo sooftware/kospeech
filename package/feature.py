@@ -48,8 +48,10 @@ def get_librosa_melspectrogram(filepath, n_mels=128, del_silence=False, input_re
             logger.info("%s Error Occur !!" % filepath)
             return None
         sig = np.array([float(x) for x in pcm])
+
     elif filepath.split('.')[-1] == 'wav':
         sig, _ = librosa.core.load(filepath, sr=16000)
+
     else:
         raise ValueError("Invalid format !!")
 
@@ -111,8 +113,10 @@ def get_librosa_mfcc(filepath, n_mfcc = 40, del_silence = False, input_reverse =
             logger.info("%s Error Occur !!" % filepath)
             return None
         sig = np.array([float(x) for x in pcm])
+
     elif filepath.split('.')[-1] == 'wav':
         sig, _ = librosa.core.load(filepath, sr=16000)
+
     else:
         raise ValueError("Invalid format !!")
 

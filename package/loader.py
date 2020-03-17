@@ -59,8 +59,6 @@ class BaseDataLoader(threading.Thread):
         self.dataset_count = dataset.count()
         self.thread_id = thread_id
 
-    def count(self):
-        return math.ceil(self.dataset_count / self.batch_size)
 
     def create_empty_batch(self):
         seqs = torch.zeros(0, 0, 0)
@@ -99,6 +97,9 @@ class BaseDataLoader(threading.Thread):
 
         logger.debug('loader %d stop' % (self.thread_id))
 
+
+    def count(self):
+        return math.ceil(self.dataset_count / self.batch_size)
 
 def _collate_fn(batch):
     """ functions that pad to the maximum sequence length """

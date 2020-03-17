@@ -16,6 +16,7 @@ def evaluate(model, queue, criterion, device):
         - **cer** (float): character error rate
     """
     logger.info('evaluate() start')
+
     total_loss = 0.
     total_num = 0
     total_dist = 0
@@ -46,4 +47,5 @@ def evaluate(model, queue, criterion, device):
             total_length += length
 
     logger.info('evaluate() completed')
+
     return total_loss / total_num, total_dist / total_length

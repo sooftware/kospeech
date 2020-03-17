@@ -77,6 +77,7 @@ class BaseDataset(Dataset):
         """ Shuffle Dataset """
         if self.pack_by_length:
             self.audio_paths, self.label_paths, self.augment_flags = self.batch_shuffle(remain_drop=False)
+
         else:
             bundle = list(zip(self.audio_paths, self.label_paths, self.augment_flags))
             random.shuffle(bundle)
@@ -86,6 +87,7 @@ class BaseDataset(Dataset):
     def sort_by_length(self):
         """ descending sort by sequence length """
         target_lengths = list()
+
         for idx, label_path in enumerate(self.label_paths):
             key = label_path.split('/')[-1].split('.')[0]
             target_lengths.append(len(self.target_dict[key].split()))
@@ -175,8 +177,10 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
     total_time_step = math.ceil(len(audio_paths) / hparams.batch_size)
     valid_time_step = math.ceil(total_time_step * valid_ratio)
     train_time_step = total_time_step - valid_time_step
+
     if hparams.use_augment:
         train_time_step = int( train_time_step * (1 + hparams.augment_ratio))
+
     train_num_per_worker = math.ceil(train_num / hparams.worker_num)
 
     # audio_paths & label_paths shuffled in the same order

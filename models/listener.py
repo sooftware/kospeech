@@ -50,10 +50,12 @@ class PyramidalRNN(nn.Module):
         batch_size = inputs.size(0)
         seq_len = inputs.size(1)
         input_size = inputs.size(2)
+
         if seq_len % 2:
             zeros = torch.zeros((inputs.size(0), 1, inputs.size(2))).to(self.device)
             inputs = torch.cat([inputs, zeros], dim = 1)
             seq_len += 1
+
         inputs = inputs.contiguous().view(batch_size, int(seq_len / 2), input_size * 2)
         output, hidden = self.rnn(inputs)
 

@@ -102,6 +102,7 @@ class Beam:
                 for beam_idx, topk_child_idx in enumerate(batch):
                     topk_child_vs[batch_num, beam_idx] = child_vs[batch_num, topk_child_idx]
                     parent_beams[batch_num, beam_idx] = self.beams[batch_num, parent_beams_ids[batch_num, beam_idx]]
+
             # append new_topk_child (shape: BxKx(S) => BxKx(S+1))
             self.beams = torch.cat([parent_beams, topk_child_vs.view(self.batch_size, self.k, 1)], dim=2).to(self.device)
             self.probs = topk_child_ps.to(self.device)
@@ -110,21 +111,24 @@ class Beam:
             if torch.any(topk_child_vs == self.eos_id):
                 done_ids = torch.where(topk_child_vs == self.eos_id)
                 count = [1] * self.batch_size # count done beams
+
                 for (batch_num, beam_idx) in zip(*done_ids):
                     self.sentences[batch_num].append(self.beams[batch_num, beam_idx])
                     self.sentence_probs[batch_num].append(self.probs[batch_num, beam_idx])
+
                     self._replace_beam(
                         child_ps=child_ps,
                         child_vs=child_vs,
                         done_ids=(batch_num, beam_idx),
                         count=count[batch_num]
                     )
+
                     count[batch_num] += 1
+
             # update decoder_input by topk_child_vs
             decoder_input = topk_child_vs
 
-        y_hats = self._get_best()
-        return y_hats
+        return self._get_best()
 
     def _get_best(self):
         """ get sentences which has the highest probability at each batch, stack it, and return it as 2d torch """
@@ -136,6 +140,7 @@ class Beam:
                 prob_batch = self.probs[batch_num].to(self.device)
                 top_beam_idx = int(prob_batch.topk(1)[1])
                 y_hats.append(self.beams[batch_num, top_beam_idx])
+
             # bring highest probability sentence
             else:
                 top_beam_idx = int(torch.FloatTensor(self.sentence_probs[batch_num]).topk(1)[1])
@@ -165,6 +170,7 @@ class Beam:
         for done in self.sentences:
             if len(done) < self.k:
                 return False
+
         return True
 
     def _forward_step(self, decoder_input, encoder_outputs):
