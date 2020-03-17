@@ -25,7 +25,7 @@ We mainly referred to following papers.
   
 if you want to study the feature of audio, we recommend this papers.  
   
-[「Voice Recognition Using MFCC Algirithm」](https://pdfs.semanticscholar.org/32d7/2b00454d5155599fb9e8e5119e16970db50d.pdf).  
+[「Voice Recognition Using MFCC Algirithm」](https://ijirae.com/volumes/vol1/issue10/27.NVEC10086.pdf).  
   
 Our project based on Seq2seq with Attention Architecture.  
 Seq2seq is a fast evolving field with new techniques and architectures being published frequently.  
@@ -91,7 +91,7 @@ We follow [PEP-8](https://www.python.org/dev/peps/pep-0008/) for code style. Esp
 [[1] 「Listen, Attend and Spell」  Paper](https://arxiv.org/abs/1508.01211)   
 [[2] 「A Structured Self-attentive Sentence Embedding」 Paper](https://arxiv.org/abs/1703.03130)  
 [[3] 「A Simple Data Augmentation Method for Automatic Speech Recognition」  Paper](https://arxiv.org/abs/1904.08779)     
-[[4] 「Voice Recognition Using MFCC Algorithm」  Paper](https://pdfs.semanticscholar.org/32d7/2b00454d5155599fb9e8e5119e16970db50d.pdf)        
+[[4] 「Voice Recognition Using MFCC Algorithm」  Paper](https://ijirae.com/volumes/vol1/issue10/27.NVEC10086.pdf)        
 [[5]   IBM pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)   
 [[6]   A.I Hub Korean Voice Dataset](http://www.aihub.or.kr/aidata/105)   
   
