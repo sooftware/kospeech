@@ -35,15 +35,19 @@ class BaseDataset(Dataset):
         self.augment_ratio = augment_ratio
         self.augment_flags = [False] * len(self.audio_paths)
         self.pack_by_length = pack_by_length
+
         if use_augment:
             self.augmentation()
+
         if pack_by_length:
             self.sort_by_length()
             self.audio_paths, self.label_paths, self.augment_flags = self.batch_shuffle(remain_drop=False)
+
         else:
             bundle = list(zip(self.audio_paths, self.label_paths, self.augment_flags))
             random.shuffle(bundle)
             self.audio_paths, self.label_paths, self.augment_flags = zip(*bundle)
+
 
     def get_item(self, idx):
         label = get_label(self.label_paths[idx], sos_id=self.sos_id, eos_id=self.eos_id, target_dict=self.target_dict)
@@ -54,7 +58,9 @@ class BaseDataset(Dataset):
 
         if self.augment_flags[idx]:
             feat = spec_augment(feat, T=70, F=15, time_mask_num=2, freq_mask_num=2)
+
         return feat, label
+
 
     def augmentation(self):
         """ Apply Spec-Augmentation """
@@ -66,6 +72,7 @@ class BaseDataset(Dataset):
             self.audio_paths.append(self.audio_paths[idx])
             self.label_paths.append(self.label_paths[idx])
 
+
     def shuffle(self):
         """ Shuffle Dataset """
         if self.pack_by_length:
@@ -74,6 +81,7 @@ class BaseDataset(Dataset):
             bundle = list(zip(self.audio_paths, self.label_paths, self.augment_flags))
             random.shuffle(bundle)
             self.audio_paths, self.label_paths, self.augment_flags = zip(*bundle)
+
 
     def sort_by_length(self):
         """ descending sort by sequence length """
@@ -135,8 +143,10 @@ class BaseDataset(Dataset):
 
         return audio_paths, label_paths, augment_flags
 
+
     def __len__(self):
         return len(self.audio_paths)
+
 
     def count(self):
         return len(self.audio_paths)
@@ -159,6 +169,7 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
         - **valid_dataset** (utils.dataset.BaseDataset): validation dataset
     """
     logger.info("split dataset start !!")
+
     train_dataset_list = list()
     train_num = math.ceil(len(audio_paths) * (1 - valid_ratio))
     total_time_step = math.ceil(len(audio_paths) / hparams.batch_size)
@@ -205,5 +216,7 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
 
     save_pickle(train_dataset_list, './data/pickle/train_dataset_list', message="")
     save_pickle(valid_dataset, './data/pickle/valid_dataset', message="")
+
     logger.info("split dataset complete !!")
+
     return train_time_step, train_dataset_list, valid_dataset

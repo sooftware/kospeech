@@ -65,6 +65,8 @@ class Beam:
         # K : beam size
         # C : classfication number
         # S : sequence length
+
+
         # get class classfication distribution (shape: BxC)
         step_outputs = self._forward_step(decoder_input, encoder_outputs).squeeze(1)
         # get top K probability & idx (shape: BxK)
@@ -129,25 +131,29 @@ class Beam:
         y_hats = []
 
         for batch_num, batch in enumerate(self.sentences):
+            # if there is no terminated sentences, bring ongoing sentence which has the highest probability instead
             if len(batch) == 0:
-                # if there is no terminated sentences, bring ongoing sentence which has the highest probability instead
                 prob_batch = self.probs[batch_num].to(self.device)
                 top_beam_idx = int(prob_batch.topk(1)[1])
                 y_hats.append(self.beams[batch_num, top_beam_idx])
+            # bring highest probability sentence
             else:
-                # bring highest probability sentence
                 top_beam_idx = int(torch.FloatTensor(self.sentence_probs[batch_num]).topk(1)[1])
                 y_hats.append(self.sentences[batch_num][top_beam_idx])
+
         y_hats = self._match_len(y_hats).to(self.device)
+
         return y_hats
 
     def _match_len(self, y_hats):
         max_len = -1
+
         for y_hat in y_hats:
             if len(y_hat) > max_len:
                 max_len = len(y_hat)
 
         matched = torch.LongTensor(self.batch_size, max_len).to(self.device)
+
         for batch_num, y_hat in enumerate(y_hats):
             matched[batch_num, :len(y_hat)] = y_hat
             matched[batch_num, len(y_hat):] = 0
@@ -165,16 +171,20 @@ class Beam:
         """ forward one step on each decoder cell """
         decoder_input = decoder_input.to(self.device)
         output_size = decoder_input.size(1)
+
         embedded = self.embedding(decoder_input).to(self.device)
         embedded = self.input_dropout(embedded)
+
         decoder_output, hidden = self.rnn(embedded, self.decoder_hidden)  # decoder output
 
         if self.use_attention:
             output = self.attention(decoder_output, encoder_outputs)
         else:
             output = decoder_output
+
         predicted_softmax = self.function(self.w(output.contiguous().view(-1, self.hidden_size)), dim=1)
         predicted_softmax = predicted_softmax.view(self.batch_size,output_size,-1)
+
         return predicted_softmax
 
     def _get_length_penalty(self, length, alpha=1.2, min_length=5):
@@ -187,14 +197,20 @@ class Beam:
 
     def _replace_beam(self, child_ps, child_vs, done_ids, count):
         """ Replaces a beam that ends with <eos> with a beam with the next higher probability. """
-        done_batch_num, done_beam_idx = done_ids[0], done_ids[1]
-        tmp_ids = child_ps.topk(self.k + count)[1]
-        new_child_idx = tmp_ids[done_batch_num, -1]
-        new_child_p = child_ps[done_batch_num, new_child_idx].to(self.device)
-        new_child_v = child_vs[done_batch_num, new_child_idx].to(self.device)
-        parent_beam_idx = (new_child_idx // self.k)
+        done_batch_num = done_ids[0]
+        done_beam_idx = done_ids[1]
+
+        replace_ids = child_ps.topk(self.k + count)[1]
+        replace_idx = replace_ids[done_batch_num, -1]
+
+        new_child_p = child_ps[done_batch_num, replace_idx].to(self.device)
+        new_child_v = child_vs[done_batch_num, replace_idx].to(self.device)
+
+        parent_beam_idx = (replace_idx // self.k)
         parent_beam = self.beams[done_batch_num, parent_beam_idx].to(self.device)
         parent_beam = parent_beam[:-1]
+
         new_beam = torch.cat([parent_beam, new_child_v.view(1)])
+
         self.beams[done_batch_num, done_beam_idx] = new_beam
         self.probs[done_batch_num, done_beam_idx] = new_child_p

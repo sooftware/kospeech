@@ -88,6 +88,7 @@ class Speller(nn.Module):
             output = speller_output
 
         predicted_softmax = function(self.w(output.contiguous().view(-1, self.hidden_size)), dim=1).view(batch_size, output_size, -1)
+
         return predicted_softmax
 
     def forward(self, inputs, listener_outputs, function=F.log_softmax, teacher_forcing_ratio=0.99, use_beam_search=False):

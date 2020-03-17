@@ -33,4 +33,5 @@ class LabelSmoothingLoss(nn.Module):
             label_smoothed.fill_(self.smoothing / (self.vocab_size - 1))
             label_smoothed.scatter_(1, target.data.unsqueeze(1), self.confidence)
             label_smoothed[target == self.ignore_index, :] = 0
+
         return torch.sum(-label_smoothed * logit)

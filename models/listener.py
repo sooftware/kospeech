@@ -177,6 +177,7 @@ class Listener(nn.Module):
             bottom_output, bottom_hidden = self.bottom_rnn(x)
             middle_output, middle_hidden = self.middle_rnn(bottom_output)
             output, hidden = self.top_rnn(middle_output)
+
         else:
             output, hidden = self.rnn(x)
 
@@ -188,5 +189,6 @@ class Listener(nn.Module):
             self.bottom_rnn.flatten_parameters()
             self.middle_rnn.flatten_parameters()
             self.top_rnn.flatten_parameters()
+
         else:
             self.rnn.flatten_parameters()

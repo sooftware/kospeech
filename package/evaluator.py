@@ -26,6 +26,7 @@ def evaluate(model, queue, criterion, device):
     with torch.no_grad():
         while True:
             feats, scripts, feat_lengths, script_lengths = queue.get()
+
             if feats.shape[0] == 0:
                 break
 
