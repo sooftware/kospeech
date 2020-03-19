@@ -14,6 +14,10 @@ limitations under the License.
 import os
 import queue
 import torch
+
+from models.listenAttendSpell import ListenAttendSpell
+from models.listener import Listener
+from models.speller import Speller
 from package.dataset import BaseDataset
 from package.definition import *
 from package.hparams import HyperParams
@@ -41,35 +45,65 @@ def test(model, queue, device):
             targets = targets.to(device)
             target = targets[:, 1:]
 
-            model.module.flatten_parameters()
-            y_hat, _ = model(feats, targets, teacher_forcing_ratio = 0.0, use_beam_search = True)
+            model.flatten_parameters()
+            y_hat, _ = model(feats, targets, teacher_forcing_ratio = 0.0, use_beam_search = False)
             dist, length = get_distance(target, y_hat, id2char, EOS_TOKEN)
             total_dist += dist
             total_length += length
             total_sent_num += target.size(0)
-            if time_step % 10 == 0:
-                logger.info('cer: {:.2f}'.format(total_dist / total_length))
+            #if time_step % 10 == 0:
+            logger.info('cer: {:.2f}'.format(total_dist / total_length))
             time_step += 1
 
     CER = total_dist / total_length
     logger.info('test() completed')
+
     return CER
 
 if __name__ == '__main__':
     # Check Envirionment ===================
-    os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
-    logger.info("device : %s" % torch.cuda.get_device_name(0))
-    logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
-    logger.info("CUDA version : %s" % (torch.version.cuda))
-    logger.info("PyTorch version : %s" % (torch.__version__))
+    #os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
+    #logger.info("device : %s" % torch.cuda.get_device_name(0))
+    #logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
+    #logger.info("CUDA version : %s" % (torch.version.cuda))
+    #logger.info("PyTorch version : %s" % (torch.__version__))
     # ==============================================================
 
     # Basic Setting ========================
     hparams = HyperParams()
     cuda = hparams.use_cuda and torch.cuda.is_available()
     device = torch.device('cuda' if cuda else 'cpu')
-    model = torch.load("model.pt",  map_location=torch.device('cpu'))
-    model.module.set_beam_size(k = 8)
+
+
+    # Model Setting ========================
+    listener = Listener(
+        feat_size = 80,
+        hidden_size = hparams.hidden_size,
+        dropout_p = hparams.dropout,
+        n_layers = hparams.listener_layer_size,
+        bidirectional = hparams.use_bidirectional,
+        rnn_cell = 'gru',
+        use_pyramidal = hparams.use_pyramidal,
+        device=device
+    )
+    speller = Speller(
+        vocab_size = len(char2id),
+        max_len = hparams.max_len,
+        k = 8,
+        hidden_size = hparams.hidden_size << (1 if hparams.use_bidirectional else 0),
+        sos_id = SOS_TOKEN,
+        eos_id = EOS_TOKEN,
+        n_layers = hparams.speller_layer_size,
+        rnn_cell = 'gru',
+        dropout_p = hparams.dropout,
+        use_attention = hparams.use_attention,
+        device = device
+    )
+    model = ListenAttendSpell(listener, speller, use_pyramidal = hparams.use_pyramidal)
+    # ==============================================================
+    load_model = torch.load("./data/weight_file/_epoch_1_step_10000.pt",  map_location=torch.device('cpu')).module
+    model.load_state_dict(load_model.state_dict())
+    model.set_beam_size(k = 8)
     audio_paths, label_paths = load_data_list(data_list_path=SAMPLE_LIST_PATH, dataset_path=SAMPLE_DATASET_PATH)
     # ==============================================================
 
