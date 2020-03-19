@@ -1,7 +1,8 @@
 # Korean-Speech-Recognition  
   
-![build](https://img.shields.io/badge/build-passing-blue) ![license](https://img.shields.io/github/license/sh951011/Korean-Speech-Recognition) ![code-quality](https://img.shields.io/badge/code%20quality-A-brightgreen) ![commit-activity](https://img.shields.io/github/last-commit/sh951011/Korean-Speech-Recognition) ![docs](https://img.shields.io/badge/docs-94%25-green)    
-![recommend](https://img.shields.io/badge/python->=3.7-4fb99a) ![code-size](https://img.shields.io/github/languages/code-size/sh951011/Korean-Speech-Recognition) [<img src="https://img.shields.io/github/issues-raw/sh951011/Korean-Speech-Recognition">](https://github.com/sh951011/Korean-Speech-Recognition/issues) [<img src="https://img.shields.io/github/issues-closed/sh951011/Korean-Speech-Recognition">](https://github.com/sh951011/Korean-Speech-Recognition/issues?q=is%3Aissue+is%3Aclosed) [<img src="https://img.shields.io/github/forks/sh951011/Korean-Speech-Recognition">](https://github.com/sh951011/Korean-Speech-Recognition/network/members) [<img src="https://img.shields.io/github/stars/sh951011/Korean-Speech-Recognition">](https://github.com/sh951011/Korean-Speech-Recognition/stargazers) [<img src="https://img.shields.io/badge/chat-on%20gitter-4fb99a">](https://gitter.im/Korean-Speech-Recognition/community)
+### End-to-End Speech Recognition on Pytorch  
+   
+[<img src="https://github.com/gentaiscool/end2end-asr-pytorch/raw/master/img/pytorch-logo-dark.png" height=18>](https://pytorch.org/) <img src="https://img.shields.io/badge/License-Apache--2.0-yellow" height=20> [<img src="https://img.shields.io/badge/chat-on%20gitter-4fb99a" height=20>](https://gitter.im/Korean-Speech-Recognition/community)
   
 ### [**Documentation**](https://sh951011.github.io/Korean-Speech-Recognition/)   
   
@@ -25,7 +26,7 @@ We mainly referred to following papers.
   
 if you want to study the feature of audio, we recommend this papers.  
   
-[「Voice Recognition Using MFCC Algirithm」](https://pdfs.semanticscholar.org/32d7/2b00454d5155599fb9e8e5119e16970db50d.pdf).  
+[「Voice Recognition Using MFCC Algirithm」](https://ijirae.com/volumes/vol1/issue10/27.NVEC10086.pdf).  
   
 Our project based on Seq2seq with Attention Architecture.  
 Seq2seq is a fast evolving field with new techniques and architectures being published frequently.  
@@ -91,7 +92,7 @@ We follow [PEP-8](https://www.python.org/dev/peps/pep-0008/) for code style. Esp
 [[1] 「Listen, Attend and Spell」  Paper](https://arxiv.org/abs/1508.01211)   
 [[2] 「A Structured Self-attentive Sentence Embedding」 Paper](https://arxiv.org/abs/1703.03130)  
 [[3] 「A Simple Data Augmentation Method for Automatic Speech Recognition」  Paper](https://arxiv.org/abs/1904.08779)     
-[[4] 「Voice Recognition Using MFCC Algorithm」  Paper](https://pdfs.semanticscholar.org/32d7/2b00454d5155599fb9e8e5119e16970db50d.pdf)        
+[[4] 「Voice Recognition Using MFCC Algorithm」  Paper](https://ijirae.com/volumes/vol1/issue10/27.NVEC10086.pdf)        
 [[5]   IBM pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)   
 [[6]   A.I Hub Korean Voice Dataset](http://www.aihub.or.kr/aidata/105)   
   
