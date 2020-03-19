@@ -116,8 +116,8 @@ class Speller(nn.Module):
 
         else:
             if use_teacher_forcing:
-                """ if teacher_forcing, Infer all at once """
-                inputs = inputs[:, :-1]
+                # if teacher_forcing, Infer all at once
+                inputs = inputs[inputs != self.eos_id].view(batch_size, -1)
                 predicted_softmax = self._forward_step(
                     input = inputs,
                     speller_hidden = speller_hidden,

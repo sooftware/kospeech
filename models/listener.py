@@ -94,7 +94,8 @@ class Listener(nn.Module):
 
         assert rnn_cell.lower() == 'lstm' or rnn_cell.lower() == 'gru' or rnn_cell.lower() == 'rnn'
         assert n_layers > 1, "n_layers should be bigger than 1"
-        assert use_pyramidal and n_layers > 4, "Pyramidal Listener`s n_layers should be bigger than 4"
+        if use_pyramidal:
+            assert n_layers > 4, "Pyramidal Listener`s n_layers should be bigger than 4"
 
         self.use_pyramidal = use_pyramidal
         self.rnn_cell = nn.LSTM if rnn_cell.lower() == 'lstm' else nn.GRU if rnn_cell.lower() == 'gru' else nn.RNN

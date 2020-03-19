@@ -36,7 +36,7 @@ class HyperParams():
                  use_label_smooth = True,
                  input_reverse = True,
                  use_augment = True,
-                 use_pickle = True,
+                 use_pickle = False,
                  use_pyramidal = False,
                  use_cuda = True,
                  pack_by_length = True,
