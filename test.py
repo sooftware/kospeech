@@ -46,13 +46,13 @@ def test(model, queue, device):
             target = targets[:, 1:]
 
             model.flatten_parameters()
-            y_hat, _ = model(feats, targets, teacher_forcing_ratio = 0.0, use_beam_search = False)
+            y_hat, _ = model(feats, targets, teacher_forcing_ratio = 1.0, use_beam_search = False)
             dist, length = get_distance(target, y_hat, id2char, EOS_TOKEN)
             total_dist += dist
             total_length += length
             total_sent_num += target.size(0)
-            #if time_step % 10 == 0:
-            logger.info('cer: {:.2f}'.format(total_dist / total_length))
+            if time_step % 10 == 0:
+                logger.info('cer: {:.2f}'.format(dist / length))
             time_step += 1
 
     CER = total_dist / total_length
@@ -62,11 +62,11 @@ def test(model, queue, device):
 
 if __name__ == '__main__':
     # Check Envirionment ===================
-    #os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
-    #logger.info("device : %s" % torch.cuda.get_device_name(0))
-    #logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
-    #logger.info("CUDA version : %s" % (torch.version.cuda))
-    #logger.info("PyTorch version : %s" % (torch.__version__))
+    os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
+    logger.info("device : %s" % torch.cuda.get_device_name(0))
+    logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
+    logger.info("CUDA version : %s" % (torch.version.cuda))
+    logger.info("PyTorch version : %s" % (torch.__version__))
     # ==============================================================
 
     # Basic Setting ========================

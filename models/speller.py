@@ -98,7 +98,7 @@ class Speller(nn.Module):
         max_len = inputs.size(1) - 1  # minus the start of sequence symbol
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
 
-        # uniformly init hidden state from -0.1 to +0.1
+        # uniformly init hidden state from -0.1 to +0.1:
         speller_hidden = torch.FloatTensor(self.n_layers, batch_size, self.hidden_size).uniform_(-0.1, 0.1).to(self.device)
 
         if use_beam_search: # TopK Decoding
@@ -129,6 +129,7 @@ class Speller(nn.Module):
                 for di in range(predicted_softmax.size(1)):
                     step_output = predicted_softmax[:, di, :]
                     decode_results.append(step_output)
+
             else:
                 speller_input = inputs[:, 0].unsqueeze(1)
 
