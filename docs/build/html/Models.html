@@ -35,7 +35,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Dataset" href="Dataset.html" />
+    <link rel="next" title="Checkpoint" href="Checkpoint.html" />
     <link rel="prev" title="More Details" href="notes/More-details.html" /> 
 </head>
 
@@ -86,8 +86,7 @@
             
               <p class="caption"><span class="caption-text">Notes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Korean-Speech-Recognition</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#intro">Intro</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Intro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">Preparation before Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/More-details.html">More Details</a></li>
 </ul>
@@ -104,6 +103,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="Checkpoint.html">Checkpoint</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Dataset.html">Dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Feature.html">Feature</a></li>
@@ -189,8 +189,8 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>listener</strong> (<a class="reference external" href="https://pytorch.org/docs/master/nn.html#torch.nn.Module" title="(in PyTorch vmaster (1.5.0a0+2b79bab ))"><em>torch.nn.Module</em></a>) – encoder of seq2seq</li>
-<li><strong>speller</strong> (<a class="reference external" href="https://pytorch.org/docs/master/nn.html#torch.nn.Module" title="(in PyTorch vmaster (1.5.0a0+2b79bab ))"><em>torch.nn.Module</em></a>) – decoder of seq2seq</li>
+<li><strong>listener</strong> (<a class="reference external" href="https://pytorch.org/docs/master/nn.html#torch.nn.Module" title="(in PyTorch vmaster (1.5.0a0+f515d87 ))"><em>torch.nn.Module</em></a>) – encoder of seq2seq</li>
+<li><strong>speller</strong> (<a class="reference external" href="https://pytorch.org/docs/master/nn.html#torch.nn.Module" title="(in PyTorch vmaster (1.5.0a0+f515d87 ))"><em>torch.nn.Module</em></a>) – decoder of seq2seq</li>
 <li><strong>function</strong> (<em>torch.nn.functional</em>) – A function used to generate symbols from RNN hidden state</li>
 </ul>
 </td>
@@ -226,7 +226,7 @@ teacher forcing would be used (default is 0.90)</li>
 </div>
 <dl class="method">
 <dt id="models.listenAttendSpell.ListenAttendSpell.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>feats</em>, <em>targets</em>, <em>teacher_forcing_ratio=0.9</em>, <em>use_beam_search=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/listenAttendSpell.html#ListenAttendSpell.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.listenAttendSpell.ListenAttendSpell.forward" title="Permalink to this definition">¶</a></dt>
+<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs</em>, <em>targets</em>, <em>teacher_forcing_ratio=0.9</em>, <em>use_beam_search=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/listenAttendSpell.html#ListenAttendSpell.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.listenAttendSpell.ListenAttendSpell.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -280,12 +280,6 @@ registered hooks while the latter silently ignores them.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">output</span> <span class="o">=</span> <span class="n">listener</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
 </pre></div>
 </div>
-<dl class="attribute">
-<dt id="models.listener.Listener.conv">
-<code class="descname">conv</code><em class="property"> = None</em><a class="headerlink" href="#models.listener.Listener.conv" title="Permalink to this definition">¶</a></dt>
-<dd><p>math :: feat_size = (in_channel * out_channel) / maxpool_layer_num</p>
-</dd></dl>
-
 <dl class="method">
 <dt id="models.listener.Listener.flatten_parameters">
 <code class="descname">flatten_parameters</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/listener.html#Listener.flatten_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.listener.Listener.flatten_parameters" title="Permalink to this definition">¶</a></dt>
@@ -451,7 +445,7 @@ registered hooks while the latter silently ignores them.</p>
 <span id="beam"></span><h2>Beam<a class="headerlink" href="#module-models.beam" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="models.beam.Beam">
-<em class="property">class </em><code class="descclassname">models.beam.</code><code class="descname">Beam</code><span class="sig-paren">(</span><em>k</em>, <em>decoder_hidden</em>, <em>decoder</em>, <em>batch_size</em>, <em>max_len</em>, <em>function</em>, <em>device</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/beam.html#Beam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.beam.Beam" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">models.beam.</code><code class="descname">Beam</code><span class="sig-paren">(</span><em>k</em>, <em>decoder</em>, <em>batch_size</em>, <em>max_len</em>, <em>function</em>, <em>device</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/beam.html#Beam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.beam.Beam" title="Permalink to this definition">¶</a></dt>
 <dd><p>Applying Beam-Search during decoding process.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -459,13 +453,14 @@ registered hooks while the latter silently ignores them.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – size of beam</li>
-<li><strong>decoder_hidden</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.5.0a0+2b79bab ))"><em>torch.Tensor</em></a>) – hidden state of decoder</li>
+<li><strong>decoder_hidden</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.5.0a0+f515d87 ))"><em>torch.Tensor</em></a>) – hidden state of decoder</li>
 <li><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – mini-batch size during infer</li>
 <li><strong>max_len</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – a maximum allowed length for the sequence to be processed</li>
-<li><strong>function</strong> (<a class="reference external" href="https://pytorch.org/docs/master/nn.html#torch.nn.Module" title="(in PyTorch vmaster (1.5.0a0+2b79bab ))"><em>torch.nn.Module</em></a>) – A function used to generate symbols from RNN hidden state (default : torch.nn.functional.log_softmax)</li>
-<li><strong>decoder</strong> (<a class="reference external" href="https://pytorch.org/docs/master/nn.html#torch.nn.Module" title="(in PyTorch vmaster (1.5.0a0+2b79bab ))"><em>torch.nn.Module</em></a>) – get pointer of decoder object to get multiple parameters at once</li>
-<li><strong>beams</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.5.0a0+2b79bab ))"><em>torch.Tensor</em></a>) – ongoing beams for decoding</li>
-<li><strong>probs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.5.0a0+2b79bab ))"><em>torch.Tensor</em></a>) – cumulative probability of beams (score of beams)</li>
+<li><strong>function</strong> (<a class="reference external" href="https://pytorch.org/docs/master/nn.html#torch.nn.Module" title="(in PyTorch vmaster (1.5.0a0+f515d87 ))"><em>torch.nn.Module</em></a>) – A function used to generate symbols from RNN hidden state</li>
+<li><strong>(</strong><strong>default</strong> – torch.nn.functional.log_softmax)</li>
+<li><strong>decoder</strong> (<a class="reference external" href="https://pytorch.org/docs/master/nn.html#torch.nn.Module" title="(in PyTorch vmaster (1.5.0a0+f515d87 ))"><em>torch.nn.Module</em></a>) – get pointer of decoder object to get multiple parameters at once</li>
+<li><strong>beams</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.5.0a0+f515d87 ))"><em>torch.Tensor</em></a>) – ongoing beams for decoding</li>
+<li><strong>probs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.5.0a0+f515d87 ))"><em>torch.Tensor</em></a>) – cumulative probability of beams (score of beams)</li>
 <li><strong>sentences</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – store beams which met &lt;eos&gt; token and terminated decoding process.</li>
 <li><strong>sentence_probs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – score of sentences</li>
 </ul>
@@ -487,7 +482,7 @@ registered hooks while the latter silently ignores them.</p>
 </dd>
 </dl>
 <p>Examples:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">beam</span> <span class="o">=</span> <span class="n">Beam</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">decoder_hidden</span><span class="p">,</span> <span class="n">decoder</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">max_len</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">log_softmax</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">beam</span> <span class="o">=</span> <span class="n">Beam</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">decoder</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">max_len</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">log_softmax</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y_hats</span> <span class="o">=</span> <span class="n">beam</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">encoder_outputs</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -508,17 +503,11 @@ registered hooks while the latter silently ignores them.</p>
 <div class="section" id="module-models.attention">
 <span id="attention"></span><h2>Attention<a class="headerlink" href="#module-models.attention" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="models.attention.Attention">
-<em class="property">class </em><code class="descclassname">models.attention.</code><code class="descname">Attention</code><span class="sig-paren">(</span><em>decoder_hidden_size</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/attention.html#Attention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.attention.Attention" title="Permalink to this definition">¶</a></dt>
-<dd><p>Applies an self attention mechanism on the output features from the decoder.
-「A Structured Self-Attentive Sentence Embedding」 Paper
-<a class="reference external" href="https://arxiv.org/abs/1703.03130">https://arxiv.org/abs/1703.03130</a></p>
-<div class="math notranslate nohighlight">
-\[\begin{split}\begin{array}{ll}
-x = encoder outputs*decoder output \\
-attn score = exp(x_i) / sum_j exp(x_j) \\
-output = \tanh(w * (attn score * encoder outputs) + b * output)
-\end{array}\end{split}\]</div>
+<dt id="models.attention.MultiHeadAttention">
+<em class="property">class </em><code class="descclassname">models.attention.</code><code class="descname">MultiHeadAttention</code><span class="sig-paren">(</span><em>hidden_size</em>, <em>n_head=4</em>, <em>dim=128</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/attention.html#MultiHeadAttention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.attention.MultiHeadAttention" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies an multi-head attention mechanism on the output features from the decoder.</p>
+<p>Refer to 「State-of-the-art Speech Recognition With Sequence-to-Sequence Models」 Paper
+<a class="reference external" href="https://arxiv.org/abs/1712.01769">https://arxiv.org/abs/1712.01769</a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -539,15 +528,16 @@ output = \tanh(w * (attn score * encoder outputs) + b * output)
 <li><strong>output</strong> (batch, output_len, dimensions): tensor containing the attended output features from the decoder.</li>
 </ul>
 </dd>
-</dl>
-<p>Examples:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">attention</span> <span class="o">=</span> <span class="n">Attention</span><span class="p">(</span><span class="n">hidden_size</span><span class="p">)</span>
+<dt>Examples::</dt>
+<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">attention</span> <span class="o">=</span> <span class="n">MultiHeadAttention</span><span class="p">(</span><span class="n">hidden_size</span><span class="p">,</span> <span class="n">n_head</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">128</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">output</span> <span class="o">=</span> <span class="n">attention</span><span class="p">(</span><span class="n">decoder_output</span><span class="p">,</span> <span class="n">encoder_outputs</span><span class="p">)</span>
 </pre></div>
 </div>
+</dd>
+</dl>
 <dl class="method">
-<dt id="models.attention.Attention.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>decoder_output</em>, <em>encoder_outputs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/attention.html#Attention.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.attention.Attention.forward" title="Permalink to this definition">¶</a></dt>
+<dt id="models.attention.MultiHeadAttention.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>decoder_output</em>, <em>encoder_outputs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/attention.html#MultiHeadAttention.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.attention.MultiHeadAttention.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -572,7 +562,7 @@ registered hooks while the latter silently ignores them.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="Dataset.html" class="btn btn-neutral float-right" title="Dataset" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="Checkpoint.html" class="btn btn-neutral float-right" title="Checkpoint" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="notes/More-details.html" class="btn btn-neutral float-left" title="More Details" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

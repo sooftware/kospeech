@@ -94,6 +94,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Checkpoint.html">Checkpoint</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Dataset.html">Dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Feature.html">Feature</a></li>
@@ -185,6 +186,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
     <span class="n">y_hat</span> <span class="o">=</span> <span class="n">y_hat</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+
     <span class="n">dist</span> <span class="o">=</span> <span class="n">Lev</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">y_hat</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
     <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
 
@@ -207,12 +209,15 @@
     <span class="n">total_dist</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">total_length</span> <span class="o">=</span> <span class="mi">0</span>
 
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">targets</span><span class="p">)):</span>
-        <span class="n">target</span> <span class="o">=</span> <span class="n">label_to_string</span><span class="p">(</span><span class="n">targets</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">id2char</span><span class="p">,</span> <span class="n">eos_id</span><span class="p">)</span>
-        <span class="n">y_hat</span> <span class="o">=</span> <span class="n">label_to_string</span><span class="p">(</span><span class="n">y_hats</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">id2char</span><span class="p">,</span> <span class="n">eos_id</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">targets</span><span class="p">)):</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">label_to_string</span><span class="p">(</span><span class="n">targets</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">id2char</span><span class="p">,</span> <span class="n">eos_id</span><span class="p">)</span>
+        <span class="n">y_hat</span> <span class="o">=</span> <span class="n">label_to_string</span><span class="p">(</span><span class="n">y_hats</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">id2char</span><span class="p">,</span> <span class="n">eos_id</span><span class="p">)</span>
+
         <span class="n">dist</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="n">char_distance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">y_hat</span><span class="p">)</span>
+
         <span class="n">total_dist</span> <span class="o">+=</span> <span class="n">dist</span>
         <span class="n">total_length</span> <span class="o">+=</span> <span class="n">length</span>
+
     <span class="k">return</span> <span class="n">total_dist</span><span class="p">,</span> <span class="n">total_length</span></div>
 
 
@@ -230,16 +235,20 @@
 <span class="sd">        - **label** (list): list of bos + sequence of label + eos</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="n">target_dict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;target_dict is None&quot;</span>
+
     <span class="n">key</span> <span class="o">=</span> <span class="n">filepath</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
     <span class="n">script</span> <span class="o">=</span> <span class="n">target_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
     <span class="n">tokens</span> <span class="o">=</span> <span class="n">script</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
 
-    <span class="n">label</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-    <span class="n">label</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">sos_id</span><span class="p">))</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">sos_id</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
-        <span class="n">label</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">token</span><span class="p">))</span>
-    <span class="n">label</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">eos_id</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">label</span></div>
+        <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">token</span><span class="p">))</span>
+    <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">eos_id</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">labels</span></div>
+
 
 <div class="viewcode-block" id="label_to_string"><a class="viewcode-back" href="../../Utils.html#package.utils.label_to_string">[docs]</a><span class="k">def</span> <span class="nf">label_to_string</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">id2char</span><span class="p">,</span> <span class="n">eos_id</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -276,6 +285,7 @@
     <span class="sd">&quot;&quot;&quot; save result of training (unit : epoch) &quot;&quot;&quot;</span>
     <span class="n">train_dict</span><span class="p">,</span> <span class="n">train_loss</span><span class="p">,</span> <span class="n">train_cer</span> <span class="o">=</span> <span class="n">train_result</span>
     <span class="n">valid_dict</span><span class="p">,</span> <span class="n">valid_loss</span><span class="p">,</span> <span class="n">valid_cer</span> <span class="o">=</span> <span class="n">valid_result</span>
+
     <span class="n">train_dict</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">train_loss</span><span class="p">)</span>
     <span class="n">train_dict</span><span class="p">[</span><span class="s2">&quot;cer&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">train_cer</span><span class="p">)</span>
     <span class="n">valid_dict</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">valid_loss</span><span class="p">)</span>
@@ -283,6 +293,7 @@
 
     <span class="n">train_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">train_dict</span><span class="p">)</span>
     <span class="n">valid_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">valid_dict</span><span class="p">)</span>
+
     <span class="n">train_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">TRAIN_RESULT_PATH</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;cp949&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">valid_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">VALID_RESULT_PATH</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;cp949&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
@@ -295,7 +306,7 @@
 
 <div class="viewcode-block" id="save_pickle"><a class="viewcode-back" href="../../Utils.html#package.utils.save_pickle">[docs]</a><span class="k">def</span> <span class="nf">save_pickle</span><span class="p">(</span><span class="n">save_var</span><span class="p">,</span> <span class="n">savepath</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; save pickle file &quot;&quot;&quot;</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">savepath</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">savepath</span> <span class="o">+</span> <span class="s1">&#39;.bin&#39;</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">save_var</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
 </pre></div>

@@ -94,6 +94,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Checkpoint.html">Checkpoint</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Dataset.html">Dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Feature.html">Feature</a></li>
@@ -200,6 +201,7 @@
             <span class="n">label_smoothed</span><span class="o">.</span><span class="n">fill_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">smoothing</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocab_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
             <span class="n">label_smoothed</span><span class="o">.</span><span class="n">scatter_</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">target</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">confidence</span><span class="p">)</span>
             <span class="n">label_smoothed</span><span class="p">[</span><span class="n">target</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_index</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">0</span>
+
         <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="n">label_smoothed</span> <span class="o">*</span> <span class="n">logit</span><span class="p">)</span></div></div>
 </pre></div>
 

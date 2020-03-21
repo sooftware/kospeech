@@ -1,5 +1,5 @@
 import torch
-from package.definition import logger, id2char, EOS_TOKEN
+#from package.definition import logger, id2char, EOS_TOKEN
 from package.utils import get_distance
 
 

@@ -1,4 +1,4 @@
-from package.definition import logger
+#from package.definition import logger
 
 class HyperParams():
     """

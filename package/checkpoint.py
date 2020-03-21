@@ -51,7 +51,7 @@ class CheckPoint:
             self.snapshot['cer'] = cer
         if hparams is not None:
             self.snapshot['hparams'] = hparams
-        if train_queue is not None:
+        if queue is not None:
             self.snapshot['queue'] = queue
         if total_loss is not None:
             self.snapshot['total_loss'] = total_loss

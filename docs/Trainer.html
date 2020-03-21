@@ -86,8 +86,7 @@
             
               <p class="caption"><span class="caption-text">Notes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Korean-Speech-Recognition</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#intro">Intro</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Intro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">Preparation before Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/More-details.html">More Details</a></li>
 </ul>
@@ -97,6 +96,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Checkpoint.html">Checkpoint</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Dataset.html">Dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Feature.html">Feature</a></li>
@@ -172,31 +172,9 @@
   <div class="section" id="module-package.trainer">
 <span id="trainer"></span><h1>Trainer<a class="headerlink" href="#module-package.trainer" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
-<dt id="package.trainer.exp_decay">
-<code class="descclassname">package.trainer.</code><code class="descname">exp_decay</code><span class="sig-paren">(</span><em>optimizer</em>, <em>total_time_step</em>, <em>hparams</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/trainer.html#exp_decay"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.trainer.exp_decay" title="Permalink to this definition">¶</a></dt>
-<dd><p>a gradual decrease in learning rates</p>
-<dl class="docutils">
-<dt>Reference:</dt>
-<dd>「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」Google Brain Team. 2019.
-<a class="reference external" href="https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py">https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py</a></dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
 <dt id="package.trainer.get_lr">
 <code class="descclassname">package.trainer.</code><code class="descname">get_lr</code><span class="sig-paren">(</span><em>optimizer</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/trainer.html#get_lr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.trainer.get_lr" title="Permalink to this definition">¶</a></dt>
 <dd><p>get learning rate</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="package.trainer.ramp_up">
-<code class="descclassname">package.trainer.</code><code class="descname">ramp_up</code><span class="sig-paren">(</span><em>optimizer</em>, <em>time_step</em>, <em>hparams</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/trainer.html#ramp_up"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.trainer.ramp_up" title="Permalink to this definition">¶</a></dt>
-<dd><p>Steps to gradually increase the learing rate</p>
-<dl class="docutils">
-<dt>Reference:</dt>
-<dd>「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」Google Brain Team. 2019.
-<a class="reference external" href="https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py">https://github.com/DemisEom/SpecAugment/blob/master/SpecAugment/spec_augment_pytorch.py</a></dd>
-</dl>
 </dd></dl>
 
 <dl class="function">
@@ -213,7 +191,7 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>model</strong> (<a class="reference external" href="https://pytorch.org/docs/master/nn.html#torch.nn.Module" title="(in PyTorch vmaster (1.5.0a0+2b79bab ))"><em>torch.nn.Module</em></a>) – Model to be trained</li>
+<li><strong>model</strong> (<a class="reference external" href="https://pytorch.org/docs/master/nn.html#torch.nn.Module" title="(in PyTorch vmaster (1.5.0a0+f515d87 ))"><em>torch.nn.Module</em></a>) – Model to be trained</li>
 <li><strong>optimizer</strong> (<em>torch.optim</em>) – optimizer for training</li>
 <li><strong>teacher_forcing_ratio</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – The probability that teacher forcing will be used (default: 0.90)</li>
 <li><strong>print_time_step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Parameters to determine how many steps to output</li>

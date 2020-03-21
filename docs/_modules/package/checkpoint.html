@@ -1,0 +1,283 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>package.checkpoint &mdash; Korean Speech Recognition 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Korean Speech Recognition
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../notes/intro.html">Intro</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notes/Preparation.html">Preparation before Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notes/More-details.html">More Details</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Models.html">Models</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Package Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Checkpoint.html">Checkpoint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Dataset.html">Dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Evaluator.html">Evaluator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Feature.html">Feature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Hparams.html">Hparams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Loader.html">Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Loss.html">Loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Utils.html">Utils</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Korean Speech Recognition</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>package.checkpoint</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for package.checkpoint</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">package.loader</span> <span class="k">import</span> <span class="n">load_pickle</span>
+<span class="kn">from</span> <span class="nn">package.utils</span> <span class="k">import</span> <span class="n">save_pickle</span>
+
+
+<div class="viewcode-block" id="CheckPoint"><a class="viewcode-back" href="../../Checkpoint.html#package.checkpoint.CheckPoint">[docs]</a><span class="k">class</span> <span class="nc">CheckPoint</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The Checkpoint class manages the saving and loading of a model during training. It allows training to be suspended</span>
+<span class="sd">    and resumed at a later time (e.g. when running on a cluster using sequential jobs).</span>
+
+<span class="sd">    To make a checkpoint, initialize a Checkpoint object with the following args; then call that object&#39;s save() method</span>
+<span class="sd">    to write parameters to disk.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        model (torch.nn.Module): seq2seq model being trained</span>
+<span class="sd">        optimizer (torch.nn): stores the state of the optimizer</span>
+<span class="sd">        epoch (int): current epoch (an epoch is a loop through the full training data)</span>
+<span class="sd">        time_step (int): number of examples seen within the current epoch</span>
+<span class="sd">        batch_size (int): mini batch size</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">CHECKPOINT_DIR</span> <span class="o">=</span> <span class="s1">&#39;./data/checkpoints/&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">epoch</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">train_dataset_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">valid_dataset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">time_step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">total_time_step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hparams</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">queue</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">snapshot</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">snapshot</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">snapshot</span><span class="p">[</span><span class="s1">&#39;train_dataset_list&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">train_dataset_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">snapshot</span><span class="p">[</span><span class="s1">&#39;valid_dataset&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">valid_dataset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">snapshot</span><span class="p">[</span><span class="s1">&#39;epoch&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">epoch</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">snapshot</span><span class="p">[</span><span class="s1">&#39;total_time_step&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">total_time_step</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">snapshot</span><span class="p">[</span><span class="s1">&#39;time_step&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">time_step</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">snapshot</span><span class="p">[</span><span class="s1">&#39;hparams&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hparams</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">snapshot</span><span class="p">[</span><span class="s1">&#39;queue&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">queue</span>
+
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">epoch</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">train_dataset_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">valid_dataset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time_step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+             <span class="n">total_time_step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hparams</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">queue</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+             <span class="n">total_loss</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">total_num</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">total_dist</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">total_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">total_sent_num</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">snapshot</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="k">if</span> <span class="n">train_dataset_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">snapshot</span><span class="p">[</span><span class="s1">&#39;train_dataset_list&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">train_dataset_list</span>
+        <span class="k">if</span> <span class="n">epoch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">snapshot</span><span class="p">[</span><span class="s1">&#39;epoch&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">epoch</span>
+        <span class="k">if</span> <span class="n">total_time_step</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">snapshot</span><span class="p">[</span><span class="s1">&#39;total_time_step&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">total_time_step</span>
+        <span class="k">if</span> <span class="n">time_step</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">snapshot</span><span class="p">[</span><span class="s1">&#39;time_step&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">time_step</span>
+        <span class="k">if</span> <span class="n">loss</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">snapshot</span><span class="p">[</span><span class="s1">&#39;loss&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">loss</span>
+        <span class="k">if</span> <span class="n">cer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">snapshot</span><span class="p">[</span><span class="s1">&#39;cer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cer</span>
+        <span class="k">if</span> <span class="n">hparams</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">snapshot</span><span class="p">[</span><span class="s1">&#39;hparams&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hparams</span>
+        <span class="k">if</span> <span class="n">queue</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">snapshot</span><span class="p">[</span><span class="s1">&#39;queue&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">queue</span>
+        <span class="k">if</span> <span class="n">total_loss</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">snapshot</span><span class="p">[</span><span class="s1">&#39;total_loss&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">total_loss</span>
+        <span class="k">if</span> <span class="n">total_num</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">snapshot</span><span class="p">[</span><span class="s1">&#39;total_num&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">total_num</span>
+        <span class="k">if</span> <span class="n">total_dist</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">snapshot</span><span class="p">[</span><span class="s1">&#39;total_dist&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">total_dist</span>
+        <span class="k">if</span> <span class="n">total_length</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">snapshot</span><span class="p">[</span><span class="s1">&#39;total_length&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">total_length</span>
+        <span class="k">if</span> <span class="n">total_sent_num</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">snapshot</span><span class="p">[</span><span class="s1">&#39;total_sent_num&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">total_sent_num</span>
+
+        <span class="n">date_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y_%m_</span><span class="si">%d</span><span class="s1">_%H_%M_%S&#39;</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">localtime</span><span class="p">())</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">CHECKPOINT_DIR</span> <span class="o">+</span> <span class="n">date_time</span> <span class="o">+</span> <span class="s1">&#39;.bin&#39;</span>
+        <span class="n">save_pickle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">snapshot</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;snapshot : </span><span class="si">%s</span><span class="s2"> save&quot;</span> <span class="o">%</span> <span class="n">path</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">snapshot</span> <span class="o">=</span> <span class="n">load_pickle</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;load snapshot...&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">snapshot</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, SooHwan Kim
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

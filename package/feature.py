@@ -2,7 +2,7 @@ import torch
 import librosa
 import numpy as np
 import random
-from package.definition import logger
+#from package.definition import logger
 
 def get_librosa_melspectrogram(filepath, n_mels=128, del_silence=False, input_reverse=True, mel_type='log_mel'):
     r"""

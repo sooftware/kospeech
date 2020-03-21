@@ -1,7 +1,7 @@
 import pandas as pd
 import pickle
 import Levenshtein as Lev
-from package.definition import *
+#from package.definition import *
 
 
 def char_distance(target, y_hat):

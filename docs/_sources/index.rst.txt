@@ -25,6 +25,7 @@ Welcome to Korean Speech Recognition's documentation!
    :maxdepth: 1
    :caption: Package Reference
 
+   Checkpoint
    Dataset
    Evaluator
    Feature

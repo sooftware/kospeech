@@ -87,7 +87,10 @@
               <p class="caption"><span class="caption-text">Notes</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Intro</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#roadmap">Roadmap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#roadmap">Roadmap</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#crr-character-recognition-rate">( <strong>CRR</strong> : Character Recognition Rate )</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#install-from-source">Install from source</a></li>
@@ -115,6 +118,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Checkpoint.html">Checkpoint</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Dataset.html">Dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Feature.html">Feature</a></li>
@@ -197,12 +201,14 @@
 <p><a class="reference external" href="https://arxiv.org/abs/1508.01211">「Listen, Attend and Spell」</a></p>
 <p><a class="reference external" href="https://arxiv.org/abs/1904.08779">「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」</a>.</p>
 <p>if you want to study the feature of audio, we recommend this papers.</p>
-<p><a class="reference external" href="https://pdfs.semanticscholar.org/32d7/2b00454d5155599fb9e8e5119e16970db50d.pdf">「Voice Recognition Using MFCC Algirithm」</a>.</p>
-<p>Our project based on Seq2seq with Attention Architecture.</p>
-<p>Seq2seq is a fast evolving field with new techniques and architectures being published frequently.</p>
-<p>and We use <a class="reference external" href="http://www.aihub.or.kr/aidata/105">AI Hub Dataset</a> which contains 1,000 hours korean voice data.</p>
-<p>And, our project is currently in progress.<br />At present our top model has recorded an <strong>80% CRR</strong>, and we are working for a higher recognition rate.<br />( <strong>CRR</strong> : Character Recognition Rate )</p>
+<p><a class="reference external" href="https://ijirae.com/volumes/vol1/issue10/27.NVEC10086.pdf">「Voice Recognition Using MFCC Algirithm」</a>.</p>
+<p>Our project based on Seq2seq with Attention Architecture.<br />Seq2seq is a fast evolving field with new techniques and architectures being published frequently.</p>
+<p>We use <a class="reference external" href="http://www.aihub.or.kr/aidata/105">AI Hub 1000h</a> dataset which contains 1,000 hours korean voice data. and, our project is currently in progress.<br />At present our top model has recorded an <strong>80% CRR</strong>, and we are working for a higher recognition rate.</p>
+<div class="section" id="crr-character-recognition-rate">
+<h3>( <strong>CRR</strong> : Character Recognition Rate )<a class="headerlink" href="#crr-character-recognition-rate" title="Permalink to this headline">¶</a></h3>
+<p>We are constantly updating the progress of the project on the <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/wiki">Wiki page</a>.  Please check this page.</p>
 <p><a class="reference external" href="https://sh951011.github.io/Korean-Speech-Recognition/notes/More-details.html">More details</a></p>
+</div>
 </div>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
@@ -239,7 +245,7 @@
 <div class="section" id="train-and-test">
 <h3>Train and Test<a class="headerlink" href="#train-and-test" title="Permalink to this headline">¶</a></h3>
 <p>if you want to start training, you should run <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/blob/master/train.py">train.py</a>.<br />or after training, you want to start testing, you should run <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/blob/master/test.py">test.py</a>.</p>
-<p>you can set up a hyperparameters <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/blob/master/utils/hparams.py">hparams.py</a>.<br />An explanation of hparams is <a class="reference external" href="https://sh951011.github.io/Korean-Speech-Recognition/Hparams.html">here</a>.</p>
+<p>you can set up a hyperparameters <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/blob/master/package/hparams.py">hparams.py</a>.<br />An explanation of hparams is <a class="reference external" href="https://sh951011.github.io/Korean-Speech-Recognition/Hparams.html">here</a>.</p>
 </div>
 </div>
 <div class="section" id="troubleshoots-and-contributing">
@@ -248,11 +254,11 @@
 <p>We appreciate any kind of feedback or contribution.  Feel free to proceed with small issues like bug fixes, documentation improvement.  For major contributions and new features, please discuss with the collaborators in corresponding issues.</p>
 <div class="section" id="code-style">
 <h3>Code Style<a class="headerlink" href="#code-style" title="Permalink to this headline">¶</a></h3>
-<p>We follow <a class="reference external" href="https://www.python.org/dev/peps/pep-0008/">PEP8</a> for code style. Especially the style of docstrings is important to generate documentation.</p>
+<p>We follow <a class="reference external" href="https://www.python.org/dev/peps/pep-0008/">PEP-8</a> for code style. Especially the style of docstrings is important to generate documentation.</p>
 </div>
 <div class="section" id="reference">
 <h3>Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h3>
-<p><a class="reference external" href="https://arxiv.org/abs/1508.01211">[1] 「Listen, Attend and Spell」  Paper</a><br /><a class="reference external" href="https://arxiv.org/abs/1703.03130">[2] 「A Structured Self-attentive Sentence Embedding」 Paper</a><br /><a class="reference external" href="https://arxiv.org/abs/1904.08779">[3] 「A Simple Data Augmentation Method for Automatic Speech Recognition」  Paper</a><br /><a class="reference external" href="https://pdfs.semanticscholar.org/32d7/2b00454d5155599fb9e8e5119e16970db50d.pdf">[4] 「Voice Recognition Using MFCC Algorithm」  Paper</a><br /><a class="reference external" href="https://github.com/IBM/pytorch-seq2seq">[5]   IBM pytorch-seq2seq</a><br /><a class="reference external" href="http://www.aihub.or.kr/aidata/105">[6]   A.I Hub Korean Voice Dataset</a></p>
+<p><a class="reference external" href="https://arxiv.org/abs/1508.01211">[1] 「Listen, Attend and Spell」  Paper</a><br /><a class="reference external" href="https://arxiv.org/abs/1712.01769">[2] 「State-of-the-art Speech Recognition With Sequence-to-Sequence Models」   Paper</a><br /><a class="reference external" href="https://arxiv.org/abs/1904.08779">[3] 「A Simple Data Augmentation Method for Automatic Speech Recognition」  Paper</a><br /><a class="reference external" href="https://ijirae.com/volumes/vol1/issue10/27.NVEC10086.pdf">[4] 「Voice Recognition Using MFCC Algorithm」  Paper</a><br /><a class="reference external" href="https://github.com/IBM/pytorch-seq2seq">[5]   IBM pytorch-seq2seq</a><br /><a class="reference external" href="http://www.aihub.or.kr/aidata/105">[6]   A.I Hub Korean Voice Dataset</a></p>
 </div>
 <div class="section" id="license">
 <h3>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h3>
@@ -263,7 +269,7 @@
 <span class="n">You</span> <span class="n">may</span> <span class="n">obtain</span> <span class="n">a</span> <span class="n">copy</span> <span class="n">of</span> <span class="n">the</span> <span class="n">License</span> <span class="n">at</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">licenses</span><span class="o">/</span><span class="n">LICENSE</span><span class="o">-</span><span class="mf">2.0</span>
 <span class="n">Unless</span> <span class="n">required</span> <span class="n">by</span> <span class="n">applicable</span> <span class="n">law</span> <span class="ow">or</span> <span class="n">agreed</span> <span class="n">to</span> <span class="ow">in</span> <span class="n">writing</span><span class="p">,</span> <span class="n">software</span>
 <span class="n">distributed</span> <span class="n">under</span> <span class="n">the</span> <span class="n">License</span> <span class="ow">is</span> <span class="n">distributed</span> <span class="n">on</span> <span class="n">an</span> <span class="s2">&quot;AS IS&quot;</span> <span class="n">BASIS</span><span class="p">,</span>
-<span class="n">WITHOUT</span> <span class="n">WARRANTIES</span> <span class="n">OR</span> <span class="n">CONDITIONS</span> <span class="n">OF</span> <span class="n">ANY</span> <span class="n">KIND</span><span class="p">,</span> <span class="n">either</span> <span class="n">express</span> <span class="ow">or</span> <span class="n">implied</span><span class="o">.</span>
+<span class="n">WITHOUT</span> <span class="n">WARRANTIES</span> <span class="n">OR</span> <span class="n">CONDITIONS</span> <span class="n">OF</span> <span class="n">ANY</span> <span class="n">KIND</span><span class="p">,</span> <span class="n">either</span> <span class="n">express</span> <span class="ow">or</span> <span class="n">implied</span><span class="o">.</span>  
 <span class="n">See</span> <span class="n">the</span> <span class="n">License</span> <span class="k">for</span> <span class="n">the</span> <span class="n">specific</span> <span class="n">language</span> <span class="n">governing</span> <span class="n">permissions</span> <span class="ow">and</span>
 <span class="n">limitations</span> <span class="n">under</span> <span class="n">the</span> <span class="n">License</span><span class="o">.</span>
 </pre></div>
