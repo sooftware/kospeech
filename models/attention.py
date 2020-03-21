@@ -30,8 +30,8 @@ class MultiHeadAttention(nn.Module):
         self.linear_out = nn.Linear(hidden_size * 2, hidden_size)
         self.dim = dim
         self.n_head = n_head
-        self.linear_q = nn.Linear(hidden_size, self.dim * n_head)
-        self.linear_k = nn.Linear(hidden_size, self.dim * n_head)
+        self.linear_q = nn.Linear(hidden_size, dim * n_head)
+        self.linear_k = nn.Linear(hidden_size, dim * n_head)
 
     def forward(self, decoder_output, encoder_outputs):
         batch_size = encoder_outputs.size(0)
