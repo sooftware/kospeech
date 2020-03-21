@@ -26,14 +26,13 @@ class Beam:
 
     Examples::
 
-        >>> beam = Beam(k, decoder_hidden, decoder, batch_size, max_len, F.log_softmax)
+        >>> beam = Beam(k, decoder, batch_size, max_len, F.log_softmax)
         >>> y_hats = beam.search(inputs, encoder_outputs)
     """
 
-    def __init__(self, k, decoder_hidden, decoder, batch_size, max_len, function, device):
+    def __init__(self, k, decoder, batch_size, max_len, function, device):
         assert k > 1, "beam size (k) should be bigger than 1"
         self.k = k
-        self.decoder_hidden = decoder_hidden
         self.batch_size = batch_size
         self.max_len = max_len
         self.function = function
@@ -181,7 +180,7 @@ class Beam:
         embedded = self.embedding(decoder_input).to(self.device)
         embedded = self.input_dropout(embedded)
 
-        decoder_output, hidden = self.rnn(embedded, self.decoder_hidden)  # decoder output
+        decoder_output, hidden = self.rnn(embedded)  # decoder output
 
         if self.use_attention:
             output = self.attention(decoder_output, encoder_outputs)

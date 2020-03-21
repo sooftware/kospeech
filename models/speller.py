@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from models.beam import Beam
-from .attention import Attention
+from .attention import MultiHeadAttention
 
 if torch.cuda.is_available():
     import torch.cuda as device
@@ -65,11 +65,11 @@ class Speller(nn.Module):
         self.k = k
         self.use_attention = use_attention
         if use_attention:
-            self.attention = Attention(decoder_hidden_size=hidden_size)
+            self.attention = MultiHeadAttention(hidden_size, dim=128, n_head=4)
         self.w = nn.Linear(self.hidden_size, vocab_size)
         self.device = device
 
-    def _forward_step(self, input, speller_hidden, listener_outputs=None, function=F.log_softmax):
+    def _forward_step(self, input, listener_outputs=None, function=F.log_softmax):
         """ forward one time step """
         batch_size = input.size(0)
         output_size = input.size(1)
@@ -80,7 +80,7 @@ class Speller(nn.Module):
         if self.training:
             self.rnn.flatten_parameters()
 
-        speller_output = self.rnn(embedded, speller_hidden)[0]
+        speller_output = self.rnn(embedded)[0]
 
         if self.use_attention:
             output = self.attention(speller_output, listener_outputs)
@@ -98,14 +98,10 @@ class Speller(nn.Module):
         max_len = inputs.size(1) - 1  # minus the start of sequence symbol
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
 
-        # uniformly init hidden state from -0.1 to +0.1:
-        speller_hidden = torch.FloatTensor(self.n_layers, batch_size, self.hidden_size).uniform_(-0.1, 0.1).to(self.device)
-
         if use_beam_search: # TopK Decoding
             inputs = inputs[:, 0].unsqueeze(1)
             beam = Beam(
                 k = self.k,
-                decoder_hidden = speller_hidden,
                 decoder = self,
                 batch_size = batch_size,
                 max_len = max_len,
@@ -121,7 +117,6 @@ class Speller(nn.Module):
                 speller_inputs = inputs[inputs != self.eos_id].view(batch_size, -1)
                 predicted_softmax = self._forward_step(
                     input = speller_inputs,
-                    speller_hidden = speller_hidden,
                     listener_outputs = listener_outputs,
                     function = function
                 )
@@ -136,7 +131,6 @@ class Speller(nn.Module):
                 for di in range(max_len):
                     predicted_softmax = self._forward_step(
                         input = speller_input,
-                        speller_hidden = speller_hidden,
                         listener_outputs = listener_outputs,
                         function = function
                     )
