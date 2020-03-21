@@ -50,11 +50,6 @@ from package.loss import LabelSmoothingLoss
 from package.trainer import supervised_train
 from package.utils import save_epoch_result
 
-if torch.cuda.is_available():
-    import torch.cuda as device
-else:
-    import torch as device
-
 
 if __name__ == '__main__':
     # Check Envirionment ===================

@@ -1,7 +1,7 @@
 import math
 import random
 from torch.utils.data import Dataset
-#from package.definition import EOS_TOKEN, logger, SOS_TOKEN
+from package.definition import EOS_TOKEN, logger, SOS_TOKEN
 from package.feature import spec_augment, get_librosa_melspectrogram
 from package.utils import get_label, save_pickle
 

@@ -1,6 +1,6 @@
 import time
 import torch
-#from package.definition import logger, id2char, EOS_TOKEN
+from package.definition import logger, id2char, EOS_TOKEN
 from package.utils import get_distance, save_step_result
 
 train_step_result = {'loss': [], 'cer': []}
