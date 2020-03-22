@@ -76,7 +76,7 @@ if you want to start training, you should run [train.py](https://github.com/sh95
 or after training, you want to start testing, you should run [test.py](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/test.py).  
   
 you can set up a configures [config.py](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/package/config.py).  
-An explanation of hparams is [here](https://sh951011.github.io/Korean-Speech-Recognition/Hparams.html).  
+An explanation of configures is [here](https://sh951011.github.io/Korean-Speech-Recognition/Hparams.html).  
   
 
 ## Troubleshoots and Contributing
