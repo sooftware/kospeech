@@ -41,11 +41,11 @@ def get_distance(targets, y_hats, id2char, eos_id):
     total_dist = 0
     total_length = 0
 
-    for idx in range(len(targets)):
-        target = label_to_string(targets[idx], id2char, eos_id)
-        y_hat = label_to_string(y_hats[idx], id2char, eos_id)
+    for (target, y_hat) in zip(targets, y_hats):
+        script = label_to_string(target, id2char, eos_id)
+        pred = label_to_string(y_hat, id2char, eos_id)
 
-        dist, length = char_distance(target, y_hat)
+        dist, length = char_distance(script, pred)
 
         total_dist += dist
         total_length += length

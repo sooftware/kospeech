@@ -20,7 +20,7 @@ from models.listener import Listener
 from models.speller import Speller
 from package.dataset import BaseDataset
 from package.definition import *
-from package.hparams import HyperParams
+from package.config import Config
 from package.loader import BaseDataLoader, load_data_list, load_targets
 from package.utils import get_distance
 
@@ -70,36 +70,36 @@ if __name__ == '__main__':
     # ==============================================================
 
     # Basic Setting ========================
-    hparams = HyperParams()
-    cuda = hparams.use_cuda and torch.cuda.is_available()
+    config = Config()
+    cuda = config.use_cuda and torch.cuda.is_available()
     device = torch.device('cuda' if cuda else 'cpu')
 
 
     # Model Setting ========================
     listener = Listener(
         feat_size = 80,
-        hidden_size = hparams.hidden_size,
-        dropout_p = hparams.dropout,
-        n_layers = hparams.listener_layer_size,
-        bidirectional = hparams.use_bidirectional,
+        hidden_size = config.hidden_size,
+        dropout_p = config.dropout,
+        n_layers = config.listener_layer_size,
+        bidirectional = config.use_bidirectional,
         rnn_cell = 'gru',
-        use_pyramidal = hparams.use_pyramidal,
+        use_pyramidal = config.use_pyramidal,
         device=device
     )
     speller = Speller(
         vocab_size = len(char2id),
-        max_len = hparams.max_len,
+        max_len = config.max_len,
         k = 8,
-        hidden_size = hparams.hidden_size << (1 if hparams.use_bidirectional else 0),
+        hidden_size = config.hidden_size << (1 if config.use_bidirectional else 0),
         sos_id = SOS_TOKEN,
         eos_id = EOS_TOKEN,
-        n_layers = hparams.speller_layer_size,
+        n_layers = config.speller_layer_size,
         rnn_cell = 'gru',
-        dropout_p = hparams.dropout,
-        use_attention = hparams.use_attention,
+        dropout_p = config.dropout,
+        use_attention = config.use_attention,
         device = device
     )
-    model = ListenAttendSpell(listener, speller, use_pyramidal = hparams.use_pyramidal)
+    model = ListenAttendSpell(listener, speller, use_pyramidal = config.use_pyramidal)
     # ==============================================================
     load_model = torch.load("./data/weight_file/_epoch_1_step_10000.pt",  map_location=torch.device('cpu')).module
     model.load_state_dict(load_model.state_dict())
@@ -114,12 +114,12 @@ if __name__ == '__main__':
         sos_id = SOS_TOKEN,
         eos_id = EOS_TOKEN,
         target_dict = target_dict,
-        input_reverse = hparams.input_reverse,
+        input_reverse = config.input_reverse,
         use_augment = False,
         pack_by_length = False
     )
-    test_queue = queue.Queue(hparams.worker_num << 1)
-    test_loader = BaseDataLoader(test_dataset, test_queue, hparams.batch_size, 0)
+    test_queue = queue.Queue(config.worker_num << 1)
+    test_loader = BaseDataLoader(test_dataset, test_queue, config.batch_size, 0)
     test_loader.start()
     CER = test(model, test_queue, device)
     logger.info('20h Test Set CER : %s' % CER)

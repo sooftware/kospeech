@@ -5,7 +5,7 @@ from package.utils import get_distance, save_step_result
 
 train_step_result = {'loss': [], 'cer': []}
 
-def supervised_train(model, hparams, epoch, total_time_step, queue,
+def supervised_train(model, config, epoch, total_time_step, queue,
                      criterion, optimizer, device, train_begin, worker_num,
                      print_time_step=10, teacher_forcing_ratio=0.90):
     """
@@ -38,14 +38,14 @@ def supervised_train(model, hparams, epoch, total_time_step, queue,
 
     while True:
         # LR Wamp-Up
-        if hparams.use_multistep_lr and epoch == 0 and time_step < RANMPUP_PERIOD:
-            set_lr(optimizer, lr=hparams.high_plateau_lr * ((time_step + 1) / RANMPUP_PERIOD) ** RAMPUP_POWER)
+        if config.use_multistep_lr and epoch == 0 and time_step < RANMPUP_PERIOD:
+            set_lr(optimizer, lr=config.high_plateau_lr * ((time_step + 1) / RANMPUP_PERIOD) ** RAMPUP_POWER)
 
         # LR Exponential-Decay
-        if hparams.use_multistep_lr and (epoch == 1 or epoch == 2 or epoch == 3):
-            decay_rate = hparams.low_plateau_lr / hparams.high_plateau_lr
+        if config.use_multistep_lr and (epoch == 1 or epoch == 2 or epoch == 3):
+            decay_rate = config.low_plateau_lr / config.high_plateau_lr
             decay_speed *= decay_rate ** (1 / (total_time_step * 3))
-            set_lr(optimizer, hparams.high_plateau_lr * decay_speed)
+            set_lr(optimizer, config.high_plateau_lr * decay_speed)
 
         # Get item from Queue =======
         feats, scripts, feat_lens, target_lens = queue.get()

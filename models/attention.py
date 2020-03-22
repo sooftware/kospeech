@@ -54,7 +54,7 @@ class MultiHeadAttention(nn.Module):
         context = torch.bmm(attn_distribution, key).view(self.n_head, batch_size, dec_len, self.dim)
         context = context.permute(1, 2, 0, 3).contiguous().view(batch_size, dec_len, -1)
         
-        # concatenate attn_val & decoder_output
+        # concatenate context & decoder_output
         combined = torch.cat((context, decoder_output), dim=2)
         output = torch.tanh(self.linear_out(combined.view(-1, 2 * self.hidden_size))).view(batch_size, -1, self.hidden_size)
 

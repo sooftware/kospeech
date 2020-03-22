@@ -21,7 +21,7 @@ class CheckPoint:
     CHECKPOINT_DIR = './data/checkpoints/'
 
     def __init__(self, model=None, epoch=None, train_dataset_list=None, valid_dataset=None,
-                 time_step=None, total_time_step=None, hparams=None, queue=None):
+                 time_step=None, total_time_step=None, config=None, queue=None):
         self.snapshot = dict()
         self.snapshot['model'] = model
         self.snapshot['train_dataset_list'] = train_dataset_list
@@ -29,11 +29,11 @@ class CheckPoint:
         self.snapshot['epoch'] = epoch
         self.snapshot['total_time_step'] = total_time_step
         self.snapshot['time_step'] = time_step
-        self.snapshot['hparams'] = hparams
+        self.snapshot['config'] = config
         self.snapshot['queue'] = queue
 
     def save(self, model=None, optimizer=None, epoch=None, train_dataset_list=None, valid_dataset=None, time_step=None,
-             total_time_step=None, batch_size=None, loss=None, cer=None, hparams=None, queue=None,
+             total_time_step=None, batch_size=None, loss=None, cer=None, config=None, queue=None,
              total_loss=None, total_num=None, total_dist=None, total_length=None, total_sent_num=None):
         if model is not None:
             self.snapshot['model'] = model
@@ -49,8 +49,8 @@ class CheckPoint:
             self.snapshot['loss'] = loss
         if cer is not None:
             self.snapshot['cer'] = cer
-        if hparams is not None:
-            self.snapshot['hparams'] = hparams
+        if config is not None:
+            self.snapshot['config'] = config
         if queue is not None:
             self.snapshot['queue'] = queue
         if total_loss is not None:

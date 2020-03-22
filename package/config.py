@@ -1,8 +1,8 @@
 from package.definition import logger
 
-class HyperParams():
+class Config():
     """
-    Hyperparameters
+    Configures
 
     Args:
         use_bidirectional (bool): if True, becomes a bidirectional listener (default: True)
@@ -36,7 +36,7 @@ class HyperParams():
                  use_label_smooth = True,
                  input_reverse = True,
                  use_augment = True,
-                 use_pickle = False,
+                 use_pickle = True,
                  use_pyramidal = False,
                  use_cuda = True,
                  pack_by_length = True,
@@ -81,9 +81,9 @@ class HyperParams():
         self.teacher_forcing = teacher_forcing
         self.seed = seed
         self.max_len = max_len
-        self.logger_hparams()
+        self.print_log()
 
-    def logger_hparams(self):
+    def print_log(self):
         """ print information of hyperparameters """
         logger.info("use_bidirectional : %s" % str(self.use_bidirectional))
         logger.info("use_attention : %s" % str(self.use_attention))

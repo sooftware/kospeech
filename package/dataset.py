@@ -41,7 +41,7 @@ class BaseDataset(Dataset):
 
         if pack_by_length:
             self.sort_by_length()
-            self.audio_paths, self.label_paths, self.augment_flags = self.batch_shuffle(remain_drop=False)
+            self.batch_shuffle(drop_last=False)
 
         else:
             bundle = list(zip(self.audio_paths, self.label_paths, self.augment_flags))
@@ -76,7 +76,7 @@ class BaseDataset(Dataset):
     def shuffle(self):
         """ Shuffle Dataset """
         if self.pack_by_length:
-            self.audio_paths, self.label_paths, self.augment_flags = self.batch_shuffle(remain_drop=False)
+            self.batch_shuffle(drop_last=False)
 
         else:
             bundle = list(zip(self.audio_paths, self.label_paths, self.augment_flags))
@@ -93,37 +93,48 @@ class BaseDataset(Dataset):
             target_lengths.append(len(self.target_dict[key].split()))
 
         bundle = list(zip(target_lengths, self.audio_paths, self.label_paths, self.augment_flags))
-        no_use, self.audio_paths, self.label_paths, self.augment_flags = zip(*sorted(bundle, reverse=True))
+        _, self.audio_paths, self.label_paths, self.augment_flags = zip(*sorted(bundle, reverse=True))
+
+        del _
 
 
-    def batch_shuffle(self, remain_drop = False):
+    def batch_shuffle(self, drop_last = False):
         """ batch shuffle """
         audio_batches, label_batches, flag_batches = [], [], []
         tmp_audio_paths, tmp_label_paths, tmp_augment_flags = [], [], []
-        idx = 0
+        index = 0
 
         while True:
-            if idx == len(self.audio_paths):
+            if index == len(self.audio_paths):
                 if len(tmp_audio_paths) != 0:
                     audio_batches.append(tmp_audio_paths)
                     label_batches.append(tmp_label_paths)
                     flag_batches.append(tmp_augment_flags)
+
                 break
 
             if len(tmp_audio_paths) == self.batch_size:
                 audio_batches.append(tmp_audio_paths)
                 label_batches.append(tmp_label_paths)
                 flag_batches.append(tmp_augment_flags)
-                tmp_audio_paths, tmp_label_paths, tmp_augment_flags = [], [], []
 
-            tmp_audio_paths.append(self.audio_paths[idx])
-            tmp_label_paths.append(self.label_paths[idx])
-            tmp_augment_flags.append(self.augment_flags[idx])
+                tmp_audio_paths = list()
+                tmp_label_paths = list()
+                tmp_augment_flags = list()
 
-            idx += 1
+            tmp_audio_paths.append(self.audio_paths[index])
+            tmp_label_paths.append(self.label_paths[index])
+            tmp_augment_flags.append(self.augment_flags[index])
 
-        remain_audio, remain_label, remain_flag = audio_batches[-1], label_batches[-1], flag_batches[-1]
-        audio_batches, label_batches, flag_batches = audio_batches[:-1], label_batches[:-1], flag_batches[:-1]
+            index += 1
+
+        last_audio_paths = audio_batches[-1]
+        last_label_paths = label_batches[-1]
+        last_augment_flags = flag_batches[-1]
+
+        audio_batches = audio_batches[:-1]
+        label_batches = label_batches[:-1]
+        flag_batches = flag_batches[:-1]
 
         bundle = list(zip(audio_batches, label_batches, flag_batches))
         random.shuffle(bundle)
@@ -131,19 +142,23 @@ class BaseDataset(Dataset):
 
         audio_paths, label_paths, augment_flags = [], [], []
 
-        for (audio_batch, label_batch, augment_flag) in zip(audio_batches, label_batches, flag_batches):
+        for (audio_batch, label_batch, flag_batch) in zip(audio_batches, label_batches, flag_batches):
             audio_paths.extend(audio_batch)
             label_paths.extend(label_batch)
-            augment_flags.extend(augment_flag)
+            augment_flags.extend(flag_batch)
 
-        audio_paths, label_paths, augment_flags = list(audio_paths), list(label_paths), list(augment_flags)
+        audio_paths = list(audio_paths)
+        label_paths = list(label_paths)
+        augment_flags = list(augment_flags)
 
-        if not remain_drop:
-            audio_paths.extend(remain_audio)
-            label_paths.extend(remain_label)
-            augment_flags.extend(remain_flag)
+        if not drop_last:
+            audio_paths.extend(last_audio_paths)
+            label_paths.extend(last_label_paths)
+            augment_flags.extend(last_augment_flags)
 
-        return audio_paths, label_paths, augment_flags
+        self.audio_paths = audio_paths
+        self.label_paths = label_paths
+        self.augment_flags = augment_flags
 
 
     def __len__(self):
@@ -155,12 +170,12 @@ class BaseDataset(Dataset):
 
 
 
-def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_dict = None):
+def split_dataset(config, audio_paths, label_paths, valid_ratio=0.05, target_dict = None):
     """
     Dataset split into training and validation Dataset.
 
     Args:
-        hparams (package.hparams.HyperParams): set of hyper parameters
+        config (package.config.HyperParams): set of configures
         audio_paths (list): set of audio path
         label_paths (list): set of label path
         target_dict (dict): dictionary of filename and target
@@ -174,14 +189,14 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
 
     train_dataset_list = list()
     train_num = math.ceil(len(audio_paths) * (1 - valid_ratio))
-    total_time_step = math.ceil(len(audio_paths) / hparams.batch_size)
+    total_time_step = math.ceil(len(audio_paths) / config.batch_size)
     valid_time_step = math.ceil(total_time_step * valid_ratio)
     train_time_step = total_time_step - valid_time_step
 
-    if hparams.use_augment:
-        train_time_step = int( train_time_step * (1 + hparams.augment_ratio))
+    if config.use_augment:
+        train_time_step = int( train_time_step * (1 + config.augment_ratio))
 
-    train_num_per_worker = math.ceil(train_num / hparams.worker_num)
+    train_num_per_worker = math.ceil(train_num / config.worker_num)
 
     # audio_paths & label_paths shuffled in the same order
     # for seperating train & validation
@@ -190,7 +205,7 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
     audio_paths, label_paths = zip(*data_paths)
 
     # seperating the train dataset by the number of workers
-    for idx in range(hparams.worker_num):
+    for idx in range(config.worker_num):
         train_begin_idx = train_num_per_worker * idx
         train_end_idx = min(train_num_per_worker * (idx + 1), train_num)
 
@@ -199,11 +214,11 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
                                     label_paths=label_paths[train_begin_idx:train_end_idx],
                                     sos_id=SOS_TOKEN, eos_id=EOS_TOKEN,
                                     target_dict=target_dict,
-                                    input_reverse=hparams.input_reverse,
-                                    use_augment=hparams.use_augment,
-                                    batch_size=hparams.batch_size,
-                                    augment_ratio=hparams.augment_ratio,
-                                    pack_by_length=hparams.pack_by_length
+                                    input_reverse=config.input_reverse,
+                                    use_augment=config.use_augment,
+                                    batch_size=config.batch_size,
+                                    augment_ratio=config.augment_ratio,
+                                    pack_by_length=config.pack_by_length
                                 )
         )
 
@@ -211,15 +226,15 @@ def split_dataset(hparams, audio_paths, label_paths, valid_ratio=0.05, target_di
                         audio_paths=audio_paths[train_num:],
                         label_paths=label_paths[train_num:],
                         sos_id=SOS_TOKEN, eos_id=EOS_TOKEN,
-                        batch_size=hparams.batch_size,
+                        batch_size=config.batch_size,
                         target_dict=target_dict,
-                        input_reverse=hparams.input_reverse,
+                        input_reverse=config.input_reverse,
                         use_augment=False,
                         pack_by_length=False
     )
 
-    save_pickle(train_dataset_list, './data/pickle/train_dataset_list', message="")
-    save_pickle(valid_dataset, './data/pickle/valid_dataset', message="")
+    save_pickle(train_dataset_list, './data/pickle/train_dataset_list')
+    save_pickle(valid_dataset, './data/pickle/valid_dataset')
 
     logger.info("split dataset complete !!")
 
