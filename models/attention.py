@@ -27,7 +27,7 @@ class MultiHeadAttention(nn.Module):
     def __init__(self, hidden_size, n_head = 4, dim = 128):
         super(MultiHeadAttention, self).__init__()
         self.hidden_size = hidden_size
-        self.linear_out = nn.Linear(hidden_size * 2, hidden_size)
+        self.out = nn.Linear(hidden_size * 2, hidden_size)
         self.dim = dim
         self.n_head = n_head
         self.linear_q = nn.Linear(hidden_size, dim * n_head)
@@ -60,6 +60,6 @@ class MultiHeadAttention(nn.Module):
         
         # concatenate context & decoder_output
         combined = torch.cat([context, decoder_output], dim=2)
-        output = torch.tanh(self.linear_out(combined.view(-1, 2 * self.hidden_size))).view(batch_size, -1, self.hidden_size)
+        output = torch.tanh(self.out(combined.view(-1, 2 * self.hidden_size))).view(batch_size, -1, self.hidden_size)
 
         return output

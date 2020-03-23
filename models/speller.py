@@ -66,8 +66,9 @@ class Speller(nn.Module):
         self.use_attention = use_attention
         if use_attention:
             self.attention = MultiHeadAttention(hidden_size, dim=128, n_head=4)
-        self.w = nn.Linear(self.hidden_size, vocab_size)
+        self.out = nn.Linear(self.hidden_size, vocab_size)
         self.device = device
+
 
     def _forward_step(self, input, listener_outputs=None, function=F.log_softmax):
         """ forward one time step """
@@ -87,12 +88,13 @@ class Speller(nn.Module):
         else:
             output = speller_output
 
-        predicted_softmax = function(self.w(output.contiguous().view(-1, self.hidden_size)), dim=1).view(batch_size, output_size, -1)
+        output = self.out(output.contiguous().view(-1, self.hidden_size))
+        predicted_softmax = function(output, dim=1).view(batch_size, output_size, -1)
 
         return predicted_softmax
 
 
-    def forward(self, inputs, listener_outputs, function=F.log_softmax, teacher_forcing_ratio=0.99, use_beam_search=False):
+    def forward(self, inputs, listener_outputs, function=F.log_softmax, teacher_forcing_ratio=0.90, use_beam_search=False):
         decode_results = list()
         batch_size = inputs.size(0)
         max_len = inputs.size(1) - 1  # minus the start of sequence symbol

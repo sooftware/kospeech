@@ -89,9 +89,10 @@ class Listener(nn.Module):
         >>> output = listener(inputs)
     """
 
-    def __init__(self, feature_size, hidden_size, device, dropout_p=0.5, n_layers=5, bidirectional=True, rnn_cell='gru', use_pyramidal = True):
-        super(Listener, self).__init__()
+    def __init__(self, feature_size, hidden_size, device, dropout_p=0.5, n_layers=5,
+                 bidirectional=True, rnn_cell='gru', use_pyramidal = True):
 
+        super(Listener, self).__init__()
         assert rnn_cell.lower() == 'lstm' or rnn_cell.lower() == 'gru' or rnn_cell.lower() == 'rnn'
         assert n_layers > 1, "n_layers should be bigger than 1"
         if use_pyramidal:

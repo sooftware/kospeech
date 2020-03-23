@@ -113,6 +113,10 @@ def label_to_string(labels, id2char, eos_id):
             sentences.append(sentence)
         return sentences
 
+    else:
+        raise ValueError("shape Error !!")
+
+
 def save_epoch_result(train_result, valid_result):
     """ save result of training (unit : epoch) """
     train_dict, train_loss, train_cer = train_result
@@ -129,12 +133,14 @@ def save_epoch_result(train_result, valid_result):
     train_df.to_csv(TRAIN_RESULT_PATH, encoding="cp949", index=False)
     valid_df.to_csv(VALID_RESULT_PATH, encoding="cp949", index=False)
 
+
 def save_step_result(train_step_result, loss, cer):
     """ save result of training (unit : K time step) """
     train_step_result["loss"].append(loss)
     train_step_result["cer"].append(cer)
     train_step_df = pd.DataFrame(train_step_result)
     train_step_df.to_csv(TRAIN_STEP_RESULT_PATH, encoding="cp949", index=False)
+
 
 def save_pickle(save_var, savepath, message=""):
     """ save pickle file """

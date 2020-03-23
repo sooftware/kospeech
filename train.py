@@ -84,6 +84,7 @@ if __name__ == '__main__':
         seed = 1,
         max_len = 151
     )
+
     random.seed(config.seed)
     torch.manual_seed(config.seed)
     torch.cuda.manual_seed_all(config.seed)

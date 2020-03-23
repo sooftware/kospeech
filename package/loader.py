@@ -133,8 +133,10 @@ def _collate_fn(batch):
         tensor = sample[0]
         target = sample[1]
         seq_length = tensor.size(0)
+
         seqs[x].narrow(0, 0, seq_length).copy_(tensor)
         targets[x].narrow(0, 0, len(target)).copy_(torch.LongTensor(target))
+
     return seqs, targets, seq_lengths, target_lengths
 
 
@@ -152,12 +154,14 @@ def load_targets(label_paths):
 
     for idx in trange(len(label_paths)):
         label_txt = label_paths[idx]
+
         with open(file=label_txt, mode="r") as f:
             label = f.readline()
             file_num = label_txt.split('/')[-1].split('.')[0].split('_')[-1]
             target_dict['KaiSpeech_label_%s' % file_num] = label
 
     save_pickle(target_dict, "./data/pickle/target_dict.bin", message="target_dict save complete !!")
+
     return target_dict
 
 
