@@ -75,8 +75,8 @@ If you already have another dataset, please modify the data set path to [definit
 if you want to start training, you should run [train.py](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/train.py).    
 or after training, you want to start testing, you should run [test.py](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/test.py).  
   
-you can set up a hyperparameters [hparams.py](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/package/hparams.py).  
-An explanation of hparams is [here](https://sh951011.github.io/Korean-Speech-Recognition/Hparams.html).  
+you can set up a configures [config.py](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/package/config.py).  
+An explanation of configures is [here](https://sh951011.github.io/Korean-Speech-Recognition/Hparams.html).  
   
 
 ## Troubleshoots and Contributing
