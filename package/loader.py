@@ -101,6 +101,7 @@ class BaseDataLoader(threading.Thread):
     def count(self):
         return math.ceil(self.dataset_count / self.batch_size)
 
+
 def _collate_fn(batch):
     """ functions that pad to the maximum sequence length """
     def seq_length_(p):

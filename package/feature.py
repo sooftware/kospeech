@@ -131,6 +131,7 @@ def get_librosa_mfcc(filepath, n_mfcc = 40, del_silence = False, input_reverse =
 
     return torch.FloatTensor( np.ascontiguousarray( np.swapaxes(mfcc, 0, 1) ) )
 
+
 def spec_augment(feat, T = 70, F = 20, time_mask_num = 2, freq_mask_num = 2):
     """
     Provides Augmentation for audio

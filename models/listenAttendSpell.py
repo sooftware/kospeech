@@ -26,7 +26,7 @@ class ListenAttendSpell(nn.Module):
 
     Examples::
 
-        >>> listener = Listener(feat_size, 256, 0.5, 6, True, 'gru', True)
+        >>> listener = Listener(feature_size, 256, 0.5, 6, True, 'gru', True)
         >>> speller = Speller(vocab_size, 120, 8, 256 << (1 if use_bidirectional else 0), SOS_TOKEN, EOS_TOKEN, 3, 'gru', 0.5 ,True, device)
         >>> model = ListenAttendSpell(listener, speller)
         >>> y_hats, logits = model()

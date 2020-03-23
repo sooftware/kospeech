@@ -34,15 +34,19 @@ class MultiHeadAttention(nn.Module):
         self.linear_k = nn.Linear(hidden_size, dim * n_head)
 
     def forward(self, decoder_output, encoder_outputs):
+        """
+        query: decoder_output
+        key: encoder_outputs
+        """
         batch_size = encoder_outputs.size(0)
-        dec_len = decoder_output.size(1)
-        enc_len = encoder_outputs.size(1)
+        query_length = decoder_output.size(1)
+        key_length = encoder_outputs.size(1)
 
-        query = self.linear_q(decoder_output).view(batch_size, dec_len, self.n_head, self.dim).permute(2, 0, 1, 3)
-        key = self.linear_k(encoder_outputs).view(batch_size, enc_len, self.n_head, self.dim).permute(2, 0, 1, 3)
+        query = self.linear_q(decoder_output).view(batch_size, query_length, self.n_head, self.dim).permute(2, 0, 1, 3)
+        key = self.linear_k(encoder_outputs).view(batch_size, key_length, self.n_head, self.dim).permute(2, 0, 1, 3)
 
-        query = query.contiguous().view(-1, dec_len, self.dim) # -1 = n_head * batch_size
-        key = key.contiguous().view(-1, enc_len, self.dim)
+        query = query.contiguous().view(-1, query_length, self.dim) # -1 = n_head * batch_size
+        key = key.contiguous().view(-1, key_length, self.dim)
 
         # get attention score
         attn_score = torch.bmm(query, key.transpose(1, 2))
@@ -51,11 +55,11 @@ class MultiHeadAttention(nn.Module):
         attn_distribution = F.softmax(attn_score, dim=2)
         
         # get context vector
-        context = torch.bmm(attn_distribution, key).view(self.n_head, batch_size, dec_len, self.dim)
-        context = context.permute(1, 2, 0, 3).contiguous().view(batch_size, dec_len, -1)
+        context = torch.bmm(attn_distribution, key).view(self.n_head, batch_size, query_length, self.dim)
+        context = context.permute(1, 2, 0, 3).contiguous().view(batch_size, key_length, -1)
         
         # concatenate context & decoder_output
-        combined = torch.cat((context, decoder_output), dim=2)
+        combined = torch.cat([context, decoder_output], dim=2)
         output = torch.tanh(self.linear_out(combined.view(-1, 2 * self.hidden_size))).view(batch_size, -1, self.hidden_size)
 
         return output

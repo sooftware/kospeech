@@ -91,7 +91,7 @@ if __name__ == '__main__':
     device = torch.device('cuda' if cuda else 'cpu')
 
     listener = Listener(
-        feat_size = 80,
+        feature_size = 80,
         hidden_size = config.hidden_size,
         dropout_p = config.dropout,
         n_layers = config.listener_layer_size,
@@ -131,7 +131,7 @@ if __name__ == '__main__':
         target_dict = load_targets(label_paths)
 
     total_time_step, train_dataset_list, valid_dataset = split_dataset(
-        hparams = config,
+        config = config,
         audio_paths = audio_paths,
         label_paths = label_paths,
         valid_ratio = 0.015,

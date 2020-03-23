@@ -22,9 +22,9 @@ class BaseDataset(Dataset):
         pack_by_length (bool): pack by similar sequence length
         batch_size (int): mini batch size
     """
-    def __init__(self, audio_paths, label_paths, sos_id = 2037, eos_id = 2038,
+    def __init__(self, audio_paths, label_paths, sos_id, eos_id,
                  target_dict = None, input_reverse = True, use_augment = True,
-                 batch_size = None, augment_ratio = 0.3, pack_by_length = True):
+                 batch_size = None, augment_ratio = 1.0, pack_by_length = True):
         self.audio_paths = list(audio_paths)
         self.label_paths = list(label_paths)
         self.sos_id = sos_id
@@ -48,7 +48,6 @@ class BaseDataset(Dataset):
             random.shuffle(bundle)
             self.audio_paths, self.label_paths, self.augment_flags = zip(*bundle)
 
-
     def get_item(self, idx):
         label = get_label(self.label_paths[idx], sos_id=self.sos_id, eos_id=self.eos_id, target_dict=self.target_dict)
         feat = get_librosa_melspectrogram(self.audio_paths[idx], n_mels=80, mel_type='log_mel', input_reverse=self.input_reverse)
@@ -61,7 +60,6 @@ class BaseDataset(Dataset):
 
         return feat, label
 
-
     def augmentation(self):
         """ Apply Spec-Augmentation """
         augment_end_idx = int(0 + ((len(self.audio_paths) - 0) * self.augment_ratio))
@@ -71,7 +69,6 @@ class BaseDataset(Dataset):
             self.augment_flags.append(True)
             self.audio_paths.append(self.audio_paths[idx])
             self.label_paths.append(self.label_paths[idx])
-
 
     def shuffle(self):
         """ Shuffle Dataset """
@@ -100,8 +97,14 @@ class BaseDataset(Dataset):
 
     def batch_shuffle(self, drop_last = False):
         """ batch shuffle """
-        audio_batches, label_batches, flag_batches = [], [], []
-        tmp_audio_paths, tmp_label_paths, tmp_augment_flags = [], [], []
+        audio_batches = list()
+        label_batches = list()
+        flag_batches = list()
+
+        tmp_audio_paths = list()
+        tmp_label_paths = list()
+        tmp_augment_flags = list()
+
         index = 0
 
         while True:
@@ -140,7 +143,9 @@ class BaseDataset(Dataset):
         random.shuffle(bundle)
         audio_batches, label_batches, flag_batches = zip(*bundle)
 
-        audio_paths, label_paths, augment_flags = [], [], []
+        audio_paths = list()
+        label_paths = list()
+        augment_flags = list()
 
         for (audio_batch, label_batch, flag_batch) in zip(audio_batches, label_batches, flag_batches):
             audio_paths.extend(audio_batch)
@@ -223,14 +228,14 @@ def split_dataset(config, audio_paths, label_paths, valid_ratio=0.05, target_dic
         )
 
     valid_dataset = BaseDataset(
-                        audio_paths=audio_paths[train_num:],
-                        label_paths=label_paths[train_num:],
-                        sos_id=SOS_TOKEN, eos_id=EOS_TOKEN,
-                        batch_size=config.batch_size,
-                        target_dict=target_dict,
-                        input_reverse=config.input_reverse,
-                        use_augment=False,
-                        pack_by_length=False
+        audio_paths=audio_paths[train_num:],
+        label_paths=label_paths[train_num:],
+        sos_id=SOS_TOKEN, eos_id=EOS_TOKEN,
+        batch_size=config.batch_size,
+        target_dict=target_dict,
+        input_reverse=config.input_reverse,
+        use_augment=False,
+        pack_by_length=False
     )
 
     save_pickle(train_dataset_list, './data/pickle/train_dataset_list')

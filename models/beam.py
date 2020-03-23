@@ -29,9 +29,10 @@ class Beam:
         >>> beam = Beam(k, decoder, batch_size, max_len, F.log_softmax)
         >>> y_hats = beam.search(inputs, encoder_outputs)
     """
-
     def __init__(self, k, decoder, batch_size, max_len, function, device):
+
         assert k > 1, "beam size (k) should be bigger than 1"
+
         self.k = k
         self.batch_size = batch_size
         self.max_len = max_len
@@ -49,6 +50,7 @@ class Beam:
         self.sentences = [[] for _ in range(self.batch_size)]
         self.sentence_probs = [[] for _ in range(self.batch_size)]
         self.device = device
+
 
     def search(self, decoder_input, encoder_outputs):
         """
@@ -129,6 +131,7 @@ class Beam:
 
         return self._get_best()
 
+
     def _get_best(self):
         """ get sentences which has the highest probability at each batch, stack it, and return it as 2d torch """
         y_hats = []
@@ -164,6 +167,7 @@ class Beam:
 
         return matched
 
+
     def _is_done(self):
         """ check if all beam search process has terminated """
         for done in self.sentences:
@@ -171,6 +175,7 @@ class Beam:
                 return False
 
         return True
+
 
     def _forward_step(self, decoder_input, encoder_outputs):
         """ forward one step on each decoder cell """
@@ -192,6 +197,7 @@ class Beam:
 
         return predicted_softmax
 
+
     def _get_length_penalty(self, length, alpha=1.2, min_length=5):
         """
         Calculate length-penalty.
@@ -199,6 +205,7 @@ class Beam:
         using alpha = 1.2, min_length = 5 usually.
         """
         return ((min_length + length) / (min_length + 1)) ** alpha
+
 
     def _replace_beam(self, child_ps, child_vs, done_ids, count):
         """ Replaces a beam that ends with <eos> with a beam with the next higher probability. """

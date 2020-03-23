@@ -85,11 +85,11 @@ class Listener(nn.Module):
 
     Examples::
 
-        >>> listener = Listener(feat_size, hidden_size, dropout_p=0.5, n_layers=5)
+        >>> listener = Listener(feature_size, hidden_size, dropout_p=0.5, n_layers=5)
         >>> output = listener(inputs)
     """
 
-    def __init__(self, feat_size, hidden_size, device, dropout_p=0.5, n_layers=5, bidirectional=True, rnn_cell='gru', use_pyramidal = True):
+    def __init__(self, feature_size, hidden_size, device, dropout_p=0.5, n_layers=5, bidirectional=True, rnn_cell='gru', use_pyramidal = True):
         super(Listener, self).__init__()
 
         assert rnn_cell.lower() == 'lstm' or rnn_cell.lower() == 'gru' or rnn_cell.lower() == 'rnn'
@@ -120,11 +120,11 @@ class Listener(nn.Module):
             nn.MaxPool2d(kernel_size=2, stride=2)
         )
 
-        feat_size = (feat_size-1) << 6 if feat_size % 2 else feat_size << 6
+        feature_size = (feature_size-1) << 6 if feature_size % 2 else feature_size << 6
 
         if use_pyramidal:
             self.bottom_rnn = self.rnn_cell(
-                input_size=feat_size,
+                input_size=feature_size,
                 hidden_size=hidden_size,
                 num_layers=2,
                 batch_first = True,
@@ -150,13 +150,14 @@ class Listener(nn.Module):
 
         else:
             self.rnn = self.rnn_cell(
-                input_size=feat_size,
+                input_size=feature_size,
                 hidden_size=hidden_size,
                 num_layers=n_layers,
                 batch_first=True,
                 bidirectional=bidirectional,
                 dropout=dropout_p
             )
+
 
     def forward(self, inputs):
         """
@@ -185,6 +186,7 @@ class Listener(nn.Module):
             output, hidden = self.rnn(x)
 
         return output, hidden
+
 
     def flatten_parameters(self):
         """ flatten parameters for fast training """

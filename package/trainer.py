@@ -8,7 +8,7 @@ train_step_result = {'loss': [], 'cer': []}
 def supervised_train(model, config, epoch, total_time_step, queue,
                      criterion, optimizer, device, train_begin, worker_num,
                      print_time_step=10, teacher_forcing_ratio=0.90):
-    """
+    r"""
     Args:
         model (torch.nn.Module): Model to be trained
         optimizer (torch.optim): optimizer for training
@@ -47,8 +47,8 @@ def supervised_train(model, config, epoch, total_time_step, queue,
             decay_speed *= decay_rate ** (1 / (total_time_step * 3))
             set_lr(optimizer, config.high_plateau_lr * decay_speed)
 
-        # Get item from Queue =======
         feats, scripts, feat_lens, target_lens = queue.get()
+
         if feats.shape[0] == 0:
             # empty feats means closing one loader
             worker_num -= 1
@@ -58,18 +58,15 @@ def supervised_train(model, config, epoch, total_time_step, queue,
                 break
             else:
                 continue
-        # ==============================================
 
-        # Inference ========
+
         inputs = feats.to(device)
         scripts = scripts.to(device)
         targets = scripts[:, 1:]
 
         model.module.flatten_parameters()
         y_hat, logit = model(inputs, scripts, teacher_forcing_ratio=teacher_forcing_ratio)
-        # ===================================================
 
-        # Calculate loss & Back-prop ======
         loss = criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
         total_loss += loss.item()
 
@@ -84,9 +81,7 @@ def supervised_train(model, config, epoch, total_time_step, queue,
 
         time_step += 1
         torch.cuda.empty_cache()
-        # ====================================================
 
-        # Show Learning Progress & Save Model ========
         if time_step % print_time_step == 0:
             current = time.time()
             elapsed = current - begin
@@ -107,9 +102,9 @@ def supervised_train(model, config, epoch, total_time_step, queue,
 
         if time_step % 10000 == 0:
             torch.save(model, "./data/weight_file/epoch_%s_step_%s.pt" % (str(epoch), str(time_step)))
-        # ===================================================================
 
     logger.info('train() completed')
+
     return total_loss / total_num, total_dist / total_length
 
 

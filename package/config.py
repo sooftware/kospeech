@@ -2,7 +2,7 @@ from package.definition import logger
 
 class Config():
     """
-    Configures
+    Configuration
 
     Args:
         use_bidirectional (bool): if True, becomes a bidirectional listener (default: True)
@@ -84,7 +84,7 @@ class Config():
         self.print_log()
 
     def print_log(self):
-        """ print information of hyperparameters """
+        """ print information of configuration """
         logger.info("use_bidirectional : %s" % str(self.use_bidirectional))
         logger.info("use_attention : %s" % str(self.use_attention))
         logger.info("use_pickle : %s" % str(self.use_pickle))
