@@ -104,10 +104,10 @@
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Checkpoint.html">Checkpoint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Config.html">Config</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Dataset.html">Dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Feature.html">Feature</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Hparams.html">Hparams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loader.html">Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
@@ -218,7 +218,7 @@ teacher forcing would be used (default is 0.90)</li>
 </dd>
 </dl>
 <p>Examples:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">listener</span> <span class="o">=</span> <span class="n">Listener</span><span class="p">(</span><span class="n">feat_size</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;gru&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">listener</span> <span class="o">=</span> <span class="n">Listener</span><span class="p">(</span><span class="n">feature_size</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;gru&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">speller</span> <span class="o">=</span> <span class="n">Speller</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">256</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="n">use_bidirectional</span> <span class="k">else</span> <span class="mi">0</span><span class="p">),</span> <span class="n">SOS_TOKEN</span><span class="p">,</span> <span class="n">EOS_TOKEN</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;gru&#39;</span><span class="p">,</span> <span class="mf">0.5</span> <span class="p">,</span><span class="kc">True</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">ListenAttendSpell</span><span class="p">(</span><span class="n">listener</span><span class="p">,</span> <span class="n">speller</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y_hats</span><span class="p">,</span> <span class="n">logits</span> <span class="o">=</span> <span class="n">model</span><span class="p">()</span>
@@ -245,7 +245,7 @@ registered hooks while the latter silently ignores them.</p>
 <span id="listener"></span><h2>Listener<a class="headerlink" href="#module-models.listener" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="models.listener.Listener">
-<em class="property">class </em><code class="descclassname">models.listener.</code><code class="descname">Listener</code><span class="sig-paren">(</span><em>feat_size</em>, <em>hidden_size</em>, <em>device</em>, <em>dropout_p=0.5</em>, <em>n_layers=5</em>, <em>bidirectional=True</em>, <em>rnn_cell='gru'</em>, <em>use_pyramidal=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/listener.html#Listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.listener.Listener" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">models.listener.</code><code class="descname">Listener</code><span class="sig-paren">(</span><em>feature_size</em>, <em>hidden_size</em>, <em>device</em>, <em>dropout_p=0.5</em>, <em>n_layers=5</em>, <em>bidirectional=True</em>, <em>rnn_cell='gru'</em>, <em>use_pyramidal=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/listener.html#Listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.listener.Listener" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts low level speech signals into higher level features</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -276,7 +276,7 @@ registered hooks while the latter silently ignores them.</p>
 </dd>
 </dl>
 <p>Examples:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">listener</span> <span class="o">=</span> <span class="n">Listener</span><span class="p">(</span><span class="n">feat_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="n">dropout_p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">listener</span> <span class="o">=</span> <span class="n">Listener</span><span class="p">(</span><span class="n">feature_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="n">dropout_p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">output</span> <span class="o">=</span> <span class="n">listener</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -538,15 +538,8 @@ registered hooks while the latter silently ignores them.</p>
 <dl class="method">
 <dt id="models.attention.MultiHeadAttention.forward">
 <code class="descname">forward</code><span class="sig-paren">(</span><em>decoder_output</em>, <em>encoder_outputs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/attention.html#MultiHeadAttention.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.attention.MultiHeadAttention.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Although the recipe for forward pass needs to be defined within
-this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
-instead of this since the former takes care of running the
-registered hooks while the latter silently ignores them.</p>
-</div>
+<dd><p>query: decoder_output
+key: encoder_outputs</p>
 </dd></dl>
 
 </dd></dl>

@@ -95,10 +95,10 @@
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Checkpoint.html">Checkpoint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Config.html">Config</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Dataset.html">Dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Feature.html">Feature</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../Hparams.html">Hparams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Loader.html">Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Loss.html">Loss</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Trainer.html">Trainer</a></li>
@@ -209,11 +209,11 @@
     <span class="n">total_dist</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">total_length</span> <span class="o">=</span> <span class="mi">0</span>
 
-    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">targets</span><span class="p">)):</span>
-        <span class="n">target</span> <span class="o">=</span> <span class="n">label_to_string</span><span class="p">(</span><span class="n">targets</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">id2char</span><span class="p">,</span> <span class="n">eos_id</span><span class="p">)</span>
-        <span class="n">y_hat</span> <span class="o">=</span> <span class="n">label_to_string</span><span class="p">(</span><span class="n">y_hats</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">id2char</span><span class="p">,</span> <span class="n">eos_id</span><span class="p">)</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">y_hat</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">y_hats</span><span class="p">):</span>
+        <span class="n">script</span> <span class="o">=</span> <span class="n">label_to_string</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">id2char</span><span class="p">,</span> <span class="n">eos_id</span><span class="p">)</span>
+        <span class="n">pred</span> <span class="o">=</span> <span class="n">label_to_string</span><span class="p">(</span><span class="n">y_hat</span><span class="p">,</span> <span class="n">id2char</span><span class="p">,</span> <span class="n">eos_id</span><span class="p">)</span>
 
-        <span class="n">dist</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="n">char_distance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">y_hat</span><span class="p">)</span>
+        <span class="n">dist</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="n">char_distance</span><span class="p">(</span><span class="n">script</span><span class="p">,</span> <span class="n">pred</span><span class="p">)</span>
 
         <span class="n">total_dist</span> <span class="o">+=</span> <span class="n">dist</span>
         <span class="n">total_length</span> <span class="o">+=</span> <span class="n">length</span>

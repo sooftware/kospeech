@@ -95,10 +95,10 @@
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Checkpoint.html">Checkpoint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Config.html">Config</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Dataset.html">Dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Feature.html">Feature</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../Hparams.html">Hparams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Loader.html">Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Loss.html">Loss</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Trainer.html">Trainer</a></li>
@@ -201,16 +201,16 @@
 
             <span class="n">feats</span> <span class="o">=</span> <span class="n">feats</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
             <span class="n">scripts</span> <span class="o">=</span> <span class="n">scripts</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-            <span class="n">target</span> <span class="o">=</span> <span class="n">scripts</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:]</span>
+            <span class="n">targets</span> <span class="o">=</span> <span class="n">scripts</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:]</span>
 
             <span class="n">model</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">flatten_parameters</span><span class="p">()</span>
             <span class="n">y_hat</span><span class="p">,</span> <span class="n">logit</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">feats</span><span class="p">,</span> <span class="n">scripts</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">use_beam_search</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
 
-            <span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">logit</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">logit</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)),</span> <span class="n">target</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">logit</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">logit</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)),</span> <span class="n">targets</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
             <span class="n">total_loss</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
             <span class="n">total_num</span> <span class="o">+=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">feat_lengths</span><span class="p">)</span>
 
-            <span class="n">dist</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="n">get_distance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">y_hat</span><span class="p">,</span> <span class="n">id2char</span><span class="p">,</span> <span class="n">EOS_TOKEN</span><span class="p">)</span>
+            <span class="n">dist</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="n">get_distance</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">y_hat</span><span class="p">,</span> <span class="n">id2char</span><span class="p">,</span> <span class="n">EOS_TOKEN</span><span class="p">)</span>
             <span class="n">total_dist</span> <span class="o">+=</span> <span class="n">dist</span>
             <span class="n">total_length</span> <span class="o">+=</span> <span class="n">length</span>
 

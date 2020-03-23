@@ -36,7 +36,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Evaluator" href="Evaluator.html" />
-    <link rel="prev" title="Checkpoint" href="Checkpoint.html" /> 
+    <link rel="prev" title="Config" href="Config.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -97,10 +97,10 @@
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Checkpoint.html">Checkpoint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Config.html">Config</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Feature.html">Feature</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Hparams.html">Hparams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loader.html">Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
@@ -173,7 +173,7 @@
 <span id="dataset"></span><h1>Dataset<a class="headerlink" href="#module-package.dataset" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="package.dataset.BaseDataset">
-<em class="property">class </em><code class="descclassname">package.dataset.</code><code class="descname">BaseDataset</code><span class="sig-paren">(</span><em>audio_paths</em>, <em>label_paths</em>, <em>sos_id=2037</em>, <em>eos_id=2038</em>, <em>target_dict=None</em>, <em>input_reverse=True</em>, <em>use_augment=True</em>, <em>batch_size=None</em>, <em>augment_ratio=0.3</em>, <em>pack_by_length=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/dataset.html#BaseDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.dataset.BaseDataset" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">package.dataset.</code><code class="descname">BaseDataset</code><span class="sig-paren">(</span><em>audio_paths</em>, <em>label_paths</em>, <em>sos_id</em>, <em>eos_id</em>, <em>target_dict=None</em>, <em>input_reverse=True</em>, <em>use_augment=True</em>, <em>batch_size=None</em>, <em>augment_ratio=1.0</em>, <em>pack_by_length=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/dataset.html#BaseDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.dataset.BaseDataset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dataset for audio &amp; label matching</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -203,7 +203,7 @@
 
 <dl class="method">
 <dt id="package.dataset.BaseDataset.batch_shuffle">
-<code class="descname">batch_shuffle</code><span class="sig-paren">(</span><em>remain_drop=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/dataset.html#BaseDataset.batch_shuffle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.dataset.BaseDataset.batch_shuffle" title="Permalink to this definition">¶</a></dt>
+<code class="descname">batch_shuffle</code><span class="sig-paren">(</span><em>drop_last=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/dataset.html#BaseDataset.batch_shuffle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.dataset.BaseDataset.batch_shuffle" title="Permalink to this definition">¶</a></dt>
 <dd><p>batch shuffle</p>
 </dd></dl>
 
@@ -223,14 +223,14 @@
 
 <dl class="function">
 <dt id="package.dataset.split_dataset">
-<code class="descclassname">package.dataset.</code><code class="descname">split_dataset</code><span class="sig-paren">(</span><em>hparams</em>, <em>audio_paths</em>, <em>label_paths</em>, <em>valid_ratio=0.05</em>, <em>target_dict=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/dataset.html#split_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.dataset.split_dataset" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">package.dataset.</code><code class="descname">split_dataset</code><span class="sig-paren">(</span><em>config</em>, <em>audio_paths</em>, <em>label_paths</em>, <em>valid_ratio=0.05</em>, <em>target_dict=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/dataset.html#split_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.dataset.split_dataset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dataset split into training and validation Dataset.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>hparams</strong> (<a class="reference internal" href="Hparams.html#package.hparams.HyperParams" title="package.hparams.HyperParams"><em>package.hparams.HyperParams</em></a>) – set of hyper parameters</li>
+<li><strong>config</strong> (<em>package.config.HyperParams</em>) – set of configures</li>
 <li><strong>audio_paths</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – set of audio path</li>
 <li><strong>label_paths</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – set of label path</li>
 <li><strong>target_dict</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – dictionary of filename and target</li>
@@ -263,7 +263,7 @@
         <a href="Evaluator.html" class="btn btn-neutral float-right" title="Evaluator" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="Checkpoint.html" class="btn btn-neutral float-left" title="Checkpoint" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="Config.html" class="btn btn-neutral float-left" title="Config" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

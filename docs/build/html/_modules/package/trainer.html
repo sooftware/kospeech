@@ -95,10 +95,10 @@
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Checkpoint.html">Checkpoint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Config.html">Config</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Dataset.html">Dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Feature.html">Feature</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../Hparams.html">Hparams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Loader.html">Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Loss.html">Loss</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Trainer.html">Trainer</a></li>
@@ -173,10 +173,10 @@
 
 <span class="n">train_step_result</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;loss&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;cer&#39;</span><span class="p">:</span> <span class="p">[]}</span>
 
-<div class="viewcode-block" id="supervised_train"><a class="viewcode-back" href="../../Trainer.html#package.trainer.supervised_train">[docs]</a><span class="k">def</span> <span class="nf">supervised_train</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">hparams</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">total_time_step</span><span class="p">,</span> <span class="n">queue</span><span class="p">,</span>
+<div class="viewcode-block" id="supervised_train"><a class="viewcode-back" href="../../Trainer.html#package.trainer.supervised_train">[docs]</a><span class="k">def</span> <span class="nf">supervised_train</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">total_time_step</span><span class="p">,</span> <span class="n">queue</span><span class="p">,</span>
                      <span class="n">criterion</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">train_begin</span><span class="p">,</span> <span class="n">worker_num</span><span class="p">,</span>
                      <span class="n">print_time_step</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="mf">0.90</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Args:</span>
 <span class="sd">        model (torch.nn.Module): Model to be trained</span>
 <span class="sd">        optimizer (torch.optim): optimizer for training</span>
@@ -206,17 +206,17 @@
 
     <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
         <span class="c1"># LR Wamp-Up</span>
-        <span class="k">if</span> <span class="n">hparams</span><span class="o">.</span><span class="n">use_multistep_lr</span> <span class="ow">and</span> <span class="n">epoch</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">time_step</span> <span class="o">&lt;</span> <span class="n">RANMPUP_PERIOD</span><span class="p">:</span>
-            <span class="n">set_lr</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="n">hparams</span><span class="o">.</span><span class="n">high_plateau_lr</span> <span class="o">*</span> <span class="p">((</span><span class="n">time_step</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">RANMPUP_PERIOD</span><span class="p">)</span> <span class="o">**</span> <span class="n">RAMPUP_POWER</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">use_multistep_lr</span> <span class="ow">and</span> <span class="n">epoch</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">time_step</span> <span class="o">&lt;</span> <span class="n">RANMPUP_PERIOD</span><span class="p">:</span>
+            <span class="n">set_lr</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">high_plateau_lr</span> <span class="o">*</span> <span class="p">((</span><span class="n">time_step</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">RANMPUP_PERIOD</span><span class="p">)</span> <span class="o">**</span> <span class="n">RAMPUP_POWER</span><span class="p">)</span>
 
         <span class="c1"># LR Exponential-Decay</span>
-        <span class="k">if</span> <span class="n">hparams</span><span class="o">.</span><span class="n">use_multistep_lr</span> <span class="ow">and</span> <span class="p">(</span><span class="n">epoch</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">epoch</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">epoch</span> <span class="o">==</span> <span class="mi">3</span><span class="p">):</span>
-            <span class="n">decay_rate</span> <span class="o">=</span> <span class="n">hparams</span><span class="o">.</span><span class="n">low_plateau_lr</span> <span class="o">/</span> <span class="n">hparams</span><span class="o">.</span><span class="n">high_plateau_lr</span>
+        <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">use_multistep_lr</span> <span class="ow">and</span> <span class="p">(</span><span class="n">epoch</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">epoch</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">epoch</span> <span class="o">==</span> <span class="mi">3</span><span class="p">):</span>
+            <span class="n">decay_rate</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">low_plateau_lr</span> <span class="o">/</span> <span class="n">config</span><span class="o">.</span><span class="n">high_plateau_lr</span>
             <span class="n">decay_speed</span> <span class="o">*=</span> <span class="n">decay_rate</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">total_time_step</span> <span class="o">*</span> <span class="mi">3</span><span class="p">))</span>
-            <span class="n">set_lr</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">hparams</span><span class="o">.</span><span class="n">high_plateau_lr</span> <span class="o">*</span> <span class="n">decay_speed</span><span class="p">)</span>
+            <span class="n">set_lr</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">high_plateau_lr</span> <span class="o">*</span> <span class="n">decay_speed</span><span class="p">)</span>
 
-        <span class="c1"># Get item from Queue =======</span>
         <span class="n">feats</span><span class="p">,</span> <span class="n">scripts</span><span class="p">,</span> <span class="n">feat_lens</span><span class="p">,</span> <span class="n">target_lens</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
         <span class="k">if</span> <span class="n">feats</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="c1"># empty feats means closing one loader</span>
             <span class="n">worker_num</span> <span class="o">-=</span> <span class="mi">1</span>
@@ -226,18 +226,15 @@
                 <span class="k">break</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">continue</span>
-        <span class="c1"># ==============================================</span>
 
-        <span class="c1"># Inference ========</span>
+
         <span class="n">inputs</span> <span class="o">=</span> <span class="n">feats</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
         <span class="n">scripts</span> <span class="o">=</span> <span class="n">scripts</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
         <span class="n">targets</span> <span class="o">=</span> <span class="n">scripts</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:]</span>
 
         <span class="n">model</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">flatten_parameters</span><span class="p">()</span>
         <span class="n">y_hat</span><span class="p">,</span> <span class="n">logit</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">scripts</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="n">teacher_forcing_ratio</span><span class="p">)</span>
-        <span class="c1"># ===================================================</span>
 
-        <span class="c1"># Calculate loss &amp; Back-prop ======</span>
         <span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">logit</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">logit</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)),</span> <span class="n">targets</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
         <span class="n">total_loss</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
 
@@ -252,9 +249,7 @@
 
         <span class="n">time_step</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">empty_cache</span><span class="p">()</span>
-        <span class="c1"># ====================================================</span>
 
-        <span class="c1"># Show Learning Progress &amp; Save Model ========</span>
         <span class="k">if</span> <span class="n">time_step</span> <span class="o">%</span> <span class="n">print_time_step</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">current</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
             <span class="n">elapsed</span> <span class="o">=</span> <span class="n">current</span> <span class="o">-</span> <span class="n">begin</span>
@@ -275,9 +270,9 @@
 
         <span class="k">if</span> <span class="n">time_step</span> <span class="o">%</span> <span class="mi">10000</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s2">&quot;./data/weight_file/epoch_</span><span class="si">%s</span><span class="s2">_step_</span><span class="si">%s</span><span class="s2">.pt&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">epoch</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">time_step</span><span class="p">)))</span>
-        <span class="c1"># ===================================================================</span>
 
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;train() completed&#39;</span><span class="p">)</span>
+
     <span class="k">return</span> <span class="n">total_loss</span> <span class="o">/</span> <span class="n">total_num</span><span class="p">,</span> <span class="n">total_dist</span> <span class="o">/</span> <span class="n">total_length</span></div>
 
 

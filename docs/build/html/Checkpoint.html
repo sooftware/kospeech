@@ -35,7 +35,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Dataset" href="Dataset.html" />
+    <link rel="next" title="Config" href="Config.html" />
     <link rel="prev" title="Models" href="Models.html" /> 
 </head>
 
@@ -97,10 +97,10 @@
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Checkpoint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Config.html">Config</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Dataset.html">Dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Feature.html">Feature</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Hparams.html">Hparams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loader.html">Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
@@ -173,7 +173,7 @@
 <span id="checkpoint"></span><h1>Checkpoint<a class="headerlink" href="#module-package.checkpoint" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="package.checkpoint.CheckPoint">
-<em class="property">class </em><code class="descclassname">package.checkpoint.</code><code class="descname">CheckPoint</code><span class="sig-paren">(</span><em>model=None</em>, <em>epoch=None</em>, <em>train_dataset_list=None</em>, <em>valid_dataset=None</em>, <em>time_step=None</em>, <em>total_time_step=None</em>, <em>hparams=None</em>, <em>queue=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/checkpoint.html#CheckPoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.checkpoint.CheckPoint" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">package.checkpoint.</code><code class="descname">CheckPoint</code><span class="sig-paren">(</span><em>model=None</em>, <em>epoch=None</em>, <em>train_dataset_list=None</em>, <em>valid_dataset=None</em>, <em>time_step=None</em>, <em>total_time_step=None</em>, <em>config=None</em>, <em>queue=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/checkpoint.html#CheckPoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.checkpoint.CheckPoint" title="Permalink to this definition">¶</a></dt>
 <dd><p>The Checkpoint class manages the saving and loading of a model during training. It allows training to be suspended
 and resumed at a later time (e.g. when running on a cluster using sequential jobs).</p>
 <p>To make a checkpoint, initialize a Checkpoint object with the following args; then call that object’s save() method
@@ -205,7 +205,7 @@ to write parameters to disk.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="Dataset.html" class="btn btn-neutral float-right" title="Dataset" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="Config.html" class="btn btn-neutral float-right" title="Config" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="Models.html" class="btn btn-neutral float-left" title="Models" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

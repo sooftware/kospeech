@@ -26,10 +26,10 @@ Welcome to Korean Speech Recognition's documentation!
    :caption: Package Reference
 
    Checkpoint
+   Config
    Dataset
    Evaluator
    Feature
-   Hparams
    Loader
    Loss
    Trainer

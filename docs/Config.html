@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Hparams &mdash; Korean Speech Recognition 1.0 documentation</title>
+  <title>Config &mdash; Korean Speech Recognition 1.0 documentation</title>
   
 
   
@@ -35,8 +35,8 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Loader" href="Loader.html" />
-    <link rel="prev" title="Feature" href="Feature.html" /> 
+    <link rel="next" title="Dataset" href="Dataset.html" />
+    <link rel="prev" title="Checkpoint" href="Checkpoint.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -97,10 +97,10 @@
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Checkpoint.html">Checkpoint</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Config</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Dataset.html">Dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Feature.html">Feature</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Hparams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loader.html">Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
@@ -150,13 +150,13 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Hparams</li>
+      <li>Config</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/Hparams.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/Config.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -169,12 +169,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-package.hparams">
-<span id="hparams"></span><h1>Hparams<a class="headerlink" href="#module-package.hparams" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-package.config">
+<span id="config"></span><h1>Config<a class="headerlink" href="#module-package.config" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
-<dt id="package.hparams.HyperParams">
-<em class="property">class </em><code class="descclassname">package.hparams.</code><code class="descname">HyperParams</code><span class="sig-paren">(</span><em>use_bidirectional=True</em>, <em>use_attention=True</em>, <em>use_label_smooth=True</em>, <em>input_reverse=True</em>, <em>use_augment=True</em>, <em>use_pickle=False</em>, <em>use_pyramidal=False</em>, <em>use_cuda=True</em>, <em>pack_by_length=True</em>, <em>augment_ratio=1.0</em>, <em>hidden_size=256</em>, <em>dropout=0.5</em>, <em>listener_layer_size=5</em>, <em>speller_layer_size=3</em>, <em>batch_size=8</em>, <em>worker_num=1</em>, <em>max_epochs=40</em>, <em>use_multistep_lr=False</em>, <em>init_lr=0.0001</em>, <em>high_plateau_lr=0.0003</em>, <em>low_plateau_lr=1e-05</em>, <em>teacher_forcing=0.9</em>, <em>seed=1</em>, <em>max_len=151</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/hparams.html#HyperParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.hparams.HyperParams" title="Permalink to this definition">¶</a></dt>
-<dd><p>Hyperparameters</p>
+<dt id="package.config.Config">
+<em class="property">class </em><code class="descclassname">package.config.</code><code class="descname">Config</code><span class="sig-paren">(</span><em>use_bidirectional=True</em>, <em>use_attention=True</em>, <em>use_label_smooth=True</em>, <em>input_reverse=True</em>, <em>use_augment=True</em>, <em>use_pickle=True</em>, <em>use_pyramidal=False</em>, <em>use_cuda=True</em>, <em>pack_by_length=True</em>, <em>augment_ratio=1.0</em>, <em>hidden_size=256</em>, <em>dropout=0.5</em>, <em>listener_layer_size=5</em>, <em>speller_layer_size=3</em>, <em>batch_size=8</em>, <em>worker_num=1</em>, <em>max_epochs=40</em>, <em>use_multistep_lr=False</em>, <em>init_lr=0.0001</em>, <em>high_plateau_lr=0.0003</em>, <em>low_plateau_lr=1e-05</em>, <em>teacher_forcing=0.9</em>, <em>seed=1</em>, <em>max_len=151</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/config.html#Config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.config.Config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configuration</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -210,9 +210,9 @@
 </tbody>
 </table>
 <dl class="method">
-<dt id="package.hparams.HyperParams.logger_hparams">
-<code class="descname">logger_hparams</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/hparams.html#HyperParams.logger_hparams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.hparams.HyperParams.logger_hparams" title="Permalink to this definition">¶</a></dt>
-<dd><p>print information of hyperparameters</p>
+<dt id="package.config.Config.print_log">
+<code class="descname">print_log</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/config.html#Config.print_log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.config.Config.print_log" title="Permalink to this definition">¶</a></dt>
+<dd><p>print information of configuration</p>
 </dd></dl>
 
 </dd></dl>
@@ -227,10 +227,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="Loader.html" class="btn btn-neutral float-right" title="Loader" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="Dataset.html" class="btn btn-neutral float-right" title="Dataset" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="Feature.html" class="btn btn-neutral float-left" title="Feature" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="Checkpoint.html" class="btn btn-neutral float-left" title="Checkpoint" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

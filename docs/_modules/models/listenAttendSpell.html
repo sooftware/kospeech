@@ -95,10 +95,10 @@
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Checkpoint.html">Checkpoint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Config.html">Config</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Dataset.html">Dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Feature.html">Feature</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../Hparams.html">Hparams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Loader.html">Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Loss.html">Loss</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Trainer.html">Trainer</a></li>
@@ -194,7 +194,7 @@
 
 <span class="sd">    Examples::</span>
 
-<span class="sd">        &gt;&gt;&gt; listener = Listener(feat_size, 256, 0.5, 6, True, &#39;gru&#39;, True)</span>
+<span class="sd">        &gt;&gt;&gt; listener = Listener(feature_size, 256, 0.5, 6, True, &#39;gru&#39;, True)</span>
 <span class="sd">        &gt;&gt;&gt; speller = Speller(vocab_size, 120, 8, 256 &lt;&lt; (1 if use_bidirectional else 0), SOS_TOKEN, EOS_TOKEN, 3, &#39;gru&#39;, 0.5 ,True, device)</span>
 <span class="sd">        &gt;&gt;&gt; model = ListenAttendSpell(listener, speller)</span>
 <span class="sd">        &gt;&gt;&gt; y_hats, logits = model()</span>

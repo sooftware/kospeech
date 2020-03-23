@@ -95,10 +95,10 @@
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Checkpoint.html">Checkpoint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Config.html">Config</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Dataset.html">Dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Feature.html">Feature</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../Hparams.html">Hparams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Loader.html">Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Loss.html">Loss</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Trainer.html">Trainer</a></li>
@@ -253,11 +253,11 @@
 
 <span class="sd">    Examples::</span>
 
-<span class="sd">        &gt;&gt;&gt; listener = Listener(feat_size, hidden_size, dropout_p=0.5, n_layers=5)</span>
+<span class="sd">        &gt;&gt;&gt; listener = Listener(feature_size, hidden_size, dropout_p=0.5, n_layers=5)</span>
 <span class="sd">        &gt;&gt;&gt; output = listener(inputs)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feat_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">dropout_p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rnn_cell</span><span class="o">=</span><span class="s1">&#39;gru&#39;</span><span class="p">,</span> <span class="n">use_pyramidal</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">dropout_p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rnn_cell</span><span class="o">=</span><span class="s1">&#39;gru&#39;</span><span class="p">,</span> <span class="n">use_pyramidal</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Listener</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="k">assert</span> <span class="n">rnn_cell</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;lstm&#39;</span> <span class="ow">or</span> <span class="n">rnn_cell</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;gru&#39;</span> <span class="ow">or</span> <span class="n">rnn_cell</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;rnn&#39;</span>
@@ -288,11 +288,11 @@
             <span class="n">nn</span><span class="o">.</span><span class="n">MaxPool2d</span><span class="p">(</span><span class="n">kernel_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
         <span class="p">)</span>
 
-        <span class="n">feat_size</span> <span class="o">=</span> <span class="p">(</span><span class="n">feat_size</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">6</span> <span class="k">if</span> <span class="n">feat_size</span> <span class="o">%</span> <span class="mi">2</span> <span class="k">else</span> <span class="n">feat_size</span> <span class="o">&lt;&lt;</span> <span class="mi">6</span>
+        <span class="n">feature_size</span> <span class="o">=</span> <span class="p">(</span><span class="n">feature_size</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">6</span> <span class="k">if</span> <span class="n">feature_size</span> <span class="o">%</span> <span class="mi">2</span> <span class="k">else</span> <span class="n">feature_size</span> <span class="o">&lt;&lt;</span> <span class="mi">6</span>
 
         <span class="k">if</span> <span class="n">use_pyramidal</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">bottom_rnn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rnn_cell</span><span class="p">(</span>
-                <span class="n">input_size</span><span class="o">=</span><span class="n">feat_size</span><span class="p">,</span>
+                <span class="n">input_size</span><span class="o">=</span><span class="n">feature_size</span><span class="p">,</span>
                 <span class="n">hidden_size</span><span class="o">=</span><span class="n">hidden_size</span><span class="p">,</span>
                 <span class="n">num_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
                 <span class="n">batch_first</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -318,13 +318,14 @@
 
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">rnn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rnn_cell</span><span class="p">(</span>
-                <span class="n">input_size</span><span class="o">=</span><span class="n">feat_size</span><span class="p">,</span>
+                <span class="n">input_size</span><span class="o">=</span><span class="n">feature_size</span><span class="p">,</span>
                 <span class="n">hidden_size</span><span class="o">=</span><span class="n">hidden_size</span><span class="p">,</span>
                 <span class="n">num_layers</span><span class="o">=</span><span class="n">n_layers</span><span class="p">,</span>
                 <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                 <span class="n">bidirectional</span><span class="o">=</span><span class="n">bidirectional</span><span class="p">,</span>
                 <span class="n">dropout</span><span class="o">=</span><span class="n">dropout_p</span>
             <span class="p">)</span>
+
 
 <div class="viewcode-block" id="Listener.forward"><a class="viewcode-back" href="../../Models.html#models.listener.Listener.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -353,6 +354,7 @@
             <span class="n">output</span><span class="p">,</span> <span class="n">hidden</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rnn</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">output</span><span class="p">,</span> <span class="n">hidden</span></div>
+
 
 <div class="viewcode-block" id="Listener.flatten_parameters"><a class="viewcode-back" href="../../Models.html#models.listener.Listener.flatten_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">flatten_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; flatten parameters for fast training &quot;&quot;&quot;</span>

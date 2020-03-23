@@ -95,10 +95,10 @@
 <p class="caption"><span class="caption-text">Package Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Checkpoint.html">Checkpoint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Config.html">Config</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Dataset.html">Dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Feature.html">Feature</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../Hparams.html">Hparams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Loader.html">Loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Loss.html">Loss</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Trainer.html">Trainer</a></li>
@@ -197,9 +197,10 @@
 <span class="sd">        &gt;&gt;&gt; beam = Beam(k, decoder, batch_size, max_len, F.log_softmax)</span>
 <span class="sd">        &gt;&gt;&gt; y_hats = beam.search(inputs, encoder_outputs)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">decoder</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">max_len</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
+
         <span class="k">assert</span> <span class="n">k</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;beam size (k) should be bigger than 1&quot;</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">=</span> <span class="n">k</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">batch_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_len</span> <span class="o">=</span> <span class="n">max_len</span>
@@ -217,6 +218,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">sentences</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sentence_probs</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span>
+
 
 <div class="viewcode-block" id="Beam.search"><a class="viewcode-back" href="../../Models.html#models.beam.Beam.search">[docs]</a>    <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">decoder_input</span><span class="p">,</span> <span class="n">encoder_outputs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -297,6 +299,7 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_best</span><span class="p">()</span></div>
 
+
     <span class="k">def</span> <span class="nf">_get_best</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; get sentences which has the highest probability at each batch, stack it, and return it as 2d torch &quot;&quot;&quot;</span>
         <span class="n">y_hats</span> <span class="o">=</span> <span class="p">[]</span>
@@ -332,6 +335,7 @@
 
         <span class="k">return</span> <span class="n">matched</span>
 
+
     <span class="k">def</span> <span class="nf">_is_done</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; check if all beam search process has terminated &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">done</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sentences</span><span class="p">:</span>
@@ -339,6 +343,7 @@
                 <span class="k">return</span> <span class="kc">False</span>
 
         <span class="k">return</span> <span class="kc">True</span>
+
 
     <span class="k">def</span> <span class="nf">_forward_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">decoder_input</span><span class="p">,</span> <span class="n">encoder_outputs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; forward one step on each decoder cell &quot;&quot;&quot;</span>
@@ -360,6 +365,7 @@
 
         <span class="k">return</span> <span class="n">predicted_softmax</span>
 
+
     <span class="k">def</span> <span class="nf">_get_length_penalty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate length-penalty.</span>
@@ -367,6 +373,7 @@
 <span class="sd">        using alpha = 1.2, min_length = 5 usually.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">((</span><span class="n">min_length</span> <span class="o">+</span> <span class="n">length</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">min_length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="o">**</span> <span class="n">alpha</span>
+
 
     <span class="k">def</span> <span class="nf">_replace_beam</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child_ps</span><span class="p">,</span> <span class="n">child_vs</span><span class="p">,</span> <span class="n">done_ids</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Replaces a beam that ends with &lt;eos&gt; with a beam with the next higher probability. &quot;&quot;&quot;</span>
