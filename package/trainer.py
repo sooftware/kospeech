@@ -15,7 +15,8 @@ def supervised_train(model, config, epoch, total_time_step, queue,
         teacher_forcing_ratio (float):  The probability that teacher forcing will be used (default: 0.90)
         print_time_step (int): Parameters to determine how many steps to output
         queue (Queue.queue): queue for threading
-        criterion (torch.nn): one of PyTorch’s loss function. Refer to http://pytorch.org/docs/master/nn.html#loss-functions for a list of them.
+        criterion (torch.nn): one of PyTorch’s loss function.
+          Refer to http://pytorch.org/docs/master/nn.html#loss-functions for a list of them.
         device (torch.cuda): device used ('cuda' or 'cpu')
         worker_num (int): the number of cpu cores used
 
@@ -30,8 +31,9 @@ def supervised_train(model, config, epoch, total_time_step, queue,
     time_step = 0
     decay_speed = 1.0
 
-    RANMPUP_PERIOD = 8152
     RAMPUP_POWER = 3
+    RANMPUP_PERIOD = 3000
+    EXP_DECAY_PERIOD = total_time_step * 3
 
     model.train()
     begin = epoch_begin = time.time()
@@ -44,7 +46,7 @@ def supervised_train(model, config, epoch, total_time_step, queue,
         # LR Exponential-Decay
         if config.use_multistep_lr and (epoch == 1 or epoch == 2 or epoch == 3):
             decay_rate = config.low_plateau_lr / config.high_plateau_lr
-            decay_speed *= decay_rate ** (1 / (total_time_step * 3))
+            decay_speed *= decay_rate ** (1 / EXP_DECAY_PERIOD)
             set_lr(optimizer, config.high_plateau_lr * decay_speed)
 
         feats, scripts, feat_lens, target_lens = queue.get()

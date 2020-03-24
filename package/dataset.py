@@ -48,9 +48,10 @@ class BaseDataset(Dataset):
             random.shuffle(bundle)
             self.audio_paths, self.label_paths, self.augment_flags = zip(*bundle)
 
+
     def get_item(self, idx):
         label = get_label(self.label_paths[idx], sos_id=self.sos_id, eos_id=self.eos_id, target_dict=self.target_dict)
-        feat = get_librosa_melspectrogram(self.audio_paths[idx], n_mels=80, mel_type='log_mel', input_reverse=self.input_reverse)
+        feat = get_librosa_melspectrogram(self.audio_paths[idx], n_mels=80, input_reverse=self.input_reverse)
 
         if feat is None: # exception handling
             return None, None
@@ -59,6 +60,7 @@ class BaseDataset(Dataset):
             feat = spec_augment(feat, T=70, F=15, time_mask_num=2, freq_mask_num=2)
 
         return feat, label
+
 
     def augmentation(self):
         """ Apply Spec-Augmentation """
@@ -69,6 +71,7 @@ class BaseDataset(Dataset):
             self.augment_flags.append(True)
             self.audio_paths.append(self.audio_paths[idx])
             self.label_paths.append(self.label_paths[idx])
+
 
     def shuffle(self):
         """ Shuffle Dataset """

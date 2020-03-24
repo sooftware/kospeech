@@ -69,6 +69,7 @@ class BaseDataLoader(threading.Thread):
 
         return seqs, targets, seq_lengths, target_lengths
 
+
     def run(self):
         logger.debug('loader %d start' % (self.thread_id))
         while True:
@@ -100,6 +101,7 @@ class BaseDataLoader(threading.Thread):
 
     def count(self):
         return math.ceil(self.dataset_count / self.batch_size)
+
 
 
 def _collate_fn(batch):
@@ -140,6 +142,7 @@ def _collate_fn(batch):
     return seqs, targets, seq_lengths, target_lengths
 
 
+
 def load_targets(label_paths):
     """
     Provides dictionary of filename and labels
@@ -165,6 +168,7 @@ def load_targets(label_paths):
     return target_dict
 
 
+
 def load_data_list(data_list_path, dataset_path):
     """
     Provides set of audio path & label path
@@ -182,6 +186,7 @@ def load_data_list(data_list_path, dataset_path):
     label_paths = list(dataset_path + data_list["label"])
 
     return audio_paths, label_paths
+
 
 
 def load_label(label_path, encoding='utf-8'):
@@ -208,6 +213,7 @@ def load_label(label_path, encoding='utf-8'):
             id2char[int(row[0])] = row[1]
 
     return char2id, id2char
+
 
 
 def load_pickle(filepath, message=""):

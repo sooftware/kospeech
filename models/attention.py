@@ -47,7 +47,7 @@ class MultiHeadAttention(nn.Module):
         query = self.linear_q(query).view(batch_size, query_length, self.n_head, self.dim).permute(2, 0, 1, 3)
         key = self.linear_k(key).view(batch_size, key_length, self.n_head, self.dim).permute(2, 0, 1, 3)
 
-        query = query.contiguous().view(-1, query_length, self.dim) # -1 = n_head * batch_size
+        query = query.contiguous().view(-1, query_length, self.dim)  # -1 = n_head * batch_size
         key = key.contiguous().view(-1, key_length, self.dim)
 
         # get attention score

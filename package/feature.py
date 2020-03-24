@@ -4,6 +4,7 @@ import numpy as np
 import random
 from package.definition import logger
 
+
 def get_librosa_melspectrogram(filepath, n_mels=128, del_silence=False, input_reverse=True, mel_type='log_mel'):
     r"""
     Compute a mel-scaled soectrigram (or Log-Mel).
@@ -44,9 +45,11 @@ def get_librosa_melspectrogram(filepath, n_mels=128, del_silence=False, input_re
     if filepath.split('.')[-1] == 'pcm':
         try:
             pcm = np.memmap(filepath, dtype='h', mode='r')
-        except:  # exception handling
+
+        except:
             logger.info("%s Error Occur !!" % filepath)
             return None
+
         sig = np.array([float(x) for x in pcm])
 
     elif filepath.split('.')[-1] == 'wav':
@@ -109,9 +112,11 @@ def get_librosa_mfcc(filepath, n_mfcc = 40, del_silence = False, input_reverse =
     if filepath.split('.')[-1] == 'pcm':
         try:
             pcm = np.memmap(filepath, dtype='h', mode='r')
-        except: # exception handling
+
+        except:
             logger.info("%s Error Occur !!" % filepath)
             return None
+
         sig = np.array([float(x) for x in pcm])
 
     elif filepath.split('.')[-1] == 'wav':
@@ -130,6 +135,7 @@ def get_librosa_mfcc(filepath, n_mfcc = 40, del_silence = False, input_reverse =
         mfcc = mfcc[:,::-1]
 
     return torch.FloatTensor( np.ascontiguousarray( np.swapaxes(mfcc, 0, 1) ) )
+
 
 
 def spec_augment(feat, T = 70, F = 20, time_mask_num = 2, freq_mask_num = 2):
