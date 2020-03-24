@@ -27,7 +27,7 @@ class MultiHeadAttention(nn.Module):
     def __init__(self, hidden_size, n_head = 4, dim = 128):
         super(MultiHeadAttention, self).__init__()
         self.hidden_size = hidden_size
-        self.out = nn.Linear(hidden_size * 2, hidden_size)
+        self.linear_out = nn.Linear(hidden_size * 2, hidden_size)
         self.dim = dim
         self.n_head = n_head
         self.linear_q = nn.Linear(hidden_size, dim * n_head)
@@ -56,10 +56,10 @@ class MultiHeadAttention(nn.Module):
         
         # get context vector
         context = torch.bmm(attn_distribution, key).view(self.n_head, batch_size, query_length, self.dim)
-        context = context.permute(1, 2, 0, 3).contiguous().view(batch_size, key_length, -1)
+        context = context.permute(1, 2, 0, 3).contiguous().view(batch_size, query_length, -1)
         
         # concatenate context & decoder_output
         combined = torch.cat([context, decoder_output], dim=2)
-        output = torch.tanh(self.out(combined.view(-1, 2 * self.hidden_size))).view(batch_size, -1, self.hidden_size)
+        output = torch.tanh(self.linear_out(combined.view(-1, 2 * self.hidden_size))).view(batch_size, -1, self.hidden_size)
 
         return output

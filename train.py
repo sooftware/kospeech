@@ -73,7 +73,7 @@ if __name__ == '__main__':
         dropout = 0.5,
         listener_layer_size = 5,
         speller_layer_size = 3,
-        batch_size = 8,
+        batch_size = 6,
         worker_num = 1,
         max_epochs = 40,
         use_multistep_lr = False,

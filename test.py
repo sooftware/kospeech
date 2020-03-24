@@ -14,7 +14,6 @@ limitations under the License.
 import os
 import queue
 import torch
-
 from models.listenAttendSpell import ListenAttendSpell
 from models.listener import Listener
 from models.speller import Speller
@@ -46,13 +45,15 @@ def test(model, queue, device):
             target = targets[:, 1:]
 
             model.flatten_parameters()
-            y_hat, _ = model(feats, targets, teacher_forcing_ratio = 1.0, use_beam_search = False)
+            y_hat, _ = model(feats, targets, teacher_forcing_ratio = 0.0, use_beam_search = False)
             dist, length = get_distance(target, y_hat, id2char, EOS_TOKEN)
             total_dist += dist
             total_length += length
             total_sent_num += target.size(0)
+
             if time_step % 10 == 0:
                 logger.info('cer: {:.2f}'.format(dist / length))
+
             time_step += 1
 
     CER = total_dist / total_length
@@ -77,13 +78,13 @@ if __name__ == '__main__':
 
     # Model Setting ========================
     listener = Listener(
-        feat_size = 80,
+        feature_size = 80,
         hidden_size = config.hidden_size,
         dropout_p = config.dropout,
         n_layers = config.listener_layer_size,
         bidirectional = config.use_bidirectional,
         rnn_cell = 'gru',
-        use_pyramidal = config.use_pyramidal,
+        use_pyramidal = False,
         device=device
     )
     speller = Speller(
@@ -101,7 +102,7 @@ if __name__ == '__main__':
     )
     model = ListenAttendSpell(listener, speller, use_pyramidal = config.use_pyramidal)
     # ==============================================================
-    load_model = torch.load("./data/weight_file/_epoch_1_step_10000.pt",  map_location=torch.device('cpu')).module
+    load_model = torch.load("./data/weight_file/epoch_0_step_160000.pt",  map_location=torch.device('cpu')).module
     model.load_state_dict(load_model.state_dict())
     model.set_beam_size(k = 8)
     audio_paths, label_paths = load_data_list(data_list_path=SAMPLE_LIST_PATH, dataset_path=SAMPLE_DATASET_PATH)

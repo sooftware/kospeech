@@ -37,6 +37,7 @@ class Beam:
         self.batch_size = batch_size
         self.max_len = max_len
         self.function = function
+        self.n_layers = decoder.n_layers
         self.rnn = decoder.rnn
         self.embedding = decoder.embedding
         self.input_dropout = decoder.input_dropout
@@ -66,10 +67,11 @@ class Beam:
         # K : beam size
         # C : classfication number
         # S : sequence length
-
+        hidden = torch.zeros(self.n_layers, self.batch_size, self.hidden_size)
 
         # get class classfication distribution (shape: BxC)
-        step_outputs = self._forward_step(decoder_input, encoder_outputs).squeeze(1)
+        step_outputs, hidden = self._forward_step(decoder_input, hidden, encoder_outputs)
+        step_outputs = step_outputs.squeeze(1)
         # get top K probability & idx (shape: BxK)
         self.probs, self.beams = step_outputs.topk(self.k)
         decoder_input = self.beams
@@ -80,7 +82,7 @@ class Beam:
             if self._is_done():
                 break
             # For each beam, get class classfication distribution (shape: BxKxC)
-            predicted_softmax = self._forward_step(decoder_input, encoder_outputs)
+            predicted_softmax, hidden = self._forward_step(decoder_input, hidden, encoder_outputs)
             step_output = predicted_softmax.squeeze(1)
             # get top k distribution (shape: BxKxK)
             child_ps, child_vs = step_output.topk(self.k)
@@ -132,6 +134,27 @@ class Beam:
         return self._get_best()
 
 
+    def _forward_step(self, decoder_input, hidden, encoder_outputs):
+        """ forward one step on each decoder cell """
+        decoder_input = decoder_input.to(self.device)
+        output_size = decoder_input.size(1)
+
+        embedded = self.embedding(decoder_input).to(self.device)
+        embedded = self.input_dropout(embedded)
+
+        decoder_output, hidden = self.rnn(embedded, hidden)  # decoder output
+
+        if self.use_attention:
+            output = self.attention(decoder_output, encoder_outputs)
+        else:
+            output = decoder_output
+
+        predicted_softmax = self.function(self.w(output.contiguous().view(-1, self.hidden_size)), dim=1)
+        predicted_softmax = predicted_softmax.view(self.batch_size,output_size,-1)
+
+        return predicted_softmax, hidden
+
+
     def _get_best(self):
         """ get sentences which has the highest probability at each batch, stack it, and return it as 2d torch """
         y_hats = []
@@ -175,27 +198,6 @@ class Beam:
                 return False
 
         return True
-
-
-    def _forward_step(self, decoder_input, encoder_outputs):
-        """ forward one step on each decoder cell """
-        decoder_input = decoder_input.to(self.device)
-        output_size = decoder_input.size(1)
-
-        embedded = self.embedding(decoder_input).to(self.device)
-        embedded = self.input_dropout(embedded)
-
-        decoder_output, hidden = self.rnn(embedded)  # decoder output
-
-        if self.use_attention:
-            output = self.attention(decoder_output, encoder_outputs)
-        else:
-            output = decoder_output
-
-        predicted_softmax = self.function(self.w(output.contiguous().view(-1, self.hidden_size)), dim=1)
-        predicted_softmax = predicted_softmax.view(self.batch_size,output_size,-1)
-
-        return predicted_softmax
 
 
     def _get_length_penalty(self, length, alpha=1.2, min_length=5):

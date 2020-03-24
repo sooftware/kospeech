@@ -5,15 +5,11 @@ import torch.nn.functional as F
 from models.beam import Beam
 from .attention import MultiHeadAttention
 
-if torch.cuda.is_available():
-    import torch.cuda as device
-else:
-    import torch as device
-
 
 class Speller(nn.Module):
     r"""
-    Converts higher level features (from listener) into output utterances by specifying a probability distribution over sequences of characters.
+    Converts higher level features (from listener) into output utterances
+    by specifying a probability distribution over sequences of characters.
 
     Args:
         vocab_size (int): size of the vocabulary
@@ -52,7 +48,9 @@ class Speller(nn.Module):
                  sos_id, eos_id, n_layers=1, rnn_cell='gru',
                  dropout_p=0, use_attention=True, device=None, k=8):
         super(Speller, self).__init__()
+
         assert rnn_cell.lower() == 'lstm' or rnn_cell.lower() == 'gru' or rnn_cell.lower() == 'rnn'
+        
         self.rnn_cell = nn.LSTM if rnn_cell.lower() == 'lstm' else nn.GRU if rnn_cell.lower() == 'gru' else nn.RNN
         self.rnn = self.rnn_cell(hidden_size , hidden_size, n_layers, batch_first=True, dropout=dropout_p).to(device)
         self.max_len = max_len
@@ -66,11 +64,11 @@ class Speller(nn.Module):
         self.use_attention = use_attention
         if use_attention:
             self.attention = MultiHeadAttention(hidden_size, dim=128, n_head=4)
-        self.out = nn.Linear(self.hidden_size, vocab_size)
+        self.w = nn.Linear(self.hidden_size, vocab_size)
         self.device = device
 
 
-    def _forward_step(self, input, listener_outputs=None, function=F.log_softmax):
+    def _forward_step(self, input, hidden, listener_outputs=None, function=F.log_softmax):
         """ forward one time step """
         batch_size = input.size(0)
         output_size = input.size(1)
@@ -81,17 +79,17 @@ class Speller(nn.Module):
         if self.training:
             self.rnn.flatten_parameters()
 
-        speller_output = self.rnn(embedded)[0]
+        output, hidden = self.rnn(embedded, hidden)
 
         if self.use_attention:
-            output = self.attention(speller_output, listener_outputs)
+            output = self.attention(output, listener_outputs)
         else:
-            output = speller_output
+            output = output
 
-        output = self.out(output.contiguous().view(-1, self.hidden_size))
+        output = self.w(output.contiguous().view(-1, self.hidden_size))
         predicted_softmax = function(output, dim=1).view(batch_size, output_size, -1)
 
-        return predicted_softmax
+        return predicted_softmax, hidden
 
 
     def forward(self, inputs, listener_outputs, function=F.log_softmax, teacher_forcing_ratio=0.90, use_beam_search=False):
@@ -99,6 +97,8 @@ class Speller(nn.Module):
         batch_size = inputs.size(0)
         max_len = inputs.size(1) - 1  # minus the start of sequence symbol
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
+
+        speller_hidden = torch.zeros(self.n_layers, batch_size, self.hidden_size)
 
         if use_beam_search: # TopK Decoding
             inputs = inputs[:, 0].unsqueeze(1)
@@ -117,8 +117,9 @@ class Speller(nn.Module):
             if use_teacher_forcing:
                 # if teacher_forcing, Infer all at once
                 speller_inputs = inputs[inputs != self.eos_id].view(batch_size, -1)
-                predicted_softmax = self._forward_step(
+                predicted_softmax, speller_hidden = self._forward_step(
                     input = speller_inputs,
+                    hidden = speller_hidden,
                     listener_outputs = listener_outputs,
                     function = function
                 )
@@ -131,8 +132,9 @@ class Speller(nn.Module):
                 speller_input = inputs[:, 0].unsqueeze(1)
 
                 for di in range(max_len):
-                    predicted_softmax = self._forward_step(
+                    predicted_softmax, speller_hidden = self._forward_step(
                         input = speller_input,
+                        hidden = speller_hidden,
                         listener_outputs = listener_outputs,
                         function = function
                     )

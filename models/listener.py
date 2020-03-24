@@ -81,7 +81,7 @@ class Listener(nn.Module):
         - **inputs**: list of sequences, whose length is the batch size and within which each sequence is a list of token IDs.
 
     Returns: output
-        - **output** (batch, seq_len, hidden_size): tensor containing the encoded features of the input sequence
+        - **output**: tensor containing the encoded features of the input sequence
 
     Examples::
 
