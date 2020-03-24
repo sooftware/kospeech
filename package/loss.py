@@ -6,7 +6,7 @@ class LabelSmoothingLoss(nn.Module):
     Provides Label-Smoothing loss.
 
     Args:
-        vocab_size (int): the number of classfication
+        class_num (int): the number of classfication
         ignore_index (int): Indexes that are ignored when calculating loss
         smoothing (float): ratio of smoothing (confidence = 1.0 - smoothing)
         dim (int): dimention of calculation loss
@@ -19,18 +19,18 @@ class LabelSmoothingLoss(nn.Module):
     Reference:
         https://github.com/pytorch/pytorch/issues/7455
     """
-    def __init__(self, vocab_size, ignore_index, smoothing=0.1, dim=-1):
+    def __init__(self, class_num, ignore_index, smoothing=0.1, dim=-1):
         super(LabelSmoothingLoss, self).__init__()
         self.confidence = 1.0 - smoothing
         self.smoothing = smoothing
-        self.vocab_size = vocab_size
+        self.class_num = class_num
         self.dim = dim
         self.ignore_index = ignore_index
 
     def forward(self, logit, target):
         with torch.no_grad():
             label_smoothed = torch.zeros_like(logit)
-            label_smoothed.fill_(self.smoothing / (self.vocab_size - 1))
+            label_smoothed.fill_(self.smoothing / (self.class_num - 1))
             label_smoothed.scatter_(1, target.data.unsqueeze(1), self.confidence)
             label_smoothed[target == self.ignore_index, :] = 0
 

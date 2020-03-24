@@ -12,7 +12,7 @@ class Speller(nn.Module):
     by specifying a probability distribution over sequences of characters.
 
     Args:
-        vocab_size (int): size of the vocabulary
+        class_num (int): the number of classfication
         max_len (int): a maximum allowed length for the sequence to be processed
         hidden_size (int): the number of features in the hidden state `h`
         sos_id (int): index of the start of sentence symbol
@@ -36,36 +36,36 @@ class Speller(nn.Module):
 
     Returns: y_hats, logits
         - **y_hats** (batch, seq_len): predicted y values (y_hat) by the model
-        - **logits** (batch, seq_len, vocab_size): predicted log probability by the model
+        - **logits** (batch, seq_len, class_num): predicted log probability by the model
 
     Examples::
 
-        >>> speller = Speller(vocab_size, max_len, hidden_size, sos_id, eos_id, n_layers)
+        >>> speller = Speller(class_num, max_len, hidden_size, sos_id, eos_id, n_layers)
         >>> y_hats, logits = speller(inputs, listener_outputs, teacher_forcing_ratio=0.90)
     """
 
-    def __init__(self, vocab_size, max_len, hidden_size,
+    def __init__(self, class_num, max_len, hidden_size,
                  sos_id, eos_id, n_layers=1, rnn_cell='gru',
                  dropout_p=0, use_attention=True, device=None, k=8):
         super(Speller, self).__init__()
 
         assert rnn_cell.lower() == 'lstm' or rnn_cell.lower() == 'gru' or rnn_cell.lower() == 'rnn'
-        
+
         self.rnn_cell = nn.LSTM if rnn_cell.lower() == 'lstm' else nn.GRU if rnn_cell.lower() == 'gru' else nn.RNN
         self.rnn = self.rnn_cell(hidden_size , hidden_size, n_layers, batch_first=True, dropout=dropout_p).to(device)
         self.max_len = max_len
         self.eos_id = eos_id
         self.sos_id = sos_id
         self.hidden_size = hidden_size
-        self.embedding = nn.Embedding(vocab_size, self.hidden_size)
+        self.embedding = nn.Embedding(class_num, self.hidden_size)
         self.n_layers = n_layers
         self.input_dropout = nn.Dropout(p=dropout_p)
         self.k = k
         self.use_attention = use_attention
-        if use_attention:
-            self.attention = MultiHeadAttention(hidden_size, dim=128, n_head=4)
-        self.w = nn.Linear(self.hidden_size, vocab_size)
+        self.out = nn.Linear(self.hidden_size, class_num)
         self.device = device
+        if use_attention:
+            self.attention = MultiHeadAttention(in_features=hidden_size << 1, dim=128, n_head=4)
 
 
     def _forward_step(self, input, hidden, listener_outputs=None, function=F.log_softmax):
@@ -83,11 +83,8 @@ class Speller(nn.Module):
 
         if self.use_attention:
             output = self.attention(output, listener_outputs)
-        else:
-            output = output
 
-        output = self.w(output.contiguous().view(-1, self.hidden_size))
-        predicted_softmax = function(output, dim=1).view(batch_size, output_size, -1)
+        predicted_softmax = function(self.out(output.contiguous().view(-1, self.hidden_size)), dim=1).view(batch_size, output_size, -1)
 
         return predicted_softmax, hidden
 
@@ -98,7 +95,7 @@ class Speller(nn.Module):
         max_len = inputs.size(1) - 1  # minus the start of sequence symbol
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
 
-        speller_hidden = torch.zeros(self.n_layers, batch_size, self.hidden_size)
+        hidden = torch.zeros(self.n_layers, batch_size, self.hidden_size)
 
         if use_beam_search: # TopK Decoding
             inputs = inputs[:, 0].unsqueeze(1)
@@ -114,12 +111,11 @@ class Speller(nn.Module):
             y_hats = beam.search(inputs, listener_outputs)
 
         else:
-            if use_teacher_forcing:
-                # if teacher_forcing, Infer all at once
+            if use_teacher_forcing:  # if teacher_forcing, Infer all at once
                 speller_inputs = inputs[inputs != self.eos_id].view(batch_size, -1)
-                predicted_softmax, speller_hidden = self._forward_step(
+                predicted_softmax, hidden = self._forward_step(
                     input = speller_inputs,
-                    hidden = speller_hidden,
+                    hidden = hidden,
                     listener_outputs = listener_outputs,
                     function = function
                 )
@@ -132,9 +128,9 @@ class Speller(nn.Module):
                 speller_input = inputs[:, 0].unsqueeze(1)
 
                 for di in range(max_len):
-                    predicted_softmax, speller_hidden = self._forward_step(
+                    predicted_softmax, hidden = self._forward_step(
                         input = speller_input,
-                        hidden = speller_hidden,
+                        hidden = hidden,
                         listener_outputs = listener_outputs,
                         function = function
                     )

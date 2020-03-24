@@ -37,30 +37,43 @@ class CheckPoint:
              total_loss=None, total_num=None, total_dist=None, total_length=None, total_sent_num=None):
         if model is not None:
             self.snapshot['model'] = model
+
         if train_dataset_list is not None:
             self.snapshot['train_dataset_list'] = train_dataset_list
+
         if epoch is not None:
             self.snapshot['epoch'] = epoch
+
         if total_time_step is not None:
             self.snapshot['total_time_step'] = total_time_step
+
         if time_step is not None:
             self.snapshot['time_step'] = time_step
+
         if loss is not None:
             self.snapshot['loss'] = loss
+
         if cer is not None:
             self.snapshot['cer'] = cer
+
         if config is not None:
             self.snapshot['config'] = config
+
         if queue is not None:
             self.snapshot['queue'] = queue
+
         if total_loss is not None:
             self.snapshot['total_loss'] = total_loss
+
         if total_num is not None:
             self.snapshot['total_num'] = total_num
+
         if total_dist is not None:
             self.snapshot['total_dist'] = total_dist
+
         if total_length is not None:
             self.snapshot['total_length'] = total_length
+
         if total_sent_num is not None:
             self.snapshot['total_sent_num'] = total_sent_num
 

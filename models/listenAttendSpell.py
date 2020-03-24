@@ -22,12 +22,12 @@ class ListenAttendSpell(nn.Module):
 
     Returns: y_hats, logits
         - **y_hats** (batch, seq_len): predicted y values (y_hat) by the model
-        - **logits** (batch, seq_len, vocab_size): logit values by the model
+        - **logits** (batch, seq_len, class_num): logit values by the model
 
     Examples::
 
-        >>> listener = Listener(feature_size, 256, 0.5, 6, True, 'gru', True)
-        >>> speller = Speller(vocab_size, 120, 8, 256 << (1 if use_bidirectional else 0), SOS_TOKEN, EOS_TOKEN, 3, 'gru', 0.5 ,True, device)
+        >>> listener = Listener(in_features, 256, 0.5, ...)
+        >>> speller = Speller(class_num, 120, 8, 256 << (1 if use_bidirectional else 0), ...)
         >>> model = ListenAttendSpell(listener, speller)
         >>> y_hats, logits = model()
     """
@@ -37,6 +37,7 @@ class ListenAttendSpell(nn.Module):
         self.speller = speller
         self.function = function
         self.use_pyramidal = use_pyramidal
+
 
     def forward(self, inputs, targets, teacher_forcing_ratio=0.90, use_beam_search=False):
         listener_outputs, listener_hidden = self.listener(inputs)
@@ -50,8 +51,10 @@ class ListenAttendSpell(nn.Module):
 
         return y_hats, logits
 
+
     def set_beam_size(self, k):
         self.speller.k = k
+
 
     def flatten_parameters(self):
         self.listener.flatten_parameters()

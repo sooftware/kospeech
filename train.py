@@ -92,7 +92,7 @@ if __name__ == '__main__':
     device = torch.device('cuda' if cuda else 'cpu')
 
     listener = Listener(
-        feature_size = 80,
+        in_features = 80,
         hidden_size = config.hidden_size,
         dropout_p = config.dropout,
         n_layers = config.listener_layer_size,
@@ -102,7 +102,7 @@ if __name__ == '__main__':
         device=device
     )
     speller = Speller(
-        vocab_size = len(char2id),
+        class_num = len(char2id),
         max_len = config.max_len,
         k = 8,
         hidden_size = config.hidden_size << (1 if config.use_bidirectional else 0),

@@ -6,7 +6,6 @@ class Beam:
 
     Args:
         k (int) : size of beam
-        decoder_hidden (torch.Tensor) : hidden state of decoder
         batch_size (int) : mini-batch size during infer
         max_len (int) :  a maximum allowed length for the sequence to be processed
         function (torch.nn.Module) : A function used to generate symbols from RNN hidden state
@@ -44,7 +43,7 @@ class Beam:
         self.use_attention = decoder.use_attention
         self.attention = decoder.attention
         self.hidden_size = decoder.hidden_size
-        self.w = decoder.w
+        self.out = decoder.out
         self.eos_id = decoder.eos_id
         self.beams = None
         self.probs = None
@@ -59,7 +58,7 @@ class Beam:
 
         Examples::
 
-            >>> beam = Beam(k, decoder_hidden, decoder, batch_size, max_len, F.log_softmax)
+            >>> beam = Beam(k, decoder, batch_size, max_len, F.log_softmax)
             >>> y_hats = beam.search(inputs, encoder_outputs)
         """
         # Comment Notation
@@ -142,15 +141,12 @@ class Beam:
         embedded = self.embedding(decoder_input).to(self.device)
         embedded = self.input_dropout(embedded)
 
-        decoder_output, hidden = self.rnn(embedded, hidden)  # decoder output
+        output, hidden = self.rnn(embedded, hidden)
 
         if self.use_attention:
-            output = self.attention(decoder_output, encoder_outputs)
-        else:
-            output = decoder_output
+            output = self.attention(output, encoder_outputs)
 
-        predicted_softmax = self.function(self.w(output.contiguous().view(-1, self.hidden_size)), dim=1)
-        predicted_softmax = predicted_softmax.view(self.batch_size,output_size,-1)
+        predicted_softmax = self.function(self.out(output.contiguous().view(-1, self.hidden_size)), dim=1).view(self.batch_size,output_size,-1)
 
         return predicted_softmax, hidden
 
