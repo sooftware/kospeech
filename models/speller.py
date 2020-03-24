@@ -65,7 +65,7 @@ class Speller(nn.Module):
         self.out = nn.Linear(self.hidden_size, class_num)
         self.device = device
         if use_attention:
-            self.attention = MultiHeadAttention(in_features=hidden_size << 1, dim=128, n_head=4)
+            self.attention = MultiHeadAttention(in_features=hidden_size, dim=128, n_head=4)
 
 
     def _forward_step(self, input, hidden, listener_outputs=None, function=F.log_softmax):

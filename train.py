@@ -52,11 +52,11 @@ from package.utils import save_epoch_result
 
 
 if __name__ == '__main__':
-    os.environ["CUDA_LAUNCH_BLOCKING"] = "1" # if you use Multi-GPU, delete this line
-    logger.info("device : %s" % torch.cuda.get_device_name(0))
-    logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
-    logger.info("CUDA version : %s" % (torch.version.cuda))
-    logger.info("PyTorch version : %s" % (torch.__version__))
+    #os.environ["CUDA_LAUNCH_BLOCKING"] = "1" # if you use Multi-GPU, delete this line
+    #logger.info("device : %s" % torch.cuda.get_device_name(0))
+    #logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
+    #logger.info("CUDA version : %s" % (torch.version.cuda))
+    #logger.info("PyTorch version : %s" % (torch.__version__))
 
     config = Config(
         use_bidirectional = True,
@@ -64,7 +64,7 @@ if __name__ == '__main__':
         use_label_smooth = True,
         input_reverse = True,
         use_augment = True,
-        use_pickle = True,
+        use_pickle = False,
         use_pyramidal = False,
         use_cuda = True,
         pack_by_length = True,

@@ -30,11 +30,12 @@ class MultiHeadAttention(nn.Module):
     def __init__(self, in_features, n_head = 4, dim = 128):
         super(MultiHeadAttention, self).__init__()
         self.in_features = in_features
-        self.n_head = n_head
         self.linear_q = nn.Linear(in_features, dim * n_head)
         self.linear_k = nn.Linear(in_features, dim * n_head)
+        self.n_head = n_head
         self.dim = dim
-        self.out = nn.Linear(in_features, in_features)
+        self.out = nn.Linear(in_features << 1, in_features)
+
 
     def forward(self, query, key):
         batch_size = key.size(0)
