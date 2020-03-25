@@ -3,6 +3,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from models.beam import Beam
+from package.definition import id2char
+from package.utils import label_to_string
 from .attention import MultiHeadAttention
 
 
@@ -62,7 +64,7 @@ class Speller(nn.Module):
         self.input_dropout = nn.Dropout(p=dropout_p)
         self.k = k
         self.use_attention = use_attention
-        self.out = nn.Linear(self.hidden_size, class_num)
+        self.w = nn.Linear(self.hidden_size, class_num)
         self.device = device
         if use_attention:
             self.attention = MultiHeadAttention(in_features=hidden_size, dim=128, n_head=4)
@@ -84,21 +86,21 @@ class Speller(nn.Module):
         if self.use_attention:
             output = self.attention(output, listener_outputs)
 
-        predicted_softmax = function(self.out(output.contiguous().view(-1, self.hidden_size)), dim=1).view(batch_size, output_size, -1)
+        predicted_softmax = function(self.w(output.contiguous().view(-1, self.hidden_size)), dim=1).view(batch_size, output_size, -1)
 
         return predicted_softmax, hidden
 
 
     def forward(self, inputs, listener_outputs, function=F.log_softmax, teacher_forcing_ratio=0.90, use_beam_search=False):
-        decode_results = list()
         batch_size = inputs.size(0)
         max_len = inputs.size(1) - 1  # minus the start of sequence symbol
+        decode_results = list()
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
 
         hidden = torch.zeros(self.n_layers, batch_size, self.hidden_size)
 
         if use_beam_search: # TopK Decoding
-            inputs = inputs[:, 0].unsqueeze(1)
+            input = inputs[:, 0].unsqueeze(1)
             beam = Beam(
                 k = self.k,
                 decoder = self,
@@ -108,7 +110,7 @@ class Speller(nn.Module):
                 device = self.device
             )
             logits = None
-            y_hats = beam.search(inputs, listener_outputs)
+            y_hats = beam.search(input, listener_outputs)
 
         else:
             if use_teacher_forcing:  # if teacher_forcing, Infer all at once
@@ -140,5 +142,7 @@ class Speller(nn.Module):
 
             logits = torch.stack(decode_results, dim=1).to(self.device)
             y_hats = logits.max(-1)[1]
+
+        print(label_to_string(y_hats.numpy(), id2char, self.eos_id))
 
         return y_hats, logits

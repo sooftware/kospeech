@@ -45,7 +45,7 @@ class Config():
                  dropout = 0.5,
                  listener_layer_size = 5,
                  speller_layer_size = 3,
-                 batch_size = 32,
+                 batch_size = 4,
                  worker_num = 1,
                  max_epochs = 40,
                  use_multistep_lr = False,

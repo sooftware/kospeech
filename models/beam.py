@@ -1,4 +1,6 @@
 import torch
+from package.definition import char2id
+
 
 class Beam:
     r"""
@@ -39,116 +41,99 @@ class Beam:
         self.n_layers = decoder.n_layers
         self.rnn = decoder.rnn
         self.embedding = decoder.embedding
-        self.input_dropout = decoder.input_dropout
         self.use_attention = decoder.use_attention
         self.attention = decoder.attention
         self.hidden_size = decoder.hidden_size
-        self.out = decoder.out
+        self.out = decoder.w
         self.eos_id = decoder.eos_id
         self.beams = None
-        self.probs = None
+        self.cumulative_probs = None
         self.sentences = [[] for _ in range(self.batch_size)]
         self.sentence_probs = [[] for _ in range(self.batch_size)]
         self.device = device
 
 
-    def search(self, decoder_input, encoder_outputs):
+    def search(self, input, encoder_outputs):
         """
         Beam-Search Decoding (Top-K Decoding)
 
         Examples::
 
-            >>> beam = Beam(k, decoder, batch_size, max_len, F.log_softmax)
-            >>> y_hats = beam.search(inputs, encoder_outputs)
+            >>> beam = Beam(k, decoder, batch_size, max_len)
+            >>> y_hats = beam.search(input, encoder_outputs)
         """
-        # Comment Notation
-        # B : batch size
-        # K : beam size
-        # C : classfication number
-        # S : sequence length
         hidden = torch.zeros(self.n_layers, self.batch_size, self.hidden_size)
+        step_outputs, hidden = self._forward_step(input, hidden, encoder_outputs)
+        self.cumulative_probs, self.beams = step_outputs.topk(self.k) # BxK
 
-        # get class classfication distribution (shape: BxC)
-        step_outputs, hidden = self._forward_step(decoder_input, hidden, encoder_outputs)
-        step_outputs = step_outputs.squeeze(1)
-        # get top K probability & idx (shape: BxK)
-        self.probs, self.beams = step_outputs.topk(self.k)
-        decoder_input = self.beams
-        # transpose (BxK) => (BxKx1)
-        self.beams = self.beams.view(self.batch_size, self.k, 1)
+        input = self.beams
+        self.beams = self.beams.unsqueeze(2)
 
         for di in range(self.max_len-1):
             if self._is_done():
                 break
-            # For each beam, get class classfication distribution (shape: BxKxC)
-            predicted_softmax, hidden = self._forward_step(decoder_input, hidden, encoder_outputs)
-            step_output = predicted_softmax.squeeze(1)
-            # get top k distribution (shape: BxKxK)
-            child_ps, child_vs = step_output.topk(self.k)
-            # get child probability (applying length penalty)
-            child_ps = self.probs.view(self.batch_size, 1, self.k) + child_ps
-            child_ps /= self._get_length_penalty(length=di+1, alpha=1.2, min_length=5)
-            # Transpose (BxKxK) => (BxK^2)
-            child_ps = child_ps.view(self.batch_size, self.k * self.k)
-            child_vs = child_vs.view(self.batch_size, self.k * self.k)
-            # Select Top k in K^2 (shape: BxK)
-            topk_child_ps, topk_child_ids = child_ps.topk(self.k)
-            # Initiate topk_child_vs (shape: BxK)
-            topk_child_vs = torch.LongTensor(self.batch_size, self.k)
-            # Initiate parent_beams (shape: BxKxS)
-            parent_beams = torch.LongTensor(self.beams.size())
-            # ids // k => ids of topk_child`s parent node
-            parent_beams_ids = (topk_child_ids // self.k).view(self.batch_size, self.k)
+            step_outputs, hidden = self._forward_step(input, hidden, encoder_outputs)
+            probs, values = step_outputs.topk(self.k)
 
-            for batch_num, batch in enumerate(topk_child_ids):
-                for beam_idx, topk_child_idx in enumerate(batch):
-                    topk_child_vs[batch_num, beam_idx] = child_vs[batch_num, topk_child_idx]
-                    parent_beams[batch_num, beam_idx] = self.beams[batch_num, parent_beams_ids[batch_num, beam_idx]]
+            self.cumulative_probs /= self._get_length_penalty(length=di+1, alpha=1.2, min_length=5)
+            probs = self.cumulative_probs.unsqueeze(1) + probs
 
-            # append new_topk_child (shape: BxKx(S) => BxKx(S+1))
-            self.beams = torch.cat([parent_beams, topk_child_vs.view(self.batch_size, self.k, 1)], dim=2).to(self.device)
-            self.probs = topk_child_ps.to(self.device)
+            probs = probs.view(self.batch_size, self.k * self.k)
+            values = values.view(self.batch_size, self.k * self.k)
+
+            topk_probs, topk_status_ids = probs.topk(self.k)
+            topk_values = torch.LongTensor(self.batch_size, self.k)
+
+            prev_beams = torch.LongTensor(self.beams.size())
+            prev_beams_ids = (topk_status_ids // self.k).view(self.batch_size, self.k)
+
+            for batch_num, batch in enumerate(topk_status_ids):
+                for beam_idx, topk_status_idx in enumerate(batch):
+                    topk_values[batch_num, beam_idx] = values[batch_num, topk_status_idx]
+                    prev_beams[batch_num, beam_idx] = self.beams[batch_num, prev_beams_ids[batch_num, beam_idx]]
+
+            self.beams = torch.cat([prev_beams, topk_values.unsqueeze(2)], dim=2).to(self.device)
+            self.cumulative_probs = topk_probs.to(self.device)
 
             # if any beam encounter eos_id
-            if torch.any(topk_child_vs == self.eos_id):
-                done_ids = torch.where(topk_child_vs == self.eos_id)
-                count = [1] * self.batch_size # count done beams
+            if torch.any(topk_values == self.eos_id):
+                done_ids = torch.where(topk_values == self.eos_id)
+                next = [1] * self.batch_size
 
                 for (batch_num, beam_idx) in zip(*done_ids):
                     self.sentences[batch_num].append(self.beams[batch_num, beam_idx])
-                    self.sentence_probs[batch_num].append(self.probs[batch_num, beam_idx])
+                    self.sentence_probs[batch_num].append(self.cumulative_probs[batch_num, beam_idx])
 
                     self._replace_beam(
-                        child_ps=child_ps,
-                        child_vs=child_vs,
-                        done_ids=(batch_num, beam_idx),
-                        count=count[batch_num]
+                        probs = probs,
+                        values = values,
+                        done_ids = (batch_num, beam_idx),
+                        next = next[batch_num]
                     )
 
-                    count[batch_num] += 1
+                    next[batch_num] += 1
 
-            # update decoder_input by topk_child_vs
-            decoder_input = topk_child_vs
+            # update input by topk_values
+            input = topk_values
 
         return self._get_best()
 
 
-    def _forward_step(self, decoder_input, hidden, encoder_outputs):
+    def _forward_step(self, input, hidden, encoder_outputs):
         """ forward one step on each decoder cell """
-        decoder_input = decoder_input.to(self.device)
-        output_size = decoder_input.size(1)
+        input = input.to(self.device)
+        output_size = input.size(1) # 1
 
-        embedded = self.embedding(decoder_input).to(self.device)
-        embedded = self.input_dropout(embedded)
-
+        embedded = self.embedding(input).to(self.device)
         output, hidden = self.rnn(embedded, hidden)
 
         if self.use_attention:
             output = self.attention(output, encoder_outputs)
 
         predicted_softmax = self.function(self.out(output.contiguous().view(-1, self.hidden_size)), dim=1).view(self.batch_size,output_size,-1)
+        step_outputs = predicted_softmax.squeeze(1)
 
-        return predicted_softmax, hidden
+        return step_outputs, hidden
 
 
     def _get_best(self):
@@ -158,7 +143,7 @@ class Beam:
         for batch_num, batch in enumerate(self.sentences):
             # if there is no terminated sentences, bring ongoing sentence which has the highest probability instead
             if len(batch) == 0:
-                prob_batch = self.probs[batch_num].to(self.device)
+                prob_batch = self.cumulative_probs[batch_num].to(self.device)
                 top_beam_idx = int(prob_batch.topk(1)[1])
                 y_hats.append(self.beams[batch_num, top_beam_idx])
 
@@ -171,6 +156,7 @@ class Beam:
 
         return y_hats
 
+
     def _match_len(self, y_hats):
         max_len = -1
 
@@ -182,9 +168,10 @@ class Beam:
 
         for batch_num, y_hat in enumerate(y_hats):
             matched[batch_num, :len(y_hat)] = y_hat
-            matched[batch_num, len(y_hat):] = 0
+            matched[batch_num, len(y_hat):] = int(char2id[' '])
 
         return matched
+
 
 
     def _is_done(self):
@@ -205,22 +192,21 @@ class Beam:
         return ((min_length + length) / (min_length + 1)) ** alpha
 
 
-    def _replace_beam(self, child_ps, child_vs, done_ids, count):
+    def _replace_beam(self, probs, values, done_ids, next):
         """ Replaces a beam that ends with <eos> with a beam with the next higher probability. """
-        done_batch_num = done_ids[0]
-        done_beam_idx = done_ids[1]
+        done_batch_num, done_beam_idx = done_ids
 
-        replace_ids = child_ps.topk(self.k + count)[1]
+        replace_ids = probs.topk(self.k + next)[1]
         replace_idx = replace_ids[done_batch_num, -1]
 
-        new_child_p = child_ps[done_batch_num, replace_idx].to(self.device)
-        new_child_v = child_vs[done_batch_num, replace_idx].to(self.device)
+        new_prob = probs[done_batch_num, replace_idx].to(self.device)
+        new_value = values[done_batch_num, replace_idx].to(self.device)
 
-        parent_beam_idx = (replace_idx // self.k)
-        parent_beam = self.beams[done_batch_num, parent_beam_idx].to(self.device)
-        parent_beam = parent_beam[:-1]
+        prev_beam_idx = (replace_idx // self.k)
+        prev_beam = self.beams[done_batch_num, prev_beam_idx]
+        prev_beam = prev_beam[:-1].to(self.device)
 
-        new_beam = torch.cat([parent_beam, new_child_v.view(1)])
+        new_beam = torch.cat([prev_beam, new_value.view(1)])
 
         self.beams[done_batch_num, done_beam_idx] = new_beam
-        self.probs[done_batch_num, done_beam_idx] = new_child_p
+        self.cumulative_probs[done_batch_num, done_beam_idx] = new_prob
