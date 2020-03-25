@@ -117,9 +117,9 @@ class Listener(nn.Module):
             self.flatten_parameters()
 
         if self.use_pyramidal:
-            output, hidden = self.bottom_rnn(x, None)
-            output, hidden = self.middle_rnn(output, hidden)
-            output, hidden = self.top_rnn(output, hidden)
+            output, hidden = self.bottom_rnn(x)
+            output, hidden = self.middle_rnn(output)
+            output, hidden = self.top_rnn(output)
 
         else:
             output, hidden = self.rnn(x)
@@ -178,7 +178,7 @@ class PyramidalRNN(nn.Module):
         self.device = device
 
 
-    def forward(self, inputs, hidden):
+    def forward(self, inputs):
         """
         Applies a multi-layer RNN to an input sequence.
 
@@ -198,12 +198,7 @@ class PyramidalRNN(nn.Module):
             seq_len += 1
 
         inputs = inputs.contiguous().view(batch_size, int(seq_len / 2), input_size * 2)
-
-        if hidden is None:
-            output, hidden = self.rnn(inputs)
-
-        else:
-            output, hidden = self.rnn(inputs, hidden)
+        output, hidden = self.rnn(inputs)
 
         return output, hidden
 
