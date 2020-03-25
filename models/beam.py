@@ -32,7 +32,7 @@ class Beam:
     """
     def __init__(self, k, decoder, batch_size, max_len, function, device):
 
-        assert k > 1, "beam size (k) should be bigger than 1"
+        #assert k > 1, "beam size (k) should be bigger than 1"
 
         self.k = k
         self.batch_size = batch_size
@@ -103,13 +103,14 @@ class Beam:
                 for (batch_num, beam_idx) in zip(*done_ids):
                     self.sentences[batch_num].append(self.beams[batch_num, beam_idx])
                     self.sentence_probs[batch_num].append(self.cumulative_probs[batch_num, beam_idx])
-
+                    """
                     self._replace_beam(
                         probs = probs,
                         values = values,
                         done_ids = (batch_num, beam_idx),
                         next = next[batch_num]
                     )
+                    """
 
                     next[batch_num] += 1
 

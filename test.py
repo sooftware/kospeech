@@ -45,7 +45,7 @@ def test(model, queue, device):
             target = targets[:, 1:]
 
             model.flatten_parameters()
-            y_hat, _ = model(feats, targets, teacher_forcing_ratio = 0.0, use_beam_search = False)
+            y_hat, _ = model(feats, targets, teacher_forcing_ratio = 0.0, use_beam_search = True)
             dist, length = get_distance(target, y_hat, id2char, EOS_TOKEN)
             total_dist += dist
             total_length += length
@@ -100,7 +100,7 @@ if __name__ == '__main__':
 
     load_model = torch.load("./data/weight_file/epoch_0_step_160000.pt",  map_location=torch.device('cpu')).module
     model.load_state_dict(load_model.state_dict())
-    model.set_beam_size(k = 3)
+    model.set_beam_size(k = 5)
 
     audio_paths, label_paths = load_data_list(data_list_path=SAMPLE_LIST_PATH, dataset_path=SAMPLE_DATASET_PATH)
     target_dict = load_targets(label_paths)

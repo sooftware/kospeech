@@ -143,6 +143,4 @@ class Speller(nn.Module):
             logits = torch.stack(decode_results, dim=1).to(self.device)
             y_hats = logits.max(-1)[1]
 
-        print(label_to_string(y_hats.numpy(), id2char, self.eos_id))
-
         return y_hats, logits
