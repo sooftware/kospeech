@@ -21,6 +21,8 @@ Speech recognition is an interdisciplinary subfield of computational linguistics
 We mainly referred to following papers.  
   
  [「Listen, Attend and Spell」](https://arxiv.org/abs/1508.01211)  
+ 
+[「State-of-the-art Speech Recognition with Sequence-to-Sequence Models」](https://arxiv.org/abs/1712.01769)
    
 [「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」](https://arxiv.org/abs/1904.08779).   
   
@@ -80,8 +82,8 @@ An explanation of configuration is [here](https://sh951011.github.io/Korean-Spee
   
 
 ## Troubleshoots and Contributing
-If you have any questions, bug reports, and feature requests, please [open an issue](https://github.com/sh951011/Korean-Speech-Recognition/issues) on Github.  
-or Contacts sh951011@gmail.com please.
+If you have any questions, bug reports, and feature requests, please [open an issue](https://github.com/sh951011/Korean-Speech-Recognition/issues) on Github.   
+For live discussions, please go to our [gitter](https://gitter.im/Korean-Speech-Recognition/community) or Contacts sh951011@gmail.com please.
   
 We appreciate any kind of feedback or contribution.  Feel free to proceed with small issues like bug fixes, documentation improvement.  For major contributions and new features, please discuss with the collaborators in corresponding issues.  
 
@@ -90,7 +92,7 @@ We follow [PEP-8](https://www.python.org/dev/peps/pep-0008/) for code style. Esp
     
 ### Reference   
 [[1] 「Listen, Attend and Spell」  Paper](https://arxiv.org/abs/1508.01211)   
-[[2] 「State-of-the-art Speech Recognition With Sequence-to-Sequence Models」   Paper](https://arxiv.org/abs/1712.01769)  
+[[2] 「State-of-the-art Speech Recognition with Sequence-to-Sequence Models」   Paper](https://arxiv.org/abs/1712.01769)  
 [[3] 「A Simple Data Augmentation Method for Automatic Speech Recognition」  Paper](https://arxiv.org/abs/1904.08779)     
 [[4] 「Voice Recognition Using MFCC Algorithm」  Paper](https://ijirae.com/volumes/vol1/issue10/27.NVEC10086.pdf)        
 [[5]    IBM pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)   
