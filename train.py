@@ -1,5 +1,6 @@
-# -*- coding: utf-8 -*-
 """
+-*- coding: utf-8 -*-
+
 Copyright 2020- Kai.Lib
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -27,8 +28,8 @@ Score:
     ● CRR: Character Recognition Rate
     ● CER: Character Error Rate based on Edit Distance
 
-GitHub repository : https://github.com/sh951011/Korean-ASR
-Documentation : https://sh951011.github.io/Korean-Speech-Recognition/index.html
+GitHub repository : https://github.com/sooftware/Korean-Speech-Recognition
+Documentation : https://sooftware.github.io/Korean-Speech-Recognition/index.html
 """
 
 import queue
@@ -52,11 +53,11 @@ from package.utils import save_epoch_result
 
 
 if __name__ == '__main__':
-    #os.environ["CUDA_LAUNCH_BLOCKING"] = "1" # if you use Multi-GPU, delete this line
-    #logger.info("device : %s" % torch.cuda.get_device_name(0))
-    #logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
-    #logger.info("CUDA version : %s" % (torch.version.cuda))
-    #logger.info("PyTorch version : %s" % (torch.__version__))
+    os.environ["CUDA_LAUNCH_BLOCKING"] = "1"  # if you use Multi-GPU, delete this line
+    logger.info("device : %s" % torch.cuda.get_device_name(0))
+    logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
+    logger.info("CUDA version : %s" % (torch.version.cuda))
+    logger.info("PyTorch version : %s" % (torch.__version__))
 
     config = Config(
         use_bidirectional = True,
