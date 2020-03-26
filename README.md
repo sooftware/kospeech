@@ -82,8 +82,8 @@ An explanation of configuration is [here](https://sh951011.github.io/Korean-Spee
   
 
 ## Troubleshoots and Contributing
-If you have any questions, bug reports, and feature requests, please [open an issue](https://github.com/sh951011/Korean-Speech-Recognition/issues) on Github.  
-or Contacts sh951011@gmail.com please.
+If you have any questions, bug reports, and feature requests, please [open an issue](https://github.com/sh951011/Korean-Speech-Recognition/issues) on Github.   
+For live discussions, please go to our [gitter](https://gitter.im/Korean-Speech-Recognition/community) or Contacts sh951011@gmail.com please.
   
 We appreciate any kind of feedback or contribution.  Feel free to proceed with small issues like bug fixes, documentation improvement.  For major contributions and new features, please discuss with the collaborators in corresponding issues.  
 
