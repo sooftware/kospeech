@@ -54,14 +54,7 @@ class Beam:
 
 
     def search(self, input, encoder_outputs):
-        """
-        Beam-Search Decoding (Top-K Decoding)
-
-        Examples::
-
-            >>> beam = Beam(k, decoder, batch_size, max_len)
-            >>> y_hats = beam.search(input, encoder_outputs)
-        """
+        """ Beam-Search Decoding (Top-K Decoding) """
         hidden = torch.zeros(self.n_layers, self.batch_size, self.hidden_size)
         step_outputs, hidden = self._forward_step(input, hidden, encoder_outputs)
         self.cumulative_probs, self.beams = step_outputs.topk(self.k) # BxK
@@ -72,6 +65,7 @@ class Beam:
         for di in range(self.max_len-1):
             if self._is_done():
                 break
+
             step_outputs, hidden = self._forward_step(input, hidden, encoder_outputs)
             probs, values = step_outputs.topk(self.k)
 
@@ -103,18 +97,14 @@ class Beam:
                 for (batch_num, beam_idx) in zip(*done_ids):
                     self.sentences[batch_num].append(self.beams[batch_num, beam_idx])
                     self.sentence_probs[batch_num].append(self.cumulative_probs[batch_num, beam_idx])
-                    """
                     self._replace_beam(
                         probs = probs,
                         values = values,
                         done_ids = (batch_num, beam_idx),
                         next = next[batch_num]
                     )
-                    """
-
                     next[batch_num] += 1
 
-            # update input by topk_values
             input = topk_values
 
         return self._get_best()
@@ -131,7 +121,8 @@ class Beam:
         if self.use_attention:
             output = self.attention(output, encoder_outputs)
 
-        predicted_softmax = self.function(self.out(output.contiguous().view(-1, self.hidden_size)), dim=1).view(self.batch_size,output_size,-1)
+        predicted_softmax = self.function(self.out(output.contiguous().view(-1, self.hidden_size)), dim=1)
+        predicted_softmax = predicted_softmax.view(self.batch_size,output_size,-1)
         step_outputs = predicted_softmax.squeeze(1)
 
         return step_outputs, hidden

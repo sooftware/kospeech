@@ -34,7 +34,7 @@ class MultiHeadAttention(nn.Module):
         self.linear_k = nn.Linear(in_features, dim * n_head)
         self.n_head = n_head
         self.dim = dim
-        self.linear_out = nn.Linear(in_features << 1, in_features)
+        self.out = nn.Linear(in_features << 1, in_features)
 
 
     def forward(self, query, key):
@@ -62,6 +62,6 @@ class MultiHeadAttention(nn.Module):
         
         # concatenate context & query
         combined = torch.cat([context, preserved], dim=2)
-        output = torch.tanh(self.linear_out(combined.view(-1, 2 * self.in_features))).view(batch_size, -1, self.in_features)
+        output = torch.tanh(self.out(combined.view(-1, 2 * self.in_features))).view(batch_size, -1, self.in_features)
 
         return output

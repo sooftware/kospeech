@@ -180,7 +180,7 @@ class PyramidalRNN(nn.Module):
 
     def forward(self, inputs):
         """
-        Applies a multi-layer RNN to an input sequence.
+        Applies a CNN & multi-layer RNN to an input sequence.
 
         Args:
             inputs (batch, seq_len): tensor containing the features of the input sequence.
