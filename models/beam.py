@@ -35,7 +35,6 @@ class Beam:
         #assert k > 1, "beam size (k) should be bigger than 1"
 
         self.k = k
-        self.batch_size = batch_size
         self.max_len = max_len
         self.function = function
         self.n_layers = decoder.n_layers
@@ -48,15 +47,17 @@ class Beam:
         self.eos_id = decoder.eos_id
         self.beams = None
         self.cumulative_probs = None
-        self.sentences = [[] for _ in range(self.batch_size)]
-        self.sentence_probs = [[] for _ in range(self.batch_size)]
+        self.sentences = [[] for _ in range(batch_size)]
+        self.sentence_probs = [[] for _ in range(batch_size)]
         self.device = device
 
 
     def search(self, input, encoder_outputs):
         """ Beam-Search Decoding (Top-K Decoding) """
-        hidden = torch.zeros(self.n_layers, self.batch_size, self.hidden_size)
-        step_outputs, hidden = self._forward_step(input, hidden, encoder_outputs)
+        batch_size = encoder_outputs.size(0)
+
+        hidden = torch.zeros(self.n_layers, batch_size, self.hidden_size)
+        step_outputs, hidden = self.forward_step(input, hidden, encoder_outputs)
         self.cumulative_probs, self.beams = step_outputs.topk(self.k) # BxK
 
         input = self.beams
@@ -66,20 +67,20 @@ class Beam:
             if self._is_done():
                 break
 
-            step_outputs, hidden = self._forward_step(input, hidden, encoder_outputs)
+            step_outputs, hidden = self.forward_step(input, hidden, encoder_outputs)
             probs, values = step_outputs.topk(self.k)
 
             self.cumulative_probs /= self._get_length_penalty(length=di+1, alpha=1.2, min_length=5)
             probs = self.cumulative_probs.unsqueeze(1) + probs
 
-            probs = probs.view(self.batch_size, self.k * self.k)
-            values = values.view(self.batch_size, self.k * self.k)
+            probs = probs.view(batch_size, self.k * self.k)
+            values = values.view(batch_size, self.k * self.k)
 
             topk_probs, topk_status_ids = probs.topk(self.k)
-            topk_values = torch.LongTensor(self.batch_size, self.k)
+            topk_values = torch.LongTensor(batch_size, self.k)
 
             prev_beams = torch.LongTensor(self.beams.size())
-            prev_beams_ids = (topk_status_ids // self.k).view(self.batch_size, self.k)
+            prev_beams_ids = (topk_status_ids // self.k).view(batch_size, self.k)
 
             for batch_num, batch in enumerate(topk_status_ids):
                 for beam_idx, topk_status_idx in enumerate(batch):
@@ -92,7 +93,7 @@ class Beam:
             # if any beam encounter eos_id
             if torch.any(topk_values == self.eos_id):
                 done_ids = torch.where(topk_values == self.eos_id)
-                next = [1] * self.batch_size
+                next = [1] * batch_size
 
                 for (batch_num, beam_idx) in zip(*done_ids):
                     self.sentences[batch_num].append(self.beams[batch_num, beam_idx])
@@ -110,10 +111,10 @@ class Beam:
         return self._get_best()
 
 
-    def _forward_step(self, input, hidden, encoder_outputs):
+    def forward_step(self, input, hidden, encoder_outputs):
         """ forward one step on each decoder cell """
-        input = input.to(self.device)
-        output_size = input.size(1) # 1
+        batch_size = encoder_outputs.size(0)
+        seq_length = input.size(1)
 
         embedded = self.embedding(input).to(self.device)
         output, hidden = self.rnn(embedded, hidden)
@@ -122,7 +123,7 @@ class Beam:
             output = self.attention(output, encoder_outputs)
 
         predicted_softmax = self.function(self.out(output.contiguous().view(-1, self.hidden_size)), dim=1)
-        predicted_softmax = predicted_softmax.view(self.batch_size,output_size,-1)
+        predicted_softmax = predicted_softmax.view(batch_size, seq_length,-1)
         step_outputs = predicted_softmax.squeeze(1)
 
         return step_outputs, hidden
@@ -150,13 +151,14 @@ class Beam:
 
 
     def _match_len(self, y_hats):
-        max_len = -1
+        batch_size = y_hats.size(0)
+        max_length = -1
 
         for y_hat in y_hats:
-            if len(y_hat) > max_len:
-                max_len = len(y_hat)
+            if len(y_hat) > max_length:
+                max_length = len(y_hat)
 
-        matched = torch.LongTensor(self.batch_size, max_len).to(self.device)
+        matched = torch.LongTensor(batch_size, max_length).to(self.device)
 
         for batch_num, y_hat in enumerate(y_hats):
             matched[batch_num, :len(y_hat)] = y_hat
