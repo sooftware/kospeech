@@ -1,4 +1,4 @@
-# Korean-Speech-Recognition  
+# ***Korean Speech Recognition***  
   
 ### End-to-End Speech Recognition on Pytorch  
    
@@ -46,7 +46,7 @@ We are constantly updating the progress of the project on the [Wiki page](https:
 
 ## Installation
 This project recommends Python 3.7 or higher.   
-We recommend creating a new virtual environment for this project (using virtualenv or conda).  
+We recommend creating a new virtual environment for this project (using virtual env or conda).  
 
 ### Prerequisites
   
