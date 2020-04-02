@@ -103,7 +103,7 @@ if __name__ == '__main__':
         device=device
     )
     speller = Speller(
-        class_num = len(char2id),
+        n_class = len(char2id),
         max_len = config.max_len,
         k = 8,
         hidden_size = config.hidden_size << (1 if config.use_bidirectional else 0),

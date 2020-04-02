@@ -9,7 +9,7 @@ class Beam:
     Args:
         k (int) : size of beam
         batch_size (int) : mini-batch size during infer
-        max_len (int) :  a maximum allowed length for the sequence to be processed
+        max_length (int) :  a maximum allowed length for the sequence to be processed
         function (torch.nn.Module) : A function used to generate symbols from RNN hidden state
         (default : torch.nn.functional.log_softmax)
         decoder (torch.nn.Module) : get pointer of decoder object to get multiple parameters at once
@@ -27,15 +27,15 @@ class Beam:
 
     Examples::
 
-        >>> beam = Beam(k, decoder, batch_size, max_len, F.log_softmax)
+        >>> beam = Beam(k, decoder, batch_size, max_length, F.log_softmax)
         >>> y_hats = beam.search(inputs, encoder_outputs)
     """
-    def __init__(self, k, decoder, batch_size, max_len, function, device):
+    def __init__(self, k, decoder, batch_size, max_length, function, device):
 
         #assert k > 1, "beam size (k) should be bigger than 1"
 
         self.k = k
-        self.max_len = max_len
+        self.max_length = max_length
         self.function = function
         self.n_layers = decoder.n_layers
         self.rnn = decoder.rnn
@@ -63,7 +63,7 @@ class Beam:
         input = self.beams
         self.beams = self.beams.unsqueeze(2)
 
-        for di in range(self.max_len-1):
+        for di in range(self.max_length - 1):
             if self._is_done():
                 break
 
