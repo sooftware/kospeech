@@ -14,7 +14,6 @@ class Config():
         use_pyramidal (bool): flag indication whether to use pyramidal rnn in listener or not (default: True)
         use_multistep_lr (bool): flag indication whether to use multistep leraning rate or not (default:False)
         augment_ratio (float): ratio of spec-augmentation applied data (default: 1.0)
-        pack_by_length (bool): pack by similar sequence length
         listener_layer_size (int): num of listener`s RNN cell (default: 6)
         speller_layer_size (int): num of speller`s RNN cell (default: 3)
         hidden_size (int): size of hidden state of RNN (default: 256)
@@ -39,13 +38,12 @@ class Config():
                  use_pickle = False,
                  use_pyramidal = True,
                  use_cuda = True,
-                 pack_by_length = True,
                  augment_ratio = 1.0,
                  hidden_size = 256,
                  dropout = 0.5,
                  listener_layer_size = 5,
                  speller_layer_size = 3,
-                 batch_size = 4,
+                 batch_size = 32,
                  worker_num = 1,
                  max_epochs = 40,
                  use_multistep_lr = False,
@@ -64,7 +62,6 @@ class Config():
         self.use_pickle = use_pickle
         self.use_pyramidal = use_pyramidal
         self.use_cuda = use_cuda
-        self.pack_by_length = pack_by_length
         self.augment_ratio = augment_ratio
         self.hidden_size = hidden_size
         self.dropout = dropout
@@ -82,6 +79,7 @@ class Config():
         self.seed = seed
         self.max_len = max_len
         self.print_log()
+
 
     def print_log(self):
         """ print information of configuration """

@@ -19,12 +19,11 @@ class BaseDataset(Dataset):
         input_reverse (bool): flag indication whether to reverse input feature or not (default: True)
         use_augment (bool): flag indication whether to use spec-augmentation or not (default: True)
         augment_ratio (float): ratio of spec-augmentation applied data (default: 1.0)
-        pack_by_length (bool): pack by similar sequence length
         batch_size (int): mini batch size
     """
     def __init__(self, audio_paths, label_paths, sos_id, eos_id,
                  target_dict = None, input_reverse = True, use_augment = True,
-                 batch_size = None, augment_ratio = 1.0, pack_by_length = True):
+                 batch_size = None, augment_ratio = 1.0):
         self.audio_paths = list(audio_paths)
         self.label_paths = list(label_paths)
         self.sos_id = sos_id
@@ -34,19 +33,13 @@ class BaseDataset(Dataset):
         self.input_reverse = input_reverse
         self.augment_ratio = augment_ratio
         self.augment_flags = [False] * len(self.audio_paths)
-        self.pack_by_length = pack_by_length
 
         if use_augment:
             self.augmentation()
 
-        if pack_by_length:
-            self.sort_by_length()
-            self.batch_shuffle(drop_last=False)
-
-        else:
-            bundle = list(zip(self.audio_paths, self.label_paths, self.augment_flags))
-            random.shuffle(bundle)
-            self.audio_paths, self.label_paths, self.augment_flags = zip(*bundle)
+        bundle = list(zip(self.audio_paths, self.label_paths, self.augment_flags))
+        random.shuffle(bundle)
+        self.audio_paths, self.label_paths, self.augment_flags = zip(*bundle)
 
 
     def get_item(self, idx):
@@ -75,98 +68,9 @@ class BaseDataset(Dataset):
 
     def shuffle(self):
         """ Shuffle Dataset """
-        if self.pack_by_length:
-            self.batch_shuffle(drop_last=False)
-
-        else:
-            bundle = list(zip(self.audio_paths, self.label_paths, self.augment_flags))
-            random.shuffle(bundle)
-            self.audio_paths, self.label_paths, self.augment_flags = zip(*bundle)
-
-
-    def sort_by_length(self):
-        """ descending sort by sequence length """
-        target_lengths = list()
-
-        for idx, label_path in enumerate(self.label_paths):
-            key = label_path.split('/')[-1].split('.')[0]
-            target_lengths.append(len(self.target_dict[key].split()))
-
-        bundle = list(zip(target_lengths, self.audio_paths, self.label_paths, self.augment_flags))
-        _, self.audio_paths, self.label_paths, self.augment_flags = zip(*sorted(bundle, reverse=True))
-
-        del _
-
-
-    def batch_shuffle(self, drop_last = False):
-        """ batch shuffle """
-        audio_batches = list()
-        label_batches = list()
-        flag_batches = list()
-
-        tmp_audio_paths = list()
-        tmp_label_paths = list()
-        tmp_augment_flags = list()
-
-        index = 0
-
-        while True:
-            if index == len(self.audio_paths):
-                if len(tmp_audio_paths) != 0:
-                    audio_batches.append(tmp_audio_paths)
-                    label_batches.append(tmp_label_paths)
-                    flag_batches.append(tmp_augment_flags)
-
-                break
-
-            if len(tmp_audio_paths) == self.batch_size:
-                audio_batches.append(tmp_audio_paths)
-                label_batches.append(tmp_label_paths)
-                flag_batches.append(tmp_augment_flags)
-
-                tmp_audio_paths = list()
-                tmp_label_paths = list()
-                tmp_augment_flags = list()
-
-            tmp_audio_paths.append(self.audio_paths[index])
-            tmp_label_paths.append(self.label_paths[index])
-            tmp_augment_flags.append(self.augment_flags[index])
-
-            index += 1
-
-        last_audio_paths = audio_batches[-1]
-        last_label_paths = label_batches[-1]
-        last_augment_flags = flag_batches[-1]
-
-        audio_batches = audio_batches[:-1]
-        label_batches = label_batches[:-1]
-        flag_batches = flag_batches[:-1]
-
-        bundle = list(zip(audio_batches, label_batches, flag_batches))
+        bundle = list(zip(self.audio_paths, self.label_paths, self.augment_flags))
         random.shuffle(bundle)
-        audio_batches, label_batches, flag_batches = zip(*bundle)
-
-        audio_paths = list()
-        label_paths = list()
-        augment_flags = list()
-
-        for (audio_batch, label_batch, flag_batch) in zip(audio_batches, label_batches, flag_batches):
-            audio_paths.extend(audio_batch)
-            label_paths.extend(label_batch)
-            augment_flags.extend(flag_batch)
-
-        audio_paths = list(audio_paths)
-        label_paths = list(label_paths)
-        augment_flags = list(augment_flags)
-
-        if not drop_last:
-            audio_paths.extend(last_audio_paths)
-            label_paths.extend(last_label_paths)
-            augment_flags.extend(last_augment_flags)
-
-        self.audio_paths = audio_paths
-        self.label_paths = label_paths
-        self.augment_flags = augment_flags
+        self.audio_paths, self.label_paths, self.augment_flags = zip(*bundle)
 
 
     def __len__(self):
@@ -225,8 +129,7 @@ def split_dataset(config, audio_paths, label_paths, valid_ratio=0.05, target_dic
                                     input_reverse=config.input_reverse,
                                     use_augment=config.use_augment,
                                     batch_size=config.batch_size,
-                                    augment_ratio=config.augment_ratio,
-                                    pack_by_length=config.pack_by_length
+                                    augment_ratio=config.augment_ratio
                                 )
         )
 
@@ -237,8 +140,7 @@ def split_dataset(config, audio_paths, label_paths, valid_ratio=0.05, target_dic
         batch_size=config.batch_size,
         target_dict=target_dict,
         input_reverse=config.input_reverse,
-        use_augment=False,
-        pack_by_length=False
+        use_augment=False
     )
 
     save_pickle(train_dataset_list, './data/pickle/train_dataset_list')

@@ -68,7 +68,6 @@ if __name__ == '__main__':
         use_pickle = False,
         use_pyramidal = False,
         use_cuda = True,
-        pack_by_length = True,
         augment_ratio = 1.0,
         hidden_size = 256,
         dropout = 0.5,
