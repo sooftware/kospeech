@@ -27,7 +27,8 @@ class MultiHeadAttention(nn.Module):
         >>> attention = MultiHeadAttention(in_features, n_head=4, dim=128)
         >>> output = attention(query, key)
     """
-    def __init__(self, in_features, n_head = 4, dim = 128):
+
+    def __init__(self, in_features, n_head=4, dim=128):
         super(MultiHeadAttention, self).__init__()
         self.in_features = in_features
         self.linear_q = nn.Linear(in_features, dim * n_head)
@@ -35,7 +36,6 @@ class MultiHeadAttention(nn.Module):
         self.n_head = n_head
         self.dim = dim
         self.out = nn.Linear(in_features << 1, in_features)
-
 
     def forward(self, query, key):
         batch_size = key.size(0)
@@ -50,16 +50,12 @@ class MultiHeadAttention(nn.Module):
         query = query.contiguous().view(-1, query_length, self.dim)  # -1 = n_head * batch_size
         key = key.contiguous().view(-1, key_length, self.dim)
 
-        # get attention score
         attn_score = torch.bmm(query, key.transpose(1, 2))
-
-        # get attention distribution
         attn_distribution = F.softmax(attn_score, dim=2)
-        
-        # get context vector
+
         context = torch.bmm(attn_distribution, key).view(self.n_head, batch_size, query_length, self.dim)
         context = context.permute(1, 2, 0, 3).contiguous().view(batch_size, query_length, -1)
-        
+
         # concatenate context & query
         combined = torch.cat([context, preserved], dim=2)
         output = torch.tanh(self.out(combined.view(-1, 2 * self.in_features))).view(batch_size, -1, self.in_features)

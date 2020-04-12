@@ -51,7 +51,6 @@ from package.loss import LabelSmoothingLoss
 from package.trainer import supervised_train
 from package.utils import save_epoch_result
 
-
 if __name__ == '__main__':
     os.environ["CUDA_LAUNCH_BLOCKING"] = "1"  # if you use Multi-GPU, delete this line
     logger.info("device : %s" % torch.cuda.get_device_name(0))
@@ -60,29 +59,29 @@ if __name__ == '__main__':
     logger.info("PyTorch version : %s" % (torch.__version__))
 
     config = Config(
-        use_bidirectional = True,
-        use_attention = True,
-        use_label_smooth = True,
-        input_reverse = True,
-        use_augment = True,
-        use_pickle = False,
-        use_pyramidal = False,
-        use_cuda = True,
-        augment_ratio = 1.0,
-        hidden_size = 256,
-        dropout = 0.5,
-        listener_layer_size = 5,
-        speller_layer_size = 3,
-        batch_size = 6,
-        worker_num = 1,
-        max_epochs = 40,
-        use_multistep_lr = False,
-        init_lr = 0.0001,
-        high_plateau_lr = 0.0003,
-        low_plateau_lr = 0.00001,
-        teacher_forcing = 0.90,
-        seed = 1,
-        max_len = 151
+        use_bidirectional=True,
+        use_attention=True,
+        use_label_smooth=True,
+        input_reverse=True,
+        use_augment=True,
+        use_pickle=False,
+        use_pyramidal=False,
+        use_cuda=True,
+        augment_ratio=1.0,
+        hidden_size=256,
+        dropout=0.5,
+        listener_layer_size=5,
+        speller_layer_size=3,
+        batch_size=6,
+        worker_num=1,
+        max_epochs=40,
+        use_multistep_lr=False,
+        init_lr=0.0001,
+        high_plateau_lr=0.0003,
+        low_plateau_lr=0.00001,
+        teacher_forcing=0.90,
+        seed=1,
+        max_len=151
     )
 
     random.seed(config.seed)
@@ -92,35 +91,35 @@ if __name__ == '__main__':
     device = torch.device('cuda' if cuda else 'cpu')
 
     listener = Listener(
-        in_features = 80,
-        hidden_size = config.hidden_size,
-        dropout_p = config.dropout,
-        n_layers = config.listener_layer_size,
-        bidirectional = config.use_bidirectional,
-        rnn_cell = 'gru',
-        use_pyramidal = config.use_pyramidal,
+        in_features=80,
+        hidden_size=config.hidden_size,
+        dropout_p=config.dropout,
+        n_layers=config.listener_layer_size,
+        bidirectional=config.use_bidirectional,
+        rnn_cell='gru',
+        use_pyramidal=config.use_pyramidal,
         device=device
     )
     speller = Speller(
-        n_class = len(char2id),
-        max_len = config.max_len,
-        k = 8,
-        hidden_size = config.hidden_size << (1 if config.use_bidirectional else 0),
-        sos_id = SOS_TOKEN,
-        eos_id = EOS_TOKEN,
-        n_layers = config.speller_layer_size,
-        rnn_cell = 'gru',
-        dropout_p = config.dropout,
-        use_attention = config.use_attention,
-        device = device
+        n_class=len(char2id),
+        max_length=config.max_len,
+        k=8,
+        hidden_size=config.hidden_size << (1 if config.use_bidirectional else 0),
+        sos_id=SOS_TOKEN,
+        eos_id=EOS_TOKEN,
+        n_layers=config.speller_layer_size,
+        rnn_cell='gru',
+        dropout_p=config.dropout,
+        use_attention=config.use_attention,
+        device=device
     )
-    model = ListenAttendSpell(listener, speller, use_pyramidal = config.use_pyramidal)
+    model = ListenAttendSpell(listener, speller, use_pyramidal=config.use_pyramidal)
     model.flatten_parameters()
     model = nn.DataParallel(model).to(device)
 
     optimizer = optim.Adam(model.module.parameters(), lr=config.init_lr)
     if config.use_label_smooth:
-        criterion = LabelSmoothingLoss(len(char2id), ignore_index = PAD_TOKEN, smoothing = 0.1, dim = -1).to(device)
+        criterion = LabelSmoothingLoss(len(char2id), ignore_index=PAD_TOKEN, smoothing=0.1, dim=-1).to(device)
     else:
         criterion = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_TOKEN).to(device)
 
@@ -132,11 +131,11 @@ if __name__ == '__main__':
         target_dict = load_targets(label_paths)
 
     total_time_step, train_dataset_list, valid_dataset = split_dataset(
-        config = config,
-        audio_paths = audio_paths,
-        label_paths = label_paths,
-        valid_ratio = 0.015,
-        target_dict = target_dict,
+        config=config,
+        audio_paths=audio_paths,
+        label_paths=label_paths,
+        valid_ratio=0.015,
+        target_dict=target_dict,
     )
 
     logger.info('start')
@@ -150,18 +149,18 @@ if __name__ == '__main__':
         train_loader = MultiLoader(train_dataset_list, train_queue, config.batch_size, config.worker_num)
         train_loader.start()
         train_loss, train_cer = supervised_train(
-            model = model,
-            total_time_step = total_time_step,
-            config = config,
-            queue = train_queue,
-            criterion = criterion,
-            epoch = epoch,
-            optimizer = optimizer,
-            device = device,
-            train_begin = train_begin,
-            worker_num = config.worker_num,
-            print_time_step = 10,
-            teacher_forcing_ratio = config.teacher_forcing
+            model=model,
+            total_time_step=total_time_step,
+            config=config,
+            queue=train_queue,
+            criterion=criterion,
+            epoch=epoch,
+            optimizer=optimizer,
+            device=device,
+            train_begin=train_begin,
+            worker_num=config.worker_num,
+            print_time_step=10,
+            teacher_forcing_ratio=config.teacher_forcing
         )
         train_loader.join()
 
@@ -178,4 +177,5 @@ if __name__ == '__main__':
         logger.info('Epoch %d (Evaluate) Loss %0.4f CER %0.4f' % (epoch, valid_loss, valid_cer))
         logger.info('Epoch %d Training result saved as a csv file complete !!' % epoch)
 
-        save_epoch_result(train_result=[train_dict, train_loss, train_cer], valid_result=[valid_dict, valid_loss, valid_cer])
+        save_epoch_result(train_result=[train_dict, train_loss, train_cer],
+                          valid_result=[valid_dict, valid_loss, valid_cer])

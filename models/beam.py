@@ -30,9 +30,10 @@ class Beam:
         >>> beam = Beam(k, decoder, batch_size, max_length, F.log_softmax)
         >>> y_hats = beam.search(inputs, encoder_outputs)
     """
+
     def __init__(self, k, decoder, batch_size, max_length, function, device):
 
-        #assert k > 1, "beam size (k) should be bigger than 1"
+        # assert k > 1, "beam size (k) should be bigger than 1"
 
         self.k = k
         self.max_length = max_length
@@ -51,14 +52,13 @@ class Beam:
         self.sentence_probs = [[] for _ in range(batch_size)]
         self.device = device
 
-
     def search(self, input, encoder_outputs):
         """ Beam-Search Decoding (Top-K Decoding) """
         batch_size = encoder_outputs.size(0)
 
         hidden = torch.zeros(self.n_layers, batch_size, self.hidden_size)
         step_outputs, hidden = self.forward_step(input, hidden, encoder_outputs)
-        self.cumulative_probs, self.beams = step_outputs.topk(self.k) # BxK
+        self.cumulative_probs, self.beams = step_outputs.topk(self.k)  # BxK
 
         input = self.beams
         self.beams = self.beams.unsqueeze(2)
@@ -70,7 +70,7 @@ class Beam:
             step_outputs, hidden = self.forward_step(input, hidden, encoder_outputs)
             probs, values = step_outputs.topk(self.k)
 
-            self.cumulative_probs /= self._get_length_penalty(length=di+1, alpha=1.2, min_length=5)
+            self.cumulative_probs /= self._get_length_penalty(length=di + 1, alpha=1.2, min_length=5)
             probs = self.cumulative_probs.unsqueeze(1) + probs
 
             probs = probs.view(batch_size, self.k * self.k)
@@ -99,17 +99,16 @@ class Beam:
                     self.sentences[batch_num].append(self.beams[batch_num, beam_idx])
                     self.sentence_probs[batch_num].append(self.cumulative_probs[batch_num, beam_idx])
                     self._replace_beam(
-                        probs = probs,
-                        values = values,
-                        done_ids = (batch_num, beam_idx),
-                        next = next[batch_num]
+                        probs=probs,
+                        values=values,
+                        done_ids=(batch_num, beam_idx),
+                        next=next[batch_num]
                     )
                     next[batch_num] += 1
 
             input = topk_values
 
         return self._get_best()
-
 
     def forward_step(self, input, hidden, encoder_outputs):
         """ forward one step on each decoder cell """
@@ -123,11 +122,10 @@ class Beam:
             output = self.attention(output, encoder_outputs)
 
         predicted_softmax = self.function(self.out(output.contiguous().view(-1, self.hidden_size)), dim=1)
-        predicted_softmax = predicted_softmax.view(batch_size, seq_length,-1)
+        predicted_softmax = predicted_softmax.view(batch_size, seq_length, -1)
         step_outputs = predicted_softmax.squeeze(1)
 
         return step_outputs, hidden
-
 
     def _get_best(self):
         """ get sentences which has the highest probability at each batch, stack it, and return it as 2d torch """
@@ -149,7 +147,6 @@ class Beam:
 
         return y_hats
 
-
     def _match_len(self, y_hats):
         batch_size = y_hats.size(0)
         max_length = -1
@@ -166,8 +163,6 @@ class Beam:
 
         return matched
 
-
-
     def _is_done(self):
         """ check if all beam search process has terminated """
         for done in self.sentences:
@@ -176,7 +171,6 @@ class Beam:
 
         return True
 
-
     def _get_length_penalty(self, length, alpha=1.2, min_length=5):
         """
         Calculate length-penalty.
@@ -184,7 +178,6 @@ class Beam:
         using alpha = 1.2, min_length = 5 usually.
         """
         return ((min_length + length) / (min_length + 1)) ** alpha
-
 
     def _replace_beam(self, probs, values, done_ids, next):
         """ Replaces a beam that ends with <eos> with a beam with the next higher probability. """

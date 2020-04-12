@@ -38,7 +38,6 @@ class ListenAttendSpell(nn.Module):
         self.function = function
         self.use_pyramidal = use_pyramidal
 
-
     def forward(self, inputs, targets, teacher_forcing_ratio=0.90, use_beam_search=False):
         listener_outputs, listener_hidden = self.listener(inputs)
         y_hats, logits = self.speller(
@@ -51,10 +50,8 @@ class ListenAttendSpell(nn.Module):
 
         return y_hats, logits
 
-
     def set_beam_size(self, k):
         self.speller.k = k
-
 
     def flatten_parameters(self):
         self.listener.flatten_parameters()
