@@ -5,15 +5,16 @@ from package.utils import get_distance, save_step_result
 
 train_step_result = {'loss': [], 'cer': []}
 
+
 def supervised_train(model, config, epoch, total_time_step, queue,
                      criterion, optimizer, device, train_begin, worker_num,
-                     print_time_step=10, teacher_forcing_ratio=0.90):
+                     print_every=10, teacher_forcing_ratio=0.90):
     r"""
     Args:
         model (torch.nn.Module): Model to be trained
         optimizer (torch.optim): optimizer for training
         teacher_forcing_ratio (float):  The probability that teacher forcing will be used (default: 0.90)
-        print_time_step (int): Parameters to determine how many steps to output
+        print_every (int): Parameters to determine how many steps to output
         queue (Queue.queue): queue for threading
         criterion (torch.nn): one of PyTorch’s loss function.
           Refer to http://pytorch.org/docs/master/nn.html#loss-functions for a list of them.
@@ -61,7 +62,6 @@ def supervised_train(model, config, epoch, total_time_step, queue,
             else:
                 continue
 
-
         inputs = feats.to(device)
         scripts = scripts.to(device)
         targets = scripts[:, 1:]
@@ -84,7 +84,7 @@ def supervised_train(model, config, epoch, total_time_step, queue,
         time_step += 1
         torch.cuda.empty_cache()
 
-        if time_step % print_time_step == 0:
+        if time_step % print_every == 0:
             current = time.time()
             elapsed = current - begin
             epoch_elapsed = (current - epoch_begin) / 60.0
