@@ -117,6 +117,9 @@ if __name__ == '__main__':
     model.flatten_parameters()
     model = nn.DataParallel(model).to(device)
 
+    for param in model.parameters():
+        param.data.uniform_(-0.08, 0.08)
+
     optimizer = optim.Adam(model.module.parameters(), lr=config.init_lr)
     if config.use_label_smooth:
         criterion = LabelSmoothingLoss(len(char2id), ignore_index=PAD_TOKEN, smoothing=0.1, dim=-1).to(device)
@@ -159,7 +162,7 @@ if __name__ == '__main__':
             device=device,
             train_begin=train_begin,
             worker_num=config.worker_num,
-            print_time_step=10,
+            print_every=10,
             teacher_forcing_ratio=config.teacher_forcing
         )
         train_loader.join()
