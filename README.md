@@ -51,7 +51,7 @@ We recommend creating a new virtual environment for this project (using virtual 
 ### Prerequisites
   
 * Numpy: `pip install numpy` (Refer [here](https://github.com/numpy/numpy) for problem installing Numpy).
-* PyTorch: Refer to [PyTorch website](http://pytorch.org/) to install the version w.r.t. your environment.
+* Pytorch: Refer to [PyTorch website](http://pytorch.org/) to install the version w.r.t. your environment.
 * Pandas: `pip install pandas` (Refer [here](https://github.com/pandas-dev/pandas) for problem installing Pandas)  
 * librosa: `pip install librosa` (Refer [here](https://github.com/librosa/librosa) for problem installing librosa)
 * tqdm: `pip install tqdm` (Refer [here](https://github.com/tqdm/tqdm) for problem installing tqdm)  
