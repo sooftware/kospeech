@@ -134,7 +134,7 @@ if __name__ == '__main__':
     else:
         target_dict = load_targets(label_paths)
 
-    total_time_step, train_dataset_list, valid_dataset = split_dataset(
+    total_time_step, train_set_list, valid_set = split_dataset(
         config=config,
         audio_paths=audio_paths,
         label_paths=label_paths,
@@ -147,10 +147,10 @@ if __name__ == '__main__':
 
     for epoch in range(config.max_epochs):
         train_queue = queue.Queue(config.worker_num << 1)
-        for train_dataset in train_dataset_list:
-            train_dataset.shuffle()
+        for train_set in train_set_list:
+            train_set.shuffle()
 
-        train_loader = MultiLoader(train_dataset_list, train_queue, config.batch_size, config.worker_num)
+        train_loader = MultiLoader(train_set_list, train_queue, config.batch_size, config.worker_num)
         train_loader.start()
         train_loss, train_cer = supervised_train(
             model=model,
@@ -172,14 +172,14 @@ if __name__ == '__main__':
         logger.info('Epoch %d (Training) Loss %0.4f CER %0.4f' % (epoch, train_loss, train_cer))
 
         valid_queue = queue.Queue(config.worker_num << 1)
-        valid_loader = CustomDataLoader(valid_dataset, valid_queue, config.batch_size, 0)
+        valid_loader = CustomDataLoader(valid_set, valid_queue, config.batch_size, 0)
         valid_loader.start()
 
         valid_loss, valid_cer = evaluate(model, valid_queue, criterion, device)
         valid_loader.join()
 
         logger.info('Epoch %d (Evaluate) Loss %0.4f CER %0.4f' % (epoch, valid_loss, valid_cer))
-        logger.info('Epoch %d Training result saved as a csv file complete !!' % epoch)
 
         save_epoch_result(train_result=[train_dict, train_loss, train_cer],
                           valid_result=[valid_dict, valid_loss, valid_cer])
+        logger.info('Epoch %d Training result saved as a csv file complete !!' % epoch)
