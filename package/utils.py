@@ -24,6 +24,7 @@ def char_distance(target, y_hat):
 
     return dist, length
 
+
 def get_distance(targets, y_hats, id2char, eos_id):
     """
     Provides total character distance between targets & y_hats
@@ -59,7 +60,7 @@ def get_label(filepath, sos_id, eos_id, target_dict=None):
 
     Args:
         filepath (str): specific path of label file
-        bos_id (int): identification of <start of sequence>
+        sos_id (int): identification of <start of sequence>
         eos_id (int): identification of <end of sequence>
         target_dict (dict): dictionary of filename and labels
 

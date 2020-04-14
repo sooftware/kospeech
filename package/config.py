@@ -1,5 +1,6 @@
 from package.definition import logger
 
+
 class Config():
     """
     Configuration
@@ -29,30 +30,31 @@ class Config():
         max_len (int): a maximum allowed length for the sequence to be processed (default: 120)
         use_cuda (bool): if True, use CUDA (default: True)
     """
+
     def __init__(self,
-                 use_bidirectional = True,
-                 use_attention = True,
-                 use_label_smooth = True,
-                 input_reverse = True,
-                 use_augment = True,
-                 use_pickle = False,
-                 use_pyramidal = True,
-                 use_cuda = True,
-                 augment_ratio = 1.0,
-                 hidden_size = 256,
-                 dropout = 0.5,
-                 listener_layer_size = 5,
-                 speller_layer_size = 3,
-                 batch_size = 32,
-                 worker_num = 1,
-                 max_epochs = 40,
-                 use_multistep_lr = False,
-                 init_lr = 0.0001,
-                 high_plateau_lr = 0.0003,
-                 low_plateau_lr = 0.00001,
-                 teacher_forcing = 0.90,
-                 seed = 1,
-                 max_len = 151
+                 use_bidirectional=True,
+                 use_attention=True,
+                 use_label_smooth=True,
+                 input_reverse=True,
+                 use_augment=True,
+                 use_pickle=False,
+                 use_pyramidal=True,
+                 use_cuda=True,
+                 augment_ratio=1.0,
+                 hidden_size=256,
+                 dropout=0.5,
+                 listener_layer_size=5,
+                 speller_layer_size=3,
+                 batch_size=32,
+                 worker_num=1,
+                 max_epochs=40,
+                 use_multistep_lr=False,
+                 init_lr=0.0001,
+                 high_plateau_lr=0.0003,
+                 low_plateau_lr=0.00001,
+                 teacher_forcing=0.90,
+                 seed=1,
+                 max_len=151
                  ):
         self.use_bidirectional = use_bidirectional
         self.use_attention = use_attention
@@ -79,7 +81,6 @@ class Config():
         self.seed = seed
         self.max_len = max_len
         self.print_log()
-
 
     def print_log(self):
         """ print information of configuration """

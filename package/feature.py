@@ -70,7 +70,7 @@ def get_librosa_melspectrogram(filepath, n_mels=128, del_silence=False, input_re
     if input_reverse:
         mel_spectrogram = mel_spectrogram[:,::-1]
 
-    return torch.FloatTensor( np.ascontiguousarray( np.swapaxes(mel_spectrogram, 0, 1) ) )
+    return torch.FloatTensor(np.ascontiguousarray(np.swapaxes(mel_spectrogram, 0, 1)))
 
 
 def get_librosa_mfcc(filepath, n_mfcc=40, del_silence=False, input_reverse=True):
@@ -134,8 +134,7 @@ def get_librosa_mfcc(filepath, n_mfcc=40, del_silence=False, input_reverse=True)
     if input_reverse:
         mfcc = mfcc[:,::-1]
 
-    return torch.FloatTensor( np.ascontiguousarray( np.swapaxes(mfcc, 0, 1) ) )
-
+    return torch.FloatTensor(np.ascontiguousarray(np.swapaxes(mfcc, 0, 1)))
 
 
 def spec_augment(feat, T=70, F=20, time_mask_num=2, freq_mask_num=2):
@@ -174,13 +173,13 @@ def spec_augment(feat, T=70, F=20, time_mask_num=2, freq_mask_num=2):
         t = np.random.uniform(low=0.0, high=T)
         t = int(t)
         t0 = random.randint(0, length - t)
-        feat[t0 : t0 + t, :] = 0
+        feat[t0: t0 + t, :] = 0
 
     # freq mask
     for _ in range(freq_mask_num):
         f = np.random.uniform(low=0.0, high=F)
         f = int(f)
         f0 = random.randint(0, n_mels - f)
-        feat[:, f0 : f0 + f] = 0
+        feat[:, f0: f0 + f] = 0
 
     return feat

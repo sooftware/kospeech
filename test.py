@@ -17,10 +17,10 @@ import torch
 from models.listenAttendSpell import ListenAttendSpell
 from models.listener import Listener
 from models.speller import Speller
-from package.dataset import BaseDataset
+from package.dataset import CustomDataset
 from package.definition import *
 from package.config import Config
-from package.loader import BaseDataLoader, load_data_list, load_targets
+from package.loader import CustomDataLoader, load_data_list, load_targets
 from package.utils import get_distance
 
 
@@ -85,7 +85,7 @@ if __name__ == '__main__':
     )
     speller = Speller(
         n_class = len(char2id),
-        max_len = config.max_len,
+        max_length = config.max_len,
         k = 1,
         hidden_size = config.hidden_size << (1 if config.use_bidirectional else 0),
         sos_id = SOS_TOKEN,
@@ -105,19 +105,18 @@ if __name__ == '__main__':
     audio_paths, label_paths = load_data_list(data_list_path=SAMPLE_LIST_PATH, dataset_path=SAMPLE_DATASET_PATH)
     target_dict = load_targets(label_paths)
 
-    test_dataset = BaseDataset(
+    test_dataset = CustomDataset(
         audio_paths = audio_paths,
         label_paths = label_paths,
         sos_id = SOS_TOKEN,
         eos_id = EOS_TOKEN,
         target_dict = target_dict,
         input_reverse = config.input_reverse,
-        use_augment = False,
-        pack_by_length = False
+        use_augment = False
     )
 
     test_queue = queue.Queue(config.worker_num << 1)
-    test_loader = BaseDataLoader(test_dataset, test_queue, config.batch_size, 0)
+    test_loader = CustomDataLoader(test_dataset, test_queue, config.batch_size, 0)
     test_loader.start()
 
     CER = test(model, test_queue, device)

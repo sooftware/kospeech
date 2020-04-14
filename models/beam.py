@@ -52,25 +52,25 @@ class Beam:
         self.sentence_probs = [[] for _ in range(batch_size)]
         self.device = device
 
-    def search(self, input, encoder_outputs):
+    def search(self, input_, encoder_outputs):
         """ Beam-Search Decoding (Top-K Decoding) """
         batch_size = encoder_outputs.size(0)
 
         hidden = torch.zeros(self.n_layers, batch_size, self.hidden_size)
-        step_outputs, hidden = self.forward_step(input, hidden, encoder_outputs)
+        step_outputs, hidden = self.forward_step(input_, hidden, encoder_outputs)
         self.cumulative_probs, self.beams = step_outputs.topk(self.k)  # BxK
 
-        input = self.beams
+        input_ = self.beams
         self.beams = self.beams.unsqueeze(2)
 
         for di in range(self.max_length - 1):
             if self._is_done():
                 break
 
-            step_outputs, hidden = self.forward_step(input, hidden, encoder_outputs)
+            step_outputs, hidden = self.forward_step(input_, hidden, encoder_outputs)
             probs, values = step_outputs.topk(self.k)
 
-            self.cumulative_probs /= self._get_length_penalty(length=di + 1, alpha=1.2, min_length=5)
+            self.cumulative_probs /= self.get_length_penalty(length=di + 1, alpha=1.2, min_length=5)
             probs = self.cumulative_probs.unsqueeze(1) + probs
 
             probs = probs.view(batch_size, self.k * self.k)
@@ -93,7 +93,7 @@ class Beam:
             # if any beam encounter eos_id
             if torch.any(topk_values == self.eos_id):
                 done_ids = torch.where(topk_values == self.eos_id)
-                next = [1] * batch_size
+                next_ = [1] * batch_size
 
                 for (batch_num, beam_idx) in zip(*done_ids):
                     self.sentences[batch_num].append(self.beams[batch_num, beam_idx])
@@ -102,20 +102,20 @@ class Beam:
                         probs=probs,
                         values=values,
                         done_ids=(batch_num, beam_idx),
-                        next=next[batch_num]
+                        next_=next_[batch_num]
                     )
-                    next[batch_num] += 1
+                    next_[batch_num] += 1
 
-            input = topk_values
+            input_ = topk_values
 
         return self._get_best()
 
-    def forward_step(self, input, hidden, encoder_outputs):
+    def forward_step(self, input_, hidden, encoder_outputs):
         """ forward one step on each decoder cell """
         batch_size = encoder_outputs.size(0)
-        seq_length = input.size(1)
+        seq_length = input_.size(1)
 
-        embedded = self.embedding(input).to(self.device)
+        embedded = self.embedding(input_).to(self.device)
         output, hidden = self.rnn(embedded, hidden)
 
         if self.use_attention:
@@ -171,7 +171,7 @@ class Beam:
 
         return True
 
-    def _get_length_penalty(self, length, alpha=1.2, min_length=5):
+    def get_length_penalty(self, length, alpha=1.2, min_length=5):
         """
         Calculate length-penalty.
         because shorter sentence usually have bigger probability.
@@ -179,11 +179,11 @@ class Beam:
         """
         return ((min_length + length) / (min_length + 1)) ** alpha
 
-    def _replace_beam(self, probs, values, done_ids, next):
+    def _replace_beam(self, probs, values, done_ids, next_):
         """ Replaces a beam that ends with <eos> with a beam with the next higher probability. """
         done_batch_num, done_beam_idx = done_ids
 
-        replace_ids = probs.topk(self.k + next)[1]
+        replace_ids = probs.topk(self.k + next_)[1]
         replace_idx = replace_ids[done_batch_num, -1]
 
         new_prob = probs[done_batch_num, replace_idx].to(self.device)

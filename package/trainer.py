@@ -11,6 +11,8 @@ def supervised_train(model, config, epoch, total_time_step, queue,
                      print_every=10, teacher_forcing_ratio=0.90):
     r"""
     Args:
+        epoch (int): present epoch
+        config (Config): configuration
         model (torch.nn.Module): Model to be trained
         optimizer (torch.optim): optimizer for training
         teacher_forcing_ratio (float):  The probability that teacher forcing will be used (default: 0.90)
@@ -55,7 +57,7 @@ def supervised_train(model, config, epoch, total_time_step, queue,
         if feats.shape[0] == 0:
             # empty feats means closing one loader
             worker_num -= 1
-            logger.debug('left train_loader: %d' % (worker_num))
+            logger.debug('left train_loader: %d' % worker_num)
 
             if worker_num == 0:
                 break

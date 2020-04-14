@@ -11,7 +11,8 @@ TARGET_DICT_PATH = "./data/pickle/new_target_dict.bin"
 TRAIN_RESULT_PATH = "./data/train_result/train_result.csv"
 VALID_RESULT_PATH = "./data/train_result/eval_result.csv"
 TRAIN_STEP_RESULT_PATH = "./data/train_result/train_step_result.csv"
-import logging, sys
+import logging
+import sys
 logger = logging.getLogger('root')
 FORMAT = "[%(asctime)s %(filename)s:%(lineno)s - %(funcName)s()] %(message)s"
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format=FORMAT)

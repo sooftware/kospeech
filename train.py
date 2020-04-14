@@ -46,10 +46,11 @@ from package.dataset import split_dataset
 from package.definition import *
 from package.evaluator import evaluate
 from package.config import Config
-from package.loader import load_data_list, load_targets, load_pickle, MultiLoader, BaseDataLoader
+from package.loader import load_data_list, load_targets, load_pickle, MultiLoader, CustomDataLoader
 from package.loss import LabelSmoothingLoss
 from package.trainer import supervised_train
 from package.utils import save_epoch_result
+
 
 if __name__ == '__main__':
     os.environ["CUDA_LAUNCH_BLOCKING"] = "1"  # if you use Multi-GPU, delete this line
@@ -171,7 +172,7 @@ if __name__ == '__main__':
         logger.info('Epoch %d (Training) Loss %0.4f CER %0.4f' % (epoch, train_loss, train_cer))
 
         valid_queue = queue.Queue(config.worker_num << 1)
-        valid_loader = BaseDataLoader(valid_dataset, valid_queue, config.batch_size, 0)
+        valid_loader = CustomDataLoader(valid_dataset, valid_queue, config.batch_size, 0)
         valid_loader.start()
 
         valid_loss, valid_cer = evaluate(model, valid_queue, criterion, device)

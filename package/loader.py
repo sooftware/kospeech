@@ -10,7 +10,7 @@ from package.definition import logger
 from package.utils import save_pickle
 
 
-class MultiLoader():
+class MultiLoader:
     """
     Multi Data Loader using Threads.
 
@@ -28,7 +28,7 @@ class MultiLoader():
         self.loader = list()
 
         for idx in range(self.worker_num):
-            self.loader.append(BaseDataLoader(self.dataset_list[idx], self.queue, self.batch_size, idx))
+            self.loader.append(CustomDataLoader(self.dataset_list[idx], self.queue, self.batch_size, idx))
 
     def start(self):
         for idx in range(self.worker_num):
@@ -39,7 +39,7 @@ class MultiLoader():
             self.loader[idx].join()
 
 
-class BaseDataLoader(threading.Thread):
+class CustomDataLoader(threading.Thread):
     """
     Base Data Loader
 
@@ -54,11 +54,10 @@ class BaseDataLoader(threading.Thread):
         self.collate_fn = _collate_fn
         self.dataset = dataset
         self.queue = queue
-        self.idx = 0
+        self.index = 0
         self.batch_size = batch_size
         self.dataset_count = dataset.count()
         self.thread_id = thread_id
-
 
     def create_empty_batch(self):
         seqs = torch.zeros(0, 0, 0)
@@ -69,22 +68,21 @@ class BaseDataLoader(threading.Thread):
 
         return seqs, targets, seq_lengths, target_lengths
 
-
     def run(self):
-        logger.debug('loader %d start' % (self.thread_id))
+        logger.debug('loader %d start' % self.thread_id)
         while True:
             items = list()
 
             for _ in range(self.batch_size):
-                if self.idx >= self.dataset_count:
+                if self.index >= self.dataset_count:
                     break
 
-                feat, label = self.dataset.get_item(self.idx)
+                feat, label = self.dataset.get_item(self.index)
 
                 if feat is not None:
                     items.append((feat, label))
 
-                self.idx += 1
+                self.index += 1
 
             if len(items) == 0:
                 batch = self.create_empty_batch()
@@ -96,12 +94,10 @@ class BaseDataLoader(threading.Thread):
             batch = self.collate_fn(items)
             self.queue.put(batch)
 
-        logger.debug('loader %d stop' % (self.thread_id))
-
+        logger.debug('loader %d stop' % self.thread_id)
 
     def count(self):
         return math.ceil(self.dataset_count / self.batch_size)
-
 
 
 def _collate_fn(batch):
@@ -142,7 +138,6 @@ def _collate_fn(batch):
     return seqs, targets, seq_lengths, target_lengths
 
 
-
 def load_targets(label_paths):
     """
     Provides dictionary of filename and labels
@@ -168,7 +163,6 @@ def load_targets(label_paths):
     return target_dict
 
 
-
 def load_data_list(data_list_path, dataset_path):
     """
     Provides set of audio path & label path
@@ -181,12 +175,11 @@ def load_data_list(data_list_path, dataset_path):
         - **audio_paths** (list): set of audio path
         - **label_paths** (list): set of label path
     """
-    data_list = pd.read_csv(data_list_path, "r", delimiter = ",", encoding="cp949")
+    data_list = pd.read_csv(data_list_path, "r", delimiter=",", encoding="cp949")
     audio_paths = list(dataset_path + data_list["audio"])
     label_paths = list(dataset_path + data_list["label"])
 
     return audio_paths, label_paths
-
 
 
 def load_label(label_path, encoding='utf-8'):
@@ -213,7 +206,6 @@ def load_label(label_path, encoding='utf-8'):
             id2char[int(row[0])] = row[1]
 
     return char2id, id2char
-
 
 
 def load_pickle(filepath, message=""):
