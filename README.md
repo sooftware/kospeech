@@ -96,11 +96,12 @@ We follow [PEP-8](https://www.python.org/dev/peps/pep-0008/) for code style. Esp
 ### Reference   
 [[1] 「Listen, Attend and Spell」  Paper](https://arxiv.org/abs/1508.01211)   
 [[2] 「State-of-the-art Speech Recognition with Sequence-to-Sequence Models」   Paper](https://arxiv.org/abs/1712.01769)  
-[[3] 「A Simple Data Augmentation Method for Automatic Speech Recognition」  Paper](https://arxiv.org/abs/1904.08779)     
-[[4] 「Voice Recognition Using MFCC Algorithm」  Paper](https://ijirae.com/volumes/vol1/issue10/27.NVEC10086.pdf)        
-[[5]    IBM pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)   
-[[6]    A.I Hub Korean Voice Dataset](http://www.aihub.or.kr/aidata/105)    
+[[3] 「A Simple Data Augmentation Method for Automatic Speech Recognition」  Paper](https://arxiv.org/abs/1904.08779)  
+[[4] An analysis of incorporating an external language model into a sequence-to-sequence model](https://arxiv.org/abs/1712.01996)  
+[[5] 「Voice Recognition Using MFCC Algorithm」  Paper](https://ijirae.com/volumes/vol1/issue10/27.NVEC10086.pdf)        
+[[6]    IBM pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)   
 [[7]    Character RNN Language Model](https://github.com/sooftware/char-rnnlm)  
+[[8]    A.I Hub Korean Voice Dataset](http://www.aihub.or.kr/aidata/105)    
   
 ### License
 ```
