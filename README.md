@@ -42,8 +42,6 @@ Also our model has recorded **91% CRR** in [Kadi-zeroth dataset](https://github.
   
 We are constantly updating the progress of the project on the [Wiki page](https://github.com/sooftware/Korean-Speech-Recognition/wiki).  Please check this page.  
   
-[More details](https://sh951011.github.io/Korean-Speech-Recognition/notes/More-details.html)
-
 ## Installation
 This project recommends Python 3.7 or higher.   
 We recommend creating a new virtual environment for this project (using virtual env or conda).  
