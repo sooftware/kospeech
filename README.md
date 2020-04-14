@@ -99,7 +99,8 @@ We follow [PEP-8](https://www.python.org/dev/peps/pep-0008/) for code style. Esp
 [[3] 「A Simple Data Augmentation Method for Automatic Speech Recognition」  Paper](https://arxiv.org/abs/1904.08779)     
 [[4] 「Voice Recognition Using MFCC Algorithm」  Paper](https://ijirae.com/volumes/vol1/issue10/27.NVEC10086.pdf)        
 [[5]    IBM pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)   
-[[6]    A.I Hub Korean Voice Dataset](http://www.aihub.or.kr/aidata/105)   
+[[6]    A.I Hub Korean Voice Dataset](http://www.aihub.or.kr/aidata/105)    
+[[7]    Character RNN Language Model](https://github.com/sooftware/char-rnnlm)  
   
 ### License
 ```
