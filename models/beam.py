@@ -8,15 +8,11 @@ class Beam:
 
     Args:
         k (int) : size of beam
+        decoder (torch.nn.Module) : get pointer of decoder object to get multiple parameters at once
         batch_size (int) : mini-batch size during infer
         max_length (int) :  a maximum allowed length for the sequence to be processed
         function (torch.nn.Module) : A function used to generate symbols from RNN hidden state
         (default : torch.nn.functional.log_softmax)
-        decoder (torch.nn.Module) : get pointer of decoder object to get multiple parameters at once
-        beams (torch.Tensor) : ongoing beams for decoding
-        probs (torch.Tensor) : cumulative probability of beams (score of beams)
-        sentences (list) : store beams which met <eos> token and terminated decoding process.
-        sentence_probs (list) : score of sentences
 
     Inputs: decoder_input, encoder_outputs
         - **decoder_input** (torch.Tensor): initial input of decoder - <sos>
@@ -33,7 +29,7 @@ class Beam:
 
     def __init__(self, k, decoder, batch_size, max_length, function, device):
 
-        # assert k > 1, "beam size (k) should be bigger than 1"
+        assert k > 1, "beam size (k) should be bigger than 1"
 
         self.k = k
         self.max_length = max_length

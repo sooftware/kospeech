@@ -11,6 +11,8 @@ def supervised_train(model, config, epoch, total_time_step, queue,
                      print_every=10, teacher_forcing_ratio=0.90):
     r"""
     Args:
+        train_begin: train begin time
+        total_time_step: total time step in epoch
         epoch (int): present epoch
         config (Config): configuration
         model (torch.nn.Module): Model to be trained
@@ -27,7 +29,8 @@ def supervised_train(model, config, epoch, total_time_step, queue,
         - **loss** (float): loss of present epoch
         - **cer** (float): character error rate
     """
-    total_loss = 0.
+    epoch_loss_total = 0.
+    print_loss_total = 0.
     total_num = 0
     total_dist = 0
     total_length = 0
@@ -72,7 +75,8 @@ def supervised_train(model, config, epoch, total_time_step, queue,
         y_hat, logit = model(inputs, scripts, teacher_forcing_ratio=teacher_forcing_ratio)
 
         loss = criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
-        total_loss += loss.item()
+        epoch_loss_total += loss.item()
+        print_loss_total += loss.item()
 
         total_num += sum(feat_lens)
         dist, length = get_distance(targets, y_hat, id2char, EOS_TOKEN)
@@ -95,21 +99,22 @@ def supervised_train(model, config, epoch, total_time_step, queue,
             logger.info('timestep: {:4d}/{:4d}, loss: {:.4f}, cer: {:.2f}, elapsed: {:.2f}s {:.2f}m {:.2f}h'.format(
                 time_step,
                 total_time_step,
-                total_loss / total_num,
+                print_loss_total / print_every,
                 total_dist / total_length,
                 elapsed, epoch_elapsed, train_elapsed)
             )
+            print_loss_total = 0
             begin = time.time()
 
         if time_step % 1000 == 0:
-            save_step_result(train_step_result, total_loss / total_num, total_dist / total_length)
+            save_step_result(train_step_result, epoch_loss_total / total_num, total_dist / total_length)
 
         if time_step % 10000 == 0:
             torch.save(model, "./data/weight_file/epoch_%s_step_%s.pt" % (str(epoch), str(time_step)))
 
     logger.info('train() completed')
 
-    return total_loss / total_num, total_dist / total_length
+    return epoch_loss_total / total_num, total_dist / total_length
 
 
 def set_lr(optimizer, lr):

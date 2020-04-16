@@ -17,7 +17,7 @@ class Speller(nn.Module):
         hidden_size (int): the number of features in the hidden state `h`
         sos_id (int): index of the start of sentence symbol
         eos_id (int): index of the end of sentence symbol
-        layer_size (int, optional): number of recurrent layers (default: 1)
+        n_layers (int, optional): number of recurrent layers (default: 1)
         rnn_cell (str, optional): type of RNN cell (default: gru)
         dropout_p (float, optional): dropout probability for the output sequence (default: 0)
         use_attention (bool, optional): flag indication whether to use attention mechanism or not (default: false)
