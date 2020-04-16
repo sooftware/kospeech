@@ -68,18 +68,18 @@ python setup.py install
 ## Get Started
 ### Preparation before Training
 
-Refer [here](https://sh951011.github.io/Korean-Speech-Recognition/notes/Preparation.html) before Training.  
+Refer [here](https://sh951011.github.io/End-to-End-Korean-Speech-Recognition/notes/Preparation.html) before Training.  
 The above document is written in Korean.  
 We will also write a document in English as soon as possible, so please wait a little bit.  
   
-If you already have another dataset, please modify the data set path to [definition.py](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/package/definition.py) as appropriate.  
+If you already have another dataset, please modify the data set path to [definition.py](https://github.com/sh951011/End-to-End-Korean-Speech-Recognition/blob/master/package/definition.py) as appropriate.  
 
 ### Train and Test
-if you want to start training, you should run [train.py](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/train.py).    
-or after training, you want to start testing, you should run [test.py](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/test.py).  
+if you want to start training, you should run [train.py](https://github.com/sh951011/End-to-End-Korean-Speech-Recognition/blob/master/train.py).    
+or after training, you want to start testing, you should run [test.py](https://github.com/sh951011/End-to-End-Korean-Speech-Recognition/blob/master/test.py).  
   
-you can set up a configuration [config.py](https://github.com/sh951011/Korean-Speech-Recognition/blob/master/package/config.py).  
-An explanation of configuration is [here](https://sh951011.github.io/Korean-Speech-Recognition/Hparams.html).  
+you can set up a configuration [config.py](https://github.com/sh951011/End-to-End-Korean-Speech-Recognition/blob/master/package/config.py).  
+An explanation of configuration is [here](https://sh951011.github.io/End-to-End-Korean-Speech-Recognition/Hparams.html).  
   
 
 ## Troubleshoots and Contributing
@@ -100,7 +100,8 @@ We follow [PEP-8](https://www.python.org/dev/peps/pep-0008/) for code style. Esp
 [[6]    IBM pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)   
 [[7]    Character RNN Language Model](https://github.com/sooftware/char-rnnlm)  
 [[8]    A.I Hub Korean Voice Dataset](http://www.aihub.or.kr/aidata/105)    
-  
+[[9]    Documentation](https://sooftware.github.io/End-to-End-Korean-Speech-Recognition/)  
+   
 ### License
 ```
 Copyright (c) 2020 Kai.Lib
