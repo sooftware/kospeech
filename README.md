@@ -68,7 +68,7 @@ python setup.py install
 ## Get Started
 ### Preparation before Training
 
-Refer [here](https://sooftware.github.io/End-to-End-Korean-Speech-Recognition/notes/Preparation.html) before Training.  
+Refer [here](https://github.com/sooftware/End-to-End-Korean-Speech-Recognition/wiki/Preparation-before-Training) before Training.  
 The above document is written in Korean.  
 We will also write a document in English as soon as possible, so please wait a little bit.  
   
