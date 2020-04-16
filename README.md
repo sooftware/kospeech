@@ -81,6 +81,11 @@ or after training, you want to start testing, you should run [test.py](https://g
 you can set up a configuration [config.py](https://github.com/sh951011/End-to-End-Korean-Speech-Recognition/blob/master/package/config.py).  
 An explanation of configuration is [here](https://sh951011.github.io/End-to-End-Korean-Speech-Recognition/Hparams.html).  
   
+### Incorporating External Language Model in Performance test
+we introduce incorporating external language model in performance test.  
+if you are interested in this content, please check [here](https://github.com/sooftware/char-rnnlm).
+  
+we refer to [「An Analysis of Incorporating an external Language Model into Sequence-to-Sequence Model」](https://arxiv.org/abs/1712.01996) paper.    
 
 ## Troubleshoots and Contributing
 If you have any questions, bug reports, and feature requests, please [open an issue](https://github.com/sh951011/Korean-Speech-Recognition/issues) on Github.   
