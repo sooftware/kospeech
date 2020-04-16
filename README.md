@@ -68,27 +68,27 @@ python setup.py install
 ## Get Started
 ### Preparation before Training
 
-Refer [here](https://sh951011.github.io/End-to-End-Korean-Speech-Recognition/notes/Preparation.html) before Training.  
+Refer [here](https://sooftware.github.io/End-to-End-Korean-Speech-Recognition/notes/Preparation.html) before Training.  
 The above document is written in Korean.  
 We will also write a document in English as soon as possible, so please wait a little bit.  
   
-If you already have another dataset, please modify the data set path to [definition.py](https://github.com/sh951011/End-to-End-Korean-Speech-Recognition/blob/master/package/definition.py) as appropriate.  
+If you already have another dataset, please modify the data set path to [definition.py](https://github.com/sooftware/End-to-End-Korean-Speech-Recognition/blob/master/package/definition.py) as appropriate.  
 
 ### Train and Test
-if you want to start training, you should run [train.py](https://github.com/sh951011/End-to-End-Korean-Speech-Recognition/blob/master/train.py).    
-or after training, you want to start testing, you should run [test.py](https://github.com/sh951011/End-to-End-Korean-Speech-Recognition/blob/master/test.py).  
+if you want to start training, you should run [train.py](https://github.com/sooftware/End-to-End-Korean-Speech-Recognition/blob/master/train.py).    
+or after training, you want to start testing, you should run [test.py](https://github.com/sooftware/End-to-End-Korean-Speech-Recognition/blob/master/test.py).  
   
-you can set up a configuration [config.py](https://github.com/sh951011/End-to-End-Korean-Speech-Recognition/blob/master/package/config.py).  
-An explanation of configuration is [here](https://sh951011.github.io/End-to-End-Korean-Speech-Recognition/Hparams.html).  
+you can set up a configuration [config.py](https://github.com/sooftware/End-to-End-Korean-Speech-Recognition/blob/master/package/config.py).  
+An explanation of configuration is [here](https://sooftware.github.io/End-to-End-Korean-Speech-Recognition/Hparams.html).  
   
 ### Incorporating External Language Model in Performance test
-we introduce incorporating external language model in performance test.  
+We introduce incorporating external language model in performance test.  
 if you are interested in this content, please check [here](https://github.com/sooftware/char-rnnlm).
   
 we refer to [「An Analysis of Incorporating an external Language Model into Sequence-to-Sequence Model」](https://arxiv.org/abs/1712.01996) paper.    
 
 ## Troubleshoots and Contributing
-If you have any questions, bug reports, and feature requests, please [open an issue](https://github.com/sh951011/Korean-Speech-Recognition/issues) on Github.   
+If you have any questions, bug reports, and feature requests, please [open an issue](https://github.com/sooftware/Korean-Speech-Recognition/issues) on Github.   
 For live discussions, please go to our [gitter](https://gitter.im/Korean-Speech-Recognition/community) or Contacts sh951011@gmail.com please.
   
 We appreciate any kind of feedback or contribution.  Feel free to proceed with small issues like bug fixes, documentation improvement.  For major contributions and new features, please discuss with the collaborators in corresponding issues.  
