@@ -49,7 +49,7 @@ class Speller(nn.Module):
                  dropout_p=0, use_attention=True, device=None, k=8):
 
         super(Speller, self).__init__()
-        assert rnn_cell.lower() in ('lstm', 'gru', 'rnn')
+        assert rnn_cell.lower() in ('lstm', 'gru', 'rnn'), 'rnn_cell should be lstm or gru or rnn'
 
         self.rnn_cell = nn.LSTM if rnn_cell.lower() == 'lstm' else nn.GRU if rnn_cell.lower() == 'gru' else nn.RNN
         self.rnn = self.rnn_cell(hidden_size, hidden_size, n_layers, batch_first=True, dropout=dropout_p).to(device)
@@ -154,4 +154,3 @@ class Speller(nn.Module):
             hidden = torch.zeros(self.n_layers, batch_size, self.hidden_size).to(self.device)
 
         return hidden
-

@@ -95,7 +95,7 @@ def split_dataset(config, audio_paths, label_paths, valid_ratio=0.05, target_dic
     """
     logger.info("split dataset start !!")
 
-    train_set_list = list()
+    trainset_list = list()
     train_num = math.ceil(len(audio_paths) * (1 - valid_ratio))
     total_time_step = math.ceil(len(audio_paths) / config.batch_size)
     valid_time_step = math.ceil(total_time_step * valid_ratio)
@@ -117,7 +117,7 @@ def split_dataset(config, audio_paths, label_paths, valid_ratio=0.05, target_dic
         train_begin_idx = train_num_per_worker * idx
         train_end_idx = min(train_num_per_worker * (idx + 1), train_num)
 
-        train_set_list.append(CustomDataset(
+        trainset_list.append(CustomDataset(
             audio_paths=audio_paths[train_begin_idx:train_end_idx],
             label_paths=label_paths[train_begin_idx:train_end_idx],
             sos_id=SOS_TOKEN, eos_id=EOS_TOKEN,
@@ -126,10 +126,9 @@ def split_dataset(config, audio_paths, label_paths, valid_ratio=0.05, target_dic
             use_augment=config.use_augment,
             batch_size=config.batch_size,
             augment_ratio=config.augment_ratio
-        )
-        )
+        ))
 
-    valid_set = CustomDataset(
+    validset = CustomDataset(
         audio_paths=audio_paths[train_num:],
         label_paths=label_paths[train_num:],
         sos_id=SOS_TOKEN, eos_id=EOS_TOKEN,
@@ -139,9 +138,9 @@ def split_dataset(config, audio_paths, label_paths, valid_ratio=0.05, target_dic
         use_augment=False
     )
 
-    save_pickle(train_set_list, './data/pickle/train_set_list')
-    save_pickle(valid_set, './data/pickle/valid_set')
+    save_pickle(trainset_list, './data/pickle/trainset_list')
+    save_pickle(validset, './data/pickle/validset')
 
     logger.info("split dataset complete !!")
 
-    return train_time_step, train_set_list, valid_set
+    return train_time_step, trainset_list, validset

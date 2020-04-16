@@ -25,7 +25,7 @@ class MultiHeadAttention(nn.Module):
 
     Examples::
         >>> attention = MultiHeadAttention(in_features, n_head=4, dim=128)
-        >>> output = attention(query, key)
+        >>> output = attention(decoder_output, encoder_outputs)
     """
 
     def __init__(self, in_features, n_head=4, dim=128):

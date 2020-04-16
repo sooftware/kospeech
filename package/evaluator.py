@@ -8,7 +8,8 @@ def evaluate(model, queue, criterion, device):
     Args:
         model (torch.nn.Module): Model to be evaluated
         queue (queue): queue for threading
-        criterion (torch.nn): one of PyTorch’s loss function. Refer to http://pytorch.org/docs/master/nn.html#loss-functions for a list of them.
+        criterion (torch.nn): one of PyTorch’s loss function.
+            Refer to http://pytorch.org/docs/master/nn.html#loss-functions for a list of them.
         device (torch.cuda): device used ('cuda' or 'cpu')
 
     Returns: loss, cer

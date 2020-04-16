@@ -31,10 +31,10 @@ class Listener(nn.Module):
                  bidirectional=True, rnn_cell='gru', use_pyramidal=True):
 
         super(Listener, self).__init__()
-        assert rnn_cell.lower() == 'lstm' or rnn_cell.lower() == 'gru' or rnn_cell.lower() == 'rnn'
-        assert n_layers > 1, "n_layers should be bigger than 1"
+        assert rnn_cell.lower() in ('lstm', 'gru', 'rnn'), 'rnn_cell should be lstm or gru or rnn'
+        assert n_layers > 1, 'n_layers should be bigger than 1'
         if use_pyramidal:
-            assert n_layers > 4, "Pyramidal Listener`s n_layers should be bigger than 4"
+            assert n_layers > 4, 'Pyramidal Listener`s n_layers should be bigger than 4'
 
         self.use_pyramidal = use_pyramidal
         self.rnn_cell = nn.LSTM if rnn_cell.lower() == 'lstm' else nn.GRU if rnn_cell.lower() == 'gru' else nn.RNN
@@ -106,7 +106,7 @@ class Listener(nn.Module):
 
         Returns: output, hidden
             - **output** (batch, seq_len, hidden_size): variable containing the encoded features of the input sequence
-            - **hidden** (num_layers * num_directions, batch, hidden_size): variable containing the features in the hidden state h
+            - **hidden** (num_layers * directions, batch, hidden_size): variable containing the features in the hidden
         """
         x = self.conv(inputs.unsqueeze(1)).to(self.device)
         x = x.transpose(1, 2)
@@ -148,11 +148,11 @@ class PyramidalRNN(nn.Module):
         dropout_p (float, optional): dropout probability for the output sequence (default: 0)
 
     Inputs: inputs
-        - **inputs**: list of sequences, whose length is the batch size and within which each sequence is a list of token IDs.
+        - **inputs**: sequences whose length is the batch size and within which each sequence is a list of token IDs.
 
     Returns: output, hidden
         - **output** (batch, seq_len, hidden_size): tensor containing the encoded features of the input sequence
-        - **hidden** (num_layers * num_directions, batch, hidden_size): tensor containing the features in the hidden state `h`
+        - **hidden** (num_layers * num_directions, batch, hidden_size): tensor containing the features in the hidden
 
     Examples::
         >>> rnn = PyramidalRNN(rnn_cell, input_size, hidden_size, dropout_p)
@@ -162,7 +162,7 @@ class PyramidalRNN(nn.Module):
     def __init__(self, rnn_cell, in_features, hidden_size, dropout_p, device, n_layers=2):
         super(PyramidalRNN, self).__init__()
 
-        assert rnn_cell.lower() == 'lstm' or rnn_cell.lower() == 'gru' or rnn_cell.lower() == 'rnn'
+        assert rnn_cell.lower() in ('lstm', 'gru', 'rnn'), 'rnn_cell should be lstm or gru or rnn'
 
         self.rnn_cell = nn.LSTM if rnn_cell.lower() == 'lstm' else nn.GRU if rnn_cell.lower() == 'gru' else nn.RNN
         self.rnn = self.rnn_cell(
