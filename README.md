@@ -81,7 +81,7 @@ or after training, you want to start testing, you should run [test.py](https://g
 you can set up a configuration [config.py](https://github.com/sooftware/End-to-End-Korean-Speech-Recognition/blob/master/package/config.py).  
 An explanation of configuration is [here](https://sooftware.github.io/End-to-End-Korean-Speech-Recognition/Config.html).  
   
-### Incorporating External Language Model in Performance test
+### Incorporating External Language Model in Performance Test
 We introduce incorporating external language model in performance test.  
 if you are interested in this content, please check [here](https://github.com/sooftware/char-rnnlm).
   
