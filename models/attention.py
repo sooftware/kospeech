@@ -37,24 +37,24 @@ class MultiHeadAttention(nn.Module):
         self.dim = dim
         self.out = nn.Linear(in_features << 1, in_features)
 
-    def forward(self, query, key):
-        batch_size = key.size(0)
-        query_length = query.size(1)
-        key_length = key.size(1)
+    def forward(self, decoder_output, encoder_outputs):
+        batch_size = encoder_outputs.size(0)
+        dec_length = decoder_output.size(1)
+        enc_length = encoder_outputs.size(1)
 
-        preserved = query
+        preserved = decoder_output
 
-        query = self.linear_q(query).view(batch_size, query_length, self.n_head, self.dim).permute(2, 0, 1, 3)
-        key = self.linear_k(key).view(batch_size, key_length, self.n_head, self.dim).permute(2, 0, 1, 3)
+        decoder_output = self.linear_q(decoder_output).view(batch_size, dec_length, self.n_head, self.dim)
+        encoder_outputs = self.linear_k(encoder_outputs).view(batch_size, enc_length, self.n_head, self.dim)
 
-        query = query.contiguous().view(-1, query_length, self.dim)  # -1 = n_head * batch_size
-        key = key.contiguous().view(-1, key_length, self.dim)
+        decoder_output = decoder_output.permute(2, 0, 1, 3).contiguous().view(-1, dec_length, self.dim)
+        encoder_outputs = encoder_outputs.permute(2, 0, 1, 3).contiguous().view(-1, enc_length, self.dim)
 
-        attn_score = torch.bmm(query, key.transpose(1, 2))
+        attn_score = torch.bmm(decoder_output, encoder_outputs.transpose(1, 2))
         attn_distribution = F.softmax(attn_score, dim=2)
 
-        context = torch.bmm(attn_distribution, key).view(self.n_head, batch_size, query_length, self.dim)
-        context = context.permute(1, 2, 0, 3).contiguous().view(batch_size, query_length, -1)
+        context = torch.bmm(attn_distribution, encoder_outputs).view(self.n_head, batch_size, dec_length, self.dim)
+        context = context.permute(1, 2, 0, 3).contiguous().view(batch_size, dec_length, -1)
 
         combined = torch.cat([context, preserved], dim=2)
         output = torch.tanh(self.out(combined.view(-1, 2 * self.in_features))).view(batch_size, -1, self.in_features)
