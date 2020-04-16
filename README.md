@@ -79,7 +79,7 @@ if you want to start training, you should run [train.py](https://github.com/soof
 or after training, you want to start testing, you should run [test.py](https://github.com/sooftware/End-to-End-Korean-Speech-Recognition/blob/master/test.py).  
   
 you can set up a configuration [config.py](https://github.com/sooftware/End-to-End-Korean-Speech-Recognition/blob/master/package/config.py).  
-An explanation of configuration is [here](https://sooftware.github.io/End-to-End-Korean-Speech-Recognition/Hparams.html).  
+An explanation of configuration is [here](https://sooftware.github.io/End-to-End-Korean-Speech-Recognition/Config.html).  
   
 ### Incorporating External Language Model in Performance test
 We introduce incorporating external language model in performance test.  
