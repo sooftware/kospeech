@@ -85,8 +85,6 @@ An explanation of configuration is [here](https://sooftware.github.io/End-to-End
 We introduce incorporating external language model in performance test.  
 if you are interested in this content, please check [here](https://github.com/sooftware/char-rnnlm).
   
-we refer to [「An Analysis of Incorporating an external Language Model into Sequence-to-Sequence Model」](https://arxiv.org/abs/1712.01996) paper.    
-
 ## Troubleshoots and Contributing
 If you have any questions, bug reports, and feature requests, please [open an issue](https://github.com/sooftware/Korean-Speech-Recognition/issues) on Github.   
 For live discussions, please go to our [gitter](https://gitter.im/Korean-Speech-Recognition/community) or Contacts sh951011@gmail.com please.
