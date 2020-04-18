@@ -2,7 +2,7 @@ import math
 import random
 from torch.utils.data import Dataset
 from package.definition import EOS_TOKEN, logger, SOS_TOKEN
-from package.feature import spec_augment, get_librosa_mfcc
+from package.feature import spec_augment, get_librosa_melspectrogram
 from package.utils import get_label, save_pickle
 
 
@@ -44,7 +44,7 @@ class CustomDataset(Dataset):
 
     def get_item(self, idx):
         label = get_label(self.label_paths[idx], sos_id=self.sos_id, eos_id=self.eos_id, target_dict=self.target_dict)
-        feat = get_librosa_mfcc(self.audio_paths[idx], n_mfcc=40, input_reverse=self.input_reverse)
+        feat = get_librosa_melspectrogram(self.audio_paths[idx], n_mels=80, input_reverse=self.input_reverse)
 
         if feat is None:  # exception handling
             return None, None
