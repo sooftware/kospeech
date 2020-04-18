@@ -73,14 +73,14 @@ if __name__ == '__main__':
         dropout=0.5,
         listener_layer_size=5,
         speller_layer_size=3,
-        batch_size=6,
+        batch_size=8,
         worker_num=1,
         max_epochs=40,
         use_multistep_lr=False,
         init_lr=0.0001,
         high_plateau_lr=0.0003,
         low_plateau_lr=0.00001,
-        teacher_forcing=0.90,
+        teacher_forcing=1.0,
         seed=1,
         max_len=151
     )
@@ -138,7 +138,7 @@ if __name__ == '__main__':
         config=config,
         audio_paths=audio_paths,
         label_paths=label_paths,
-        valid_ratio=0.01,
+        valid_ratio=0.005,
         target_dict=target_dict,
     )
 

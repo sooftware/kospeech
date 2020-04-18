@@ -31,6 +31,9 @@ def supervised_train(model, config, epoch, total_time_step, queue,
     """
     epoch_loss_total = 0.
     print_loss_total = 0.
+    print_every_dist = 0.
+    print_every_length = 0.
+    print_every_num = 0.
     total_num = 0
     total_dist = 0
     total_length = 0
@@ -83,6 +86,10 @@ def supervised_train(model, config, epoch, total_time_step, queue,
         total_dist += dist
         total_length += length
 
+        print_every_num += sum(feat_lens)
+        print_every_dist += dist
+        print_every_length += length
+
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
@@ -99,11 +106,14 @@ def supervised_train(model, config, epoch, total_time_step, queue,
             logger.info('timestep: {:4d}/{:4d}, loss: {:.4f}, cer: {:.2f}, elapsed: {:.2f}s {:.2f}m {:.2f}h'.format(
                 time_step,
                 total_time_step,
-                print_loss_total / print_every,
-                total_dist / total_length,
+                print_loss_total / print_every_num,
+                print_every_dist / print_every_length,
                 elapsed, epoch_elapsed, train_elapsed)
             )
             print_loss_total = 0
+            print_every_dist = 0
+            print_every_length = 0
+            print_every_num = 0
             begin = time.time()
 
         if time_step % 1000 == 0:
