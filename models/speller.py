@@ -5,6 +5,12 @@ import torch.nn.functional as F
 from models.beam import Beam
 from .attention import MultiHeadAttention
 
+supported_rnns = {
+    'lstm': nn.LSTM,
+    'gru': nn.GRU,
+    'rnn': nn.RNN
+}
+
 
 class Speller(nn.Module):
     r"""
@@ -18,7 +24,7 @@ class Speller(nn.Module):
         sos_id (int): index of the start of sentence symbol
         eos_id (int): index of the end of sentence symbol
         n_layers (int, optional): number of recurrent layers (default: 1)
-        rnn_cell (str, optional): type of RNN cell (default: gru)
+        rnn_type (str, optional): type of RNN cell (default: gru)
         dropout_p (float, optional): dropout probability for the output sequence (default: 0)
         use_attention (bool, optional): flag indication whether to use attention mechanism or not (default: false)
         k (int) : size of beam
@@ -45,13 +51,13 @@ class Speller(nn.Module):
     """
 
     def __init__(self, n_class, max_length, hidden_size,
-                 sos_id, eos_id, n_layers=1, rnn_cell='gru',
+                 sos_id, eos_id, n_layers=1, rnn_type='gru',
                  dropout_p=0, use_attention=True, device=None, k=8):
 
         super(Speller, self).__init__()
-        assert rnn_cell.lower() in ('lstm', 'gru', 'rnn'), 'rnn_cell should be lstm or gru or rnn'
+        assert rnn_type.lower() in supported_rnns.keys(), 'RNN type not supported.'
 
-        self.rnn_cell = nn.LSTM if rnn_cell.lower() == 'lstm' else nn.GRU if rnn_cell.lower() == 'gru' else nn.RNN
+        self.rnn_cell = supported_rnns[rnn_type]
         self.rnn = self.rnn_cell(hidden_size, hidden_size, n_layers, batch_first=True, dropout=dropout_p).to(device)
         self.max_length = max_length
         self.eos_id = eos_id

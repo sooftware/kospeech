@@ -1,7 +1,7 @@
 import math
 import random
 from torch.utils.data import Dataset
-from package.definition import EOS_TOKEN, logger, SOS_TOKEN
+from package.definition import EOS_token, logger, SOS_token
 from package.feature import spec_augment, get_librosa_melspectrogram
 from package.utils import get_label, save_pickle
 
@@ -120,7 +120,7 @@ def split_dataset(config, audio_paths, label_paths, valid_ratio=0.05, target_dic
         trainset_list.append(CustomDataset(
             audio_paths=audio_paths[train_begin_idx:train_end_idx],
             label_paths=label_paths[train_begin_idx:train_end_idx],
-            sos_id=SOS_TOKEN, eos_id=EOS_TOKEN,
+            sos_id=SOS_token, eos_id=EOS_token,
             target_dict=target_dict,
             input_reverse=config.input_reverse,
             use_augment=config.use_augment,
@@ -131,7 +131,7 @@ def split_dataset(config, audio_paths, label_paths, valid_ratio=0.05, target_dic
     validset = CustomDataset(
         audio_paths=audio_paths[train_num:],
         label_paths=label_paths[train_num:],
-        sos_id=SOS_TOKEN, eos_id=EOS_TOKEN,
+        sos_id=SOS_token, eos_id=EOS_token,
         batch_size=config.batch_size,
         target_dict=target_dict,
         input_reverse=config.input_reverse,

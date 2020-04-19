@@ -62,7 +62,7 @@ def get_librosa_melspectrogram(filepath, n_mels=128, del_silence=False, input_re
         non_silence_ids = librosa.effects.split(y=sig, top_db=30)
         sig = np.concatenate([sig[start:end] for start, end in non_silence_ids])
 
-    mel_spectrogram = librosa.feature.melspectrogram(sig, sr=16000, n_mels=n_mels, n_fft=400, hop_length=160, window='hamming')
+    mel_spectrogram = librosa.feature.melspectrogram(sig, sr=16000, n_mels=n_mels, n_fft=400, hop_length=160)
 
     if mel_type == 'log_mel':
         mel_spectrogram = librosa.amplitude_to_db(mel_spectrogram, ref=np.max)
@@ -129,7 +129,7 @@ def get_librosa_mfcc(filepath, n_mfcc=40, del_silence=False, input_reverse=True)
         non_silence_ids = librosa.effects.split(sig, top_db=30)
         sig = np.concatenate([sig[start:end] for start, end in non_silence_ids])
 
-    mfcc = librosa.feature.mfcc(sig, sr=16000, hop_length=160, n_mfcc=n_mfcc, n_fft=400, window='hamming')
+    mfcc = librosa.feature.mfcc(sig, sr=16000, hop_length=160, n_mfcc=n_mfcc, n_fft=400)
 
     if input_reverse:
         mfcc = mfcc[:,::-1]

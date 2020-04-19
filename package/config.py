@@ -1,7 +1,7 @@
 from package.definition import logger
 
 
-class Config():
+class Config:
     """
     Configuration
 

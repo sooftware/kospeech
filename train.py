@@ -97,7 +97,7 @@ if __name__ == '__main__':
         dropout_p=config.dropout,
         n_layers=config.listener_layer_size,
         bidirectional=config.use_bidirectional,
-        rnn_cell='gru',
+        rnn_type='gru',
         use_pyramidal=config.use_pyramidal,
         device=device
     )
@@ -106,10 +106,10 @@ if __name__ == '__main__':
         max_length=config.max_len,
         k=8,
         hidden_size=config.hidden_size << (1 if config.use_bidirectional else 0),
-        sos_id=SOS_TOKEN,
-        eos_id=EOS_TOKEN,
+        sos_id=SOS_token,
+        eos_id=EOS_token,
         n_layers=config.speller_layer_size,
-        rnn_cell='gru',
+        rnn_type='gru',
         dropout_p=config.dropout,
         use_attention=config.use_attention,
         device=device
@@ -123,9 +123,9 @@ if __name__ == '__main__':
 
     optimizer = optim.Adam(model.module.parameters(), lr=config.init_lr)
     if config.use_label_smooth:
-        criterion = LabelSmoothingLoss(len(char2id), ignore_index=PAD_TOKEN, smoothing=0.1, dim=-1).to(device)
+        criterion = LabelSmoothingLoss(len(char2id), ignore_index=PAD_token, smoothing=0.1, dim=-1).to(device)
     else:
-        criterion = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_TOKEN).to(device)
+        criterion = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_token).to(device)
 
     audio_paths, label_paths = load_data_list(data_list_path=SAMPLE_LIST_PATH, dataset_path=SAMPLE_DATASET_PATH)
 

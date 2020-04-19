@@ -2,8 +2,8 @@
 Copyright 2020- Kai.Lib
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-      http://www.apache.org/licenses/LICENSE-2.0
+You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -46,7 +46,7 @@ def test(model, queue, device):
 
             model.flatten_parameters()
             y_hat, _ = model(feats, targets, teacher_forcing_ratio=0.0, use_beam_search=True)
-            dist, length = get_distance(target, y_hat, id2char, EOS_TOKEN)
+            dist, length = get_distance(target, y_hat, id2char, EOS_token)
             total_dist += dist
             total_length += length
             total_sent_num += target.size(0)
@@ -78,7 +78,7 @@ if __name__ == '__main__':
         dropout_p=config.dropout,
         n_layers=config.listener_layer_size,
         bidirectional=config.use_bidirectional,
-        rnn_cell='gru',
+        rnn_type='gru',
         use_pyramidal=False,
         device=device
     )
@@ -87,18 +87,17 @@ if __name__ == '__main__':
         max_length=config.max_len,
         k=1,
         hidden_size=config.hidden_size << (1 if config.use_bidirectional else 0),
-        sos_id=SOS_TOKEN,
-        eos_id=EOS_TOKEN,
+        sos_id=SOS_token,
+        eos_id=EOS_token,
         n_layers=config.speller_layer_size,
-        rnn_cell='gru',
+        rnn_type='gru',
         dropout_p=config.dropout,
         use_attention=config.use_attention,
         device=device
     )
     model = ListenAttendSpell(listener, speller, use_pyramidal=config.use_pyramidal)
 
-    load_model = torch.load("./data/weight_file/epoch_0_step_160000.pt", map_location=torch.device('cpu')).module
-    model.load_state_dict(load_model.state_dict())
+    load_model = torch.load('weight_path')
     model.set_beam_size(k=5)
 
     audio_paths, label_paths = load_data_list(data_list_path=SAMPLE_LIST_PATH, dataset_path=SAMPLE_DATASET_PATH)
@@ -107,8 +106,8 @@ if __name__ == '__main__':
     test_dataset = CustomDataset(
         audio_paths=audio_paths,
         label_paths=label_paths,
-        sos_id=SOS_TOKEN,
-        eos_id=EOS_TOKEN,
+        sos_id=SOS_token,
+        eos_id=EOS_token,
         target_dict=target_dict,
         input_reverse=config.input_reverse,
         use_augment=False
@@ -119,5 +118,5 @@ if __name__ == '__main__':
     test_loader.start()
 
     cer = test(model, test_queue, device)
-
     logger.info('20h Test Set CER : %s' % cer)
+    test_loader.join()

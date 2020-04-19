@@ -1,13 +1,19 @@
 import torch.nn as nn
 import torch
 
+supported_rnns = {
+    'lstm': nn.LSTM,
+    'gru': nn.GRU,
+    'rnn': nn.RNN
+}
+
 
 class Listener(nn.Module):
     r"""
     Converts low level speech signals into higher level features
 
     Args:
-        rnn_cell (str, optional): type of RNN cell (default: gru)
+        rnn_type (str, optional): type of RNN cell (default: gru)
         hidden_size (int): the number of features in the hidden state `h`
         n_layers (int, optional): number of recurrent layers (default: 1)
         bidirectional (bool, optional): if True, becomes a bidirectional encoder (defulat: False)
@@ -15,7 +21,7 @@ class Listener(nn.Module):
         dropout_p (float, optional): dropout probability for the output sequence (default: 0)
 
     Inputs: inputs, hidden
-        - **inputs**: list of sequences, whose length is the batch size and within which each sequence is a list of token IDs.
+        - **inputs**: list of sequences, whose length is the batch size and within which each sequence is list of tokens
         - **hidden**: variable containing the features in the hidden state h
 
     Returns: output
@@ -28,16 +34,16 @@ class Listener(nn.Module):
     """
 
     def __init__(self, in_features, hidden_size, device, dropout_p=0.5, n_layers=5,
-                 bidirectional=True, rnn_cell='gru', use_pyramidal=True):
+                 bidirectional=True, rnn_type='gru', use_pyramidal=True):
 
         super(Listener, self).__init__()
-        assert rnn_cell.lower() in ('lstm', 'gru', 'rnn'), 'rnn_cell should be lstm or gru or rnn'
+        assert rnn_type.lower() in supported_rnns.keys(), 'RNN type not supported.'
         assert n_layers > 1, 'n_layers should be bigger than 1'
         if use_pyramidal:
             assert n_layers > 4, 'Pyramidal Listener`s n_layers should be bigger than 4'
 
         self.use_pyramidal = use_pyramidal
-        self.rnn_cell = nn.LSTM if rnn_cell.lower() == 'lstm' else nn.GRU if rnn_cell.lower() == 'gru' else nn.RNN
+        self.rnn_cell = supported_rnns[rnn_type]
         self.device = device
         self.conv = nn.Sequential(
             nn.Conv2d(in_channels=1, out_channels=64, kernel_size=3, padding=1),
@@ -71,7 +77,7 @@ class Listener(nn.Module):
                 dropout=dropout_p
             )
             self.middle_rnn = PyramidalRNN(
-                rnn_cell=rnn_cell,
+                rnn_type=rnn_type,
                 in_features=hidden_size << 1 if bidirectional else 0,
                 hidden_size=hidden_size,
                 dropout_p=dropout_p,
@@ -79,7 +85,7 @@ class Listener(nn.Module):
                 device=device
             )
             self.top_rnn = PyramidalRNN(
-                rnn_cell=rnn_cell,
+                rnn_type=rnn_type,
                 in_features=hidden_size << 1 if bidirectional else 0,
                 hidden_size=hidden_size,
                 dropout_p=dropout_p,
@@ -155,16 +161,16 @@ class PyramidalRNN(nn.Module):
         - **hidden** (num_layers * num_directions, batch, hidden_size): tensor containing the features in the hidden
 
     Examples::
-        >>> rnn = PyramidalRNN(rnn_cell, input_size, hidden_size, dropout_p)
+        >>> rnn = PyramidalRNN(rnn_type, input_size, hidden_size, dropout_p)
         >>> output, hidden = rnn(inputs)
     """
 
-    def __init__(self, rnn_cell, in_features, hidden_size, dropout_p, device, n_layers=2):
+    def __init__(self, rnn_type, in_features, hidden_size, dropout_p, device, n_layers=2):
         super(PyramidalRNN, self).__init__()
 
-        assert rnn_cell.lower() in ('lstm', 'gru', 'rnn'), 'rnn_cell should be lstm or gru or rnn'
+        assert rnn_type.lower() in supported_rnns.keys(), 'RNN type not supported.'
 
-        self.rnn_cell = nn.LSTM if rnn_cell.lower() == 'lstm' else nn.GRU if rnn_cell.lower() == 'gru' else nn.RNN
+        self.rnn_cell = supported_rnns[rnn_type]
         self.rnn = self.rnn_cell(
             input_size=in_features << 1,
             hidden_size=hidden_size,
