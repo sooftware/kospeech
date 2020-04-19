@@ -58,9 +58,9 @@ def supervised_train(model, config, epoch, total_time_step, queue,
             decay_speed *= decay_rate ** (1 / EXP_DECAY_PERIOD)
             set_lr(optimizer, config.high_plateau_lr * decay_speed)
 
-        feats, scripts, feat_lens, target_lens = queue.get()
+        inputs, scripts, input_lengths, target_lengths = queue.get()
 
-        if feats.shape[0] == 0:
+        if inputs.shape[0] == 0:
             # empty feats means closing one loader
             worker_num -= 1
             logger.debug('left train_loader: %d' % worker_num)
@@ -70,7 +70,7 @@ def supervised_train(model, config, epoch, total_time_step, queue,
             else:
                 continue
 
-        inputs = feats.to(device)
+        inputs = inputs.to(device)
         scripts = scripts.to(device)
         targets = scripts[:, 1:]
 
@@ -81,13 +81,14 @@ def supervised_train(model, config, epoch, total_time_step, queue,
         epoch_loss_total += loss.item()
         print_loss_total += loss.item()
 
-        total_num += sum(feat_lens)
-        dist, length = get_distance(targets, y_hat, id2char, EOS_TOKEN)
-        total_dist += dist
-        total_length += length
+        total_num += sum(input_lengths)
+        print_every_num += sum(input_lengths)
 
-        print_every_num += sum(feat_lens)
+        dist, length = get_distance(targets, y_hat, id2char, EOS_TOKEN)
+
+        total_dist += dist
         print_every_dist += dist
+        total_length += length
         print_every_length += length
 
         optimizer.zero_grad()
