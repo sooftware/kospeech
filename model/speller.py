@@ -2,7 +2,7 @@ import random
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from models.beam import Beam
+from model.beam import Beam
 from .attention import MultiHeadAttention
 
 supported_rnns = {

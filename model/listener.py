@@ -147,7 +147,7 @@ class PyramidalRNN(nn.Module):
     Pyramidal RNN for time resolution reduction
 
     Args:
-        rnn_cell (str, optional): type of RNN cell (default: gru)
+        rnn_type (str, optional): type of RNN cell (default: gru)
         hidden_size (int): the number of features in the hidden state `h`
         n_layers (int, optional): number of recurrent layers (default: 1)
         in_features (int): size of input feature

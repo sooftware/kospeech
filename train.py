@@ -39,9 +39,9 @@ import random
 import torch
 import time
 import os
-from models.speller import Speller
-from models.listener import Listener
-from models.listenAttendSpell import ListenAttendSpell
+from model.speller import Speller
+from model.listener import Listener
+from model.listenAttendSpell import ListenAttendSpell
 from package.dataset import split_dataset
 from package.definition import *
 from package.evaluator import evaluate

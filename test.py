@@ -14,9 +14,9 @@ limitations under the License.
 import os
 import queue
 import torch
-from models.listenAttendSpell import ListenAttendSpell
-from models.listener import Listener
-from models.speller import Speller
+from model.listenAttendSpell import ListenAttendSpell
+from model.listener import Listener
+from model.speller import Speller
 from package.dataset import CustomDataset
 from package.definition import *
 from package.config import Config
