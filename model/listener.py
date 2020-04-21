@@ -8,30 +8,6 @@ supported_rnns = {
 }
 
 
-class MaskConv(nn.Module):
-    def __init__(self, seq_module):
-        super(MaskConv, self).__init__()
-        self.seq_module = seq_module
-
-    def forward(self, x, lengths):
-        """
-        :param x: The input of size BxCxDxT
-        :param lengths: The actual length of each sequence in the batch
-        :return: Masked output from the module
-        """
-        for module in self.seq_module:
-            x = module(x)
-            mask = torch.BoolTensor(x.size()).fill_(0)
-            if x.is_cuda:
-                mask = mask.cuda()
-            for i, length in enumerate(lengths):
-                length = length.item()
-                if (mask[i].size(2) - length) > 0:
-                    mask[i].narrow(2, length, mask[i].size(2) - length).fill_(1)
-            x = x.masked_fill(mask, 0)
-        return x, lengths
-
-
 class Listener(nn.Module):
     r"""
     Converts low level speech signals into higher level features
@@ -69,26 +45,25 @@ class Listener(nn.Module):
         self.use_pyramidal = use_pyramidal
         self.rnn_cell = supported_rnns[rnn_type]
         self.device = device
-        self.conv = MaskConv(
-            nn.Sequential(
-                nn.Conv2d(in_channels=1, out_channels=64, kernel_size=3, padding=1),
-                nn.Hardtanh(0, 20, inplace=True),
-                nn.BatchNorm2d(num_features=64),
-                nn.Conv2d(in_channels=64, out_channels=64, kernel_size=3, padding=1),
-                nn.Hardtanh(0, 20, inplace=True),
-                nn.MaxPool2d(kernel_size=2, stride=2),
-                nn.BatchNorm2d(num_features=64),
-                nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, padding=1),
-                nn.Hardtanh(0, 20, inplace=True),
-                nn.BatchNorm2d(num_features=128),
-                nn.Conv2d(in_channels=128, out_channels=128, kernel_size=3, padding=1),
-                nn.Hardtanh(0, 20, inplace=True),
-                nn.BatchNorm2d(num_features=128),
-                nn.Conv2d(in_channels=128, out_channels=256, kernel_size=3, padding=1),
-                nn.Hardtanh(0, 20, inplace=True),
-                nn.BatchNorm2d(num_features=256),
-                nn.MaxPool2d(kernel_size=2, stride=2)
-            ))
+        self.conv = nn.Sequential(
+            nn.Conv2d(in_channels=1, out_channels=64, kernel_size=3, padding=1),
+            nn.Hardtanh(0, 20, inplace=True),
+            nn.BatchNorm2d(num_features=64),
+            nn.Conv2d(in_channels=64, out_channels=64, kernel_size=3, padding=1),
+            nn.Hardtanh(0, 20, inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.BatchNorm2d(num_features=64),
+            nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, padding=1),
+            nn.Hardtanh(0, 20, inplace=True),
+            nn.BatchNorm2d(num_features=128),
+            nn.Conv2d(in_channels=128, out_channels=128, kernel_size=3, padding=1),
+            nn.Hardtanh(0, 20, inplace=True),
+            nn.BatchNorm2d(num_features=128),
+            nn.Conv2d(in_channels=128, out_channels=256, kernel_size=3, padding=1),
+            nn.Hardtanh(0, 20, inplace=True),
+            nn.BatchNorm2d(num_features=256),
+            nn.MaxPool2d(kernel_size=2, stride=2)
+        )
 
         in_features = (in_features - 1) << 6 if in_features % 2 else in_features << 6
 
@@ -128,20 +103,17 @@ class Listener(nn.Module):
                 dropout=dropout_p
             )
 
-    def forward(self, inputs, input_lengths=None):
+    def forward(self, inputs):
         """
         Applies a multi-layer RNN to an input sequence.
 
         Args:
-            input_lengths: input lengths
             inputs (batch, seq_len): tensor containing the features of the input sequence.
 
         Returns: output, hidden
             - **output** (batch, seq_len, hidden_size): variable containing the encoded features of the input sequence
             - **hidden** (num_layers * directions, batch, hidden_size): variable containing the features in the hidden
         """
-        output_lengths = self.get_lengths(input_lengths)
-
         x = self.conv(inputs.unsqueeze(1)).to(self.device)
         x = x.transpose(1, 2)
         x = x.contiguous().view(x.size(0), x.size(1), x.size(2) * x.size(3)).to(self.device)
@@ -150,16 +122,14 @@ class Listener(nn.Module):
             self.flatten_parameters()
 
         if self.use_pyramidal:
-            output, h_state = self.bottom_rnn(x)
-            output, h_state = self.middle_rnn(output)
-            output, h_state = self.top_rnn(output)
+            output, hidden = self.bottom_rnn(x)
+            output, hidden = self.middle_rnn(output)
+            output, hidden = self.top_rnn(output)
 
         else:
-            x = nn.utils.rnn.pack_padded_sequence(x, output_lengths)
-            output, h_state = self.rnn(x)
-            output, _ = nn.utils.rnn.pad_packed_sequence(output)
+            output, hidden = self.rnn(x)
 
-        return output, h_state
+        return output, hidden
 
     def flatten_parameters(self):
         """ flatten parameters for fast training """
@@ -170,15 +140,6 @@ class Listener(nn.Module):
 
         else:
             self.rnn.flatten_parameters()
-
-    def get_lengths(self, input_length):
-        seq_len = input_length
-
-        for m in self.conv.modules():
-            if type(m) == nn.modules.conv.Conv2d:
-                seq_len = ((seq_len + 2 * m.padding[1] - m.dilation[1] * (m.kernel_size[1] - 1) - 1) / m.stride[1] + 1)
-
-        return seq_len.int()
 
 
 class PyramidalRNN(nn.Module):
