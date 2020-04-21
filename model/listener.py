@@ -103,17 +103,20 @@ class Listener(nn.Module):
                 dropout=dropout_p
             )
 
-    def forward(self, inputs):
+    def forward(self, inputs, input_lengths=None):
         """
         Applies a multi-layer RNN to an input sequence.
 
         Args:
+            input_lengths: input lengths
             inputs (batch, seq_len): tensor containing the features of the input sequence.
 
         Returns: output, hidden
             - **output** (batch, seq_len, hidden_size): variable containing the encoded features of the input sequence
             - **hidden** (num_layers * directions, batch, hidden_size): variable containing the features in the hidden
         """
+        output_lengths = self.get_lengths(input_lengths)
+
         x = self.conv(inputs.unsqueeze(1)).to(self.device)
         x = x.transpose(1, 2)
         x = x.contiguous().view(x.size(0), x.size(1), x.size(2) * x.size(3)).to(self.device)
@@ -122,14 +125,16 @@ class Listener(nn.Module):
             self.flatten_parameters()
 
         if self.use_pyramidal:
-            output, hidden = self.bottom_rnn(x)
-            output, hidden = self.middle_rnn(output)
-            output, hidden = self.top_rnn(output)
+            output, h_state = self.bottom_rnn(x)
+            output, h_state = self.middle_rnn(output)
+            output, h_state = self.top_rnn(output)
 
         else:
-            output, hidden = self.rnn(x)
+            x = nn.utils.rnn.pack_padded_sequence(x, output_lengths)
+            output, h_state = self.rnn(x)
+            output, _ = nn.utils.rnn.pad_packed_sequence(output)
 
-        return output, hidden
+        return output, h_state
 
     def flatten_parameters(self):
         """ flatten parameters for fast training """
@@ -140,6 +145,15 @@ class Listener(nn.Module):
 
         else:
             self.rnn.flatten_parameters()
+
+    def get_lengths(self, input_length):
+        seq_len = input_length
+
+        for m in self.conv.modules():
+            if type(m) == nn.modules.conv.Conv2d:
+                seq_len = ((seq_len + 2 * m.padding[1] - m.dilation[1] * (m.kernel_size[1] - 1) - 1) / m.stride[1] + 1)
+
+        return seq_len.int()
 
 
 class PyramidalRNN(nn.Module):
