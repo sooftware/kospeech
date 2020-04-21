@@ -8,6 +8,30 @@ supported_rnns = {
 }
 
 
+class MaskConv(nn.Module):
+    def __init__(self, seq_module):
+        super(MaskConv, self).__init__()
+        self.seq_module = seq_module
+
+    def forward(self, x, lengths):
+        """
+        :param x: The input of size BxCxDxT
+        :param lengths: The actual length of each sequence in the batch
+        :return: Masked output from the module
+        """
+        for module in self.seq_module:
+            x = module(x)
+            mask = torch.BoolTensor(x.size()).fill_(0)
+            if x.is_cuda:
+                mask = mask.cuda()
+            for i, length in enumerate(lengths):
+                length = length.item()
+                if (mask[i].size(2) - length) > 0:
+                    mask[i].narrow(2, length, mask[i].size(2) - length).fill_(1)
+            x = x.masked_fill(mask, 0)
+        return x, lengths
+
+
 class Listener(nn.Module):
     r"""
     Converts low level speech signals into higher level features
@@ -45,25 +69,26 @@ class Listener(nn.Module):
         self.use_pyramidal = use_pyramidal
         self.rnn_cell = supported_rnns[rnn_type]
         self.device = device
-        self.conv = nn.Sequential(
-            nn.Conv2d(in_channels=1, out_channels=64, kernel_size=3, padding=1),
-            nn.Hardtanh(0, 20, inplace=True),
-            nn.BatchNorm2d(num_features=64),
-            nn.Conv2d(in_channels=64, out_channels=64, kernel_size=3, padding=1),
-            nn.Hardtanh(0, 20, inplace=True),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-            nn.BatchNorm2d(num_features=64),
-            nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, padding=1),
-            nn.Hardtanh(0, 20, inplace=True),
-            nn.BatchNorm2d(num_features=128),
-            nn.Conv2d(in_channels=128, out_channels=128, kernel_size=3, padding=1),
-            nn.Hardtanh(0, 20, inplace=True),
-            nn.BatchNorm2d(num_features=128),
-            nn.Conv2d(in_channels=128, out_channels=256, kernel_size=3, padding=1),
-            nn.Hardtanh(0, 20, inplace=True),
-            nn.BatchNorm2d(num_features=256),
-            nn.MaxPool2d(kernel_size=2, stride=2)
-        )
+        self.conv = MaskConv(
+            nn.Sequential(
+                nn.Conv2d(in_channels=1, out_channels=64, kernel_size=3, padding=1),
+                nn.Hardtanh(0, 20, inplace=True),
+                nn.BatchNorm2d(num_features=64),
+                nn.Conv2d(in_channels=64, out_channels=64, kernel_size=3, padding=1),
+                nn.Hardtanh(0, 20, inplace=True),
+                nn.MaxPool2d(kernel_size=2, stride=2),
+                nn.BatchNorm2d(num_features=64),
+                nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, padding=1),
+                nn.Hardtanh(0, 20, inplace=True),
+                nn.BatchNorm2d(num_features=128),
+                nn.Conv2d(in_channels=128, out_channels=128, kernel_size=3, padding=1),
+                nn.Hardtanh(0, 20, inplace=True),
+                nn.BatchNorm2d(num_features=128),
+                nn.Conv2d(in_channels=128, out_channels=256, kernel_size=3, padding=1),
+                nn.Hardtanh(0, 20, inplace=True),
+                nn.BatchNorm2d(num_features=256),
+                nn.MaxPool2d(kernel_size=2, stride=2)
+            ))
 
         in_features = (in_features - 1) << 6 if in_features % 2 else in_features << 6
 
