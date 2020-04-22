@@ -39,7 +39,7 @@ class Beam:
         self.embedding = decoder.embedding
         self.use_attention = decoder.use_attention
         self.attention = decoder.attention
-        self.hidden_size = decoder.hidden_size
+        self.hidden_dim = decoder.hidden_dim
         self.out = decoder.w
         self.eos_id = decoder.eos_id
         self.beams = None
@@ -52,8 +52,8 @@ class Beam:
         """ Beam-Search Decoding (Top-K Decoding) """
         batch_size = encoder_outputs.size(0)
 
-        hidden = torch.zeros(self.n_layers, batch_size, self.hidden_size)
-        step_outputs, hidden = self.forward_step(input_, hidden, encoder_outputs)
+        h_state = None
+        step_outputs, h_state = self.forward_step(input_, h_state, encoder_outputs)
         self.cumulative_probs, self.beams = step_outputs.topk(self.k)  # BxK
 
         input_ = self.beams
@@ -63,7 +63,7 @@ class Beam:
             if self._is_done():
                 break
 
-            step_outputs, hidden = self.forward_step(input_, hidden, encoder_outputs)
+            step_outputs, h_state = self.forward_step(input_, h_state, encoder_outputs)
             probs, values = step_outputs.topk(self.k)
 
             self.cumulative_probs /= self.get_length_penalty(length=di + 1, alpha=1.2, min_length=5)
@@ -106,22 +106,22 @@ class Beam:
 
         return self._get_best()
 
-    def forward_step(self, input_, hidden, encoder_outputs):
+    def forward_step(self, input_, h_state, encoder_outputs):
         """ forward one step on each decoder cell """
         batch_size = encoder_outputs.size(0)
         seq_length = input_.size(1)
 
         embedded = self.embedding(input_).to(self.device)
-        output, hidden = self.rnn(embedded, hidden)
+        output, h_state = self.rnn(embedded, h_state)
 
         if self.use_attention:
             output = self.attention(output, encoder_outputs)
 
-        predicted_softmax = self.function(self.out(output.contiguous().view(-1, self.hidden_size)), dim=1)
+        predicted_softmax = self.function(self.out(output.contiguous().view(-1, self.hidden_dim)), dim=1)
         predicted_softmax = predicted_softmax.view(batch_size, seq_length, -1)
         step_outputs = predicted_softmax.squeeze(1)
 
-        return step_outputs, hidden
+        return step_outputs, h_state
 
     def _get_best(self):
         """ get sentences which has the highest probability at each batch, stack it, and return it as 2d torch """

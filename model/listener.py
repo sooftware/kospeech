@@ -14,15 +14,15 @@ class Listener(nn.Module):
 
     Args:
         rnn_type (str, optional): type of RNN cell (default: gru)
-        hidden_size (int): the number of features in the hidden state `h`
+        hidden_dim (int): the number of features in the hidden state `h`
         n_layers (int, optional): number of recurrent layers (default: 1)
         bidirectional (bool, optional): if True, becomes a bidirectional encoder (defulat: False)
         use_pyramidal (bool): flag indication whether to use pyramidal rnn for time resolution (default: True)
         dropout_p (float, optional): dropout probability for the output sequence (default: 0)
 
-    Inputs: inputs, hidden
+    Inputs: inputs, h_state
         - **inputs**: list of sequences, whose length is the batch size and within which each sequence is list of tokens
-        - **hidden**: variable containing the features in the hidden state h
+        - **h_state**: variable containing the features in the hidden state h
 
     Returns: output
         - **output**: tensor containing the encoded features of the input sequence
@@ -33,7 +33,7 @@ class Listener(nn.Module):
         >>> output = listener(inputs)
     """
 
-    def __init__(self, in_features, hidden_size, device, dropout_p=0.5, n_layers=5,
+    def __init__(self, in_features, hidden_dim, device, dropout_p=0.5, n_layers=5,
                  bidirectional=True, rnn_type='gru', use_pyramidal=True):
 
         super(Listener, self).__init__()
@@ -70,7 +70,7 @@ class Listener(nn.Module):
         if use_pyramidal:
             self.bottom_rnn = self.rnn_cell(
                 in_features=in_features,
-                hidden_size=hidden_size,
+                hidden_dim=hidden_dim,
                 num_layers=2,
                 batch_first=True,
                 bidirectional=bidirectional,
@@ -78,16 +78,16 @@ class Listener(nn.Module):
             )
             self.middle_rnn = PyramidalRNN(
                 rnn_type=rnn_type,
-                in_features=hidden_size << 1 if bidirectional else 0,
-                hidden_size=hidden_size,
+                in_features=hidden_dim << 1 if bidirectional else 0,
+                hidden_dim=hidden_dim,
                 dropout_p=dropout_p,
                 n_layers=2,
                 device=device
             )
             self.top_rnn = PyramidalRNN(
                 rnn_type=rnn_type,
-                in_features=hidden_size << 1 if bidirectional else 0,
-                hidden_size=hidden_size,
+                in_features=hidden_dim << 1 if bidirectional else 0,
+                hidden_dim=hidden_dim,
                 dropout_p=dropout_p,
                 n_layers=n_layers - 4,
                 device=device
@@ -96,7 +96,7 @@ class Listener(nn.Module):
         else:
             self.rnn = self.rnn_cell(
                 input_size=in_features,
-                hidden_size=hidden_size,
+                hidden_dim=hidden_dim,
                 num_layers=n_layers,
                 batch_first=True,
                 bidirectional=bidirectional,
@@ -110,9 +110,9 @@ class Listener(nn.Module):
         Args:
             inputs (batch, seq_len): tensor containing the features of the input sequence.
 
-        Returns: output, hidden
-            - **output** (batch, seq_len, hidden_size): variable containing the encoded features of the input sequence
-            - **hidden** (num_layers * directions, batch, hidden_size): variable containing the features in the hidden
+        Returns: output, h_state
+            - **output** (batch, seq_len, hidden_dim): variable containing the encoded features of the input sequence
+            - **h_state** (num_layers * directions, batch, hidden_dim): variable containing the features in the hidden
         """
         x = self.conv(inputs.unsqueeze(1)).to(self.device)
         x = x.transpose(1, 2)
@@ -122,14 +122,14 @@ class Listener(nn.Module):
             self.flatten_parameters()
 
         if self.use_pyramidal:
-            output, hidden = self.bottom_rnn(x)
-            output, hidden = self.middle_rnn(output)
-            output, hidden = self.top_rnn(output)
+            output, h_state = self.bottom_rnn(x)
+            output, h_state = self.middle_rnn(output)
+            output, h_state = self.top_rnn(output)
 
         else:
-            output, hidden = self.rnn(x)
+            output, h_state = self.rnn(x)
 
-        return output, hidden
+        return output, h_state
 
     def flatten_parameters(self):
         """ flatten parameters for fast training """
@@ -148,7 +148,7 @@ class PyramidalRNN(nn.Module):
 
     Args:
         rnn_type (str, optional): type of RNN cell (default: gru)
-        hidden_size (int): the number of features in the hidden state `h`
+        hidden_dim (int): the number of features in the hidden state `h`
         n_layers (int, optional): number of recurrent layers (default: 1)
         in_features (int): size of input feature
         dropout_p (float, optional): dropout probability for the output sequence (default: 0)
@@ -156,16 +156,16 @@ class PyramidalRNN(nn.Module):
     Inputs: inputs
         - **inputs**: sequences whose length is the batch size and within which each sequence is a list of token IDs.
 
-    Returns: output, hidden
-        - **output** (batch, seq_len, hidden_size): tensor containing the encoded features of the input sequence
-        - **hidden** (num_layers * num_directions, batch, hidden_size): tensor containing the features in the hidden
+    Returns: output, h_state
+        - **output** (batch, seq_len, hidden_dim): tensor containing the encoded features of the input sequence
+        - **h_state** (num_layers * num_directions, batch, hidden_dim): tensor containing the features in the hidden
 
     Examples::
         >>> rnn = PyramidalRNN(rnn_type, input_size, hidden_size, dropout_p)
-        >>> output, hidden = rnn(inputs)
+        >>> output, h_state = rnn(inputs)
     """
 
-    def __init__(self, rnn_type, in_features, hidden_size, dropout_p, device, n_layers=2):
+    def __init__(self, rnn_type, in_features, hidden_dim, dropout_p, device, n_layers=2):
         super(PyramidalRNN, self).__init__()
 
         assert rnn_type.lower() in supported_rnns.keys(), 'RNN type not supported.'
@@ -173,7 +173,7 @@ class PyramidalRNN(nn.Module):
         self.rnn_cell = supported_rnns[rnn_type]
         self.rnn = self.rnn_cell(
             input_size=in_features << 1,
-            hidden_size=hidden_size,
+            hidden_dim=hidden_dim,
             num_layers=n_layers,
             bidirectional=True,
             batch_first=True,
@@ -189,7 +189,7 @@ class PyramidalRNN(nn.Module):
             inputs (batch, seq_len): tensor containing the features of the input sequence.
 
         Returns: output
-            - **output** (batch, seq_len, hidden_size): variable containing the encoded features of the input sequence
+            - **output** (batch, seq_len, hidden_dim): variable containing the encoded features of the input sequence
         """
         batch_size = inputs.size(0)
         seq_length = inputs.size(1)
@@ -201,9 +201,9 @@ class PyramidalRNN(nn.Module):
             seq_length += 1
 
         inputs = inputs.contiguous().view(batch_size, int(seq_length / 2), input_size * 2)
-        output, hidden = self.rnn(inputs)
+        output, h_state = self.rnn(inputs)
 
-        return output, hidden
+        return output, h_state
 
     def flatten_parameters(self):
         self.rnn.flatten_parameters()

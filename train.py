@@ -53,23 +53,17 @@ from package.utils import save_epoch_result
 
 
 if __name__ == '__main__':
-    os.environ["CUDA_LAUNCH_BLOCKING"] = "1"  # if you use Multi-GPU, delete this line
-    logger.info("device : %s" % torch.cuda.get_device_name(0))
-    logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
-    logger.info("CUDA version : %s" % torch.version.cuda)
-    logger.info("PyTorch version : %s" % torch.__version__)
-
     config = Config(
         use_bidirectional=True,
         use_attention=True,
         use_label_smooth=True,
         input_reverse=True,
-        use_augment=True,
+        use_augment=False,
         use_pickle=False,
         use_pyramidal=False,
         use_cuda=True,
-        augment_ratio=1.0,
-        hidden_size=256,
+        augment_ratio=0.0,
+        hidden_dim=256,
         dropout=0.5,
         listener_layer_size=5,
         speller_layer_size=3,
@@ -82,7 +76,9 @@ if __name__ == '__main__':
         low_plateau_lr=0.00001,
         teacher_forcing=1.0,
         seed=1,
-        max_len=151
+        max_len=151,
+        load_model=False,
+        model_path=None
     )
 
     random.seed(config.seed)
@@ -91,35 +87,46 @@ if __name__ == '__main__':
     cuda = config.use_cuda and torch.cuda.is_available()
     device = torch.device('cuda' if cuda else 'cpu')
 
-    listener = Listener(
-        in_features=80,
-        hidden_size=config.hidden_size,
-        dropout_p=config.dropout,
-        n_layers=config.listener_layer_size,
-        bidirectional=config.use_bidirectional,
-        rnn_type='gru',
-        use_pyramidal=config.use_pyramidal,
-        device=device
-    )
-    speller = Speller(
-        n_class=len(char2id),
-        max_length=config.max_len,
-        k=8,
-        hidden_size=config.hidden_size << (1 if config.use_bidirectional else 0),
-        sos_id=SOS_token,
-        eos_id=EOS_token,
-        n_layers=config.speller_layer_size,
-        rnn_type='gru',
-        dropout_p=config.dropout,
-        use_attention=config.use_attention,
-        device=device
-    )
-    model = ListenAttendSpell(listener, speller, use_pyramidal=config.use_pyramidal)
-    model.flatten_parameters()
-    model = nn.DataParallel(model).to(device)
+    if device == 'cuda':
+        os.environ["CUDA_LAUNCH_BLOCKING"] = "1"  # if you use Multi-GPU, delete this line
+        logger.info("device : %s" % torch.cuda.get_device_name(0))
+        logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
+        logger.info("CUDA version : %s" % torch.version.cuda)
+        logger.info("PyTorch version : %s" % torch.__version__)
 
-    for param in model.parameters():
-        param.data.uniform_(-0.08, 0.08)
+    if not config.load_model:
+        listener = Listener(
+            in_features=80,
+            hidden_dim=config.hidden_dim,
+            dropout_p=config.dropout,
+            n_layers=config.listener_layer_size,
+            bidirectional=config.use_bidirectional,
+            rnn_type='gru',
+            use_pyramidal=config.use_pyramidal,
+            device=device
+        )
+        speller = Speller(
+            n_class=len(char2id),
+            max_length=config.max_len,
+            k=8,
+            hidden_dim=config.hidden_dim << (1 if config.use_bidirectional else 0),
+            sos_id=SOS_token,
+            eos_id=EOS_token,
+            n_layers=config.speller_layer_size,
+            rnn_type='gru',
+            dropout_p=config.dropout,
+            use_attention=config.use_attention,
+            device=device
+        )
+        model = ListenAttendSpell(listener, speller, use_pyramidal=config.use_pyramidal)
+        model.flatten_parameters()
+        model = nn.DataParallel(model).to(device)
+
+        for param in model.parameters():
+            param.data.uniform_(-0.08, 0.08)
+
+    else:
+        model = torch.load(config.model_path).to(device)
 
     optimizer = optim.Adam(model.module.parameters(), lr=config.init_lr)
     if config.use_label_smooth:

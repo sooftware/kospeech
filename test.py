@@ -74,7 +74,7 @@ if __name__ == '__main__':
 
     listener = Listener(
         in_features=80,
-        hidden_size=config.hidden_size,
+        hidden_dim=config.hidden_dim,
         dropout_p=config.dropout,
         n_layers=config.listener_layer_size,
         bidirectional=config.use_bidirectional,
@@ -86,7 +86,7 @@ if __name__ == '__main__':
         n_class=len(char2id),
         max_length=config.max_len,
         k=1,
-        hidden_size=config.hidden_size << (1 if config.use_bidirectional else 0),
+        hidden_dim=config.hidden_dim << (1 if config.use_bidirectional else 0),
         sos_id=SOS_token,
         eos_id=EOS_token,
         n_layers=config.speller_layer_size,

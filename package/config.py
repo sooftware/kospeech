@@ -41,7 +41,7 @@ class Config:
                  use_pyramidal=True,
                  use_cuda=True,
                  augment_ratio=1.0,
-                 hidden_size=256,
+                 hidden_dim=256,
                  dropout=0.5,
                  listener_layer_size=5,
                  speller_layer_size=3,
@@ -54,7 +54,9 @@ class Config:
                  low_plateau_lr=0.00001,
                  teacher_forcing=0.90,
                  seed=1,
-                 max_len=151
+                 max_len=151,
+                 load_model=False,
+                 model_path=None
                  ):
         self.use_bidirectional = use_bidirectional
         self.use_attention = use_attention
@@ -65,7 +67,7 @@ class Config:
         self.use_pyramidal = use_pyramidal
         self.use_cuda = use_cuda
         self.augment_ratio = augment_ratio
-        self.hidden_size = hidden_size
+        self.hidden_dim = hidden_dim
         self.dropout = dropout
         self.listener_layer_size = listener_layer_size
         self.speller_layer_size = speller_layer_size
@@ -80,6 +82,8 @@ class Config:
         self.teacher_forcing = teacher_forcing
         self.seed = seed
         self.max_len = max_len
+        self.load_model = load_model
+        self.model_path = model_path
         self.print_log()
 
     def print_log(self):
@@ -91,7 +95,7 @@ class Config:
         logger.info("use_pyramidal : %s" % str(self.use_pyramidal))
         logger.info("augment_ratio : %0.2f" % self.augment_ratio)
         logger.info("input_reverse : %s" % str(self.input_reverse))
-        logger.info("hidden_size : %d" % self.hidden_size)
+        logger.info("hidden_dim : %d" % self.hidden_dim)
         logger.info("listener_layer_size : %d" % self.listener_layer_size)
         logger.info("speller_layer_size : %d" % self.speller_layer_size)
         logger.info("dropout : %0.2f" % self.dropout)

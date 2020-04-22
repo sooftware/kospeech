@@ -34,13 +34,9 @@ class CustomDataset(Dataset):
         self.input_reverse = input_reverse
         self.augment_ratio = augment_ratio
         self.augment_flags = [False] * len(self.audio_paths)
-
         if use_augment:
             self.augmentation()
-
-        bundle = list(zip(self.audio_paths, self.label_paths, self.augment_flags))
-        random.shuffle(bundle)
-        self.audio_paths, self.label_paths, self.augment_flags = zip(*bundle)
+        self.shuffle()
 
     def get_item(self, idx):
         label = get_label(self.label_paths[idx], sos_id=self.sos_id, eos_id=self.eos_id, target_dict=self.target_dict)
@@ -55,7 +51,6 @@ class CustomDataset(Dataset):
         return feat, label
 
     def augmentation(self):
-        """ Apply Spec-Augmentation """
         augment_end_idx = int(0 + ((len(self.audio_paths) - 0) * self.augment_ratio))
         logger.info("Applying Augmentation...")
 
@@ -65,10 +60,9 @@ class CustomDataset(Dataset):
             self.label_paths.append(self.label_paths[idx])
 
     def shuffle(self):
-        """ Shuffle Dataset """
-        bundle = list(zip(self.audio_paths, self.label_paths, self.augment_flags))
-        random.shuffle(bundle)
-        self.audio_paths, self.label_paths, self.augment_flags = zip(*bundle)
+        temp = list(zip(self.audio_paths, self.label_paths, self.augment_flags))
+        random.shuffle(temp)
+        self.audio_paths, self.label_paths, self.augment_flags = zip(*temp)
 
     def __len__(self):
         return len(self.audio_paths)
@@ -128,19 +122,19 @@ def split_dataset(config, audio_paths, label_paths, valid_ratio=0.05, target_dic
             augment_ratio=config.augment_ratio
         ))
 
-    validset = CustomDataset(
-        audio_paths=audio_paths[train_num:],
-        label_paths=label_paths[train_num:],
-        sos_id=SOS_token, eos_id=EOS_token,
-        batch_size=config.batch_size,
-        target_dict=target_dict,
-        input_reverse=config.input_reverse,
-        use_augment=False
-    )
+    # validset = CustomDataset(
+    #     audio_paths=audio_paths[train_num:],
+    #     label_paths=label_paths[train_num:],
+    #     sos_id=SOS_token, eos_id=EOS_token,
+    #     batch_size=config.batch_size,
+    #     target_dict=target_dict,
+    #     input_reverse=config.input_reverse,
+    #     use_augment=False
+    # )
 
     save_pickle(trainset_list, './data/pickle/trainset_list')
-    save_pickle(validset, './data/pickle/validset')
+    #save_pickle(validset, './data/pickle/validset')
 
     logger.info("split dataset complete !!")
 
-    return train_time_step, trainset_list, validset
+    return train_time_step, trainset_list, None#, validset
