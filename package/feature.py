@@ -5,16 +5,16 @@ import random
 from package.definition import logger
 
 
-def get_librosa_melspectrogram(filepath, n_mels=128, del_silence=False, input_reverse=True, mel_type='log_mel'):
+def get_librosa_melspectrogram(filepath, n_mels=80, del_silence=False, input_reverse=True, normalize=True):
     r"""
     Compute a mel-scaled soectrigram (or Log-Mel).
 
-    Args:
+    Args: filepath, n_mels, del_silence, input_reverse, normalize
         filepath (str): specific path of audio file
         n_mels (int): number of mel filter
         del_silence (bool): flag indication whether to delete silence or not (default: True)
-        mel_type (str): if 'log_mel' return log-mel (default: 'log_mel')
         input_reverse (bool): flag indication whether to reverse input or not (default: True)
+        normalize (bool): flag indication whether to normalize spectrum or not (default:True)
 
     Feature Parameters:
         - **sample rate**: A.I Hub dataset`s sample rate is 16,000
@@ -29,13 +29,13 @@ def get_librosa_melspectrogram(filepath, n_mels=128, del_silence=False, input_re
         Hop Length = sr * stride \\
         \end{array}
 
-    Returns: mel_spectrogram
-        - **mel_spectrogram** (torch.Tensor): return Mel-Spectrogram (or Log-Mel) feature
+    Returns: spectrogram
+        - **spectrogram** (torch.Tensor): return Mel-Spectrogram (or Log-Mel) feature
 
     Examples::
         Generate mel spectrogram from a time series
 
-    >>> get_librosa_melspectrogram("KaiSpeech_021458.pcm", n_mels=128, input_reverse=True)
+    >>> get_librosa_melspectrogram("KaiSpeech_021458.pcm", n_mels=80, input_reverse=True, normalize=True)
     Tensor([[  2.891e-07,   2.548e-03, ...,   8.116e-09,   5.633e-09],
             [  1.986e-07,   1.162e-02, ...,   9.332e-08,   6.716e-09],
             ...,
@@ -62,26 +62,33 @@ def get_librosa_melspectrogram(filepath, n_mels=128, del_silence=False, input_re
         non_silence_ids = librosa.effects.split(y=sig, top_db=30)
         sig = np.concatenate([sig[start:end] for start, end in non_silence_ids])
 
-    mel_spectrogram = librosa.feature.melspectrogram(sig, sr=16000, n_mels=n_mels, n_fft=400, hop_length=160)
+    spectrogram = librosa.feature.melspectrogram(sig, sr=16000, n_mels=n_mels, n_fft=400, hop_length=160)
+    spectrogram = librosa.amplitude_to_db(spectrogram, ref=np.max)
 
-    if mel_type == 'log_mel':
-        mel_spectrogram = librosa.amplitude_to_db(mel_spectrogram, ref=np.max)
+    if normalize:
+        mean = np.mean(spectrogram)
+        std = np.std(spectrogram)
+        spectrogram -= mean
+        spectrogram /= std
 
     if input_reverse:
-        mel_spectrogram = mel_spectrogram[:,::-1]
+        spectrogram = spectrogram[:, ::-1]
 
-    return torch.FloatTensor(np.ascontiguousarray(np.swapaxes(mel_spectrogram, 0, 1)))
+    spectrogram = torch.FloatTensor(np.ascontiguousarray(np.swapaxes(spectrogram, 0, 1)))
+
+    return spectrogram
 
 
-def get_librosa_mfcc(filepath, n_mfcc=40, del_silence=False, input_reverse=True):
+def get_librosa_mfcc(filepath, n_mfcc=40, del_silence=False, input_reverse=True, normalize=True):
     r""":
     Mel-frequency cepstral coefficients (MFCCs)
 
-    Args:
+    Args: filepath, n_mfcc, del_silence, input_reverse, normalize
         filepath (str): specific path of audio file
         n_mfcc (int): number of mel filter
         del_silence (bool): flag indication whether to delete silence or not (default: True)
         input_reverse (bool): flag indication whether to reverse input or not (default: True)
+        normalize (bool): flag indication whether to normalize spectrum or not (default:True)
 
     Feature Parameters:
         - **sample rate**: A.I Hub dataset`s sample rate is 16,000
@@ -96,8 +103,8 @@ def get_librosa_mfcc(filepath, n_mfcc=40, del_silence=False, input_reverse=True)
         HopLength = sr * stride \\
         \end{array}
 
-    Returns: mfcc
-        - **mfcc** (torch.Tensor): return mel frequency cepstral coefficient feature
+    Returns: spectrogram
+        - **spectrogram** (torch.Tensor): return mel frequency cepstral coefficient feature
 
     Examples::
         Generate mfccs from a time series
@@ -129,22 +136,30 @@ def get_librosa_mfcc(filepath, n_mfcc=40, del_silence=False, input_reverse=True)
         non_silence_ids = librosa.effects.split(sig, top_db=30)
         sig = np.concatenate([sig[start:end] for start, end in non_silence_ids])
 
-    mfcc = librosa.feature.mfcc(sig, sr=16000, hop_length=160, n_mfcc=n_mfcc, n_fft=400)
+    spectrogram = librosa.feature.mfcc(sig, sr=16000, hop_length=160, n_mfcc=n_mfcc, n_fft=400)
+
+    if normalize:
+        mean = np.mean(spectrogram)
+        std = np.std(spectrogram)
+        spectrogram -= mean
+        spectrogram /= std
 
     if input_reverse:
-        mfcc = mfcc[:,::-1]
+        spectrogram = spectrogram[:, ::-1]
 
-    return torch.FloatTensor(np.ascontiguousarray(np.swapaxes(mfcc, 0, 1)))
+    spectrogram = torch.FloatTensor(np.ascontiguousarray(np.swapaxes(spectrogram, 0, 1)))
+
+    return spectrogram
 
 
-def spec_augment(feat, T=70, F=20, time_mask_num=2, freq_mask_num=2):
+def spec_augment(spectrogram, time_mask_para=70, freq_mask_para=20, time_mask_num=2, freq_mask_num=2):
     """
     Provides Augmentation for audio
 
     Args:
-        feat (torch.Tensor): input data feature
-        T (int): Hyper Parameter for Time Masking to limit time masking length
-        F (int): Hyper Parameter for Freq Masking to limit freq masking length
+        spectrogram (torch.Tensor): spectrum
+        time_mask_para (int): Hyper Parameter for Time Masking to limit time masking length
+        freq_mask_para (int): Hyper Parameter for Freq Masking to limit freq masking length
         time_mask_num (int): how many time-masked area to make
         freq_mask_num (int): how many freq-masked area to make
 
@@ -158,28 +173,28 @@ def spec_augment(feat, T=70, F=20, time_mask_num=2, freq_mask_num=2):
     Examples::
         Generate spec augmentation from a feature
 
-        >>> spec_augment(feat, T = 70, F = 20, time_mask_num = 2, freq_mask_num = 2)
+        >>> spec_augment(spectrogram, time_mask_para=70, freq_mask_para=20, time_mask_num=2, freq_mask_num=2)
         Tensor([[ -5.229e+02,  0, ...,  -5.229e+02,  -5.229e+02],
                 [  7.105e-15,  0, ...,  -7.105e-15,  -7.105e-15],
                 ...,
                 [          0,  0, ...,           0,           0],
                 [  3.109e-14,  0, ...,   2.931e-14,   2.931e-14]])
     """
-    length = feat.size(0)
-    n_mels = feat.size(1)
+    length = spectrogram.size(0)
+    n_mels = spectrogram.size(1)
 
     # time mask
     for _ in range(time_mask_num):
-        t = np.random.uniform(low=0.0, high=T)
+        t = np.random.uniform(low=0.0, high=time_mask_para)
         t = int(t)
         t0 = random.randint(0, length - t)
-        feat[t0: t0 + t, :] = 0
+        spectrogram[t0: t0 + t, :] = 0
 
     # freq mask
     for _ in range(freq_mask_num):
-        f = np.random.uniform(low=0.0, high=F)
+        f = np.random.uniform(low=0.0, high=freq_mask_para)
         f = int(f)
         f0 = random.randint(0, n_mels - f)
-        feat[:, f0: f0 + f] = 0
+        spectrogram[:, f0: f0 + f] = 0
 
-    return feat
+    return spectrogram

@@ -39,16 +39,33 @@ class CustomDataset(Dataset):
         self.shuffle()
 
     def get_item(self, idx):
-        label = get_label(self.label_paths[idx], sos_id=self.sos_id, eos_id=self.eos_id, target_dict=self.target_dict)
-        feat = get_librosa_melspectrogram(self.audio_paths[idx], n_mels=80, input_reverse=self.input_reverse)
+        label = get_label(
+            filepath=self.label_paths[idx],
+            sos_id=self.sos_id,
+            eos_id=self.eos_id,
+            target_dict=self.target_dict
+        )
+        spectrogram = get_librosa_melspectrogram(
+            filepath=self.audio_paths[idx],
+            n_mels=80,
+            input_reverse=self.input_reverse,
+            del_silence=True,
+            normalize=True
+        )
 
-        if feat is None:  # exception handling
+        if spectrogram is None:  # exception handling
             return None, None
 
         if self.augment_flags[idx]:
-            feat = spec_augment(feat, T=70, F=15, time_mask_num=2, freq_mask_num=2)
+            spectrogram = spec_augment(
+                spectrogram,
+                time_mask_para=70,
+                freq_mask_para=15,
+                time_mask_num=2,
+                freq_mask_num=2
+            )
 
-        return feat, label
+        return spectrogram, label
 
     def augmentation(self):
         augment_end_idx = int(0 + ((len(self.audio_paths) - 0) * self.augment_ratio))
@@ -122,19 +139,19 @@ def split_dataset(config, audio_paths, label_paths, valid_ratio=0.05, target_dic
             augment_ratio=config.augment_ratio
         ))
 
-    # validset = CustomDataset(
-    #     audio_paths=audio_paths[train_num:],
-    #     label_paths=label_paths[train_num:],
-    #     sos_id=SOS_token, eos_id=EOS_token,
-    #     batch_size=config.batch_size,
-    #     target_dict=target_dict,
-    #     input_reverse=config.input_reverse,
-    #     use_augment=False
-    # )
+    validset = CustomDataset(
+        audio_paths=audio_paths[train_num:],
+        label_paths=label_paths[train_num:],
+        sos_id=SOS_token, eos_id=EOS_token,
+        batch_size=config.batch_size,
+        target_dict=target_dict,
+        input_reverse=config.input_reverse,
+        use_augment=False
+    )
 
     save_pickle(trainset_list, './data/pickle/trainset_list')
-    #save_pickle(validset, './data/pickle/validset')
+    save_pickle(validset, './data/pickle/validset')
 
     logger.info("split dataset complete !!")
 
-    return train_time_step, trainset_list, None#, validset
+    return train_time_step, trainset_list, validset

@@ -51,8 +51,8 @@ class Speller(nn.Module):
     """
 
     def __init__(self, n_class, max_length, hidden_dim,
-                 sos_id, eos_id, n_layers=1, rnn_type='gru',
-                 dropout_p=0, use_attention=True, device=None, k=8):
+                 sos_id, eos_id, n_layers=1, rnn_type='gru', dropout_p=0,
+                 use_attention=True, device=None, k=8, external_lm=None):
 
         super(Speller, self).__init__()
         assert rnn_type.lower() in supported_rnns.keys(), 'RNN type not supported.'
@@ -70,6 +70,7 @@ class Speller(nn.Module):
         self.use_attention = use_attention
         self.fc = nn.Linear(self.hidden_dim, n_class)
         self.device = device
+        self.external_lm = external_lm
         if use_attention:
             self.attention = MultiHeadAttention(in_features=hidden_dim, dim=128, n_head=4)
 

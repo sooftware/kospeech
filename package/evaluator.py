@@ -27,26 +27,25 @@ def evaluate(model, queue, criterion, device):
 
     with torch.no_grad():
         while True:
-            feats, scripts, feat_lengths, script_lengths = queue.get()
+            inputs, scripts, input_lengths, script_lengths = queue.get()
 
-            if feats.shape[0] == 0:
+            if inputs.shape[0] == 0:
                 break
 
-            feats = feats.to(device)
+            inputs = inputs.to(device)
             scripts = scripts.to(device)
             targets = scripts[:, 1:]
 
             model.module.flatten_parameters()
-            y_hat, logit = model(feats, scripts, teacher_forcing_ratio=0.0, use_beam_search = False)
+            y_hat, logit = model(inputs, scripts, teacher_forcing_ratio=0.0, use_beam_search = False)
 
             loss = criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
             total_loss += loss.item()
-            total_num += sum(feat_lengths)
+            total_num += sum(input_lengths)
 
             dist, length = get_distance(targets, y_hat, id2char, EOS_token)
             total_dist += dist
             total_length += length
 
     logger.info('evaluate() completed')
-
     return total_loss / total_num, total_dist / total_length

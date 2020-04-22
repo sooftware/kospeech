@@ -37,23 +37,23 @@ class MultiHeadAttention(nn.Module):
         self.V = nn.Linear(in_features, dim * n_head)
         self.fc = nn.Linear(in_features << 1, in_features)
 
-    def forward(self, decoder_output, encoder_outputs):
-        batch_size = encoder_outputs.size(0)
-        dec_length = decoder_output.size(1)
-        enc_length = encoder_outputs.size(1)
+    def forward(self, queries, values):
+        batch_size = values.size(0)
+        dec_length = queries.size(1)
+        enc_length = values.size(1)
 
-        preserved = decoder_output
+        preserved = queries
 
-        decoder_output = self.W(decoder_output).view(batch_size, dec_length, self.n_head, self.dim)
-        encoder_outputs = self.V(encoder_outputs).view(batch_size, enc_length, self.n_head, self.dim)
+        queries = self.W(queries).view(batch_size, dec_length, self.n_head, self.dim)
+        values = self.V(values).view(batch_size, enc_length, self.n_head, self.dim)
 
-        decoder_output = decoder_output.permute(2, 0, 1, 3).contiguous().view(-1, dec_length, self.dim)
-        encoder_outputs = encoder_outputs.permute(2, 0, 1, 3).contiguous().view(-1, enc_length, self.dim)
+        queries = queries.permute(2, 0, 1, 3).contiguous().view(-1, dec_length, self.dim)
+        values = values.permute(2, 0, 1, 3).contiguous().view(-1, enc_length, self.dim)
 
-        attn_score = torch.bmm(decoder_output, encoder_outputs.transpose(1, 2))
+        attn_score = torch.bmm(queries, values.transpose(1, 2))
         attn_distribution = F.softmax(attn_score, dim=2)
 
-        context = torch.bmm(attn_distribution, encoder_outputs).view(self.n_head, batch_size, dec_length, self.dim)
+        context = torch.bmm(attn_distribution, values).view(self.n_head, batch_size, dec_length, self.dim)
         context = context.permute(1, 2, 0, 3).contiguous().view(batch_size, dec_length, -1)
 
         combined = torch.cat([context, preserved], dim=2)
