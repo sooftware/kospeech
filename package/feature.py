@@ -6,7 +6,7 @@ from package.definition import logger
 
 
 def get_librosa_melspectrogram(filepath, n_mels=80, del_silence=False, input_reverse=True,
-                               normalize=True, sr=16000, window_size=20, stride=10):
+                               normalize=False, sr=16000, window_size=20, stride=10):
     r"""
     Compute a mel-scaled soectrigram (or Log-Mel).
 

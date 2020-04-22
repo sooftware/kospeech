@@ -102,7 +102,7 @@ class Speller(nn.Module):
         decode_outputs = list()
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
 
-        h_state = None
+        h_state = self._init_state(batch_size)
 
         if use_beam_search:  # TopK Decoding
             input_ = inputs[:, 0].unsqueeze(1)
@@ -149,3 +149,14 @@ class Speller(nn.Module):
             y_hats = logits.max(-1)[1]
 
         return y_hats, logits
+
+    def _init_state(self, batch_size):
+        if isinstance(self.rnn, nn.LSTM):
+            h_0 = torch.zeros(self.n_layers, batch_size, self.hidden_size).to(self.device)
+            c_0 = torch.zeros(self.n_layers, batch_size, self.hidden_size).to(self.device)
+            h_state = (h_0, c_0)
+
+        else:
+            h_state = torch.zeros(self.n_layers, batch_size, self.hidden_size).to(self.device)
+
+        return h_state
