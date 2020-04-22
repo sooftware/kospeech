@@ -85,8 +85,7 @@ class Speller(nn.Module):
 
         return predicted_softmax, h_state
 
-    def forward(self, inputs, listener_outputs, teacher_forcing_ratio=0.90,
-                use_beam_search=False):
+    def forward(self, inputs, listener_outputs, teacher_forcing_ratio=0.90, use_beam_search=False):
         batch_size = inputs.size(0)
         max_length = inputs.size(1) - 1  # minus the start of sequence symbol
 
@@ -109,9 +108,9 @@ class Speller(nn.Module):
 
         else:
             if use_teacher_forcing:  # if teacher_forcing, Infer all at once
-                speller_inputs = inputs[inputs != self.eos_id].view(batch_size, -1)
+                inputs = inputs[inputs != self.eos_id].view(batch_size, -1)
                 predicted_softmax, h_state = self.forward_step(
-                    input_=speller_inputs,
+                    input_=inputs,
                     h_state=h_state,
                     listener_outputs=listener_outputs
                 )
@@ -121,17 +120,17 @@ class Speller(nn.Module):
                     decode_outputs.append(step_output)
 
             else:
-                speller_input = inputs[:, 0].unsqueeze(1)
+                input_ = inputs[:, 0].unsqueeze(1)
 
                 for di in range(max_length):
                     predicted_softmax, h_state = self.forward_step(
-                        input_=speller_input,
+                        input_=input_,
                         h_state=h_state,
                         listener_outputs=listener_outputs
                     )
                     step_output = predicted_softmax.squeeze(1)
                     decode_outputs.append(step_output)
-                    speller_input = decode_outputs[-1].topk(1)[1]
+                    input_ = decode_outputs[-1].topk(1)[1]
 
             logits = torch.stack(decode_outputs, dim=1).to(self.device)
             y_hats = logits.max(-1)[1]
