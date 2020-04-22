@@ -70,7 +70,7 @@ class Listener(nn.Module):
         if use_pyramidal:
             self.bottom_rnn = self.rnn_cell(
                 in_features=in_features,
-                hidden_dim=hidden_dim,
+                hidden_size=hidden_dim,
                 num_layers=2,
                 batch_first=True,
                 bidirectional=bidirectional,
@@ -96,7 +96,7 @@ class Listener(nn.Module):
         else:
             self.rnn = self.rnn_cell(
                 input_size=in_features,
-                hidden_dim=hidden_dim,
+                hidden_size=hidden_dim,
                 num_layers=n_layers,
                 batch_first=True,
                 bidirectional=bidirectional,
