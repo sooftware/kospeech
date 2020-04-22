@@ -24,7 +24,7 @@ class MultiHeadAttention(nn.Module):
         - **output** (batch, output_len, dimensions): tensor containing the attended output features from the decoder.
 
     Examples::
-        >>> attention = MultiHeadAttention(in_features, n_head=4, dim=128)
+        >>> attention = MultiHeadAttention(in_features=512, n_head=4, dim=128)
         >>> output = attention(decoder_output, encoder_outputs)
     """
 
@@ -39,22 +39,22 @@ class MultiHeadAttention(nn.Module):
 
     def forward(self, queries, values):
         batch_size = values.size(0)
-        dec_length = queries.size(1)
-        enc_length = values.size(1)
+        query_length = queries.size(1)
+        value_length = values.size(1)
 
         preserved = queries
 
-        queries = self.W(queries).view(batch_size, dec_length, self.n_head, self.dim)
-        values = self.V(values).view(batch_size, enc_length, self.n_head, self.dim)
+        queries = self.W(queries).view(batch_size, query_length, self.n_head, self.dim)
+        values = self.V(values).view(batch_size, value_length, self.n_head, self.dim)
 
-        queries = queries.permute(2, 0, 1, 3).contiguous().view(-1, dec_length, self.dim)
-        values = values.permute(2, 0, 1, 3).contiguous().view(-1, enc_length, self.dim)
+        queries = queries.permute(2, 0, 1, 3).contiguous().view(-1, query_length, self.dim)
+        values = values.permute(2, 0, 1, 3).contiguous().view(-1, value_length, self.dim)
 
         attn_score = torch.bmm(queries, values.transpose(1, 2))
         attn_distribution = F.softmax(attn_score, dim=2)
 
-        context = torch.bmm(attn_distribution, values).view(self.n_head, batch_size, dec_length, self.dim)
-        context = context.permute(1, 2, 0, 3).contiguous().view(batch_size, dec_length, -1)
+        context = torch.bmm(attn_distribution, values).view(self.n_head, batch_size, query_length, self.dim)
+        context = context.permute(1, 2, 0, 3).contiguous().view(batch_size, query_length, -1)
 
         combined = torch.cat([context, preserved], dim=2)
         output = torch.tanh(self.fc(combined.view(-1, 2 * self.in_features))).view(batch_size, -1, self.in_features)

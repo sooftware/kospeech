@@ -150,5 +150,4 @@ def split_dataset(config, audio_paths, label_paths, valid_ratio=0.05, target_dic
     save_pickle(validset, './data/pickle/validset')
 
     logger.info("split dataset complete !!")
-
     return train_time_step, trainset_list, validset

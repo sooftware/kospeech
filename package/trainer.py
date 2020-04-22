@@ -35,8 +35,8 @@ def supervised_train(model, config, epoch, total_time_step, queue,
     total_length = 0
     time_step = 0
     decay_speed = 1.0
-    max_norm = 400
 
+    MAX_NORM = 400
     RAMPUP_POWER = 3
     RANMPUP_PERIOD = 3000
     EXP_DECAY_PERIOD = total_time_step * 3
@@ -85,7 +85,7 @@ def supervised_train(model, config, epoch, total_time_step, queue,
 
         optimizer.zero_grad()
         loss.backward()
-        torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm)
+        torch.nn.utils.clip_grad_norm_(model.parameters(), MAX_NORM)
         optimizer.step()
 
         time_step += 1

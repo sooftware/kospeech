@@ -17,6 +17,9 @@ def get_librosa_melspectrogram(filepath, n_mels=80,
         del_silence (bool): flag indication whether to delete silence or not (default: True)
         input_reverse (bool): flag indication whether to reverse input or not (default: True)
         normalize (bool): flag indication whether to normalize spectrum or not (default:True)
+        sr (int): sample rate
+        window_size (int): window size (ms)
+        stride (int): forwarding size (ms)
 
     Feature Parameters:
         - **sample rate**: A.I Hub dataset`s sample rate is 16,000
@@ -37,7 +40,7 @@ def get_librosa_melspectrogram(filepath, n_mels=80,
     Examples::
         Generate mel spectrogram from a time series
 
-    >>> get_librosa_melspectrogram("KaiSpeech_021458.pcm", n_mels=80, input_reverse=True, normalize=True)
+    >>> get_librosa_melspectrogram("KaiSpeech_021458.pcm", n_mels=80)
     Tensor([[  2.891e-07,   2.548e-03, ...,   8.116e-09,   5.633e-09],
             [  1.986e-07,   1.162e-02, ...,   9.332e-08,   6.716e-09],
             ...,
@@ -183,7 +186,7 @@ def spec_augment(spectrogram, time_mask_para=70, freq_mask_para=20, time_mask_nu
     Examples::
         Generate spec augmentation from a feature
 
-        >>> spec_augment(spectrogram, time_mask_para=70, freq_mask_para=20, time_mask_num=2, freq_mask_num=2)
+        >>> spec_augment(spectrogram, time_mask_para=70, freq_mask_para=20, n_time_mask=2, freq_mask_num=2)
         Tensor([[ -5.229e+02,  0, ...,  -5.229e+02,  -5.229e+02],
                 [  7.105e-15,  0, ...,  -7.105e-15,  -7.105e-15],
                 ...,
