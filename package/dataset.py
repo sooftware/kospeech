@@ -141,9 +141,8 @@ def split_dataset(config, audio_paths, label_paths, valid_ratio=0.05, target_dic
         audio_paths=audio_paths[train_num:],
         label_paths=label_paths[train_num:],
         sos_id=SOS_token, eos_id=EOS_token,
-        batch_size=config.batch_size,
         target_dict=target_dict,
-        input_reverse=config.input_reverse,
+        config=config,
         use_augment=False
     )
 

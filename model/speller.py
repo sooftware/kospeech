@@ -152,11 +152,11 @@ class Speller(nn.Module):
 
     def _init_state(self, batch_size):
         if isinstance(self.rnn, nn.LSTM):
-            h_0 = torch.zeros(self.n_layers, batch_size, self.hidden_size).to(self.device)
-            c_0 = torch.zeros(self.n_layers, batch_size, self.hidden_size).to(self.device)
+            h_0 = torch.zeros(self.n_layers, batch_size, self.hidden_dim).to(self.device)
+            c_0 = torch.zeros(self.n_layers, batch_size, self.hidden_dim).to(self.device)
             h_state = (h_0, c_0)
 
         else:
-            h_state = torch.zeros(self.n_layers, batch_size, self.hidden_size).to(self.device)
+            h_state = torch.zeros(self.n_layers, batch_size, self.hidden_dim).to(self.device)
 
         return h_state

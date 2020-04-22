@@ -2,7 +2,7 @@
 # If you haven't read https://sh951011.github.io/End-to-End-Korean-Speech-Recognition/notes/Preparation.html
 # please read it first before setting define.py
 
-DATASET_PATH = "G:/한국어 음성데이터/KaiSpeech/" # set by your data path
+DATASET_PATH = "G:/한국어 음성데이터/KaiSpeech/"  # set by your data path
 SAMPLE_DATASET_PATH = "./data/sample/"
 TRAIN_LIST_PATH = "./data/data_list/train_list.csv"
 TEST_LIST_PATH = "./data/data_list/test_list.csv"
