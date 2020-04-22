@@ -105,16 +105,11 @@ We follow [PEP-8](https://www.python.org/dev/peps/pep-0008/) for code style. Esp
 [[8]    A.I Hub Korean Voice Dataset](http://www.aihub.or.kr/aidata/105)    
 [[9]    Documentation](https://sooftware.github.io/End-to-End-Korean-Speech-Recognition/)  
    
-### License
+### Citing
 ```
-Copyright (c) 2020 Kai.Lib
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+@source_code{
+  title={Character-unit based End-to-End Korean Speech Recognition},
+  author={Soohwan Kim, Seyoung Bae, Cheolhwang Won},
+  year={2020}
+}
 ```
