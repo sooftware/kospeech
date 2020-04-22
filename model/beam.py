@@ -1,5 +1,6 @@
 import torch
-from package.definition import char2id
+import torch.nn.functional as F
+from package.definition import char2id, PAD_token
 
 
 class Beam:
@@ -11,8 +12,6 @@ class Beam:
         decoder (torch.nn.Module) : get pointer of decoder object to get multiple parameters at once
         batch_size (int) : mini-batch size during infer
         max_length (int) :  a maximum allowed length for the sequence to be processed
-        function (torch.nn.Module) : A function used to generate symbols from RNN hidden state
-        (default : torch.nn.functional.log_softmax)
 
     Inputs: decoder_input, encoder_outputs
         - **decoder_input** (torch.Tensor): initial input of decoder - <sos>
@@ -27,16 +26,14 @@ class Beam:
         >>> y_hats = beam.search(inputs, encoder_outputs)
     """
 
-    def __init__(self, k, decoder, batch_size, max_length, function, device):
+    def __init__(self, k, decoder, batch_size, max_length, device):
 
         assert k > 1, "beam size (k) should be bigger than 1"
 
         self.max_length = max_length
-        self.function = function
         self.n_layers = decoder.n_layers
         self.rnn = decoder.rnn
         self.embedding = decoder.embedding
-        self.use_attention = decoder.use_attention
         self.attention = decoder.attention
         self.hidden_dim = decoder.hidden_dim
         self.fc = decoder.fc
@@ -106,25 +103,22 @@ class Beam:
         return self._get_best()
 
     def forward_step(self, input_, h_state, encoder_outputs):
-        """ forward one step on each decoder cell """
         batch_size = encoder_outputs.size(0)
         seq_length = input_.size(1)
 
         embedded = self.embedding(input_).to(self.device)
+
         output, h_state = self.rnn(embedded, h_state)
+        output = self.attention(output, encoder_outputs)
 
-        if self.use_attention:
-            output = self.attention(output, encoder_outputs)
-
-        predicted_softmax = self.function(self.fc(output.contiguous().view(-1, self.hidden_dim)), dim=1)
+        predicted_softmax = F.log_softmax(self.fc(output.contiguous().view(-1, self.hidden_dim)), dim=1)
         predicted_softmax = predicted_softmax.view(batch_size, seq_length, -1)
         step_outputs = predicted_softmax.squeeze(1)
 
         return step_outputs, h_state
 
     def _get_best(self):
-        """ get sentences which has the highest probability at each batch, stack it, and return it as 2d torch """
-        y_hats = []
+        y_hats = list()
 
         for batch_num, batch in enumerate(self.sentences):
             # if there is no terminated sentences, bring ongoing sentence which has the highest probability instead
@@ -154,7 +148,7 @@ class Beam:
 
         for batch_num, y_hat in enumerate(y_hats):
             matched[batch_num, :len(y_hat)] = y_hat
-            matched[batch_num, len(y_hat):] = int(char2id[' '])
+            matched[batch_num, len(y_hat):] = int(char2id[PAD_token])
 
         return matched
 

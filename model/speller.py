@@ -28,13 +28,11 @@ class Speller(nn.Module):
         dropout_p (float, optional): dropout probability for the output sequence (default: 0)
         k (int) : size of beam
 
-    Inputs: inputs, listener_outputs, function, teacher_forcing_ratio
+    Inputs: inputs, listener_outputs, teacher_forcing_ratio
         - **inputs** (batch, seq_len, input_size): list of sequences, whose length is the batch size and within which
           each sequence is a list of token IDs.  It is used for teacher forcing when provided. (default `None`)
         - **listener_outputs** (batch, seq_len, hidden_dim): tensor with containing the outputs of the listener.
           Used for attention mechanism (default is `None`).
-        - **function** (torch.nn.Module): A function used to generate symbols from RNN hidden state
-          (default is `torch.nn.functional.log_softmax`).
         - **teacher_forcing_ratio** (float): The probability that teacher forcing will be used. A random number is
           drawn uniformly from 0-1 for every decoding token, and if the sample is smaller than the given value,
           teacher forcing would be used (default is 0).
@@ -69,7 +67,7 @@ class Speller(nn.Module):
         self.device = device
         self.attention = MultiHeadAttention(in_features=hidden_dim, dim=128, n_head=4)
 
-    def forward_step(self, input_, h_state, listener_outputs=None, function=F.log_softmax):
+    def forward_step(self, input_, h_state, listener_outputs=None):
         batch_size = input_.size(0)
         seq_length = input_.size(1)
 
@@ -82,12 +80,12 @@ class Speller(nn.Module):
         output, h_state = self.rnn(embedded, h_state)
         context = self.attention(output, listener_outputs)
 
-        predicted_softmax = function(self.fc(context.contiguous().view(-1, self.hidden_dim)), dim=1)
+        predicted_softmax = F.log_softmax(self.fc(context.contiguous().view(-1, self.hidden_dim)), dim=1)
         predicted_softmax = predicted_softmax.view(batch_size, seq_length, -1)
 
         return predicted_softmax, h_state
 
-    def forward(self, inputs, listener_outputs, function=F.log_softmax, teacher_forcing_ratio=0.90,
+    def forward(self, inputs, listener_outputs, teacher_forcing_ratio=0.90,
                 use_beam_search=False):
         batch_size = inputs.size(0)
         max_length = inputs.size(1) - 1  # minus the start of sequence symbol
@@ -104,7 +102,6 @@ class Speller(nn.Module):
                 decoder=self,
                 batch_size=batch_size,
                 max_length=max_length,
-                function=function,
                 device=self.device
             )
             logits = None
@@ -116,8 +113,7 @@ class Speller(nn.Module):
                 predicted_softmax, h_state = self.forward_step(
                     input_=speller_inputs,
                     h_state=h_state,
-                    listener_outputs=listener_outputs,
-                    function=function
+                    listener_outputs=listener_outputs
                 )
 
                 for di in range(predicted_softmax.size(1)):
@@ -131,8 +127,7 @@ class Speller(nn.Module):
                     predicted_softmax, h_state = self.forward_step(
                         input_=speller_input,
                         h_state=h_state,
-                        listener_outputs=listener_outputs,
-                        function=function
+                        listener_outputs=listener_outputs
                     )
                     step_output = predicted_softmax.squeeze(1)
                     decode_outputs.append(step_output)

@@ -93,4 +93,3 @@ class Listener(nn.Module):
 
     def flatten_parameters(self):
         self.rnn.flatten_parameters()
-

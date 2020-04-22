@@ -32,19 +32,17 @@ class ListenAttendSpell(nn.Module):
         >>> model = ListenAttendSpell(listener, speller)
         >>> y_hats, logits = model()
     """
-    def __init__(self, listener, speller, function=F.log_softmax,):
+    def __init__(self, listener, speller):
         super(ListenAttendSpell, self).__init__()
 
         self.listener = listener
         self.speller = speller
-        self.function = function
 
     def forward(self, inputs, targets, teacher_forcing_ratio=0.90, use_beam_search=False):
-        listener_outputs, listener_hidden = self.listener(inputs)
+        output, h_state = self.listener(inputs)
         y_hats, logits = self.speller(
             inputs=targets,
-            listener_outputs=listener_outputs,
-            function=self.function,
+            listener_outputs=output,
             teacher_forcing_ratio=teacher_forcing_ratio,
             use_beam_search=use_beam_search
         )
