@@ -1,35 +1,12 @@
 """
--*- coding: utf-8 -*-
+    -*- coding: utf-8 -*-
 
-Copyright 2020- Kai.Lib
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-- Korean Speech Recognition
-Team: Kai.Lib
-    ● Team Member
-        ○ Kim-Soo-Hwan: KW University elcomm. senior
-        ○ Bae-Se-Young: KW University elcomm. senior
-        ○ Won-Cheol-Hwang: KW University elcomm. senior
-
-Model Architecture:
-    ● Listen, Attend and Spell (Seq2seq with Attention)
-
-Data:
-    ● A.I Hub Dataset
-
-Score:
-    ● CRR: Character Recognition Rate
-    ● CER: Character Error Rate based on Edit Distance
-
-GitHub repository : https://github.com/sooftware/Korean-Speech-Recognition
-Documentation : https://sooftware.github.io/Korean-Speech-Recognition/index.html
+    @source_code{
+      title={Character-unit based End-to-End Korean Speech Recognition},
+      author={Soohwan Kim, Seyoung Bae, Cheolhwang Won},
+      link={https://github.com/sooftware/End-to-End-Korean-Speech-Recognition},
+      year={2020}
+    }
 """
 
 import queue
@@ -55,17 +32,15 @@ from package.utils import save_epoch_result
 if __name__ == '__main__':
     config = Config(
         use_bidirectional=True,
-        use_attention=True,
         use_label_smooth=True,
         input_reverse=True,
         use_augment=False,
-        use_pickle=True,
-        use_pyramidal=False,
+        use_pickle=False,
         use_cuda=True,
-        augment_ratio=0.0,
+        augment_ratio=1.0,
         hidden_dim=256,
         dropout=0.5,
-        listener_layer_size=4,
+        listener_layer_size=5,
         speller_layer_size=3,
         batch_size=12,
         worker_num=1,
@@ -94,7 +69,9 @@ if __name__ == '__main__':
         logger.info("CUDA version : %s" % torch.version.cuda)
         logger.info("PyTorch version : %s" % torch.__version__)
 
-    if not config.load_model:
+    if config.load_model:
+        model = torch.load(config.model_path).to(device)
+    else:
         listener = Listener(
             in_features=80,
             hidden_dim=config.hidden_dim,
@@ -102,7 +79,6 @@ if __name__ == '__main__':
             n_layers=config.listener_layer_size,
             bidirectional=config.use_bidirectional,
             rnn_type='gru',
-            use_pyramidal=config.use_pyramidal,
             device=device
         )
         speller = Speller(
@@ -115,18 +91,14 @@ if __name__ == '__main__':
             n_layers=config.speller_layer_size,
             rnn_type='gru',
             dropout_p=config.dropout,
-            use_attention=config.use_attention,
             device=device
         )
-        model = ListenAttendSpell(listener, speller, use_pyramidal=config.use_pyramidal)
+        model = ListenAttendSpell(listener, speller)
         model.flatten_parameters()
         model = nn.DataParallel(model).to(device)
 
         for param in model.parameters():
             param.data.uniform_(-0.08, 0.08)
-
-    else:
-        model = torch.load(config.model_path).to(device)
 
     optimizer = optim.Adam(model.module.parameters(), lr=config.init_lr)
     if config.use_label_smooth:

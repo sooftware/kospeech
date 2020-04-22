@@ -7,17 +7,15 @@ class Config:
 
     Args:
         use_bidirectional (bool): if True, becomes a bidirectional listener (default: True)
-        use_attention (bool): flag indication whether to use attention mechanism or not (default: True)
         use_label_smooth (bool): flag indication whether to use label smoothing or not (default: True)
         input_reverse (bool): flag indication whether to reverse input feature or not (default: True)
         use_pickle (bool): flag indication whether to load data from pickle or not (default: False)
         use_augment (bool): flag indication whether to use spec-augmentation or not (default: True)
-        use_pyramidal (bool): flag indication whether to use pyramidal rnn in listener or not (default: True)
         use_multistep_lr (bool): flag indication whether to use multistep leraning rate or not (default:False)
         augment_ratio (float): ratio of spec-augmentation applied data (default: 1.0)
         listener_layer_size (int): num of listener`s RNN cell (default: 6)
         speller_layer_size (int): num of speller`s RNN cell (default: 3)
-        hidden_size (int): size of hidden state of RNN (default: 256)
+        hidden_dim (int): size of hidden state of RNN (default: 256)
         dropout (float): dropout probability (default: 0.5)
         batch_size (int): mini-batch size (default: 12)
         worker_num (int): num of cpu core will be used (default: 1)
@@ -33,12 +31,10 @@ class Config:
 
     def __init__(self,
                  use_bidirectional=True,
-                 use_attention=True,
                  use_label_smooth=True,
                  input_reverse=True,
                  use_augment=True,
                  use_pickle=False,
-                 use_pyramidal=True,
                  use_cuda=True,
                  augment_ratio=1.0,
                  hidden_dim=256,
@@ -62,12 +58,10 @@ class Config:
                  stride=10,       # ms
                  ):
         self.use_bidirectional = use_bidirectional
-        self.use_attention = use_attention
         self.use_label_smooth = use_label_smooth
         self.input_reverse = input_reverse
         self.use_augment = use_augment
         self.use_pickle = use_pickle
-        self.use_pyramidal = use_pyramidal
         self.use_cuda = use_cuda
         self.augment_ratio = augment_ratio
         self.hidden_dim = hidden_dim
@@ -95,10 +89,8 @@ class Config:
     def print_log(self):
         """ print information of configuration """
         logger.info("use_bidirectional : %s" % str(self.use_bidirectional))
-        logger.info("use_attention : %s" % str(self.use_attention))
         logger.info("use_pickle : %s" % str(self.use_pickle))
         logger.info("use_augment : %s" % str(self.use_augment))
-        logger.info("use_pyramidal : %s" % str(self.use_pyramidal))
         logger.info("augment_ratio : %0.2f" % self.augment_ratio)
         logger.info("input_reverse : %s" % str(self.input_reverse))
         logger.info("hidden_dim : %d" % self.hidden_dim)

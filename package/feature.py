@@ -11,7 +11,7 @@ def get_librosa_melspectrogram(filepath, n_mels=80,
     r"""
     Compute a mel-scaled soectrigram (or Log-Mel).
 
-    Args: filepath, n_mels, del_silence, input_reverse, normalize
+    Args: filepath, n_mels, del_silence, input_reverse, normalize, sr, wiindow_size, stride
         filepath (str): specific path of audio file
         n_mels (int): number of mel filter
         del_silence (bool): flag indication whether to delete silence or not (default: True)
@@ -20,19 +20,6 @@ def get_librosa_melspectrogram(filepath, n_mels=80,
         sr (int): sample rate
         window_size (int): window size (ms)
         stride (int): forwarding size (ms)
-
-    Feature Parameters:
-        - **sample rate**: A.I Hub dataset`s sample rate is 16,000
-        - **frame length**: 25ms
-        - **stride**: 10ms
-        - **overlap**: 15ms
-        - **window**: Hamming Window
-
-    .. math::
-        \begin{array}{ll}
-        NFFT = sr * frame length \\
-        Hop Length = sr * stride \\
-        \end{array}
 
     Returns: spectrogram
         - **spectrogram** (torch.Tensor): return Mel-Spectrogram (or Log-Mel) feature
@@ -51,7 +38,7 @@ def get_librosa_melspectrogram(filepath, n_mels=80,
         try:
             pcm = np.memmap(filepath, dtype='h', mode='r')
 
-        except:
+        except RuntimeError:
             logger.info("%s Error Occur !!" % filepath)
             return None
 
@@ -61,7 +48,7 @@ def get_librosa_melspectrogram(filepath, n_mels=80,
         signal, _ = librosa.core.load(filepath, sr=sr)
 
     else:
-        raise ValueError("Invalid format !!")
+        raise ValueError("%s is not Supported." % filepath.split('.')[-1])
 
     N_FFT = int(sr * 0.001 * window_size)
     STRIDE = int(sr * 0.001 * stride)
@@ -100,19 +87,6 @@ def get_librosa_mfcc(filepath, n_mfcc=40,
         input_reverse (bool): flag indication whether to reverse input or not (default: True)
         normalize (bool): flag indication whether to normalize spectrum or not (default:True)
 
-    Feature Parameters:
-        - **sample rate**: A.I Hub dataset`s sample rate is 16,000
-        - **frame length**: 25ms
-        - **stride**: 10ms
-        - **overlap**: 15ms
-        - **window**: Hamming Window
-
-    .. math::
-        \begin{array}{ll}
-        NFFT = sr * frame length \\
-        HopLength = sr * stride \\
-        \end{array}
-
     Returns: spectrogram
         - **spectrogram** (torch.Tensor): return mel frequency cepstral coefficient feature
 
@@ -130,7 +104,7 @@ def get_librosa_mfcc(filepath, n_mfcc=40,
         try:
             pcm = np.memmap(filepath, dtype='h', mode='r')
 
-        except:
+        except RuntimeError:
             logger.info("%s Error Occur !!" % filepath)
             return None
 
@@ -169,7 +143,7 @@ def spec_augment(spectrogram, time_mask_para=70, freq_mask_para=20, time_mask_nu
     """
     Provides Augmentation for audio
 
-    Args:
+    Args: spectrogram, time_mask_para, freq_mask_para, time_mask_num, freq_mask_num
         spectrogram (torch.Tensor): spectrum
         time_mask_para (int): Hyper Parameter for Time Masking to limit time masking length
         freq_mask_para (int): Hyper Parameter for Freq Masking to limit freq masking length

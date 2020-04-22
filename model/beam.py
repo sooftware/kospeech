@@ -31,7 +31,6 @@ class Beam:
 
         assert k > 1, "beam size (k) should be bigger than 1"
 
-        self.k = k
         self.max_length = max_length
         self.function = function
         self.n_layers = decoder.n_layers
@@ -40,19 +39,19 @@ class Beam:
         self.use_attention = decoder.use_attention
         self.attention = decoder.attention
         self.hidden_dim = decoder.hidden_dim
-        self.out = decoder.w
+        self.fc = decoder.fc
         self.eos_id = decoder.eos_id
         self.beams = None
         self.cumulative_probs = None
         self.sentences = [[] for _ in range(batch_size)]
         self.sentence_probs = [[] for _ in range(batch_size)]
         self.device = device
+        self.k = k
 
     def search(self, input_, encoder_outputs):
-        """ Beam-Search Decoding (Top-K Decoding) """
         batch_size = encoder_outputs.size(0)
-
         h_state = None
+
         step_outputs, h_state = self.forward_step(input_, h_state, encoder_outputs)
         self.cumulative_probs, self.beams = step_outputs.topk(self.k)  # BxK
 
@@ -117,7 +116,7 @@ class Beam:
         if self.use_attention:
             output = self.attention(output, encoder_outputs)
 
-        predicted_softmax = self.function(self.out(output.contiguous().view(-1, self.hidden_dim)), dim=1)
+        predicted_softmax = self.function(self.fc(output.contiguous().view(-1, self.hidden_dim)), dim=1)
         predicted_softmax = predicted_softmax.view(batch_size, seq_length, -1)
         step_outputs = predicted_softmax.squeeze(1)
 

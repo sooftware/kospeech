@@ -27,17 +27,17 @@ class ListenAttendSpell(nn.Module):
 
     Examples::
 
-        >>> listener = Listener(in_features, 256, 0.5, ...)
+        >>> listener = Listener(in_features=80, hidden_dim=256, dropout_p=0.5, ...)
         >>> speller = Speller(class_num, 120, 8, 256 << (1 if use_bidirectional else 0), ...)
         >>> model = ListenAttendSpell(listener, speller)
         >>> y_hats, logits = model()
     """
-    def __init__(self, listener, speller, function=F.log_softmax, use_pyramidal=False):
+    def __init__(self, listener, speller, function=F.log_softmax,):
         super(ListenAttendSpell, self).__init__()
+
         self.listener = listener
         self.speller = speller
         self.function = function
-        self.use_pyramidal = use_pyramidal
 
     def forward(self, inputs, targets, teacher_forcing_ratio=0.90, use_beam_search=False):
         listener_outputs, listener_hidden = self.listener(inputs)

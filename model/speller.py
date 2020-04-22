@@ -26,7 +26,6 @@ class Speller(nn.Module):
         n_layers (int, optional): number of recurrent layers (default: 1)
         rnn_type (str, optional): type of RNN cell (default: gru)
         dropout_p (float, optional): dropout probability for the output sequence (default: 0)
-        use_attention (bool, optional): flag indication whether to use attention mechanism or not (default: false)
         k (int) : size of beam
 
     Inputs: inputs, listener_outputs, function, teacher_forcing_ratio
@@ -50,9 +49,8 @@ class Speller(nn.Module):
         >>> y_hats, logits = speller(inputs, listener_outputs, teacher_forcing_ratio=0.90)
     """
 
-    def __init__(self, n_class, max_length, hidden_dim,
-                 sos_id, eos_id, n_layers=1, rnn_type='gru', dropout_p=0,
-                 use_attention=True, device=None, k=8):
+    def __init__(self, n_class, max_length, hidden_dim, sos_id, eos_id,
+                 n_layers=1, rnn_type='gru', dropout_p=0.5, device=None, k=5):
 
         super(Speller, self).__init__()
         assert rnn_type.lower() in supported_rnns.keys(), 'RNN type not supported.'
@@ -67,14 +65,11 @@ class Speller(nn.Module):
         self.n_layers = n_layers
         self.input_dropout = nn.Dropout(p=dropout_p)
         self.k = k
-        self.use_attention = use_attention
         self.fc = nn.Linear(self.hidden_dim, n_class)
         self.device = device
-        if use_attention:
-            self.attention = MultiHeadAttention(in_features=hidden_dim, dim=128, n_head=4)
+        self.attention = MultiHeadAttention(in_features=hidden_dim, dim=128, n_head=4)
 
     def forward_step(self, input_, h_state, listener_outputs=None, function=F.log_softmax):
-        """ forward one time step """
         batch_size = input_.size(0)
         seq_length = input_.size(1)
 
@@ -85,11 +80,9 @@ class Speller(nn.Module):
             self.rnn.flatten_parameters()
 
         output, h_state = self.rnn(embedded, h_state)
+        context = self.attention(output, listener_outputs)
 
-        if self.use_attention:
-            output = self.attention(output, listener_outputs)
-
-        predicted_softmax = function(self.fc(output.contiguous().view(-1, self.hidden_dim)), dim=1)
+        predicted_softmax = function(self.fc(context.contiguous().view(-1, self.hidden_dim)), dim=1)
         predicted_softmax = predicted_softmax.view(batch_size, seq_length, -1)
 
         return predicted_softmax, h_state

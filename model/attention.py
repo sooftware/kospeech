@@ -25,7 +25,7 @@ class MultiHeadAttention(nn.Module):
 
     Examples::
         >>> attention = MultiHeadAttention(in_features=512, n_head=4, dim=128)
-        >>> output = attention(decoder_output, encoder_outputs)
+        >>> output = attention(queries, values)
     """
 
     def __init__(self, in_features, n_head=4, dim=128):
@@ -51,12 +51,12 @@ class MultiHeadAttention(nn.Module):
         values = values.permute(2, 0, 1, 3).contiguous().view(-1, value_length, self.dim)
 
         attn_score = torch.bmm(queries, values.transpose(1, 2))
-        attn_distribution = F.softmax(attn_score, dim=2)
+        alignment = F.softmax(attn_score, dim=2)
 
-        context = torch.bmm(attn_distribution, values).view(self.n_head, batch_size, query_length, self.dim)
-        context = context.permute(1, 2, 0, 3).contiguous().view(batch_size, query_length, -1)
+        attn_val = torch.bmm(alignment, values).view(self.n_head, batch_size, query_length, self.dim)
+        attn_val = attn_val.permute(1, 2, 0, 3).contiguous().view(batch_size, query_length, -1)
 
-        combined = torch.cat([context, preserved], dim=2)
-        output = torch.tanh(self.fc(combined.view(-1, 2 * self.in_features))).view(batch_size, -1, self.in_features)
+        combined = torch.cat([attn_val, preserved], dim=2)
+        context = torch.tanh(self.fc(combined.view(-1, 2 * self.in_features))).view(batch_size, -1, self.in_features)
 
-        return output
+        return context
