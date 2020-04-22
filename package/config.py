@@ -56,7 +56,10 @@ class Config:
                  seed=1,
                  max_len=151,
                  load_model=False,
-                 model_path=None
+                 model_path=None,
+                 sr=16000,
+                 window_size=20,  # ms
+                 stride=10,       # ms
                  ):
         self.use_bidirectional = use_bidirectional
         self.use_attention = use_attention
@@ -82,6 +85,9 @@ class Config:
         self.teacher_forcing = teacher_forcing
         self.seed = seed
         self.max_len = max_len
+        self.sr = sr
+        self.window_size = window_size
+        self.stride = stride
         self.load_model = load_model
         self.model_path = model_path
         self.print_log()
@@ -110,3 +116,6 @@ class Config:
         logger.info("seed : %d" % self.seed)
         logger.info("max_len : %d" % self.max_len)
         logger.info("use_cuda : %s" % str(self.use_cuda))
+        logger.info("sr : %d" % self.sr)
+        logger.info("window_size : %d" % self.window_size)
+        logger.info("stride : %s" % str(self.stride))

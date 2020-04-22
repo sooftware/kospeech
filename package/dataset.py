@@ -16,24 +16,21 @@ class CustomDataset(Dataset):
         sos_id (int): identification of <start of sequence>
         eos_id (int): identification of <end of sequence>
         target_dict (dict): dictionary of filename and labels
-        input_reverse (bool): flag indication whether to reverse input feature or not (default: True)
         use_augment (bool): flag indication whether to use spec-augmentation or not (default: True)
-        augment_ratio (float): ratio of spec-augmentation applied data (default: 1.0)
-        batch_size (int): mini batch size
     """
 
     def __init__(self, audio_paths, label_paths, sos_id, eos_id,
-                 target_dict=None, input_reverse=True, use_augment=True,
-                 batch_size=None, augment_ratio=1.0):
+                 target_dict=None, config=None, use_augment=True):
         self.audio_paths = list(audio_paths)
         self.label_paths = list(label_paths)
         self.sos_id = sos_id
         self.eos_id = eos_id
-        self.batch_size = batch_size
+        self.batch_size = config.batch_size
         self.target_dict = target_dict
-        self.input_reverse = input_reverse
-        self.augment_ratio = augment_ratio
+        self.input_reverse = config.input_reverse
+        self.augment_ratio = config.augment_ratio
         self.augment_flags = [False] * len(self.audio_paths)
+        self.config = config
         if use_augment:
             self.augmentation()
         self.shuffle()
@@ -50,7 +47,10 @@ class CustomDataset(Dataset):
             n_mels=80,
             input_reverse=self.input_reverse,
             del_silence=True,
-            normalize=True
+            normalize=True,
+            sr=self.config.sr,
+            window_size=self.config.window_size,
+            stride=self.config.stride
         )
 
         if spectrogram is None:  # exception handling
@@ -133,10 +133,8 @@ def split_dataset(config, audio_paths, label_paths, valid_ratio=0.05, target_dic
             label_paths=label_paths[train_begin_idx:train_end_idx],
             sos_id=SOS_token, eos_id=EOS_token,
             target_dict=target_dict,
-            input_reverse=config.input_reverse,
             use_augment=config.use_augment,
-            batch_size=config.batch_size,
-            augment_ratio=config.augment_ratio
+            config=config
         ))
 
     validset = CustomDataset(

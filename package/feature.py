@@ -5,7 +5,8 @@ import random
 from package.definition import logger
 
 
-def get_librosa_melspectrogram(filepath, n_mels=80, del_silence=False, input_reverse=True, normalize=True):
+def get_librosa_melspectrogram(filepath, n_mels=80, del_silence=False, input_reverse=True,
+                               normalize=True, sr=16000, window_size=20, stride=10):
     r"""
     Compute a mel-scaled soectrigram (or Log-Mel).
 
@@ -53,16 +54,19 @@ def get_librosa_melspectrogram(filepath, n_mels=80, del_silence=False, input_rev
         sig = np.array([float(x) for x in pcm])
 
     elif filepath.split('.')[-1] == 'wav':
-        sig, _ = librosa.core.load(filepath, sr=16000)
+        sig, _ = librosa.core.load(filepath, sr=sr)
 
     else:
         raise ValueError("Invalid format !!")
+
+    N_FFT = 16000 * 0.001 * window_size
+    STRIDE = 16000 * 0.001 * stride
 
     if del_silence:
         non_silence_ids = librosa.effects.split(y=sig, top_db=30)
         sig = np.concatenate([sig[start:end] for start, end in non_silence_ids])
 
-    spectrogram = librosa.feature.melspectrogram(sig, sr=16000, n_mels=n_mels, n_fft=400, hop_length=160)
+    spectrogram = librosa.feature.melspectrogram(sig, sr=sr, n_mels=n_mels, n_fft=N_FFT, hop_length=STRIDE)
     spectrogram = librosa.amplitude_to_db(spectrogram, ref=np.max)
 
     if normalize:
@@ -79,7 +83,8 @@ def get_librosa_melspectrogram(filepath, n_mels=80, del_silence=False, input_rev
     return spectrogram
 
 
-def get_librosa_mfcc(filepath, n_mfcc=40, del_silence=False, input_reverse=True, normalize=True):
+def get_librosa_mfcc(filepath, n_mfcc=40, del_silence=False, input_reverse=True,
+                     normalize=True, sr=16000, window_size=20, stride=10):
     r""":
     Mel-frequency cepstral coefficients (MFCCs)
 
@@ -127,16 +132,19 @@ def get_librosa_mfcc(filepath, n_mfcc=40, del_silence=False, input_reverse=True,
         sig = np.array([float(x) for x in pcm])
 
     elif filepath.split('.')[-1] == 'wav':
-        sig, _ = librosa.core.load(filepath, sr=16000)
+        sig, _ = librosa.core.load(filepath, sr=sr)
 
     else:
         raise ValueError("Invalid format !!")
+
+    N_FFT = 16000 * 0.001 * window_size
+    STRIDE = 16000 * 0.001 * stride
 
     if del_silence:
         non_silence_ids = librosa.effects.split(sig, top_db=30)
         sig = np.concatenate([sig[start:end] for start, end in non_silence_ids])
 
-    spectrogram = librosa.feature.mfcc(sig, sr=16000, hop_length=160, n_mfcc=n_mfcc, n_fft=400)
+    spectrogram = librosa.feature.mfcc(sig, sr=sr, n_mfcc=n_mfcc, n_fft=N_FFT, hop_length=STRIDE)
 
     if normalize:
         mean = np.mean(spectrogram)
