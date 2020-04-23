@@ -34,7 +34,7 @@ def get_librosa_melspectrogram(filepath, n_mels=80,
             [  3.668e-09,   2.029e-08, ...,   3.208e-09,   2.864e-09],
             [  2.561e-10,   2.096e-09, ...,   7.543e-10,   6.101e-10]])
     """
-    if filepath.split('.')[-1] == 'pcm':
+    if filepath.endswith('.pcm'):
         try:
             pcm = np.memmap(filepath, dtype='h', mode='r')
 
@@ -44,7 +44,7 @@ def get_librosa_melspectrogram(filepath, n_mels=80,
 
         signal = np.array([float(x) for x in pcm])
 
-    elif filepath.split('.')[-1] == 'wav':
+    elif filepath.endswith('.wav'):
         signal, _ = librosa.core.load(filepath, sr=sr)
 
     else:
@@ -100,7 +100,7 @@ def get_librosa_mfcc(filepath, n_mfcc=40,
                 [  1.066e-14,  -7.500e+00, ...,   1.421e-14,   1.421e-14],
                 [  3.109e-14,  -5.058e+00, ...,   2.931e-14,   2.931e-14]])
     """
-    if filepath.split('.')[-1] == 'pcm':
+    if filepath.endswith('.pcm'):
         try:
             pcm = np.memmap(filepath, dtype='h', mode='r')
 
@@ -110,7 +110,7 @@ def get_librosa_mfcc(filepath, n_mfcc=40,
 
         signal = np.array([float(x) for x in pcm])
 
-    elif filepath.split('.')[-1] == 'wav':
+    elif filepath.endswith('.wav'):
         signal, _ = librosa.core.load(filepath, sr=sr)
 
     else:
