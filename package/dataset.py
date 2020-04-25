@@ -6,7 +6,7 @@ from package.feature import spec_augment, get_librosa_melspectrogram
 from package.utils import get_label, save_pickle
 
 
-class CustomDataset(Dataset):
+class SpectrogramDataset(Dataset):
     """
     Dataset for audio & label matching
 
@@ -36,12 +36,7 @@ class CustomDataset(Dataset):
         self.shuffle()
 
     def get_item(self, idx):
-        label = get_label(
-            filepath=self.label_paths[idx],
-            sos_id=self.sos_id,
-            eos_id=self.eos_id,
-            target_dict=self.target_dict
-        )
+        label = get_label(self.label_paths[idx], self.sos_id, self.eos_id, self.target_dict)
         spectrogram = get_librosa_melspectrogram(
             filepath=self.audio_paths[idx],
             n_mels=80,
@@ -128,7 +123,7 @@ def split_dataset(config, audio_paths, label_paths, valid_ratio=0.05, target_dic
         train_begin_idx = train_num_per_worker * idx
         train_end_idx = min(train_num_per_worker * (idx + 1), train_num)
 
-        trainset_list.append(CustomDataset(
+        trainset_list.append(SpectrogramDataset(
             audio_paths=audio_paths[train_begin_idx:train_end_idx],
             label_paths=label_paths[train_begin_idx:train_end_idx],
             sos_id=SOS_token, eos_id=EOS_token,
@@ -137,7 +132,7 @@ def split_dataset(config, audio_paths, label_paths, valid_ratio=0.05, target_dic
             config=config
         ))
 
-    validset = CustomDataset(
+    validset = SpectrogramDataset(
         audio_paths=audio_paths[train_num:],
         label_paths=label_paths[train_num:],
         sos_id=SOS_token, eos_id=EOS_token,

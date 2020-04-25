@@ -119,7 +119,6 @@ def label_to_string(labels, id2char, eos_id):
 
 
 def save_epoch_result(train_result, valid_result):
-    """ save result of training (unit : epoch) """
     train_dict, train_loss, train_cer = train_result
     valid_dict, valid_loss, valid_cer = valid_result
 
@@ -136,7 +135,6 @@ def save_epoch_result(train_result, valid_result):
 
 
 def save_step_result(train_step_result, loss, cer):
-    """ save result of training (unit : K time step) """
     train_step_result["loss"].append(loss)
     train_step_result["cer"].append(cer)
     train_step_df = pd.DataFrame(train_step_result)
@@ -144,7 +142,6 @@ def save_step_result(train_step_result, loss, cer):
 
 
 def save_pickle(save_var, savepath, message=""):
-    """ save pickle file """
     with open(savepath + '.bin', "wb") as f:
         pickle.dump(save_var, f)
     logger.info(message)

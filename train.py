@@ -23,7 +23,7 @@ from package.dataset import split_dataset
 from package.definition import *
 from package.evaluator import evaluate
 from package.config import Config
-from package.loader import load_data_list, load_targets, load_pickle, MultiLoader, CustomDataLoader
+from package.loader import load_data_list, load_targets, load_pickle, MultiLoader, AudioDataLoader
 from package.loss import LabelSmoothingLoss
 from package.trainer import supervised_train
 from package.utils import save_epoch_result
@@ -153,7 +153,7 @@ if __name__ == '__main__':
 
         # Validation
         valid_queue = queue.Queue(config.worker_num << 1)
-        valid_loader = CustomDataLoader(validset, valid_queue, config.batch_size, 0)
+        valid_loader = AudioDataLoader(validset, valid_queue, config.batch_size, 0)
         valid_loader.start()
 
         valid_loss, valid_cer = evaluate(model, valid_queue, criterion, device)

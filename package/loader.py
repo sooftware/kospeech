@@ -28,7 +28,7 @@ class MultiLoader:
         self.loader = list()
 
         for idx in range(self.worker_num):
-            self.loader.append(CustomDataLoader(self.dataset_list[idx], self.queue, self.batch_size, idx))
+            self.loader.append(AudioDataLoader(self.dataset_list[idx], self.queue, self.batch_size, idx))
 
     def start(self):
         for idx in range(self.worker_num):
@@ -39,7 +39,7 @@ class MultiLoader:
             self.loader[idx].join()
 
 
-class CustomDataLoader(threading.Thread):
+class AudioDataLoader(threading.Thread):
     """
     Base Data Loader
 
