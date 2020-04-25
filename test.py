@@ -1,14 +1,12 @@
 """
-Copyright 2020- Kai.Lib
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+    -*- coding: utf-8 -*-
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+    @source_code{
+      title={Character-unit based End-to-End Korean Speech Recognition},
+      author={Soohwan Kim, Seyoung Bae, Cheolhwang Won},
+      link={https://github.com/sooftware/End-to-End-Korean-Speech-Recognition},
+      year={2020}
+    }
 """
 
 import os
@@ -36,16 +34,16 @@ def test(model, queue, device):
 
     with torch.no_grad():
         while True:
-            feats, targets, feat_lengths, script_lengths = queue.get()
-            if feats.shape[0] == 0:
+            inputs, targets, input_lengths, target_lengths = queue.get()
+            if inputs.shape[0] == 0:
                 break
 
-            feats = feats.to(device)
+            inputs = inputs.to(device)
             targets = targets.to(device)
             target = targets[:, 1:]
 
             model.flatten_parameters()
-            y_hat, _ = model(feats, targets, teacher_forcing_ratio=0.0, use_beam_search=True)
+            y_hat, _ = model(inputs, targets, teacher_forcing_ratio=0.0, use_beam_search=True)
             dist, length = get_distance(target, y_hat, id2char, EOS_token)
             total_dist += dist
             total_length += length
@@ -92,10 +90,9 @@ if __name__ == '__main__':
         n_layers=config.speller_layer_size,
         rnn_type='gru',
         dropout_p=config.dropout,
-        use_attention=config.use_attention,
         device=device
     )
-    model = ListenAttendSpell(listener, speller, use_pyramidal=config.use_pyramidal)
+    model = ListenAttendSpell(listener, speller)
 
     load_model = torch.load('weight_path')
     model.set_beam_size(k=5)

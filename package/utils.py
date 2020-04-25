@@ -67,7 +67,7 @@ def get_label(filepath, sos_id, eos_id, target_dict=None):
     Returns: label
         - **label** (list): list of bos + sequence of label + eos
     """
-    assert target_dict is not None, "target_dict is None"
+    assert target_dict is not None, 'target_dict is None'
 
     key = filepath.split('/')[-1].split('.')[0]
 
