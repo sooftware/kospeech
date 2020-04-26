@@ -12,7 +12,7 @@ This is project for Korean Speech Recognition using LAS (Listen, Attend and Spel
 implemented in [PyTorch](http://pytorch.org).  
 We appreciate any kind of feedback or contribution.
   
-<img src="https://postfiles.pstatic.net/MjAyMDAyMjVfODIg/MDAxNTgyNjE5NzE3NjU5.51D-0F_nvBCZQ89XpgaycjPsX92z_lZK-vCQIHXfOmkg.kK0ILmnHM-LXMRxjTB5o1vJjKnhI4cw73me3LpvRkxUg.PNG.sooftware/LAS.png?type=w773" width=500> 
+<img src="https://user-images.githubusercontent.com/42150335/80304889-23c36780-87f4-11ea-932c-7119b48b7253.png" width=650> 
   
 ## Roadmap
   
