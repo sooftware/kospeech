@@ -1,18 +1,17 @@
-# **End-to-End Korean Speech Recognition**  
+# **End-to-End Speech Recognition**  
   
 ### Character-unit based End-to-End Korean Speech Recognition  
    
 [<img src="https://github.com/gentaiscool/end2end-asr-pytorch/raw/master/img/pytorch-logo-dark.png" height=18>](https://pytorch.org/) <img src="https://img.shields.io/badge/License-Apache--2.0-yellow" height=20> [<img src="https://img.shields.io/badge/chat-on%20gitter-4fb99a" height=20>](https://gitter.im/Korean-Speech-Recognition/community)
   
-### [**Documentation**](https://sooftware.github.io/End-to-End-Korean-Speech-Recognition/)   
+### [**Documentation**](https://sooftware.github.io/End-to-end-Speech-Recognition/)   
   
 ## Intro
 
-This is project for Korean Speech Recognition using LAS (Listen, Attend and Spell) models   
-implemented in [PyTorch](http://pytorch.org).  
+This is project for Korean Speech Recognition using LAS (Listen, Attend and Spell) models implemented in [PyTorch](http://pytorch.org).  
 We appreciate any kind of feedback or contribution.
   
-<img src="https://postfiles.pstatic.net/MjAyMDAyMjVfODIg/MDAxNTgyNjE5NzE3NjU5.51D-0F_nvBCZQ89XpgaycjPsX92z_lZK-vCQIHXfOmkg.kK0ILmnHM-LXMRxjTB5o1vJjKnhI4cw73me3LpvRkxUg.PNG.sooftware/LAS.png?type=w773" width=500> 
+<img src="https://user-images.githubusercontent.com/42150335/80313879-c85f9c80-8828-11ea-8e27-af3b50d2a0c8.png" width=650> 
   
 ## Roadmap
   
@@ -79,7 +78,7 @@ Also our model has recorded **91% CRR** in [Kadi-zeroth dataset](https://github.
   
 ###### ( **CRR** : Character Recognition Rate )  
   
-We are constantly updating the progress of the project on the [Wiki page](https://github.com/sooftware/Korean-Speech-Recognition/wiki).  Please check this page.  
+We are constantly updating the progress of the project on the [Wiki page](https://github.com/sooftware/End-to-end-Speech-Recognition/wiki).  Please check this page.  
   
 ## Installation
 This project recommends Python 3.7 or higher.   
@@ -107,25 +106,25 @@ python setup.py install
 ## Get Started
 ### Preparation before Training
 
-Refer [here](https://github.com/sooftware/End-to-End-Korean-Speech-Recognition/wiki/Preparation-before-Training) before Training.  
+Refer [here](https://github.com/sooftware/End-to-end-Speech-Recognition/wiki/Preparation-before-Training) before Training.  
 The above document is written in Korean.  
 We will also write a document in English as soon as possible, so please wait a little bit.  
   
-If you already have another dataset, please modify the data set path to [definition.py](https://github.com/sooftware/End-to-End-Korean-Speech-Recognition/blob/master/package/definition.py) as appropriate.  
+If you already have another dataset, please modify the data set path to [definition.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/package/definition.py) as appropriate.  
 
 ### Train and Test
-if you want to start training, you should run [train.py](https://github.com/sooftware/End-to-End-Korean-Speech-Recognition/blob/master/train.py).    
-or after training, you want to start testing, you should run [test.py](https://github.com/sooftware/End-to-End-Korean-Speech-Recognition/blob/master/test.py).  
+if you want to start training, you should run [train.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/train.py).    
+or after training, you want to start testing, you should run [test.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/test.py).  
   
-you can set up a configuration [config.py](https://github.com/sooftware/End-to-End-Korean-Speech-Recognition/blob/master/package/config.py).  
-An explanation of configuration is [here](https://sooftware.github.io/End-to-End-Korean-Speech-Recognition/Config.html).  
+you can set up a configuration [config.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/package/config.py).  
+An explanation of configuration is [here](https://sooftware.github.io/End-to-end-Speech-Recognition/Config.html).  
   
 ### Incorporating External Language Model in Performance Test
 We introduce incorporating external language model in performance test.  
 if you are interested in this content, please check [here](https://github.com/sooftware/char-rnnlm).
   
 ## Troubleshoots and Contributing
-If you have any questions, bug reports, and feature requests, please [open an issue](https://github.com/sooftware/Korean-Speech-Recognition/issues) on Github.   
+If you have any questions, bug reports, and feature requests, please [open an issue](https://github.com/sooftware/End-to-end-Speech-Recognition/issues) on Github.   
 For live discussions, please go to our [gitter](https://gitter.im/Korean-Speech-Recognition/community) or Contacts sh951011@gmail.com please.
   
 We appreciate any kind of feedback or contribution.  Feel free to proceed with small issues like bug fixes, documentation improvement.  For major contributions and new features, please discuss with the collaborators in corresponding issues.  
@@ -147,7 +146,7 @@ We follow [PEP-8](https://www.python.org/dev/peps/pep-0008/) for code style. Esp
 ### Citing
 ```
 @source_code{
-  title={Character-unit based End-to-End Korean Speech Recognition},
+  title={Character-unit based End-to-end Korean Speech Recognition},
   author={Soohwan Kim, Seyoung Bae, Cheolhwang Won},
   year={2020}
 }
