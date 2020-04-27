@@ -4,6 +4,43 @@ import numpy as np
 import random
 
 
+def get_librosa_spectrogram(filepath, input_reverse=True, normalize=False, del_silence=False,
+                            sr=16000, window_size=20, stride=10):
+    if filepath.endswith('.pcm'):
+        pcm = np.memmap(filepath, dtype='h', mode='r')
+        signal = np.array([float(x) for x in pcm])
+
+    elif filepath.endswith('.wav'):
+        signal, _ = librosa.core.load(filepath, sr=sr)
+
+    else:
+        raise ValueError("%s is not Supported." % filepath.split('.')[-1])
+
+    N_FFT = int(sr * 0.001 * window_size)
+    STRIDE = int(sr * 0.001 * stride)
+
+    if del_silence:
+        non_silence_ids = librosa.effects.split(y=signal, top_db=30)
+        signal = np.concatenate([signal[start:end] for start, end in non_silence_ids])
+
+    D = librosa.stft(signal, n_fft=N_FFT, hop_length=STRIDE, win_length=window_size)
+    spectrogram, phase = librosa.magphase(D)
+
+    spectrogram = np.log1p(spectrogram)
+
+    if normalize:
+        mean = np.mean(spectrogram)
+        std = np.std(spectrogram)
+        spectrogram -= mean
+        spectrogram /= std
+
+    if input_reverse:
+        spectrogram = spectrogram[:, ::-1]
+
+    spectrogram = torch.FloatTensor(np.ascontiguousarray(np.swapaxes(spectrogram, 0, 1)))
+    return spectrogram
+
+
 def get_librosa_melspectrogram(filepath, n_mels=80, del_silence=False, input_reverse=True, normalize=False,
                                sr=16000, window_size=20, stride=10):
     r"""
@@ -62,7 +99,6 @@ def get_librosa_melspectrogram(filepath, n_mels=80, del_silence=False, input_rev
         spectrogram = spectrogram[:, ::-1]
 
     spectrogram = torch.FloatTensor(np.ascontiguousarray(np.swapaxes(spectrogram, 0, 1)))
-
     return spectrogram
 
 
@@ -120,7 +156,6 @@ def get_librosa_mfcc(filepath, n_mfcc=40, del_silence=False, input_reverse=True,
         spectrogram = spectrogram[:, ::-1]
 
     spectrogram = torch.FloatTensor(np.ascontiguousarray(np.swapaxes(spectrogram, 0, 1)))
-
     return spectrogram
 
 
