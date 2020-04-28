@@ -1,4 +1,4 @@
-# **End-to-End Speech Recognition**  
+# **End-to-end Speech Recognition**  
   
 ### Character-unit based End-to-End Korean Speech Recognition  
    
