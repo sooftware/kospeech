@@ -51,9 +51,9 @@ class MultiHeadAttention(nn.Module):
         values = values.permute(2, 0, 1, 3).contiguous().view(-1, value_length, self.dim)
 
         attn_score = torch.bmm(queries, values.transpose(1, 2))
-        alignment = F.softmax(attn_score, dim=2)
+        align = F.softmax(attn_score, dim=2)
 
-        attn_val = torch.bmm(alignment, values).view(self.n_head, batch_size, query_length, self.dim)
+        attn_val = torch.bmm(align, values).view(self.n_head, batch_size, query_length, self.dim)
         attn_val = attn_val.permute(1, 2, 0, 3).contiguous().view(batch_size, query_length, -1)
 
         combined = torch.cat([attn_val, preserved], dim=2)

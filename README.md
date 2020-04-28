@@ -1,8 +1,8 @@
-# **End-to-end Speech Recognition**  
+# **End-to-End Speech Recognition**  
   
 ### Character-unit based End-to-End Korean Speech Recognition  
    
-[<img src="https://github.com/gentaiscool/end2end-asr-pytorch/raw/master/img/pytorch-logo-dark.png" height=18>](https://pytorch.org/) <img src="https://img.shields.io/badge/License-Apache--2.0-yellow" height=20> [<img src="https://img.shields.io/badge/chat-on%20gitter-4fb99a" height=20>](https://gitter.im/Korean-Speech-Recognition/community) <img src="https://img.shields.io/badge/Fixing-Beam%20Search-red" height=20>  
+[<img src="https://github.com/gentaiscool/end2end-asr-pytorch/raw/master/img/pytorch-logo-dark.png" height=18>](https://pytorch.org/) <img src="https://img.shields.io/badge/License-Apache--2.0-yellow" height=20> [<img src="https://img.shields.io/badge/chat-on%20gitter-4fb99a" height=20>](https://gitter.im/Korean-Speech-Recognition/community)
   
 ### [**Documentation**](https://sooftware.github.io/End-to-end-Speech-Recognition/)   
   
@@ -72,7 +72,7 @@ ListenAttendSpell(
 ```
   
 We use [AI Hub 1000h](http://www.aihub.or.kr/aidata/105) dataset which contains 1,000 hours korean voice data. and, our project is currently in progress.   
-At present our top model has recorded an **82.3% CRR**, and we are working for a higher recognition rate.  
+At present our top model has recorded an **80% CRR**, and we are working for a higher recognition rate.  
   
 Also our model has recorded **91% CRR** in [Kadi-zeroth dataset](https://github.com/goodatlas/zeroth).  
   

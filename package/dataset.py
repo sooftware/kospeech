@@ -54,8 +54,8 @@ class SpectrogramDataset(Dataset):
         if self.augment_flags[idx]:
             spectrogram = spec_augment(
                 spectrogram,
-                time_mask_para=70,
-                freq_mask_para=15,
+                time_mask_para=40,
+                freq_mask_para=10,
                 time_mask_num=2,
                 freq_mask_num=2
             )

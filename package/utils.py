@@ -25,7 +25,7 @@ def char_distance(target, y_hat):
     return dist, length
 
 
-def get_distance(targets, y_hats, id2char, eos_id):
+def get_distance(targets, y_hats, id2char, char2id, eos_id):
     """
     Provides total character distance between targets & y_hats
 
@@ -43,8 +43,11 @@ def get_distance(targets, y_hats, id2char, eos_id):
     total_length = 0
 
     for (target, y_hat) in zip(targets, y_hats):
-        script = label_to_string(target, id2char, eos_id)
-        pred = label_to_string(y_hat, id2char, eos_id)
+        script = label_to_string(target, id2char, char2id, eos_id)
+        pred = label_to_string(y_hat, id2char, char2id, eos_id)
+
+        print(script)
+        print(pred)
 
         dist, length = char_distance(script, pred)
 
@@ -83,7 +86,7 @@ def get_label(filepath, sos_id, eos_id, target_dict=None):
     return labels
 
 
-def label_to_string(labels, id2char, eos_id):
+def label_to_string(labels, id2char, char2id, eos_id):
     """
     Converts label to string (number => Hangeul)
 
@@ -112,6 +115,22 @@ def label_to_string(labels, id2char, eos_id):
                     break
                 sentence += id2char[label.item()]
             sentences.append(sentence)
+        return sentences
+
+    elif len(labels.shape) == 3:
+        sentences = list()
+        for batch in labels:
+            batch_candidates = list()
+            for beams in batch:
+                candidates = list()
+                for beam in beams:
+                    sentence = str()
+                    if beam.item() == eos_id:
+                        break
+                    sentence += id2char[beam.item()]
+                    candidates.append(sentence)
+                batch_candidates.append(candidates)
+            sentences.append(batch_candidates)
         return sentences
 
     else:

@@ -12,14 +12,15 @@
 import os
 import queue
 import torch
+import warnings
 from model.listenAttendSpell import ListenAttendSpell
 from model.listener import Listener
 from model.speller import Speller
-from package.dataset import CustomDataset
+from package.dataset import SpectrogramDataset
 from package.definition import *
 from package.config import Config
-from package.loader import CustomDataLoader, load_data_list, load_targets
-from package.utils import get_distance
+from package.loader import AudioDataLoader, load_data_list, load_targets
+from package.utils import get_distance, label_to_string
 
 
 def test(model, queue, device):
@@ -37,20 +38,21 @@ def test(model, queue, device):
             inputs, targets, input_lengths, target_lengths = queue.get()
             if inputs.shape[0] == 0:
                 break
-
             inputs = inputs.to(device)
             targets = targets.to(device)
-            target = targets[:, 1:]
+            scripts = targets[:, 1:]
 
             model.flatten_parameters()
             y_hat, _ = model(inputs, targets, teacher_forcing_ratio=0.0, use_beam_search=True)
-            dist, length = get_distance(target, y_hat, id2char, EOS_token)
+            # print(y_hat)
+            # print(label_to_string(scripts, id2char, char2id, EOS_token))
+            dist, length = get_distance(scripts, y_hat, id2char, char2id, EOS_token)
             total_dist += dist
             total_length += length
-            total_sent_num += target.size(0)
+            total_sent_num += scripts.size(0)
 
-            if time_step % 10 == 0:
-                logger.info('cer: {:.2f}'.format(dist / length))
+            #  if time_step % 10 == 0:
+            logger.info('cer: {:.2f}'.format(dist / length))
 
             time_step += 1
 
@@ -60,15 +62,18 @@ def test(model, queue, device):
 
 
 if __name__ == '__main__':
-    os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
-    logger.info("device : %s" % torch.cuda.get_device_name(0))
-    logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
-    logger.info("CUDA version : %s" % torch.version.cuda)
-    logger.info("PyTorch version : %s" % torch.__version__)
+    warnings.filterwarnings('ignore')
 
-    config = Config()
+    config = Config(batch_size=4)
     cuda = config.use_cuda and torch.cuda.is_available()
     device = torch.device('cuda' if cuda else 'cpu')
+
+    if device == 'cuda':
+        os.environ["CUDA_LAUNCH_BLOCKING"] = "1"  # if you use Multi-GPU, delete this line
+        logger.info("device : %s" % torch.cuda.get_device_name(0))
+        logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
+        logger.info("CUDA version : %s" % torch.version.cuda)
+        logger.info("PyTorch version : %s" % torch.__version__)
 
     listener = Listener(
         in_features=80,
@@ -77,7 +82,6 @@ if __name__ == '__main__':
         n_layers=config.listener_layer_size,
         bidirectional=config.use_bidirectional,
         rnn_type='gru',
-        use_pyramidal=False,
         device=device
     )
     speller = Speller(
@@ -94,24 +98,25 @@ if __name__ == '__main__':
     )
     model = ListenAttendSpell(listener, speller)
 
-    load_model = torch.load('weight_path')
+    load_model = torch.load("./data/weight_file/epoch_3_step_40000.pt", map_location=torch.device('cpu')).module
+    model.load_state_dict(load_model.state_dict())
     model.set_beam_size(k=5)
 
-    audio_paths, label_paths = load_data_list(data_list_path=SAMPLE_LIST_PATH, dataset_path=SAMPLE_DATASET_PATH)
+    audio_paths, label_paths = load_data_list(data_list_path=DEBUG_LIST_PATH, dataset_path=SAMPLE_DATASET_PATH)
     target_dict = load_targets(label_paths)
 
-    test_dataset = CustomDataset(
+    testset = SpectrogramDataset(
         audio_paths=audio_paths,
         label_paths=label_paths,
         sos_id=SOS_token,
         eos_id=EOS_token,
         target_dict=target_dict,
-        input_reverse=config.input_reverse,
+        config=config,
         use_augment=False
     )
 
     test_queue = queue.Queue(config.worker_num << 1)
-    test_loader = CustomDataLoader(test_dataset, test_queue, config.batch_size, 0)
+    test_loader = AudioDataLoader(testset, test_queue, config.batch_size, 0)
     test_loader.start()
 
     cer = test(model, test_queue, device)

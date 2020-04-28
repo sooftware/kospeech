@@ -34,22 +34,20 @@ if __name__ == '__main__':
         use_bidirectional=True,
         use_label_smooth=True,
         input_reverse=True,
-        use_augment=False,
-        use_pickle=False,
+        use_augment=True,
+        use_pickle=True,
         use_cuda=True,
         augment_ratio=1.0,
         hidden_dim=256,
         dropout=0.5,
         listener_layer_size=5,
         speller_layer_size=3,
-        batch_size=12,
+        batch_size=32,
         worker_num=1,
         max_epochs=40,
         use_multistep_lr=False,
-        init_lr=0.0001,
-        high_plateau_lr=0.0003,
-        low_plateau_lr=0.00001,
-        teacher_forcing=1.0,
+        init_lr=0.001,
+        teacher_forcing=0.99,
         seed=1,
         max_len=151,
         load_model=False,
@@ -63,7 +61,7 @@ if __name__ == '__main__':
     device = torch.device('cuda' if cuda else 'cpu')
 
     if device == 'cuda':
-        os.environ["CUDA_LAUNCH_BLOCKING"] = "1"  # if you use Multi-GPU, delete this line
+        #  os.environ["CUDA_LAUNCH_BLOCKING"] = "1"  # if you use Multi-GPU, delete this line
         logger.info("device : %s" % torch.cuda.get_device_name(0))
         logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
         logger.info("CUDA version : %s" % torch.version.cuda)
@@ -101,6 +99,8 @@ if __name__ == '__main__':
             param.data.uniform_(-0.08, 0.08)
 
     optimizer = optim.Adam(model.module.parameters(), lr=config.init_lr)
+    scheduler = ReduceLROnPlateau(optimizer, 'min', patience=1)
+
     if config.use_label_smooth:
         criterion = LabelSmoothingLoss(len(char2id), ignore_index=PAD_token, smoothing=0.1, dim=-1).to(device)
     else:
@@ -158,6 +158,8 @@ if __name__ == '__main__':
 
         valid_loss, valid_cer = evaluate(model, valid_queue, criterion, device)
         valid_loader.join()
+
+        scheduler.step(valid_loss)
 
         logger.info('Epoch %d (Evaluate) Loss %0.4f CER %0.4f' % (epoch, valid_loss, valid_cer))
         save_epoch_result(train_result=[train_dict, train_loss, train_cer],

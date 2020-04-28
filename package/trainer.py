@@ -1,6 +1,6 @@
 import time
 import torch
-from package.definition import logger, id2char, EOS_token
+from package.definition import logger, id2char, EOS_token, char2id
 from package.utils import get_distance, save_step_result
 
 train_step_result = {'loss': [], 'cer': []}
@@ -77,7 +77,7 @@ def supervised_train(model, config, epoch, total_time_step, queue,
         loss = criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
         epoch_loss_total += loss.item()
 
-        dist, length = get_distance(targets, y_hat, id2char, EOS_token)
+        dist, length = get_distance(targets, y_hat, id2char, char2id, EOS_token)
 
         total_num += sum(input_lengths)
         total_dist += dist

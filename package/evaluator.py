@@ -1,5 +1,5 @@
 import torch
-from package.definition import logger, id2char, EOS_token
+from package.definition import logger, id2char, EOS_token, char2id
 from package.utils import get_distance
 
 
@@ -37,13 +37,13 @@ def evaluate(model, queue, criterion, device):
             targets = scripts[:, 1:]
 
             model.module.flatten_parameters()
-            y_hat, logit = model(inputs, scripts, teacher_forcing_ratio=0.0, use_beam_search = False)
+            y_hat, logit = model(inputs, scripts, teacher_forcing_ratio=0.0, use_beam_search=False)
 
             loss = criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
             total_loss += loss.item()
             total_num += sum(input_lengths)
 
-            dist, length = get_distance(targets, y_hat, id2char, EOS_token)
+            dist, length = get_distance(targets, y_hat, id2char, char2id, EOS_token)
             total_dist += dist
             total_length += length
 
