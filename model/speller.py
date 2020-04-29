@@ -116,9 +116,9 @@ class Speller(nn.Module):
             probs = list()
 
             for beam in beams:
-                _, ks = beam.sort_finished(self.k)
+                _, ks = beam.sort_finished()
                 times, k = ks[0]
-                hyp, beam_index, prob = beam.get_hyp(times, k)
+                hyp, beam_index, prob = beam.get_hypoyhesis(times, k)
 
                 prob = torch.stack(prob)
                 prob = beam.fill_empty_sequence(prob, max_length)
@@ -131,9 +131,10 @@ class Speller(nn.Module):
                 decode_outputs.append(probs[i])
 
         else:
-            if use_teacher_forcing:  # if teacher_forcing, Infer all at once
+            if use_teacher_forcing:
                 inputs = inputs[inputs != self.eos_id].view(batch_size, -1)
                 predicted_softmax, h_state = self.forward_step(inputs, h_state, listener_outputs)
+                predicted_softmax = predicted_softmax.view(batch_size, inputs.size(1), -1)
 
                 for di in range(predicted_softmax.size(1)):
                     step_output = predicted_softmax[:, di, :]

@@ -13,9 +13,6 @@ import os
 import queue
 import torch
 import warnings
-from model.listenAttendSpell import ListenAttendSpell
-from model.listener import Listener
-from model.speller import Speller
 from package.dataset import SpectrogramDataset
 from package.definition import *
 from package.config import Config
@@ -73,32 +70,9 @@ if __name__ == '__main__':
         logger.info("CUDA version : %s" % torch.version.cuda)
         logger.info("PyTorch version : %s" % torch.__version__)
 
-    listener = Listener(
-        in_features=80,
-        hidden_dim=config.hidden_dim,
-        dropout_p=config.dropout,
-        n_layers=config.listener_layer_size,
-        bidirectional=config.use_bidirectional,
-        rnn_type='gru',
-        device=device
-    )
-    speller = Speller(
-        n_class=len(char2id),
-        max_length=config.max_len,
-        k=1,
-        hidden_dim=config.hidden_dim << (1 if config.use_bidirectional else 0),
-        sos_id=SOS_token,
-        eos_id=EOS_token,
-        n_layers=config.speller_layer_size,
-        rnn_type='gru',
-        dropout_p=config.dropout,
-        n_head=4,
-        device=device
-    )
-    model = ListenAttendSpell(listener, speller)
-
-    load_model = torch.load("./data/weight_file/epoch4.pt", map_location=torch.device('cpu')).module
-    model.load_state_dict(load_model.state_dict())
+    model = torch.load('./data/weight_file/epoch4.pt', map_location=torch.device('cpu')).module
+    model.listener.device = 'cpu'
+    model.speller.device = 'cpu'
     model.set_beam_size(k=3)
 
     audio_paths, label_paths = load_data_list(data_list_path=SAMPLE_LIST_PATH, dataset_path=SAMPLE_DATASET_PATH)

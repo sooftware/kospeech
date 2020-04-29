@@ -33,6 +33,7 @@ def get_distance(targets, y_hats, id2char, char2id, eos_id):
         targets (torch.Tensor): set of ground truth
         y_hats (torch.Tensor): predicted y values (y_hat) by the model
         id2char (dict): id2char[id] = ch
+        char2id (dict): char2id[ch] = id
         eos_id (int): identification of <end of sequence>
 
     Returns: total_dist, total_length
@@ -90,6 +91,7 @@ def label_to_string(labels, id2char, char2id, eos_id):
     Args:
         labels (list): number label
         id2char (dict): id2char[id] = ch
+        char2id (dict): char2id[ch] = id
         eos_id (int): identification of <end of sequence>
 
     Returns: sentence
@@ -129,9 +131,6 @@ def label_to_string(labels, id2char, char2id, eos_id):
                 batch_candidates.append(candidates)
             sentences.append(batch_candidates)
         return sentences
-
-    else:
-        raise ValueError("shape Error !!")
 
 
 def save_epoch_result(train_result, valid_result):
