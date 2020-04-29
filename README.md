@@ -11,7 +11,7 @@
 This is project for Korean Speech Recognition using LAS (Listen, Attend and Spell) models implemented in [PyTorch](http://pytorch.org).  
 We appreciate any kind of feedback or contribution.
   
-<img src="https://user-images.githubusercontent.com/42150335/80313879-c85f9c80-8828-11ea-8e27-af3b50d2a0c8.png" width=650> 
+<img src="https://user-images.githubusercontent.com/42150335/80630547-5dfc6580-8a8f-11ea-91e8-73fe5e8b9e4b.png" width=650> 
   
 ## Roadmap
   
@@ -49,22 +49,18 @@ ListenAttendSpell(
       (9): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
       (10): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
       (11): Hardtanh(min_val=0, max_val=20, inplace=True)
-      (12): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-      (13): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-      (14): Hardtanh(min_val=0, max_val=20, inplace=True)
-      (15): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-      (16): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+      (12): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
     )
-    (rnn): GRU(5120, 256, num_layers=5, batch_first=True, dropout=0.3, bidirectional=True)
+    (rnn): GRU(2560, 256, num_layers=5, batch_first=True, dropout=0.5, bidirectional=True)
   )
   (speller): Speller(
-    (rnn): GRU(512, 512, num_layers=3, batch_first=True, dropout=0.3)
+    (rnn): GRU(512, 512, num_layers=3, batch_first=True, dropout=0.5)
     (embedding): Embedding(2040, 512)
-    (input_dropout): Dropout(p=0.3, inplace=False)
+    (input_dropout): Dropout(p=0.5, inplace=False)
     (fc): Linear(in_features=512, out_features=2040, bias=True)
     (attention): MultiHeadAttention(
-      (W): Linear(in_features=512, out_features=512, bias=True)
-      (V): Linear(in_features=512, out_features=512, bias=True)
+      (W): Linear(in_features=512, out_features=1536, bias=True)
+      (V): Linear(in_features=512, out_features=1536, bias=True)
       (fc): Linear(in_features=1024, out_features=512, bias=True)
     )
   )
@@ -72,9 +68,9 @@ ListenAttendSpell(
 ```
   
 We use [AI Hub 1000h](http://www.aihub.or.kr/aidata/105) dataset which contains 1,000 hours korean voice data. and, our project is currently in progress.   
-At present our top model has recorded an **80% CRR**, and we are working for a higher recognition rate.  
+At present our top model has recorded an **82.3% CRR**, and we are working for a higher recognition rate.  
   
-Also our model has recorded **91% CRR** in [Kadi-zeroth dataset](https://github.com/goodatlas/zeroth).  
+Also our model has recorded **91.0% CRR** in [Kadi-zeroth dataset](https://github.com/goodatlas/zeroth).  
   
 ###### ( **CRR** : Character Recognition Rate )  
   
