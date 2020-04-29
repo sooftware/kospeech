@@ -106,13 +106,13 @@ Refer [here](https://github.com/sooftware/End-to-end-Speech-Recognition/wiki/Pre
 The above document is written in Korean.  
 We will also write a document in English as soon as possible, so please wait a little bit.  
   
-If you already have another dataset, please modify the data set path to [definition.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/package/definition.py) as appropriate.  
+If you already have another dataset, please modify the data set path to [definition.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/utils/definition.py) as appropriate.  
 
 ### Train and Test
 if you want to start training, you should run [train.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/train.py).    
 or after training, you want to start testing, you should run [test.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/test.py).  
   
-you can set up a configuration [config.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/package/config.py).  
+you can set up a configuration [config.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/utils/config.py).  
 An explanation of configuration is [here](https://sooftware.github.io/End-to-end-Speech-Recognition/Config.html).  
   
 ### Incorporating External Language Model in Performance Test
