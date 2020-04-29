@@ -1,6 +1,6 @@
 import torch
-from package.definition import logger, id2char, EOS_token, char2id
-from package.utils import get_distance
+from utils.definition import logger, id2char, EOS_token, char2id
+from utils.util import get_distance
 
 
 def evaluate(model, queue, criterion, device):

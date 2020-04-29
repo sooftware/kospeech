@@ -1,9 +1,9 @@
 import math
 import random
 from torch.utils.data import Dataset
-from package.definition import EOS_token, logger, SOS_token
-from package.feature import spec_augment, get_librosa_melspectrogram
-from package.utils import get_label, save_pickle
+from utils.definition import EOS_token, logger, SOS_token
+from utils.feature import spec_augment, get_librosa_melspectrogram
+from utils.util import get_label, save_pickle
 
 
 class SpectrogramDataset(Dataset):
@@ -19,8 +19,7 @@ class SpectrogramDataset(Dataset):
         use_augment (bool): flag indication whether to use spec-augmentation or not (default: True)
     """
 
-    def __init__(self, audio_paths, label_paths, sos_id, eos_id,
-                 target_dict=None, config=None, use_augment=True):
+    def __init__(self, audio_paths, label_paths, sos_id, eos_id, target_dict=None, config=None, use_augment=True):
         self.audio_paths = list(audio_paths)
         self.label_paths = list(label_paths)
         self.sos_id = sos_id
@@ -28,7 +27,7 @@ class SpectrogramDataset(Dataset):
         self.batch_size = config.batch_size
         self.target_dict = target_dict
         self.input_reverse = config.input_reverse
-        self.augment_ratio = config.augment_ratio
+        self.augment_num = config.augment_num
         self.augment_flags = [False] * len(self.audio_paths)
         self.config = config
         if use_augment:
@@ -38,7 +37,7 @@ class SpectrogramDataset(Dataset):
     def get_item(self, idx):
         label = get_label(self.label_paths[idx], self.sos_id, self.eos_id, self.target_dict)
         spectrogram = get_librosa_melspectrogram(
-            filepath=self.audio_paths[idx],
+            self.audio_paths[idx],
             n_mels=80,
             input_reverse=self.input_reverse,
             del_silence=True,
@@ -63,13 +62,14 @@ class SpectrogramDataset(Dataset):
         return spectrogram, label
 
     def augmentation(self):
-        augment_end_idx = int(0 + ((len(self.audio_paths) - 0) * self.augment_ratio))
+        augment_end_idx = int(0 + ((len(self.audio_paths) - 0) * self.augment_num))
         logger.info("Applying Augmentation...")
 
-        for idx in range(augment_end_idx):
-            self.augment_flags.append(True)
-            self.audio_paths.append(self.audio_paths[idx])
-            self.label_paths.append(self.label_paths[idx])
+        for _ in range(self.augment_num):
+            for idx in range(augment_end_idx):
+                self.augment_flags.append(True)
+                self.audio_paths.append(self.audio_paths[idx])
+                self.label_paths.append(self.label_paths[idx])
 
     def shuffle(self):
         temp = list(zip(self.audio_paths, self.label_paths, self.augment_flags))
@@ -108,7 +108,7 @@ def split_dataset(config, audio_paths, label_paths, valid_ratio=0.05, target_dic
     train_time_step = total_time_step - valid_time_step
 
     if config.use_augment:
-        train_time_step = int(train_time_step * (1 + config.augment_ratio))
+        train_time_step = int(train_time_step * (1 + config.augment_num))
 
     train_num_per_worker = math.ceil(train_num / config.worker_num)
 

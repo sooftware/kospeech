@@ -35,7 +35,7 @@ class Beam(object):
 
     def advance(self, predicted_softmax):
         predicted_softmax_clone = predicted_softmax.clone()
-        num_words = predicted_softmax.size(1)
+        num_class = predicted_softmax.size(1)
 
         # force the output to be longer than self.min_length
         current_length = len(self.next_ys)
@@ -64,9 +64,9 @@ class Beam(object):
 
         # best_scores_id is flattened beam x word array, so calculate which
         # word and beam each score came from
-        prev_k = best_scores_id / num_words
+        prev_k = best_scores_id / num_class
         self.prev_ks.append(prev_k)
-        self.next_ys.append((best_scores_id - prev_k * num_words))
+        self.next_ys.append((best_scores_id - prev_k * num_class))
 
         for i in range(self.k):
             if self.next_ys[-1][i] == self.eos_id:

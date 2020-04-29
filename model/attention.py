@@ -57,6 +57,6 @@ class MultiHeadAttention(nn.Module):
         attn_val = attn_val.permute(1, 2, 0, 3).contiguous().view(batch_size, query_length, -1)
 
         combined = torch.cat([attn_val, preserved], dim=2)
-        context = torch.tanh(self.fc(combined.view(-1, 2 * self.in_features))).view(batch_size, -1, self.in_features)
+        output = torch.tanh(self.fc(combined.view(-1, 2 * self.in_features))).view(batch_size, -1, self.in_features)
 
-        return context
+        return output

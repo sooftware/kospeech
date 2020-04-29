@@ -13,11 +13,11 @@ import os
 import queue
 import torch
 import warnings
-from package.dataset import SpectrogramDataset
-from package.definition import *
-from package.config import Config
-from package.loader import AudioDataLoader, load_data_list, load_targets
-from package.utils import get_distance
+from utils.dataset import SpectrogramDataset
+from utils.definition import *
+from utils.config import Config
+from utils.loader import AudioDataLoader, load_data_list, load_targets
+from utils.util import get_distance
 
 
 def test(model, queue, device):

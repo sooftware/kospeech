@@ -6,8 +6,8 @@ import math
 import random
 import pandas as pd
 from tqdm import trange
-from package.definition import logger
-from package.utils import save_pickle
+from utils.definition import logger
+from utils.util import save_pickle
 
 
 class MultiLoader:
@@ -41,7 +41,7 @@ class MultiLoader:
 
 class AudioDataLoader(threading.Thread):
     """
-    Base Data Loader
+    Audio Data Loader
 
     Args:
         dataset (package.dataset.BaseDataset): object of BaseDataset
@@ -123,7 +123,7 @@ def _collate_fn(batch):
     seqs = torch.zeros(batch_size, max_seq_size, feat_size)
 
     targets = torch.zeros(batch_size, max_target_size).to(torch.long)
-    from package.definition import PAD_token
+    from utils.definition import PAD_token
     targets.fill_(PAD_token)
 
     for x in range(batch_size):

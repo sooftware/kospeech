@@ -1,7 +1,7 @@
 import time
 import torch
-from package.definition import logger, id2char, EOS_token, char2id
-from package.utils import get_distance, save_step_result
+from utils.definition import logger, id2char, EOS_token, char2id
+from utils.util import get_distance, save_step_result
 
 train_step_result = {'loss': [], 'cer': []}
 
@@ -34,27 +34,14 @@ def supervised_train(model, config, epoch, total_time_step, queue,
     total_dist = 0
     total_length = 0
     time_step = 0
-    decay_speed = 1.0
-
-    MAX_NORM = 400
-    RAMPUP_POWER = 3
-    RANMPUP_PERIOD = 3000
-    EXP_DECAY_PERIOD = total_time_step * 3
+    max_norm = 400
+    save_model_every = 10000
+    save_result_every = 1000
 
     model.train()
     begin = epoch_begin = time.time()
 
     while True:
-        # LR Wamp-Up
-        if config.use_multistep_lr and epoch == 0 and time_step < RANMPUP_PERIOD:
-            set_lr(optimizer, lr=config.high_plateau_lr * ((time_step + 1) / RANMPUP_PERIOD) ** RAMPUP_POWER)
-
-        # LR Exponential-Decay
-        if config.use_multistep_lr and (epoch == 1 or epoch == 2 or epoch == 3):
-            decay_rate = config.low_plateau_lr / config.high_plateau_lr
-            decay_speed *= decay_rate ** (1 / EXP_DECAY_PERIOD)
-            set_lr(optimizer, config.high_plateau_lr * decay_speed)
-
         inputs, scripts, input_lengths, target_lengths = queue.get()
 
         if inputs.shape[0] == 0:
@@ -85,7 +72,7 @@ def supervised_train(model, config, epoch, total_time_step, queue,
 
         optimizer.zero_grad()
         loss.backward()
-        torch.nn.utils.clip_grad_norm_(model.parameters(), MAX_NORM)
+        torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm)
         optimizer.step()
 
         time_step += 1
@@ -106,10 +93,10 @@ def supervised_train(model, config, epoch, total_time_step, queue,
             )
             begin = time.time()
 
-        if time_step % 1000 == 0:
+        if time_step % save_result_every == 0:
             save_step_result(train_step_result, epoch_loss_total / total_num, total_dist / total_length)
 
-        if time_step % 10000 == 0:
+        if time_step % save_model_every == 0:
             torch.save(model, "./data/weight_file/epoch_%s_step_%s.pt" % (str(epoch), str(time_step)))
 
     logger.info('train() completed')

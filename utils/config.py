@@ -1,4 +1,4 @@
-from package.definition import logger
+from utils.definition import logger
 
 
 class Config:
@@ -12,7 +12,7 @@ class Config:
         use_pickle (bool): flag indication whether to load data from pickle or not (default: False)
         use_augment (bool): flag indication whether to use spec-augmentation or not (default: True)
         use_multistep_lr (bool): flag indication whether to use multistep leraning rate or not (default:False)
-        augment_ratio (float): ratio of spec-augmentation applied data (default: 1.0)
+        augment_num (float): number of spec-augmentation applied per data (default: 2)
         listener_layer_size (int): num of listener`s RNN cell (default: 6)
         speller_layer_size (int): num of speller`s RNN cell (default: 3)
         hidden_dim (int): size of hidden state of RNN (default: 256)
@@ -36,7 +36,7 @@ class Config:
                  use_augment=True,
                  use_pickle=False,
                  use_cuda=True,
-                 augment_ratio=1.0,
+                 augment_num=2,
                  hidden_dim=256,
                  dropout=0.5,
                  listener_layer_size=5,
@@ -64,7 +64,7 @@ class Config:
         self.use_augment = use_augment
         self.use_pickle = use_pickle
         self.use_cuda = use_cuda
-        self.augment_ratio = augment_ratio
+        self.augment_num = augment_num
         self.hidden_dim = hidden_dim
         self.dropout = dropout
         self.listener_layer_size = listener_layer_size
@@ -93,7 +93,7 @@ class Config:
         logger.info("use_bidirectional : %s" % str(self.use_bidirectional))
         logger.info("use_pickle : %s" % str(self.use_pickle))
         logger.info("use_augment : %s" % str(self.use_augment))
-        logger.info("augment_ratio : %0.2f" % self.augment_ratio)
+        logger.info("augment_num : %d" % self.augment_num)
         logger.info("input_reverse : %s" % str(self.input_reverse))
         logger.info("hidden_dim : %d" % self.hidden_dim)
         logger.info("listener_layer_size : %d" % self.listener_layer_size)

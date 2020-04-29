@@ -22,14 +22,14 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 from model.speller import Speller
 from model.listener import Listener
 from model.listenAttendSpell import ListenAttendSpell
-from package.dataset import split_dataset
-from package.definition import *
-from package.evaluator import evaluate
-from package.config import Config
-from package.loader import load_data_list, load_targets, load_pickle, MultiLoader, AudioDataLoader
-from package.loss import LabelSmoothingLoss
-from package.trainer import supervised_train
-from package.utils import save_epoch_result
+from utils.dataset import split_dataset
+from utils.definition import *
+from utils.evaluator import evaluate
+from utils.config import Config
+from utils.loader import load_data_list, load_targets, load_pickle, MultiLoader, AudioDataLoader
+from utils.loss import LabelSmoothingLoss
+from utils.trainer import supervised_train
+from utils.util import save_epoch_result
 
 
 if __name__ == '__main__':
