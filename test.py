@@ -20,7 +20,7 @@ from package.dataset import SpectrogramDataset
 from package.definition import *
 from package.config import Config
 from package.loader import AudioDataLoader, load_data_list, load_targets
-from package.utils import get_distance, label_to_string
+from package.utils import get_distance
 
 
 def test(model, queue, device):
@@ -44,8 +44,7 @@ def test(model, queue, device):
 
             model.flatten_parameters()
             y_hat, _ = model(inputs, targets, teacher_forcing_ratio=0.0, use_beam_search=True)
-            # print(y_hat)
-            # print(label_to_string(scripts, id2char, char2id, EOS_token))
+
             dist, length = get_distance(scripts, y_hat, id2char, char2id, EOS_token)
             total_dist += dist
             total_length += length
@@ -57,7 +56,6 @@ def test(model, queue, device):
             time_step += 1
 
     logger.info('test() completed')
-
     return total_dist / total_length
 
 
@@ -94,15 +92,16 @@ if __name__ == '__main__':
         n_layers=config.speller_layer_size,
         rnn_type='gru',
         dropout_p=config.dropout,
+        n_head=4,
         device=device
     )
     model = ListenAttendSpell(listener, speller)
 
-    load_model = torch.load("./data/weight_file/epoch_3_step_40000.pt", map_location=torch.device('cpu')).module
+    load_model = torch.load("./data/weight_file/epoch4.pt", map_location=torch.device('cpu')).module
     model.load_state_dict(load_model.state_dict())
-    model.set_beam_size(k=5)
+    model.set_beam_size(k=3)
 
-    audio_paths, label_paths = load_data_list(data_list_path=DEBUG_LIST_PATH, dataset_path=SAMPLE_DATASET_PATH)
+    audio_paths, label_paths = load_data_list(data_list_path=SAMPLE_LIST_PATH, dataset_path=SAMPLE_DATASET_PATH)
     target_dict = load_targets(label_paths)
 
     testset = SpectrogramDataset(

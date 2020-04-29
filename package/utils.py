@@ -45,9 +45,12 @@ def get_distance(targets, y_hats, id2char, char2id, eos_id):
     for (target, y_hat) in zip(targets, y_hats):
         script = label_to_string(target, id2char, char2id, eos_id)
         pred = label_to_string(y_hat, id2char, char2id, eos_id)
+<<<<<<< HEAD
+=======
 
         print(script)
         print(pred)
+>>>>>>> d019d071985ecea558b425f266c7d804c3839cab
 
         dist, length = char_distance(script, pred)
 

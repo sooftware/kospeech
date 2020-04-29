@@ -39,27 +39,22 @@ class Listener(nn.Module):
         rnn_cell = supported_rnns[rnn_type]
         self.device = device
         self.conv = nn.Sequential(
-            # Refered to VGGNet
-            nn.Conv2d(in_channels=1, out_channels=64, kernel_size=3, padding=1),
+            nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1),
             nn.Hardtanh(0, 20, inplace=True),
             nn.BatchNorm2d(num_features=64),
-            nn.Conv2d(in_channels=64, out_channels=64, kernel_size=3, padding=1),
+            nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
             nn.Hardtanh(0, 20, inplace=True),
-            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.MaxPool2d(2, stride=2),
             nn.BatchNorm2d(num_features=64),
-            nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, padding=1),
+            nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1),
             nn.Hardtanh(0, 20, inplace=True),
             nn.BatchNorm2d(num_features=128),
-            nn.Conv2d(in_channels=128, out_channels=128, kernel_size=3, padding=1),
+            nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1),
             nn.Hardtanh(0, 20, inplace=True),
-            nn.BatchNorm2d(num_features=128),
-            nn.Conv2d(in_channels=128, out_channels=256, kernel_size=3, padding=1),
-            nn.Hardtanh(0, 20, inplace=True),
-            nn.BatchNorm2d(num_features=256),
-            nn.MaxPool2d(kernel_size=2, stride=2)
+            nn.MaxPool2d(2, stride=2)
         )
 
-        in_features = (in_features - 1) << 6 if in_features % 2 else in_features << 6
+        in_features = (in_features - 1) << 5 if in_features % 2 else in_features << 5
         self.rnn = rnn_cell(
             input_size=in_features,
             hidden_size=hidden_dim,

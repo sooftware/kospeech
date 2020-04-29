@@ -16,6 +16,9 @@ import random
 import torch
 import time
 import os
+
+from torch.optim.lr_scheduler import ReduceLROnPlateau
+
 from model.speller import Speller
 from model.listener import Listener
 from model.listenAttendSpell import ListenAttendSpell
@@ -39,7 +42,8 @@ if __name__ == '__main__':
         use_cuda=True,
         augment_ratio=1.0,
         hidden_dim=256,
-        dropout=0.5,
+        dropout=0.3,
+        n_head=12,
         listener_layer_size=5,
         speller_layer_size=3,
         batch_size=32,
@@ -47,6 +51,8 @@ if __name__ == '__main__':
         max_epochs=40,
         use_multistep_lr=False,
         init_lr=0.001,
+        high_plateau_lr=0.0003,
+        low_plateau_lr=0.00001,
         teacher_forcing=0.99,
         seed=1,
         max_len=151,
@@ -61,7 +67,7 @@ if __name__ == '__main__':
     device = torch.device('cuda' if cuda else 'cpu')
 
     if device == 'cuda':
-        #  os.environ["CUDA_LAUNCH_BLOCKING"] = "1"  # if you use Multi-GPU, delete this line
+        os.environ["CUDA_LAUNCH_BLOCKING"] = "1"  # if you use Multi-GPU, delete this line
         logger.info("device : %s" % torch.cuda.get_device_name(0))
         logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
         logger.info("CUDA version : %s" % torch.version.cuda)
@@ -82,13 +88,14 @@ if __name__ == '__main__':
         speller = Speller(
             n_class=len(char2id),
             max_length=config.max_len,
-            k=8,
+            k=5,
             hidden_dim=config.hidden_dim << (1 if config.use_bidirectional else 0),
             sos_id=SOS_token,
             eos_id=EOS_token,
             n_layers=config.speller_layer_size,
             rnn_type='gru',
             dropout_p=config.dropout,
+            n_head=config.n_head,
             device=device
         )
         model = ListenAttendSpell(listener, speller)

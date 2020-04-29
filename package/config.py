@@ -41,6 +41,7 @@ class Config:
                  dropout=0.5,
                  listener_layer_size=5,
                  speller_layer_size=3,
+                 n_head=12,
                  batch_size=32,
                  worker_num=1,
                  max_epochs=40,
@@ -71,6 +72,7 @@ class Config:
         self.batch_size = batch_size
         self.worker_num = worker_num
         self.max_epochs = max_epochs
+        self.n_head = n_head
         self.use_multistep_lr = use_multistep_lr
         self.init_lr = init_lr
         if use_multistep_lr:
@@ -96,6 +98,7 @@ class Config:
         logger.info("hidden_dim : %d" % self.hidden_dim)
         logger.info("listener_layer_size : %d" % self.listener_layer_size)
         logger.info("speller_layer_size : %d" % self.speller_layer_size)
+        logger.info("n_head : %d" % self.n_head)
         logger.info("dropout : %0.2f" % self.dropout)
         logger.info("batch_size : %d" % self.batch_size)
         logger.info("worker_num : %d" % self.worker_num)
