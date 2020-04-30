@@ -68,7 +68,7 @@ class Speller(nn.Module):
         self.device = device
         self.attention = MultiHeadAttention(in_features=hidden_dim, dim=128, n_head=n_head)
 
-    def forward_step(self, input_var, h_state, context=None):
+    def forward_step(self, input_var, h_state, listener_outputs=None):
         embedded = self.embedding(input_var).to(self.device)
         embedded = self.input_dropout(embedded)
 
@@ -79,27 +79,25 @@ class Speller(nn.Module):
             self.rnn.flatten_parameters()
 
         output, h_state = self.rnn(embedded, h_state)
-        output = self.attention(output, context)
+        output = self.attention(output, listener_outputs)
 
         predicted_softmax = F.log_softmax(self.fc(output.contiguous().view(-1, self.hidden_dim)), dim=1)
         return predicted_softmax, h_state
 
-    def forward(self, inputs, context, teacher_forcing_ratio=0.90, use_beam_search=False):
-        batch_size = inputs.size(0)
-        max_length = inputs.size(1) - 1  # minus the start of sequence symbol
+    def forward(self, inputs, listener_outputs, teacher_forcing_ratio=0.90, use_beam_search=False):
+        inputs, batch_size, max_length = self._validate_args(inputs, listener_outputs)
+        h_state = self._init_state(batch_size)
 
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
         decode_outputs = list()
 
-        h_state = self._init_state(batch_size)
-
         if use_beam_search:
             h_state = self._inflate(h_state, self.k, dim=1)
-            batch_size, context_length, context_dim = context.size()
-            context = self._inflate(context, self.k, dim=0)
-            context = context.view(self.k, batch_size, context_length, context_dim)
-            context = context.transpose(0, 1)
-            context = context.reshape(batch_size * self.k, context_length, context_dim)
+            batch_size, listener_output_lens, listener_dim = listener_outputs.size()
+            listener_outputs = self._inflate(listener_outputs, self.k, dim=0)
+            listener_outputs = listener_outputs.view(self.k, batch_size, listener_output_lens, listener_dim)
+            listener_outputs = listener_outputs.transpose(0, 1)
+            listener_outputs = listener_outputs.reshape(batch_size * self.k, listener_output_lens, listener_dim)
 
             beams = [Beam(self.k, self.sos_id, self.eos_id) for _ in range(batch_size)]
 
@@ -107,7 +105,7 @@ class Speller(nn.Module):
                 input_var = torch.stack([beam.current_predictions for beam in beams]).to(self.device)
                 input_var = input_var.view(-1)
 
-                predicted_softmax, h_state = self.forward_step(input_var, h_state, context)
+                predicted_softmax, h_state = self.forward_step(input_var, h_state, listener_outputs)
                 predicted_softmax = predicted_softmax.view(batch_size, self.k, -1)
 
                 for idx, beam in enumerate(beams):
@@ -133,7 +131,7 @@ class Speller(nn.Module):
         else:
             if use_teacher_forcing:
                 inputs = inputs[inputs != self.eos_id].view(batch_size, -1)
-                predicted_softmax, h_state = self.forward_step(inputs, h_state, context)
+                predicted_softmax, h_state = self.forward_step(inputs, h_state, listener_outputs)
                 predicted_softmax = predicted_softmax.view(batch_size, inputs.size(1), -1)
 
                 for di in range(predicted_softmax.size(1)):
@@ -144,7 +142,7 @@ class Speller(nn.Module):
                 input_var = inputs[:, 0].unsqueeze(1)
 
                 for di in range(max_length):
-                    predicted_softmax, h_state = self.forward_step(input_var, h_state, context)
+                    predicted_softmax, h_state = self.forward_step(input_var, h_state, listener_outputs)
                     step_output = predicted_softmax.view(batch_size, input_var.size(1), -1).squeeze(1)
                     decode_outputs.append(step_output)
                     input_var = decode_outputs[-1].topk(1)[1]
@@ -170,3 +168,13 @@ class Speller(nn.Module):
             h_state = torch.zeros(self.n_layers, batch_size, self.hidden_dim).to(self.device)
 
         return h_state
+
+    def _validate_args(self, inputs, listener_outputs):
+        if inputs is None:
+            inputs = torch.empty(listener_outputs.size(0), 1).type(torch.long)
+            inputs[:, 0] = self.sos_id
+
+        batch_size = inputs.size(0)
+        max_length = inputs.size(1) - 1  # minus the start of sequence symbol
+
+        return inputs, batch_size, max_length

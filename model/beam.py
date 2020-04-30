@@ -43,7 +43,7 @@ class Beam(object):
             # assumes there are len(predicted_softmax_clone) predictions OTHER
             # than EOS that are greater than -1e20
             for idx in range(len(predicted_softmax)):
-                predicted_softmax[idx][self.eos_id] = -1e10
+                predicted_softmax[idx][self.eos_id] = -1e20
 
         # Sum the previous scores.
         if len(self.prev_ks) > 0:
@@ -51,7 +51,7 @@ class Beam(object):
             # Don't let EOS have children.
             for i in range(self.k):
                 if self.next_ys[-1][i] == self.eos_id:
-                    beam_scores[i] = -1e10
+                    beam_scores[i] = -1e20
 
         else:
             beam_scores = predicted_softmax[0]

@@ -39,8 +39,7 @@ def test(model, queue, device):
             targets = targets.to(device)
             scripts = targets[:, 1:]
 
-            model.flatten_parameters()
-            y_hat, _ = model(inputs, targets, teacher_forcing_ratio=0.0, use_beam_search=True)
+            y_hat, logits = model(inputs, targets, teacher_forcing_ratio=0.0, use_beam_search=True)
 
             dist, length = get_distance(scripts, y_hat, id2char, char2id, EOS_token)
             total_dist += dist
@@ -59,7 +58,7 @@ def test(model, queue, device):
 if __name__ == '__main__':
     warnings.filterwarnings('ignore')
 
-    config = Config(batch_size=4)
+    config = Config(batch_size=1)
     cuda = config.use_cuda and torch.cuda.is_available()
     device = torch.device('cuda' if cuda else 'cpu')
 
@@ -73,7 +72,7 @@ if __name__ == '__main__':
     model = torch.load('./data/weight_file/epoch4.pt', map_location=torch.device('cpu')).module
     model.listener.device = 'cpu'
     model.speller.device = 'cpu'
-    model.set_beam_size(k=3)
+    model.set_beam_size(k=2)
 
     audio_paths, label_paths = load_data_list(data_list_path=SAMPLE_LIST_PATH, dataset_path=SAMPLE_DATASET_PATH)
     target_dict = load_targets(label_paths)
