@@ -4,6 +4,40 @@ import numpy as np
 import random
 
 
+def get_spectrogram_feature(filepath, input_reverse=True, normalize=False, del_silence=False,
+                            sr=16000, window_size=20, stride=10):
+    if filepath.endswith('.pcm'):
+        pcm = np.memmap(filepath, dtype='h', mode='r')
+        signal = np.array([float(x) for x in pcm])
+
+    elif filepath.endswith('.wav'):
+        signal, _ = librosa.core.load(filepath, sr=sr)
+
+    else:
+        raise ValueError("%s is not Supported." % filepath.split('.')[-1])
+
+    N_FFT = int(sr * 0.001 * window_size)
+    STRIDE = int(sr * 0.001 * stride)
+
+    stft = torch.stft(torch.FloatTensor(signal),
+                      N_FFT,
+                      hop_length=STRIDE,
+                      win_length=N_FFT,
+                      window=torch.hamming_window(N_FFT),
+                      center=False,
+                      normalized=False,
+                      onesided=True
+                      )
+
+    stft = (stft[:, :, 0].pow(2) + stft[:, :, 1].pow(2)).pow(0.5)  # (N_FFT / 2 + 1 * T)
+    amag = stft.numpy()
+    feat = torch.FloatTensor(amag)
+    feat = torch.FloatTensor(feat).transpose(0, 1)
+    feat -= feat.mean()
+
+    return feat
+
+
 def get_librosa_spectrogram(filepath, input_reverse=True, normalize=False, del_silence=False,
                             sr=16000, window_size=20, stride=10):
     if filepath.endswith('.pcm'):
