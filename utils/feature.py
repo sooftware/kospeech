@@ -190,6 +190,9 @@ def spec_augment(spectrogram, time_mask_para=70, freq_mask_para=20, time_mask_nu
     length = spectrogram.size(0)
     n_mels = spectrogram.size(1)
 
+    if length < time_mask_para / 2:
+        return spectrogram
+
     # time mask
     for _ in range(time_mask_num):
         t = np.random.uniform(low=0.0, high=time_mask_para)
