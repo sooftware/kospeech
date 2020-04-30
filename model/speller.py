@@ -133,10 +133,7 @@ class Speller(nn.Module):
                 inputs = inputs[inputs != self.eos_id].view(batch_size, -1)
 
                 predicted_softmax, h_state = self.forward_step(inputs, h_state, listener_outputs)
-                print(predicted_softmax.size())
                 predicted_softmax = predicted_softmax.view(batch_size, inputs.size(1), -1)
-                print(predicted_softmax.size())
-                exit()
 
                 for di in range(predicted_softmax.size(1)):
                     step_output = predicted_softmax[:, di, :]
