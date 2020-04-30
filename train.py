@@ -38,12 +38,12 @@ if __name__ == '__main__':
         use_label_smooth=True,
         input_reverse=True,
         use_augment=True,
-        use_pickle=True,
+        use_pickle=False,
         use_cuda=True,
         augment_num=1,
         hidden_dim=256,
         dropout=0.3,
-        n_head=12,
+        n_head=8,
         listener_layer_size=5,
         speller_layer_size=3,
         batch_size=8,
@@ -113,7 +113,7 @@ if __name__ == '__main__':
     else:
         criterion = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_token).to(device)
 
-    audio_paths, label_paths = load_data_list(data_list_path=TRAIN_LIST_PATH, dataset_path=DATASET_PATH)
+    audio_paths, label_paths = load_data_list(data_list_path=SAMPLE_LIST_PATH, dataset_path=SAMPLE_DATASET_PATH)
 
     if config.use_pickle:
         target_dict = load_pickle(TARGET_DICT_PATH, "load all target_dict using pickle complete !!")
