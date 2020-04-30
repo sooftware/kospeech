@@ -4,8 +4,7 @@ import numpy as np
 import random
 
 
-def get_spectrogram_feature(filepath, input_reverse=True, normalize=False, del_silence=False,
-                            sr=16000, window_size=20, stride=10):
+def get_spectrogram_feature(filepath, sr=16000, window_size=20, stride=10):
     if filepath.endswith('.pcm'):
         pcm = np.memmap(filepath, dtype='h', mode='r')
         signal = np.array([float(x) for x in pcm])
