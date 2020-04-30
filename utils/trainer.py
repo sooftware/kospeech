@@ -61,6 +61,8 @@ def supervised_train(model, config, epoch, total_time_step, queue,
         model.module.flatten_parameters()
         y_hat, logit = model(inputs, scripts, teacher_forcing_ratio=teacher_forcing_ratio)
 
+        print(logit.size())
+        print(targets.size())
         loss = criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
         epoch_loss_total += loss.item()
 

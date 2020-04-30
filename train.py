@@ -53,7 +53,7 @@ if __name__ == '__main__':
         init_lr=0.001,
         high_plateau_lr=0.0003,
         low_plateau_lr=0.00001,
-        teacher_forcing=0.99,
+        teacher_forcing=1.0,
         seed=1,
         max_len=151,
         load_model=False,
