@@ -194,7 +194,7 @@ def spec_augment(spectrogram, time_mask_para=70, freq_mask_para=20, time_mask_nu
     for _ in range(time_mask_num):
         t = np.random.uniform(low=0.0, high=time_mask_para)
         t = int(t)
-        t0 = random.randint(0, length - t)
+        t0 = random.randint(0, abs(length - t))
         spectrogram[t0: t0 + t, :] = 0
 
     # freq mask
