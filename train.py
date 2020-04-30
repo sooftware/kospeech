@@ -40,7 +40,7 @@ if __name__ == '__main__':
         use_augment=True,
         use_pickle=True,
         use_cuda=True,
-        augment_ratio=1.0,
+        augment_num=1,
         hidden_dim=256,
         dropout=0.3,
         n_head=12,
@@ -86,7 +86,7 @@ if __name__ == '__main__':
             device=device
         )
         speller = Speller(
-            n_class=len(char2id),
+            num_class=len(char2id),
             max_length=config.max_len,
             k=5,
             hidden_dim=config.hidden_dim << (1 if config.use_bidirectional else 0),

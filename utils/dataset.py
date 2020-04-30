@@ -8,7 +8,7 @@ from utils.util import get_label, save_pickle
 
 class SpectrogramDataset(Dataset):
     """
-    Dataset for audio & label matching
+    Dataset for audio & label matchingf
 
     Args:
         audio_paths (list): set of audio path
