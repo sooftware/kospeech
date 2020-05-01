@@ -24,9 +24,7 @@ class SpectrogramDataset(Dataset):
         self.label_paths = list(label_paths)
         self.sos_id = sos_id
         self.eos_id = eos_id
-        self.batch_size = config.batch_size
         self.target_dict = target_dict
-        self.input_reverse = config.input_reverse
         self.augment_num = config.augment_num
         self.augment_flags = [False] * len(self.audio_paths)
         self.config = config
@@ -38,8 +36,8 @@ class SpectrogramDataset(Dataset):
         label = get_label(self.label_paths[idx], self.sos_id, self.eos_id, self.target_dict)
         spectrogram = get_librosa_melspectrogram(
             self.audio_paths[idx],
-            n_mels=80,
-            input_reverse=self.input_reverse,
+            n_mels=self.config.n_mels,
+            input_reverse=self.config.input_reverse,
             del_silence=True,
             normalize=True,
             sr=self.config.sr,
@@ -85,7 +83,7 @@ class SpectrogramDataset(Dataset):
 
 def split_dataset(config, audio_paths, label_paths, valid_ratio=0.05, target_dict=None):
     """
-    Dataset split into training and validation Dataset.
+    split into training set and validation set.
 
     Args:
         valid_ratio: validation set ratio of total dataset

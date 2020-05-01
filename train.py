@@ -42,18 +42,23 @@ if __name__ == '__main__':
         use_cuda=True,
         augment_num=1,
         hidden_dim=256,
-        dropout=0.3,
-        n_head=8,
+        dropout=0.4,
+        num_head=16,
+        attn_dim=64,
         listener_layer_size=5,
         speller_layer_size=3,
-        batch_size=8,
+        batch_size=32,
         worker_num=1,
         max_epochs=40,
-        use_multistep_lr=False,
-        init_lr=0.001,
-        high_plateau_lr=0.0003,
-        low_plateau_lr=0.00001,
+        lr=0.001,
         teacher_forcing=1.0,
+        sr=16000,
+        window_size=20,
+        stride=10,
+        n_mels=80,
+        save_result_every=1000,
+        save_model_every=10000,
+        print_every=10,
         seed=1,
         max_len=151,
         load_model=False,
@@ -80,7 +85,7 @@ if __name__ == '__main__':
             in_features=80,
             hidden_dim=config.hidden_dim,
             dropout_p=config.dropout,
-            n_layers=config.listener_layer_size,
+            num_layers=config.listener_layer_size,
             bidirectional=config.use_bidirectional,
             rnn_type='gru',
             device=device
@@ -92,10 +97,11 @@ if __name__ == '__main__':
             hidden_dim=config.hidden_dim << (1 if config.use_bidirectional else 0),
             sos_id=SOS_token,
             eos_id=EOS_token,
-            n_layers=config.speller_layer_size,
+            num_layers=config.speller_layer_size,
             rnn_type='gru',
             dropout_p=config.dropout,
-            n_head=config.n_head,
+            num_head=config.num_head,
+            attn_dim=config.attn_dim,
             device=device
         )
         model = ListenAttendSpell(listener, speller)
@@ -105,7 +111,7 @@ if __name__ == '__main__':
         for param in model.parameters():
             param.data.uniform_(-0.08, 0.08)
 
-    optimizer = optim.Adam(model.module.parameters(), lr=config.init_lr)
+    optimizer = optim.Adam(model.module.parameters(), lr=config.lr)
     scheduler = ReduceLROnPlateau(optimizer, 'min', patience=1)
 
     if config.use_label_smooth:
@@ -150,7 +156,6 @@ if __name__ == '__main__':
             device=device,
             train_begin=train_begin,
             worker_num=config.worker_num,
-            print_every=10,
             teacher_forcing_ratio=config.teacher_forcing
         )
         train_loader.join()

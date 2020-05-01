@@ -12,6 +12,13 @@ supported_rnns = {
 }
 
 
+def _inflate(tensor, n_repeat, dim):
+    repeat_dims = [1] * len(tensor.size())
+    repeat_dims[dim] *= n_repeat
+
+    return tensor.repeat(*repeat_dims)
+
+
 class Speller(nn.Module):
     r"""
     Converts higher level features (from listener) into output utterances
@@ -23,7 +30,7 @@ class Speller(nn.Module):
         hidden_dim (int): the number of features in the hidden state `h`
         sos_id (int): index of the start of sentence symbol
         eos_id (int): index of the end of sentence symbol
-        n_layers (int, optional): number of recurrent layers (default: 1)
+        num_layers (int, optional): number of recurrent layers (default: 1)
         rnn_type (str, optional): type of RNN cell (default: gru)
         dropout_p (float, optional): dropout probability for the output sequence (default: 0)
         k (int) : size of beam
@@ -43,30 +50,30 @@ class Speller(nn.Module):
 
     Examples::
 
-        >>> speller = Speller(num_class, max_length, hidden_dim, sos_id, eos_id, n_layers)
+        >>> speller = Speller(num_class, max_length, hidden_dim, sos_id, eos_id, num_layers)
         >>> y_hats, logits = speller(inputs, context, teacher_forcing_ratio=0.90)
     """
 
-    def __init__(self, num_class, max_length, hidden_dim, sos_id, eos_id, n_head,
-                 n_layers=1, rnn_type='gru', dropout_p=0.5, device=None, k=5):
+    def __init__(self, num_class, max_length, hidden_dim, sos_id, eos_id, num_head, attn_dim=64,
+                 num_layers=1, rnn_type='gru', dropout_p=0.5, device=None, k=5):
 
         super(Speller, self).__init__()
         assert rnn_type.lower() in supported_rnns.keys(), 'RNN type not supported.'
 
         self.num_class = num_class
         self.rnn_cell = supported_rnns[rnn_type]
-        self.rnn = self.rnn_cell(hidden_dim, hidden_dim, n_layers, batch_first=True, dropout=dropout_p).to(device)
+        self.rnn = self.rnn_cell(hidden_dim, hidden_dim, num_layers, batch_first=True, dropout=dropout_p).to(device)
         self.max_length = max_length
         self.eos_id = eos_id
         self.sos_id = sos_id
         self.hidden_dim = hidden_dim
         self.embedding = nn.Embedding(num_class, self.hidden_dim)
-        self.n_layers = n_layers
+        self.num_layers = num_layers
         self.input_dropout = nn.Dropout(p=dropout_p)
         self.k = k
         self.fc = nn.Linear(self.hidden_dim, num_class)
         self.device = device
-        self.attention = MultiHeadAttention(in_features=hidden_dim, dim=128, n_head=n_head)
+        self.attention = MultiHeadAttention(in_features=hidden_dim, dim=attn_dim, num_head=num_head)
 
     def forward_step(self, input_var, h_state, listener_outputs=None):
         embedded = self.embedding(input_var).to(self.device)
@@ -125,12 +132,12 @@ class Speller(nn.Module):
 
     def init_state(self, batch_size):
         if isinstance(self.rnn, nn.LSTM):
-            h_0 = torch.zeros(self.n_layers, batch_size, self.hidden_dim).to(self.device)
-            c_0 = torch.zeros(self.n_layers, batch_size, self.hidden_dim).to(self.device)
+            h_0 = torch.zeros(self.num_layers, batch_size, self.hidden_dim).to(self.device)
+            c_0 = torch.zeros(self.num_layers, batch_size, self.hidden_dim).to(self.device)
             h_state = (h_0, c_0)
 
         else:
-            h_state = torch.zeros(self.n_layers, batch_size, self.hidden_dim).to(self.device)
+            h_state = torch.zeros(self.num_layers, batch_size, self.hidden_dim).to(self.device)
 
         return h_state
 
