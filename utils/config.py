@@ -7,7 +7,7 @@ class Config:
 
     Args:
         use_bidirectional (bool): if True, becomes a bidirectional listener (default: True)
-        use_label_smooth (bool): flag indication whether to use label smoothing or not (default: True)
+        label_smoothing (float): ratio of label smoothing. 0.0 means apply nn.CrossEntropy() (default: 0.1)
         input_reverse (bool): flag indication whether to reverse input feature or not (default: True)
         use_pickle (bool): flag indication whether to load data from pickle or not (default: False)
         use_augment (bool): flag indication whether to use spec-augmentation or not (default: True)
@@ -20,7 +20,7 @@ class Config:
         worker_num (int): num of cpu core will be used (default: 1)
         max_epochs (int): max epoch (default: 40)
         lr (float): initial learning rate (default: 1e-4)
-        teacher_forcing (float): The probability that teacher forcing will be used (default: 0.90)
+        teacher_forcing_ratio (float): The probability that teacher forcing will be used (default: 0.90)
         seed (int): seed for random (default: 1)
         max_len (int): a maximum allowed length for the sequence to be processed (default: 120)
         use_cuda (bool): if True, use CUDA (default: True)

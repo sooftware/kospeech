@@ -9,8 +9,8 @@ class ListenAttendSpell(nn.Module):
         listener (torch.nn.Module): encoder of seq2seq
         speller (torch.nn.Module): decoder of seq2seq
 
-    Inputs: feats, targets, teacher_forcing_ratio, use_beam_search
-        - **feats** (torch.Tensor): tensor of sequences, whose length is the batch size and within which
+    Inputs: inputs, targets, teacher_forcing_ratio, use_beam_search
+        - **inputs** (torch.Tensor): tensor of sequences, whose length is the batch size and within which
           each sequence is a list of token IDs. This information is forwarded to the encoder.
         - **targets** (torch.Tensor): tensor of sequences, whose length is the batch size and within which
           each sequence is a list of token IDs. This information is forwarded to the decoder.
@@ -47,6 +47,7 @@ class ListenAttendSpell(nn.Module):
         return hypothesis, logits
 
     def set_beam_size(self, k):
+        """ Set size of beam """
         self.speller.k = k
 
     def flatten_parameters(self):

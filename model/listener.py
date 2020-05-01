@@ -8,8 +8,7 @@ supported_rnns = {
 
 
 class Listener(nn.Module):
-    r"""
-    Converts low level speech signals into higher level features
+    r"""Converts low level speech signals into higher level features
 
     Args:
         rnn_type (str, optional): type of RNN cell (default: gru)

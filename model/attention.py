@@ -4,8 +4,7 @@ import torch.nn.functional as F
 
 
 class MultiHeadAttention(nn.Module):
-    r"""
-    Applies a multi-head attention mechanism on the output features from the decoder.
+    r"""Applies a multi-head attention mechanism on the output features from the decoder.
 
     Refer to 「State-of-the-art Speech Recognition With Sequence-to-Sequence Models」 Paper
     https://arxiv.org/abs/1712.01769
@@ -25,7 +24,7 @@ class MultiHeadAttention(nn.Module):
 
     Examples::
         >>> attention = MultiHeadAttention(in_features=512, n_head=8, dim=64)
-        >>> output = attention(queries, values)
+        >>> output = attention(Q, V)
     """
 
     def __init__(self, in_features, num_head=8, dim=64):

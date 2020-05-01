@@ -13,6 +13,7 @@ supported_rnns = {
 
 
 def _inflate(tensor, n_repeat, dim):
+    """ Given a tensor, 'inflates' it along the given dimension by replicating each slice specified number of times  """
     repeat_dims = [1] * len(tensor.size())
     repeat_dims[dim] *= n_repeat
 
@@ -20,8 +21,7 @@ def _inflate(tensor, n_repeat, dim):
 
 
 class Speller(nn.Module):
-    r"""
-    Converts higher level features (from listener) into output utterances
+    r"""Converts higher level features (from listener) into output utterances
     by specifying a probability distribution over sequences of characters.
 
     Args:
@@ -131,6 +131,7 @@ class Speller(nn.Module):
         return hypothesis, logit
 
     def init_state(self, batch_size):
+        """ Initialize hidden state - Create h_0 """
         if isinstance(self.rnn, nn.LSTM):
             h_0 = torch.zeros(self.num_layers, batch_size, self.hidden_dim).to(self.device)
             c_0 = torch.zeros(self.num_layers, batch_size, self.hidden_dim).to(self.device)
@@ -142,6 +143,7 @@ class Speller(nn.Module):
         return h_state
 
     def _validate_args(self, inputs, listener_outputs):
+        """ Validate arguments """
         batch_size = listener_outputs.size(0)
 
         if inputs is None:

@@ -11,8 +11,7 @@ def _inflate(tensor, n_repeat, dim):
 
 
 class BeamSearch(nn.Module):
-    r"""
-    Applies beam search decoing (Top k decoding)
+    r"""Applies beam search decoing (Top k decoding)
 
     Args:
         decoder (nn.Module): decoder to which beam search will be applied
@@ -127,6 +126,7 @@ class BeamSearch(nn.Module):
         return self.get_hypothesis()
 
     def get_successor(self, current_ps, current_vs, finished_ids, num_successor, eos_cnt, k):
+        """ Get successor of finish beam """
         finished_batch_idx, finished_idx = finished_ids
 
         successor_ids = current_ps.topk(k + num_successor)[1]
@@ -153,6 +153,7 @@ class BeamSearch(nn.Module):
         return eos_cnt
 
     def get_hypothesis(self):
+        """ Get the hypothesis of beam search process """
         hypothesis = list()
 
         for batch_idx, batch in enumerate(self.finished):
@@ -175,6 +176,7 @@ class BeamSearch(nn.Module):
         return hypothesis
 
     def is_all_finished(self, k):
+        """ Check all process finished """
         for done in self.finished:
             if len(done) < k:
                 return False
@@ -182,6 +184,7 @@ class BeamSearch(nn.Module):
         return True
 
     def fill_sequence(self, hypothesis):
+        """ Fill a sequence with hypothesis and ' ' """
         batch_size = len(hypothesis)
         max_length = -1
 
@@ -189,13 +192,13 @@ class BeamSearch(nn.Module):
             if len(y_hat) > max_length:
                 max_length = len(y_hat)
 
-        matched = torch.zeros((batch_size, max_length), dtype=torch.long).to(self.device)
+        sequence = torch.zeros((batch_size, max_length), dtype=torch.long).to(self.device)
 
         for batch_idx, y_hat in enumerate(hypothesis):
-            matched[batch_idx, :len(y_hat)] = y_hat
-            matched[batch_idx, len(y_hat):] = int(char2id[' '])
+            sequence[batch_idx, :len(y_hat)] = y_hat
+            sequence[batch_idx, len(y_hat):] = int(char2id[' '])
 
-        return matched
+        return sequence
 
     def get_length_penalty(self, length):
         """
