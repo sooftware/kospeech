@@ -33,7 +33,6 @@ def get_torch_spectrogram(filepath, sr=16000, window_size=20, stride=10):
     spectrogram = np.log1p(spectrogram.numpy())
     spectrogram = torch.FloatTensor(spectrogram).transpose(0, 1)
     spectrogram -= spectrogram.mean()
-
     return spectrogram
 
 

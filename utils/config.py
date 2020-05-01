@@ -40,11 +40,12 @@ class Config:
                  speller_layer_size=3,
                  num_head=12,
                  attn_dim=64,
+                 label_smoothing=0.1,
                  batch_size=32,
                  worker_num=1,
                  max_epochs=40,
                  lr=0.001,
-                 teacher_forcing=0.99,
+                 teacher_forcing_ratio=0.99,
                  seed=1,
                  max_len=151,
                  load_model=False,
@@ -58,7 +59,6 @@ class Config:
                  print_every=10,
                  ):
         self.use_bidirectional = use_bidirectional
-        self.use_label_smooth = use_label_smooth
         self.input_reverse = input_reverse
         self.use_augment = use_augment
         self.use_pickle = use_pickle
@@ -73,8 +73,9 @@ class Config:
         self.max_epochs = max_epochs
         self.num_head = num_head
         self.attn_dim = attn_dim
+        self.label_smoothing = label_smoothing
         self.lr = lr
-        self.teacher_forcing = teacher_forcing
+        self.teacher_forcing_ratio = teacher_forcing_ratio
         self.seed = seed
         self.max_len = max_len
         self.n_mels = n_mels
@@ -105,7 +106,7 @@ class Config:
         logger.info("worker_num : %d" % self.worker_num)
         logger.info("max_epochs : %d" % self.max_epochs)
         logger.info("initial learning rate : %0.4f" % self.lr)
-        logger.info("teacher_forcing_ratio : %0.2f" % self.teacher_forcing)
+        logger.info("teacher_forcing_ratio : %0.2f" % self.teacher_forcing_ratio)
         logger.info("seed : %d" % self.seed)
         logger.info("max_len : %d" % self.max_len)
         logger.info("use_cuda : %s" % str(self.use_cuda))

@@ -2,7 +2,7 @@ import random
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from model.beam import BeamSearch
+from model.beamsearch import BeamSearch
 from model.attention import MultiHeadAttention
 
 supported_rnns = {
@@ -64,16 +64,16 @@ class Speller(nn.Module):
         self.rnn_cell = supported_rnns[rnn_type]
         self.rnn = self.rnn_cell(hidden_dim, hidden_dim, num_layers, batch_first=True, dropout=dropout_p).to(device)
         self.max_length = max_length
-        self.eos_id = eos_id
-        self.sos_id = sos_id
         self.hidden_dim = hidden_dim
         self.embedding = nn.Embedding(num_class, self.hidden_dim)
         self.num_layers = num_layers
         self.input_dropout = nn.Dropout(p=dropout_p)
         self.k = k
         self.fc = nn.Linear(self.hidden_dim, num_class)
-        self.device = device
         self.attention = MultiHeadAttention(in_features=hidden_dim, dim=attn_dim, num_head=num_head)
+        self.eos_id = eos_id
+        self.sos_id = sos_id
+        self.device = device
 
     def forward_step(self, input_var, h_state, listener_outputs=None):
         embedded = self.embedding(input_var).to(self.device)

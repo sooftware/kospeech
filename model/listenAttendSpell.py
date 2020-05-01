@@ -9,7 +9,6 @@ class ListenAttendSpell(nn.Module):
     Args:
         listener (torch.nn.Module): encoder of seq2seq
         speller (torch.nn.Module): decoder of seq2seq
-        function (torch.nn.functional): A function used to generate symbols from RNN hidden state
 
     Inputs: feats, targets, teacher_forcing_ratio, use_beam_search
         - **feats** (torch.Tensor): tensor of sequences, whose length is the batch size and within which
@@ -34,7 +33,6 @@ class ListenAttendSpell(nn.Module):
     """
     def __init__(self, listener, speller):
         super(ListenAttendSpell, self).__init__()
-
         self.listener = listener
         self.speller = speller
 

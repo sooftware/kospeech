@@ -35,7 +35,6 @@ from utils.util import save_epoch_result
 if __name__ == '__main__':
     config = Config(
         use_bidirectional=True,
-        use_label_smooth=True,
         input_reverse=True,
         use_augment=True,
         use_pickle=False,
@@ -45,13 +44,14 @@ if __name__ == '__main__':
         dropout=0.4,
         num_head=16,
         attn_dim=64,
+        label_smoothing=0.1,
         listener_layer_size=5,
         speller_layer_size=3,
         batch_size=32,
         worker_num=1,
         max_epochs=40,
         lr=0.001,
-        teacher_forcing=1.0,
+        teacher_forcing_ratio=1.0,
         sr=16000,
         window_size=20,
         stride=10,
@@ -114,10 +114,10 @@ if __name__ == '__main__':
     optimizer = optim.Adam(model.module.parameters(), lr=config.lr)
     scheduler = ReduceLROnPlateau(optimizer, 'min', patience=1)
 
-    if config.use_label_smooth:
-        criterion = LabelSmoothingLoss(len(char2id), ignore_index=PAD_token, smoothing=0.1, dim=-1).to(device)
-    else:
+    if config.label_smoothing == 0.0:
         criterion = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_token).to(device)
+    else:
+        criterion = LabelSmoothingLoss(len(char2id), PAD_token, config.label_smoothing, dim=-1).to(device)
 
     audio_paths, label_paths = load_data_list(data_list_path=SAMPLE_LIST_PATH, dataset_path=SAMPLE_DATASET_PATH)
 
@@ -156,7 +156,7 @@ if __name__ == '__main__':
             device=device,
             train_begin=train_begin,
             worker_num=config.worker_num,
-            teacher_forcing_ratio=config.teacher_forcing
+            teacher_forcing_ratio=config.teacher_forcing_ratio
         )
         train_loader.join()
 
