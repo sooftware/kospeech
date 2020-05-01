@@ -72,16 +72,16 @@ class Speller(nn.Module):
         embedded = self.embedding(input_var).to(self.device)
         embedded = self.input_dropout(embedded)
 
-        if len(embedded.size()) == 2:
+        if len(embedded.size()) == 2:  # if beam search
             embedded = embedded.unsqueeze(1)
 
         if self.training:
             self.rnn.flatten_parameters()
 
         output, h_state = self.rnn(embedded, h_state)
-        output = self.attention(output, listener_outputs)
+        context = self.attention(output, listener_outputs)
 
-        predicted_softmax = F.log_softmax(self.fc(output.contiguous().view(-1, self.hidden_dim)), dim=1)
+        predicted_softmax = F.log_softmax(self.fc(context.contiguous().view(-1, self.hidden_dim)), dim=1)
         return predicted_softmax, h_state
 
     def forward(self, inputs, listener_outputs, teacher_forcing_ratio=0.90, use_beam_search=False):
@@ -142,9 +142,10 @@ class Speller(nn.Module):
             else:
                 input_var = inputs[:, 0].unsqueeze(1)
 
-                for di in range(self.max_length):
+                for di in range(max_length):
                     predicted_softmax, h_state = self.forward_step(input_var, h_state, listener_outputs)
-                    step_output = predicted_softmax.view(batch_size, input_var.size(1), -1).squeeze(1)
+                    # step_output = predicted_softmax.view(batch_size, input_var.size(1), -1).squeeze(1)
+                    step_output = predicted_softmax.view(batch_size, 1, -1).squeeze(1)
                     decode_outputs.append(step_output)
                     input_var = decode_outputs[-1].topk(1)[1]
 
@@ -171,11 +172,14 @@ class Speller(nn.Module):
         return h_state
 
     def _validate_args(self, inputs, listener_outputs):
+        batch_size = inputs.size(0)
+
         if inputs is None:
             inputs = torch.empty(listener_outputs.size(0), 1).type(torch.long)
             inputs[:, 0] = self.sos_id
+            max_length = self.max_length
 
-        batch_size = inputs.size(0)
-        max_length = inputs.size(1) - 1  # minus the start of sequence symbol
+        else:
+            max_length = inputs.size(1) - 1  # minus the start of sequence symbol
 
         return inputs, batch_size, max_length
