@@ -12,14 +12,6 @@ supported_rnns = {
 }
 
 
-def _inflate(tensor, n_repeat, dim):
-    """ Given a tensor, 'inflates' it along the given dimension by replicating each slice specified number of times  """
-    repeat_dims = [1] * len(tensor.size())
-    repeat_dims[dim] *= n_repeat
-
-    return tensor.repeat(*repeat_dims)
-
-
 class Speller(nn.Module):
     r"""Converts higher level features (from listener) into output utterances
     by specifying a probability distribution over sequences of characters.

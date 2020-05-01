@@ -4,6 +4,7 @@ from utils.definition import char2id
 
 
 def _inflate(tensor, n_repeat, dim):
+    """ Given a tensor, 'inflates' it along the given dimension by replicating each slice specified number of times  """
     repeat_dims = [1] * len(tensor.size())
     repeat_dims[dim] *= n_repeat
 
