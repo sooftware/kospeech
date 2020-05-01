@@ -28,7 +28,6 @@ class Config:
 
     def __init__(self,
                  use_bidirectional=True,
-                 use_label_smooth=True,
                  input_reverse=True,
                  use_augment=True,
                  use_pickle=False,
