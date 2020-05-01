@@ -27,8 +27,8 @@ class BeamSearch(nn.Module):
         - **hypothesis** : predicted y values (y_hat) by the model
 
     Examples::
-        >>> attention = MultiHeadAttention(in_features=512, n_head=8, dim=64)
-        >>> output = attention(queries, values)
+        >>> search = BeamSearch(self, batch_size)
+        >>> hypothesis = search(inputs, listener_outputs, k=self.k)
     """
     def __init__(self, decoder, batch_size):
         super(BeamSearch, self).__init__()
