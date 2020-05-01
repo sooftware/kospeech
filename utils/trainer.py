@@ -6,9 +6,8 @@ from utils.util import get_distance, save_step_result
 train_step_result = {'loss': [], 'cer': []}
 
 
-def supervised_train(model, config, epoch, total_time_step, queue,
-                     criterion, optimizer, device, train_begin, worker_num,
-                     print_every=10, teacher_forcing_ratio=0.90):
+def supervised_train(model, config, epoch, total_time_step, queue, criterion, optimizer,
+                     device, train_begin, worker_num, teacher_forcing_ratio=0.90):
     r"""
     Args:
         train_begin: train begin time
@@ -18,7 +17,6 @@ def supervised_train(model, config, epoch, total_time_step, queue,
         model (torch.nn.Module): Model to be trained
         optimizer (torch.optim): optimizer for training
         teacher_forcing_ratio (float):  The probability that teacher forcing will be used (default: 0.90)
-        print_every (int): Parameters to determine how many steps to output
         queue (Queue.queue): queue for threading
         criterion (torch.nn): one of PyTorch’s loss function.
           Refer to http://pytorch.org/docs/master/nn.html#loss-functions for a list of them.
@@ -35,8 +33,6 @@ def supervised_train(model, config, epoch, total_time_step, queue,
     total_length = 0
     time_step = 0
     max_norm = 400
-    save_model_every = 10000
-    save_result_every = 1000
 
     model.train()
     begin = epoch_begin = time.time()
@@ -78,7 +74,7 @@ def supervised_train(model, config, epoch, total_time_step, queue,
         time_step += 1
         torch.cuda.empty_cache()
 
-        if time_step % print_every == 0:
+        if time_step % config.print_every == 0:
             current = time.time()
             elapsed = current - begin
             epoch_elapsed = (current - epoch_begin) / 60.0
@@ -93,10 +89,10 @@ def supervised_train(model, config, epoch, total_time_step, queue,
             )
             begin = time.time()
 
-        if time_step % save_result_every == 0:
+        if time_step % config.save_result_every == 0:
             save_step_result(train_step_result, epoch_loss_total / total_num, total_dist / total_length)
 
-        if time_step % save_model_every == 0:
+        if time_step % config.save_model_every == 0:
             torch.save(model, "./data/weight_file/epoch_%s_step_%s.pt" % (str(epoch), str(time_step)))
 
     logger.info('train() completed')

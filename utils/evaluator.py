@@ -37,7 +37,7 @@ def evaluate(model, queue, criterion, device):
             targets = scripts[:, 1:]
 
             model.module.flatten_parameters()
-            y_hat, logit = model(inputs, scripts, teacher_forcing_ratio=0.0, use_beam_search=False)
+            y_hat, logit = model(inputs, None, teacher_forcing_ratio=0.0, use_beam_search=False)
 
             loss = criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
             total_loss += loss.item()
