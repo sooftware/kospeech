@@ -55,12 +55,12 @@ def supervised_train(model, config, epoch, total_time_step, queue, criterion, op
         targets = scripts[:, 1:]
 
         model.module.flatten_parameters()
-        y_hat, logit = model(inputs, scripts, teacher_forcing_ratio=teacher_forcing_ratio)
+        hypothesis, logit = model(inputs, scripts, teacher_forcing_ratio=teacher_forcing_ratio)
 
         loss = criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
         epoch_loss_total += loss.item()
 
-        dist, length = get_distance(targets, y_hat, id2char, char2id, EOS_token)
+        dist, length = get_distance(targets, hypothesis, id2char, char2id, EOS_token)
 
         total_num += sum(input_lengths)
         total_dist += dist

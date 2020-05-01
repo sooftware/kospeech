@@ -16,9 +16,7 @@ import random
 import torch
 import time
 import os
-
 from torch.optim.lr_scheduler import ReduceLROnPlateau
-
 from model.speller import Speller
 from model.listener import Listener
 from model.listenAttendSpell import ListenAttendSpell

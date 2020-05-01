@@ -1,5 +1,4 @@
 import torch.nn as nn
-import torch.nn.functional as F
 
 
 class ListenAttendSpell(nn.Module):
@@ -38,14 +37,14 @@ class ListenAttendSpell(nn.Module):
 
     def forward(self, inputs, targets, teacher_forcing_ratio=0.90, use_beam_search=False):
         listener_outputs, h_state = self.listener(inputs)
-        y_hats, logits = self.speller(
+        hypothesis, logits = self.speller(
             inputs=targets,
             listener_outputs=listener_outputs,
             teacher_forcing_ratio=teacher_forcing_ratio,
             use_beam_search=use_beam_search
         )
 
-        return y_hats, logits
+        return hypothesis, logits
 
     def set_beam_size(self, k):
         self.speller.k = k

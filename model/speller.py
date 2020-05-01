@@ -44,14 +44,14 @@ class Speller(nn.Module):
           drawn uniformly from 0-1 for every decoding token, and if the sample is smaller than the given value,
           teacher forcing would be used (default is 0).
 
-    Returns: y_hats, logits
-        - **y_hats** (batch, seq_len): predicted y values (y_hat) by the model
-        - **logits** (batch, seq_len, num_class): predicted log probability by the model
+    Returns: hypothesis, logit
+        - **hypothesis** (batch, seq_len): predicted y values (y_hat) by the model
+        - **logit** (batch, seq_len, num_class): predicted log probability by the model
 
     Examples::
 
         >>> speller = Speller(num_class, max_length, hidden_dim, sos_id, eos_id, num_layers)
-        >>> y_hats, logits = speller(inputs, context, teacher_forcing_ratio=0.90)
+        >>> hypothesis, logit = speller(inputs, context, teacher_forcing_ratio=0.90)
     """
 
     def __init__(self, num_class, max_length, hidden_dim, sos_id, eos_id, num_head, attn_dim=64,
@@ -92,7 +92,7 @@ class Speller(nn.Module):
         return predicted_softmax, h_state
 
     def forward(self, inputs, listener_outputs, teacher_forcing_ratio=0.90, use_beam_search=False):
-        y_hats, logits = None, None
+        hypothesis, logit = None, None
 
         inputs, batch_size, max_length = self._validate_args(inputs, listener_outputs)
         h_state = self.init_state(batch_size)
@@ -102,7 +102,7 @@ class Speller(nn.Module):
 
         if use_beam_search:
             search = BeamSearch(self, batch_size)
-            y_hats = search(inputs, listener_outputs, k=self.k)
+            hypothesis = search(inputs, listener_outputs, k=self.k)
 
         else:
             if use_teacher_forcing:
@@ -125,10 +125,10 @@ class Speller(nn.Module):
                     decode_outputs.append(step_output)
                     input_var = decode_outputs[-1].topk(1)[1]
 
-            logits = torch.stack(decode_outputs, dim=1).to(self.device)
-            y_hats = logits.max(-1)[1]
+            logit = torch.stack(decode_outputs, dim=1).to(self.device)
+            hypothesis = logit.max(-1)[1]
 
-        return y_hats, logits
+        return hypothesis, logit
 
     def init_state(self, batch_size):
         if isinstance(self.rnn, nn.LSTM):

@@ -11,7 +11,25 @@ def _inflate(tensor, n_repeat, dim):
 
 
 class BeamSearch(nn.Module):
+    r"""
+    Applies beam search decoing (Top k decoding)
 
+    Args:
+        decoder (nn.Module): decoder to which beam search will be applied
+        batch_size (int): batch size
+
+    Inputs: input_var, encoder_outputs, k
+        - **input_var** : sequence of sos_id
+        - **encoder_outputs** : tensor containing the encoded features of the input sequence
+        - **l** : size of beam
+
+    Returns: hypothesis
+        - **hypothesis** : predicted y values (y_hat) by the model
+
+    Examples::
+        >>> attention = MultiHeadAttention(in_features=512, n_head=8, dim=64)
+        >>> output = attention(queries, values)
+    """
     def __init__(self, decoder, batch_size):
         super(BeamSearch, self).__init__()
         self.batch_size = batch_size
@@ -48,14 +66,14 @@ class BeamSearch(nn.Module):
         encoder_outputs = encoder_outputs.view(k, batch_size, -1, encoder_dim)
         encoder_outputs = encoder_outputs.transpose(0, 1)
         encoder_outputs = encoder_outputs.reshape(batch_size * k, -1, encoder_dim)
-        inflated_h_state = _inflate(h_state, k, dim=1)
+        h_state = _inflate(h_state, k, dim=1)
 
         for di in range(self.max_length - 1):
             if self.is_all_finished(k):
                 break
 
-            inflated_h_state = inflated_h_state.view(self.num_layers, batch_size * k, self.hidden_dim)
-            step_outputs, inflated_h_state = self.forward_step(input_var, inflated_h_state, encoder_outputs)
+            h_state = h_state.view(self.num_layers, batch_size * k, self.hidden_dim)
+            step_outputs, h_state = self.forward_step(input_var, h_state, encoder_outputs)
 
             step_outputs = step_outputs.view(batch_size, k, -1)
             current_ps, current_vs = step_outputs.topk(k)
@@ -86,33 +104,32 @@ class BeamSearch(nn.Module):
 
             if torch.any(topk_current_vs == self.eos_id):
                 finished_ids = torch.where(topk_current_vs == self.eos_id)
-                nexts = [1] * batch_size
+                num_successors = [1] * batch_size
 
                 for (batch_idx, idx) in zip(*finished_ids):
                     self.finished[batch_idx].append(self.ongoing_beams[batch_idx, idx])
                     self.finished_ps[batch_idx].append(self.cumulative_ps[batch_idx, idx])
 
                     if k != 1:
-                        eos_count = self.get_successor(
+                        eos_cnt = self.get_successor(
                             current_ps=current_ps,
                             current_vs=current_vs,
                             finished_ids=(batch_idx, idx),
-                            next_=nexts[batch_idx],
-                            eos_count=1,
+                            num_successor=num_successors[batch_idx],
+                            eos_cnt=1,
                             k=k
                         )
-
-                        nexts[batch_idx] += eos_count
+                        num_successors[batch_idx] += eos_cnt
 
             input_var = self.ongoing_beams[:, :, -1]
             input_var = input_var.view(batch_size * k, -1)
 
         return self.get_hypothesis()
 
-    def get_successor(self, current_ps, current_vs, finished_ids, next_, eos_count, k):
+    def get_successor(self, current_ps, current_vs, finished_ids, num_successor, eos_cnt, k):
         finished_batch_idx, finished_idx = finished_ids
 
-        successor_ids = current_ps.topk(k + next_)[1]
+        successor_ids = current_ps.topk(k + num_successor)[1]
         successor_idx = successor_ids[finished_batch_idx, -1]
 
         successor_p = current_ps[finished_batch_idx, successor_idx].to(self.device)
@@ -127,13 +144,13 @@ class BeamSearch(nn.Module):
         if int(successor_v) == self.eos_id:
             self.finished[finished_batch_idx].append(successor)
             self.finished_ps[finished_batch_idx].append(successor_p)
-            eos_count = self.get_successor(current_ps, current_vs, finished_ids, next_ + eos_count, eos_count + 1, k)
+            eos_cnt = self.get_successor(current_ps, current_vs, finished_ids, num_successor + eos_cnt, eos_cnt + 1, k)
 
         else:
             self.ongoing_beams[finished_batch_idx, finished_idx] = successor
             self.cumulative_ps[finished_batch_idx, finished_idx] = successor_p
 
-        return eos_count
+        return eos_cnt
 
     def get_hypothesis(self):
         hypothesis = list()
@@ -164,17 +181,17 @@ class BeamSearch(nn.Module):
 
         return True
 
-    def fill_sequence(self, y_hats):
-        batch_size = len(y_hats)
+    def fill_sequence(self, hypothesis):
+        batch_size = len(hypothesis)
         max_length = -1
 
-        for y_hat in y_hats:
+        for y_hat in hypothesis:
             if len(y_hat) > max_length:
                 max_length = len(y_hat)
 
         matched = torch.zeros((batch_size, max_length), dtype=torch.long).to(self.device)
 
-        for batch_idx, y_hat in enumerate(y_hats):
+        for batch_idx, y_hat in enumerate(hypothesis):
             matched[batch_idx, :len(y_hat)] = y_hat
             matched[batch_idx, len(y_hat):] = int(char2id[' '])
 

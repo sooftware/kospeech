@@ -5,7 +5,7 @@ import torch.nn.functional as F
 
 class MultiHeadAttention(nn.Module):
     r"""
-    Applies an multi-head attention mechanism on the output features from the decoder.
+    Applies a multi-head attention mechanism on the output features from the decoder.
 
     Refer to 「State-of-the-art Speech Recognition With Sequence-to-Sequence Models」 Paper
     https://arxiv.org/abs/1712.01769
