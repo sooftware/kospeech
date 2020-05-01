@@ -120,8 +120,8 @@ class Speller(nn.Module):
 
                 for di in range(max_length):
                     predicted_softmax, h_state = self.forward_step(input_var, h_state, listener_outputs)
-                    # step_output = predicted_softmax.view(batch_size, input_var.size(1), -1).squeeze(1)
                     step_output = predicted_softmax.view(batch_size, 1, -1).squeeze(1)
+
                     decode_outputs.append(step_output)
                     input_var = decode_outputs[-1].topk(1)[1]
 
