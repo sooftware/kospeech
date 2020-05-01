@@ -1,121 +1,189 @@
 import torch
+import torch.nn as nn
+from utils.definition import char2id
 
 
-class Beam(object):
-    """Class for managing the internals of the beam search process.
-    Takes care of beams, back pointers, and scores.
+def _inflate(tensor, n_repeat, dim):
+    repeat_dims = [1] * len(tensor.size())
+    repeat_dims[dim] *= n_repeat
 
-    Args:
-        k (int): Number of beams to use.
-        bos_id (int): Magic integer in output vocab.
-        eos_id (int): Magic integer in output vocab.
-        min_length (int): Shortest acceptable generation, not counting begin-of-sentence or end-of-sentence.
-    """
+    return tensor.repeat(*repeat_dims)
 
-    def __init__(self, k, bos_id, eos_id, min_length=3):
 
-        self.k = k
-        self.scores = torch.FloatTensor(k).zero_()
-        self.next_ys = [torch.LongTensor(k).fill_(bos_id)]
-        self.eos_id = eos_id
-        self.all_scores = list()
-        self.all_probs = list()
-        self.prev_ks = list()
-        self.finished = list()
-        self.min_length = min_length
+class BeamSearch(nn.Module):
 
-    @property
-    def current_predictions(self):
-        return self.next_ys[-1]
+    def __init__(self, decoder, batch_size):
+        super(BeamSearch, self).__init__()
+        self.batch_size = batch_size
+        self.hidden_dim = decoder.hidden_dim
+        self.eos_id = decoder.eos_id
+        self.rnn = decoder.rnn
+        self.fc = decoder.fc
+        self.device = decoder.device
+        self.max_length = decoder.max_length
+        self.init_state = decoder.init_state
+        self.num_layers = decoder.num_layers
+        self.ongoing_beams = None
+        self.cumulative_ps = None
+        self.finished = [[] for _ in range(batch_size)]
+        self.finished_ps = [[] for _ in range(batch_size)]
+        self.forward_step = decoder.forward_step
+        self.alpha = 1.2
+        self.min_length = 5
 
-    @property
-    def current_origin(self):
-        """Get the backpointers for the current timestep."""
-        return self.prev_ks[-1]
+    def forward(self, input_var, encoder_outputs, k=5):
+        batch_size = encoder_outputs.size(0)
+        h_state = self.init_state(batch_size)
 
-    def advance(self, predicted_softmax):
-        predicted_softmax_clone = predicted_softmax.clone()
-        num_class = predicted_softmax.size(1)
+        step_outputs, h_state = self.forward_step(input_var, h_state, encoder_outputs)
+        self.cumulative_ps, self.ongoing_beams = step_outputs.topk(k)
 
-        # force the output to be longer than self.min_length
-        current_length = len(self.next_ys)
-        if current_length <= self.min_length:
-            # assumes there are len(predicted_softmax_clone) predictions OTHER
-            # than EOS that are greater than -1e20
-            for idx in range(len(predicted_softmax)):
-                predicted_softmax[idx][self.eos_id] = -1e20
+        self.ongoing_beams = self.ongoing_beams.view(batch_size * k, 1)
+        self.cumulative_ps = self.cumulative_ps.view(batch_size * k, 1)
 
-        # Sum the previous scores.
-        if len(self.prev_ks) > 0:
-            beam_scores = predicted_softmax + self.scores.unsqueeze(1)  # beam_width * predicted_softmax
-            # Don't let EOS have children.
-            for i in range(self.k):
-                if self.next_ys[-1][i] == self.eos_id:
-                    beam_scores[i] = -1e20
+        input_var = self.ongoing_beams
+
+        encoder_dim = encoder_outputs.size(2)
+        encoder_outputs = _inflate(encoder_outputs, k, dim=0)
+        encoder_outputs = encoder_outputs.view(k, batch_size, -1, encoder_dim)
+        encoder_outputs = encoder_outputs.transpose(0, 1)
+        encoder_outputs = encoder_outputs.reshape(batch_size * k, -1, encoder_dim)
+        inflated_h_state = _inflate(h_state, k, dim=1)
+
+        for di in range(self.max_length - 1):
+            if self.is_all_finished(k):
+                break
+
+            inflated_h_state = inflated_h_state.view(self.num_layers, batch_size * k, self.hidden_dim)
+            step_outputs, inflated_h_state = self.forward_step(input_var, inflated_h_state, encoder_outputs)
+
+            step_outputs = step_outputs.view(batch_size, k, -1)
+            current_ps, current_vs = step_outputs.topk(k)
+
+            self.cumulative_ps = self.cumulative_ps.view(batch_size, k)
+            self.ongoing_beams = self.ongoing_beams.view(batch_size, k, -1)
+
+            current_ps = (current_ps.permute(0, 2, 1) + self.cumulative_ps.unsqueeze(1)).permute(0, 2, 1)
+            current_ps = current_ps.view(batch_size, k ** 2)
+            current_vs = current_vs.view(batch_size, k ** 2)
+
+            self.cumulative_ps = self.cumulative_ps.view(batch_size, k)
+            self.ongoing_beams = self.ongoing_beams.view(batch_size, k, -1)
+
+            topk_current_ps, topk_status_ids = current_ps.topk(k)
+            prev_status_ids = (topk_status_ids // k)
+
+            topk_current_vs = torch.zeros((batch_size, k), dtype=torch.long)
+            prev_status = torch.zeros(self.ongoing_beams.size(), dtype=torch.long)
+
+            for batch_idx, batch in enumerate(topk_status_ids):
+                for idx, topk_status_idx in enumerate(batch):
+                    topk_current_vs[batch_idx, idx] = current_vs[batch_idx, topk_status_idx]
+                    prev_status[batch_idx, idx] = self.ongoing_beams[batch_idx, prev_status_ids[batch_idx, idx]]
+
+            self.ongoing_beams = torch.cat([prev_status, topk_current_vs.unsqueeze(2)], dim=2).to(self.device)
+            self.cumulative_ps = topk_current_ps.to(self.device)
+
+            if torch.any(topk_current_vs == self.eos_id):
+                finished_ids = torch.where(topk_current_vs == self.eos_id)
+                nexts = [1] * batch_size
+
+                for (batch_idx, idx) in zip(*finished_ids):
+                    self.finished[batch_idx].append(self.ongoing_beams[batch_idx, idx])
+                    self.finished_ps[batch_idx].append(self.cumulative_ps[batch_idx, idx])
+
+                    if k != 1:
+                        eos_count = self.get_successor(
+                            current_ps=current_ps,
+                            current_vs=current_vs,
+                            finished_ids=(batch_idx, idx),
+                            next_=nexts[batch_idx],
+                            eos_count=1,
+                            k=k
+                        )
+
+                        nexts[batch_idx] += eos_count
+
+            input_var = self.ongoing_beams[:, :, -1]
+            input_var = input_var.view(batch_size * k, -1)
+
+        return self.get_hypothesis()
+
+    def get_successor(self, current_ps, current_vs, finished_ids, next_, eos_count, k):
+        finished_batch_idx, finished_idx = finished_ids
+
+        successor_ids = current_ps.topk(k + next_)[1]
+        successor_idx = successor_ids[finished_batch_idx, -1]
+
+        successor_p = current_ps[finished_batch_idx, successor_idx].to(self.device)
+        successor_v = current_vs[finished_batch_idx, successor_idx].to(self.device)
+
+        prev_status_idx = (successor_idx // k)
+        prev_status = self.ongoing_beams[finished_batch_idx, prev_status_idx]
+        prev_status = prev_status.view(-1)[:-1].to(self.device)
+
+        successor = torch.cat([prev_status, successor_v.view(1)])
+
+        if int(successor_v) == self.eos_id:
+            self.finished[finished_batch_idx].append(successor)
+            self.finished_ps[finished_batch_idx].append(successor_p)
+            eos_count = self.get_successor(current_ps, current_vs, finished_ids, next_ + eos_count, eos_count + 1, k)
 
         else:
-            beam_scores = predicted_softmax[0]
+            self.ongoing_beams[finished_batch_idx, finished_idx] = successor
+            self.cumulative_ps[finished_batch_idx, finished_idx] = successor_p
 
-        flat_beam_scores = beam_scores.view(-1)
-        best_scores, best_scores_id = flat_beam_scores.topk(self.k, 0, True, True)
-        self.all_probs.append(predicted_softmax_clone)
-        self.all_scores.append(self.scores)
-        self.scores = best_scores
+        return eos_count
 
-        # best_scores_id is flattened beam x word array, so calculate which
-        # word and beam each score came from
-        prev_k = best_scores_id / num_class
-        self.prev_ks.append(prev_k)
-        self.next_ys.append((best_scores_id - prev_k * num_class))
-
-        for i in range(self.k):
-            if self.next_ys[-1][i] == self.eos_id:
-                length = len(self.next_ys) - 1
-                # score = self.scores[i] / length
-                score = self.scores[i] / self.get_length_penalty(length)
-                self.finished.append((score, length, i))
-
-        # End condition is when top-of-beam is EOS and no global score.
-        if self.next_ys[-1][0] == self.eos_id:
-            self.all_scores.append(self.scores)
-
-    def sort_finished(self):
-        if len(self.finished) == 0:
-            for i in range(self.k):
-                length = len(self.next_ys) - 1
-                score = self.scores[i] / self.get_length_penalty(length)
-                self.finished.append((score, length, i))
-
-        self.finished = sorted(self.finished, key=lambda obj: obj[0], reverse=True)
-
-        scores = [sc for sc, _, _ in self.finished]
-        ks = [(t, k) for _, t, k in self.finished]
-
-        return scores, ks
-
-    def get_hypoyhesis(self, timestep, k):
-        """Walk back to construct the full hypothesis."""
+    def get_hypothesis(self):
         hypothesis = list()
-        key_index = list()
-        log_prob = list()
 
-        for j in range(len(self.prev_ks[:timestep]) - 1, -1, -1):
-            hypothesis.append(self.next_ys[j + 1][k])
-            key_index.append(k)
-            log_prob.append(self.all_probs[j][k])
-            k = self.prev_ks[j][k]
+        for batch_idx, batch in enumerate(self.finished):
+            for idx, beam in enumerate(batch):
+                self.finished_ps[batch_idx][idx] /= self.get_length_penalty(len(beam))
 
-        return hypothesis[::-1], key_index[::-1], log_prob[::-1]
+        for batch_idx, batch in enumerate(self.finished):
+            # if there is no terminated sentences, bring ongoing sentence which has the highest probability instead
+            if len(batch) == 0:
+                prob_batch = self.cumulative_ps[batch_idx].to(self.device)
+                top_beam_idx = int(prob_batch.topk(1)[1])
+                hypothesis.append(self.ongoing_beams[batch_idx, top_beam_idx])
 
-    def fill_empty_sequence(self, stack, max_length):
-        for i in range(stack.size(0), max_length):
-            stack = torch.cat([stack, stack[0].unsqueeze(0)])
-        return stack
+            # bring highest probability sentence
+            else:
+                top_beam_idx = int(torch.FloatTensor(self.finished_ps[batch_idx]).topk(1)[1])
+                hypothesis.append(self.finished[batch_idx][top_beam_idx])
 
-    def get_length_penalty(self, length, alpha=1.2, min_length=5):
+        hypothesis = self.fill_sequence(hypothesis).to(self.device)
+        return hypothesis
+
+    def is_all_finished(self, k):
+        for done in self.finished:
+            if len(done) < k:
+                return False
+
+        return True
+
+    def fill_sequence(self, y_hats):
+        batch_size = len(y_hats)
+        max_length = -1
+
+        for y_hat in y_hats:
+            if len(y_hat) > max_length:
+                max_length = len(y_hat)
+
+        matched = torch.zeros((batch_size, max_length), dtype=torch.long).to(self.device)
+
+        for batch_idx, y_hat in enumerate(y_hats):
+            matched[batch_idx, :len(y_hat)] = y_hat
+            matched[batch_idx, len(y_hat):] = int(char2id[' '])
+
+        return matched
+
+    def get_length_penalty(self, length):
         """
         Calculate length-penalty.
         because shorter sentence usually have bigger probability.
         using alpha = 1.2, min_length = 5 usually.
         """
-        return ((min_length + length) / (min_length + 1)) ** alpha
+        return ((self.min_length + length) / (self.min_length + 1)) ** self.alpha

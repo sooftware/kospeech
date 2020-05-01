@@ -2,7 +2,7 @@ import random
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from model.beam import Beam
+from model.beam import BeamSearch
 from model.attention import MultiHeadAttention
 
 supported_rnns = {
@@ -85,48 +85,17 @@ class Speller(nn.Module):
         return predicted_softmax, h_state
 
     def forward(self, inputs, listener_outputs, teacher_forcing_ratio=0.90, use_beam_search=False):
+        y_hats, logits = None, None
+
         inputs, batch_size, max_length = self._validate_args(inputs, listener_outputs)
-        h_state = self._init_state(batch_size)
+        h_state = self.init_state(batch_size)
 
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
         decode_outputs = list()
 
         if use_beam_search:
-            h_state = self._inflate(h_state, self.k, dim=1)
-            batch_size, listener_output_lens, listener_dim = listener_outputs.size()
-            listener_outputs = self._inflate(listener_outputs, self.k, dim=0)
-            listener_outputs = listener_outputs.view(self.k, batch_size, listener_output_lens, listener_dim)
-            listener_outputs = listener_outputs.transpose(0, 1)
-            listener_outputs = listener_outputs.reshape(batch_size * self.k, listener_output_lens, listener_dim)
-
-            beams = [Beam(self.k, self.sos_id, self.eos_id) for _ in range(batch_size)]
-
-            for di in range(max_length):
-                input_var = torch.stack([beam.current_predictions for beam in beams]).to(self.device)
-                input_var = input_var.view(-1)
-
-                predicted_softmax, h_state = self.forward_step(input_var, h_state, listener_outputs)
-                predicted_softmax = predicted_softmax.view(batch_size, self.k, -1)
-
-                for idx, beam in enumerate(beams):
-                    beam.advance(predicted_softmax[idx, :])
-
-            log_probs = list()
-
-            for beam in beams:
-                _, ks = beam.sort_finished()
-                times, k = ks[0]
-                hyp, beam_index, log_prob = beam.get_hypoyhesis(times, k)
-
-                log_prob = torch.stack(log_prob)
-                log_prob = beam.fill_empty_sequence(log_prob, max_length)
-                log_probs.append(log_prob)
-
-            log_probs = torch.stack(log_probs)
-            log_probs = torch.transpose(log_probs, 0, 1)
-
-            for idx in range(log_probs.size(0)):
-                decode_outputs.append(log_probs[idx])
+            search = BeamSearch(self, batch_size)
+            y_hats = search(inputs, listener_outputs, k=self.k)
 
         else:
             if use_teacher_forcing:
@@ -149,18 +118,12 @@ class Speller(nn.Module):
                     decode_outputs.append(step_output)
                     input_var = decode_outputs[-1].topk(1)[1]
 
-        logits = torch.stack(decode_outputs, dim=1).to(self.device)
-        y_hats = logits.max(-1)[1]
+            logits = torch.stack(decode_outputs, dim=1).to(self.device)
+            y_hats = logits.max(-1)[1]
 
         return y_hats, logits
 
-    def _inflate(self, tensor, n_repeat, dim):
-        repeat_dims = [1] * len(tensor.size())
-        repeat_dims[dim] *= n_repeat
-
-        return tensor.repeat(*repeat_dims)
-
-    def _init_state(self, batch_size):
+    def init_state(self, batch_size):
         if isinstance(self.rnn, nn.LSTM):
             h_0 = torch.zeros(self.n_layers, batch_size, self.hidden_dim).to(self.device)
             c_0 = torch.zeros(self.n_layers, batch_size, self.hidden_dim).to(self.device)
@@ -172,10 +135,10 @@ class Speller(nn.Module):
         return h_state
 
     def _validate_args(self, inputs, listener_outputs):
-        batch_size = inputs.size(0)
+        batch_size = listener_outputs.size(0)
 
         if inputs is None:
-            inputs = torch.empty(listener_outputs.size(0), 1).type(torch.long)
+            inputs = torch.empty(batch_size, 1).type(torch.long)
             inputs[:, 0] = self.sos_id
             max_length = self.max_length
 
