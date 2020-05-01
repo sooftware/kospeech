@@ -1,76 +1,11 @@
 import torch
 import librosa
+import torchaudio
 import numpy as np
 import random
 
-
-def get_torch_spectrogram(filepath, sr=16000, window_size=20, stride=10):
-    if filepath.endswith('.pcm'):
-        pcm = np.memmap(filepath, dtype='h', mode='r')
-        signal = np.array([float(x) for x in pcm])
-
-    elif filepath.endswith('.wav'):
-        signal, _ = librosa.core.load(filepath, sr=sr)
-
-    else:
-        raise ValueError("%s is not Supported." % filepath.split('.')[-1])
-
-    N_FFT = int(sr * 0.001 * window_size)
-    STRIDE = int(sr * 0.001 * stride)
-
-    spectrogram = torch.stft(
-        torch.FloatTensor(signal),
-        N_FFT,
-        hop_length=STRIDE,
-        win_length=N_FFT,
-        window=torch.hamming_window(N_FFT),
-        center=False,
-        normalized=False,
-        onesided=True
-    )
-
-    spectrogram = (spectrogram[:, :, 0].pow(2) + spectrogram[:, :, 1].pow(2)).pow(0.5)  # (N_FFT / 2 + 1 * T)
-    spectrogram = np.log1p(spectrogram.numpy())
-    spectrogram = torch.FloatTensor(spectrogram).transpose(0, 1)
-    spectrogram -= spectrogram.mean()
-    return spectrogram
-
-
-def get_librosa_spectrogram(filepath, input_reverse=True, normalize=False, del_silence=False,
-                            sr=16000, window_size=20, stride=10):
-    if filepath.endswith('.pcm'):
-        pcm = np.memmap(filepath, dtype='h', mode='r')
-        signal = np.array([float(x) for x in pcm])
-
-    elif filepath.endswith('.wav'):
-        signal, _ = librosa.core.load(filepath, sr=sr)
-
-    else:
-        raise ValueError("%s is not Supported." % filepath.split('.')[-1])
-
-    N_FFT = int(sr * 0.001 * window_size)
-    STRIDE = int(sr * 0.001 * stride)
-
-    if del_silence:
-        non_silence_ids = librosa.effects.split(y=signal, top_db=30)
-        signal = np.concatenate([signal[start:end] for start, end in non_silence_ids])
-
-    D = librosa.stft(signal, n_fft=N_FFT, hop_length=STRIDE, win_length=window_size)
-    spectrogram, phase = librosa.magphase(D)
-
-    spectrogram = np.log1p(spectrogram)
-
-    if normalize:
-        mean = np.mean(spectrogram)
-        std = np.std(spectrogram)
-        spectrogram -= mean
-        spectrogram /= std
-
-    if input_reverse:
-        spectrogram = spectrogram[:, ::-1]
-
-    spectrogram = torch.FloatTensor(np.ascontiguousarray(np.swapaxes(spectrogram, 0, 1)))
-    return spectrogram
+# Collection of feature extraction
+# You can use it according to your environment.
 
 
 def get_librosa_melspectrogram(filepath, n_mels=80, del_silence=False, input_reverse=True, normalize=False,
@@ -239,4 +174,108 @@ def spec_augment(spectrogram, time_mask_para=70, freq_mask_para=20, time_mask_nu
         f0 = random.randint(0, n_mels - f)
         spectrogram[:, f0: f0 + f] = 0
 
+    return spectrogram
+
+
+def get_torchaudio_melspectrogram(filepath, n_mels=80, input_reverse=True, normalize=False,
+                                  sr=16000, window_size=20, stride=10):
+    if filepath.endswith('.pcm'):
+        pcm = np.memmap(filepath, dtype='h', mode='r')
+        signal = np.array([float(x) for x in pcm])
+
+    elif filepath.endswith('.wav'):
+        signal, _ = librosa.core.load(filepath, sr=sr)
+
+    else:
+        raise ValueError("%s is not Supported." % filepath.split('.')[-1])
+
+    N_FFT = int(sr * 0.001 * window_size)
+    STRIDE = int(sr * 0.001 * stride)
+
+    transforms = torchaudio.transforms.MelSpectrogram(sample_rate=sr, n_fft=N_FFT, n_mels=n_mels, hop_length=STRIDE)
+    amplitude_to_db = torchaudio.transforms.AmplitudeToDB()
+
+    spectrogram = transforms(torch.Tensor(signal))
+    spectrogram = amplitude_to_db(spectrogram)
+    spectrogram = spectrogram.numpy()
+
+    if normalize:
+        mean = np.mean(spectrogram)
+        std = np.std(spectrogram)
+        spectrogram -= mean
+        spectrogram /= std
+
+    if input_reverse:
+        spectrogram = spectrogram[:, ::-1]
+
+    spectrogram = torch.FloatTensor(np.ascontiguousarray(np.swapaxes(spectrogram, 0, 1)))
+    return spectrogram
+
+
+def get_torch_spectrogram(filepath, sr=16000, window_size=20, stride=10):
+    if filepath.endswith('.pcm'):
+        pcm = np.memmap(filepath, dtype='h', mode='r')
+        signal = np.array([float(x) for x in pcm])
+
+    elif filepath.endswith('.wav'):
+        signal, _ = librosa.core.load(filepath, sr=sr)
+
+    else:
+        raise ValueError("%s is not Supported." % filepath.split('.')[-1])
+
+    N_FFT = int(sr * 0.001 * window_size)
+    STRIDE = int(sr * 0.001 * stride)
+
+    spectrogram = torch.stft(
+        torch.FloatTensor(signal),
+        N_FFT,
+        hop_length=STRIDE,
+        win_length=N_FFT,
+        window=torch.hamming_window(N_FFT),
+        center=False,
+        normalized=False,
+        onesided=True
+    )
+
+    spectrogram = (spectrogram[:, :, 0].pow(2) + spectrogram[:, :, 1].pow(2)).pow(0.5)  # (N_FFT / 2 + 1 * T)
+    spectrogram = np.log1p(spectrogram.numpy())
+    spectrogram = torch.FloatTensor(spectrogram).transpose(0, 1)
+    spectrogram -= spectrogram.mean()
+    return spectrogram
+
+
+def get_librosa_spectrogram(filepath, input_reverse=True, normalize=False, del_silence=False,
+                            sr=16000, window_size=20, stride=10):
+    if filepath.endswith('.pcm'):
+        pcm = np.memmap(filepath, dtype='h', mode='r')
+        signal = np.array([float(x) for x in pcm])
+
+    elif filepath.endswith('.wav'):
+        signal, _ = librosa.core.load(filepath, sr=sr)
+
+    else:
+        raise ValueError("%s is not Supported." % filepath.split('.')[-1])
+
+    N_FFT = int(sr * 0.001 * window_size)
+    STRIDE = int(sr * 0.001 * stride)
+
+    if del_silence:
+        non_silence_ids = librosa.effects.split(y=signal, top_db=30)
+        signal = np.concatenate([signal[start:end] for start, end in non_silence_ids])
+
+    D = librosa.stft(signal, n_fft=N_FFT, hop_length=STRIDE, win_length=window_size)
+    spectrogram, phase = librosa.magphase(D)
+
+    spectrogram = np.log1p(spectrogram)
+
+    if normalize:
+        mean = np.mean(spectrogram)
+        std = np.std(spectrogram)
+        spectrogram -= mean
+        spectrogram /= std
+
+    if input_reverse:
+        spectrogram = spectrogram[:, ::-1]
+
+    spectrogram = torch.FloatTensor(np.ascontiguousarray(np.swapaxes(spectrogram, 0, 1)))
     return spectrogram
