@@ -63,16 +63,6 @@ class Listener(nn.Module):
         )
 
     def forward(self, inputs):
-        """
-        Applies a multi-layer RNN to an input sequence.
-
-        Args: inputs
-            inputs (batch, seq_len): tensor containing the features of the input sequence.
-
-        Returns: output, h_state
-            - **output** (batch, seq_len, hidden_dim): variable containing the encoded features of the input sequence
-            - **h_state** (num_layers * directions, batch, hidden_dim): variable containing the features in the hidden
-        """
         x = self.conv(inputs.unsqueeze(1)).to(self.device)
         x = x.transpose(1, 2)
         x = x.contiguous().view(x.size(0), x.size(1), x.size(2) * x.size(3)).to(self.device)

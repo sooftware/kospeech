@@ -37,6 +37,7 @@ class Config:
                  dropout=0.5,
                  listener_layer_size=5,
                  speller_layer_size=3,
+                 rnn_type='gru',
                  num_head=12,
                  attn_dim=64,
                  label_smoothing=0.1,
@@ -53,6 +54,7 @@ class Config:
                  sr=16000,
                  window_size=20,  # ms
                  stride=10,       # ms
+                 feature_extract_by='librosa',
                  save_result_every=1000,
                  save_model_every=10000,
                  print_every=10,
@@ -67,6 +69,7 @@ class Config:
         self.dropout = dropout
         self.listener_layer_size = listener_layer_size
         self.speller_layer_size = speller_layer_size
+        self.rnn_type = rnn_type
         self.batch_size = batch_size
         self.worker_num = worker_num
         self.max_epochs = max_epochs
@@ -81,6 +84,7 @@ class Config:
         self.sr = sr
         self.window_size = window_size
         self.stride = stride
+        self.feature_extract_by = feature_extract_by
         self.save_result_every = save_result_every
         self.save_model_every = save_model_every
         self.print_every = print_every
@@ -98,6 +102,7 @@ class Config:
         logger.info("hidden_dim : %d" % self.hidden_dim)
         logger.info("listener_layer_size : %d" % self.listener_layer_size)
         logger.info("speller_layer_size : %d" % self.speller_layer_size)
+        logger.info("rnn_type : %s" % self.rnn_type)
         logger.info("num_head : %d" % self.num_head)
         logger.info("attn_dim : %d" % self.attn_dim)
         logger.info("dropout : %0.2f" % self.dropout)
@@ -113,3 +118,4 @@ class Config:
         logger.info("sr : %d" % self.sr)
         logger.info("window_size : %d" % self.window_size)
         logger.info("stride : %s" % str(self.stride))
+        logger.info("feature_extract_by : %s" % str(self.feature_extract_by))

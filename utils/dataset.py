@@ -5,6 +5,11 @@ from utils.definition import EOS_token, logger, SOS_token
 from utils.feature import spec_augment, get_librosa_melspectrogram, get_torchaudio_melspectrogram
 from utils.util import get_label, save_pickle
 
+supported_feature_extractor = {
+    'librosa': get_librosa_melspectrogram,
+    'torchaudio': get_torchaudio_melspectrogram
+}
+
 
 class SpectrogramDataset(Dataset):
     """
@@ -27,6 +32,7 @@ class SpectrogramDataset(Dataset):
         self.target_dict = target_dict
         self.augment_num = config.augment_num
         self.augment_flags = [False] * len(self.audio_paths)
+        self.feature_extract = supported_feature_extractor[config.feature_extract_by]
         self.config = config
         if use_augment:
             self.augmentation()
@@ -34,24 +40,12 @@ class SpectrogramDataset(Dataset):
 
     def get_item(self, idx):
         label = get_label(self.label_paths[idx], self.sos_id, self.eos_id, self.target_dict)
-        """
-        spectrogram = get_librosa_melspectrogram(
+        spectrogram = self.feature_extract(
             self.audio_paths[idx],
             n_mels=self.config.n_mels,
             input_reverse=self.config.input_reverse,
             del_silence=True,
             normalize=True,
-            sr=self.config.sr,
-            window_size=self.config.window_size,
-            stride=self.config.stride
-        )
-        """
-        spectrogram = get_torchaudio_melspectrogram(
-            self.audio_paths[idx],
-            n_mels=self.config.n_mels,
-            del_silence=True,
-            input_reverse=True,
-            normalize=False,
             sr=self.config.sr,
             window_size=self.config.window_size,
             stride=self.config.stride

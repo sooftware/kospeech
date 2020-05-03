@@ -39,21 +39,23 @@ if __name__ == '__main__':
         use_cuda=True,
         augment_num=1,
         hidden_dim=256,
-        dropout=0.4,
-        num_head=16,
+        dropout=0.3,
+        num_head=8,
         attn_dim=64,
         label_smoothing=0.1,
         listener_layer_size=5,
         speller_layer_size=3,
+        rnn_type='gru',
         batch_size=32,
         worker_num=1,
         max_epochs=40,
         lr=0.001,
-        teacher_forcing_ratio=1.0,
+        teacher_forcing_ratio=0.99,
         sr=16000,
         window_size=20,
         stride=10,
         n_mels=80,
+        feature_extract_by='librosa',
         save_result_every=1000,
         save_model_every=10000,
         print_every=10,
@@ -70,7 +72,7 @@ if __name__ == '__main__':
     device = torch.device('cuda' if cuda else 'cpu')
 
     if device == 'cuda':
-        os.environ["CUDA_LAUNCH_BLOCKING"] = "1"  # if you use Multi-GPU, delete this line
+        # os.environ["CUDA_LAUNCH_BLOCKING"] = "1"  # if you use Multi-GPU, delete this line
         logger.info("device : %s" % torch.cuda.get_device_name(0))
         logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
         logger.info("CUDA version : %s" % torch.version.cuda)
@@ -80,12 +82,12 @@ if __name__ == '__main__':
         model = torch.load(config.model_path).to(device)
     else:
         listener = Listener(
-            in_features=80,
+            in_features=config.n_mels,
             hidden_dim=config.hidden_dim,
             dropout_p=config.dropout,
             num_layers=config.listener_layer_size,
             bidirectional=config.use_bidirectional,
-            rnn_type='gru',
+            rnn_type=config.rnn_type,
             device=device
         )
         speller = Speller(
@@ -96,7 +98,7 @@ if __name__ == '__main__':
             sos_id=SOS_token,
             eos_id=EOS_token,
             num_layers=config.speller_layer_size,
-            rnn_type='gru',
+            rnn_type=config.rnn_type,
             dropout_p=config.dropout,
             num_head=config.num_head,
             attn_dim=config.attn_dim,

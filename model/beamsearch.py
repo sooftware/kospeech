@@ -1,5 +1,7 @@
+import copy
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from utils.definition import char2id
 
 
@@ -43,9 +45,8 @@ class BeamSearch(nn.Module):
         self.num_layers = decoder.num_layers
         self.ongoing_beams = None
         self.cumulative_ps = None
-        self.finished = [[] for _ in range(batch_size)]
-        self.finished_ps = [[] for _ in range(batch_size)]
-        self.forward_step = decoder.forward_step
+        self.finished = [list() for _ in range(batch_size)]
+        self.finished_ps = [list() for _ in range(batch_size)]
         self.alpha = 1.2
         self.min_length = 5
 
@@ -125,6 +126,16 @@ class BeamSearch(nn.Module):
             input_var = input_var.view(batch_size * k, -1)
 
         return self.get_hypothesis()
+
+    def forward_step(self, input_var, h_state, encoder_outputs=None):
+        embedded = self.embedding(input_var).to(self.device)
+        embedded = self.input_dropout(embedded).unsqueeze(1)
+
+        output, h_state = self.rnn(embedded, h_state)
+        context = self.attention(output, encoder_outputs, copy.deepcopy(encoder_outputs))
+
+        predicted_softmax = F.log_softmax(self.fc(context.contiguous().view(-1, self.hidden_dim)), dim=1)
+        return predicted_softmax, h_state
 
     def get_successor(self, current_ps, current_vs, finished_ids, num_successor, eos_cnt, k):
         """ Get successor of finish beam """

@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import numpy as np
 import torch.nn.functional as F
 
 
@@ -24,7 +25,7 @@ class MultiHeadAttention(nn.Module):
 
     Examples::
         >>> attention = MultiHeadAttention(in_features=512, n_head=8, dim=64)
-        >>> output = attention(Q, V)
+        >>> output = attention(Q, K, V)
     """
 
     def __init__(self, in_features, num_head=8, dim=64):
@@ -33,27 +34,29 @@ class MultiHeadAttention(nn.Module):
         self.num_head = num_head
         self.dim = dim
         self.W_Q = nn.Linear(in_features, dim * num_head)
+        self.W_K = nn.Linear(in_features, dim * num_head)
         self.W_V = nn.Linear(in_features, dim * num_head)
-        self.fc = nn.Linear(in_features + dim * num_head, in_features)
+        self.fc = nn.Linear(in_features << 1, in_features)
 
-    def forward(self, Q, V):
+    def forward(self, Q, K, V):
         batch_size = V.size(0)
         residual = Q
 
         q_s = self.W_Q(Q).view(batch_size, -1, self.num_head, self.dim)
+        k_s = self.W_K(K).view(batch_size, -1, self.num_head, self.dim)
         v_s = self.W_V(V).view(batch_size, -1, self.num_head, self.dim)
 
         q_s = q_s.permute(2, 0, 1, 3).contiguous().view(batch_size * self.num_head, -1, self.dim)
+        k_s = k_s.permute(2, 0, 1, 3).contiguous().view(batch_size * self.num_head, -1, self.dim)
         v_s = v_s.permute(2, 0, 1, 3).contiguous().view(batch_size * self.num_head, -1, self.dim)
 
-        attn_score = torch.bmm(q_s, v_s.transpose(1, 2))
-        align = F.softmax(attn_score, dim=2)
+        score = torch.bmm(q_s, k_s.transpose(1, 2)) / np.sqrt(self.dim)  # Scaled dot-product
+        align = F.softmax(score, dim=2)
 
-        attn_val = torch.bmm(align, v_s).view(self.num_head, batch_size, -1, self.dim)
-        attn_val = attn_val.permute(1, 2, 0, 3).contiguous().view(batch_size, -1, self.num_head * self.dim)
-        combined = torch.cat([attn_val, residual], dim=2)
+        context = torch.bmm(align, v_s).view(self.num_head, batch_size, -1, self.dim)
+        context = context.permute(1, 2, 0, 3).contiguous().view(batch_size, -1, self.num_head * self.dim)
 
-        context = torch.tanh(self.fc(combined.view(-1, self.in_features + self.dim * self.num_head)))
-        context = context.view(batch_size, -1, self.in_features)
+        combined = torch.cat([context, residual], dim=2)
+        output = torch.tanh(self.fc(combined.view(-1, self.in_features << 1))).view(batch_size, -1, self.in_features)
 
-        return context
+        return output

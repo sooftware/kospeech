@@ -215,6 +215,8 @@ def get_torchaudio_melspectrogram(filepath, n_mels=80, del_silence=False, input_
         spectrogram = spectrogram[:, ::-1]
 
     spectrogram = torch.FloatTensor(np.ascontiguousarray(np.swapaxes(spectrogram, 0, 1)))
+
+    del transforms, amplitude_to_db
     return spectrogram
 
 

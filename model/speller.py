@@ -1,6 +1,7 @@
 import random
 import torch
 import torch.nn as nn
+import copy
 import torch.nn.functional as F
 from model.beamsearch import BeamSearch
 from model.attention import MultiHeadAttention
@@ -68,19 +69,21 @@ class Speller(nn.Module):
         self.device = device
 
     def forward_step(self, input_var, h_state, listener_outputs=None):
+        batch_size = input_var.size(0)
+        seq_length = input_var.size(1)
+
         embedded = self.embedding(input_var).to(self.device)
         embedded = self.input_dropout(embedded)
-
-        if len(embedded.size()) == 2:  # if beam search
-            embedded = embedded.unsqueeze(1)
 
         if self.training:
             self.rnn.flatten_parameters()
 
         output, h_state = self.rnn(embedded, h_state)
-        context = self.attention(output, listener_outputs)
+        context = self.attention(output, listener_outputs, copy.deepcopy(listener_outputs))
 
         predicted_softmax = F.log_softmax(self.fc(context.contiguous().view(-1, self.hidden_dim)), dim=1)
+        predicted_softmax = predicted_softmax.view(batch_size, seq_length, -1)
+
         return predicted_softmax, h_state
 
     def forward(self, inputs, listener_outputs, teacher_forcing_ratio=0.90, use_beam_search=False):
@@ -99,9 +102,7 @@ class Speller(nn.Module):
         else:
             if use_teacher_forcing:
                 inputs = inputs[inputs != self.eos_id].view(batch_size, -1)
-
                 predicted_softmax, h_state = self.forward_step(inputs, h_state, listener_outputs)
-                predicted_softmax = predicted_softmax.view(batch_size, inputs.size(1), -1)
 
                 for di in range(predicted_softmax.size(1)):
                     step_output = predicted_softmax[:, di, :]
@@ -112,7 +113,7 @@ class Speller(nn.Module):
 
                 for di in range(max_length):
                     predicted_softmax, h_state = self.forward_step(input_var, h_state, listener_outputs)
-                    step_output = predicted_softmax.view(batch_size, 1, -1).squeeze(1)
+                    step_output = predicted_softmax.squeeze(1)
 
                     decode_outputs.append(step_output)
                     input_var = decode_outputs[-1].topk(1)[1]
