@@ -116,22 +116,6 @@ def label_to_string(labels, id2char, char2id, eos_id):
             sentences.append(sentence)
         return sentences
 
-    elif len(labels.shape) == 3:
-        sentences = list()
-        for batch in labels:
-            batch_candidates = list()
-            for beams in batch:
-                candidates = list()
-                for beam in beams:
-                    sentence = str()
-                    if beam.item() == eos_id:
-                        break
-                    sentence += id2char[beam.item()]
-                    candidates.append(sentence)
-                batch_candidates.append(candidates)
-            sentences.append(batch_candidates)
-        return sentences
-
 
 def save_epoch_result(train_result, valid_result):
     train_dict, train_loss, train_cer = train_result

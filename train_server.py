@@ -132,7 +132,7 @@ if __name__ == '__main__':
             param.data.uniform_(-0.08, 0.08)
 
     optimizer = optim.Adam(model.module.parameters(), lr=config.lr)
-    scheduler = ReduceLROnPlateau(optimizer, 'min', patience=1)
+    scheduler = ReduceLROnPlateau(optimizer, 'min', patience=1, verbose=True)
 
     if config.label_smoothing == 0.0:
         criterion = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_token).to(device)

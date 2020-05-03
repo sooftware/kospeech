@@ -28,7 +28,7 @@ class MultiHeadAttention(nn.Module):
         >>> output = attention(Q, K, V)
     """
 
-    def __init__(self, in_features, num_head=8, dim=64):
+    def __init__(self, in_features, num_head=4, dim=128):
         super(MultiHeadAttention, self).__init__()
 
         assert num_head * dim == in_features, "<num_head> * <dim> size must be same to <in_features> size"
@@ -37,26 +37,23 @@ class MultiHeadAttention(nn.Module):
         self.num_head = num_head
         self.dim = dim
         self.W_Q = nn.Linear(in_features, dim * num_head)
-        self.W_K = nn.Linear(in_features, dim * num_head)
         self.W_V = nn.Linear(in_features, dim * num_head)
         self.fc = nn.Linear(in_features << 1, in_features)
 
-    def forward(self, Q, K, V):
+    def forward(self, Q, V):
         batch_size = V.size(0)
         q_len = Q.size(1)
-        k_len = K.size(1)
+        v_len = V.size(1)
 
         residual = Q
 
         q_s = self.W_Q(Q).view(batch_size, q_len, self.num_head, self.dim).permute(2, 0, 1, 3)
-        k_s = self.W_K(K).view(batch_size, k_len, self.num_head, self.dim).permute(2, 0, 1, 3)
-        v_s = self.W_V(V).view(batch_size, k_len, self.num_head, self.dim).permute(2, 0, 1, 3)
+        v_s = self.W_V(V).view(batch_size, v_len, self.num_head, self.dim).permute(2, 0, 1, 3)
 
         q_s = q_s.contiguous().view(-1, q_len, self.dim)
-        k_s = k_s.contiguous().view(-1, k_len, self.dim)
-        v_s = v_s.contiguous().view(-1, k_len, self.dim)
+        v_s = v_s.contiguous().view(-1, v_len, self.dim)
 
-        score = torch.bmm(q_s, k_s.transpose(1, 2)) / np.sqrt(self.dim)  # scaled dot-product
+        score = torch.bmm(q_s, v_s.transpose(1, 2)) / np.sqrt(self.dim)  # scaled dot-product
         align = F.softmax(score, dim=2)
 
         context = torch.bmm(align, v_s).view(self.num_head, batch_size, q_len, self.dim)

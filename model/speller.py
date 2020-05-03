@@ -74,11 +74,8 @@ class Speller(nn.Module):
         embedded = self.embedding(input_var).to(self.device)
         embedded = self.input_dropout(embedded)
 
-        if self.training:
-            self.rnn.flatten_parameters()
-
         output, h_state = self.rnn(embedded, h_state)
-        context = self.attention(output, listener_outputs, listener_outputs)
+        context = self.attention(output, listener_outputs)
 
         predicted_softmax = F.log_softmax(self.fc(context.contiguous().view(-1, self.hidden_dim)), dim=1)
         predicted_softmax = predicted_softmax.view(batch_size, seq_length, -1)
@@ -138,8 +135,7 @@ class Speller(nn.Module):
         # inference
         if inputs is None:
             batch_size = 1
-            inputs = torch.zeros(batch_size, 1).type(torch.long)
-            inputs[:, 0] = self.sos_id
+            inputs = torch.LongTensor([self.sos_id] * batch_size).view(batch_size, 1)
             max_length = self.max_length
 
             if teacher_forcing_ratio > 0:

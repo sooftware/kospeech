@@ -132,7 +132,7 @@ class BeamSearch(nn.Module):
         embedded = self.input_dropout(embedded).unsqueeze(1)
 
         output, h_state = self.rnn(embedded, h_state)
-        context = self.attention(output, encoder_outputs, encoder_outputs)
+        context = self.attention(output, encoder_outputs)
 
         predicted_softmax = F.log_softmax(self.fc(context.contiguous().view(-1, self.hidden_dim)), dim=1)
         return predicted_softmax, h_state
