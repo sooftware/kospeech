@@ -59,9 +59,9 @@ ListenAttendSpell(
     (input_dropout): Dropout(p=0.4, inplace=False)
     (fc): Linear(in_features=512, out_features=2040, bias=True)
     (attention): MultiHeadAttention(
-      (W_Q): Linear(in_features=512, out_features=1024, bias=True)
-      (W_V): Linear(in_features=512, out_features=1024, bias=True)
-      (fc): Linear(in_features=1536, out_features=512, bias=True)
+      (W_Q): Linear(in_features=512, out_features=512, bias=True)
+      (W_V): Linear(in_features=512, out_features=512, bias=True)
+      (fc): Linear(in_features=1024, out_features=512, bias=True)
     )
   )
 )
