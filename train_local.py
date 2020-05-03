@@ -22,7 +22,7 @@ from model.listenAttendSpell import ListenAttendSpell
 from utils.dataset import split_dataset
 from utils.definition import *
 from utils.evaluator import evaluate
-from utils.config import Config
+from utils.args import Arguments
 from utils.loader import load_data_list, load_targets, load_pickle, MultiLoader, AudioDataLoader
 from utils.loss import LabelSmoothingLoss
 from utils.trainer import supervised_train
@@ -30,7 +30,7 @@ from utils.util import save_epoch_result
 
 
 if __name__ == '__main__':
-    config = Config(
+    args = Arguments(
         use_bidirectional=True,
         input_reverse=True,
         use_augment=True,
@@ -72,10 +72,10 @@ if __name__ == '__main__':
         run_by_sample=True
     )
 
-    random.seed(config.seed)
-    torch.manual_seed(config.seed)
-    torch.cuda.manual_seed_all(config.seed)
-    cuda = config.use_cuda and torch.cuda.is_available()
+    random.seed(args.seed)
+    torch.manual_seed(args.seed)
+    torch.cuda.manual_seed_all(args.seed)
+    cuda = args.use_cuda and torch.cuda.is_available()
     device = torch.device('cuda' if cuda else 'cpu')
 
     if str(device) == 'cuda':
@@ -85,30 +85,30 @@ if __name__ == '__main__':
         logger.info("CUDA version : %s" % torch.version.cuda)
         logger.info("PyTorch version : %s" % torch.__version__)
 
-    if config.load_model:
-        model = torch.load(config.model_path).to(device)
+    if args.load_model:
+        model = torch.load(args.model_path).to(device)
     else:
         listener = Listener(
-            in_features=config.n_mels,
-            hidden_dim=config.hidden_dim,
-            dropout_p=config.dropout,
-            num_layers=config.listener_layer_size,
-            bidirectional=config.use_bidirectional,
-            rnn_type=config.rnn_type,
+            in_features=args.n_mels,
+            hidden_dim=args.hidden_dim,
+            dropout_p=args.dropout,
+            num_layers=args.listener_layer_size,
+            bidirectional=args.use_bidirectional,
+            rnn_type=args.rnn_type,
             device=device
         )
         speller = Speller(
             num_class=len(char2id),
-            max_length=config.max_len,
+            max_length=args.max_len,
             k=5,
-            hidden_dim=config.hidden_dim << (1 if config.use_bidirectional else 0),
+            hidden_dim=args.hidden_dim << (1 if args.use_bidirectional else 0),
             sos_id=SOS_token,
             eos_id=EOS_token,
-            num_layers=config.speller_layer_size,
-            rnn_type=config.rnn_type,
-            dropout_p=config.dropout,
-            num_head=config.num_head,
-            attn_dim=config.attn_dim,
+            num_layers=args.speller_layer_size,
+            rnn_type=args.rnn_type,
+            dropout_p=args.dropout,
+            num_head=args.num_head,
+            attn_dim=args.attn_dim,
             device=device
         )
         model = ListenAttendSpell(listener, speller)
@@ -118,55 +118,55 @@ if __name__ == '__main__':
         for param in model.parameters():
             param.data.uniform_(-0.08, 0.08)
 
-    optimizer = optim.Adam(model.module.parameters(), lr=config.lr)
+    optimizer = optim.Adam(model.module.parameters(), lr=args.lr)
     scheduler = ReduceLROnPlateau(optimizer, 'min', patience=1, verbose=True)
 
-    if config.label_smoothing == 0.0:
+    if args.label_smoothing == 0.0:
         criterion = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_token).to(device)
     else:
-        criterion = LabelSmoothingLoss(len(char2id), PAD_token, config.label_smoothing, dim=-1).to(device)
+        criterion = LabelSmoothingLoss(len(char2id), PAD_token, args.label_smoothing, dim=-1).to(device)
 
-    if config.run_by_sample:
+    if args.run_by_sample:
         audio_paths, label_paths = load_data_list(data_list_path=SAMPLE_LIST_PATH, dataset_path=SAMPLE_DATASET_PATH)
     else:
         audio_paths, label_paths = load_data_list(data_list_path=TRAIN_LIST_PATH, dataset_path=DATASET_PATH)
 
-    if config.use_pickle:
+    if args.use_pickle:
         target_dict = load_pickle(TARGET_DICT_PATH, "load all target_dict using pickle complete !!")
     else:
         target_dict = load_targets(label_paths)
 
     total_time_step, trainset_list, validset = split_dataset(
-        config=config,
+        args=args,
         audio_paths=audio_paths,
         label_paths=label_paths,
-        valid_ratio=config.valid_ratio,
+        valid_ratio=args.valid_ratio,
         target_dict=target_dict,
     )
 
     logger.info('start')
     train_begin = time.time()
 
-    for epoch in range(config.max_epochs):
-        train_queue = queue.Queue(config.worker_num << 1)
+    for epoch in range(args.max_epochs):
+        train_queue = queue.Queue(args.worker_num << 1)
         for trainset in trainset_list:
             trainset.shuffle()
 
         # Training
-        train_loader = MultiLoader(trainset_list, train_queue, config.batch_size, config.worker_num)
+        train_loader = MultiLoader(trainset_list, train_queue, args.batch_size, args.worker_num)
         train_loader.start()
         train_loss, train_cer = supervised_train(
             model=model,
             total_time_step=total_time_step,
-            config=config,
+            args=args,
             queue=train_queue,
             criterion=criterion,
             epoch=epoch,
             optimizer=optimizer,
             device=device,
             train_begin=train_begin,
-            worker_num=config.worker_num,
-            teacher_forcing_ratio=config.teacher_forcing_ratio
+            worker_num=args.worker_num,
+            teacher_forcing_ratio=args.teacher_forcing_ratio
         )
         train_loader.join()
 
@@ -174,8 +174,8 @@ if __name__ == '__main__':
         logger.info('Epoch %d (Training) Loss %0.4f CER %0.4f' % (epoch, train_loss, train_cer))
 
         # Validation
-        valid_queue = queue.Queue(config.worker_num << 1)
-        valid_loader = AudioDataLoader(validset, valid_queue, config.batch_size, 0)
+        valid_queue = queue.Queue(args.worker_num << 1)
+        valid_loader = AudioDataLoader(validset, valid_queue, args.batch_size, 0)
         valid_loader.start()
 
         valid_loss, valid_cer = evaluate(model, valid_queue, criterion, device)

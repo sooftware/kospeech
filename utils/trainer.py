@@ -6,14 +6,14 @@ from utils.util import get_distance, save_step_result
 train_step_result = {'loss': [], 'cer': []}
 
 
-def supervised_train(model, config, epoch, total_time_step, queue, criterion, optimizer,
+def supervised_train(model, args, epoch, total_time_step, queue, criterion, optimizer,
                      device, train_begin, worker_num, teacher_forcing_ratio=0.90):
     r"""
     Args:
         train_begin: train begin time
         total_time_step: total time step in epoch
         epoch (int): present epoch
-        config (Config): configuration
+        args (Arguments): set of Argugments
         model (torch.nn.Module): Model to be trained
         optimizer (torch.optim): optimizer for training
         teacher_forcing_ratio (float):  The probability that teacher forcing will be used (default: 0.90)
@@ -74,7 +74,7 @@ def supervised_train(model, config, epoch, total_time_step, queue, criterion, op
         time_step += 1
         torch.cuda.empty_cache()
 
-        if time_step % config.print_every == 0:
+        if time_step % args.print_every == 0:
             current = time.time()
             elapsed = current - begin
             epoch_elapsed = (current - epoch_begin) / 60.0
@@ -89,10 +89,10 @@ def supervised_train(model, config, epoch, total_time_step, queue, criterion, op
             )
             begin = time.time()
 
-        if time_step % config.save_result_every == 0:
+        if time_step % args.save_result_every == 0:
             save_step_result(train_step_result, epoch_loss_total / total_num, total_dist / total_length)
 
-        if time_step % config.save_model_every == 0:
+        if time_step % args.save_model_every == 0:
             torch.save(model, "./data/weight_file/epoch_%s_step_%s.pt" % (str(epoch), str(time_step)))
 
     logger.info('train() completed')

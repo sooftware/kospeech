@@ -1,9 +1,9 @@
 from utils.definition import logger
 
 
-class Config:
+class Arguments:
     """
-    Configuration
+    set of Arguments
 
     Args:
         use_bidirectional (bool): if True, becomes a bidirectional listener (default: True)
@@ -109,7 +109,7 @@ class Config:
         self.print_log()
 
     def print_log(self):
-        """ print information of configuration """
+        """ print information of arguments """
         logger.info("use_bidirectional : %s" % str(self.use_bidirectional))
         logger.info("use_pickle : %s" % str(self.use_pickle))
         logger.info("use_augment : %s" % str(self.use_augment))

@@ -15,7 +15,7 @@ import torch
 import warnings
 from utils.dataset import SpectrogramDataset
 from utils.definition import *
-from utils.config import Config
+from utils.args import Arguments
 from utils.loader import AudioDataLoader, load_data_list, load_targets
 from utils.util import get_distance
 
@@ -57,8 +57,8 @@ def test(model, queue, device):
 
 if __name__ == '__main__':
     warnings.filterwarnings('ignore')
-    config = Config(batch_size=10)
-    cuda = config.use_cuda and torch.cuda.is_available()
+    args = Arguments(batch_size=10)
+    cuda = args.use_cuda and torch.cuda.is_available()
     device = torch.device('cuda' if cuda else 'cpu')
 
     if device == 'cuda':
@@ -82,12 +82,12 @@ if __name__ == '__main__':
         sos_id=SOS_token,
         eos_id=EOS_token,
         target_dict=target_dict,
-        config=config,
+        args=args,
         use_augment=False
     )
 
-    test_queue = queue.Queue(config.worker_num << 1)
-    test_loader = AudioDataLoader(testset, test_queue, config.batch_size, 0)
+    test_queue = queue.Queue(args.worker_num << 1)
+    test_loader = AudioDataLoader(testset, test_queue, args.batch_size, 0)
     test_loader.start()
 
     cer = test(model, test_queue, device)
