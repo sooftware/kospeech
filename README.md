@@ -59,9 +59,9 @@ ListenAttendSpell(
     (input_dropout): Dropout(p=0.4, inplace=False)
     (fc): Linear(in_features=512, out_features=2040, bias=True)
     (attention): MultiHeadAttention(
-      (W_Q): Linear(in_features=512, out_features=1024, bias=True)
-      (W_V): Linear(in_features=512, out_features=1024, bias=True)
-      (fc): Linear(in_features=1536, out_features=512, bias=True)
+      (W_Q): Linear(in_features=512, out_features=512, bias=True)
+      (W_V): Linear(in_features=512, out_features=512, bias=True)
+      (fc): Linear(in_features=1024, out_features=512, bias=True)
     )
   )
 )
@@ -83,9 +83,10 @@ We recommend creating a new virtual environment for this project (using virtual 
 ### Prerequisites
   
 * Numpy: `pip install numpy` (Refer [here](https://github.com/numpy/numpy) for problem installing Numpy).
-* Pytorch: Refer to [PyTorch website](http://pytorch.org/) to install the version w.r.t. your environment.
+* Pytorch: Refer to [PyTorch website](http://pytorch.org/) to install the version w.r.t. your environment.   
 * Pandas: `pip install pandas` (Refer [here](https://github.com/pandas-dev/pandas) for problem installing Pandas)  
 * librosa: `pip install librosa` (Refer [here](https://github.com/librosa/librosa) for problem installing librosa)
+* torchaudio: `pip install torchaudio` (Refer [here](https://github.com/pytorch/pytorch) for problem installing torchaudio)
 * tqdm: `pip install tqdm` (Refer [here](https://github.com/tqdm/tqdm) for problem installing tqdm)  
   
 ### Install from source
@@ -109,8 +110,8 @@ We will also write a document in English as soon as possible, so please wait a l
 If you already have another dataset, please modify the data set path to [definition.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/utils/definition.py) as appropriate.  
 
 ### Train and Test
-if you want to start training, you should run [local_train.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/local_train.py).
-or after training, you want to start testing, you should run [test.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/test.py).  
+if you want to start training, you should run [local_train.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/local_train.py). or [server_train.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/server_train.py)    
+after training, you want to start testing, you should run [test.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/test.py).  
   
 you can set up a configuration [config.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/utils/config.py).  
 An explanation of configuration is [here](https://sooftware.github.io/End-to-end-Speech-Recognition/Config.html).  
