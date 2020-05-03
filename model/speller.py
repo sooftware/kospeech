@@ -1,7 +1,6 @@
 import random
 import torch
 import torch.nn as nn
-import copy
 import torch.nn.functional as F
 from model.beamsearch import BeamSearch
 from model.attention import MultiHeadAttention
@@ -79,7 +78,7 @@ class Speller(nn.Module):
             self.rnn.flatten_parameters()
 
         output, h_state = self.rnn(embedded, h_state)
-        context = self.attention(output, listener_outputs, copy.deepcopy(listener_outputs))
+        context = self.attention(output, listener_outputs, listener_outputs)
 
         predicted_softmax = F.log_softmax(self.fc(context.contiguous().view(-1, self.hidden_dim)), dim=1)
         predicted_softmax = predicted_softmax.view(batch_size, seq_length, -1)
