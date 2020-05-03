@@ -194,16 +194,16 @@ def get_torchaudio_melspectrogram(filepath, n_mels=80, del_silence=False, input_
     N_FFT = int(sr * 0.001 * window_size)
     STRIDE = int(sr * 0.001 * stride)
 
+    if del_silence:
+        non_silence_ids = dlibrosa.split(y=signal, top_db=30)
+        spectrogram = np.concatenate([signal[start:end] for start, end in non_silence_ids])
+
     transforms = torchaudio.transforms.MelSpectrogram(sample_rate=sr, n_fft=N_FFT, n_mels=n_mels, hop_length=STRIDE)
     amplitude_to_db = torchaudio.transforms.AmplitudeToDB()
 
-    spectrogram = transforms(torch.Tensor(signal))
+    spectrogram = transforms(torch.Tensor(spectrogram))
     spectrogram = amplitude_to_db(spectrogram)
     spectrogram = spectrogram.numpy()
-
-    if del_silence:
-        non_silence_ids = dlibrosa.split(y=spectrogram, top_db=30)
-        spectrogram = np.concatenate([spectrogram[start:end] for start, end in non_silence_ids])
 
     if normalize:
         mean = np.mean(spectrogram)
