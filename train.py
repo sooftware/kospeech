@@ -58,14 +58,18 @@ if __name__ == '__main__':
         normalize=True,
         del_silence=True,
         feature_extract_by='librosa',  # you can choose librosa or torchaudio
+        time_mask_para=50,
+        freq_mask_para=12,
+        time_mask_num=2,
+        freq_mask_num=2,
         save_result_every=1000,
         save_model_every=10000,
         print_every=10,
-        seed=1,
+        seed=7,
         max_len=151,
         load_model=False,
         model_path=None,
-        run_by_sample=False
+        run_by_sample=False,
     )
 
     random.seed(config.seed)
