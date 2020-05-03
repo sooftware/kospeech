@@ -88,7 +88,7 @@ class Speller(nn.Module):
     def forward(self, inputs, listener_outputs, teacher_forcing_ratio=0.90, use_beam_search=False):
         hypothesis, logit = None, None
 
-        inputs, batch_size, max_length = self.validate_args(inputs, listener_outputs)
+        inputs, batch_size, max_length = self.validate_args(inputs, listener_outputs, teacher_forcing_ratio)
         h_state = self.init_state(batch_size)
 
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
@@ -141,6 +141,9 @@ class Speller(nn.Module):
             inputs = torch.zeros(batch_size, 1).type(torch.long)
             inputs[:, 0] = self.sos_id
             max_length = self.max_length
+
+            if teacher_forcing_ratio > 0:
+                raise ValueError("Teacher forcing has to be disabled (set 0) when no inputs is provided.")
 
         else:
             batch_size = listener_outputs.size(0)
