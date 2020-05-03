@@ -51,7 +51,7 @@ class BeamSearch(nn.Module):
         self.validate_args = decoder.validate_args
 
     def forward(self, input_var, encoder_outputs, k=5):
-        inputs, batch_size, max_length = self.validate_args(input_var, encoder_outputs)
+        inputs, batch_size, max_length = self.validate_args(input_var, encoder_outputs, 0.0)
         h_state = self.init_state(batch_size)
 
         step_outputs, h_state = self.forward_step(input_var, h_state, encoder_outputs)
