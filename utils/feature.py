@@ -3,6 +3,8 @@ import librosa
 import torchaudio
 import numpy as np
 import random
+from experiment import detourLibrosa as dlibrosa
+
 
 # Collection of feature extraction
 # You can use it according to your environment.
@@ -177,7 +179,7 @@ def spec_augment(spectrogram, time_mask_para=70, freq_mask_para=20, time_mask_nu
     return spectrogram
 
 
-def get_torchaudio_melspectrogram(filepath, n_mels=80, input_reverse=True, normalize=False,
+def get_torchaudio_melspectrogram(filepath, n_mels=80, del_silence=False, input_reverse=True, normalize=False,
                                   sr=16000, window_size=20, stride=10):
     if filepath.endswith('.pcm'):
         pcm = np.memmap(filepath, dtype='h', mode='r')
@@ -198,6 +200,10 @@ def get_torchaudio_melspectrogram(filepath, n_mels=80, input_reverse=True, norma
     spectrogram = transforms(torch.Tensor(signal))
     spectrogram = amplitude_to_db(spectrogram)
     spectrogram = spectrogram.numpy()
+
+    if del_silence:
+        non_silence_ids = dlibrosa.split(y=spectrogram, top_db=30)
+        spectrogram = np.concatenate([spectrogram[start:end] for start, end in non_silence_ids])
 
     if normalize:
         mean = np.mean(spectrogram)

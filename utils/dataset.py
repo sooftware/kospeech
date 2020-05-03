@@ -2,7 +2,7 @@ import math
 import random
 from torch.utils.data import Dataset
 from utils.definition import EOS_token, logger, SOS_token
-from utils.feature import spec_augment, get_librosa_melspectrogram
+from utils.feature import spec_augment, get_librosa_melspectrogram, get_torchaudio_melspectrogram
 from utils.util import get_label, save_pickle
 
 
@@ -34,12 +34,24 @@ class SpectrogramDataset(Dataset):
 
     def get_item(self, idx):
         label = get_label(self.label_paths[idx], self.sos_id, self.eos_id, self.target_dict)
+        """
         spectrogram = get_librosa_melspectrogram(
             self.audio_paths[idx],
             n_mels=self.config.n_mels,
             input_reverse=self.config.input_reverse,
             del_silence=True,
             normalize=True,
+            sr=self.config.sr,
+            window_size=self.config.window_size,
+            stride=self.config.stride
+        )
+        """
+        spectrogram = get_torchaudio_melspectrogram(
+            self.audio_paths[idx],
+            n_mels=self.config.n_mels,
+            del_silence=True,
+            input_reverse=True,
+            normalize=False,
             sr=self.config.sr,
             window_size=self.config.window_size,
             stride=self.config.stride
