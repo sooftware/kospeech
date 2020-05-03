@@ -46,6 +46,7 @@ class Config:
                  max_epochs=40,
                  lr=0.001,
                  teacher_forcing_ratio=0.99,
+                 valid_ratio=0.01,
                  seed=1,
                  max_len=151,
                  load_model=False,
@@ -54,10 +55,17 @@ class Config:
                  sr=16000,
                  window_size=20,  # ms
                  stride=10,       # ms
+                 del_silence=True,
+                 normalize=True,
                  feature_extract_by='librosa',
+                 time_mask_para=40,
+                 freq_mask_para=10,
+                 time_mask_num=2,
+                 freq_mask_num=2,
                  save_result_every=1000,
                  save_model_every=10000,
                  print_every=10,
+                 run_by_sample=True
                  ):
         self.use_bidirectional = use_bidirectional
         self.input_reverse = input_reverse
@@ -77,19 +85,27 @@ class Config:
         self.attn_dim = attn_dim
         self.label_smoothing = label_smoothing
         self.lr = lr
-        self.teacher_forcing_ratio = teacher_forcing_ratio
+        self.teacher_forcing_ratio = teacher_forcing_ratio,
+        self.valid_ratio = valid_ratio
         self.seed = seed
         self.max_len = max_len
         self.n_mels = n_mels
         self.sr = sr
         self.window_size = window_size
         self.stride = stride
+        self.del_silence = del_silence,
+        self.normalize = normalize,
         self.feature_extract_by = feature_extract_by
+        self.time_mask_para = time_mask_para
+        self.freq_mask_para = freq_mask_para
+        self.time_mask_num = time_mask_num
+        self.freq_mask_num = freq_mask_num
         self.save_result_every = save_result_every
         self.save_model_every = save_model_every
         self.print_every = print_every
         self.load_model = load_model
         self.model_path = model_path
+        self.run_by_sample = run_by_sample
         self.print_log()
 
     def print_log(self):
@@ -109,6 +125,7 @@ class Config:
         logger.info("batch_size : %d" % self.batch_size)
         logger.info("worker_num : %d" % self.worker_num)
         logger.info("max_epochs : %d" % self.max_epochs)
+        logger.info("valid_ratio : %f" % self.valid_ratio)
         logger.info("initial learning rate : %0.4f" % self.lr)
         logger.info("teacher_forcing_ratio : %0.2f" % self.teacher_forcing_ratio)
         logger.info("seed : %d" % self.seed)
@@ -118,4 +135,10 @@ class Config:
         logger.info("sr : %d" % self.sr)
         logger.info("window_size : %d" % self.window_size)
         logger.info("stride : %s" % str(self.stride))
+        logger.info("del_silence : %s" % str(self.del_silence))
+        logger.info("normalize : %s" % str(self.normalize))
         logger.info("feature_extract_by : %s" % str(self.feature_extract_by))
+        logger.info("time_mask_para : %d" % self.time_mask_para)
+        logger.info("freq_mask_para : %d" % self.freq_mask_para)
+        logger.info("time_mask_num : %d" % self.time_mask_num)
+        logger.info("freq_mask_num : %d" % self.freq_mask_num)

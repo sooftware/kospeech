@@ -88,7 +88,7 @@ class Speller(nn.Module):
     def forward(self, inputs, listener_outputs, teacher_forcing_ratio=0.90, use_beam_search=False):
         hypothesis, logit = None, None
 
-        inputs, batch_size, max_length = self._validate_args(inputs, listener_outputs)
+        inputs, batch_size, max_length = self.validate_args(inputs, listener_outputs, teacher_forcing_ratio)
         h_state = self.init_state(batch_size)
 
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
@@ -100,8 +100,8 @@ class Speller(nn.Module):
 
         else:
             if use_teacher_forcing:
-                inputs = inputs[inputs != self.eos_id].view(batch_size, -1)
-                predicted_softmax, h_state = self.forward_step(inputs, h_state, listener_outputs)
+                input_var = inputs[inputs != self.eos_id].view(batch_size, -1)
+                predicted_softmax, h_state = self.forward_step(input_var, h_state, listener_outputs)
 
                 for di in range(predicted_softmax.size(1)):
                     step_output = predicted_softmax[:, di, :]
@@ -134,16 +134,19 @@ class Speller(nn.Module):
 
         return h_state
 
-    def _validate_args(self, inputs, listener_outputs):
-        """ Validate arguments """
-        batch_size = listener_outputs.size(0)
-
+    def validate_args(self, inputs, listener_outputs, teacher_forcing_ratio):
+        # inference
         if inputs is None:
-            inputs = torch.empty(batch_size, 1).type(torch.long)
+            batch_size = 1
+            inputs = torch.zeros(batch_size, 1).type(torch.long)
             inputs[:, 0] = self.sos_id
             max_length = self.max_length
 
+            if teacher_forcing_ratio > 0:
+                raise ValueError("Teacher forcing has to be disabled (set 0) when no inputs is provided.")
+
         else:
+            batch_size = listener_outputs.size(0)
             max_length = inputs.size(1) - 1  # minus the start of sequence symbol
 
         return inputs, batch_size, max_length

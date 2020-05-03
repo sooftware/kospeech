@@ -5,7 +5,7 @@ from utils.definition import EOS_token, logger, SOS_token
 from utils.feature import spec_augment, get_librosa_melspectrogram, get_torchaudio_melspectrogram
 from utils.util import get_label, save_pickle
 
-supported_feature_extractor = {
+supported_feature_extract_funtions = {
     'librosa': get_librosa_melspectrogram,
     'torchaudio': get_torchaudio_melspectrogram
 }
@@ -32,7 +32,7 @@ class SpectrogramDataset(Dataset):
         self.target_dict = target_dict
         self.augment_num = config.augment_num
         self.augment_flags = [False] * len(self.audio_paths)
-        self.feature_extract = supported_feature_extractor[config.feature_extract_by]
+        self.get_feature = supported_feature_extract_funtions[config.feature_extract_by]
         self.config = config
         if use_augment:
             self.augmentation()
@@ -40,12 +40,12 @@ class SpectrogramDataset(Dataset):
 
     def get_item(self, idx):
         label = get_label(self.label_paths[idx], self.sos_id, self.eos_id, self.target_dict)
-        spectrogram = self.feature_extract(
+        spectrogram = self.get_feature(
             self.audio_paths[idx],
             n_mels=self.config.n_mels,
             input_reverse=self.config.input_reverse,
-            del_silence=True,
-            normalize=True,
+            del_silence=self.config.del_silence,
+            normalize=self.config.normalize,
             sr=self.config.sr,
             window_size=self.config.window_size,
             stride=self.config.stride
@@ -57,10 +57,10 @@ class SpectrogramDataset(Dataset):
         if self.augment_flags[idx]:
             spectrogram = spec_augment(
                 spectrogram,
-                time_mask_para=40,
-                freq_mask_para=10,
-                time_mask_num=2,
-                freq_mask_num=2
+                time_mask_para=self.config.time_mask_para,
+                freq_mask_para=self.config.freq_mask_para,
+                time_mask_num=self.config.time_mask_num,
+                freq_mask_num=self.config.freq_mask_num
             )
 
         return spectrogram, label

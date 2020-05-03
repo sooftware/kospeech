@@ -47,7 +47,6 @@ class ListenAttendSpell(nn.Module):
         return hypothesis, logits
 
     def set_beam_size(self, k):
-        """ Set size of beam """
         self.speller.k = k
 
     def flatten_parameters(self):

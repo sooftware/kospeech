@@ -15,7 +15,6 @@ import torch.optim as optim
 import random
 import torch
 import time
-import os
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from model.speller import Speller
 from model.listener import Listener
@@ -40,8 +39,8 @@ if __name__ == '__main__':
         augment_num=1,
         hidden_dim=256,
         dropout=0.3,
-        num_head=8,
-        attn_dim=64,
+        num_head=4,
+        attn_dim=128,
         label_smoothing=0.1,
         listener_layer_size=5,
         speller_layer_size=3,
@@ -49,20 +48,24 @@ if __name__ == '__main__':
         batch_size=32,
         worker_num=1,
         max_epochs=40,
-        lr=0.001,
+        lr=1e-4,
         teacher_forcing_ratio=0.99,
+        valid_ratio=0.01,
         sr=16000,
         window_size=20,
         stride=10,
         n_mels=80,
-        feature_extract_by='librosa',
+        normalize=True,
+        del_silence=True,
+        feature_extract_by='librosa',  # you can choose librosa or torchaudio
         save_result_every=1000,
         save_model_every=10000,
         print_every=10,
         seed=1,
         max_len=151,
         load_model=False,
-        model_path=None
+        model_path=None,
+        run_by_sample=False
     )
 
     random.seed(config.seed)
@@ -71,7 +74,7 @@ if __name__ == '__main__':
     cuda = config.use_cuda and torch.cuda.is_available()
     device = torch.device('cuda' if cuda else 'cpu')
 
-    if device == 'cuda':
+    if str(device) == 'cuda':
         # os.environ["CUDA_LAUNCH_BLOCKING"] = "1"  # if you use Multi-GPU, delete this line
         logger.info("device : %s" % torch.cuda.get_device_name(0))
         logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
@@ -119,7 +122,10 @@ if __name__ == '__main__':
     else:
         criterion = LabelSmoothingLoss(len(char2id), PAD_token, config.label_smoothing, dim=-1).to(device)
 
-    audio_paths, label_paths = load_data_list(data_list_path=SAMPLE_LIST_PATH, dataset_path=SAMPLE_DATASET_PATH)
+    if config.run_by_sample:
+        audio_paths, label_paths = load_data_list(data_list_path=SAMPLE_LIST_PATH, dataset_path=SAMPLE_DATASET_PATH)
+    else:
+        audio_paths, label_paths = load_data_list(data_list_path=TRAIN_LIST_PATH, dataset_path=DATASET_PATH)
 
     if config.use_pickle:
         target_dict = load_pickle(TARGET_DICT_PATH, "load all target_dict using pickle complete !!")
@@ -130,7 +136,7 @@ if __name__ == '__main__':
         config=config,
         audio_paths=audio_paths,
         label_paths=label_paths,
-        valid_ratio=0.01,
+        valid_ratio=config.valid_ratio,
         target_dict=target_dict,
     )
 

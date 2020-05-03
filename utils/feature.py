@@ -3,7 +3,7 @@ import librosa
 import torchaudio
 import numpy as np
 import random
-from experiment import detourLibrosa as dlibrosa
+from utils import from_librosa as from_librosa
 
 
 # Collection of feature extraction
@@ -159,15 +159,13 @@ def spec_augment(spectrogram, time_mask_para=70, freq_mask_para=20, time_mask_nu
     length = spectrogram.size(0)
     n_mels = spectrogram.size(1)
 
-    if length < time_mask_para / 2:
-        return spectrogram
-
     # time mask
     for _ in range(time_mask_num):
         t = np.random.uniform(low=0.0, high=time_mask_para)
         t = int(t)
-        t0 = random.randint(0, abs(length - t))
-        spectrogram[t0: t0 + t, :] = 0
+        if length - t > 0:
+            t0 = random.randint(0, length - t)
+            spectrogram[t0: t0 + t, :] = 0
 
     # freq mask
     for _ in range(freq_mask_num):
@@ -195,13 +193,13 @@ def get_torchaudio_melspectrogram(filepath, n_mels=80, del_silence=False, input_
     STRIDE = int(sr * 0.001 * stride)
 
     if del_silence:
-        non_silence_ids = dlibrosa.split(y=signal, top_db=30)
+        non_silence_ids = from_librosa.split(y=signal, top_db=30)
         signal = np.concatenate([signal[start:end] for start, end in non_silence_ids])
 
     transforms = torchaudio.transforms.MelSpectrogram(sample_rate=sr, n_fft=N_FFT, n_mels=n_mels, hop_length=STRIDE)
     amplitude_to_db = torchaudio.transforms.AmplitudeToDB()
 
-    spectrogram = transforms(torch.Tensor(signal))
+    spectrogram = transforms(torch.FloatTensor(signal))
     spectrogram = amplitude_to_db(spectrogram)
     spectrogram = spectrogram.numpy()
 
