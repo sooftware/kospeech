@@ -47,7 +47,7 @@ if __name__ == '__main__':
         rnn_type='gru',
         batch_size=32,
         worker_num=1,
-        max_epochs=40,
+        max_epochs=20,
         lr=1e-4,
         teacher_forcing_ratio=0.99,
         valid_ratio=0.01,
@@ -77,7 +77,6 @@ if __name__ == '__main__':
     torch.cuda.manual_seed_all(config.seed)
     cuda = config.use_cuda and torch.cuda.is_available()
     device = torch.device('cuda' if cuda else 'cpu')
-    config.teacher_forcing_ratio = config.teacher_forcing_ratio[0]
 
     if str(device) == 'cuda':
         # os.environ["CUDA_LAUNCH_BLOCKING"] = "1"  # if you use Multi-GPU, delete this line

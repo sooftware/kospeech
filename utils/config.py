@@ -43,7 +43,7 @@ class Config:
                  label_smoothing=0.1,
                  batch_size=32,
                  worker_num=1,
-                 max_epochs=40,
+                 max_epochs=20,
                  lr=0.001,
                  teacher_forcing_ratio=0.99,
                  valid_ratio=0.01,
@@ -85,7 +85,7 @@ class Config:
         self.attn_dim = attn_dim
         self.label_smoothing = label_smoothing
         self.lr = lr
-        self.teacher_forcing_ratio = teacher_forcing_ratio,
+        self.teacher_forcing_ratio = teacher_forcing_ratio
         self.valid_ratio = valid_ratio
         self.seed = seed
         self.max_len = max_len
@@ -93,8 +93,8 @@ class Config:
         self.sr = sr
         self.window_size = window_size
         self.stride = stride
-        self.del_silence = del_silence,
-        self.normalize = normalize,
+        self.del_silence = del_silence
+        self.normalize = normalize
         self.feature_extract_by = feature_extract_by
         self.time_mask_para = time_mask_para
         self.freq_mask_para = freq_mask_para
