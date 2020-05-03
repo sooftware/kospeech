@@ -74,6 +74,9 @@ class Speller(nn.Module):
         embedded = self.embedding(input_var).to(self.device)
         embedded = self.input_dropout(embedded)
 
+        if self.training:
+            self.rnn.flatten_parameters()
+
         output, h_state = self.rnn(embedded, h_state)
         context = self.attention(output, listener_outputs)
 

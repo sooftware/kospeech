@@ -52,7 +52,7 @@ if __name__ == '__main__':
     parser.add_argument('--batch_size', type=int, default=32, help='batch size in training (default: 32)')
     parser.add_argument('--workers', type=int, default=1, help='number of workers in dataset loader (default: 1)')
     parser.add_argument('--max_epochs', type=int, default=20, help='number of max epochs in training (default: 20)')
-    parser.add_argument('--lr', type=float, default=1e-04, help='learning rate (default: 0.0001)')
+    parser.add_argument('--lr', type=float, default=3e-04, help='learning rate (default: 3e-04)')
     parser.add_argument('--teacher_forcing_ratio', type=float, default=0.99,
                         help='teacher forcing ratio in decoder (default: 0.99)')
     parser.add_argument('--valid_ratio', type=float, default=0.01, help='validation dataset ratio in training dataset')

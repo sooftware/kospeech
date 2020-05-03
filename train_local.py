@@ -48,7 +48,7 @@ if __name__ == '__main__':
         batch_size=32,
         worker_num=1,
         max_epochs=20,
-        lr=1e-4,
+        lr=3e-4,
         teacher_forcing_ratio=0.99,
         valid_ratio=0.01,
         sr=16000,
