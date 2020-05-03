@@ -43,18 +43,18 @@ class MultiHeadAttention(nn.Module):
 
     def forward(self, Q, K, V):
         batch_size = V.size(0)
-        q_len = V.size(1)
+        q_len = Q.size(1)
         k_len = K.size(1)
 
         residual = Q
 
-        q_s = self.W_Q(Q).view(batch_size, -1, self.num_head, self.dim)
-        k_s = self.W_K(K).view(batch_size, -1, self.num_head, self.dim)
-        v_s = self.W_V(V).view(batch_size, -1, self.num_head, self.dim)
+        q_s = self.W_Q(Q).view(batch_size, q_len, self.num_head, self.dim).permute(2, 0, 1, 3)
+        k_s = self.W_K(K).view(batch_size, k_len, self.num_head, self.dim).permute(2, 0, 1, 3)
+        v_s = self.W_V(V).view(batch_size, k_len, self.num_head, self.dim).permute(2, 0, 1, 3)
 
-        q_s = q_s.permute(2, 0, 1, 3).contiguous().view(-1, q_len, self.dim)
-        k_s = k_s.permute(2, 0, 1, 3).contiguous().view(-1, k_len, self.dim)
-        v_s = v_s.permute(2, 0, 1, 3).contiguous().view(-1, k_len, self.dim)
+        q_s = q_s.contiguous().view(-1, q_len, self.dim)
+        k_s = k_s.contiguous().view(-1, k_len, self.dim)
+        v_s = v_s.contiguous().view(-1, k_len, self.dim)
 
         score = torch.bmm(q_s, k_s.transpose(1, 2)) / np.sqrt(self.dim)  # scaled dot-product
         align = F.softmax(score, dim=2)
