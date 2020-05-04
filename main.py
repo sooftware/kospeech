@@ -136,7 +136,7 @@ def main():
             param.data.uniform_(-0.08, 0.08)
 
     optimizer = optim.Adam(model.module.parameters(), lr=args.lr)
-    scheduler = ReduceLROnPlateau(optimizer, 'min', patience=1, verbose=True)
+    lr_scheduler = ReduceLROnPlateau(optimizer, 'min', patience=1, verbose=True)
 
     if args.label_smoothing == 0.0:
         criterion = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_token).to(device)
@@ -198,7 +198,7 @@ def main():
         valid_loss, valid_cer = evaluate(model, valid_queue, criterion, device)
         valid_loader.join()
 
-        scheduler.step(valid_loss)
+        lr_scheduler.step(valid_loss)
 
         logger.info('Epoch %d (Evaluate) Loss %0.4f CER %0.4f' % (epoch, valid_loss, valid_cer))
         save_epoch_result(train_result=[train_dict, train_loss, train_cer],
