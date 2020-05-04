@@ -51,7 +51,7 @@ if __name__ == '__main__':
     parser.add_argument('--rnn_type', type=str, default='gru', help='type of rnn cell: [gru, lstm, rnn] (default: gru)')
     parser.add_argument('--k', type=int, default=5, help='size of beam (default: 5)')
     parser.add_argument('--batch_size', type=int, default=32, help='batch size in training (default: 32)')
-    parser.add_argument('--workers', type=int, default=1, help='number of workers in dataset loader (default: 1)')
+    parser.add_argument('--worker_num', type=int, default=1, help='number of workers in dataset loader (default: 1)')
     parser.add_argument('--max_epochs', type=int, default=20, help='number of max epochs in training (default: 20)')
     parser.add_argument('--lr', type=float, default=3e-04, help='learning rate (default: 3e-04)')
     parser.add_argument('--teacher_forcing_ratio', type=float, default=0.99,

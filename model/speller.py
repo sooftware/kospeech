@@ -135,9 +135,9 @@ class Speller(nn.Module):
         return h_state
 
     def validate_args(self, inputs, listener_outputs, teacher_forcing_ratio):
-        # inference
-        if inputs is None:
-            batch_size = 1
+        batch_size = listener_outputs.size(0)
+
+        if inputs is None:  # inference
             inputs = torch.LongTensor([self.sos_id] * batch_size).view(batch_size, 1)
             max_length = self.max_length
 
@@ -145,7 +145,6 @@ class Speller(nn.Module):
                 raise ValueError("Teacher forcing has to be disabled (set 0) when no inputs is provided.")
 
         else:
-            batch_size = listener_outputs.size(0)
             max_length = inputs.size(1) - 1  # minus the start of sequence symbol
 
         return inputs, batch_size, max_length
