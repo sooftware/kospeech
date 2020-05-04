@@ -47,7 +47,7 @@ class Speller(nn.Module):
     """
 
     def __init__(self, num_class, max_length, hidden_dim, sos_id, eos_id, num_head, attn_dim=64,
-                 num_layers=1, rnn_type='gru', dropout_p=0.5, device=None, k=5):
+                 num_layers=1, rnn_type='gru', dropout_p=0.5, device=None, k=5, ignore_index=0):
 
         super(Speller, self).__init__()
         assert rnn_type.lower() in supported_rnns.keys(), 'RNN type not supported.'
@@ -66,6 +66,7 @@ class Speller(nn.Module):
         self.eos_id = eos_id
         self.sos_id = sos_id
         self.device = device
+        self.ignore_index = ignore_index
 
     def forward_step(self, input_var, h_state, listener_outputs=None):
         batch_size = input_var.size(0)

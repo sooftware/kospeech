@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from main import char2id
 
 
 def _inflate(tensor, n_repeat, dim):
@@ -49,6 +48,7 @@ class BeamSearch(nn.Module):
         self.alpha = 1.2
         self.min_length = 5
         self.validate_args = decoder.validate_args
+        self.ignore_index = decoder.ignore_index
 
     def forward(self, input_var, encoder_outputs, k=5):
         inputs, batch_size, max_length = self.validate_args(input_var, encoder_outputs, 0.0)
@@ -208,7 +208,7 @@ class BeamSearch(nn.Module):
 
         for batch_idx, y_hat in enumerate(hypothesis):
             sequence[batch_idx, :len(y_hat)] = y_hat
-            sequence[batch_idx, len(y_hat):] = int(char2id[' '])
+            sequence[batch_idx, len(y_hat):] = int(self.ignore_index)
 
         return sequence
 

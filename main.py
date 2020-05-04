@@ -17,8 +17,7 @@ import torch
 import time
 import argparse
 import warnings
-import logging
-import sys
+from definition import *
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from model.speller import Speller
 from model.listener import Listener
@@ -26,37 +25,12 @@ from model.listenAttendSpell import ListenAttendSpell
 from trainer import supervised_train, evaluate
 from loss import LabelSmoothingLoss
 from utils import save_epoch_result
-from data_loader import split_dataset, load_data_list, load_targets, load_pickle, MultiLoader, AudioDataLoader, \
-     load_label
+from label_loader import load_targets
+from data_loader import split_dataset, load_data_list, load_pickle, MultiLoader, AudioDataLoader
 
-# If you haven't read https://sh951011.github.io/End-to-End-Korean-Speech-Recognition/notes/Preparation.html
-# please read it first before setting define.py
-
-DATASET_PATH = "/data1/"  # set by your data path
-SAMPLE_DATASET_PATH = "./data/sample/"
-TRAIN_LIST_PATH = "./data/data_list/train_list.csv"
-TEST_LIST_PATH = "./data/data_list/test_list.csv"
-SAMPLE_LIST_PATH = "./data/data_list/sample_list.csv"
-DEBUG_LIST_PATH = "./data/data_list/debug_list.csv"
-TARGET_DICT_PATH = "./data/pickle/new_target_dict.bin"
-TRAIN_RESULT_PATH = "./data/train_result/train_result.csv"
-VALID_RESULT_PATH = "./data/train_result/eval_result.csv"
-TRAIN_STEP_RESULT_PATH = "./data/train_result/train_step_result.csv"
-logger = logging.getLogger('root')
-FORMAT = "[%(asctime)s %(filename)s:%(lineno)s - %(funcName)s()] %(message)s"
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format=FORMAT)
-logger.setLevel(logging.INFO)
-char2id, id2char = load_label('./data/label/train_labels.csv', encoding='utf-8')  # 2,040
-# if you want to use total character label
-# change => char2id, id2char = load_label('./data/label/test_labels.csv', encoding='utf-8') # 2,337
-SOS_token = int(char2id['<s>'])
-EOS_token = int(char2id['</s>'])
-PAD_token = int(char2id['_'])
-train_dict = {'loss': [], 'cer': []}
-valid_dict = {'loss': [], 'cer': []}
 
 parser = argparse.ArgumentParser(description='End-to-end Speech Recognition')
-parser.add_argument('--use_bidrionctional', action='store_true', default=False)
+parser.add_argument('--use_bidirectional', action='store_true', default=False)
 parser.add_argument('--input_reverse', action='store_true', default=False)
 parser.add_argument('--use_augment', action='store_true', default=False)
 parser.add_argument('--use_pickle', action='store_true', default=False)
@@ -99,8 +73,6 @@ parser.add_argument('--time_mask_num', type=int, default=2,
                     help='how many time-masked area to make (default: 2)')
 parser.add_argument('--freq_mask_num', type=int, default=2,
                     help='how many freq-masked area to make (default: 2)')
-parser.add_argument('--feature_extract_by', type=str, default='librosa',
-                    help='which library to use for feature extraction: [librosa, torchaudio] (default: librosa)')
 parser.add_argument('--save_result_every', type=int, default=1000,
                     help='to determine whether to store training results every N timesteps (default: 1000)')
 parser.add_argument('--save_model_every', type=int, default=10000,
@@ -110,13 +82,6 @@ parser.add_argument('--print_every', type=int, default=10,
 
 
 def main():
-    global SOS_token
-    global EOS_token
-    global PAD_token
-    global train_dict
-    global valid_dict
-    global logger
-
     warnings.filterwarnings('ignore')
     args = parser.parse_args()
     random.seed(args.seed)
@@ -157,7 +122,8 @@ def main():
             dropout_p=args.dropout,
             num_head=args.num_head,
             attn_dim=args.attn_dim,
-            device=device
+            device=device,
+            ignore_index=char2id[' ']
         )
         model = ListenAttendSpell(listener, speller)
         model.flatten_parameters()

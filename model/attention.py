@@ -30,9 +30,7 @@ class MultiHeadAttention(nn.Module):
 
     def __init__(self, in_features, num_head=4, dim=128):
         super(MultiHeadAttention, self).__init__()
-
         assert num_head * dim == in_features, "<num_head> * <dim> size must be same to <in_features> size"
-
         self.in_features = in_features
         self.num_head = num_head
         self.dim = dim

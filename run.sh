@@ -19,7 +19,7 @@ MAX_LEN=151
 WINDOW_SIZE=20
 STRIDE=10
 N_MELS=80
-FEATURE_EXTRACT_BY='torchaudio'
+FEATURE_EXTRACT_BY='librosa'
 TIME_MASK_PARA=50
 FREQ_MASK_PARA=12
 TIME_MASK_NUM=2
@@ -29,12 +29,12 @@ SAVE_MODEL_EVERY=10000
 PRINT_EVERY=10
 
 
-python3 ./server.py --batch_size $BATCH_SIZE --worker_num $WORKER_NUM --max_epochs $MAX_EPOCHS --use_bidirectional
---input_reverse --use_augment --use_pickle --use_cuda --augment_num $AUGMENT_NUM --hidden_dim $HIDDEN_DIM
---dropout $DROPOUT --num_head $NUM_HEAD --attn_dim $ATTN_DIM --label_smoothing $LABEL_SMOOTHING
---listener_layer_size $LISTENER_LAYER_SIZE --speller_layer_size $SPELLER_LAYER_SIZE --rnn_type $RNN_TYPE --k $K --lr $LR
---teacher_forcing_ratio $TEACHER_FORCING_RATIO --valid_ratio $VALID_RATIO --max_len $MAX_LEN --window_size $WINDOW_SIZE
---stride $STRIDE n_mels $N_MELS --normalize --del_silence --feature_extract_by $FEATURE_EXTRACT_BY
---time_mask_para $TIME_MASK_PARA --freq_mask_para $FREQ_MASK_PARA --time_mask_num $TIME_MASK_NUM
---freq_mask_num $FREQ_MASK_NUM --save_result_every $SAVE_RESULT_EVERY --save_model_every $SAVE_MODEL_EVERY
---print_every $PRINT_EVERY
+python ./main.py --batch_size $BATCH_SIZE --worker_num $WORKER_NUM --max_epochs $MAX_EPOCHS --use_bidirectional \
+--input_reverse --use_augment --use_pickle --use_cuda --augment_num $AUGMENT_NUM --hidden_dim $HIDDEN_DIM \
+--dropout $DROPOUT --num_head $NUM_HEAD --attn_dim $ATTN_DIM --label_smoothing $LABEL_SMOOTHING \
+--listener_layer_size $LISTENER_LAYER_SIZE --speller_layer_size $SPELLER_LAYER_SIZE --rnn_type $RNN_TYPE --k $K \
+--lr $LR --teacher_forcing_ratio $TEACHER_FORCING_RATIO --valid_ratio $VALID_RATIO --max_len $MAX_LEN \
+--window_size $WINDOW_SIZE --stride $STRIDE --n_mels $N_MELS --normalize --del_silence \
+--feature_extract_by $FEATURE_EXTRACT_BY --time_mask_para $TIME_MASK_PARA --freq_mask_para $FREQ_MASK_PARA \
+--time_mask_num $TIME_MASK_NUM --freq_mask_num $FREQ_MASK_NUM --save_result_every $SAVE_RESULT_EVERY \
+--save_model_every $SAVE_MODEL_EVERY --print_every $PRINT_EVERY

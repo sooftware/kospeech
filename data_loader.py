@@ -1,13 +1,11 @@
 import math
 import random
-import csv
 import pickle
 import torch
 import threading
 import pandas as pd
-from main import logger, SOS_token, EOS_token, PAD_token
+from definition import logger, SOS_token, EOS_token, PAD_token
 from torch.utils.data import Dataset
-from tqdm import trange
 from feature import spec_augment, get_librosa_melspectrogram, get_torchaudio_melspectrogram
 from utils import get_label, save_pickle
 
@@ -285,31 +283,6 @@ def _collate_fn(batch):
     return seqs, targets, seq_lengths, target_lengths
 
 
-def load_targets(label_paths):
-    """
-    Provides dictionary of filename and labels
-
-    Args:
-        label_paths (list): set of label paths
-
-    Returns: target_dict
-        - **target_dict** (dict): dictionary of filename and labels
-    """
-    target_dict = dict()
-
-    for idx in trange(len(label_paths)):
-        label_txt = label_paths[idx]
-
-        with open(file=label_txt, mode="r") as f:
-            label = f.readline()
-            file_num = label_txt.split('/')[-1].split('.')[0].split('_')[-1]
-            target_dict['KaiSpeech_label_%s' % file_num] = label
-
-    save_pickle(target_dict, "./data/pickle/target_dict.bin", message="target_dict save complete !!")
-
-    return target_dict
-
-
 def load_data_list(data_list_path, dataset_path):
     """
     Provides set of audio path & label path
@@ -327,32 +300,6 @@ def load_data_list(data_list_path, dataset_path):
     label_paths = list(dataset_path + data_list["label"])
 
     return audio_paths, label_paths
-
-
-def load_label(label_path, encoding='utf-8'):
-    """
-    Provides char2id, id2char
-
-    Args:
-        label_path (list): csv file with character labels
-        encoding (str): encoding method
-
-    Returns: char2id, id2char
-        - **char2id** (dict): char2id[ch] = id
-        - **id2char** (dict): id2char[id] = ch
-    """
-    char2id = dict()
-    id2char = dict()
-
-    with open(label_path, 'r', encoding=encoding) as f:
-        labels = csv.reader(f, delimiter=',')
-        next(labels)
-
-        for row in labels:
-            char2id[row[1]] = row[0]
-            id2char[int(row[0])] = row[1]
-
-    return char2id, id2char
 
 
 def load_pickle(filepath, message=""):
