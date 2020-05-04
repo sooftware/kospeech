@@ -44,6 +44,8 @@ parser.add_argument('--dropout', type=float, default=0.3, help='dropout rate in 
 parser.add_argument('--num_head', type=int, default=4, help='number of head in attention (default: 4)')
 parser.add_argument('--attn_dim', type=int, default=128, help='dimention of attention (default: 128)')
 parser.add_argument('--label_smoothing', type=float, default=0.1, help='ratio of label smoothing (default: 0.1)')
+parser.add_argument('--conv_type', type=str, default='custom',
+                    help='conv type of listener [custom, deepspeech2] (default: custom')
 parser.add_argument('--listener_layer_size', type=int, default=5, help='layer size of encoder (default: 5)')
 parser.add_argument('--speller_layer_size', type=int, default=3, help='layer size of decoder (default: 3)')
 parser.add_argument('--rnn_type', type=str, default='gru', help='type of rnn cell: [gru, lstm, rnn] (default: gru)')
@@ -107,6 +109,7 @@ def main():
             dropout_p=args.dropout,
             num_layers=args.listener_layer_size,
             bidirectional=args.use_bidirectional,
+            conv_type=args.conv_type,
             rnn_type=args.rnn_type,
             device=device
         )

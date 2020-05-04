@@ -1,3 +1,4 @@
+import math
 import torch.nn as nn
 
 supported_rnns = {
@@ -30,29 +31,56 @@ class Listener(nn.Module):
         >>> output = listener(inputs)
     """
 
-    def __init__(self, in_features, hidden_dim, device, dropout_p=0.5, num_layers=5, bidirectional=True, rnn_type='gru'):
+    def __init__(self, in_features, hidden_dim, device, dropout_p=0.5, num_layers=5, bidirectional=True,
+                 rnn_type='gru', conv_type='custom'):
         super(Listener, self).__init__()
         assert rnn_type.lower() in supported_rnns.keys(), 'RNN type not supported.'
 
         rnn_cell = supported_rnns[rnn_type]
         self.device = device
-        self.conv = nn.Sequential(
-            nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1),
-            nn.Hardtanh(0, 20, inplace=True),
-            nn.BatchNorm2d(num_features=64),
-            nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
-            nn.Hardtanh(0, 20, inplace=True),
-            nn.MaxPool2d(2, stride=2),
-            nn.BatchNorm2d(num_features=64),
-            nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1),
-            nn.Hardtanh(0, 20, inplace=True),
-            nn.BatchNorm2d(num_features=128),
-            nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1),
-            nn.Hardtanh(0, 20, inplace=True),
-            nn.MaxPool2d(2, stride=2)
-        )
 
-        in_features = (in_features - 1) << 5 if in_features % 2 else in_features << 5
+        if conv_type == 'custom':
+            self.conv = nn.Sequential(
+                nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1),
+                nn.Hardtanh(0, 20, inplace=True),
+                nn.BatchNorm2d(num_features=64),
+                nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
+                nn.Hardtanh(0, 20, inplace=True),
+                nn.MaxPool2d(2, stride=2),
+                nn.BatchNorm2d(num_features=64),
+                nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1),
+                nn.Hardtanh(0, 20, inplace=True),
+                nn.BatchNorm2d(num_features=128),
+                nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1),
+                nn.Hardtanh(0, 20, inplace=True),
+                nn.MaxPool2d(2, stride=2)
+            )
+            in_features = (in_features - 1) << 5 if in_features % 2 else in_features << 5
+
+        elif conv_type == 'deepspeech2':
+            self.conv = nn.Sequential(
+                nn.Conv2d(1, 32, kernel_size=(41, 11), stride=(2, 2), padding=(20, 5)),
+                nn.BatchNorm2d(32),
+                nn.Hardtanh(0, 20, inplace=True),
+                nn.Conv2d(32, 32, kernel_size=(21, 11), stride=(2, 1), padding=(10, 5)),
+                nn.Hardtanh(0, 20, inplace=True),
+                nn.MaxPool2d(2, stride=2),
+                nn.BatchNorm2d(num_features=32),
+                nn.Conv2d(32, 64, kernel_size=(41, 11), stride=(2, 2), padding=(20, 5)),
+                nn.BatchNorm2d(64),
+                nn.Hardtanh(0, 20, inplace=True),
+                nn.Conv2d(64, 64, kernel_size=(21, 11), stride=(2, 1), padding=(10, 5)),
+                nn.BatchNorm2d(64),
+                nn.Hardtanh(0, 20, inplace=True),
+                nn.MaxPool2d(2, stride=2)
+            )
+            in_features = int(math.floor(in_features + 2 * 20 - 41) / 2 + 1)
+            in_features = int(math.floor(in_features + 2 * 10 - 21) / 2 + 1)
+            in_features *= 16
+
+        else:
+            raise ValueError("conv type should be one of [custom, deepspeech2]")
+
         self.rnn = rnn_cell(
             input_size=in_features,
             hidden_size=hidden_dim,

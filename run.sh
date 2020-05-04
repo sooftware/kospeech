@@ -10,6 +10,7 @@ ATTN_DIM=128
 LABEL_SMOOTHING=0.1
 LISTENER_LAYER_SIZE=5
 SPELLER_LAYER_SIZE=3
+CONV_TYPE='custom'
 RNN_TYPE='gru'
 K=5
 LR=3e-04
@@ -37,4 +38,4 @@ python ./main.py --batch_size $BATCH_SIZE --worker_num $WORKER_NUM --max_epochs 
 --window_size $WINDOW_SIZE --stride $STRIDE --n_mels $N_MELS --normalize --del_silence \
 --feature_extract_by $FEATURE_EXTRACT_BY --time_mask_para $TIME_MASK_PARA --freq_mask_para $FREQ_MASK_PARA \
 --time_mask_num $TIME_MASK_NUM --freq_mask_num $FREQ_MASK_NUM --save_result_every $SAVE_RESULT_EVERY \
---save_model_every $SAVE_MODEL_EVERY --print_every $PRINT_EVERY
+--save_model_every $SAVE_MODEL_EVERY --print_every $PRINT_EVERY --conv_type $CONV_TYPE
