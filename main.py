@@ -2,7 +2,7 @@
     -*- coding: utf-8 -*-
 
     @source_code{
-      title={Character-unit based End-to-End Korean Speech Recognition},
+      title={Character-unit based End-to-end Korean Speech Recognition},
       author={Soohwan Kim, Seyoung Bae, Cheolhwang Won},
       link={https://github.com/sooftware/End-to-End-Korean-Speech-Recognition},
       year={2020}
@@ -30,28 +30,28 @@ from data_loader import split_dataset, load_data_list, load_pickle, MultiLoader,
 
 
 parser = argparse.ArgumentParser(description='End-to-end Speech Recognition')
-parser.add_argument('--use_bidirectional', action='store_true', default=False)
+parser.add_argument('--use_bidirectional', action='store_true', default=True)
 parser.add_argument('--input_reverse', action='store_true', default=False)
 parser.add_argument('--use_augment', action='store_true', default=False)
 parser.add_argument('--use_pickle', action='store_true', default=False)
 parser.add_argument('--use_cuda', action='store_true', default=False)
 parser.add_argument('--load_model', action='store_true', default=False)
-parser.add_argument('--run_by_sample', action='store_true', default=False)
+parser.add_argument('--run_by_sample', action='store_true', default=True)
 parser.add_argument('--model_path', type=str, default=None, help='Location to load models (default: None')
-parser.add_argument('--augment_num', type=int, default=1, help='SpecAugemnt Number per one data (default: 1)')
-parser.add_argument('--hidden_dim', type=int, default=256, help='hidden size of model (default: 256)')
-parser.add_argument('--dropout', type=float, default=0.3, help='dropout rate in training (default: 0.3)')
+parser.add_argument('--augment_num', type=int, default=1, help='Number of SpecAugemnt per data (default: 1)')
+parser.add_argument('--hidden_dim', type=int, default=256, help='hidden state dimension of model (default: 256)')
+parser.add_argument('--dropout', type=float, default=0.3, help='dropout ratio in training (default: 0.3)')
 parser.add_argument('--num_head', type=int, default=4, help='number of head in attention (default: 4)')
 parser.add_argument('--attn_dim', type=int, default=128, help='dimention of attention (default: 128)')
 parser.add_argument('--label_smoothing', type=float, default=0.1, help='ratio of label smoothing (default: 0.1)')
 parser.add_argument('--conv_type', type=str, default='custom',
                     help='conv type of listener [custom, deepspeech2] (default: custom')
-parser.add_argument('--listener_layer_size', type=int, default=5, help='layer size of encoder (default: 5)')
-parser.add_argument('--speller_layer_size', type=int, default=3, help='layer size of decoder (default: 3)')
+parser.add_argument('--listener_layer_size', type=int, default=2, help='layer size of encoder (default: 5)')
+parser.add_argument('--speller_layer_size', type=int, default=1, help='layer size of decoder (default: 3)')
 parser.add_argument('--rnn_type', type=str, default='gru', help='type of rnn cell: [gru, lstm, rnn] (default: gru)')
 parser.add_argument('--k', type=int, default=5, help='size of beam (default: 5)')
-parser.add_argument('--batch_size', type=int, default=32, help='batch size in training (default: 32)')
-parser.add_argument('--worker_num', type=int, default=1, help='number of workers in dataset loader (default: 1)')
+parser.add_argument('--batch_size', type=int, default=1, help='batch size in training (default: 32)')
+parser.add_argument('--worker_num', type=int, default=4, help='number of workers in dataset loader (default: 4)')
 parser.add_argument('--max_epochs', type=int, default=20, help='number of max epochs in training (default: 20)')
 parser.add_argument('--lr', type=float, default=3e-04, help='learning rate (default: 3e-04)')
 parser.add_argument('--teacher_forcing_ratio', type=float, default=0.99,
@@ -93,7 +93,6 @@ def main():
     device = torch.device('cuda' if cuda else 'cpu')
 
     if str(device) == 'cuda':
-        # os.environ["CUDA_LAUNCH_BLOCKING"] = "1"  # if you use Multi-GPU, delete this line
         for idx in range(torch.cuda.device_count()):
             logger.info("device : %s" % torch.cuda.get_device_name(idx))
         logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
@@ -136,7 +135,7 @@ def main():
             param.data.uniform_(-0.08, 0.08)
 
     optimizer = optim.Adam(model.module.parameters(), lr=args.lr)
-    lr_scheduler = ReduceLROnPlateau(optimizer, 'min', patience=1, factor=0.333, verbose=True)
+    lr_scheduler = ReduceLROnPlateau(optimizer, 'min', patience=1, factor=0.333, verbose=True, min_lr=3e-05)
 
     if args.label_smoothing == 0.0:
         criterion = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_token).to(device)

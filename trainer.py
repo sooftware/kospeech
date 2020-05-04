@@ -59,7 +59,7 @@ def supervised_train(model, args, epoch, total_time_step, queue, criterion, opti
 
         dist, length = get_distance(targets, hypothesis, id2char, char2id, EOS_token)
 
-        total_num += sum(input_lengths)
+        total_num += int(input_lengths.sum())
         total_dist += dist
         total_length += length
 
@@ -130,13 +130,13 @@ def evaluate(model, queue, criterion, device):
             targets = scripts[:, 1:]
 
             model.module.flatten_parameters()
-            y_hat, logit = model(inputs, None, teacher_forcing_ratio=0.0, use_beam_search=False)
+            hypothesis, logit = model(inputs, teacher_forcing_ratio=0.0, use_beam_search=False)
 
             loss = criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
             total_loss += loss.item()
             total_num += sum(input_lengths)
 
-            dist, length = get_distance(targets, y_hat, id2char, char2id, EOS_token)
+            dist, length = get_distance(targets, hypothesis, id2char, char2id, EOS_token)
             total_dist += dist
             total_length += length
 

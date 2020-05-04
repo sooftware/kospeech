@@ -54,8 +54,8 @@ class BeamSearch(nn.Module):
         inputs, batch_size, max_length = self.validate_args(input_var, encoder_outputs, 0.0)
         h_state = self.init_state(batch_size)
 
-        step_outputs, h_state = self.forward_step(input_var, h_state, encoder_outputs)
-        self.cumulative_ps, self.ongoing_beams = step_outputs.topk(k)
+        predicted_softmax, h_state = self.forward_step(input_var, h_state, encoder_outputs)
+        self.cumulative_ps, self.ongoing_beams = predicted_softmax.topk(k)
 
         self.ongoing_beams = self.ongoing_beams.view(batch_size * k, 1)
         self.cumulative_ps = self.cumulative_ps.view(batch_size * k, 1)
@@ -74,10 +74,10 @@ class BeamSearch(nn.Module):
                 break
 
             h_state = h_state.view(self.num_layers, batch_size * k, self.hidden_dim)
-            step_outputs, h_state = self.forward_step(input_var, h_state, encoder_outputs)
+            predicted_softmax, h_state = self.forward_step(input_var, h_state, encoder_outputs)
 
-            step_outputs = step_outputs.view(batch_size, k, -1)
-            current_ps, current_vs = step_outputs.topk(k)
+            predicted_softmax = predicted_softmax.view(batch_size, k, -1)
+            current_ps, current_vs = predicted_softmax.topk(k)
 
             self.cumulative_ps = self.cumulative_ps.view(batch_size, k)
             self.ongoing_beams = self.ongoing_beams.view(batch_size, k, -1)
@@ -135,6 +135,7 @@ class BeamSearch(nn.Module):
         context = self.attention(output, encoder_outputs)
 
         predicted_softmax = F.log_softmax(self.fc(context.contiguous().view(-1, self.hidden_dim)), dim=1)
+
         return predicted_softmax, h_state
 
     def get_successor(self, current_ps, current_vs, finished_ids, num_successor, eos_cnt, k):

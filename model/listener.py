@@ -44,7 +44,7 @@ class MaskConv(nn.Module):
 
             x = x.masked_fill(mask, 0)
 
-        return x, lengths
+        return x
 
 
 class Listener(nn.Module):
@@ -116,6 +116,7 @@ class Listener(nn.Module):
             in_features = int(math.floor(in_features + 2 * 20 - 41) / 2 + 1)
             in_features = int(math.floor(in_features + 2 * 10 - 21) / 2 + 1)
             in_features *= 16
+            in_features = int(in_features / 5)
 
         else:
             raise ValueError("conv type should be one of [custom, deepspeech2]")
@@ -132,18 +133,18 @@ class Listener(nn.Module):
     def forward(self, inputs, input_lengths):
         output_lengths = self.get_seq_lengths(input_lengths)
 
-        x = inputs.unsqueeze(1).permute(0, 1, 3, 2)    # (B, 1, D, T)
-        x, _ = self.conv(x, output_lengths)            # (B, C, D, T)
+        x = inputs.unsqueeze(1).permute(0, 1, 3, 2)    # (batch_size, 1, hidden_dim, seq_len)
+        x = self.conv(x, output_lengths)               # (batch_size, conv_out, hidden_dim, seq_len)
 
         x_size = x.size()
-        x = x.view(x_size[0], x_size[1] * x_size[2], x_size[3])      # (B, C * D, T)
-        x = x.transpose(1, 2).transpose(0, 1).contiguous()           # (T, B, D)
+        x = x.view(x_size[0], x_size[1] * x_size[2], x_size[3])    # (batch_size, conv_out * hidden_dim, seq_len)
+        x = x.transpose(1, 2).transpose(0, 1).contiguous()         # (seq_len, batch_size, hidden_dim)
 
         x = nn.utils.rnn.pack_padded_sequence(x, output_lengths)
         output, h_state = self.rnn(x)
         output, _ = nn.utils.rnn.pad_packed_sequence(output)
 
-        output = output.transpose(0, 1)  # (B, T, D)
+        output = output.transpose(0, 1)  # (batch_size, seq_len, hidden_dim)
 
         return output, h_state
 

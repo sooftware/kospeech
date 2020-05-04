@@ -35,16 +35,11 @@ class ListenAttendSpell(nn.Module):
         self.listener = listener
         self.speller = speller
 
-    def forward(self, inputs, input_lengths, targets, teacher_forcing_ratio=0.90, use_beam_search=False):
+    def forward(self, inputs, input_lengths, targets=None, teacher_forcing_ratio=0.90, use_beam_search=False):
         listener_outputs, h_state = self.listener(inputs, input_lengths)
-        hypothesis, logits = self.speller(
-            inputs=targets,
-            listener_outputs=listener_outputs,
-            teacher_forcing_ratio=teacher_forcing_ratio,
-            use_beam_search=use_beam_search
-        )
+        hypothesis, logit = self.speller(targets, listener_outputs, teacher_forcing_ratio, use_beam_search)
 
-        return hypothesis, logits
+        return hypothesis, logit
 
     def set_beam_size(self, k):
         self.speller.k = k

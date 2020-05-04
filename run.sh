@@ -1,6 +1,12 @@
-
+# End-to-end Speech Recognition
+#  @source_code{
+#      title={Character-unit based End-to-end Korean Speech Recognition},
+#      author={Soohwan Kim, Seyoung Bae, Cheolhwang Won},
+#      link={https://github.com/sooftware/End-to-End-Korean-Speech-Recognition},
+#      year={2020}
+#  }
 BATCH_SIZE=32
-WORKER_NUM=8
+WORKER_NUM=4
 MAX_EPOCHS=20
 AUGMENT_NUM=1
 HIDDEN_DIM=256

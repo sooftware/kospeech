@@ -15,7 +15,8 @@ import warnings
 import logging
 import sys
 import argparse
-from data_loader import SpectrogramDataset, AudioDataLoader, load_data_list, load_targets, load_label
+from data_loader import SpectrogramDataset, AudioDataLoader, load_data_list
+from label_loader import load_targets, load_label
 from utils import get_distance
 
 
@@ -58,7 +59,7 @@ def test(model, queue, device, args):
             targets = targets.to(device)
             scripts = targets[:, 1:]
 
-            y_hat, logits = model(inputs, None, teacher_forcing_ratio=0.0, use_beam_search=True)
+            y_hat, logits = model(inputs, teacher_forcing_ratio=0.0, use_beam_search=True)
 
             dist, length = get_distance(scripts, y_hat, id2char, char2id, EOS_token)
             total_dist += dist
