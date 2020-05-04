@@ -45,6 +45,7 @@ if __name__ == '__main__':
         listener_layer_size=5,
         speller_layer_size=3,
         rnn_type='gru',
+        k=5,
         batch_size=32,
         worker_num=1,
         max_epochs=20,
@@ -100,7 +101,7 @@ if __name__ == '__main__':
         speller = Speller(
             num_class=len(char2id),
             max_length=args.max_len,
-            k=5,
+            k=args.k,
             hidden_dim=args.hidden_dim << (1 if args.use_bidirectional else 0),
             sos_id=SOS_token,
             eos_id=EOS_token,

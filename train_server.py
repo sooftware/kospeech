@@ -49,6 +49,7 @@ if __name__ == '__main__':
     parser.add_argument('--listener_layer_size', type=int, default=5, help='layer size of encoder (default: 5)')
     parser.add_argument('--speller_layer_size', type=int, default=3, help='layer size of decoder (default: 3)')
     parser.add_argument('--rnn_type', type=str, default='gru', help='type of rnn cell: [gru, lstm, rnn] (default: gru)')
+    parser.add_argument('--k', type=int, default=5, help='size of beam (default: 5)')
     parser.add_argument('--batch_size', type=int, default=32, help='batch size in training (default: 32)')
     parser.add_argument('--workers', type=int, default=1, help='number of workers in dataset loader (default: 1)')
     parser.add_argument('--max_epochs', type=int, default=20, help='number of max epochs in training (default: 20)')
@@ -113,7 +114,7 @@ if __name__ == '__main__':
         speller = Speller(
             num_class=len(char2id),
             max_length=args.max_len,
-            k=5,
+            k=args.k,
             hidden_dim=args.hidden_dim << (1 if args.use_bidirectional else 0),
             sos_id=SOS_token,
             eos_id=EOS_token,

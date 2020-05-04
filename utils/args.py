@@ -3,7 +3,7 @@ from utils.definition import logger
 
 class Arguments:
     """
-    set of Arguments
+    set of Argument
 
     Args:
         use_bidirectional (bool): if True, becomes a bidirectional listener (default: True)
@@ -38,6 +38,7 @@ class Arguments:
                  listener_layer_size=5,
                  speller_layer_size=3,
                  rnn_type='gru',
+                 k=5,
                  num_head=12,
                  attn_dim=64,
                  label_smoothing=0.1,
@@ -78,6 +79,7 @@ class Arguments:
         self.listener_layer_size = listener_layer_size
         self.speller_layer_size = speller_layer_size
         self.rnn_type = rnn_type
+        self.k = k
         self.batch_size = batch_size
         self.worker_num = worker_num
         self.max_epochs = max_epochs
