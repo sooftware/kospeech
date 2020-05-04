@@ -1,10 +1,9 @@
 import logging
 import sys
-import csv
 from label_loader import load_label
 
 # If you haven't read https://sh951011.github.io/End-to-End-Korean-Speech-Recognition/notes/Preparation.html
-# please read it first before setting define.py
+# please read it first before setting definition.py
 
 DATASET_PATH = "/data1/"  # set by your data path
 SAMPLE_DATASET_PATH = "./data/sample/"
