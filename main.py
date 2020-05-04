@@ -153,13 +153,7 @@ def main():
     else:
         target_dict = load_targets(label_paths)
 
-    total_time_step, trainset_list, validset = split_dataset(
-        args=args,
-        audio_paths=audio_paths,
-        label_paths=label_paths,
-        valid_ratio=args.valid_ratio,
-        target_dict=target_dict,
-    )
+    total_time_step, trainset_list, validset = split_dataset(args, audio_paths, label_paths, target_dict)
 
     logger.info('start')
     train_begin = time.time()
@@ -182,8 +176,6 @@ def main():
             optimizer=optimizer,
             device=device,
             train_begin=train_begin,
-            worker_num=args.worker_num,
-            teacher_forcing_ratio=args.teacher_forcing_ratio
         )
         train_loader.join()
 

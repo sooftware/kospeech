@@ -6,8 +6,7 @@ from utils import get_distance, save_step_result
 train_step_result = {'loss': [], 'cer': []}
 
 
-def supervised_train(model, args, epoch, total_time_step, queue, criterion, optimizer,
-                     device, train_begin, worker_num, teacher_forcing_ratio=0.90):
+def supervised_train(model, args, epoch, total_time_step, queue, criterion, optimizer, device, train_begin):
     r"""
     Args:
         train_begin: train begin time
@@ -16,12 +15,10 @@ def supervised_train(model, args, epoch, total_time_step, queue, criterion, opti
         args (Arguments): set of Argugments
         model (torch.nn.Module): Model to be trained
         optimizer (torch.optim): optimizer for training
-        teacher_forcing_ratio (float):  The probability that teacher forcing will be used (default: 0.90)
         queue (Queue.queue): queue for threading
         criterion (torch.nn): one of PyTorch’s loss function.
           Refer to http://pytorch.org/docs/master/nn.html#loss-functions for a list of them.
         device (torch.cuda): device used ('cuda' or 'cpu')
-        worker_num (int): the number of cpu cores used
 
     Returns: loss, cer
         - **loss** (float): loss of present epoch
@@ -42,10 +39,10 @@ def supervised_train(model, args, epoch, total_time_step, queue, criterion, opti
 
         if inputs.shape[0] == 0:
             # empty feats means closing one loader
-            worker_num -= 1
-            logger.debug('left train_loader: %d' % worker_num)
+            args.worker_num -= 1
+            logger.debug('left train_loader: %d' % args.worker_num)
 
-            if worker_num == 0:
+            if args.worker_num == 0:
                 break
             else:
                 continue
@@ -55,7 +52,7 @@ def supervised_train(model, args, epoch, total_time_step, queue, criterion, opti
         targets = scripts[:, 1:]
 
         model.module.flatten_parameters()
-        hypothesis, logit = model(inputs, scripts, teacher_forcing_ratio=teacher_forcing_ratio, use_beam_search=False)
+        hypothesis, logit = model(inputs, input_lengths, scripts, teacher_forcing_ratio=args.teacher_forcing_ratio)
 
         loss = criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
         epoch_loss_total += loss.item()

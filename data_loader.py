@@ -91,12 +91,11 @@ class SpectrogramDataset(Dataset):
         return len(self.audio_paths)
 
 
-def split_dataset(args, audio_paths, label_paths, valid_ratio=0.05, target_dict=None):
+def split_dataset(args, audio_paths, label_paths, target_dict=None):
     """
     split into training set and validation set.
 
     Args:
-        valid_ratio: validation set ratio of total dataset
         args (utils.args.Arguments): set of arguments
         audio_paths (list): set of audio path
         label_paths (list): set of label path
@@ -110,9 +109,9 @@ def split_dataset(args, audio_paths, label_paths, valid_ratio=0.05, target_dict=
     logger.info("split dataset start !!")
 
     trainset_list = list()
-    train_num = math.ceil(len(audio_paths) * (1 - valid_ratio))
+    train_num = math.ceil(len(audio_paths) * (1 - args.valid_ratio))
     total_time_step = math.ceil(len(audio_paths) / args.batch_size)
-    valid_time_step = math.ceil(total_time_step * valid_ratio)
+    valid_time_step = math.ceil(total_time_step * args.valid_ratio)
     train_time_step = total_time_step - valid_time_step
 
     if args.use_augment:
@@ -254,6 +253,7 @@ def _collate_fn(batch):
     def target_length_(p):
         return len(p[1])
 
+    batch = sorted(batch, key=lambda sample: sample[0].size(0), reverse=True)
     seq_lengths = [len(s[0]) for s in batch]
     target_lengths = [len(s[1]) for s in batch]
 
@@ -280,6 +280,7 @@ def _collate_fn(batch):
         seqs[x].narrow(0, 0, seq_length).copy_(tensor)
         targets[x].narrow(0, 0, len(target)).copy_(torch.LongTensor(target))
 
+    seq_lengths = torch.IntTensor(seq_lengths)
     return seqs, targets, seq_lengths, target_lengths
 
 
