@@ -110,8 +110,8 @@ We will also write a document in English as soon as possible, so please wait a l
 If you already have another dataset, please modify the data set path to [definition.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/definition.py) as appropriate.
 
 ### Train and Test
-if you want to start training, you can run by[run.sh](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/run.sh)
-after training, you want to start testing, you should run [test.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/test.py).
+if you want to start training, you can run by [run.sh](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/run.sh)  
+after training, you want to start testing, you should run [test.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/test.py).  
 you can set up a arguments [run.sh](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/run.sh).
 
 ### Incorporating External Language Model in Performance Test
