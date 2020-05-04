@@ -3,7 +3,7 @@ import librosa
 # import torchaudio  # if your os is not Linux, delete this line
 import numpy as np
 import random
-from utils import from_librosa as from_librosa
+import from_librosa as from_librosa
 
 
 # Collection of feature extraction

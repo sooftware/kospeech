@@ -107,15 +107,13 @@ Refer [here](https://github.com/sooftware/End-to-end-Speech-Recognition/wiki/Pre
 The above document is written in Korean.  
 We will also write a document in English as soon as possible, so please wait a little bit.  
   
-If you already have another dataset, please modify the data set path to [definition.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/utils/definition.py) as appropriate.  
+If you already have another dataset, please modify the data set path to [main.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/main.py) as appropriate.
 
 ### Train and Test
-if you want to start training, you should run [local_train.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/local_train.py). or [server_train.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/server_train.py)    
-after training, you want to start testing, you should run [test.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/test.py).  
-  
-you can set up a configuration [config.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/utils/config.py).  
-An explanation of configuration is [here](https://sooftware.github.io/End-to-end-Speech-Recognition/Config.html).  
-  
+if you want to start training, you should run [main.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/main.py). or you can run by[run.sh](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/run.sh)
+after training, you want to start testing, you should run [test.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/test.py).
+you can set up a arguments [main.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/utils/main.py).
+
 ### Incorporating External Language Model in Performance Test
 We introduce incorporating external language model in performance test.  
 if you are interested in this content, please check [here](https://github.com/sooftware/char-rnnlm).

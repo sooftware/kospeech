@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from utils.definition import char2id
+from main import char2id
 
 
 def _inflate(tensor, n_repeat, dim):
