@@ -16,9 +16,9 @@ class MultiHeadAttention(nn.Module):
         num_head (int): number of heads. (default: 4)
         dim (int): dimension size of sub heads. (default: 128)
 
-    Inputs: query, key
-        - **query** (batch, output_len, dimensions): tensor containing the output features from the decoder.
-        - **key** (batch, input_len, dimensions): tensor containing features of the encoded input sequence.
+    Inputs: Q, K
+        - **Q** (batch, output_len, dimensions): tensor containing the output features from the decoder.
+        - **K** (batch, input_len, dimensions): tensor containing features of the encoded input sequence.
 
     Returns: output
         - **output** (batch, output_len, dimensions): tensor containing the attended output features from the decoder.

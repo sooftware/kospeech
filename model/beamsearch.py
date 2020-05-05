@@ -171,7 +171,7 @@ class BeamSearch(nn.Module):
 
         for batch_idx, batch in enumerate(self.finished):
             for idx, beam in enumerate(batch):
-                self.finished_ps[batch_idx][idx] /= self.get_length_penalty(len(beam))
+                self.finished_ps[batch_idx][idx] /= len(beam)  # self.get_length_penalty(len(beam))
 
         for batch_idx, batch in enumerate(self.finished):
             # if there is no terminated sentences, bring ongoing sentence which has the highest probability instead

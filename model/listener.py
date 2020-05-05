@@ -1,4 +1,3 @@
-import math
 import torch
 import torch.nn as nn
 
@@ -129,7 +128,7 @@ class Listener(nn.Module):
             if type(m) == nn.modules.conv.Conv2d:
                 seq_len = ((seq_len + 2 * m.padding[1] - m.dilation[1] * (m.kernel_size[1] - 1) - 1) / m.stride[1] + 1)
 
-        seq_len = math.ceil(seq_len / 4)  # MaxPool2d x 2
+        seq_len /= 4
         return seq_len.int()
 
     def flatten_parameters(self):

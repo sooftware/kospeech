@@ -34,11 +34,11 @@ class SpectrogramDataset(Dataset):
         self.sos_id = sos_id
         self.eos_id = eos_id
         self.target_dict = target_dict
-        self.augment_num = args.augment_num
         self.augment_flags = [False] * len(self.audio_paths)
         self.get_feature = feature_extract_funtions[args.feature_extract_by]
         self.args = args
         if use_augment:
+            self.augment_num = args.augment_num
             self.augmentation()
         self.shuffle()
 
