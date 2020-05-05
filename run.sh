@@ -5,6 +5,7 @@
 #      link={https://github.com/sooftware/End-to-End-Korean-Speech-Recognition},
 #      year={2020}
 #  }
+
 BATCH_SIZE=32
 WORKER_NUM=4
 MAX_EPOCHS=20

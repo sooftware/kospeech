@@ -4,6 +4,8 @@ import torch.nn as nn
 
 class LabelSmoothingLoss(nn.Module):
     """
+    Copied from https://github.com/pytorch/pytorch/issues/7455
+
     Provides Label-Smoothing loss.
 
     Args: n_class, ignore_index, smoothing, dim
@@ -18,9 +20,6 @@ class LabelSmoothingLoss(nn.Module):
 
     Returns: label_smoothed
         - **label_smoothed** (float): sum of loss
-
-    Reference:
-        https://github.com/pytorch/pytorch/issues/7455
     """
     def __init__(self, num_class, ignore_index, smoothing=0.1, dim=-1):
         super(LabelSmoothingLoss, self).__init__()

@@ -17,7 +17,7 @@ feature_extract_funtions = {
 
 class SpectrogramDataset(Dataset):
     """
-    Dataset for audio & label matchingf
+    Dataset for audio & label matching
 
     Args:
         audio_paths (list): set of audio path
@@ -26,6 +26,7 @@ class SpectrogramDataset(Dataset):
         eos_id (int): identification of <end of sequence>
         target_dict (dict): dictionary of filename and labels
         use_augment (bool): flag indication whether to use spec-augmentation or not (default: True)
+        args (ArgumentParser): set of arguments
     """
 
     def __init__(self, audio_paths, label_paths, sos_id, eos_id, target_dict=None, args=None, use_augment=True):
@@ -102,9 +103,9 @@ def split_dataset(args, audio_paths, label_paths, target_dict=None):
         target_dict (dict): dictionary of filename and target
 
     Returns: train_batch_num, train_dataset_list, valid_dataset
-        - **train_batch_num** (int): num of batch for training
-        - **train_dataset_list** (list): list of training dataset
-        - **valid_dataset** (utils.dataset.BaseDataset): validation dataset
+        - **train_time_step** (int): number of time step for training
+        - **trainset_list** (list): list of training dataset
+        - **validset** (data_loader.SpectrogramDataset): validation dataset
     """
     logger.info("split dataset start !!")
 
@@ -160,7 +161,7 @@ class MultiLoader:
     Multi Data Loader using Threads.
 
     Args:
-        dataset_list (list): list of BaseDataset
+        dataset_list (list): list of SpectrogramDataset
         queue (Queue.queue): queue for threading
         batch_size (int): size of batch
         worker_num (int): the number of cpu cores used
@@ -189,7 +190,7 @@ class AudioDataLoader(threading.Thread):
     Audio Data Loader
 
     Args:
-        dataset (package.dataset.BaseDataset): object of BaseDataset
+        dataset (data_loader.SpectrogramDataset): object of SpectrogramDataset
         queue (Queue.queue): queue for threading
         batch_size (int): size of batch
         thread_id (int): identification of thread

@@ -18,9 +18,9 @@ class MaskConv(nn.Module):
     results of the model do not change when batch sizes change during inference.
     Input needs to be in the shape of (BxCxDxT)
     """
-    def __init__(self, seq_module):
+    def __init__(self, sequential):
         super(MaskConv, self).__init__()
-        self.seq_module = seq_module
+        self.sequential = sequential
 
     def forward(self, x, lengths):
         """
@@ -28,7 +28,7 @@ class MaskConv(nn.Module):
         :param lengths: The actual length of each sequence in the batch
         :return: Masked output from the module
         """
-        for module in self.seq_module:
+        for module in self.sequential:
             x = module(x)
             mask = torch.BoolTensor(x.size()).fill_(0)
 
@@ -71,23 +71,25 @@ class Listener(nn.Module):
 
     def __init__(self, input_size, hidden_dim, device, dropout_p=0.5, num_layers=5, bidirectional=True, rnn_type='gru'):
         super(Listener, self).__init__()
-        assert rnn_type.lower() in supported_rnns.keys(), 'RNN type not supported.'
+        assert rnn_type.lower() in supported_rnns.keys(), 'RNN type is not supported.'
         self.device = device
-        self.conv = MaskConv(nn.Sequential(
-            nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1),
-            nn.Hardtanh(0, 20, inplace=True),
-            nn.BatchNorm2d(num_features=64),
-            nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
-            nn.Hardtanh(0, 20, inplace=True),
-            nn.MaxPool2d(2, stride=2),
-            nn.BatchNorm2d(num_features=64),
-            nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1),
-            nn.Hardtanh(0, 20, inplace=True),
-            nn.BatchNorm2d(num_features=128),
-            nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1),
-            nn.Hardtanh(0, 20, inplace=True),
-            nn.MaxPool2d(2, stride=2)
-        ))
+        self.conv = MaskConv(
+            nn.Sequential(
+                nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1),
+                nn.Hardtanh(0, 20, inplace=True),
+                nn.BatchNorm2d(num_features=64),
+                nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
+                nn.Hardtanh(0, 20, inplace=True),
+                nn.MaxPool2d(2, stride=2),
+                nn.BatchNorm2d(num_features=64),
+                nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1),
+                nn.Hardtanh(0, 20, inplace=True),
+                nn.BatchNorm2d(num_features=128),
+                nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1),
+                nn.Hardtanh(0, 20, inplace=True),
+                nn.MaxPool2d(2, stride=2)
+            )
+        )
         input_size = (input_size - 1) << 5 if input_size % 2 else input_size << 5
         rnn_cell = supported_rnns[rnn_type]
         self.rnn = rnn_cell(
