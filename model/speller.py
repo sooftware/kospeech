@@ -136,6 +136,7 @@ class Speller(nn.Module):
         return h_state
 
     def validate_args(self, inputs, listener_outputs, teacher_forcing_ratio):
+        """ Validate Arguments """
         batch_size = listener_outputs.size(0)
 
         if inputs is None:  # inference

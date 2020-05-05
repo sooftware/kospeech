@@ -119,12 +119,17 @@ class Listener(nn.Module):
         return output, h_state
 
     def get_seq_lengths(self, input_length):
+        """
+        Copied from https://github.com/clovaai/ClovaCall/blob/master/las.pytorch/models/EncoderRNN.py
+        Copyright (c) 2020-present NAVER Corp.
+        MIT License
+        """
         seq_len = input_length
         for m in self.conv.modules():
             if type(m) == nn.modules.conv.Conv2d:
                 seq_len = ((seq_len + 2 * m.padding[1] - m.dilation[1] * (m.kernel_size[1] - 1) - 1) / m.stride[1] + 1)
 
-        seq_len /= 4  # MaxPool2d x 2
+        seq_len = math.ceil(seq_len / 4)  # MaxPool2d x 2
         return seq_len.int()
 
     def flatten_parameters(self):
