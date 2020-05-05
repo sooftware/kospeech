@@ -51,7 +51,11 @@ parser.add_argument('--k', type=int, default=5, help='size of beam (default: 5)'
 parser.add_argument('--batch_size', type=int, default=32, help='batch size in training (default: 32)')
 parser.add_argument('--worker_num', type=int, default=4, help='number of workers in dataset loader (default: 4)')
 parser.add_argument('--max_epochs', type=int, default=20, help='number of max epochs in training (default: 20)')
-parser.add_argument('--lr', type=float, default=3e-04, help='learning rate (default: 3e-04)')
+parser.add_argument('--lr', type=float, default=3e-04, help='initial learning rate (default: 3e-04)')
+parser.add_argument('--min_lr', type=float, default=3e-05, help='minimum learning rate (default: 3e-05)')
+parser.add_argument('--lr_factor', type=float, default=0.333, help='minimum learning rate (default: 0.333)')
+parser.add_argument('--lr_patience', type=int, default=1,
+                help=' Number of epochs with no improvement after which learning rate will be reduced. (default: 1)')
 parser.add_argument('--teacher_forcing_ratio', type=float, default=0.99,
                     help='teacher forcing ratio in decoder (default: 0.99)')
 parser.add_argument('--valid_ratio', type=float, default=0.01, help='validation dataset ratio in training dataset')
@@ -132,7 +136,8 @@ def main():
             param.data.uniform_(-0.08, 0.08)
 
     optimizer = optim.Adam(model.module.parameters(), lr=args.lr)
-    lr_scheduler = ReduceLROnPlateau(optimizer, 'min', patience=1, factor=0.333, verbose=True, min_lr=3e-05)
+    lr_scheduler = ReduceLROnPlateau(optimizer, 'min', patience=args.lr_patience,
+                                     factor=args.lr_factor, verbose=True, min_lr=args.min_lr)
 
     if args.label_smoothing == 0.0:
         criterion = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_token).to(device)
