@@ -2,5 +2,5 @@
 Utils
 =====================================================
 
-.. automodule:: package.utils
+.. automodule:: utils
     :members:

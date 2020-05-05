@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Intro &mdash; Korean Speech Recognition 1.0 documentation</title>
+  <title>Intro &mdash; End-to-end Speech Recognition 2.0 documentation</title>
   
 
   
@@ -24,7 +24,6 @@
         <script type="text/javascript" src="../_static/jquery.js"></script>
         <script type="text/javascript" src="../_static/underscore.js"></script>
         <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -36,7 +35,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Preparation before Training" href="Preparation.html" />
-    <link rel="prev" title="Welcome to Korean Speech Recognition’s documentation!" href="../index.html" /> 
+    <link rel="prev" title="Welcome to End-to-end Speech Recognition’s documentation!" href="../index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -50,7 +49,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home"> Korean Speech Recognition
+            <a href="../index.html" class="icon icon-home"> End-to-end Speech Recognition
           
 
           
@@ -60,7 +59,7 @@
             
             
               <div class="version">
-                1.0
+                2.0
               </div>
             
           
@@ -99,31 +98,30 @@
 <li class="toctree-l2"><a class="reference internal" href="#get-started">Get Started</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#preparation-before-training">Preparation before Training</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#train-and-test">Train and Test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#incorporating-external-language-model-in-performance-test">Incorporating External Language Model in Performance Test</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#troubleshoots-and-contributing">Troubleshoots and Contributing</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#code-style">Code Style</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#reference">Reference</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#license">License</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#citing">Citing</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="Preparation.html">Preparation before Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="More-details.html">More Details</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Data-Analysis.html">Data-Analysis</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Architecture</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../Models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Model.html">Model</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Package Reference</span></p>
+<p class="caption"><span class="caption-text">Package</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../Checkpoint.html">Checkpoint</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../Config.html">Config</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../Dataset.html">Dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../Evaluator.html">Evaluator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Data_loader.html">Data_loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Feature.html">Feature</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../Loader.html">Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Label_loader.html">Label_loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Loss.html">Loss</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Trainer.html">Trainer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Utils.html">Utils</a></li>
@@ -141,7 +139,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">Korean Speech Recognition</a>
+          <a href="../index.html">End-to-end Speech Recognition</a>
         
       </nav>
 
@@ -193,33 +191,70 @@
             
   <div class="section" id="intro">
 <h1>Intro<a class="headerlink" href="#intro" title="Permalink to this headline">¶</a></h1>
-<p>This is project for Korean Speech Recognition using LAS (Listen, Attend and Spell) models<br />implemented in <a class="reference external" href="http://pytorch.org">PyTorch</a>.<br />We appreciate any kind of feedback or contribution.</p>
-<img src="https://postfiles.pstatic.net/MjAyMDAyMjVfODIg/MDAxNTgyNjE5NzE3NjU5.51D-0F_nvBCZQ89XpgaycjPsX92z_lZK-vCQIHXfOmkg.kK0ILmnHM-LXMRxjTB5o1vJjKnhI4cw73me3LpvRkxUg.PNG.sooftware/LAS.png?type=w773" width=500> <div class="section" id="roadmap">
+<p>This is project for Korean Speech Recognition using LAS (Listen, Attend and Spell) models implemented in <a class="reference external" href="http://pytorch.org">PyTorch</a>.<br />We appreciate any kind of feedback or contribution.</p>
+<img src="https://user-images.githubusercontent.com/42150335/80630547-5dfc6580-8a8f-11ea-91e8-73fe5e8b9e4b.png" width=650> <div class="section" id="roadmap">
 <h2>Roadmap<a class="headerlink" href="#roadmap" title="Permalink to this headline">¶</a></h2>
 <p>Speech recognition is an interdisciplinary subfield of computational linguistics that develops methodologies and technologies that enables the recognition and translation of spoken language into text by computers.</p>
 <p>We mainly referred to following papers.</p>
 <p><a class="reference external" href="https://arxiv.org/abs/1508.01211">「Listen, Attend and Spell」</a></p>
+<p><a class="reference external" href="https://arxiv.org/abs/1712.01769">「State-of-the-art Speech Recognition with Sequence-to-Sequence Models」</a></p>
 <p><a class="reference external" href="https://arxiv.org/abs/1904.08779">「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」</a>.</p>
 <p>if you want to study the feature of audio, we recommend this papers.</p>
 <p><a class="reference external" href="https://ijirae.com/volumes/vol1/issue10/27.NVEC10086.pdf">「Voice Recognition Using MFCC Algirithm」</a>.</p>
-<p>Our project based on Seq2seq with Attention Architecture.<br />Seq2seq is a fast evolving field with new techniques and architectures being published frequently.</p>
-<p>We use <a class="reference external" href="http://www.aihub.or.kr/aidata/105">AI Hub 1000h</a> dataset which contains 1,000 hours korean voice data. and, our project is currently in progress.<br />At present our top model has recorded an <strong>80% CRR</strong>, and we are working for a higher recognition rate.</p>
+<p>Our project based on Seq2seq with Attention Architecture.<br />Seq2seq is a fast evolving field with new techniques and architectures being published frequently.<br />Our model architeuture is as follows.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ListenAttendSpell</span><span class="p">(</span>
+  <span class="p">(</span><span class="n">listener</span><span class="p">):</span> <span class="n">Listener</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">conv</span><span class="p">):</span> <span class="n">MaskConv</span><span class="p">(</span>
+      <span class="p">(</span><span class="n">seq_module</span><span class="p">):</span> <span class="n">Sequential</span><span class="p">(</span>
+        <span class="p">(</span><span class="mi">0</span><span class="p">):</span> <span class="n">Conv2d</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">stride</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">padding</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="p">(</span><span class="mi">1</span><span class="p">):</span> <span class="n">Hardtanh</span><span class="p">(</span><span class="n">min_val</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_val</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="p">(</span><span class="mi">2</span><span class="p">):</span> <span class="n">BatchNorm2d</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-05</span><span class="p">,</span> <span class="n">momentum</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">affine</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">track_running_stats</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="p">(</span><span class="mi">3</span><span class="p">):</span> <span class="n">Conv2d</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">stride</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">padding</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="p">(</span><span class="mi">4</span><span class="p">):</span> <span class="n">Hardtanh</span><span class="p">(</span><span class="n">min_val</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_val</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="p">(</span><span class="mi">5</span><span class="p">):</span> <span class="n">MaxPool2d</span><span class="p">(</span><span class="n">kernel_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dilation</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ceil_mode</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="p">(</span><span class="mi">6</span><span class="p">):</span> <span class="n">BatchNorm2d</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-05</span><span class="p">,</span> <span class="n">momentum</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">affine</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">track_running_stats</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="p">(</span><span class="mi">7</span><span class="p">):</span> <span class="n">Conv2d</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">stride</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">padding</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="p">(</span><span class="mi">8</span><span class="p">):</span> <span class="n">Hardtanh</span><span class="p">(</span><span class="n">min_val</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_val</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="p">(</span><span class="mi">9</span><span class="p">):</span> <span class="n">BatchNorm2d</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-05</span><span class="p">,</span> <span class="n">momentum</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">affine</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">track_running_stats</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="p">(</span><span class="mi">10</span><span class="p">):</span> <span class="n">Conv2d</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">stride</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">padding</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="p">(</span><span class="mi">11</span><span class="p">):</span> <span class="n">Hardtanh</span><span class="p">(</span><span class="n">min_val</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_val</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="p">(</span><span class="mi">12</span><span class="p">):</span> <span class="n">MaxPool2d</span><span class="p">(</span><span class="n">kernel_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dilation</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ceil_mode</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+      <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="p">(</span><span class="n">rnn</span><span class="p">):</span> <span class="n">GRU</span><span class="p">(</span><span class="mi">2560</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">bidirectional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+  <span class="p">)</span>
+  <span class="p">(</span><span class="n">speller</span><span class="p">):</span> <span class="n">Speller</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">rnn</span><span class="p">):</span> <span class="n">GRU</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">embedding</span><span class="p">):</span> <span class="n">Embedding</span><span class="p">(</span><span class="mi">2040</span><span class="p">,</span> <span class="mi">512</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">input_dropout</span><span class="p">):</span> <span class="n">Dropout</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">fc</span><span class="p">):</span> <span class="n">Linear</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">out_features</span><span class="o">=</span><span class="mi">2040</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">attention</span><span class="p">):</span> <span class="n">MultiHeadAttention</span><span class="p">(</span>
+      <span class="p">(</span><span class="n">W_Q</span><span class="p">):</span> <span class="n">Linear</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">out_features</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+      <span class="p">(</span><span class="n">W_V</span><span class="p">):</span> <span class="n">Linear</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">out_features</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+      <span class="p">(</span><span class="n">fc</span><span class="p">):</span> <span class="n">Linear</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span> <span class="n">out_features</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="p">)</span>
+  <span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>We use <a class="reference external" href="http://www.aihub.or.kr/aidata/105">AI Hub 1000h</a> dataset which contains 1,000 hours korean voice data. and, our project is currently in progress.<br />At present our top model has recorded an <strong>82.3% CRR</strong>, and we are working for a higher recognition rate.</p>
+<p>Also our model has recorded <strong>91.0% CRR</strong> in <a class="reference external" href="https://github.com/goodatlas/zeroth">Kadi-zeroth dataset</a>.</p>
 <div class="section" id="crr-character-recognition-rate">
 <h3>( <strong>CRR</strong> : Character Recognition Rate )<a class="headerlink" href="#crr-character-recognition-rate" title="Permalink to this headline">¶</a></h3>
-<p>We are constantly updating the progress of the project on the <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/wiki">Wiki page</a>.  Please check this page.</p>
-<p><a class="reference external" href="https://sh951011.github.io/Korean-Speech-Recognition/notes/More-details.html">More details</a></p>
+<p>We are constantly updating the progress of the project on the <a class="reference external" href="https://github.com/sooftware/End-to-end-Speech-Recognition/wiki">Wiki page</a>.  Please check this page.</p>
 </div>
 </div>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
-<p>This project recommends Python 3.7 or higher.<br />We recommend creating a new virtual environment for this project (using virtualenv or conda).</p>
+<p>This project recommends Python 3.7 or higher.<br />We recommend creating a new virtual environment for this project (using virtual env or conda).</p>
 <div class="section" id="prerequisites">
 <h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Numpy: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">numpy</span></code> (Refer <a class="reference external" href="https://github.com/numpy/numpy">here</a> for problem installing Numpy).</li>
-<li>PyTorch: Refer to <a class="reference external" href="http://pytorch.org/">PyTorch website</a> to install the version w.r.t. your environment.</li>
+<li>Pytorch: Refer to <a class="reference external" href="http://pytorch.org/">PyTorch website</a> to install the version w.r.t. your environment.</li>
 <li>Pandas: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pandas</span></code> (Refer <a class="reference external" href="https://github.com/pandas-dev/pandas">here</a> for problem installing Pandas)</li>
 <li>librosa: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">librosa</span></code> (Refer <a class="reference external" href="https://github.com/librosa/librosa">here</a> for problem installing librosa)</li>
+<li>torchaudio: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">torchaudio</span></code> (Refer <a class="reference external" href="https://github.com/pytorch/pytorch">here</a> for problem installing torchaudio)</li>
 <li>tqdm: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">tqdm</span></code> (Refer <a class="reference external" href="https://github.com/tqdm/tqdm">here</a> for problem installing tqdm)</li>
 </ul>
 </div>
@@ -239,18 +274,34 @@
 <h2>Get Started<a class="headerlink" href="#get-started" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="preparation-before-training">
 <h3>Preparation before Training<a class="headerlink" href="#preparation-before-training" title="Permalink to this headline">¶</a></h3>
-<p>Refer <a class="reference external" href="https://sh951011.github.io/Korean-Speech-Recognition/notes/Preparation.html">here</a> before Training.<br />The above document is written in Korean.<br />We will also write a document in English as soon as possible, so please wait a little bit.</p>
-<p>If you already have another dataset, please modify the data set path to <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/blob/master/package/definition.py">definition.py</a> as appropriate.</p>
+<p>Refer <a class="reference external" href="https://github.com/sooftware/End-to-end-Speech-Recognition/wiki/Preparation-before-Training">here</a> before Training.<br />The above document is written in Korean.<br />We will also write a document in English as soon as possible, so please wait a little bit.</p>
+<p>If you already have another dataset, please modify the data set path to <a class="reference external" href="https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/definition.py">definition.py</a> as appropriate.</p>
 </div>
 <div class="section" id="train-and-test">
 <h3>Train and Test<a class="headerlink" href="#train-and-test" title="Permalink to this headline">¶</a></h3>
-<p>if you want to start training, you should run <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/blob/master/train.py">train.py</a>.<br />or after training, you want to start testing, you should run <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/blob/master/test.py">test.py</a>.</p>
-<p>you can set up a hyperparameters <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/blob/master/package/hparams.py">hparams.py</a>.<br />An explanation of hparams is <a class="reference external" href="https://sh951011.github.io/Korean-Speech-Recognition/Hparams.html">here</a>.</p>
+<p>you can run by <a class="reference external" href="https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/run.sh">run.sh</a> like following.</p>
+<ul class="simple">
+<li>Linux</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ./run.sh
+</pre></div>
+</div>
+<ul class="simple">
+<li>Window</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ run.sh
+</pre></div>
+</div>
+<p>after training, you want to start testing, you should run <a class="reference external" href="https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/test.py">test.py</a>.<br />you can set up a arguments at <a class="reference external" href="https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/run.sh">run.sh</a> or at execution time.</p>
+</div>
+<div class="section" id="incorporating-external-language-model-in-performance-test">
+<h3>Incorporating External Language Model in Performance Test<a class="headerlink" href="#incorporating-external-language-model-in-performance-test" title="Permalink to this headline">¶</a></h3>
+<p>We introduce incorporating external language model in performance test.<br />if you are interested in this content, please check <a class="reference external" href="https://github.com/sooftware/char-rnnlm">here</a>.</p>
 </div>
 </div>
 <div class="section" id="troubleshoots-and-contributing">
 <h2>Troubleshoots and Contributing<a class="headerlink" href="#troubleshoots-and-contributing" title="Permalink to this headline">¶</a></h2>
-<p>If you have any questions, bug reports, and feature requests, please <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/issues">open an issue</a> on Github.<br />or Contacts sh951011&#64;gmail.com please.</p>
+<p>If you have any questions, bug reports, and feature requests, please <a class="reference external" href="https://github.com/sooftware/End-to-end-Speech-Recognition/issues">open an issue</a> on Github.<br />For live discussions, please go to our <a class="reference external" href="https://gitter.im/Korean-Speech-Recognition/community">gitter</a> or Contacts sh951011&#64;gmail.com please.</p>
 <p>We appreciate any kind of feedback or contribution.  Feel free to proceed with small issues like bug fixes, documentation improvement.  For major contributions and new features, please discuss with the collaborators in corresponding issues.</p>
 <div class="section" id="code-style">
 <h3>Code Style<a class="headerlink" href="#code-style" title="Permalink to this headline">¶</a></h3>
@@ -258,20 +309,15 @@
 </div>
 <div class="section" id="reference">
 <h3>Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h3>
-<p><a class="reference external" href="https://arxiv.org/abs/1508.01211">[1] 「Listen, Attend and Spell」  Paper</a><br /><a class="reference external" href="https://arxiv.org/abs/1712.01769">[2] 「State-of-the-art Speech Recognition With Sequence-to-Sequence Models」   Paper</a><br /><a class="reference external" href="https://arxiv.org/abs/1904.08779">[3] 「A Simple Data Augmentation Method for Automatic Speech Recognition」  Paper</a><br /><a class="reference external" href="https://ijirae.com/volumes/vol1/issue10/27.NVEC10086.pdf">[4] 「Voice Recognition Using MFCC Algorithm」  Paper</a><br /><a class="reference external" href="https://github.com/IBM/pytorch-seq2seq">[5]   IBM pytorch-seq2seq</a><br /><a class="reference external" href="http://www.aihub.or.kr/aidata/105">[6]   A.I Hub Korean Voice Dataset</a></p>
+<p><a class="reference external" href="https://arxiv.org/abs/1508.01211">[1] 「Listen, Attend and Spell」  Paper</a><br /><a class="reference external" href="https://arxiv.org/abs/1712.01769">[2] 「State-of-the-art Speech Recognition with Sequence-to-Sequence Models」   Paper</a><br /><a class="reference external" href="https://arxiv.org/abs/1904.08779">[3] 「A Simple Data Augmentation Method for Automatic Speech Recognition」  Paper</a><br /><a class="reference external" href="https://arxiv.org/abs/1712.01996">[4] 「An analysis of incorporating an external language model into a sequence-to-sequence model」  Paper</a><br /><a class="reference external" href="https://ijirae.com/volumes/vol1/issue10/27.NVEC10086.pdf">[5] 「Voice Recognition Using MFCC Algorithm」  Paper</a><br /><a class="reference external" href="https://github.com/IBM/pytorch-seq2seq">[6]    IBM pytorch-seq2seq</a><br /><a class="reference external" href="https://github.com/sooftware/char-rnnlm">[7]    Character RNN Language Model</a><br /><a class="reference external" href="http://www.aihub.or.kr/aidata/105">[8]    A.I Hub Korean Voice Dataset</a><br /><a class="reference external" href="https://sooftware.github.io/End-to-End-Korean-Speech-Recognition/">[9]    Documentation</a></p>
 </div>
-<div class="section" id="license">
-<h3>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Copyright</span> <span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="mi">2020</span> <span class="n">Kai</span><span class="o">.</span><span class="n">Lib</span>
-
-<span class="n">Licensed</span> <span class="n">under</span> <span class="n">the</span> <span class="n">Apache</span> <span class="n">License</span><span class="p">,</span> <span class="n">Version</span> <span class="mf">2.0</span> <span class="p">(</span><span class="n">the</span> <span class="s2">&quot;License&quot;</span><span class="p">);</span>
-<span class="n">you</span> <span class="n">may</span> <span class="ow">not</span> <span class="n">use</span> <span class="n">this</span> <span class="n">file</span> <span class="k">except</span> <span class="ow">in</span> <span class="n">compliance</span> <span class="k">with</span> <span class="n">the</span> <span class="n">License</span><span class="o">.</span>
-<span class="n">You</span> <span class="n">may</span> <span class="n">obtain</span> <span class="n">a</span> <span class="n">copy</span> <span class="n">of</span> <span class="n">the</span> <span class="n">License</span> <span class="n">at</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">licenses</span><span class="o">/</span><span class="n">LICENSE</span><span class="o">-</span><span class="mf">2.0</span>
-<span class="n">Unless</span> <span class="n">required</span> <span class="n">by</span> <span class="n">applicable</span> <span class="n">law</span> <span class="ow">or</span> <span class="n">agreed</span> <span class="n">to</span> <span class="ow">in</span> <span class="n">writing</span><span class="p">,</span> <span class="n">software</span>
-<span class="n">distributed</span> <span class="n">under</span> <span class="n">the</span> <span class="n">License</span> <span class="ow">is</span> <span class="n">distributed</span> <span class="n">on</span> <span class="n">an</span> <span class="s2">&quot;AS IS&quot;</span> <span class="n">BASIS</span><span class="p">,</span>
-<span class="n">WITHOUT</span> <span class="n">WARRANTIES</span> <span class="n">OR</span> <span class="n">CONDITIONS</span> <span class="n">OF</span> <span class="n">ANY</span> <span class="n">KIND</span><span class="p">,</span> <span class="n">either</span> <span class="n">express</span> <span class="ow">or</span> <span class="n">implied</span><span class="o">.</span>  
-<span class="n">See</span> <span class="n">the</span> <span class="n">License</span> <span class="k">for</span> <span class="n">the</span> <span class="n">specific</span> <span class="n">language</span> <span class="n">governing</span> <span class="n">permissions</span> <span class="ow">and</span>
-<span class="n">limitations</span> <span class="n">under</span> <span class="n">the</span> <span class="n">License</span><span class="o">.</span>
+<div class="section" id="citing">
+<h3>Citing<a class="headerlink" href="#citing" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@source_code</span><span class="p">{</span>
+  <span class="n">title</span><span class="o">=</span><span class="p">{</span><span class="n">Character</span><span class="o">-</span><span class="n">unit</span> <span class="n">based</span> <span class="n">End</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">end</span> <span class="n">Korean</span> <span class="n">Speech</span> <span class="n">Recognition</span><span class="p">},</span>
+  <span class="n">author</span><span class="o">=</span><span class="p">{</span><span class="n">Soohwan</span> <span class="n">Kim</span><span class="p">,</span> <span class="n">Seyoung</span> <span class="n">Bae</span><span class="p">,</span> <span class="n">Cheolhwang</span> <span class="n">Won</span><span class="p">},</span>
+  <span class="n">year</span><span class="o">=</span><span class="p">{</span><span class="mi">2020</span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>
@@ -289,7 +335,7 @@
         <a href="Preparation.html" class="btn btn-neutral float-right" title="Preparation before Training" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../index.html" class="btn btn-neutral float-left" title="Welcome to Korean Speech Recognition’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../index.html" class="btn btn-neutral float-left" title="Welcome to End-to-end Speech Recognition’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -298,7 +344,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020, SooHwan Kim
+        &copy; Copyright 2020, Soohwan Kim
 
     </p>
   </div>

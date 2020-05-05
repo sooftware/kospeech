@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Utils &mdash; Korean Speech Recognition 1.0 documentation</title>
+  <title>Utils &mdash; End-to-end Speech Recognition 2.0 documentation</title>
   
 
   
@@ -24,7 +24,6 @@
         <script type="text/javascript" src="_static/jquery.js"></script>
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -49,7 +48,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> Korean Speech Recognition
+            <a href="index.html" class="icon icon-home"> End-to-end Speech Recognition
           
 
           
@@ -59,7 +58,7 @@
             
             
               <div class="version">
-                1.0
+                2.0
               </div>
             
           
@@ -88,19 +87,17 @@
 <li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Intro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">Preparation before Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/More-details.html">More Details</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/Data-Analysis.html">Data-Analysis</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Architecture</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Model.html">Model</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Package Reference</span></p>
+<p class="caption"><span class="caption-text">Package</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="Checkpoint.html">Checkpoint</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Config.html">Config</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Dataset.html">Dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Data_loader.html">Data_loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Feature.html">Feature</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Loader.html">Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Label_loader.html">Label_loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Utils</a></li>
@@ -118,7 +115,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Korean Speech Recognition</a>
+          <a href="index.html">End-to-end Speech Recognition</a>
         
       </nav>
 
@@ -168,11 +165,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-package.utils">
-<span id="utils"></span><h1>Utils<a class="headerlink" href="#module-package.utils" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-utils">
+<span id="utils"></span><h1>Utils<a class="headerlink" href="#module-utils" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
-<dt id="package.utils.char_distance">
-<code class="descclassname">package.utils.</code><code class="descname">char_distance</code><span class="sig-paren">(</span><em>target</em>, <em>y_hat</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/utils.html#char_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.utils.char_distance" title="Permalink to this definition">¶</a></dt>
+<dt id="utils.char_distance">
+<code class="descclassname">utils.</code><code class="descname">char_distance</code><span class="sig-paren">(</span><em>target</em>, <em>y_hat</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils.html#char_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.char_distance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculating charater distance between target &amp; y_hat</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -197,17 +194,18 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="package.utils.get_distance">
-<code class="descclassname">package.utils.</code><code class="descname">get_distance</code><span class="sig-paren">(</span><em>targets</em>, <em>y_hats</em>, <em>id2char</em>, <em>eos_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/utils.html#get_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.utils.get_distance" title="Permalink to this definition">¶</a></dt>
+<dt id="utils.get_distance">
+<code class="descclassname">utils.</code><code class="descname">get_distance</code><span class="sig-paren">(</span><em>targets</em>, <em>y_hats</em>, <em>id2char</em>, <em>char2id</em>, <em>eos_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils.html#get_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.get_distance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provides total character distance between targets &amp; y_hats</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>targets</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.5.0a0+f515d87 ))"><em>torch.Tensor</em></a>) – set of ground truth</li>
-<li><strong>y_hats</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.5.0a0+f515d87 ))"><em>torch.Tensor</em></a>) – predicted y values (y_hat) by the model</li>
+<li><strong>targets</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+0549e1f ))"><em>torch.Tensor</em></a>) – set of ground truth</li>
+<li><strong>y_hats</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+0549e1f ))"><em>torch.Tensor</em></a>) – predicted y values (y_hat) by the model</li>
 <li><strong>id2char</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – id2char[id] = ch</li>
+<li><strong>char2id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – char2id[ch] = id</li>
 <li><strong>eos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of &lt;end of sequence&gt;</li>
 </ul>
 </td>
@@ -225,8 +223,8 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="package.utils.get_label">
-<code class="descclassname">package.utils.</code><code class="descname">get_label</code><span class="sig-paren">(</span><em>filepath</em>, <em>sos_id</em>, <em>eos_id</em>, <em>target_dict=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/utils.html#get_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.utils.get_label" title="Permalink to this definition">¶</a></dt>
+<dt id="utils.get_label">
+<code class="descclassname">utils.</code><code class="descname">get_label</code><span class="sig-paren">(</span><em>filepath</em>, <em>sos_id</em>, <em>eos_id</em>, <em>target_dict=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils.html#get_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.get_label" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provides specific file`s label to list format.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -234,7 +232,7 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>filepath</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – specific path of label file</li>
-<li><strong>bos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of &lt;start of sequence&gt;</li>
+<li><strong>sos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of &lt;start of sequence&gt;</li>
 <li><strong>eos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of &lt;end of sequence&gt;</li>
 <li><strong>target_dict</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – dictionary of filename and labels</li>
 </ul>
@@ -252,8 +250,8 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="package.utils.label_to_string">
-<code class="descclassname">package.utils.</code><code class="descname">label_to_string</code><span class="sig-paren">(</span><em>labels</em>, <em>id2char</em>, <em>eos_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/utils.html#label_to_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.utils.label_to_string" title="Permalink to this definition">¶</a></dt>
+<dt id="utils.label_to_string">
+<code class="descclassname">utils.</code><code class="descname">label_to_string</code><span class="sig-paren">(</span><em>labels</em>, <em>id2char</em>, <em>char2id</em>, <em>eos_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils.html#label_to_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.label_to_string" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts label to string (number =&gt; Hangeul)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -262,6 +260,7 @@
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>labels</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – number label</li>
 <li><strong>id2char</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – id2char[id] = ch</li>
+<li><strong>char2id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – char2id[ch] = id</li>
 <li><strong>eos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of &lt;end of sequence&gt;</li>
 </ul>
 </td>
@@ -275,24 +274,6 @@
 </ul>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="package.utils.save_epoch_result">
-<code class="descclassname">package.utils.</code><code class="descname">save_epoch_result</code><span class="sig-paren">(</span><em>train_result</em>, <em>valid_result</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/utils.html#save_epoch_result"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.utils.save_epoch_result" title="Permalink to this definition">¶</a></dt>
-<dd><p>save result of training (unit : epoch)</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="package.utils.save_pickle">
-<code class="descclassname">package.utils.</code><code class="descname">save_pickle</code><span class="sig-paren">(</span><em>save_var</em>, <em>savepath</em>, <em>message=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/utils.html#save_pickle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.utils.save_pickle" title="Permalink to this definition">¶</a></dt>
-<dd><p>save pickle file</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="package.utils.save_step_result">
-<code class="descclassname">package.utils.</code><code class="descname">save_step_result</code><span class="sig-paren">(</span><em>train_step_result</em>, <em>loss</em>, <em>cer</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/utils.html#save_step_result"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.utils.save_step_result" title="Permalink to this definition">¶</a></dt>
-<dd><p>save result of training (unit : K time step)</p>
 </dd></dl>
 
 </div>
@@ -315,7 +296,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020, SooHwan Kim
+        &copy; Copyright 2020, Soohwan Kim
 
     </p>
   </div>

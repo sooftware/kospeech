@@ -2,5 +2,5 @@
 Loss
 =====================================================
 
-.. automodule:: package.loss
+.. automodule:: loss
     :members:

@@ -27,14 +27,14 @@ import sphinx_rtd_theme
 
 # -- Project information -----------------------------------------------------
 
-project = 'Korean Speech Recognition'
-copyright = '2020, SooHwan Kim'
-author = 'SooHwan Kim'
+project = 'End-to-end Speech Recognition'
+copyright = '2020, Soohwan Kim'
+author = 'Soohwan Kim'
 
 # The short X.Y version
-version = '1.0'
+version = '2.0'
 # The full version, including alpha/beta/rc tags
-release = '1.0'
+release = '2.0'
 
 
 # -- General configuration ---------------------------------------------------
@@ -137,7 +137,7 @@ html_static_path = ['_static']
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'KoreanSpeechRecognitiondoc'
+htmlhelp_basename = 'End-to-end.Speech.Recognition.doc'
 
 
 # -- Options for LaTeX output ------------------------------------------------

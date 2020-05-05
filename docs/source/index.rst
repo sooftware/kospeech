@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Korean Speech Recognition's documentation!
-=====================================================
+Welcome to End-to-end Speech Recognition's documentation!
+===========================================================
 
 .. toctree::
    :maxdepth: 1
@@ -13,24 +13,21 @@ Welcome to Korean Speech Recognition's documentation!
    notes/intro
    notes/Preparation
    notes/More-details
+   notes/Data-Analysis
 
 .. toctree::
    :maxdepth: 1
    :caption: Architecture
 
-
-   Models
+   Model
 
 .. toctree::
    :maxdepth: 1
-   :caption: Package Reference
+   :caption: Package
 
-   Checkpoint
-   Config
-   Dataset
-   Evaluator
+   Data_loader
    Feature
-   Loader
+   Label_loader
    Loss
    Trainer
    Utils

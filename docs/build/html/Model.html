@@ -1,0 +1,609 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Model &mdash; End-to-end Speech Recognition 2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Data_loader" href="Data_loader.html" />
+    <link rel="prev" title="Data-Analysis" href="notes/Data-Analysis.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> End-to-end Speech Recognition
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Intro</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">Preparation before Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/More-details.html">More Details</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/Data-Analysis.html">Data-Analysis</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Architecture</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Model</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-model.listenAttendSpell">ListenAttendSpell</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-model.listener">Listener</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-model.speller">Speller</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-model.beamsearch">BeamSearch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-model.attention">Attention</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Package</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Data_loader.html">Data_loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Feature.html">Feature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Label_loader.html">Label_loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Utils.html">Utils</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">End-to-end Speech Recognition</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Model</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Model.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="model">
+<h1>Model<a class="headerlink" href="#model" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-model.listenAttendSpell">
+<span id="listenattendspell"></span><h2>ListenAttendSpell<a class="headerlink" href="#module-model.listenAttendSpell" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="model.listenAttendSpell.ListenAttendSpell">
+<em class="property">class </em><code class="descclassname">model.listenAttendSpell.</code><code class="descname">ListenAttendSpell</code><span class="sig-paren">(</span><em>listener</em>, <em>speller</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/listenAttendSpell.html#ListenAttendSpell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.listenAttendSpell.ListenAttendSpell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Listen, Attend and Spell (LAS) Model</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>listener</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.6.0a0+0549e1f ))"><em>torch.nn.Module</em></a>) – encoder of seq2seq</li>
+<li><strong>speller</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.6.0a0+0549e1f ))"><em>torch.nn.Module</em></a>) – decoder of seq2seq</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Inputs: inputs, targets, teacher_forcing_ratio, use_beam_search</dt>
+<dd><ul class="first last simple">
+<li><strong>inputs</strong> (torch.Tensor): tensor of sequences, whose length is the batch size and within which
+each sequence is a list of token IDs. This information is forwarded to the encoder.</li>
+<li><strong>targets</strong> (torch.Tensor): tensor of sequences, whose length is the batch size and within which
+each sequence is a list of token IDs. This information is forwarded to the decoder.</li>
+<li><strong>teacher_forcing_ratio</strong> (float): The probability that teacher forcing will be used. A random number
+is drawn uniformly from 0-1 for every decoding token, and if the sample is smaller than the given value,
+teacher forcing would be used (default is 0.90)</li>
+<li><strong>use_beam_search</strong> (bool): flag indication whether to use beam-search or not (default: false)</li>
+</ul>
+</dd>
+<dt>Returns: y_hats, logits</dt>
+<dd><ul class="first last simple">
+<li><strong>y_hats</strong> (batch, seq_len): predicted y values (y_hat) by the model</li>
+<li><strong>logits</strong> (batch, seq_len, class_num): logit values by the model</li>
+</ul>
+</dd>
+</dl>
+<p>Examples:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">listener</span> <span class="o">=</span> <span class="n">Listener</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">dropout_p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">speller</span> <span class="o">=</span> <span class="n">Speller</span><span class="p">(</span><span class="n">num_class</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">256</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="n">use_bidirectional</span> <span class="k">else</span> <span class="mi">0</span><span class="p">),</span> <span class="o">...</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">ListenAttendSpell</span><span class="p">(</span><span class="n">listener</span><span class="p">,</span> <span class="n">speller</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y_hats</span><span class="p">,</span> <span class="n">logits</span> <span class="o">=</span> <span class="n">model</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="model.listenAttendSpell.ListenAttendSpell.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs</em>, <em>input_lengths</em>, <em>targets=None</em>, <em>teacher_forcing_ratio=0.9</em>, <em>use_beam_search=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/listenAttendSpell.html#ListenAttendSpell.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.listenAttendSpell.ListenAttendSpell.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-model.listener">
+<span id="listener"></span><h2>Listener<a class="headerlink" href="#module-model.listener" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="model.listener.Listener">
+<em class="property">class </em><code class="descclassname">model.listener.</code><code class="descname">Listener</code><span class="sig-paren">(</span><em>input_size</em>, <em>hidden_dim</em>, <em>device</em>, <em>dropout_p=0.5</em>, <em>num_layers=5</em>, <em>bidirectional=True</em>, <em>rnn_type='gru'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/listener.html#Listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.listener.Listener" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts low level speech signals into higher level features</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>rnn_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – type of RNN cell (default: gru)</li>
+<li><strong>hidden_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – the number of features in the hidden state <cite>h</cite></li>
+<li><strong>num_layers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – number of recurrent layers (default: 1)</li>
+<li><strong>bidirectional</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – if True, becomes a bidirectional encoder (defulat: False)</li>
+<li><strong>dropout_p</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em>) – dropout probability for the output sequence (default: 0)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Inputs: inputs, h_state</dt>
+<dd><ul class="first last simple">
+<li><strong>inputs</strong>: list of sequences, whose length is the batch size and within which each sequence is list of tokens</li>
+<li><strong>h_state</strong>: variable containing the features in the hidden state h</li>
+</ul>
+</dd>
+<dt>Returns: output</dt>
+<dd><ul class="first last simple">
+<li><strong>output</strong>: tensor containing the encoded features of the input sequence</li>
+</ul>
+</dd>
+</dl>
+<p>Examples:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">listener</span> <span class="o">=</span> <span class="n">Listener</span><span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">dropout_p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">output</span> <span class="o">=</span> <span class="n">listener</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="model.listener.Listener.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs</em>, <em>input_lengths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/listener.html#Listener.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.listener.Listener.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="model.listener.Listener.get_seq_lengths">
+<code class="descname">get_seq_lengths</code><span class="sig-paren">(</span><em>input_length</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/listener.html#Listener.get_seq_lengths"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.listener.Listener.get_seq_lengths" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copied from <a class="reference external" href="https://github.com/clovaai/ClovaCall/blob/master/las.pytorch/models/EncoderRNN.py">https://github.com/clovaai/ClovaCall/blob/master/las.pytorch/models/EncoderRNN.py</a>
+Copyright (c) 2020-present NAVER Corp.
+MIT License</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="model.listener.MaskConv">
+<em class="property">class </em><code class="descclassname">model.listener.</code><code class="descname">MaskConv</code><span class="sig-paren">(</span><em>sequential</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/listener.html#MaskConv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.listener.MaskConv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copied from <a class="reference external" href="https://github.com/SeanNaren/deepspeech.pytorch/blob/master/model.py">https://github.com/SeanNaren/deepspeech.pytorch/blob/master/model.py</a>
+Copyright (c) 2017 Sean Naren
+MIT License</p>
+<p>Adds padding to the output of the module based on the given lengths. This is to ensure that the
+results of the model do not change when batch sizes change during inference.
+Input needs to be in the shape of (BxCxDxT)</p>
+<dl class="method">
+<dt id="model.listener.MaskConv.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>x</em>, <em>lengths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/listener.html#MaskConv.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.listener.MaskConv.forward" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – The input of size BxCxDxT</li>
+<li><strong>lengths</strong> – The actual length of each sequence in the batch</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Masked output from the module</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-model.speller">
+<span id="speller"></span><h2>Speller<a class="headerlink" href="#module-model.speller" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="model.speller.Speller">
+<em class="property">class </em><code class="descclassname">model.speller.</code><code class="descname">Speller</code><span class="sig-paren">(</span><em>num_class</em>, <em>max_length</em>, <em>hidden_dim</em>, <em>sos_id</em>, <em>eos_id</em>, <em>num_head</em>, <em>attn_dim=64</em>, <em>num_layers=1</em>, <em>rnn_type='gru'</em>, <em>dropout_p=0.5</em>, <em>device=None</em>, <em>k=5</em>, <em>ignore_index=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/speller.html#Speller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.speller.Speller" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts higher level features (from listener) into output utterances
+by specifying a probability distribution over sequences of characters.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>num_class</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – the number of classfication</li>
+<li><strong>max_length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – a maximum allowed length for the sequence to be processed</li>
+<li><strong>hidden_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – the number of features in the hidden state <cite>h</cite></li>
+<li><strong>sos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – index of the start of sentence symbol</li>
+<li><strong>eos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – index of the end of sentence symbol</li>
+<li><strong>num_layers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – number of recurrent layers (default: 1)</li>
+<li><strong>rnn_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – type of RNN cell (default: gru)</li>
+<li><strong>dropout_p</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em>) – dropout probability for the output sequence (default: 0)</li>
+<li><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – size of beam</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Inputs: inputs, context, teacher_forcing_ratio</dt>
+<dd><ul class="first last simple">
+<li><strong>inputs</strong> (batch, seq_len, input_size): list of sequences, whose length is the batch size and within which
+each sequence is a list of token IDs.  It is used for teacher forcing when provided. (default <cite>None</cite>)</li>
+<li><strong>context</strong> (batch, seq_len, hidden_dim): tensor with containing the outputs of the listener.
+Used for attention mechanism (default is <cite>None</cite>).</li>
+<li><strong>teacher_forcing_ratio</strong> (float): The probability that teacher forcing will be used. A random number is
+drawn uniformly from 0-1 for every decoding token, and if the sample is smaller than the given value,
+teacher forcing would be used (default is 0).</li>
+</ul>
+</dd>
+<dt>Returns: hypothesis, logit</dt>
+<dd><ul class="first last simple">
+<li><strong>hypothesis</strong> (batch, seq_len): predicted y values (y_hat) by the model</li>
+<li><strong>logit</strong> (batch, seq_len, num_class): predicted log probability by the model</li>
+</ul>
+</dd>
+</dl>
+<p>Examples:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">speller</span> <span class="o">=</span> <span class="n">Speller</span><span class="p">(</span><span class="n">num_class</span><span class="p">,</span> <span class="n">max_length</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">sos_id</span><span class="p">,</span> <span class="n">eos_id</span><span class="p">,</span> <span class="n">num_layers</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hypothesis</span><span class="p">,</span> <span class="n">logit</span> <span class="o">=</span> <span class="n">speller</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="mf">0.90</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="model.speller.Speller.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs</em>, <em>listener_outputs</em>, <em>teacher_forcing_ratio=0.9</em>, <em>use_beam_search=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/speller.html#Speller.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.speller.Speller.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="model.speller.Speller.init_state">
+<code class="descname">init_state</code><span class="sig-paren">(</span><em>batch_size</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/speller.html#Speller.init_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.speller.Speller.init_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize hidden state - Create h_0</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="model.speller.Speller.validate_args">
+<code class="descname">validate_args</code><span class="sig-paren">(</span><em>inputs</em>, <em>listener_outputs</em>, <em>teacher_forcing_ratio</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/speller.html#Speller.validate_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.speller.Speller.validate_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate arguments</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-model.beamsearch">
+<span id="beamsearch"></span><h2>BeamSearch<a class="headerlink" href="#module-model.beamsearch" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="model.beamsearch.BeamSearch">
+<em class="property">class </em><code class="descclassname">model.beamsearch.</code><code class="descname">BeamSearch</code><span class="sig-paren">(</span><em>decoder</em>, <em>batch_size</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/beamsearch.html#BeamSearch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.beamsearch.BeamSearch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies beam search decoing (Top k decoding)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>decoder</strong> (<em>nn.Module</em>) – decoder to which beam search will be applied</li>
+<li><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – batch size</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Inputs: input_var, encoder_outputs, k</dt>
+<dd><ul class="first last simple">
+<li><strong>input_var</strong> : sequence of sos_id</li>
+<li><strong>encoder_outputs</strong> : tensor containing the encoded features of the input sequence</li>
+<li><strong>k</strong> : size of beam</li>
+</ul>
+</dd>
+<dt>Returns: hypothesis</dt>
+<dd><ul class="first last simple">
+<li><strong>hypothesis</strong> : predicted y values (y_hat) by the model</li>
+</ul>
+</dd>
+<dt>Examples::</dt>
+<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">search</span> <span class="o">=</span> <span class="n">BeamSearch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hypothesis</span> <span class="o">=</span> <span class="n">search</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">listener_outputs</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<dl class="method">
+<dt id="model.beamsearch.BeamSearch.fill_sequence">
+<code class="descname">fill_sequence</code><span class="sig-paren">(</span><em>hypothesis</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/beamsearch.html#BeamSearch.fill_sequence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.beamsearch.BeamSearch.fill_sequence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fill a sequence with hypothesis and ‘ ‘</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="model.beamsearch.BeamSearch.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>input_var</em>, <em>encoder_outputs</em>, <em>k=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/beamsearch.html#BeamSearch.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.beamsearch.BeamSearch.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="model.beamsearch.BeamSearch.get_hypothesis">
+<code class="descname">get_hypothesis</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/beamsearch.html#BeamSearch.get_hypothesis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.beamsearch.BeamSearch.get_hypothesis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the hypothesis of beam search process</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="model.beamsearch.BeamSearch.get_length_penalty">
+<code class="descname">get_length_penalty</code><span class="sig-paren">(</span><em>length</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/beamsearch.html#BeamSearch.get_length_penalty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.beamsearch.BeamSearch.get_length_penalty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate length-penalty.
+because shorter sentence usually have bigger probability.
+using alpha = 1.2, min_length = 5 usually.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="model.beamsearch.BeamSearch.get_successor">
+<code class="descname">get_successor</code><span class="sig-paren">(</span><em>current_ps</em>, <em>current_vs</em>, <em>finished_ids</em>, <em>num_successor</em>, <em>eos_cnt</em>, <em>k</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/beamsearch.html#BeamSearch.get_successor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.beamsearch.BeamSearch.get_successor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get successor of finish beam</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="model.beamsearch.BeamSearch.is_all_finished">
+<code class="descname">is_all_finished</code><span class="sig-paren">(</span><em>k</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/beamsearch.html#BeamSearch.is_all_finished"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.beamsearch.BeamSearch.is_all_finished" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check all process finished</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-model.attention">
+<span id="attention"></span><h2>Attention<a class="headerlink" href="#module-model.attention" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="model.attention.MultiHeadAttention">
+<em class="property">class </em><code class="descclassname">model.attention.</code><code class="descname">MultiHeadAttention</code><span class="sig-paren">(</span><em>in_features</em>, <em>num_head=4</em>, <em>dim=128</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/attention.html#MultiHeadAttention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.attention.MultiHeadAttention" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies a multi-head attention mechanism on the output features from the decoder.</p>
+<p>Refer to 「State-of-the-art Speech Recognition With Sequence-to-Sequence Models」 Paper
+<a class="reference external" href="https://arxiv.org/abs/1712.01769">https://arxiv.org/abs/1712.01769</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>in_features</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The number of expected features in the output</li>
+<li><strong>num_head</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of heads. (default: 4)</li>
+<li><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – dimension size of sub heads. (default: 128)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Inputs: Q, V</dt>
+<dd><ul class="first last simple">
+<li><strong>Q</strong> (batch, output_len, dimensions): tensor containing the output features from the decoder.</li>
+<li><strong>V</strong> (batch, input_len, dimensions): tensor containing features of the encoded input sequence.</li>
+</ul>
+</dd>
+<dt>Returns: output</dt>
+<dd><ul class="first last simple">
+<li><strong>output</strong> (batch, output_len, dimensions): tensor containing the attended output features from the decoder.</li>
+</ul>
+</dd>
+<dt>Examples::</dt>
+<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">attention</span> <span class="o">=</span> <span class="n">MultiHeadAttention</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">n_head</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">output</span> <span class="o">=</span> <span class="n">attention</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">V</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<dl class="method">
+<dt id="model.attention.MultiHeadAttention.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>Q</em>, <em>V</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/model/attention.html#MultiHeadAttention.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#model.attention.MultiHeadAttention.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Data_loader.html" class="btn btn-neutral float-right" title="Data_loader" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="notes/Data-Analysis.html" class="btn btn-neutral float-left" title="Data-Analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Soohwan Kim
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

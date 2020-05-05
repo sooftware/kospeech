@@ -2,5 +2,5 @@
 Feature
 =====================================================
 
-.. automodule:: package.feature
+.. automodule:: feature
     :members:

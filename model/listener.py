@@ -71,7 +71,7 @@ class Listener(nn.Module):
 
     def __init__(self, input_size, hidden_dim, device, dropout_p=0.5, num_layers=5, bidirectional=True, rnn_type='gru'):
         super(Listener, self).__init__()
-        assert rnn_type.lower() in supported_rnns.keys(), 'RNN type is not supported.'
+        assert rnn_type.lower() in supported_rnns.keys(), "Unsupported RNN Cell: {0}".format(rnn_type)
         self.device = device
         self.conv = MaskConv(
             nn.Sequential(

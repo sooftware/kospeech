@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>model.listenAttendSpell &mdash; Korean Speech Recognition 1.0 documentation</title>
+  <title>model.listenAttendSpell &mdash; End-to-end Speech Recognition 2.0 documentation</title>
   
 
   
@@ -24,7 +24,6 @@
         <script type="text/javascript" src="../../_static/jquery.js"></script>
         <script type="text/javascript" src="../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -48,7 +47,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home"> Korean Speech Recognition
+            <a href="../../index.html" class="icon icon-home"> End-to-end Speech Recognition
           
 
           
@@ -58,7 +57,7 @@
             
             
               <div class="version">
-                1.0
+                2.0
               </div>
             
           
@@ -87,19 +86,17 @@
 <li class="toctree-l1"><a class="reference internal" href="../../notes/intro.html">Intro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../notes/Preparation.html">Preparation before Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../notes/More-details.html">More Details</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notes/Data-Analysis.html">Data-Analysis</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Architecture</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../Models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Model.html">Model</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Package Reference</span></p>
+<p class="caption"><span class="caption-text">Package</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../Checkpoint.html">Checkpoint</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../Config.html">Config</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../Dataset.html">Dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../Evaluator.html">Evaluator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Data_loader.html">Data_loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Feature.html">Feature</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../Loader.html">Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Label_loader.html">Label_loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Loss.html">Loss</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Trainer.html">Trainer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Utils.html">Utils</a></li>
@@ -117,7 +114,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">Korean Speech Recognition</a>
+          <a href="../../index.html">End-to-end Speech Recognition</a>
         
       </nav>
 
@@ -167,19 +164,18 @@
             
   <h1>Source code for model.listenAttendSpell</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
-<span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
 
-<div class="viewcode-block" id="ListenAttendSpell"><a class="viewcode-back" href="../../Models.html#model.listenAttendSpell.ListenAttendSpell">[docs]</a><span class="k">class</span> <span class="nc">ListenAttendSpell</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ListenAttendSpell"><a class="viewcode-back" href="../../Model.html#model.listenAttendSpell.ListenAttendSpell">[docs]</a><span class="k">class</span> <span class="nc">ListenAttendSpell</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Listen, Attend and Spell (LAS) Model</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        listener (torch.nn.Module): encoder of seq2seq</span>
 <span class="sd">        speller (torch.nn.Module): decoder of seq2seq</span>
-<span class="sd">        decode_function (torch.nn.functional): A function used to generate symbols from RNN hidden state</span>
 
-<span class="sd">    Inputs: feats, targets, teacher_forcing_ratio, use_beam_search</span>
-<span class="sd">        - **feats** (torch.Tensor): tensor of sequences, whose length is the batch size and within which</span>
+<span class="sd">    Inputs: inputs, targets, teacher_forcing_ratio, use_beam_search</span>
+<span class="sd">        - **inputs** (torch.Tensor): tensor of sequences, whose length is the batch size and within which</span>
 <span class="sd">          each sequence is a list of token IDs. This information is forwarded to the encoder.</span>
 <span class="sd">        - **targets** (torch.Tensor): tensor of sequences, whose length is the batch size and within which</span>
 <span class="sd">          each sequence is a list of token IDs. This information is forwarded to the decoder.</span>
@@ -190,32 +186,25 @@
 
 <span class="sd">    Returns: y_hats, logits</span>
 <span class="sd">        - **y_hats** (batch, seq_len): predicted y values (y_hat) by the model</span>
-<span class="sd">        - **logits** (batch, seq_len, vocab_size): logit values by the model</span>
+<span class="sd">        - **logits** (batch, seq_len, class_num): logit values by the model</span>
 
 <span class="sd">    Examples::</span>
 
-<span class="sd">        &gt;&gt;&gt; listener = Listener(feat_size, 256, 0.5, 6, True, &#39;gru&#39;, True)</span>
-<span class="sd">        &gt;&gt;&gt; speller = Speller(vocab_size, 120, 8, 256 &lt;&lt; (1 if use_bidirectional else 0), SOS_TOKEN, EOS_TOKEN, 3, &#39;gru&#39;, 0.5 ,True, device)</span>
+<span class="sd">        &gt;&gt;&gt; listener = Listener(in_features=80, hidden_dim=256, dropout_p=0.5, ...)</span>
+<span class="sd">        &gt;&gt;&gt; speller = Speller(num_class, 120, 8, 256 &lt;&lt; (1 if use_bidirectional else 0), ...)</span>
 <span class="sd">        &gt;&gt;&gt; model = ListenAttendSpell(listener, speller)</span>
+<span class="sd">        &gt;&gt;&gt; y_hats, logits = model()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">listener</span><span class="p">,</span> <span class="n">speller</span><span class="p">,</span> <span class="n">decode_function</span><span class="o">=</span><span class="n">F</span><span class="o">.</span><span class="n">log_softmax</span><span class="p">,</span> <span class="n">use_pyramidal</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">listener</span><span class="p">,</span> <span class="n">speller</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">ListenAttendSpell</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">listener</span> <span class="o">=</span> <span class="n">listener</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">speller</span> <span class="o">=</span> <span class="n">speller</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">decode_function</span> <span class="o">=</span> <span class="n">decode_function</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">use_pyramidal</span> <span class="o">=</span> <span class="n">use_pyramidal</span>
 
-<div class="viewcode-block" id="ListenAttendSpell.forward"><a class="viewcode-back" href="../../Models.html#model.listenAttendSpell.ListenAttendSpell.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feats</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="mf">0.90</span><span class="p">,</span> <span class="n">use_beam_search</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="n">listener_outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">listener</span><span class="p">(</span><span class="n">feats</span><span class="p">)</span>
-        <span class="n">y_hats</span><span class="p">,</span> <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">speller</span><span class="p">(</span>
-            <span class="n">inputs</span><span class="o">=</span><span class="n">targets</span><span class="p">,</span>
-            <span class="n">listener_outputs</span><span class="o">=</span><span class="n">listener_outputs</span><span class="p">,</span>
-            <span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">decode_function</span><span class="p">,</span>
-            <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="n">teacher_forcing_ratio</span><span class="p">,</span>
-            <span class="n">use_beam_search</span><span class="o">=</span><span class="n">use_beam_search</span>
-        <span class="p">)</span>
+<div class="viewcode-block" id="ListenAttendSpell.forward"><a class="viewcode-back" href="../../Model.html#model.listenAttendSpell.ListenAttendSpell.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">,</span> <span class="n">targets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="mf">0.90</span><span class="p">,</span> <span class="n">use_beam_search</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">listener_outputs</span><span class="p">,</span> <span class="n">h_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">listener</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">)</span>
+        <span class="n">hypothesis</span><span class="p">,</span> <span class="n">logit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">speller</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">listener_outputs</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="p">,</span> <span class="n">use_beam_search</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">y_hats</span><span class="p">,</span> <span class="n">logits</span></div>
+        <span class="k">return</span> <span class="n">hypothesis</span><span class="p">,</span> <span class="n">logit</span></div>
 
     <span class="k">def</span> <span class="nf">set_beam_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">speller</span><span class="o">.</span><span class="n">k</span> <span class="o">=</span> <span class="n">k</span>
@@ -235,7 +224,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020, SooHwan Kim
+        &copy; Copyright 2020, Soohwan Kim
 
     </p>
   </div>

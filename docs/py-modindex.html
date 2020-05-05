@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Python Module Index &mdash; Korean Speech Recognition 1.0 documentation</title>
+  <title>Python Module Index &mdash; End-to-end Speech Recognition 2.0 documentation</title>
   
 
   
@@ -24,7 +24,6 @@
         <script type="text/javascript" src="_static/jquery.js"></script>
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -36,6 +35,10 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
  
+
+    <script type="text/javascript">
+      DOCUMENTATION_OPTIONS.COLLAPSE_INDEX = true;
+    </script>
 
 
 </head>
@@ -51,7 +54,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> Korean Speech Recognition
+            <a href="index.html" class="icon icon-home"> End-to-end Speech Recognition
           
 
           
@@ -61,7 +64,7 @@
             
             
               <div class="version">
-                1.0
+                2.0
               </div>
             
           
@@ -90,19 +93,17 @@
 <li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Intro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">Preparation before Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/More-details.html">More Details</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/Data-Analysis.html">Data-Analysis</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Architecture</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Model.html">Model</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Package Reference</span></p>
+<p class="caption"><span class="caption-text">Package</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Checkpoint.html">Checkpoint</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Config.html">Config</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Dataset.html">Dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Data_loader.html">Data_loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Feature.html">Feature</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Loader.html">Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Label_loader.html">Label_loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Utils.html">Utils</a></li>
@@ -120,7 +121,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Korean Speech Recognition</a>
+          <a href="index.html">End-to-end Speech Recognition</a>
         
       </nav>
 
@@ -170,11 +171,44 @@
    <h1>Python Module Index</h1>
 
    <div class="modindex-jumpbox">
+   <a href="#cap-d"><strong>d</strong></a> | 
+   <a href="#cap-f"><strong>f</strong></a> | 
+   <a href="#cap-l"><strong>l</strong></a> | 
    <a href="#cap-m"><strong>m</strong></a> | 
-   <a href="#cap-p"><strong>p</strong></a>
+   <a href="#cap-t"><strong>t</strong></a> | 
+   <a href="#cap-u"><strong>u</strong></a>
    </div>
 
    <table class="indextable modindextable">
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-d"><td></td><td>
+       <strong>d</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="Data_loader.html#module-data_loader"><code class="xref">data_loader</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-f"><td></td><td>
+       <strong>f</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="Feature.html#module-feature"><code class="xref">feature</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-l"><td></td><td>
+       <strong>l</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="Label_loader.html#module-label_loader"><code class="xref">label_loader</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="Loss.html#module-loss"><code class="xref">loss</code></a></td><td>
+       <em></em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-m"><td></td><td>
        <strong>m</strong></td><td></td></tr>
@@ -182,86 +216,48 @@
        <td><img src="_static/minus.png" class="toggler"
               id="toggle-1" style="display: none" alt="-" /></td>
        <td>
-       <code class="xref">models</code></td><td>
+       <code class="xref">model</code></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="Models.html#module-models.attention"><code class="xref">models.attention</code></a></td><td>
+       <a href="Model.html#module-model.attention"><code class="xref">model.attention</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="Models.html#module-models.beam"><code class="xref">models.beam</code></a></td><td>
+       <a href="Model.html#module-model.beamsearch"><code class="xref">model.beamsearch</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="Models.html#module-models.listenAttendSpell"><code class="xref">models.listenAttendSpell</code></a></td><td>
+       <a href="Model.html#module-model.listenAttendSpell"><code class="xref">model.listenAttendSpell</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="Models.html#module-models.listener"><code class="xref">models.listener</code></a></td><td>
+       <a href="Model.html#module-model.listener"><code class="xref">model.listener</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="Models.html#module-models.speller"><code class="xref">models.speller</code></a></td><td>
+       <a href="Model.html#module-model.speller"><code class="xref">model.speller</code></a></td><td>
        <em></em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
-     <tr class="cap" id="cap-p"><td></td><td>
-       <strong>p</strong></td><td></td></tr>
+     <tr class="cap" id="cap-t"><td></td><td>
+       <strong>t</strong></td><td></td></tr>
      <tr>
-       <td><img src="_static/minus.png" class="toggler"
-              id="toggle-2" style="display: none" alt="-" /></td>
+       <td></td>
        <td>
-       <code class="xref">package</code></td><td>
+       <a href="Trainer.html#module-trainer"><code class="xref">trainer</code></a></td><td>
        <em></em></td></tr>
-     <tr class="cg-2">
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-u"><td></td><td>
+       <strong>u</strong></td><td></td></tr>
+     <tr>
        <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="Checkpoint.html#module-package.checkpoint"><code class="xref">package.checkpoint</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-2">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="Config.html#module-package.config"><code class="xref">package.config</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-2">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="Dataset.html#module-package.dataset"><code class="xref">package.dataset</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-2">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="Evaluator.html#module-package.evaluator"><code class="xref">package.evaluator</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-2">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="Feature.html#module-package.feature"><code class="xref">package.feature</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-2">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="Loader.html#module-package.loader"><code class="xref">package.loader</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-2">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="Loss.html#module-package.loss"><code class="xref">package.loss</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-2">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="Trainer.html#module-package.trainer"><code class="xref">package.trainer</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-2">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="Utils.html#module-package.utils"><code class="xref">package.utils</code></a></td><td>
+       <td>
+       <a href="Utils.html#module-utils"><code class="xref">utils</code></a></td><td>
        <em></em></td></tr>
    </table>
 
@@ -276,7 +272,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020, SooHwan Kim
+        &copy; Copyright 2020, Soohwan Kim
 
     </p>
   </div>

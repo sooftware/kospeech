@@ -50,7 +50,7 @@ class Speller(nn.Module):
                  num_layers=1, rnn_type='gru', dropout_p=0.5, device=None, k=5, ignore_index=0):
 
         super(Speller, self).__init__()
-        assert rnn_type.lower() in supported_rnns.keys(), 'RNN type is not supported.'
+        assert rnn_type.lower() in supported_rnns.keys(), "Unsupported RNN Cell: {0}".format(rnn_type)
 
         self.num_class = num_class
         self.rnn_cell = supported_rnns[rnn_type]

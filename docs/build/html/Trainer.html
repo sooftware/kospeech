@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Trainer &mdash; Korean Speech Recognition 1.0 documentation</title>
+  <title>Trainer &mdash; End-to-end Speech Recognition 2.0 documentation</title>
   
 
   
@@ -24,7 +24,6 @@
         <script type="text/javascript" src="_static/jquery.js"></script>
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -50,7 +49,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> Korean Speech Recognition
+            <a href="index.html" class="icon icon-home"> End-to-end Speech Recognition
           
 
           
@@ -60,7 +59,7 @@
             
             
               <div class="version">
-                1.0
+                2.0
               </div>
             
           
@@ -89,19 +88,17 @@
 <li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Intro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">Preparation before Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/More-details.html">More Details</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/Data-Analysis.html">Data-Analysis</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Architecture</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Model.html">Model</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Package Reference</span></p>
+<p class="caption"><span class="caption-text">Package</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="Checkpoint.html">Checkpoint</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Config.html">Config</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Dataset.html">Dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Data_loader.html">Data_loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Feature.html">Feature</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Loader.html">Loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Label_loader.html">Label_loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Trainer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Utils.html">Utils</a></li>
@@ -119,7 +116,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Korean Speech Recognition</a>
+          <a href="index.html">End-to-end Speech Recognition</a>
         
       </nav>
 
@@ -169,36 +166,66 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-package.trainer">
-<span id="trainer"></span><h1>Trainer<a class="headerlink" href="#module-package.trainer" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-trainer">
+<span id="trainer"></span><h1>Trainer<a class="headerlink" href="#module-trainer" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
-<dt id="package.trainer.get_lr">
-<code class="descclassname">package.trainer.</code><code class="descname">get_lr</code><span class="sig-paren">(</span><em>optimizer</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/trainer.html#get_lr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.trainer.get_lr" title="Permalink to this definition">¶</a></dt>
-<dd><p>get learning rate</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="package.trainer.set_lr">
-<code class="descclassname">package.trainer.</code><code class="descname">set_lr</code><span class="sig-paren">(</span><em>optimizer</em>, <em>lr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/trainer.html#set_lr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.trainer.set_lr" title="Permalink to this definition">¶</a></dt>
-<dd><p>set learning rate</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="package.trainer.supervised_train">
-<code class="descclassname">package.trainer.</code><code class="descname">supervised_train</code><span class="sig-paren">(</span><em>model</em>, <em>config</em>, <em>epoch</em>, <em>total_time_step</em>, <em>queue</em>, <em>criterion</em>, <em>optimizer</em>, <em>device</em>, <em>train_begin</em>, <em>worker_num</em>, <em>print_time_step=10</em>, <em>teacher_forcing_ratio=0.9</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/package/trainer.html#supervised_train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#package.trainer.supervised_train" title="Permalink to this definition">¶</a></dt>
+<dt id="trainer.evaluate">
+<code class="descclassname">trainer.</code><code class="descname">evaluate</code><span class="sig-paren">(</span><em>model</em>, <em>queue</em>, <em>criterion</em>, <em>device</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/trainer.html#evaluate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#trainer.evaluate" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>model</strong> (<a class="reference external" href="https://pytorch.org/docs/master/nn.html#torch.nn.Module" title="(in PyTorch vmaster (1.5.0a0+f515d87 ))"><em>torch.nn.Module</em></a>) – Model to be trained</li>
-<li><strong>optimizer</strong> (<em>torch.optim</em>) – optimizer for training</li>
-<li><strong>teacher_forcing_ratio</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – The probability that teacher forcing will be used (default: 0.90)</li>
-<li><strong>print_time_step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Parameters to determine how many steps to output</li>
-<li><strong>queue</strong> (<em>Queue.queue</em>) – queue for threading</li>
-<li><strong>criterion</strong> (<em>torch.nn</em>) – one of PyTorch’s loss function. Refer to <a class="reference external" href="http://pytorch.org/docs/master/nn.html#loss-functions">http://pytorch.org/docs/master/nn.html#loss-functions</a> for a list of them.</li>
+<li><strong>model</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.6.0a0+0549e1f ))"><em>torch.nn.Module</em></a>) – Model to be evaluated</li>
+<li><strong>queue</strong> (<em>queue</em>) – queue for threading</li>
+<li><strong>criterion</strong> (<em>torch.nn</em>) – one of PyTorch’s loss function.
+Refer to <a class="reference external" href="http://pytorch.org/docs/master/nn.html#loss-functions">http://pytorch.org/docs/master/nn.html#loss-functions</a> for a list of them.</li>
 <li><strong>device</strong> (<em>torch.cuda</em>) – device used (‘cuda’ or ‘cpu’)</li>
-<li><strong>worker_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – the number of cpu cores used</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Returns: loss, cer</dt>
+<dd><ul class="first last simple">
+<li><strong>loss</strong> (float): loss of evalution</li>
+<li><strong>cer</strong> (float): character error rate</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="trainer.get_lr">
+<code class="descclassname">trainer.</code><code class="descname">get_lr</code><span class="sig-paren">(</span><em>optimizer</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/trainer.html#get_lr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#trainer.get_lr" title="Permalink to this definition">¶</a></dt>
+<dd><p>get learning rate</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="trainer.set_lr">
+<code class="descclassname">trainer.</code><code class="descname">set_lr</code><span class="sig-paren">(</span><em>optimizer</em>, <em>lr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/trainer.html#set_lr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#trainer.set_lr" title="Permalink to this definition">¶</a></dt>
+<dd><p>set learning rate</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="trainer.supervised_train">
+<code class="descclassname">trainer.</code><code class="descname">supervised_train</code><span class="sig-paren">(</span><em>model</em>, <em>args</em>, <em>epoch</em>, <em>total_time_step</em>, <em>queue</em>, <em>criterion</em>, <em>optimizer</em>, <em>device</em>, <em>train_begin</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/trainer.html#supervised_train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#trainer.supervised_train" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>train_begin</strong> – train begin time</li>
+<li><strong>total_time_step</strong> – total time step in epoch</li>
+<li><strong>epoch</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – present epoch</li>
+<li><strong>args</strong> (<em>Arguments</em>) – set of Argugments</li>
+<li><strong>model</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.6.0a0+0549e1f ))"><em>torch.nn.Module</em></a>) – Model to be trained</li>
+<li><strong>optimizer</strong> (<em>torch.optim</em>) – optimizer for training</li>
+<li><strong>queue</strong> (<em>Queue.queue</em>) – queue for threading</li>
+<li><strong>criterion</strong> (<em>torch.nn</em>) – one of PyTorch’s loss function.
+Refer to <a class="reference external" href="http://pytorch.org/docs/master/nn.html#loss-functions">http://pytorch.org/docs/master/nn.html#loss-functions</a> for a list of them.</li>
+<li><strong>device</strong> (<em>torch.cuda</em>) – device used (‘cuda’ or ‘cpu’)</li>
 </ul>
 </td>
 </tr>
@@ -236,7 +263,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020, SooHwan Kim
+        &copy; Copyright 2020, Soohwan Kim
 
     </p>
   </div>
