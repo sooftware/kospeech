@@ -118,7 +118,7 @@ def split_dataset(args, audio_paths, label_paths, target_dict=None):
     if args.use_augment:
         train_time_step = int(train_time_step * (1 + args.augment_num))
 
-    train_num_per_worker = math.ceil(train_num / args.worker_num)
+    train_num_per_worker = math.ceil(train_num / args.num_workers)
 
     # audio_paths & label_paths shuffled in the same order
     # for seperating train & validation
@@ -127,7 +127,7 @@ def split_dataset(args, audio_paths, label_paths, target_dict=None):
     audio_paths, label_paths = zip(*data_paths)
 
     # seperating the train dataset by the number of workers
-    for idx in range(args.worker_num):
+    for idx in range(args.num_workers):
         train_begin_idx = train_num_per_worker * idx
         train_end_idx = min(train_num_per_worker * (idx + 1), train_num)
 
@@ -164,24 +164,24 @@ class MultiLoader:
         dataset_list (list): list of SpectrogramDataset
         queue (Queue.queue): queue for threading
         batch_size (int): size of batch
-        worker_num (int): the number of cpu cores used
+        num_workers (int): the number of cpu cores used
     """
-    def __init__(self, dataset_list, queue, batch_size, worker_num):
+    def __init__(self, dataset_list, queue, batch_size, num_workers):
         self.dataset_list = dataset_list
         self.queue = queue
         self.batch_size = batch_size
-        self.worker_num = worker_num
+        self.num_workers = num_workers
         self.loader = list()
 
-        for idx in range(self.worker_num):
+        for idx in range(self.num_workers):
             self.loader.append(AudioDataLoader(self.dataset_list[idx], self.queue, self.batch_size, idx))
 
     def start(self):
-        for idx in range(self.worker_num):
+        for idx in range(self.num_workers):
             self.loader[idx].start()
 
     def join(self):
-        for idx in range(self.worker_num):
+        for idx in range(self.num_workers):
             self.loader[idx].join()
 
 

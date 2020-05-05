@@ -81,7 +81,7 @@ parser.add_argument('--load_model', action='store_true', default=True)
 parser.add_argument('--use_cuda', action='store_true', default=True)
 parser.add_argument('--model_path', type=str, default=None, help='Location to load models (default: None')
 parser.add_argument('--k', type=int, default=5, help='size of beam (default: 5)')
-parser.add_argument('--worker_num', type=int, default=1, help='number of workers in dataset loader (default: 1)')
+parser.add_argument('--num_workers', type=int, default=1, help='number of workers in dataset loader (default: 1)')
 parser.add_argument('--sr', type=int, default=16000, help='sample rate (default: 16000)')
 parser.add_argument('--window_size', type=int, default=20, help='Window size for spectrogram (default: 20ms)')
 parser.add_argument('--stride', type=int, default=10, help='Window stride for spectrogram (default: 10ms)')
@@ -127,7 +127,7 @@ def main():
         use_augment=False
     )
 
-    test_queue = queue.Queue(args.worker_num << 1)
+    test_queue = queue.Queue(args.num_workers << 1)
     test_loader = AudioDataLoader(testset, test_queue, args.batch_size, 0)
     test_loader.start()
 
