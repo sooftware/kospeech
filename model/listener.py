@@ -129,7 +129,7 @@ class Listener(nn.Module):
         )
 
     def forward(self, inputs, input_lengths):
-        if self.conv_type == 'without_maxpool':
+        if self.conv_type == 'with_maxpool':
             x = self.conv(inputs.unsqueeze(1)).to(self.device)
             x = x.transpose(1, 2)
             x = x.contiguous().view(x.size(0), x.size(1), x.size(2) * x.size(3)).to(self.device)
@@ -139,7 +139,7 @@ class Listener(nn.Module):
 
             output, h_state = self.rnn(x)
 
-        elif self.conv_type == 'deepspeech2':
+        elif self.conv_type == 'without_maxpool':
             output_lengths = self.get_seq_lengths(input_lengths)
 
             x = inputs.unsqueeze(1).permute(0, 1, 3, 2)    # (batch_size, 1, hidden_dim, seq_len)
