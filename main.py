@@ -171,7 +171,7 @@ def main():
         # Training
         train_loader = MultiLoader(trainset_list, train_queue, args.batch_size, args.num_workers)
         train_loader.start()
-        train_loss, train_cer = supervised_train(model, args, total_time_step, train_queue,
+        train_loss, train_cer = supervised_train(model, args, epoch, total_time_step, train_queue,
                                                  criterion, optimizer, device, train_begin)
         train_loader.join()
 
