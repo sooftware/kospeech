@@ -67,7 +67,11 @@ class BeamSearch(nn.Module):
         encoder_outputs = encoder_outputs.view(k, batch_size, -1, encoder_dim)
         encoder_outputs = encoder_outputs.transpose(0, 1)
         encoder_outputs = encoder_outputs.reshape(batch_size * k, -1, encoder_dim)
-        h_state = _inflate(h_state, k, dim=1)
+
+        if isinstance(h_state, tuple):
+            h_state = tuple([_inflate(h, self.k, 1) for h in h_state])
+        else:
+            h_state = _inflate(h_state, self.k, 1)
 
         for di in range(self.max_length - 1):
             if self.is_all_finished(k):
