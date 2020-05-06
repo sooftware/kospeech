@@ -129,7 +129,7 @@ class Listener(nn.Module):
         )
 
     def forward(self, inputs, input_lengths):
-        if self.conv_type == 'custom2':
+        if self.conv_type == 'without_maxpool':
             x = self.conv(inputs.unsqueeze(1)).to(self.device)
             x = x.transpose(1, 2)
             x = x.contiguous().view(x.size(0), x.size(1), x.size(2) * x.size(3)).to(self.device)
