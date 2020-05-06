@@ -163,6 +163,7 @@ def print_args(args):
     logger.info('--label_smoothing: %s' % str(args.label_smoothing))
     logger.info('--listener_layer_size: %s' % str(args.listener_layer_size))
     logger.info('--speller_layer_size: %s' % str(args.speller_layer_size))
+    logger.info('--conv_type: %s' % str(args.conv_type))
     logger.info('--rnn_type: %s' % str(args.rnn_type))
     logger.info('--k: %s' % str(args.k))
     logger.info('--batch_size: %s' % str(args.batch_size))

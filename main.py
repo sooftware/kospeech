@@ -44,6 +44,8 @@ parser.add_argument('--dropout', type=float, default=0.3, help='dropout ratio in
 parser.add_argument('--num_head', type=int, default=4, help='number of head in attention (default: 4)')
 parser.add_argument('--attn_dim', type=int, default=128, help='dimention of attention (default: 128)')
 parser.add_argument('--label_smoothing', type=float, default=0.1, help='ratio of label smoothing (default: 0.1)')
+parser.add_argument('--conv_type', type=str, default='with_maxpool',
+                    help='type of conv in listener [with_maxpool, without_maxpool] (default: with_maxpool')
 parser.add_argument('--listener_layer_size', type=int, default=5, help='layer size of encoder (default: 5)')
 parser.add_argument('--speller_layer_size', type=int, default=3, help='layer size of decoder (default: 3)')
 parser.add_argument('--rnn_type', type=str, default='gru', help='type of rnn cell: [gru, lstm, rnn] (default: gru)')
@@ -112,7 +114,8 @@ def main():
             num_layers=args.listener_layer_size,
             bidirectional=args.use_bidirectional,
             rnn_type=args.rnn_type,
-            device=device
+            device=device,
+            conv_type=args.conv_type
         )
         speller = Speller(
             num_class=len(char2id),
@@ -168,17 +171,8 @@ def main():
         # Training
         train_loader = MultiLoader(trainset_list, train_queue, args.batch_size, args.num_workers)
         train_loader.start()
-        train_loss, train_cer = supervised_train(
-            model=model,
-            total_time_step=total_time_step,
-            args=args,
-            queue=train_queue,
-            criterion=criterion,
-            epoch=epoch,
-            optimizer=optimizer,
-            device=device,
-            train_begin=train_begin,
-        )
+        train_loss, train_cer = supervised_train(model, args, total_time_step, train_queue,
+                                                 criterion, optimizer, device, train_begin)
         train_loader.join()
 
         torch.save(model, "./data/weight_file/epoch%s.pt" % str(epoch))
