@@ -1,4 +1,4 @@
-# End-to-end Speech Recognition
+#  End-to-end Speech Recognition
 #  @source_code{
 #      title={Character-unit based End-to-end Korean Speech Recognition},
 #      author={Soohwan Kim, Seyoung Bae, Cheolhwang Won},
