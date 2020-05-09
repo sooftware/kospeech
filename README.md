@@ -30,7 +30,8 @@ if you want to study the feature of audio, we recommend this papers.
 [「Voice Recognition Using MFCC Algirithm」](https://ijirae.com/volumes/vol1/issue10/27.NVEC10086.pdf).  
   
 Our project based on Seq2seq with Attention Architecture.  
-Seq2seq is a fast evolving field with new techniques and architectures being published frequently.  
+
+Sequence to sequence architecture is a field that is still actively studied in the field of speech recognition.    
 Our model architeuture is as follows.
   
 ```python
@@ -67,7 +68,7 @@ ListenAttendSpell(
 )
 ```
   
-We use [AI Hub 1000h](http://www.aihub.or.kr/aidata/105) dataset which contains 1,000 hours korean voice data. and, our project is currently in progress.   
+We use [KsponSpeech](http://www.aihub.or.kr/aidata/105) dataset which contains 1,000 hours korean voice data. and, our project is currently in progress.   
 At present our top model has recorded an **82.3% CRR**, and we are working for a higher recognition rate.  
   
 Also our model has recorded **91.0% CRR** in [Kadi-zeroth dataset](https://github.com/goodatlas/zeroth).  
@@ -146,7 +147,7 @@ We follow [PEP-8](https://www.python.org/dev/peps/pep-0008/) for code style. Esp
 [[5] 「Voice Recognition Using MFCC Algorithm」  Paper](https://ijirae.com/volumes/vol1/issue10/27.NVEC10086.pdf)        
 [[6]    IBM pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)   
 [[7]    Character RNN Language Model](https://github.com/sooftware/char-rnnlm)  
-[[8]    A.I Hub Korean Voice Dataset](http://www.aihub.or.kr/aidata/105)    
+[[8]    KsponSpeech](http://www.aihub.or.kr/aidata/105)    
 [[9]    Documentation](https://sooftware.github.io/End-to-End-Korean-Speech-Recognition/)  
    
 ### Citing
