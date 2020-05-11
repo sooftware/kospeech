@@ -2,7 +2,7 @@
   
 ### Character-unit based End-to-end Korean Speech Recognition  
    
-[<img src="https://github.com/gentaiscool/end2end-asr-pytorch/raw/master/img/pytorch-logo-dark.png" height=18>](https://pytorch.org/) <img src="https://img.shields.io/badge/License-Apache--2.0-yellow" height=20> [<img src="https://img.shields.io/badge/chat-on%20gitter-4fb99a" height=20>](https://gitter.im/Korean-Speech-Recognition/community) ![fork](https://img.shields.io/github/forks/sooftware/End-to-end-Speech-Recognition) ![star](https://img.shields.io/github/stars/sooftware/End-to-end-Speech-Recognition)  
+[<img src="https://github.com/gentaiscool/end2end-asr-pytorch/raw/master/img/pytorch-logo-dark.png" height=18>](https://pytorch.org/) <img src="https://img.shields.io/badge/License-Apache--2.0-yellow" height=20> ![star](https://img.shields.io/github/stars/sooftware/End-to-end-Speech-Recognition) ![fork](https://img.shields.io/github/forks/sooftware/End-to-end-Speech-Recognition) [<img src="https://img.shields.io/badge/chat-on%20gitter-4fb99a" height=20>](https://gitter.im/Korean-Speech-Recognition/community)   
   
 ### [**Documentation**](https://sooftware.github.io/End-to-end-Speech-Recognition/)   
   
@@ -30,28 +30,27 @@ if you want to study the feature of audio, we recommend this papers.
 [「Voice Recognition Using MFCC Algirithm」](https://ijirae.com/volumes/vol1/issue10/27.NVEC10086.pdf).  
   
 Our project based on Seq2seq with Attention Architecture.  
-Seq2seq is a fast evolving field with new techniques and architectures being published frequently.  
+
+Sequence to sequence architecture is a field that is still actively studied in the field of speech recognition.    
 Our model architeuture is as follows.
   
 ```python
 ListenAttendSpell(
   (listener): Listener(
-    (conv): MaskConv(
-      (sequential): Sequential(
-        (0): Conv2d(1, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-        (1): Hardtanh(min_val=0, max_val=20, inplace=True)
-        (2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-        (3): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-        (4): Hardtanh(min_val=0, max_val=20, inplace=True)
-        (5): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
-        (6): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-        (7): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-        (8): Hardtanh(min_val=0, max_val=20, inplace=True)
-        (9): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-        (10): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-        (11): Hardtanh(min_val=0, max_val=20, inplace=True)
-        (12): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
-      )
+    (conv): Sequential(
+      (0): Conv2d(1, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      (1): Hardtanh(min_val=0, max_val=20, inplace=True)
+      (2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (3): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      (4): Hardtanh(min_val=0, max_val=20, inplace=True)
+      (5): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+      (6): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (7): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      (8): Hardtanh(min_val=0, max_val=20, inplace=True)
+      (9): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (10): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      (11): Hardtanh(min_val=0, max_val=20, inplace=True)
+      (12): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
     )
     (rnn): GRU(2560, 256, num_layers=5, batch_first=True, dropout=0.3, bidirectional=True)
   )
@@ -69,7 +68,7 @@ ListenAttendSpell(
 )
 ```
   
-We use [AI Hub 1000h](http://www.aihub.or.kr/aidata/105) dataset which contains 1,000 hours korean voice data. and, our project is currently in progress.   
+We use [KsponSpeech](http://www.aihub.or.kr/aidata/105) dataset which contains 1,000 hours korean voice data. and, our project is currently in progress.   
 At present our top model has recorded an **82.3% CRR**, and we are working for a higher recognition rate.  
   
 Also our model has recorded **91.0% CRR** in [Kadi-zeroth dataset](https://github.com/goodatlas/zeroth).  
@@ -148,7 +147,7 @@ We follow [PEP-8](https://www.python.org/dev/peps/pep-0008/) for code style. Esp
 [[5] 「Voice Recognition Using MFCC Algorithm」  Paper](https://ijirae.com/volumes/vol1/issue10/27.NVEC10086.pdf)        
 [[6]    IBM pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)   
 [[7]    Character RNN Language Model](https://github.com/sooftware/char-rnnlm)  
-[[8]    A.I Hub Korean Voice Dataset](http://www.aihub.or.kr/aidata/105)    
+[[8]    KsponSpeech](http://www.aihub.or.kr/aidata/105)    
 [[9]    Documentation](https://sooftware.github.io/End-to-End-Korean-Speech-Recognition/)  
    
 ### Citing
