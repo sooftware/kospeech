@@ -6,6 +6,7 @@ supported_rnns = {
     'gru': nn.GRU,
     'rnn': nn.RNN
 }
+
 supported_conv_types = [
     'with_maxpool',
     'without_maxpool'
@@ -57,7 +58,7 @@ class Listener(nn.Module):
     Args:
         rnn_type (str, optional): type of RNN cell (default: gru)
         hidden_dim (int): the number of features in the hidden state `h`
-        num_layers (int, optional): number of recurrent layers (default: 1)
+        n_layers (int, optional): number of recurrent layers (default: 1)
         bidirectional (bool, optional): if True, becomes a bidirectional encoder (defulat: False)
         dropout_p (float, optional): dropout probability for the output sequence (default: 0)
 
@@ -70,11 +71,11 @@ class Listener(nn.Module):
 
     Examples::
 
-        >>> listener = Listener(80, hidden_dim=256, dropout_p=0.5, num_layers=5)
+        >>> listener = Listener(80, hidden_dim=256, dropout_p=0.5, n_layers=5)
         >>> output = listener(inputs)
     """
 
-    def __init__(self, input_size, hidden_dim, device, dropout_p=0.5, num_layers=5,
+    def __init__(self, input_size, hidden_dim, device, dropout_p=0.5, n_layers=5,
                  bidirectional=True, rnn_type='gru', conv_type='with_maxpool'):
         super(Listener, self).__init__()
 
@@ -122,7 +123,7 @@ class Listener(nn.Module):
         self.rnn = rnn_cell(
             input_size=input_size,
             hidden_size=hidden_dim,
-            num_layers=num_layers,
+            num_layers=n_layers,
             batch_first=True,
             bidirectional=bidirectional,
             dropout=dropout_p

@@ -41,7 +41,7 @@ parser.add_argument('--model_path', type=str, default=None, help='Location to lo
 parser.add_argument('--augment_num', type=int, default=1, help='Number of SpecAugemnt per data (default: 1)')
 parser.add_argument('--hidden_dim', type=int, default=256, help='hidden state dimension of model (default: 256)')
 parser.add_argument('--dropout', type=float, default=0.3, help='dropout ratio in training (default: 0.3)')
-parser.add_argument('--num_head', type=int, default=4, help='number of head in attention (default: 4)')
+parser.add_argument('--n_head', type=int, default=4, help='number of head in attention (default: 4)')
 parser.add_argument('--attn_dim', type=int, default=128, help='dimention of attention (default: 128)')
 parser.add_argument('--label_smoothing', type=float, default=0.1, help='ratio of label smoothing (default: 0.1)')
 parser.add_argument('--conv_type', type=str, default='with_maxpool',
@@ -111,7 +111,7 @@ def main():
             input_size=args.n_mels,
             hidden_dim=args.hidden_dim,
             dropout_p=args.dropout,
-            num_layers=args.listener_layer_size,
+            n_layers=args.listener_layer_size,
             bidirectional=args.use_bidirectional,
             rnn_type=args.rnn_type,
             device=device,
@@ -124,10 +124,10 @@ def main():
             hidden_dim=args.hidden_dim << (1 if args.use_bidirectional else 0),
             sos_id=SOS_token,
             eos_id=EOS_token,
-            num_layers=args.speller_layer_size,
+            n_layers=args.speller_layer_size,
             rnn_type=args.rnn_type,
             dropout_p=args.dropout,
-            num_head=args.num_head,
+            n_head=args.n_head,
             attn_dim=args.attn_dim,
             device=device,
             ignore_index=char2id[' ']

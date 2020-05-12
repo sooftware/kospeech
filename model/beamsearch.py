@@ -40,7 +40,7 @@ class BeamSearch(nn.Module):
         self.device = decoder.device
         self.max_length = decoder.max_length
         self.init_state = decoder.init_state
-        self.num_layers = decoder.num_layers
+        self.n_layers = decoder.n_layers
         self.ongoing_beams = None
         self.cumulative_ps = None
         self.finished = [list() for _ in range(batch_size)]
@@ -77,7 +77,7 @@ class BeamSearch(nn.Module):
             if self.is_all_finished(k):
                 break
 
-            h_state = h_state.view(self.num_layers, batch_size * k, self.hidden_dim)
+            h_state = h_state.view(self.n_layers, batch_size * k, self.hidden_dim)
             predicted_softmax, h_state = self.forward_step(input_var, h_state, encoder_outputs)
 
             predicted_softmax = predicted_softmax.view(batch_size, k, -1)
@@ -109,22 +109,22 @@ class BeamSearch(nn.Module):
 
             if torch.any(topk_current_vs == self.eos_id):
                 finished_ids = torch.where(topk_current_vs == self.eos_id)
-                num_successors = [1] * batch_size
+                n_successors = [1] * batch_size
 
                 for (batch_idx, idx) in zip(*finished_ids):
                     self.finished[batch_idx].append(self.ongoing_beams[batch_idx, idx])
                     self.finished_ps[batch_idx].append(self.cumulative_ps[batch_idx, idx])
 
                     if k != 1:
-                        eos_cnt = self.get_successor(
+                        n_eos = self.get_successor(
                             current_ps=current_ps,
                             current_vs=current_vs,
                             finished_ids=(batch_idx, idx),
-                            num_successor=num_successors[batch_idx],
-                            eos_cnt=1,
+                            n_successors=n_successors[batch_idx],
+                            n_eos=1,
                             k=k
                         )
-                        num_successors[batch_idx] += eos_cnt
+                        n_successors[batch_idx] += n_eos
 
             input_var = self.ongoing_beams[:, :, -1]
             input_var = input_var.view(batch_size * k, -1)
@@ -142,11 +142,11 @@ class BeamSearch(nn.Module):
 
         return predicted_softmax, h_state
 
-    def get_successor(self, current_ps, current_vs, finished_ids, num_successor, eos_cnt, k):
+    def get_successor(self, current_ps, current_vs, finished_ids, n_successors, n_eos, k):
         """ Get successor of finish beam """
         finished_batch_idx, finished_idx = finished_ids
 
-        successor_ids = current_ps.topk(k + num_successor)[1]
+        successor_ids = current_ps.topk(k + n_successors)[1]
         successor_idx = successor_ids[finished_batch_idx, -1]
 
         successor_p = current_ps[finished_batch_idx, successor_idx].to(self.device)
@@ -161,13 +161,13 @@ class BeamSearch(nn.Module):
         if int(successor_v) == self.eos_id:
             self.finished[finished_batch_idx].append(successor)
             self.finished_ps[finished_batch_idx].append(successor_p)
-            eos_cnt = self.get_successor(current_ps, current_vs, finished_ids, num_successor + eos_cnt, eos_cnt + 1, k)
+            n_eos = self.get_successor(current_ps, current_vs, finished_ids, n_successors + n_eos, n_eos + 1, k)
 
         else:
             self.ongoing_beams[finished_batch_idx, finished_idx] = successor
             self.cumulative_ps[finished_batch_idx, finished_idx] = successor_p
 
-        return eos_cnt
+        return n_eos
 
     def get_hypothesis(self):
         """ Get the hypothesis of beam search process """
