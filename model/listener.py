@@ -102,7 +102,7 @@ class Listener(nn.Module):
                 )
 
         elif conv_type.lower() == 'without_maxpool':
-            self. conv = MaskConv(
+            self.conv = MaskConv(
                 nn.Sequential(
                     nn.Conv2d(1, 32, kernel_size=3, stride=1, padding=1),
                     nn.Hardtanh(0, 20, inplace=True),
