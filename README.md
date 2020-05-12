@@ -2,7 +2,7 @@
   
 ### Character-unit based End-to-end Korean Speech Recognition  
    
-[<img src="https://github.com/gentaiscool/end2end-asr-pytorch/raw/master/img/pytorch-logo-dark.png" height=18>](https://pytorch.org/) <img src="https://img.shields.io/badge/License-Apache--2.0-yellow" height=20> ![star](https://img.shields.io/github/stars/sooftware/End-to-end-Speech-Recognition) ![fork](https://img.shields.io/github/forks/sooftware/End-to-end-Speech-Recognition) [<img src="https://img.shields.io/badge/chat-on%20gitter-4fb99a" height=20>](https://gitter.im/Korean-Speech-Recognition/community)   
+[<img src="https://github.com/gentaiscool/end2end-asr-pytorch/raw/master/img/pytorch-logo-dark.png" height=18>](https://pytorch.org/) <img src="https://img.shields.io/badge/License-Apache--2.0-yellow" height=20> [<img src="https://img.shields.io/badge/chat-on%20gitter-4fb99a" height=20>](https://gitter.im/Korean-Speech-Recognition/community)   
   
 ### [**Documentation**](https://sooftware.github.io/End-to-end-Speech-Recognition/)   
   
