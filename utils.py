@@ -158,7 +158,7 @@ def print_args(args):
     logger.info('--augment_num: %s' % str(args.augment_num))
     logger.info('--hidden_dim: %s' % str(args.hidden_dim))
     logger.info('--dropout: %s' % str(args.dropout))
-    logger.info('--num_head: %s' % str(args.num_head))
+    logger.info('--n_head: %s' % str(args.n_head))
     logger.info('--attn_dim: %s' % str(args.attn_dim))
     logger.info('--label_smoothing: %s' % str(args.label_smoothing))
     logger.info('--listener_layer_size: %s' % str(args.listener_layer_size))
