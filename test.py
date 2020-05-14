@@ -12,8 +12,6 @@
 import queue
 import torch
 import warnings
-import logging
-import sys
 import argparse
 from data_loader import SpectrogramDataset, AudioDataLoader, load_data_list
 from definition import logger, id2char, EOS_token, SAMPLE_LIST_PATH, SAMPLE_DATASET_PATH, SOS_token
