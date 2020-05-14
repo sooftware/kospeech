@@ -16,7 +16,7 @@ import logging
 import sys
 import argparse
 from data_loader import SpectrogramDataset, AudioDataLoader, load_data_list
-from definition import logger, id2char, EOS_token
+from definition import logger, id2char, EOS_token, SAMPLE_LIST_PATH, SAMPLE_DATASET_PATH, SOS_token
 from label_loader import load_targets, load_label
 from model.topk_decoder import TopKDecoder
 from utils import get_distance
