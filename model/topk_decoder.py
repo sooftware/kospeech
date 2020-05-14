@@ -27,6 +27,9 @@ class TopKDecoder(nn.Module):
     """
     def __init__(self, decoder, k):
         super(TopKDecoder, self).__init__()
+
+        assert k > 1, "k should be greater than 1"
+
         self.sos_id = decoder.sos_id
         self.eos_id = decoder.eos_id
         self.k = k
