@@ -52,7 +52,7 @@ def supervised_train(model, args, epoch, total_time_step, queue, criterion, opti
         targets = scripts[:, 1:]
 
         model.module.flatten_parameters()
-        output = model(inputs, teacher_forcing_ratio=args.teacher_forcing_ratio)
+        output = model(inputs, input_lengths, scripts, teacher_forcing_ratio=args.teacher_forcing_ratio)
 
         logit = torch.stack(output, dim=1).to(device)
         hypothesis = logit.max(-1)[1]
@@ -133,7 +133,7 @@ def evaluate(model, queue, criterion, device):
             targets = scripts[:, 1:]
 
             model.module.flatten_parameters()
-            output = model(inputs, teacher_forcing_ratio=0.0)
+            output = model(inputs, input_lengths, teacher_forcing_ratio=0.0)
 
             logit = torch.stack(output, dim=1).to(device)
             hypothesis = logit.max(-1)[1]
