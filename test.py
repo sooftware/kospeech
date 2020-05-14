@@ -16,28 +16,10 @@ import logging
 import sys
 import argparse
 from data_loader import SpectrogramDataset, AudioDataLoader, load_data_list
+from definition import logger, id2char, EOS_token
 from label_loader import load_targets, load_label
+from model.topk_decoder import TopKDecoder
 from utils import get_distance
-
-
-DATASET_PATH = "/data1/"  # set by your data path
-SAMPLE_DATASET_PATH = "./data/sample/"
-TRAIN_LIST_PATH = "./data/data_list/train_list.csv"
-TEST_LIST_PATH = "./data/data_list/test_list.csv"
-SAMPLE_LIST_PATH = "./data/data_list/sample_list.csv"
-DEBUG_LIST_PATH = "./data/data_list/debug_list.csv"
-logger = logging.getLogger('root')
-FORMAT = "[%(asctime)s %(filename)s:%(lineno)s - %(funcName)s()] %(message)s"
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format=FORMAT)
-logger.setLevel(logging.INFO)
-char2id, id2char = load_label('./data/label/train_labels.csv', encoding='utf-8')  # 2,040
-# if you want to use total character label
-# change => char2id, id2char = load_label('./data/label/test_labels.csv', encoding='utf-8') # 2,337
-SOS_token = int(char2id['<s>'])
-EOS_token = int(char2id['</s>'])
-PAD_token = int(char2id['_'])
-train_dict = {'loss': [], 'cer': []}
-valid_dict = {'loss': [], 'cer': []}
 
 
 def test(model, queue, device, args):
@@ -59,9 +41,12 @@ def test(model, queue, device, args):
             targets = targets.to(device)
             scripts = targets[:, 1:]
 
-            y_hat, logits = model(inputs, input_lengths, teacher_forcing_ratio=0.0, use_beam_search=True)
+            output = model(inputs, input_lengths, teacher_forcing_ratio=0.0)
 
-            dist, length = get_distance(scripts, y_hat, id2char, char2id, EOS_token)
+            logit = torch.stack(output, dim=1).to(device)
+            hypothesis = logit.max(-1)[1]
+
+            dist, length = get_distance(scripts, hypothesis, id2char, EOS_token)
             total_dist += dist
             total_length += length
             total_sent_num += scripts.size(0)
@@ -76,10 +61,10 @@ def test(model, queue, device, args):
 
 
 parser = argparse.ArgumentParser(description='End-to-end Speech Recognition')
-parser.add_argument('--batch_size', type=int, default=2, help='batch size in performance test (default: 1)')
+parser.add_argument('--batch_size', type=int, default=1, help='batch size in performance test (default: 1)')
 parser.add_argument('--load_model', action='store_true', default=True)
 parser.add_argument('--use_cuda', action='store_true', default=True)
-parser.add_argument('--model_path', type=str, default=None, help='Location to load models (default: None')
+parser.add_argument('--model_path', type=str, default='./data/weight_file/epoch4.pt', help='Location to load models (default: None')
 parser.add_argument('--k', type=int, default=5, help='size of beam (default: 5)')
 parser.add_argument('--num_workers', type=int, default=1, help='number of workers in dataset loader (default: 1)')
 parser.add_argument('--sr', type=int, default=16000, help='sample rate (default: 16000)')
@@ -94,15 +79,15 @@ parser.add_argument('--print_every', type=int, default=10,
 parser.add_argument('--feature_extract_by', type=str, default='librosa',
                     help='which library to use for feature extraction: [librosa, torchaudio] (default: librosa)')
 parser.add_argument('--max_len', type=int, default=151, help='maximum characters of sentence (default: 151)')
+args = parser.parse_args()
 
 
 def main():
     warnings.filterwarnings('ignore')
-    args = parser.parse_args()
     cuda = args.use_cuda and torch.cuda.is_available()
     device = torch.device('cuda' if cuda else 'cpu')
 
-    if device == 'cuda':
+    if str(device) == 'cuda':
         for idx in range(torch.cuda.device_count()):
             logger.info("device : %s" % torch.cuda.get_device_name(idx))
         logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
@@ -110,9 +95,11 @@ def main():
         logger.info("PyTorch version : %s" % torch.__version__)
 
     model = torch.load(args.model_path, map_location='cpu').module
+    topk_decoder = TopKDecoder(model.speller, args.k)
+    model.set_speller(topk_decoder)
+
     model.listener.device = 'cpu'
     model.speller.device = 'cpu'
-    model.set_beam_size(k=args.k)
 
     audio_paths, label_paths = load_data_list(data_list_path=SAMPLE_LIST_PATH, dataset_path=SAMPLE_DATASET_PATH)
     target_dict = load_targets(label_paths)

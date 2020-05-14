@@ -1,9 +1,12 @@
 import torch
-import librosa
-# import torchaudio  # if your os is not Linux, delete this line
+import platform
 import numpy as np
 import random
-import from_librosa as from_librosa
+import librosa
+
+if platform.system() == 'Linux':
+    import torchaudio
+    import from_librosa as from_librosa
 
 
 # Collection of feature extraction

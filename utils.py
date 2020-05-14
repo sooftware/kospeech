@@ -25,7 +25,7 @@ def char_distance(target, y_hat):
     return dist, length
 
 
-def get_distance(targets, y_hats, id2char, char2id, eos_id):
+def get_distance(targets, y_hats, id2char, eos_id):
     """
     Provides total character distance between targets & y_hats
 
@@ -33,7 +33,6 @@ def get_distance(targets, y_hats, id2char, char2id, eos_id):
         targets (torch.Tensor): set of ground truth
         y_hats (torch.Tensor): predicted y values (y_hat) by the model
         id2char (dict): id2char[id] = ch
-        char2id (dict): char2id[ch] = id
         eos_id (int): identification of <end of sequence>
 
     Returns: total_dist, total_length
@@ -44,8 +43,8 @@ def get_distance(targets, y_hats, id2char, char2id, eos_id):
     total_length = 0
 
     for (target, y_hat) in zip(targets, y_hats):
-        script = label_to_string(target, id2char, char2id, eos_id)
-        pred = label_to_string(y_hat, id2char, char2id, eos_id)
+        script = label_to_string(target, id2char, eos_id)
+        pred = label_to_string(y_hat, id2char, eos_id)
 
         dist, length = char_distance(script, pred)
 
@@ -84,7 +83,7 @@ def get_label(filepath, sos_id, eos_id, target_dict=None):
     return labels
 
 
-def label_to_string(labels, id2char, char2id, eos_id):
+def label_to_string(labels, id2char, eos_id):
     """
     Converts label to string (number => Hangeul)
 

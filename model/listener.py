@@ -62,9 +62,9 @@ class Listener(nn.Module):
         bidirectional (bool, optional): if True, becomes a bidirectional encoder (defulat: False)
         dropout_p (float, optional): dropout probability for the output sequence (default: 0)
 
-    Inputs: inputs, h_state
+    Inputs: inputs, hidden
         - **inputs**: list of sequences, whose length is the batch size and within which each sequence is list of tokens
-        - **h_state**: variable containing the features in the hidden state h
+        - **hidden**: variable containing the features in the hidden state h
 
     Returns: output
         - **output**: tensor containing the encoded features of the input sequence
@@ -138,7 +138,7 @@ class Listener(nn.Module):
             if self.training:
                 self.flatten_parameters()
 
-            output, h_state = self.rnn(x)
+            output, hidden = self.rnn(x)
 
         elif self.conv_type == 'without_maxpool':
             output_lengths = self.get_seq_lengths(input_lengths)
@@ -151,7 +151,7 @@ class Listener(nn.Module):
             x = x.transpose(1, 2).transpose(0, 1).contiguous()         # (seq_len, batch_size, hidden_dim)
 
             x = nn.utils.rnn.pack_padded_sequence(x, output_lengths)
-            output, h_state = self.rnn(x)
+            output, hidden = self.rnn(x)
             output, _ = nn.utils.rnn.pad_packed_sequence(output)
 
             output = output.transpose(0, 1)  # (batch_size, seq_len, hidden_dim)
@@ -159,7 +159,7 @@ class Listener(nn.Module):
         else:
             raise ValueError("Unsupported Conv Type: {0}".format(self.conv_type))
 
-        return output, h_state
+        return output, hidden
 
     def get_seq_lengths(self, input_length):
         """

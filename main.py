@@ -85,11 +85,11 @@ parser.add_argument('--save_model_every', type=int, default=10000,
                     help='to determine whether to store training model every N timesteps (default: 10000)')
 parser.add_argument('--print_every', type=int, default=10,
                     help='to determine whether to store training progress every N timesteps (default: 10')
+args = parser.parse_args()
 
 
 def main():
     warnings.filterwarnings('ignore')
-    args = parser.parse_args()
     print_args(args)
     random.seed(args.seed)
     torch.manual_seed(args.seed)

@@ -2,7 +2,6 @@ import random
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from model.beamsearch import BeamSearch
 from model.attention import MultiHeadAttention
 
 supported_rnns = {
@@ -68,7 +67,7 @@ class Speller(nn.Module):
         self.device = device
         self.ignore_index = ignore_index
 
-    def forward_step(self, input_var, h_state, listener_outputs=None):
+    def forward_step(self, input_var, hidden, listener_outputs):
         batch_size = input_var.size(0)
         seq_length = input_var.size(1)
 
@@ -78,62 +77,40 @@ class Speller(nn.Module):
         if self.training:
             self.rnn.flatten_parameters()
 
-        output, h_state = self.rnn(embedded, h_state)
+        output, hidden = self.rnn(embedded, hidden)
         context = self.attention(output, listener_outputs)
 
         predicted_softmax = F.log_softmax(self.fc(context.contiguous().view(-1, self.hidden_dim)), dim=1)
         predicted_softmax = predicted_softmax.view(batch_size, seq_length, -1)
 
-        return predicted_softmax, h_state
+        return predicted_softmax, hidden
 
-    def forward(self, inputs, listener_outputs, teacher_forcing_ratio=0.90, use_beam_search=False):
-        hypothesis, logit = None, None
+    def forward(self, inputs, listener_outputs, teacher_forcing_ratio=0.90):
+        hidden = None
+        decoder_outputs = list()
 
         inputs, batch_size, max_length = self.validate_args(inputs, listener_outputs, teacher_forcing_ratio)
-        h_state = self.init_state(batch_size)
-
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
-        decode_outputs = list()
 
-        if use_beam_search:
-            search = BeamSearch(self, batch_size)
-            hypothesis = search(inputs, listener_outputs, k=self.k)
+        if use_teacher_forcing:
+            input_var = inputs[inputs != self.eos_id].view(batch_size, -1)
+            predicted_softmax, hidden = self.forward_step(input_var, hidden, listener_outputs)
 
-        else:
-            if use_teacher_forcing:
-                input_var = inputs[inputs != self.eos_id].view(batch_size, -1)
-                predicted_softmax, h_state = self.forward_step(input_var, h_state, listener_outputs)
-
-                for di in range(predicted_softmax.size(1)):
-                    step_output = predicted_softmax[:, di, :]
-                    decode_outputs.append(step_output)
-
-            else:
-                input_var = inputs[:, 0].unsqueeze(1)
-
-                for di in range(max_length):
-                    predicted_softmax, h_state = self.forward_step(input_var, h_state, listener_outputs)
-                    step_output = predicted_softmax.squeeze(1)
-
-                    decode_outputs.append(step_output)
-                    input_var = decode_outputs[-1].topk(1)[1]
-
-            logit = torch.stack(decode_outputs, dim=1).to(self.device)
-            hypothesis = logit.max(-1)[1]
-
-        return hypothesis, logit
-
-    def init_state(self, batch_size):
-        """ Initialize hidden state - Create h_0 """
-        if isinstance(self.rnn, nn.LSTM):
-            h_0 = torch.zeros(self.n_layers, batch_size, self.hidden_dim).to(self.device)
-            c_0 = torch.zeros(self.n_layers, batch_size, self.hidden_dim).to(self.device)
-            h_state = (h_0, c_0)
+            for di in range(predicted_softmax.size(1)):
+                step_output = predicted_softmax[:, di, :]
+                decoder_outputs.append(step_output)
 
         else:
-            h_state = torch.zeros(self.n_layers, batch_size, self.hidden_dim).to(self.device)
+            input_var = inputs[:, 0].unsqueeze(1)
 
-        return h_state
+            for di in range(max_length):
+                predicted_softmax, hidden = self.forward_step(input_var, hidden, listener_outputs)
+                step_output = predicted_softmax.squeeze(1)
+
+                decoder_outputs.append(step_output)
+                input_var = decoder_outputs[-1].topk(1)[1]
+
+        return decoder_outputs
 
     def validate_args(self, inputs, listener_outputs, teacher_forcing_ratio):
         """ Validate arguments """
