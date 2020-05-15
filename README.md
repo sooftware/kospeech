@@ -69,7 +69,7 @@ ListenAttendSpell(
 ```
   
 We use [KsponSpeech](http://www.aihub.or.kr/aidata/105) dataset which contains 1,000 hours korean voice data. and, our project is currently in progress.   
-At present our top model has recorded an **84.65% CRR**, and we are working for a higher recognition rate.  
+At present our top model has recorded an **85.16% CRR**, and we are working for a higher recognition rate.  
   
 Also our model has recorded **91.0% CRR** in [Kadi-zeroth dataset](https://github.com/goodatlas/zeroth).  
   
