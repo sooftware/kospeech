@@ -25,6 +25,7 @@ class TopKDecoder(nn.Module):
     Returns: hypothesis
         - **hypothesis** : predicted y values (y_hat) by the model
     """
+
     def __init__(self, decoder, k):
         super(TopKDecoder, self).__init__()
 
@@ -94,9 +95,9 @@ class TopKDecoder(nn.Module):
             stored_hidden.append(hidden)
 
         # Do backtracking to return the optimal values
-        output, h_t, h_n, s, l, p = self._backtrack(stored_outputs, stored_hidden,
-                                                    stored_predecessors, stored_emitted_symbols,
-                                                    stored_scores, batch_size, self.hidden_dim)
+        output = self._backtrack(stored_outputs, stored_hidden,
+                                 stored_predecessors, stored_emitted_symbols,
+                                 stored_scores, batch_size, self.hidden_dim)
 
         decoder_outputs = [step[:, 0, :] for step in output]
 
@@ -116,31 +117,26 @@ class TopKDecoder(nn.Module):
         Returns:
             output [(batch, k, vocab_size)] * sequence_length: A list of the output probabilities (p_n)
             from the last layer of the RNN, for every n = [0, ... , seq_len - 1]
-            h_t [(batch, k, hidden_dim)] * sequence_length: A list containing the output features (h_n)
-            from the last layer of the RNN, for every n = [0, ... , seq_len - 1]
-            h_n(batch, k, hidden_dim): A Tensor containing the last hidden state for all top-k sequences.
-            score [batch, k]: A list containing the final scores for all top-k sequences
-            length [batch, k]: A list specifying the length of each sequence in the top-k candidates
-            p (batch, k, sequence_len): A Tensor containing predicted sequence
         """
 
         lstm = isinstance(nw_hidden[0], tuple)
 
         # initialize return variables given different types
         output = list()
-        h_t = list()
-        p = list()
         # Placeholder for last hidden state of top-k sequences.
         # If a (top-k) sequence ends early in decoding, `h_n` contains
         # its hidden state when it sees EOS.  Otherwise, `h_n` contains
         # the last hidden state of decoding.
+
         if lstm:
             state_size = nw_hidden[0][0].size()
             h_n = tuple([torch.zeros(state_size), torch.zeros(state_size)])
         else:
             h_n = torch.zeros(nw_hidden[0].size())
-        l = [[self.rnn.max_length] * self.k for _ in range(batch_size)]  # Placeholder for lengths of top-k sequences
-                                                                         # Similar to `h_n`
+
+        # Placeholder for lengths of top-k sequences
+        # Similar to `h_n`
+        lengths = [[self.rnn.max_length] * self.k for _ in range(batch_size)]
 
         # the last step output of the beams are not sorted
         # thus they are sorted here
@@ -148,8 +144,9 @@ class TopKDecoder(nn.Module):
         # initialize the sequence scores with the sorted last step beam scores
         s = sorted_score.clone()
 
-        batch_eos_found = [0] * batch_size   # the number of EOS found
-                                             # in the backward loop below for each batch
+        # the number of EOS found
+        # in the backward loop below for each batch
+        batch_eos_found = [0] * batch_size
 
         t = self.rnn.max_length - 1
         # initialize the back pointer with the sorted order of the last step beams.
@@ -187,7 +184,7 @@ class TopKDecoder(nn.Module):
             #
             eos_indices = symbols[t].data.squeeze(1).eq(self.eos_id).nonzero()
             if eos_indices.dim() > 0:
-                for i in range(eos_indices.size(0)-1, -1, -1):
+                for i in range(eos_indices.size(0) - 1, -1, -1):
                     # Indices of the EOS symbol for both variables
                     # with b*k as the first dimension, and b, k for
                     # the first two dimensions
@@ -213,12 +210,10 @@ class TopKDecoder(nn.Module):
                         h_n[:, res_idx, :] = nw_hidden[t][:, idx[0], :].data
                     current_symbol[res_idx, :] = symbols[t][idx[0]]
                     s[b_idx, res_k_idx] = scores[t][idx[0]].data[0]
-                    l[b_idx][res_k_idx] = t + 1
+                    lengths[b_idx][res_k_idx] = t + 1
 
             # record the back tracked results
             output.append(current_output)
-            h_t.append(current_hidden)
-            p.append(current_symbol)
 
             t -= 1
 
@@ -226,20 +221,12 @@ class TopKDecoder(nn.Module):
         # the order (very unlikely)
         s, re_sorted_idx = s.topk(self.k)
         for b_idx in range(batch_size):
-            l[b_idx] = [l[b_idx][k_idx.item()] for k_idx in re_sorted_idx[b_idx, :]]
+            lengths[b_idx] = [lengths[b_idx][k_idx.item()] for k_idx in re_sorted_idx[b_idx, :]]
 
         re_sorted_idx = (re_sorted_idx + self.pos_index.expand_as(re_sorted_idx)).view(batch_size * self.k)
 
         # Reverse the sequences and re-order at the same time
         # It is reversed because the backtracking happens in reverse time order
         output = [step.index_select(0, re_sorted_idx).view(batch_size, self.k, -1) for step in reversed(output)]
-        p = [step.index_select(0, re_sorted_idx).view(batch_size, self.k, -1) for step in reversed(p)]
-        if lstm:
-            h_t = [tuple([h.index_select(1, re_sorted_idx).view(-1, batch_size, self.k, hidden_dim) for h in step]) for step in reversed(h_t)]
-            h_n = tuple([h.index_select(1, re_sorted_idx.data).view(-1, batch_size, self.k, hidden_dim) for h in h_n])
-        else:
-            h_t = [step.index_select(1, re_sorted_idx).view(-1, batch_size, self.k, hidden_dim) for step in reversed(h_t)]
-            h_n = h_n.index_select(1, re_sorted_idx.data).view(-1, batch_size, self.k, hidden_dim)
-        s = s.data
 
-        return output, h_t, h_n, s, l, p
+        return output
