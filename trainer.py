@@ -39,10 +39,10 @@ def supervised_train(model, args, epoch, total_time_step, queue, criterion, opti
 
         if inputs.shape[0] == 0:
             # empty feats means closing one loader
-            args.worker_num -= 1
-            logger.debug('left train_loader: %d' % args.worker_num)
+            args.num_workers -= 1
+            logger.debug('left train_loader: %d' % args.num_workers)
 
-            if args.worker_num == 0:
+            if args.num_workers == 0:
                 break
             else:
                 continue

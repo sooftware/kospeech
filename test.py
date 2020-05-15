@@ -14,7 +14,8 @@ import torch
 import warnings
 import argparse
 from data_loader import SpectrogramDataset, AudioDataLoader, load_data_list
-from definition import logger, id2char, EOS_token, SAMPLE_LIST_PATH, SAMPLE_DATASET_PATH, SOS_token
+from definition import logger, id2char, EOS_token, SAMPLE_LIST_PATH, SAMPLE_DATASET_PATH, SOS_token, TEST_LIST_PATH, \
+    DATASET_PATH
 from label_loader import load_targets, load_label
 from model.topk_decoder import TopKDecoder
 from utils import get_distance
@@ -92,14 +93,14 @@ def main():
         logger.info("CUDA version : %s" % torch.version.cuda)
         logger.info("PyTorch version : %s" % torch.__version__)
 
-    model = torch.load(args.model_path, map_location='cpu').module
-    topk_decoder = TopKDecoder(model.speller, args.k)
-    model.set_speller(topk_decoder)
+    model = torch.load(args.model_path)
+    model.module.speller.device = device
+    model.module.listener.device = device
 
-    model.listener.device = 'cpu'
-    model.speller.device = 'cpu'
+    topk_decoder = TopKDecoder(model.module.speller, args.k)
+    model.module.set_speller(topk_decoder)
 
-    audio_paths, label_paths = load_data_list(data_list_path=SAMPLE_LIST_PATH, dataset_path=SAMPLE_DATASET_PATH)
+    audio_paths, label_paths = load_data_list(data_list_path=TEST_LIST_PATH, dataset_path=DATASET_PATH)
     target_dict = load_targets(label_paths)
 
     testset = SpectrogramDataset(

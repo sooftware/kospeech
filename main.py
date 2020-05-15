@@ -52,7 +52,7 @@ parser.add_argument('--rnn_type', type=str, default='gru', help='type of rnn cel
 parser.add_argument('--k', type=int, default=5, help='size of beam (default: 5)')
 parser.add_argument('--batch_size', type=int, default=32, help='batch size in training (default: 32)')
 parser.add_argument('--num_workers', type=int, default=4, help='number of workers in dataset loader (default: 4)')
-parser.add_argument('--max_epochs', type=int, default=20, help='number of max epochs in training (default: 20)')
+parser.add_argument('--num_epochs', type=int, default=20, help='number of epochs in training (default: 20)')
 parser.add_argument('--lr', type=float, default=3e-04, help='initial learning rate (default: 3e-04)')
 parser.add_argument('--min_lr', type=float, default=3e-05, help='minimum learning rate (default: 3e-05)')
 parser.add_argument('--lr_factor', type=float, default=0.333, help='minimum learning rate (default: 0.333)')
@@ -118,7 +118,7 @@ def main():
             conv_type=args.conv_type
         )
         speller = Speller(
-            num_class=len(char2id),
+            num_classes=len(char2id),
             max_length=args.max_len,
             k=args.k,
             hidden_dim=args.hidden_dim << (1 if args.use_bidirectional else 0),
@@ -163,7 +163,7 @@ def main():
     logger.info('start')
     train_begin = time.time()
 
-    for epoch in range(args.max_epochs):
+    for epoch in range(args.num_epochs):
         train_queue = queue.Queue(args.num_workers << 1)
         for trainset in trainset_list:
             trainset.shuffle()

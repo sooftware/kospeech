@@ -8,7 +8,7 @@
 
 BATCH_SIZE=32
 NUM_WORKERS=4
-MAX_EPOCHS=20
+NUM_EPOCHS=20
 AUGMENT_NUM=1
 HIDDEN_DIM=256
 DROPOUT=0.3
@@ -39,7 +39,7 @@ SAVE_MODEL_EVERY=10000
 PRINT_EVERY=10
 
 
-python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --max_epochs $MAX_EPOCHS --use_bidirectional \
+python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epochs $NUM_EPOCHS --use_bidirectional \
 --input_reverse --use_augment --use_pickle --use_cuda --augment_num $AUGMENT_NUM --hidden_dim $HIDDEN_DIM \
 --dropout $DROPOUT --n_head $N_HEAD --attn_dim $ATTN_DIM --label_smoothing $LABEL_SMOOTHING \
 --listener_layer_size $LISTENER_LAYER_SIZE --speller_layer_size $SPELLER_LAYER_SIZE --rnn_type $RNN_TYPE --k $K \

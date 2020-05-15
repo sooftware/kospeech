@@ -22,8 +22,8 @@ class TopKDecoder(nn.Module):
         - **input_var** : sequence of sos_id
         - **encoder_outputs** : tensor containing the encoded features of the input sequence
 
-    Returns: hypothesis
-        - **hypothesis** : predicted y values (y_hat) by the model
+    Returns: decoder_outputs
+        - **decoder_outputs** : result of beam search
     """
 
     def __init__(self, decoder, k):
@@ -34,26 +34,31 @@ class TopKDecoder(nn.Module):
         self.sos_id = decoder.sos_id
         self.eos_id = decoder.eos_id
         self.k = k
-        self.num_class = decoder.num_class
+        self.max_length = decoder.max_length
+        self.num_classes = decoder.num_classes
         self.hidden_dim = decoder.hidden_dim
         self.forward_step = decoder.forward_step
+        self.device = decoder.device
 
     def forward(self, input_var, encoder_outputs, teacher_forcing_ratio=0.0):
         inputs, batch_size, max_length = self.validate_args(input_var, encoder_outputs, 0.0)
-        self.pos_index = Variable(torch.LongTensor(range(batch_size)) * self.k).view(-1, 1)
+        self.pos_index = Variable(torch.LongTensor(range(batch_size)) * self.k).view(-1, 1).to(self.device)
 
         hidden = None
-        inflated_encoder_outputs = _inflate(encoder_outputs, self.k, 1)
+        inflated_encoder_outputs = _inflate(encoder_outputs, self.k, dim=0)
 
         # Initialize the scores; for the first step,
         # ignore the inflated copies to avoid duplicate entries in the top k
-        sequence_scores = torch.Tensor(batch_size * self.k, 1)
+        sequence_scores = torch.Tensor(batch_size * self.k, 1).to(self.device)
         sequence_scores.fill_(-float('Inf'))
-        sequence_scores.index_fill_(0, torch.LongTensor([i * self.k for i in range(0, batch_size)]), 0.0)
+
+        fill_index = torch.LongTensor([i * self.k for i in range(0, batch_size)]).to(self.device)
+        sequence_scores.index_fill_(0, fill_index, 0.0)
         sequence_scores = Variable(sequence_scores)
 
         # Initialize the input vector
         input_var = Variable(torch.transpose(torch.LongTensor([[self.sos_id] * batch_size * self.k]), 0, 1))
+        input_var = input_var.to(self.device)
 
         # Store decisions for backtracking
         stored_outputs = list()
@@ -66,16 +71,18 @@ class TopKDecoder(nn.Module):
             # Run the RNN one step forward
             predicted_softmax, hidden = self.forward_step(input_var, hidden, inflated_encoder_outputs)
 
-            sequence_scores = _inflate(sequence_scores, self.num_class, 1)
+            stored_outputs.append(predicted_softmax)
+
+            sequence_scores = _inflate(sequence_scores, self.num_classes, 1)
             sequence_scores += predicted_softmax.squeeze(1)
             scores, candidates = sequence_scores.view(batch_size, -1).topk(self.k, dim=1)
 
             # Reshape input = (bk, 1) and sequence_scores = (bk, 1)
-            input_var = (candidates % self.V).view(batch_size * self.k, 1)
+            input_var = (candidates % self.num_classes).view(batch_size * self.k, 1)
             sequence_scores = scores.view(batch_size * self.k, 1)
 
             # Update fields for next timestep
-            predecessors = (candidates / self.num_class + self.pos_index.expand_as(candidates))
+            predecessors = (candidates / self.num_classes + self.pos_index.expand_as(candidates))
             predecessors = predecessors.view(batch_size * self.k, 1)
 
             if isinstance(hidden, tuple):
@@ -136,7 +143,7 @@ class TopKDecoder(nn.Module):
 
         # Placeholder for lengths of top-k sequences
         # Similar to `h_n`
-        lengths = [[self.rnn.max_length] * self.k for _ in range(batch_size)]
+        lengths = [[self.max_length] * self.k for _ in range(batch_size)]
 
         # the last step output of the beams are not sorted
         # thus they are sorted here
@@ -148,7 +155,7 @@ class TopKDecoder(nn.Module):
         # in the backward loop below for each batch
         batch_eos_found = [0] * batch_size
 
-        t = self.rnn.max_length - 1
+        t = self.max_length - 1
         # initialize the back pointer with the sorted order of the last step beams.
         # add self.pos_index for indexing variable with b*k as the first dimension.
         t_predecessors = (sorted_idx + self.pos_index.expand_as(sorted_idx)).view(batch_size * self.k)

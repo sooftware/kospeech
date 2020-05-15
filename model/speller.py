@@ -16,7 +16,7 @@ class Speller(nn.Module):
     by specifying a probability distribution over sequences of characters.
 
     Args:
-        num_class (int): the number of classfication
+        num_classes (int): the number of classfication
         max_length (int): a maximum allowed length for the sequence to be processed
         hidden_dim (int): the number of features in the hidden state `h`
         sos_id (int): index of the start of sentence symbol
@@ -37,30 +37,30 @@ class Speller(nn.Module):
 
     Returns: hypothesis, logit
         - **hypothesis** (batch, seq_len): predicted y values (y_hat) by the model
-        - **logit** (batch, seq_len, num_class): predicted log probability by the model
+        - **logit** (batch, seq_len, num_classes): predicted log probability by the model
 
     Examples::
 
-        >>> speller = Speller(num_class, max_length, hidden_dim, sos_id, eos_id, n_layers)
+        >>> speller = Speller(num_classes, max_length, hidden_dim, sos_id, eos_id, n_layers)
         >>> hypothesis, logit = speller(inputs, context, teacher_forcing_ratio=0.90)
     """
 
-    def __init__(self, num_class, max_length, hidden_dim, sos_id, eos_id, n_head, attn_dim=64,
+    def __init__(self, num_classes, max_length, hidden_dim, sos_id, eos_id, n_head, attn_dim=64,
                  n_layers=1, rnn_type='gru', dropout_p=0.5, device=None, k=5, ignore_index=0):
 
         super(Speller, self).__init__()
         assert rnn_type.lower() in supported_rnns.keys(), "Unsupported RNN Cell: {0}".format(rnn_type)
 
-        self.num_class = num_class
+        self.num_classes = num_classes
         self.rnn_cell = supported_rnns[rnn_type]
         self.rnn = self.rnn_cell(hidden_dim, hidden_dim, n_layers, batch_first=True, dropout=dropout_p).to(device)
         self.max_length = max_length
         self.hidden_dim = hidden_dim
-        self.embedding = nn.Embedding(num_class, self.hidden_dim)
+        self.embedding = nn.Embedding(num_classes, self.hidden_dim)
         self.n_layers = n_layers
         self.input_dropout = nn.Dropout(p=dropout_p)
         self.k = k
-        self.fc = nn.Linear(self.hidden_dim, num_class)
+        self.fc = nn.Linear(self.hidden_dim, num_classes)
         self.attention = MultiHeadAttention(in_features=hidden_dim, dim=attn_dim, n_head=n_head)
         self.eos_id = eos_id
         self.sos_id = sos_id
