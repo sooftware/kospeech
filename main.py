@@ -36,7 +36,11 @@ def main():
         logger.info("PyTorch version : %s" % torch.__version__)
 
     if args.mode == 'train':
-        model = build_model(args, device)
+        if args.load_model:
+            model = torch.load(args.model_path).to(device)
+
+        else:
+            model = build_model(args, device)
 
         trainer = SupervisedTrainer(model, args, device)
         trainer.train(TRAIN_LIST_PATH, DATASET_PATH, 0)

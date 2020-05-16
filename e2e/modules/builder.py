@@ -21,35 +21,30 @@ supported_convs = [
 
 def build_model(args, device):
     """ build base model """
-    if args.load_model:
-        model = torch.load(args.model_path).to(device)
+    listener = build_listener(
+        input_size=args.n_mels,
+        hidden_dim=args.hidden_dim,
+        dropout_p=args.dropout,
+        num_layers=args.listener_layer_size,
+        bidirectional=args.use_bidirectional,
+        rnn_type=args.rnn_type,
+        device=device,
+        conv_type=args.conv_type
+    )
+    speller = build_speller(
+        num_classes=len(char2id),
+        max_len=args.max_len,
+        hidden_dim=args.hidden_dim << (1 if args.use_bidirectional else 0),
+        sos_id=SOS_token,
+        eos_id=EOS_token,
+        num_layers=args.speller_layer_size,
+        rnn_type=args.rnn_type,
+        dropout_p=args.dropout,
+        num_heads=args.num_heads,
+        device=device
+    )
 
-    else:
-        listener = build_listener(
-            input_size=args.n_mels,
-            hidden_dim=args.hidden_dim,
-            dropout_p=args.dropout,
-            num_layers=args.listener_layer_size,
-            bidirectional=args.use_bidirectional,
-            rnn_type=args.rnn_type,
-            device=device,
-            conv_type=args.conv_type
-        )
-        speller = build_speller(
-            num_classes=len(char2id),
-            max_length=args.max_len,
-            hidden_dim=args.hidden_dim << (1 if args.use_bidirectional else 0),
-            sos_id=SOS_token,
-            eos_id=EOS_token,
-            num_layers=args.speller_layer_size,
-            rnn_type=args.rnn_type,
-            dropout_p=args.dropout,
-            num_heads=args.num_heads,
-            device=device
-        )
-        model = build_las(listener, speller, device, use_multi_gpu=args.use_multi_gpu, init_uniform=args.init_uniform)
-
-    return model
+    return build_las(listener, speller, device, use_multi_gpu=args.use_multi_gpu, init_uniform=args.init_uniform)
 
 
 def build_las(listener, speller, device, use_multi_gpu=True, init_uniform=True):
@@ -77,48 +72,24 @@ def build_listener(input_size, hidden_dim, dropout_p, num_layers, bidirectional,
     assert rnn_type.lower() in supported_rnns.keys(), "Unsupported RNN Cell: {0}".format(rnn_type)
     assert conv_type.lower() in supported_convs, "Unsupported Conv: {0}".format(conv_type)
 
-    listener = Listener(
-        input_size=input_size,
-        hidden_dim=hidden_dim,
-        dropout_p=dropout_p,
-        num_layers=num_layers,
-        bidirectional=bidirectional,
-        rnn_type=rnn_type,
-        device=device,
-        conv_type=conv_type
-    )
-
-    return listener
+    return Listener(input_size, hidden_dim, device, dropout_p, num_layers, bidirectional, rnn_type, conv_type)
 
 
-def build_speller(num_classes, max_length, hidden_dim, sos_id, eos_id, num_layers, rnn_type, dropout_p, num_heads, device):
+def build_speller(num_classes, max_len, hidden_dim, sos_id, eos_id, num_layers, rnn_type, dropout_p, num_heads, device):
     """ build speller & validate parameters """
     assert isinstance(num_classes, int), "num_classes should be inteager type"
     assert isinstance(num_layers, int), "num_layers should be inteager type"
     assert isinstance(sos_id, int), "sos_id should be inteager type"
     assert isinstance(eos_id, int), "eos_id should be inteager type"
     assert isinstance(num_heads, int), "num_heads should be inteager type"
-    assert isinstance(max_length, int), "max_length should be inteager type"
+    assert isinstance(max_len, int), "max_len should be inteager type"
     assert isinstance(dropout_p, float), "dropout_p should be inteager type"
     assert hidden_dim % num_heads == 0, "{0} % {1} should be zero".format(hidden_dim, num_heads)
     assert dropout_p >= 0.0, "dropout probability should be positive"
     assert hidden_dim > 0, "hidden_dim should be greater than 0"
     assert rnn_type.lower() in supported_rnns.keys(), "Unsupported RNN Cell: {0}".format(rnn_type)
 
-    speller = Speller(
-        num_classes=num_classes,
-        max_length=max_length,
-        hidden_dim=hidden_dim,
-        sos_id=sos_id,
-        eos_id=eos_id,
-        num_layers=num_layers,
-        rnn_type=rnn_type,
-        dropout_p=dropout_p,
-        num_heads=num_heads,
-        device=device,
-    )
-
-    return speller
+    return Speller(num_classes, max_len, hidden_dim, sos_id, eos_id, num_heads, num_layers, rnn_type, dropout_p, device)
 
 
 def load_test_model(args, device, use_beamsearch=True):
