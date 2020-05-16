@@ -24,7 +24,7 @@ class Speller(nn.Module):
         eos_id (int): index of the end of sentence symbol
         num_layers (int, optional): number of recurrent layers (default: 1)
         rnn_type (str, optional): type of RNN cell (default: gru)
-        dropout_p (float, optional): dropout probability for the output sequence (default: 0)
+        dropout_p (float, optional): dropout probability (default: 0)
         device (torch.device): device - 'cuda' or 'cpu'
 
     Inputs: inputs, listener_outputs, teacher_forcing_ratio

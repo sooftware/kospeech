@@ -63,7 +63,7 @@ class Listener(nn.Module):
         bidirectional (bool, optional): if True, becomes a bidirectional encoder (defulat: False)
         rnn_type (str, optional): type of RNN cell (default: gru)
         conv_type(str, optional): type of conv in listener [increase, repeat] (default: increase)
-        dropout_p (float, optional): dropout probability for the output sequence (default: 0)
+        dropout_p (float, optional): dropout probability (default: 0)
         device (torch.device): device - 'cuda' or 'cpu'
 
     Inputs: inputs, hidden
@@ -74,7 +74,7 @@ class Listener(nn.Module):
         - **output**: tensor containing the encoded features of the input sequence
     """
     def __init__(self, input_size, hidden_dim, device, dropout_p=0.5, num_layers=1,
-                 bidirectional=True, rnn_type='gru', conv_type='with_maxpool'):
+                 bidirectional=True, rnn_type='gru', conv_type='increase'):
         super(Listener, self).__init__()
         self.device = device
         self.conv_type = conv_type

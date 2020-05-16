@@ -2,5 +2,5 @@
 Evaluator
 =====================================================
 
-.. automodule:: evaluator
+.. automodule:: las.evaluator.evaluator
     :members:

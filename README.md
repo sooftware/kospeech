@@ -153,7 +153,7 @@ We follow [PEP-8](https://www.python.org/dev/peps/pep-0008/) for code style. Esp
 ### Citing
 ```
 @source_code{
-  title={Character-unit based End-to-end Korean Speech Recognition},
+  title={End-to-end Speech Recognition},
   author={Soohwan Kim, Seyoung Bae, Cheolhwang Won},
   year={2020}
 }

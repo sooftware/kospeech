@@ -18,8 +18,8 @@ class SupervisedTrainer:
     The SupervisedTrainer class helps in setting up training framework in a supervised setting.
 
     Args:
-        model (torch.nn.Module):
-        args (argparse.ArgumentParser):
+        model (torch.nn.Module): model to train
+        args (argparse.ArgumentParser): set of arguments
         device (torch.device): device - 'cuda' or 'cpu'
     """
     def __init__(self, model, args, device):
@@ -42,6 +42,14 @@ class SupervisedTrainer:
             self.criterion = LabelSmoothingLoss(len(char2id), PAD_token, args.label_smoothing, dim=-1).to(device)
 
     def train(self, data_list_path, dataset_path, start_epoch):
+        """
+        Run training for a given model.
+
+        Args:
+            data_list_path (str): path of csv file, containing trainset list
+            dataset_path (str): path of dataset
+            start_epoch (int): number of beginning epoch
+        """
         audio_paths, label_paths = load_data_list(data_list_path, dataset_path)
 
         if self.args.use_pickle:
@@ -84,6 +92,19 @@ class SupervisedTrainer:
             logger.info('Epoch %d Training result saved as a csv file complete !!' % epoch)
 
     def train_epoches(self, epoch, epoch_time_step, train_begin, queue):
+        """
+        Run training one epoch
+
+        Args:
+            epoch (int): number of current epoch
+            epoch_time_step (int): total time step in one epoch
+            train_begin (int): time of train begin
+            queue (queue.Queue): training queue, containing input, targets, input_lengths, target_lengths
+
+        Returns: loss, cer
+            - **loss** (float): loss of current epoch
+            - **cer** (float): character error rate of current epoch
+        """
         epoch_loss_total = 0.
         total_num = 0
         total_dist = 0
@@ -159,6 +180,16 @@ class SupervisedTrainer:
         return epoch_loss_total / total_num, total_dist / total_length
 
     def validate(self, queue):
+        """
+        Run training one epoch
+
+        Args:
+            queue (queue.Queue): validation queue, containing input, targets, input_lengths, target_lengths
+
+        Returns: loss, cer
+            - **loss** (float): loss of validation
+            - **cer** (float): character error rate of validation
+        """
         logger.info('validate() start')
 
         total_loss = 0.

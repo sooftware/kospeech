@@ -44,6 +44,7 @@ class SpectrogramDataset(Dataset):
         self.shuffle()
 
     def get_item(self, idx):
+        """ get spectrogram & label """
         label = get_label(self.label_paths[idx], self.sos_id, self.eos_id, self.target_dict)
         spectrogram = self.get_feature(
             self.audio_paths[idx],
@@ -71,6 +72,7 @@ class SpectrogramDataset(Dataset):
         return spectrogram, label
 
     def augmentation(self):
+        """ Note flag for SpecAugment """
         augment_end_idx = int(0 + ((len(self.audio_paths) - 0) * self.augment_num))
         logger.info("Applying Augmentation...")
 
@@ -81,6 +83,7 @@ class SpectrogramDataset(Dataset):
                 self.label_paths.append(self.label_paths[idx])
 
     def shuffle(self):
+        """ Shuffle dataset """
         tmp = list(zip(self.audio_paths, self.label_paths, self.augment_flags))
         random.shuffle(tmp)
         self.audio_paths, self.label_paths, self.augment_flags = zip(*tmp)
@@ -177,10 +180,12 @@ class MultiDataLoader:
             self.loader.append(AudioDataLoader(self.dataset_list[idx], self.queue, self.batch_size, idx))
 
     def start(self):
+        """ Run threads """
         for idx in range(self.num_workers):
             self.loader[idx].start()
 
     def join(self):
+        """ Wait for the other threads """
         for idx in range(self.num_workers):
             self.loader[idx].join()
 
@@ -215,6 +220,7 @@ class AudioDataLoader(threading.Thread):
         return seqs, targets, seq_lengths, target_lengths
 
     def run(self):
+        """ Load data from SpectrogramDataset """
         logger.debug('loader %d start' % self.thread_id)
 
         while True:

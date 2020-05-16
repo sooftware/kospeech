@@ -90,18 +90,16 @@
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Las.html">Las</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Model.html">Model</a></li>
 </ul>
 <p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Builder.html">Builder</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Data_loader.html">Data_loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Dataset.html">Dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Feature.html">Feature</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Label_loader.html">Label_loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modules.html">Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="SupervisedTrainer.html">SupervisedTrainer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Utils.html">Utils</a></li>
 </ul>
 
             
@@ -171,23 +169,27 @@
  <a href="#A"><strong>A</strong></a>
  | <a href="#B"><strong>B</strong></a>
  | <a href="#C"><strong>C</strong></a>
- | <a href="#D"><strong>D</strong></a>
  | <a href="#E"><strong>E</strong></a>
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
+ | <a href="#J"><strong>J</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
+ | <a href="#P"><strong>P</strong></a>
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
- | <a href="#U"><strong>U</strong></a>
  | <a href="#V"><strong>V</strong></a>
  
 </div>
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Data_loader.html#data_loader.AudioDataLoader">AudioDataLoader (class in data_loader)</a>
+      <li><a href="Dataset.html#las.dataset.data_loader.AudioDataLoader">AudioDataLoader (class in las.dataset.data_loader)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Dataset.html#las.dataset.data_loader.SpectrogramDataset.augmentation">augmentation() (las.dataset.data_loader.SpectrogramDataset method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -195,19 +197,17 @@
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Builder.html#builder.build_args">build_args() (in module builder)</a>
+      <li><a href="Modules.html#las.modules.builder.build_args">build_args() (in module las.modules.builder)</a>
 </li>
-      <li><a href="Builder.html#builder.build_las">build_las() (in module builder)</a>
-</li>
-      <li><a href="Builder.html#builder.build_listener">build_listener() (in module builder)</a>
+      <li><a href="Modules.html#las.modules.builder.build_las">build_las() (in module las.modules.builder)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Builder.html#builder.build_model">build_model() (in module builder)</a>
+      <li><a href="Modules.html#las.modules.builder.build_listener">build_listener() (in module las.modules.builder)</a>
 </li>
-      <li><a href="Builder.html#builder.build_speller">build_speller() (in module builder)</a>
+      <li><a href="Modules.html#las.modules.builder.build_model">build_model() (in module las.modules.builder)</a>
 </li>
-      <li><a href="Builder.html#module-builder">builder (module)</a>
+      <li><a href="Modules.html#las.modules.builder.build_speller">build_speller() (in module las.modules.builder)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -215,15 +215,7 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Utils.html#utils.char_distance">char_distance() (in module utils)</a>
-</li>
-  </ul></td>
-</tr></table>
-
-<h2 id="D">D</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Data_loader.html#module-data_loader">data_loader (module)</a>
+      <li><a href="Modules.html#las.modules.utils.char_distance">char_distance() (in module las.modules.utils)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -231,11 +223,11 @@
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Evaluator.html#evaluator.Evaluator">Evaluator (class in evaluator)</a>
+      <li><a href="Evaluator.html#las.evaluator.evaluator.Evaluator.evaluate">evaluate() (las.evaluator.evaluator.Evaluator method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Evaluator.html#module-evaluator">evaluator (module)</a>
+      <li><a href="Evaluator.html#las.evaluator.evaluator.Evaluator">Evaluator (class in las.evaluator.evaluator)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -243,22 +235,20 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Feature.html#module-feature">feature (module)</a>
-</li>
-      <li><a href="Las.html#las.attention.MultiHeadAttention.forward">forward() (las.attention.MultiHeadAttention method)</a>
+      <li><a href="Loss.html#las.loss.loss.LabelSmoothingLoss.forward">forward() (las.loss.loss.LabelSmoothingLoss method)</a>
 
       <ul>
-        <li><a href="Las.html#las.las.ListenAttendSpell.forward">(las.las.ListenAttendSpell method)</a>
+        <li><a href="Model.html#las.model.attention.MultiHeadAttention.forward">(las.model.attention.MultiHeadAttention method)</a>
 </li>
-        <li><a href="Las.html#las.listener.Listener.forward">(las.listener.Listener method)</a>
+        <li><a href="Model.html#las.model.las.ListenAttendSpell.forward">(las.model.las.ListenAttendSpell method)</a>
 </li>
-        <li><a href="Las.html#las.listener.MaskConv.forward">(las.listener.MaskConv method)</a>
+        <li><a href="Model.html#las.model.listener.Listener.forward">(las.model.listener.Listener method)</a>
 </li>
-        <li><a href="Las.html#las.speller.Speller.forward">(las.speller.Speller method)</a>
+        <li><a href="Model.html#las.model.listener.MaskConv.forward">(las.model.listener.MaskConv method)</a>
 </li>
-        <li><a href="Las.html#las.topk_decoder.TopKDecoder.forward">(las.topk_decoder.TopKDecoder method)</a>
+        <li><a href="Model.html#las.model.speller.Speller.forward">(las.model.speller.Speller method)</a>
 </li>
-        <li><a href="Loss.html#loss.LabelSmoothingLoss.forward">(loss.LabelSmoothingLoss method)</a>
+        <li><a href="Model.html#las.model.topk_decoder.TopKDecoder.forward">(las.model.topk_decoder.TopKDecoder method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -267,23 +257,33 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Utils.html#utils.get_distance">get_distance() (in module utils)</a>
+      <li><a href="Modules.html#las.modules.utils.get_distance">get_distance() (in module las.modules.utils)</a>
 </li>
-      <li><a href="Utils.html#utils.get_label">get_label() (in module utils)</a>
+      <li><a href="Dataset.html#las.dataset.data_loader.SpectrogramDataset.get_item">get_item() (las.dataset.data_loader.SpectrogramDataset method)</a>
 </li>
-      <li><a href="Feature.html#feature.get_librosa_melspectrogram">get_librosa_melspectrogram() (in module feature)</a>
+      <li><a href="Modules.html#las.modules.utils.get_label">get_label() (in module las.modules.utils)</a>
 </li>
-      <li><a href="Feature.html#feature.get_librosa_mfcc">get_librosa_mfcc() (in module feature)</a>
+      <li><a href="Feature.html#las.feature.feature.get_librosa_melspectrogram">get_librosa_melspectrogram() (in module las.feature.feature)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Feature.html#feature.get_librosa_spectrogram">get_librosa_spectrogram() (in module feature)</a>
+      <li><a href="Feature.html#las.feature.feature.get_librosa_mfcc">get_librosa_mfcc() (in module las.feature.feature)</a>
 </li>
-      <li><a href="Las.html#las.listener.Listener.get_seq_lengths">get_seq_lengths() (las.listener.Listener method)</a>
+      <li><a href="Feature.html#las.feature.feature.get_librosa_spectrogram">get_librosa_spectrogram() (in module las.feature.feature)</a>
 </li>
-      <li><a href="Feature.html#feature.get_torch_spectrogram">get_torch_spectrogram() (in module feature)</a>
+      <li><a href="Model.html#las.model.listener.Listener.get_seq_lengths">get_seq_lengths() (las.model.listener.Listener method)</a>
 </li>
-      <li><a href="Feature.html#feature.get_torchaudio_melspectrogram">get_torchaudio_melspectrogram() (in module feature)</a>
+      <li><a href="Feature.html#las.feature.feature.get_torch_spectrogram">get_torch_spectrogram() (in module las.feature.feature)</a>
+</li>
+      <li><a href="Feature.html#las.feature.feature.get_torchaudio_melspectrogram">get_torchaudio_melspectrogram() (in module las.feature.feature)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="J">J</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Dataset.html#las.dataset.data_loader.MultiDataLoader.join">join() (las.dataset.data_loader.MultiDataLoader method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -291,39 +291,53 @@
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Label_loader.html#module-label_loader">label_loader (module)</a>
+      <li><a href="Modules.html#las.modules.utils.label_to_string">label_to_string() (in module las.modules.utils)</a>
 </li>
-      <li><a href="Utils.html#utils.label_to_string">label_to_string() (in module utils)</a>
+      <li><a href="Loss.html#las.loss.loss.LabelSmoothingLoss">LabelSmoothingLoss (class in las.loss.loss)</a>
 </li>
-      <li><a href="Loss.html#loss.LabelSmoothingLoss">LabelSmoothingLoss (class in loss)</a>
+      <li><a href="Dataset.html#module-las.dataset.data_loader">las.dataset.data_loader (module)</a>
 </li>
-      <li><a href="Las.html#module-las.attention">las.attention (module)</a>
+      <li><a href="Dataset.html#module-las.dataset.label_loader">las.dataset.label_loader (module)</a>
 </li>
-      <li><a href="Las.html#module-las.las">las.las (module)</a>
+      <li><a href="Evaluator.html#module-las.evaluator.evaluator">las.evaluator.evaluator (module)</a>
 </li>
-      <li><a href="Las.html#module-las.listener">las.listener (module)</a>
+      <li><a href="Feature.html#module-las.feature.feature">las.feature.feature (module)</a>
 </li>
-      <li><a href="Las.html#module-las.speller">las.speller (module)</a>
+      <li><a href="Feature.html#module-las.feature.from_librosa">las.feature.from_librosa (module)</a>
 </li>
-      <li><a href="Las.html#module-las.topk_decoder">las.topk_decoder (module)</a>
+      <li><a href="Loss.html#module-las.loss.loss">las.loss.loss (module)</a>
+</li>
+      <li><a href="Model.html#module-las.model.attention">las.model.attention (module)</a>
+</li>
+      <li><a href="Model.html#module-las.model.las">las.model.las (module)</a>
+</li>
+      <li><a href="Model.html#module-las.model.listener">las.model.listener (module)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Las.html#las.las.ListenAttendSpell">ListenAttendSpell (class in las.las)</a>
+      <li><a href="Model.html#module-las.model.speller">las.model.speller (module)</a>
 </li>
-      <li><a href="Las.html#las.listener.Listener">Listener (class in las.listener)</a>
+      <li><a href="Model.html#module-las.model.topk_decoder">las.model.topk_decoder (module)</a>
 </li>
-      <li><a href="Data_loader.html#data_loader.load_data_list">load_data_list() (in module data_loader)</a>
+      <li><a href="Modules.html#module-las.modules.builder">las.modules.builder (module)</a>
 </li>
-      <li><a href="Label_loader.html#label_loader.load_label">load_label() (in module label_loader)</a>
+      <li><a href="Modules.html#module-las.modules.utils">las.modules.utils (module)</a>
 </li>
-      <li><a href="Data_loader.html#data_loader.load_pickle">load_pickle() (in module data_loader)</a>
+      <li><a href="SupervisedTrainer.html#module-las.trainer.supervised_trainer">las.trainer.supervised_trainer (module)</a>
 </li>
-      <li><a href="Label_loader.html#label_loader.load_targets">load_targets() (in module label_loader)</a>
+      <li><a href="Model.html#las.model.las.ListenAttendSpell">ListenAttendSpell (class in las.model.las)</a>
 </li>
-      <li><a href="Builder.html#builder.load_test_model">load_test_model() (in module builder)</a>
+      <li><a href="Model.html#las.model.listener.Listener">Listener (class in las.model.listener)</a>
 </li>
-      <li><a href="Loss.html#module-loss">loss (module)</a>
+      <li><a href="Dataset.html#las.dataset.data_loader.load_data_list">load_data_list() (in module las.dataset.data_loader)</a>
+</li>
+      <li><a href="Dataset.html#las.dataset.label_loader.load_label">load_label() (in module las.dataset.label_loader)</a>
+</li>
+      <li><a href="Dataset.html#las.dataset.data_loader.load_pickle">load_pickle() (in module las.dataset.data_loader)</a>
+</li>
+      <li><a href="Dataset.html#las.dataset.label_loader.load_targets">load_targets() (in module las.dataset.label_loader)</a>
+</li>
+      <li><a href="Modules.html#las.modules.builder.load_test_model">load_test_model() (in module las.modules.builder)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -331,13 +345,25 @@
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Las.html#las.listener.MaskConv">MaskConv (class in las.listener)</a>
+      <li><a href="Model.html#las.model.listener.MaskConv">MaskConv (class in las.model.listener)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Data_loader.html#data_loader.MultiDataLoader">MultiDataLoader (class in data_loader)</a>
+      <li><a href="Dataset.html#las.dataset.data_loader.MultiDataLoader">MultiDataLoader (class in las.dataset.data_loader)</a>
 </li>
-      <li><a href="Las.html#las.attention.MultiHeadAttention">MultiHeadAttention (class in las.attention)</a>
+      <li><a href="Model.html#las.model.attention.MultiHeadAttention">MultiHeadAttention (class in las.model.attention)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="P">P</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Evaluator.html#las.evaluator.evaluator.Evaluator.predict">predict() (las.evaluator.evaluator.Evaluator method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Modules.html#las.modules.utils.print_args">print_args() (in module las.modules.utils)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -345,7 +371,7 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Data_loader.html#data_loader.AudioDataLoader.run">run() (data_loader.AudioDataLoader method)</a>
+      <li><a href="Dataset.html#las.dataset.data_loader.AudioDataLoader.run">run() (las.dataset.data_loader.AudioDataLoader method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -353,19 +379,27 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Feature.html#feature.spec_augment">spec_augment() (in module feature)</a>
+      <li><a href="Modules.html#las.modules.utils.save_epoch_result">save_epoch_result() (in module las.modules.utils)</a>
 </li>
-      <li><a href="Data_loader.html#data_loader.SpectrogramDataset">SpectrogramDataset (class in data_loader)</a>
+      <li><a href="Modules.html#las.modules.utils.save_pickle">save_pickle() (in module las.modules.utils)</a>
 </li>
-      <li><a href="Las.html#las.speller.Speller">Speller (class in las.speller)</a>
+      <li><a href="Modules.html#las.modules.utils.save_step_result">save_step_result() (in module las.modules.utils)</a>
+</li>
+      <li><a href="Dataset.html#las.dataset.data_loader.SpectrogramDataset.shuffle">shuffle() (las.dataset.data_loader.SpectrogramDataset method)</a>
+</li>
+      <li><a href="Feature.html#las.feature.feature.spec_augment">spec_augment() (in module las.feature.feature)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Data_loader.html#data_loader.split_dataset">split_dataset() (in module data_loader)</a>
+      <li><a href="Dataset.html#las.dataset.data_loader.SpectrogramDataset">SpectrogramDataset (class in las.dataset.data_loader)</a>
 </li>
-      <li><a href="SupervisedTrainer.html#module-supervised_trainer">supervised_trainer (module)</a>
+      <li><a href="Model.html#las.model.speller.Speller">Speller (class in las.model.speller)</a>
 </li>
-      <li><a href="SupervisedTrainer.html#supervised_trainer.SupervisedTrainer">SupervisedTrainer (class in supervised_trainer)</a>
+      <li><a href="Dataset.html#las.dataset.data_loader.split_dataset">split_dataset() (in module las.dataset.data_loader)</a>
+</li>
+      <li><a href="Dataset.html#las.dataset.data_loader.MultiDataLoader.start">start() (las.dataset.data_loader.MultiDataLoader method)</a>
+</li>
+      <li><a href="SupervisedTrainer.html#las.trainer.supervised_trainer.SupervisedTrainer">SupervisedTrainer (class in las.trainer.supervised_trainer)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -373,15 +407,13 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Las.html#las.topk_decoder.TopKDecoder">TopKDecoder (class in las.topk_decoder)</a>
+      <li><a href="Model.html#las.model.topk_decoder.TopKDecoder">TopKDecoder (class in las.model.topk_decoder)</a>
 </li>
   </ul></td>
-</tr></table>
-
-<h2 id="U">U</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Utils.html#module-utils">utils (module)</a>
+      <li><a href="SupervisedTrainer.html#las.trainer.supervised_trainer.SupervisedTrainer.train">train() (las.trainer.supervised_trainer.SupervisedTrainer method)</a>
+</li>
+      <li><a href="SupervisedTrainer.html#las.trainer.supervised_trainer.SupervisedTrainer.train_epoches">train_epoches() (las.trainer.supervised_trainer.SupervisedTrainer method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -389,7 +421,11 @@
 <h2 id="V">V</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Las.html#las.speller.Speller.validate_args">validate_args() (las.speller.Speller method)</a>
+      <li><a href="SupervisedTrainer.html#las.trainer.supervised_trainer.SupervisedTrainer.validate">validate() (las.trainer.supervised_trainer.SupervisedTrainer method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Model.html#las.model.speller.Speller.validate_args">validate_args() (las.model.speller.Speller method)</a>
 </li>
   </ul></td>
 </tr></table>

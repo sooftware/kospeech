@@ -2,5 +2,7 @@
 Loss
 =====================================================
 
-.. automodule:: loss
+LabelSmoothingLoss
+-------------------------------------------
+.. automodule:: las.loss.loss
     :members:

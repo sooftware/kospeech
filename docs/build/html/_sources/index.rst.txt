@@ -18,17 +18,15 @@ Welcome to End-to-end Speech Recognition's documentation!
    :maxdepth: 1
    :caption: ARCHITECTURE
 
-   Las
+   Model
 
 .. toctree::
    :maxdepth: 1
    :caption: PACKAGE REFERENCE
 
-   Builder
-   Data_loader
+   Dataset
    Evaluator
    Feature
-   Label_loader
    Loss
+   Modules
    SupervisedTrainer
-   Utils

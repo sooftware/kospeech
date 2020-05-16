@@ -1,5 +1,4 @@
 import argparse
-
 import torch
 import torch.nn as nn
 from las.modules.definition import char2id, EOS_token, SOS_token

@@ -10,7 +10,7 @@ class Evaluator:
     """
     Class to evaluate models with given datasets.
 
-    Args: model, batch_size, device
+    Args:
         model (las.las): model to evaluate performance
         batch_size (int): size of batch. recommended batch size is 1.
         device (torch.device): device - 'cuda' or 'cpu'
@@ -22,6 +22,14 @@ class Evaluator:
         self.device = device
 
     def evaluate(self, args, data_list_path, dataset_path):
+        """
+        Evaluate a model on given dataset and return performance.
+
+        Args:
+            args (argparse.ArgumentParser): set of arguments
+            data_list_path (str): path of csv file, containing testset list
+            dataset_path (str): path of dataset
+        """
         audio_paths, label_paths = load_data_list(data_list_path, dataset_path)
         target_dict = load_targets(label_paths)
 
@@ -44,6 +52,16 @@ class Evaluator:
         eval_loader.join()
 
     def predict(self, args, queue):
+        """
+        Make prediction given testset as input.
+
+        Args:
+             args (argparse.ArgumentParser): set of arguments
+             queue (queue.Queue): evaluate queue, containing input, targets, input_lengths, target_lengths
+
+        Returns: cer
+            - **cer** (float): character error rate of predict
+        """
         logger.info('evaluate() start')
         total_dist = 0
         total_length = 0
@@ -77,4 +95,6 @@ class Evaluator:
                 time_step += 1
 
         logger.info('evaluate() completed')
-        return total_dist / total_length
+        cer = total_dist / total_length
+
+        return cer

@@ -117,6 +117,7 @@ def label_to_string(labels, id2char, eos_id):
 
 
 def save_epoch_result(train_result, valid_result):
+    """ Save result of epoch """
     train_dict, train_loss, train_cer = train_result
     valid_dict, valid_loss, valid_cer = valid_result
 
@@ -133,6 +134,7 @@ def save_epoch_result(train_result, valid_result):
 
 
 def save_step_result(train_step_result, loss, cer):
+    """ Save result of --check_every step """
     train_step_result["loss"].append(loss)
     train_step_result["cer"].append(cer)
     train_step_df = pd.DataFrame(train_step_result)
@@ -140,12 +142,14 @@ def save_step_result(train_step_result, loss, cer):
 
 
 def save_pickle(save_var, savepath, message=""):
+    """ Save variable using pickle """
     with open(savepath + '.bin', "wb") as f:
         pickle.dump(save_var, f)
     logger.info(message)
 
 
 def print_args(args):
+    """ Print arguments """
     logger.info('--mode: %s' % str(args.mode))
     logger.info('--use_multi_gpu: %s' % str(args.use_multi_gpu))
     logger.info('--init_uniform: %s' % str(args.init_uniform))

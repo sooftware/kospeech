@@ -35,7 +35,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Feature" href="Feature.html" />
-    <link rel="prev" title="Data_loader" href="Data_loader.html" /> 
+    <link rel="prev" title="Dataset" href="Dataset.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -91,18 +91,16 @@
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Las.html">Las</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Model.html">Model</a></li>
 </ul>
 <p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="Builder.html">Builder</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Data_loader.html">Data_loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Dataset.html">Dataset</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Feature.html">Feature</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Label_loader.html">Label_loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modules.html">Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="SupervisedTrainer.html">SupervisedTrainer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Utils.html">Utils</a></li>
 </ul>
 
             
@@ -167,11 +165,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-evaluator">
-<span id="evaluator"></span><h1>Evaluator<a class="headerlink" href="#module-evaluator" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-las.evaluator.evaluator">
+<span id="evaluator"></span><h1>Evaluator<a class="headerlink" href="#module-las.evaluator.evaluator" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
-<dt id="evaluator.Evaluator">
-<em class="property">class </em><code class="descclassname">evaluator.</code><code class="descname">Evaluator</code><span class="sig-paren">(</span><em>model</em>, <em>batch_size=1</em>, <em>device=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/evaluator.html#Evaluator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#evaluator.Evaluator" title="Permalink to this definition">¶</a></dt>
+<dt id="las.evaluator.evaluator.Evaluator">
+<em class="property">class </em><code class="descclassname">las.evaluator.evaluator.</code><code class="descname">Evaluator</code><span class="sig-paren">(</span><em>model</em>, <em>batch_size=1</em>, <em>device=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/las/evaluator/evaluator.html#Evaluator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#las.evaluator.evaluator.Evaluator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class to evaluate models with given datasets.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -186,6 +184,50 @@
 </tr>
 </tbody>
 </table>
+<dl class="method">
+<dt id="las.evaluator.evaluator.Evaluator.evaluate">
+<code class="descname">evaluate</code><span class="sig-paren">(</span><em>args</em>, <em>data_list_path</em>, <em>dataset_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/las/evaluator/evaluator.html#Evaluator.evaluate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#las.evaluator.evaluator.Evaluator.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate a model on given dataset and return performance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser" title="(in Python v3.8)"><em>argparse.ArgumentParser</em></a>) – set of arguments</li>
+<li><strong>data_list_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – path of csv file, containing testset list</li>
+<li><strong>dataset_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – path of dataset</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="las.evaluator.evaluator.Evaluator.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>args</em>, <em>queue</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/las/evaluator/evaluator.html#Evaluator.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#las.evaluator.evaluator.Evaluator.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make prediction given testset as input.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser" title="(in Python v3.8)"><em>argparse.ArgumentParser</em></a>) – set of arguments</li>
+<li><strong>queue</strong> (<a class="reference external" href="https://docs.python.org/3/library/queue.html#queue.Queue" title="(in Python v3.8)"><em>queue.Queue</em></a>) – evaluate queue, containing input, targets, input_lengths, target_lengths</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Returns: cer</dt>
+<dd><ul class="first last simple">
+<li><strong>cer</strong> (float): character error rate of predict</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -201,7 +243,7 @@
         <a href="Feature.html" class="btn btn-neutral float-right" title="Feature" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="Data_loader.html" class="btn btn-neutral float-left" title="Data_loader" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="Dataset.html" class="btn btn-neutral float-left" title="Dataset" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
