@@ -108,7 +108,7 @@ Refer [here](https://github.com/sooftware/End-to-end-Speech-Recognition/wiki/Pre
 The above document is written in Korean.  
 We will also write a document in English as soon as possible, so please wait a little bit.  
   
-If you already have another dataset, please modify the data set path to [definition.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/las/modules/definition.py) as appropriate.
+If you already have another dataset, please modify the data set path to [definition.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/e2e/modules/definition.py) as appropriate.
 
 ### Train and Test
 you can run by [run.sh](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/run.sh) like following.  

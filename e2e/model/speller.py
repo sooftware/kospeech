@@ -2,7 +2,7 @@ import random
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from las.model.attention import MultiHeadAttention
+from e2e.model.attention import MultiHeadAttention
 
 supported_rnns = {
     'lstm': nn.LSTM,

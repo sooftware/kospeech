@@ -4,11 +4,11 @@ import torch.nn as nn
 import queue
 from torch import optim
 from torch.optim.lr_scheduler import ReduceLROnPlateau
-from las.dataset.data_loader import load_data_list, load_pickle, split_dataset, MultiDataLoader, AudioDataLoader
-from las.modules.definition import logger, id2char, EOS_token, char2id, PAD_token, TARGET_DICT_PATH, valid_dict, train_dict
-from las.dataset.label_loader import load_targets
-from las.loss.loss import LabelSmoothingLoss
-from las.modules.utils import get_distance, save_step_result, save_epoch_result
+from e2e.dataset.data_loader import load_data_list, load_pickle, split_dataset, MultiDataLoader, AudioDataLoader
+from e2e.modules.definition import logger, id2char, EOS_token, char2id, PAD_token, TARGET_DICT_PATH, valid_dict, train_dict
+from e2e.dataset.label_loader import load_targets
+from e2e.loss.loss import LabelSmoothingLoss
+from e2e.modules.utils import get_distance, save_step_result, save_epoch_result
 
 train_step_result = {'loss': [], 'cer': []}
 

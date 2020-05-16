@@ -5,9 +5,9 @@ import torch
 import threading
 import pandas as pd
 from torch.utils.data import Dataset
-from las.modules.definition import logger, SOS_token, EOS_token, PAD_token
-from las.feature.feature import spec_augment, get_librosa_melspectrogram, get_torchaudio_melspectrogram
-from las.modules.utils import get_label, save_pickle
+from e2e.modules.definition import logger, SOS_token, EOS_token, PAD_token
+from e2e.feature.feature import spec_augment, get_librosa_melspectrogram, get_torchaudio_melspectrogram
+from e2e.modules.utils import get_label, save_pickle
 
 
 class SpectrogramDataset(Dataset):

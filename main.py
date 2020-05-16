@@ -11,11 +11,11 @@
 import random
 import torch
 import warnings
-from las.modules.definition import *
-from las.evaluator.evaluator import Evaluator
-from las.trainer.supervised_trainer import SupervisedTrainer
-from las.modules.utils import print_args
-from las.modules.builder import build_model, load_test_model, build_args
+from e2e.modules.definition import *
+from e2e.evaluator.evaluator import Evaluator
+from e2e.trainer.supervised_trainer import SupervisedTrainer
+from e2e.modules.utils import print_args
+from e2e.modules.builder import build_model, load_test_model, build_args
 
 
 def main():
