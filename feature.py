@@ -180,8 +180,8 @@ def spec_augment(spectrogram, time_mask_para=70, freq_mask_para=20, time_mask_nu
     return spectrogram
 
 
-def get_torchaudio_melspectrogram(filepath, n_mels=80, del_silence=False, input_reverse=True, normalize=False,
-                                  sr=16000, window_size=20, stride=10):
+def get_torchaudio_melspectrogram(filepath, n_mels=80, del_silence=False, input_reverse=True,
+                                  normalize=False, sr=16000, window_size=20, stride=10):
     if filepath.endswith('.pcm'):
         pcm = np.memmap(filepath, dtype='h', mode='r')
         signal = np.array([float(x) for x in pcm])

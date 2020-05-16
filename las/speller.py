@@ -2,7 +2,7 @@ import random
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from model.attention import MultiHeadAttention
+from las.attention import MultiHeadAttention
 
 supported_rnns = {
     'lstm': nn.LSTM,
@@ -12,60 +12,50 @@ supported_rnns = {
 
 
 class Speller(nn.Module):
-    r"""Converts higher level features (from listener) into output utterances
+    r"""
+    Converts higher level features (from listener) into output utterances
     by specifying a probability distribution over sequences of characters.
 
-    Args:
+    Args: num_classes, max_length, hidden_dim, sos_id, eos_id, num_layers, rnn_type, dropout_p
         num_classes (int): the number of classfication
         max_length (int): a maximum allowed length for the sequence to be processed
         hidden_dim (int): the number of features in the hidden state `h`
         sos_id (int): index of the start of sentence symbol
         eos_id (int): index of the end of sentence symbol
-        n_layers (int, optional): number of recurrent layers (default: 1)
+        num_layers (int, optional): number of recurrent layers (default: 1)
         rnn_type (str, optional): type of RNN cell (default: gru)
         dropout_p (float, optional): dropout probability for the output sequence (default: 0)
-        k (int) : size of beam
+        device (torch.device): device - 'cuda' or 'cpu'
 
-    Inputs: inputs, context, teacher_forcing_ratio
+    Inputs: inputs, listener_outputs, teacher_forcing_ratio
         - **inputs** (batch, seq_len, input_size): list of sequences, whose length is the batch size and within which
           each sequence is a list of token IDs.  It is used for teacher forcing when provided. (default `None`)
-        - **context** (batch, seq_len, hidden_dim): tensor with containing the outputs of the listener.
+        - **listener_outputs** (batch, seq_len, hidden_dim): tensor with containing the outputs of the listener.
           Used for attention mechanism (default is `None`).
         - **teacher_forcing_ratio** (float): The probability that teacher forcing will be used. A random number is
           drawn uniformly from 0-1 for every decoding token, and if the sample is smaller than the given value,
           teacher forcing would be used (default is 0).
 
-    Returns: hypothesis, logit
-        - **hypothesis** (batch, seq_len): predicted y values (y_hat) by the model
-        - **logit** (batch, seq_len, num_classes): predicted log probability by the model
-
-    Examples::
-
-        >>> speller = Speller(num_classes, max_length, hidden_dim, sos_id, eos_id, n_layers)
-        >>> hypothesis, logit = speller(inputs, context, teacher_forcing_ratio=0.90)
+    Returns: decoder_outputs
+        - **decoder_outputs** (seq_len, batch_size, num_classes): list of tensors containing
+        the outputs of the decoding function.
     """
-
-    def __init__(self, num_classes, max_length, hidden_dim, sos_id, eos_id, n_head, attn_dim=64,
-                 n_layers=1, rnn_type='gru', dropout_p=0.5, device=None, k=5, ignore_index=0):
+    def __init__(self, num_classes, max_length, hidden_dim, sos_id, eos_id,
+                 num_heads, num_layers=1, rnn_type='gru', dropout_p=0.5, device=None):
 
         super(Speller, self).__init__()
-        assert rnn_type.lower() in supported_rnns.keys(), "Unsupported RNN Cell: {0}".format(rnn_type)
-
         self.num_classes = num_classes
         self.rnn_cell = supported_rnns[rnn_type]
-        self.rnn = self.rnn_cell(hidden_dim, hidden_dim, n_layers, batch_first=True, dropout=dropout_p).to(device)
+        self.rnn = self.rnn_cell(hidden_dim, hidden_dim, num_layers, batch_first=True, dropout=dropout_p).to(device)
         self.max_length = max_length
         self.hidden_dim = hidden_dim
         self.embedding = nn.Embedding(num_classes, self.hidden_dim)
-        self.n_layers = n_layers
         self.input_dropout = nn.Dropout(p=dropout_p)
-        self.k = k
-        self.fc = nn.Linear(self.hidden_dim, num_classes)
-        self.attention = MultiHeadAttention(in_features=hidden_dim, dim=attn_dim, n_head=n_head)
         self.eos_id = eos_id
         self.sos_id = sos_id
         self.device = device
-        self.ignore_index = ignore_index
+        self.attention = MultiHeadAttention(in_features=hidden_dim, num_heads=num_heads)
+        self.fc = nn.Linear(self.hidden_dim, num_classes)
 
     def forward_step(self, input_var, hidden, listener_outputs):
         batch_size = input_var.size(0)

@@ -19,16 +19,16 @@ class ListenAttendSpell(nn.Module):
           teacher forcing would be used (default is 0.90)
         - **use_beam_search** (bool): flag indication whether to use beam-search or not (default: false)
 
-    Returns: y_hats, logits
-        - **y_hats** (batch, seq_len): predicted y values (y_hat) by the model
-        - **logits** (batch, seq_len, class_num): logit values by the model
+    Returns: output
+            - **output** (seq_len, batch_size, num_classes): list of tensors containing
+            the outputs of the decoding function.
 
     Examples::
 
         >>> listener = Listener(in_features=80, hidden_dim=256, dropout_p=0.5, ...)
         >>> speller = Speller(num_class, 120, 8, 256 << (1 if use_bidirectional else 0), ...)
         >>> model = ListenAttendSpell(listener, speller)
-        >>> y_hats, logits = model()
+        >>> logit = model()
     """
     def __init__(self, listener, speller):
         super(ListenAttendSpell, self).__init__()

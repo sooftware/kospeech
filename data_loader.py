@@ -9,11 +9,6 @@ from torch.utils.data import Dataset
 from feature import spec_augment, get_librosa_melspectrogram, get_torchaudio_melspectrogram
 from utils import get_label, save_pickle
 
-feature_extract_funtions = {
-    'librosa': get_librosa_melspectrogram,
-    'torchaudio': get_torchaudio_melspectrogram
-}
-
 
 class SpectrogramDataset(Dataset):
     """
@@ -29,6 +24,11 @@ class SpectrogramDataset(Dataset):
         args (ArgumentParser): set of arguments
     """
 
+    feature_extract_funtions = {
+        'librosa': get_librosa_melspectrogram,
+        'torchaudio': get_torchaudio_melspectrogram
+    }
+
     def __init__(self, audio_paths, label_paths, sos_id, eos_id, target_dict=None, args=None, use_augment=True):
         self.audio_paths = list(audio_paths)
         self.label_paths = list(label_paths)
@@ -36,7 +36,7 @@ class SpectrogramDataset(Dataset):
         self.eos_id = eos_id
         self.target_dict = target_dict
         self.augment_flags = [False] * len(self.audio_paths)
-        self.get_feature = feature_extract_funtions[args.feature_extract_by]
+        self.get_feature = SpectrogramDataset.feature_extract_funtions[args.feature_extract_by]
         self.args = args
         if use_augment:
             self.augment_num = args.augment_num
@@ -61,7 +61,7 @@ class SpectrogramDataset(Dataset):
 
         if self.augment_flags[idx]:
             spectrogram = spec_augment(
-                spectrogram,
+                spectrogram=spectrogram,
                 time_mask_para=self.args.time_mask_para,
                 freq_mask_para=self.args.freq_mask_para,
                 time_mask_num=self.args.time_mask_num,
@@ -81,9 +81,9 @@ class SpectrogramDataset(Dataset):
                 self.label_paths.append(self.label_paths[idx])
 
     def shuffle(self):
-        temp = list(zip(self.audio_paths, self.label_paths, self.augment_flags))
-        random.shuffle(temp)
-        self.audio_paths, self.label_paths, self.augment_flags = zip(*temp)
+        tmp = list(zip(self.audio_paths, self.label_paths, self.augment_flags))
+        random.shuffle(tmp)
+        self.audio_paths, self.label_paths, self.augment_flags = zip(*tmp)
 
     def __len__(self):
         return len(self.audio_paths)
@@ -156,7 +156,7 @@ def split_dataset(args, audio_paths, label_paths, target_dict=None):
     return train_time_step, trainset_list, validset
 
 
-class MultiLoader:
+class MultiDataLoader:
     """
     Multi Data Loader using Threads.
 
@@ -216,6 +216,7 @@ class AudioDataLoader(threading.Thread):
 
     def run(self):
         logger.debug('loader %d start' % self.thread_id)
+
         while True:
             items = list()
 

@@ -1,6 +1,7 @@
 import pandas as pd
 import pickle
 import Levenshtein as Lev
+import torch
 from definition import logger, TRAIN_RESULT_PATH, VALID_RESULT_PATH, TRAIN_STEP_RESULT_PATH
 
 
@@ -146,19 +147,20 @@ def save_pickle(save_var, savepath, message=""):
 
 
 def print_args(args):
+    logger.info('--mode: %s' % str(args.mode))
+    logger.info('--use_multi_gpu: %s' % str(args.use_multi_gpu))
+    logger.info('--init_uniform: %s' % str(args.init_uniform))
     logger.info('--use_bidirectional: %s' % str(args.use_bidirectional))
     logger.info('--input_reverse: %s' % str(args.input_reverse))
     logger.info('--use_augment: %s' % str(args.use_augment))
     logger.info('--use_pickle: %s' % str(args.use_pickle))
     logger.info('--use_cuda: %s' % str(args.use_cuda))
     logger.info('--load_model: %s' % str(args.load_model))
-    logger.info('--run_by_sample: %s' % str(args.run_by_sample))
     logger.info('--model_path: %s' % str(args.model_path))
     logger.info('--augment_num: %s' % str(args.augment_num))
     logger.info('--hidden_dim: %s' % str(args.hidden_dim))
     logger.info('--dropout: %s' % str(args.dropout))
-    logger.info('--n_head: %s' % str(args.n_head))
-    logger.info('--attn_dim: %s' % str(args.attn_dim))
+    logger.info('--n_head: %s' % str(args.num_heads))
     logger.info('--label_smoothing: %s' % str(args.label_smoothing))
     logger.info('--listener_layer_size: %s' % str(args.listener_layer_size))
     logger.info('--speller_layer_size: %s' % str(args.speller_layer_size))
@@ -167,7 +169,7 @@ def print_args(args):
     logger.info('--k: %s' % str(args.k))
     logger.info('--batch_size: %s' % str(args.batch_size))
     logger.info('--num_workers: %s' % str(args.num_workers))
-    logger.info('--max_epochs: %s' % str(args.max_epochs))
+    logger.info('--max_epochs: %s' % str(args.num_epochs))
     logger.info('--lr: %s' % str(args.lr))
     logger.info('--min_lr: %s' % str(args.min_lr))
     logger.info('--lr_factor: %s' % str(args.lr_factor))

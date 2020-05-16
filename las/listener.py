@@ -7,33 +7,34 @@ supported_rnns = {
     'rnn': nn.RNN
 }
 
-supported_conv_types = [
-    'with_maxpool',
-    'without_maxpool'
-]
-
 
 class MaskConv(nn.Module):
     """
-    Copied from https://github.com/SeanNaren/deepspeech.pytorch/blob/master/model.py
-    Copyright (c) 2017 Sean Naren
-    MIT License
+    Mask Convolution
 
     Adds padding to the output of the module based on the given lengths. This is to ensure that the
     results of the model do not change when batch sizes change during inference.
     Input needs to be in the shape of (BxCxDxT)
+
+    Args: sequential
+        sequential (torch.nn): sequential list of convolution layer
+
+    Inputs:
+        - **x**: The input of size BxCxDxT
+        - **lengths**: The actual length of each sequence in the batch
+
+    Returns: x
+        - **x**: Masked output from the module
+
+    Copied from https://github.com/SeanNaren/deepspeech.pytorch/blob/master/model.py
+    Copyright (c) 2017 Sean Naren
+    MIT License
     """
     def __init__(self, sequential):
         super(MaskConv, self).__init__()
         self.sequential = sequential
 
     def forward(self, x, lengths):
-        """
-        :param x: The input of size BxCxDxT
-        :param lengths: The actual length of each sequence in the batch
-        :return: Masked output from the module
-        """
-
         for module in self.sequential:
             x = module(x)
             mask = torch.BoolTensor(x.size()).fill_(0)
@@ -55,12 +56,15 @@ class MaskConv(nn.Module):
 class Listener(nn.Module):
     r"""Converts low level speech signals into higher level features
 
-    Args:
-        rnn_type (str, optional): type of RNN cell (default: gru)
+    Args: input_size, hidden_dim, num_layers, bidirectional, rnn_type, conv_type, dropout_p, device
+        input_size (int): size of input
         hidden_dim (int): the number of features in the hidden state `h`
-        n_layers (int, optional): number of recurrent layers (default: 1)
+        num_layers (int, optional): number of recurrent layers (default: 1)
         bidirectional (bool, optional): if True, becomes a bidirectional encoder (defulat: False)
+        rnn_type (str, optional): type of RNN cell (default: gru)
+        conv_type(str, optional): type of conv in listener [increase, repeat] (default: increase)
         dropout_p (float, optional): dropout probability for the output sequence (default: 0)
+        device (torch.device): device - 'cuda' or 'cpu'
 
     Inputs: inputs, hidden
         - **inputs**: list of sequences, whose length is the batch size and within which each sequence is list of tokens
@@ -68,23 +72,14 @@ class Listener(nn.Module):
 
     Returns: output
         - **output**: tensor containing the encoded features of the input sequence
-
-    Examples::
-
-        >>> listener = Listener(80, hidden_dim=256, dropout_p=0.5, n_layers=5)
-        >>> output = listener(inputs)
     """
-
-    def __init__(self, input_size, hidden_dim, device, dropout_p=0.5, n_layers=5,
+    def __init__(self, input_size, hidden_dim, device, dropout_p=0.5, num_layers=1,
                  bidirectional=True, rnn_type='gru', conv_type='with_maxpool'):
         super(Listener, self).__init__()
-
-        assert rnn_type.lower() in supported_rnns.keys(), "Unsupported RNN Cell: {0}".format(rnn_type)
-        assert conv_type.lower() in supported_conv_types, "Unsupported Conv Type: {0}".format(self.conv_type)
-
         self.device = device
         self.conv_type = conv_type
-        if conv_type.lower() == 'with_maxpool':
+
+        if conv_type.lower() == 'increase':
             self.conv = nn.Sequential(
                     nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1),
                     nn.Hardtanh(0, 20, inplace=True),
@@ -101,7 +96,7 @@ class Listener(nn.Module):
                     nn.MaxPool2d(2, stride=2)
                 )
 
-        elif conv_type.lower() == 'without_maxpool':
+        elif conv_type.lower() == 'repeat':
             self.conv = MaskConv(
                 nn.Sequential(
                     nn.Conv2d(1, 32, kernel_size=3, stride=1, padding=1),
@@ -123,14 +118,14 @@ class Listener(nn.Module):
         self.rnn = rnn_cell(
             input_size=input_size,
             hidden_size=hidden_dim,
-            num_layers=n_layers,
+            num_layers=num_layers,
             batch_first=True,
             bidirectional=bidirectional,
             dropout=dropout_p
         )
 
     def forward(self, inputs, input_lengths):
-        if self.conv_type == 'with_maxpool':
+        if self.conv_type == 'increase':
             x = self.conv(inputs.unsqueeze(1)).to(self.device)
             x = x.transpose(1, 2)
             x = x.contiguous().view(x.size(0), x.size(1), x.size(2) * x.size(3)).to(self.device)
@@ -140,7 +135,7 @@ class Listener(nn.Module):
 
             output, hidden = self.rnn(x)
 
-        elif self.conv_type == 'without_maxpool':
+        elif self.conv_type == 'repeat':
             output_lengths = self.get_seq_lengths(input_lengths)
 
             x = inputs.unsqueeze(1).permute(0, 1, 3, 2)    # (batch_size, 1, hidden_dim, seq_len)
@@ -163,8 +158,8 @@ class Listener(nn.Module):
 
     def get_seq_lengths(self, input_length):
         """
-        Copied from https://github.com/clovaai/ClovaCall/blob/master/las.pytorch/models/EncoderRNN.py
-        Copyright (c) 2020-present NAVER Corp.
+        Copied from https://github.com/SeanNaren/deepspeech.pytorch/blob/master/model.py
+        Copyright (c) 2017 Sean Naren
         MIT License
         """
         seq_len = input_length

@@ -38,6 +38,7 @@ class TopKDecoder(nn.Module):
         self.num_classes = decoder.num_classes
         self.hidden_dim = decoder.hidden_dim
         self.forward_step = decoder.forward_step
+        self.pos_index = None
         self.device = decoder.device
 
     def forward(self, input_var, encoder_outputs, teacher_forcing_ratio=0.0):
@@ -45,7 +46,7 @@ class TopKDecoder(nn.Module):
         self.pos_index = Variable(torch.LongTensor(range(batch_size)) * self.k).view(-1, 1).to(self.device)
 
         hidden = None
-        inflated_encoder_outputs = _inflate(encoder_outputs, self.k, dim=0)
+        inflated_encoder_outputs = _inflate(encoder_outputs, self.k, 0)
 
         # Initialize the scores; for the first step,
         # ignore the inflated copies to avoid duplicate entries in the top k
@@ -104,14 +105,15 @@ class TopKDecoder(nn.Module):
         # Do backtracking to return the optimal values
         output = self._backtrack(stored_outputs, stored_hidden,
                                  stored_predecessors, stored_emitted_symbols,
-                                 stored_scores, batch_size, self.hidden_dim)
+                                 stored_scores, batch_size)
 
         decoder_outputs = [step[:, 0, :] for step in output]
 
         return decoder_outputs
 
-    def _backtrack(self, nw_output, nw_hidden, predecessors, symbols, scores, batch_size, hidden_dim):
+    def _backtrack(self, nw_output, nw_hidden, predecessors, symbols, scores, batch_size):
         """Backtracks over batch to generate optimal k-sequences.
+
         Args:
             nw_output [(batch*k, vocab_size)] * sequence_length: A Tensor of outputs from network
             nw_hidden [(num_layers, batch*k, hidden_dim)] * sequence_length: A Tensor of hidden states from network
@@ -119,7 +121,6 @@ class TopKDecoder(nn.Module):
             symbols [(batch*k)] * sequence_length: A Tensor of predicted tokens
             scores [(batch*k)] * sequence_length: A Tensor containing sequence scores for every token t = [0, ... , seq_len - 1]
             batch_size: Size of the batch
-            hidden_dim: Size of the hidden state
 
         Returns:
             output [(batch, k, vocab_size)] * sequence_length: A list of the output probabilities (p_n)
