@@ -12,11 +12,11 @@
 import random
 import torch
 import warnings
-from definition import *
-from evaluator import Evaluator
-from supervised_trainer import SupervisedTrainer
-from utils import print_args
-from builder import build_model, load_test_model, build_args
+from las.modules.definition import *
+from las.evaluator.evaluator import Evaluator
+from las.trainer.supervised_trainer import SupervisedTrainer
+from las.modules.utils import print_args
+from las.modules.builder import build_model, load_test_model, build_args
 
 
 def main():

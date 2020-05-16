@@ -4,10 +4,10 @@ import pickle
 import torch
 import threading
 import pandas as pd
-from definition import logger, SOS_token, EOS_token, PAD_token
 from torch.utils.data import Dataset
-from feature import spec_augment, get_librosa_melspectrogram, get_torchaudio_melspectrogram
-from utils import get_label, save_pickle
+from las.modules.definition import logger, SOS_token, EOS_token, PAD_token
+from las.feature.feature import spec_augment, get_librosa_melspectrogram, get_torchaudio_melspectrogram
+from las.modules.utils import get_label, save_pickle
 
 
 class SpectrogramDataset(Dataset):

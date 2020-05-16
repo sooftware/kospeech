@@ -1,11 +1,10 @@
 from distutils.core import setup
-import setuptools
 
 setup(
-    name='Korean-Speech-Recognition',
+    name='End-to-end-Speech-Recognition',
     version='1.0',
     install_requires=[
-        'torch>=1.2.0',
+        'torch>=1.4.0',
         'python-Levenshtein',
         'librosa >= 0.7.0',
         'numpy',

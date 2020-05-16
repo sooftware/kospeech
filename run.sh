@@ -37,7 +37,8 @@ SAVE_MODEL_EVERY=10000
 PRINT_EVERY=10
 MODE='train'
 
-
+# N.B.: assumes las is called from parent directory, as described in README.md
+cd las
 python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epochs $NUM_EPOCHS --use_bidirectional \
 --input_reverse --use_augment --use_cuda --augment_num $AUGMENT_NUM --hidden_dim $HIDDEN_DIM \
 --dropout $DROPOUT --num_heads $NUM_HEADS --label_smoothing $LABEL_SMOOTHING \

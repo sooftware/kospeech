@@ -1,9 +1,9 @@
 import queue
 import torch
-from data_loader import SpectrogramDataset, AudioDataLoader, load_data_list
-from definition import logger, id2char, EOS_token, SOS_token
-from label_loader import load_targets
-from utils import get_distance
+from las.dataset.data_loader import SpectrogramDataset, AudioDataLoader, load_data_list
+from las.modules.definition import logger, id2char, EOS_token, SOS_token
+from las.dataset.label_loader import load_targets
+from las.modules.utils import get_distance
 
 
 class Evaluator:

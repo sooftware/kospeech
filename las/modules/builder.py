@@ -2,11 +2,11 @@ import argparse
 
 import torch
 import torch.nn as nn
-from definition import char2id, EOS_token, SOS_token
-from las.las import ListenAttendSpell
-from las.listener import Listener
-from las.speller import Speller
-from las.topk_decoder import TopKDecoder
+from las.modules.definition import char2id, EOS_token, SOS_token
+from las.model.las import ListenAttendSpell
+from las.model.listener import Listener
+from las.model.speller import Speller
+from las.model.topk_decoder import TopKDecoder
 
 supported_rnns = {
     'lstm': nn.LSTM,
