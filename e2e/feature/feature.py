@@ -50,7 +50,7 @@ def get_librosa_melspectrogram(filepath, n_mels=80, del_silence=False, input_rev
         signal, _ = librosa.core.load(filepath, sr=sr)
 
     else:
-        raise ValueError("%s is not Supported." % filepath.split('.')[-1])
+        raise ValueError("Unsupported format: {0}".format(filepath.split('.')[-1]))
 
     N_FFT = int(sr * 0.001 * window_size)
     STRIDE = int(sr * 0.001 * stride)
@@ -108,7 +108,7 @@ def get_librosa_mfcc(filepath, n_mfcc=40, del_silence=False, input_reverse=True,
         signal, _ = librosa.core.load(filepath, sr=sr)
 
     else:
-        raise ValueError("Invalid format !!")
+        raise ValueError("Unsupported format: {0}".format(filepath.split('.')[-1]))
 
     N_FFT = int(sr * 0.001 * window_size)
     STRIDE = int(sr * 0.001 * stride)
@@ -217,7 +217,7 @@ def get_torchaudio_melspectrogram(filepath, n_mels=80, del_silence=False, input_
         signal, _ = librosa.core.load(filepath, sr=sr)
 
     else:
-        raise ValueError("%s is not Supported." % filepath.split('.')[-1])
+        raise ValueError("Unsupported format: {0}".format(filepath.split('.')[-1]))
 
     N_FFT = int(sr * 0.001 * window_size)
     STRIDE = int(sr * 0.001 * stride)
@@ -279,7 +279,7 @@ def get_torch_spectrogram(filepath, sr=16000, window_size=20, stride=10):
         signal, _ = librosa.core.load(filepath, sr=sr)
 
     else:
-        raise ValueError("%s is not Supported." % filepath.split('.')[-1])
+        raise ValueError("Unsupported format: {0}".format(filepath.split('.')[-1]))
 
     N_FFT = int(sr * 0.001 * window_size)
     STRIDE = int(sr * 0.001 * stride)
@@ -336,7 +336,7 @@ def get_librosa_spectrogram(filepath, input_reverse=True, normalize=False, del_s
         signal, _ = librosa.core.load(filepath, sr=sr)
 
     else:
-        raise ValueError("%s is not Supported." % filepath.split('.')[-1])
+        raise ValueError("Unsupported format: {0}".format(filepath.split('.')[-1]))
 
     N_FFT = int(sr * 0.001 * window_size)
     STRIDE = int(sr * 0.001 * stride)
