@@ -123,7 +123,7 @@ $ ./run.sh
 $ run.sh
 ```
   
-after training, you want to start testing, you should run [test.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/test.py).  
+after training, you want to start testing, you should run [main.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/main.py) by `--mode='eval'`.  
 you can set up a arguments at [run.sh](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/run.sh) or at execution time.  
 
 ### Incorporating External Language Model in Performance Test
