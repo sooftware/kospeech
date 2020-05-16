@@ -91,7 +91,7 @@
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Las.html">Las</a></li>
 </ul>
 <p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul class="current">
@@ -99,7 +99,7 @@
 <li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Feature.html">Feature</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Loss</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-las.loss.loss">LabelSmoothingLoss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-e2e.loss.loss">LabelSmoothingLoss</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="Modules.html">Modules</a></li>
@@ -170,11 +170,11 @@
             
   <div class="section" id="loss">
 <h1>Loss<a class="headerlink" href="#loss" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-las.loss.loss">
-<span id="labelsmoothingloss"></span><h2>LabelSmoothingLoss<a class="headerlink" href="#module-las.loss.loss" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-e2e.loss.loss">
+<span id="labelsmoothingloss"></span><h2>LabelSmoothingLoss<a class="headerlink" href="#module-e2e.loss.loss" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="las.loss.loss.LabelSmoothingLoss">
-<em class="property">class </em><code class="descclassname">las.loss.loss.</code><code class="descname">LabelSmoothingLoss</code><span class="sig-paren">(</span><em>num_classes</em>, <em>ignore_index</em>, <em>smoothing=0.1</em>, <em>dim=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/las/loss/loss.html#LabelSmoothingLoss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#las.loss.loss.LabelSmoothingLoss" title="Permalink to this definition">¶</a></dt>
+<dt id="e2e.loss.loss.LabelSmoothingLoss">
+<em class="property">class </em><code class="descclassname">e2e.loss.loss.</code><code class="descname">LabelSmoothingLoss</code><span class="sig-paren">(</span><em>num_classes</em>, <em>ignore_index</em>, <em>smoothing=0.1</em>, <em>dim=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/loss/loss.html#LabelSmoothingLoss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.loss.loss.LabelSmoothingLoss" title="Permalink to this definition">¶</a></dt>
 <dd><p>Copied from <a class="reference external" href="https://github.com/pytorch/pytorch/issues/7455">https://github.com/pytorch/pytorch/issues/7455</a></p>
 <p>Provides Label-Smoothing loss.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -202,8 +202,8 @@ target (torch.Tensor): ground-thruth encoded to integers which directly point a 
 </dd>
 </dl>
 <dl class="method">
-<dt id="las.loss.loss.LabelSmoothingLoss.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>logit</em>, <em>target</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/las/loss/loss.html#LabelSmoothingLoss.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#las.loss.loss.LabelSmoothingLoss.forward" title="Permalink to this definition">¶</a></dt>
+<dt id="e2e.loss.loss.LabelSmoothingLoss.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>logit</em>, <em>target</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/loss/loss.html#LabelSmoothingLoss.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.loss.loss.LabelSmoothingLoss.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">

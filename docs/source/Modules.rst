@@ -4,10 +4,10 @@ Modules
 
 builder
 -------------------------------------------
-.. automodule:: las.modules.builder
+.. automodule:: e2e.modules.builder
     :members:
 
 utils
 -------------------------------------------
-.. automodule:: las.modules.utils
+.. automodule:: e2e.modules.utils
     :members:

@@ -2,5 +2,5 @@
 SupervisedTrainer
 =====================================================
 
-.. automodule:: las.trainer.supervised_trainer
+.. automodule:: e2e.trainer.supervised_trainer
     :members:

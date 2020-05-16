@@ -91,7 +91,7 @@
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Las.html">Las</a></li>
 </ul>
 <p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul class="current">
@@ -100,8 +100,8 @@
 <li class="toctree-l1"><a class="reference internal" href="Feature.html">Feature</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Modules</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-las.modules.builder">builder</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-las.modules.utils">utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-e2e.modules.builder">builder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-e2e.modules.utils">utils</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="SupervisedTrainer.html">SupervisedTrainer</a></li>
@@ -171,50 +171,50 @@
             
   <div class="section" id="modules">
 <h1>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-las.modules.builder">
-<span id="builder"></span><h2>builder<a class="headerlink" href="#module-las.modules.builder" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-e2e.modules.builder">
+<span id="builder"></span><h2>builder<a class="headerlink" href="#module-e2e.modules.builder" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="las.modules.builder.build_args">
-<code class="descclassname">las.modules.builder.</code><code class="descname">build_args</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/las/modules/builder.html#build_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#las.modules.builder.build_args" title="Permalink to this definition">¶</a></dt>
+<dt id="e2e.modules.builder.build_args">
+<code class="descclassname">e2e.modules.builder.</code><code class="descname">build_args</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/builder.html#build_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.builder.build_args" title="Permalink to this definition">¶</a></dt>
 <dd><p>build argements</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="las.modules.builder.build_las">
-<code class="descclassname">las.modules.builder.</code><code class="descname">build_las</code><span class="sig-paren">(</span><em>listener</em>, <em>speller</em>, <em>device</em>, <em>use_multi_gpu=True</em>, <em>init_uniform=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/las/modules/builder.html#build_las"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#las.modules.builder.build_las" title="Permalink to this definition">¶</a></dt>
+<dt id="e2e.modules.builder.build_las">
+<code class="descclassname">e2e.modules.builder.</code><code class="descname">build_las</code><span class="sig-paren">(</span><em>listener</em>, <em>speller</em>, <em>device</em>, <em>use_multi_gpu=True</em>, <em>init_uniform=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/builder.html#build_las"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.builder.build_las" title="Permalink to this definition">¶</a></dt>
 <dd><p>build las model &amp; validate parameters</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="las.modules.builder.build_listener">
-<code class="descclassname">las.modules.builder.</code><code class="descname">build_listener</code><span class="sig-paren">(</span><em>input_size</em>, <em>hidden_dim</em>, <em>dropout_p</em>, <em>num_layers</em>, <em>bidirectional</em>, <em>rnn_type</em>, <em>device</em>, <em>conv_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/las/modules/builder.html#build_listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#las.modules.builder.build_listener" title="Permalink to this definition">¶</a></dt>
+<dt id="e2e.modules.builder.build_listener">
+<code class="descclassname">e2e.modules.builder.</code><code class="descname">build_listener</code><span class="sig-paren">(</span><em>input_size</em>, <em>hidden_dim</em>, <em>dropout_p</em>, <em>num_layers</em>, <em>bidirectional</em>, <em>rnn_type</em>, <em>device</em>, <em>conv_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/builder.html#build_listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.builder.build_listener" title="Permalink to this definition">¶</a></dt>
 <dd><p>build listener &amp; validate parameters</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="las.modules.builder.build_model">
-<code class="descclassname">las.modules.builder.</code><code class="descname">build_model</code><span class="sig-paren">(</span><em>args</em>, <em>device</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/las/modules/builder.html#build_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#las.modules.builder.build_model" title="Permalink to this definition">¶</a></dt>
+<dt id="e2e.modules.builder.build_model">
+<code class="descclassname">e2e.modules.builder.</code><code class="descname">build_model</code><span class="sig-paren">(</span><em>args</em>, <em>device</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/builder.html#build_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.builder.build_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>build base model</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="las.modules.builder.build_speller">
-<code class="descclassname">las.modules.builder.</code><code class="descname">build_speller</code><span class="sig-paren">(</span><em>num_classes</em>, <em>max_length</em>, <em>hidden_dim</em>, <em>sos_id</em>, <em>eos_id</em>, <em>num_layers</em>, <em>rnn_type</em>, <em>dropout_p</em>, <em>num_heads</em>, <em>device</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/las/modules/builder.html#build_speller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#las.modules.builder.build_speller" title="Permalink to this definition">¶</a></dt>
+<dt id="e2e.modules.builder.build_speller">
+<code class="descclassname">e2e.modules.builder.</code><code class="descname">build_speller</code><span class="sig-paren">(</span><em>num_classes</em>, <em>max_length</em>, <em>hidden_dim</em>, <em>sos_id</em>, <em>eos_id</em>, <em>num_layers</em>, <em>rnn_type</em>, <em>dropout_p</em>, <em>num_heads</em>, <em>device</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/builder.html#build_speller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.builder.build_speller" title="Permalink to this definition">¶</a></dt>
 <dd><p>build speller &amp; validate parameters</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="las.modules.builder.load_test_model">
-<code class="descclassname">las.modules.builder.</code><code class="descname">load_test_model</code><span class="sig-paren">(</span><em>args</em>, <em>device</em>, <em>use_beamsearch=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/las/modules/builder.html#load_test_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#las.modules.builder.load_test_model" title="Permalink to this definition">¶</a></dt>
+<dt id="e2e.modules.builder.load_test_model">
+<code class="descclassname">e2e.modules.builder.</code><code class="descname">load_test_model</code><span class="sig-paren">(</span><em>args</em>, <em>device</em>, <em>use_beamsearch=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/builder.html#load_test_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.builder.load_test_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>load model for performance test</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-las.modules.utils">
-<span id="utils"></span><h2>utils<a class="headerlink" href="#module-las.modules.utils" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-e2e.modules.utils">
+<span id="utils"></span><h2>utils<a class="headerlink" href="#module-e2e.modules.utils" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="las.modules.utils.char_distance">
-<code class="descclassname">las.modules.utils.</code><code class="descname">char_distance</code><span class="sig-paren">(</span><em>target</em>, <em>y_hat</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/las/modules/utils.html#char_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#las.modules.utils.char_distance" title="Permalink to this definition">¶</a></dt>
+<dt id="e2e.modules.utils.char_distance">
+<code class="descclassname">e2e.modules.utils.</code><code class="descname">char_distance</code><span class="sig-paren">(</span><em>target</em>, <em>y_hat</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/utils.html#char_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.utils.char_distance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculating charater distance between target &amp; y_hat</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -239,8 +239,8 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="las.modules.utils.get_distance">
-<code class="descclassname">las.modules.utils.</code><code class="descname">get_distance</code><span class="sig-paren">(</span><em>targets</em>, <em>y_hats</em>, <em>id2char</em>, <em>eos_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/las/modules/utils.html#get_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#las.modules.utils.get_distance" title="Permalink to this definition">¶</a></dt>
+<dt id="e2e.modules.utils.get_distance">
+<code class="descclassname">e2e.modules.utils.</code><code class="descname">get_distance</code><span class="sig-paren">(</span><em>targets</em>, <em>y_hats</em>, <em>id2char</em>, <em>eos_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/utils.html#get_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.utils.get_distance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provides total character distance between targets &amp; y_hats</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -267,8 +267,8 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="las.modules.utils.get_label">
-<code class="descclassname">las.modules.utils.</code><code class="descname">get_label</code><span class="sig-paren">(</span><em>filepath</em>, <em>sos_id</em>, <em>eos_id</em>, <em>target_dict=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/las/modules/utils.html#get_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#las.modules.utils.get_label" title="Permalink to this definition">¶</a></dt>
+<dt id="e2e.modules.utils.get_label">
+<code class="descclassname">e2e.modules.utils.</code><code class="descname">get_label</code><span class="sig-paren">(</span><em>filepath</em>, <em>sos_id</em>, <em>eos_id</em>, <em>target_dict=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/utils.html#get_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.utils.get_label" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provides specific file`s label to list format.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -294,8 +294,8 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="las.modules.utils.label_to_string">
-<code class="descclassname">las.modules.utils.</code><code class="descname">label_to_string</code><span class="sig-paren">(</span><em>labels</em>, <em>id2char</em>, <em>eos_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/las/modules/utils.html#label_to_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#las.modules.utils.label_to_string" title="Permalink to this definition">¶</a></dt>
+<dt id="e2e.modules.utils.label_to_string">
+<code class="descclassname">e2e.modules.utils.</code><code class="descname">label_to_string</code><span class="sig-paren">(</span><em>labels</em>, <em>id2char</em>, <em>eos_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/utils.html#label_to_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.utils.label_to_string" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts label to string (number =&gt; Hangeul)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -320,26 +320,26 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="las.modules.utils.print_args">
-<code class="descclassname">las.modules.utils.</code><code class="descname">print_args</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/las/modules/utils.html#print_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#las.modules.utils.print_args" title="Permalink to this definition">¶</a></dt>
+<dt id="e2e.modules.utils.print_args">
+<code class="descclassname">e2e.modules.utils.</code><code class="descname">print_args</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/utils.html#print_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.utils.print_args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print arguments</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="las.modules.utils.save_epoch_result">
-<code class="descclassname">las.modules.utils.</code><code class="descname">save_epoch_result</code><span class="sig-paren">(</span><em>train_result</em>, <em>valid_result</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/las/modules/utils.html#save_epoch_result"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#las.modules.utils.save_epoch_result" title="Permalink to this definition">¶</a></dt>
+<dt id="e2e.modules.utils.save_epoch_result">
+<code class="descclassname">e2e.modules.utils.</code><code class="descname">save_epoch_result</code><span class="sig-paren">(</span><em>train_result</em>, <em>valid_result</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/utils.html#save_epoch_result"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.utils.save_epoch_result" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save result of epoch</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="las.modules.utils.save_pickle">
-<code class="descclassname">las.modules.utils.</code><code class="descname">save_pickle</code><span class="sig-paren">(</span><em>save_var</em>, <em>savepath</em>, <em>message=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/las/modules/utils.html#save_pickle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#las.modules.utils.save_pickle" title="Permalink to this definition">¶</a></dt>
+<dt id="e2e.modules.utils.save_pickle">
+<code class="descclassname">e2e.modules.utils.</code><code class="descname">save_pickle</code><span class="sig-paren">(</span><em>save_var</em>, <em>savepath</em>, <em>message=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/utils.html#save_pickle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.utils.save_pickle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save variable using pickle</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="las.modules.utils.save_step_result">
-<code class="descclassname">las.modules.utils.</code><code class="descname">save_step_result</code><span class="sig-paren">(</span><em>train_step_result</em>, <em>loss</em>, <em>cer</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/las/modules/utils.html#save_step_result"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#las.modules.utils.save_step_result" title="Permalink to this definition">¶</a></dt>
+<dt id="e2e.modules.utils.save_step_result">
+<code class="descclassname">e2e.modules.utils.</code><code class="descname">save_step_result</code><span class="sig-paren">(</span><em>train_step_result</em>, <em>loss</em>, <em>cer</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/utils.html#save_step_result"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.utils.save_step_result" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save result of –check_every step</p>
 </dd></dl>
 

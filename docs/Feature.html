@@ -91,7 +91,7 @@
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Las.html">Las</a></li>
 </ul>
 <p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul class="current">
@@ -99,7 +99,7 @@
 <li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Feature</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#id1">feature</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-las.feature.from_librosa">from_librosa</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-e2e.feature.from_librosa">from_librosa</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
@@ -173,11 +173,11 @@
 <h1>Feature<a class="headerlink" href="#feature" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="id1">
 <h2>feature<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
-<span class="target" id="module-las.feature.feature"></span><p>Collection of feature extraction
+<span class="target" id="module-e2e.feature.feature"></span><p>Collection of feature extraction
 You can use it according to your environment.</p>
 <dl class="function">
-<dt id="las.feature.feature.get_librosa_melspectrogram">
-<code class="descclassname">las.feature.feature.</code><code class="descname">get_librosa_melspectrogram</code><span class="sig-paren">(</span><em>filepath</em>, <em>n_mels=80</em>, <em>del_silence=False</em>, <em>input_reverse=True</em>, <em>normalize=False</em>, <em>sr=16000</em>, <em>window_size=20</em>, <em>stride=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/las/feature/feature.html#get_librosa_melspectrogram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#las.feature.feature.get_librosa_melspectrogram" title="Permalink to this definition">¶</a></dt>
+<dt id="e2e.feature.feature.get_librosa_melspectrogram">
+<code class="descclassname">e2e.feature.feature.</code><code class="descname">get_librosa_melspectrogram</code><span class="sig-paren">(</span><em>filepath</em>, <em>n_mels=80</em>, <em>del_silence=False</em>, <em>input_reverse=True</em>, <em>normalize=False</em>, <em>sr=16000</em>, <em>window_size=20</em>, <em>stride=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/feature/feature.html#get_librosa_melspectrogram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.feature.feature.get_librosa_melspectrogram" title="Permalink to this definition">¶</a></dt>
 <dd><p>get a mel-scaled spectrogram by librosa.</p>
 <dl class="docutils">
 <dt>Args: filepath, n_mels, del_silence, input_reverse, normalize, sr, wiindow_size, stride</dt>
@@ -208,8 +208,8 @@ stride (int): forwarding size (ms)</dd>
 </dd></dl>
 
 <dl class="function">
-<dt id="las.feature.feature.get_librosa_mfcc">
-<code class="descclassname">las.feature.feature.</code><code class="descname">get_librosa_mfcc</code><span class="sig-paren">(</span><em>filepath</em>, <em>n_mfcc=40</em>, <em>del_silence=False</em>, <em>input_reverse=True</em>, <em>normalize=True</em>, <em>sr=16000</em>, <em>window_size=20</em>, <em>stride=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/las/feature/feature.html#get_librosa_mfcc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#las.feature.feature.get_librosa_mfcc" title="Permalink to this definition">¶</a></dt>
+<dt id="e2e.feature.feature.get_librosa_mfcc">
+<code class="descclassname">e2e.feature.feature.</code><code class="descname">get_librosa_mfcc</code><span class="sig-paren">(</span><em>filepath</em>, <em>n_mfcc=40</em>, <em>del_silence=False</em>, <em>input_reverse=True</em>, <em>normalize=True</em>, <em>sr=16000</em>, <em>window_size=20</em>, <em>stride=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/feature/feature.html#get_librosa_mfcc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.feature.feature.get_librosa_mfcc" title="Permalink to this definition">¶</a></dt>
 <dd><p>:
 get Mel-frequency cepstral coefficients (MFCCs) by librosa</p>
 <dl class="docutils">
@@ -239,8 +239,8 @@ normalize (bool): flag indication whether to normalize spectrum or not (default:
 </dd></dl>
 
 <dl class="function">
-<dt id="las.feature.feature.get_librosa_spectrogram">
-<code class="descclassname">las.feature.feature.</code><code class="descname">get_librosa_spectrogram</code><span class="sig-paren">(</span><em>filepath</em>, <em>input_reverse=True</em>, <em>normalize=False</em>, <em>del_silence=False</em>, <em>sr=16000</em>, <em>window_size=20</em>, <em>stride=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/las/feature/feature.html#get_librosa_spectrogram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#las.feature.feature.get_librosa_spectrogram" title="Permalink to this definition">¶</a></dt>
+<dt id="e2e.feature.feature.get_librosa_spectrogram">
+<code class="descclassname">e2e.feature.feature.</code><code class="descname">get_librosa_spectrogram</code><span class="sig-paren">(</span><em>filepath</em>, <em>input_reverse=True</em>, <em>normalize=False</em>, <em>del_silence=False</em>, <em>sr=16000</em>, <em>window_size=20</em>, <em>stride=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/feature/feature.html#get_librosa_spectrogram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.feature.feature.get_librosa_spectrogram" title="Permalink to this definition">¶</a></dt>
 <dd><p>get a spectrogram by librosa.</p>
 <dl class="docutils">
 <dt>Args: filepath, n_mels, del_silence, input_reverse, normalize, sr, wiindow_size, stride</dt>
@@ -270,8 +270,8 @@ stride (int): forwarding size (ms)</dd>
 </dd></dl>
 
 <dl class="function">
-<dt id="las.feature.feature.get_torch_spectrogram">
-<code class="descclassname">las.feature.feature.</code><code class="descname">get_torch_spectrogram</code><span class="sig-paren">(</span><em>filepath</em>, <em>sr=16000</em>, <em>window_size=20</em>, <em>stride=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/las/feature/feature.html#get_torch_spectrogram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#las.feature.feature.get_torch_spectrogram" title="Permalink to this definition">¶</a></dt>
+<dt id="e2e.feature.feature.get_torch_spectrogram">
+<code class="descclassname">e2e.feature.feature.</code><code class="descname">get_torch_spectrogram</code><span class="sig-paren">(</span><em>filepath</em>, <em>sr=16000</em>, <em>window_size=20</em>, <em>stride=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/feature/feature.html#get_torch_spectrogram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.feature.feature.get_torch_spectrogram" title="Permalink to this definition">¶</a></dt>
 <dd><p>get a spectrogram by torch.</p>
 <dl class="docutils">
 <dt>Args: filepath, n_mels, del_silence, input_reverse, normalize, sr, wiindow_size, stride</dt>
@@ -298,8 +298,8 @@ stride (int): forwarding size (ms)</dd>
 </dd></dl>
 
 <dl class="function">
-<dt id="las.feature.feature.get_torchaudio_melspectrogram">
-<code class="descclassname">las.feature.feature.</code><code class="descname">get_torchaudio_melspectrogram</code><span class="sig-paren">(</span><em>filepath</em>, <em>n_mels=80</em>, <em>del_silence=False</em>, <em>input_reverse=True</em>, <em>normalize=False</em>, <em>sr=16000</em>, <em>window_size=20</em>, <em>stride=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/las/feature/feature.html#get_torchaudio_melspectrogram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#las.feature.feature.get_torchaudio_melspectrogram" title="Permalink to this definition">¶</a></dt>
+<dt id="e2e.feature.feature.get_torchaudio_melspectrogram">
+<code class="descclassname">e2e.feature.feature.</code><code class="descname">get_torchaudio_melspectrogram</code><span class="sig-paren">(</span><em>filepath</em>, <em>n_mels=80</em>, <em>del_silence=False</em>, <em>input_reverse=True</em>, <em>normalize=False</em>, <em>sr=16000</em>, <em>window_size=20</em>, <em>stride=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/feature/feature.html#get_torchaudio_melspectrogram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.feature.feature.get_torchaudio_melspectrogram" title="Permalink to this definition">¶</a></dt>
 <dd><p>get a mel-scaled spectrogram by torchaudio.</p>
 <dl class="docutils">
 <dt>Args: filepath, n_mels, del_silence, input_reverse, normalize, sr, wiindow_size, stride</dt>
@@ -330,8 +330,8 @@ stride (int): forwarding size (ms)</dd>
 </dd></dl>
 
 <dl class="function">
-<dt id="las.feature.feature.spec_augment">
-<code class="descclassname">las.feature.feature.</code><code class="descname">spec_augment</code><span class="sig-paren">(</span><em>spectrogram</em>, <em>time_mask_para=70</em>, <em>freq_mask_para=20</em>, <em>time_mask_num=2</em>, <em>freq_mask_num=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/las/feature/feature.html#spec_augment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#las.feature.feature.spec_augment" title="Permalink to this definition">¶</a></dt>
+<dt id="e2e.feature.feature.spec_augment">
+<code class="descclassname">e2e.feature.feature.</code><code class="descname">spec_augment</code><span class="sig-paren">(</span><em>spectrogram</em>, <em>time_mask_para=70</em>, <em>freq_mask_para=20</em>, <em>time_mask_num=2</em>, <em>freq_mask_num=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/feature/feature.html#spec_augment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.feature.feature.spec_augment" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provides Augmentation for audio</p>
 <dl class="docutils">
 <dt>Args: spectrogram, time_mask_para, freq_mask_para, time_mask_num, freq_mask_num</dt>
@@ -366,8 +366,8 @@ freq_mask_num (int): how many freq-masked area to make</dd>
 </dd></dl>
 
 </div>
-<div class="section" id="module-las.feature.from_librosa">
-<span id="from-librosa"></span><h2>from_librosa<a class="headerlink" href="#module-las.feature.from_librosa" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-e2e.feature.from_librosa">
+<span id="from-librosa"></span><h2>from_librosa<a class="headerlink" href="#module-e2e.feature.from_librosa" title="Permalink to this headline">¶</a></h2>
 <p>codes from <a class="reference external" href="https://github.com/librosa/librosa">https://github.com/librosa/librosa</a>
 use this code fragments instead of importing librosa package,
 because of our server has a problem with importing librosa.</p>

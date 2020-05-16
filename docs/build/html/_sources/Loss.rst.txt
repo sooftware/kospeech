@@ -4,5 +4,5 @@ Loss
 
 LabelSmoothingLoss
 -------------------------------------------
-.. automodule:: las.loss.loss
+.. automodule:: e2e.loss.loss
     :members:
