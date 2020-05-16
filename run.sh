@@ -39,7 +39,7 @@ MODE='train'
 
 
 python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epochs $NUM_EPOCHS --use_bidirectional \
---input_reverse --use_augment --use_pickle --use_cuda --augment_num $AUGMENT_NUM --hidden_dim $HIDDEN_DIM \
+--input_reverse --use_augment --use_cuda --augment_num $AUGMENT_NUM --hidden_dim $HIDDEN_DIM \
 --dropout $DROPOUT --num_heads $NUM_HEADS --label_smoothing $LABEL_SMOOTHING \
 --listener_layer_size $LISTENER_LAYER_SIZE --speller_layer_size $SPELLER_LAYER_SIZE --rnn_type $RNN_TYPE \
 --lr $LR --teacher_forcing_ratio $TEACHER_FORCING_RATIO --valid_ratio $VALID_RATIO --max_len $MAX_LEN \
@@ -47,4 +47,4 @@ python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epoch
 --feature_extract_by $FEATURE_EXTRACT_BY --time_mask_para $TIME_MASK_PARA --freq_mask_para $FREQ_MASK_PARA \
 --time_mask_num $TIME_MASK_NUM --freq_mask_num $FREQ_MASK_NUM --save_result_every $SAVE_RESULT_EVERY \
 --save_model_every $SAVE_MODEL_EVERY --print_every $PRINT_EVERY --min_lr $MIN_LR --lr_patience $LR_PATIENCE \
---conv_type $CONV_TYPE --use_multi_gpu --init_uniforms --mode $MODE
+--conv_type $CONV_TYPE --use_multi_gpu --init_uniform --mode $MODE
