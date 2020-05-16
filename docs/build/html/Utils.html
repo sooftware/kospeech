@@ -34,7 +34,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Trainer" href="Trainer.html" /> 
+    <link rel="prev" title="SupervisedTrainer" href="SupervisedTrainer.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -82,24 +82,25 @@
               
             
             
-              <p class="caption"><span class="caption-text">Notes</span></p>
+              <p class="caption"><span class="caption-text">NOTES</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Intro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">Preparation before Training</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notes/More-details.html">More Details</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/Data-Analysis.html">Data-Analysis</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Architecture</span></p>
+<p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Las.html">Las</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Package</span></p>
+<p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Builder.html">Builder</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Data_loader.html">Data_loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Feature.html">Feature</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Label_loader.html">Label_loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SupervisedTrainer.html">SupervisedTrainer</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Utils</a></li>
 </ul>
 
@@ -195,17 +196,16 @@
 
 <dl class="function">
 <dt id="utils.get_distance">
-<code class="descclassname">utils.</code><code class="descname">get_distance</code><span class="sig-paren">(</span><em>targets</em>, <em>y_hats</em>, <em>id2char</em>, <em>char2id</em>, <em>eos_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils.html#get_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.get_distance" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">utils.</code><code class="descname">get_distance</code><span class="sig-paren">(</span><em>targets</em>, <em>y_hats</em>, <em>id2char</em>, <em>eos_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils.html#get_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.get_distance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provides total character distance between targets &amp; y_hats</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>targets</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+0549e1f ))"><em>torch.Tensor</em></a>) – set of ground truth</li>
-<li><strong>y_hats</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+0549e1f ))"><em>torch.Tensor</em></a>) – predicted y values (y_hat) by the model</li>
+<li><strong>targets</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+fe44741 ))"><em>torch.Tensor</em></a>) – set of ground truth</li>
+<li><strong>y_hats</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+fe44741 ))"><em>torch.Tensor</em></a>) – predicted y values (y_hat) by the model</li>
 <li><strong>id2char</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – id2char[id] = ch</li>
-<li><strong>char2id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – char2id[ch] = id</li>
 <li><strong>eos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of &lt;end of sequence&gt;</li>
 </ul>
 </td>
@@ -251,7 +251,7 @@
 
 <dl class="function">
 <dt id="utils.label_to_string">
-<code class="descclassname">utils.</code><code class="descname">label_to_string</code><span class="sig-paren">(</span><em>labels</em>, <em>id2char</em>, <em>char2id</em>, <em>eos_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils.html#label_to_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.label_to_string" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">utils.</code><code class="descname">label_to_string</code><span class="sig-paren">(</span><em>labels</em>, <em>id2char</em>, <em>eos_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils.html#label_to_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.label_to_string" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts label to string (number =&gt; Hangeul)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -260,7 +260,6 @@
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>labels</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – number label</li>
 <li><strong>id2char</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – id2char[id] = ch</li>
-<li><strong>char2id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – char2id[ch] = id</li>
 <li><strong>eos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of &lt;end of sequence&gt;</li>
 </ul>
 </td>
@@ -287,7 +286,7 @@
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
       
-        <a href="Trainer.html" class="btn btn-neutral float-left" title="Trainer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="SupervisedTrainer.html" class="btn btn-neutral float-left" title="SupervisedTrainer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

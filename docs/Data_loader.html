@@ -34,8 +34,8 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Feature" href="Feature.html" />
-    <link rel="prev" title="Model" href="Model.html" /> 
+    <link rel="next" title="Evaluator" href="Evaluator.html" />
+    <link rel="prev" title="Builder" href="Builder.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -83,24 +83,25 @@
               
             
             
-              <p class="caption"><span class="caption-text">Notes</span></p>
+              <p class="caption"><span class="caption-text">NOTES</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Intro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">Preparation before Training</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notes/More-details.html">More Details</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/Data-Analysis.html">Data-Analysis</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Architecture</span></p>
+<p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Las.html">Las</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Package</span></p>
+<p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Builder.html">Builder</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Data_loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Feature.html">Feature</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Label_loader.html">Label_loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SupervisedTrainer.html">SupervisedTrainer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Utils.html">Utils</a></li>
 </ul>
 
@@ -199,8 +200,8 @@ from the args and kwargs arguments, respectively.</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="data_loader.MultiLoader">
-<em class="property">class </em><code class="descclassname">data_loader.</code><code class="descname">MultiLoader</code><span class="sig-paren">(</span><em>dataset_list</em>, <em>queue</em>, <em>batch_size</em>, <em>worker_num</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_loader.html#MultiLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_loader.MultiLoader" title="Permalink to this definition">¶</a></dt>
+<dt id="data_loader.MultiDataLoader">
+<em class="property">class </em><code class="descclassname">data_loader.</code><code class="descname">MultiDataLoader</code><span class="sig-paren">(</span><em>dataset_list</em>, <em>queue</em>, <em>batch_size</em>, <em>num_workers</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_loader.html#MultiDataLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data_loader.MultiDataLoader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Multi Data Loader using Threads.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -210,7 +211,7 @@ from the args and kwargs arguments, respectively.</p>
 <li><strong>dataset_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – list of SpectrogramDataset</li>
 <li><strong>queue</strong> (<em>Queue.queue</em>) – queue for threading</li>
 <li><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – size of batch</li>
-<li><strong>worker_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – the number of cpu cores used</li>
+<li><strong>num_workers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – the number of cpu cores used</li>
 </ul>
 </td>
 </tr>
@@ -328,10 +329,10 @@ from the args and kwargs arguments, respectively.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="Feature.html" class="btn btn-neutral float-right" title="Feature" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="Evaluator.html" class="btn btn-neutral float-right" title="Evaluator" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="Model.html" class="btn btn-neutral float-left" title="Model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="Builder.html" class="btn btn-neutral float-left" title="Builder" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

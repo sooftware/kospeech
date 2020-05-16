@@ -1,7 +1,7 @@
 import queue
 import torch
 from data_loader import SpectrogramDataset, AudioDataLoader, load_data_list
-from definition import logger, id2char, EOS_token, SOS_token
+#from definition import logger, id2char, EOS_token, SOS_token
 from label_loader import load_targets
 from utils import get_distance
 
@@ -10,7 +10,7 @@ class Evaluator:
     """
     Class to evaluate models with given datasets.
 
-    Args: model, batch_size, device
+    Args:
         model (las.las): model to evaluate performance
         batch_size (int): size of batch. recommended batch size is 1.
         device (torch.device): device - 'cuda' or 'cpu'

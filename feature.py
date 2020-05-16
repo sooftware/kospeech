@@ -1,3 +1,8 @@
+"""
+Collection of feature extraction
+You can use it according to your environment.
+"""
+
 import torch
 import platform
 import numpy as np
@@ -9,14 +14,10 @@ if platform.system() == 'Linux':
     import from_librosa as from_librosa
 
 
-# Collection of feature extraction
-# You can use it according to your environment.
-
-
 def get_librosa_melspectrogram(filepath, n_mels=80, del_silence=False, input_reverse=True, normalize=False,
                                sr=16000, window_size=20, stride=10):
     r"""
-    Compute a mel-scaled soectrigram (or Log-Mel).
+    get a mel-scaled spectrogram by librosa.
 
     Args: filepath, n_mels, del_silence, input_reverse, normalize, sr, wiindow_size, stride
         filepath (str): specific path of audio file
@@ -34,7 +35,7 @@ def get_librosa_melspectrogram(filepath, n_mels=80, del_silence=False, input_rev
     Examples::
         Generate mel spectrogram from a time series
 
-    >>> get_librosa_melspectrogram("KaiSpeech_021458.pcm", n_mels=80)
+    >>> get_librosa_melspectrogram(filepath, n_mels=80)
     Tensor([[  2.891e-07,   2.548e-03, ...,   8.116e-09,   5.633e-09],
             [  1.986e-07,   1.162e-02, ...,   9.332e-08,   6.716e-09],
             ...,
@@ -77,7 +78,7 @@ def get_librosa_melspectrogram(filepath, n_mels=80, del_silence=False, input_rev
 def get_librosa_mfcc(filepath, n_mfcc=40, del_silence=False, input_reverse=True, normalize=True,
                      sr=16000, window_size=20, stride=10):
     r""":
-    Mel-frequency cepstral coefficients (MFCCs)
+    get Mel-frequency cepstral coefficients (MFCCs) by librosa
 
     Args: filepath, n_mfcc, del_silence, input_reverse, normalize
         filepath (str): specific path of audio file
@@ -182,6 +183,32 @@ def spec_augment(spectrogram, time_mask_para=70, freq_mask_para=20, time_mask_nu
 
 def get_torchaudio_melspectrogram(filepath, n_mels=80, del_silence=False, input_reverse=True,
                                   normalize=False, sr=16000, window_size=20, stride=10):
+    r"""
+    get a mel-scaled spectrogram by torchaudio.
+
+    Args: filepath, n_mels, del_silence, input_reverse, normalize, sr, wiindow_size, stride
+        filepath (str): specific path of audio file
+        n_mels (int): number of mel filter
+        del_silence (bool): flag indication whether to delete silence or not (default: True)
+        input_reverse (bool): flag indication whether to reverse input or not (default: True)
+        normalize (bool): flag indication whether to normalize spectrum or not (default:True)
+        sr (int): sample rate
+        window_size (int): window size (ms)
+        stride (int): forwarding size (ms)
+
+    Returns: spectrogram
+        - **spectrogram** (torch.Tensor): return Mel-Spectrogram (or Log-Mel) feature
+
+    Examples::
+        Generate mel spectrogram from a time series
+
+    >>> get_torchaudio_melspectrogram(filepath, n_mels=80)
+    Tensor([[  2.891e-07,   2.548e-03, ...,   8.116e-09,   5.633e-09],
+            [  1.986e-07,   1.162e-02, ...,   9.332e-08,   6.716e-09],
+            ...,
+            [  3.668e-09,   2.029e-08, ...,   3.208e-09,   2.864e-09],
+            [  2.561e-10,   2.096e-09, ...,   7.543e-10,   6.101e-10]])
+    """
     if filepath.endswith('.pcm'):
         pcm = np.memmap(filepath, dtype='h', mode='r')
         signal = np.array([float(x) for x in pcm])
@@ -222,6 +249,28 @@ def get_torchaudio_melspectrogram(filepath, n_mels=80, del_silence=False, input_
 
 
 def get_torch_spectrogram(filepath, sr=16000, window_size=20, stride=10):
+    r"""
+    get a spectrogram by torch.
+
+    Args: filepath, n_mels, del_silence, input_reverse, normalize, sr, wiindow_size, stride
+        filepath (str): specific path of audio file
+        sr (int): sample rate
+        window_size (int): window size (ms)
+        stride (int): forwarding size (ms)
+
+    Returns: spectrogram
+        - **spectrogram** (torch.Tensor): return Spectrogram feature
+
+    Examples::
+        Generate mel spectrogram from a time series
+
+    >>> get_torch_spectrogram(filepath)
+    Tensor([[  2.891e-07,   2.548e-03, ...,   8.116e-09,   5.633e-09],
+            [  1.986e-07,   1.162e-02, ...,   9.332e-08,   6.716e-09],
+            ...,
+            [  3.668e-09,   2.029e-08, ...,   3.208e-09,   2.864e-09],
+            [  2.561e-10,   2.096e-09, ...,   7.543e-10,   6.101e-10]])
+    """
     if filepath.endswith('.pcm'):
         pcm = np.memmap(filepath, dtype='h', mode='r')
         signal = np.array([float(x) for x in pcm])
@@ -253,8 +302,32 @@ def get_torch_spectrogram(filepath, sr=16000, window_size=20, stride=10):
     return spectrogram
 
 
-def get_librosa_spectrogram(filepath, input_reverse=True, normalize=False, del_silence=False,
-                            sr=16000, window_size=20, stride=10):
+def get_librosa_spectrogram(filepath, input_reverse=True, normalize=False, del_silence=False, sr=16000, window_size=20, stride=10):
+    r"""
+    get a spectrogram by librosa.
+
+    Args: filepath, n_mels, del_silence, input_reverse, normalize, sr, wiindow_size, stride
+        filepath (str): specific path of audio file
+        del_silence (bool): flag indication whether to delete silence or not (default: True)
+        input_reverse (bool): flag indication whether to reverse input or not (default: True)
+        normalize (bool): flag indication whether to normalize spectrum or not (default:True)
+        sr (int): sample rate
+        window_size (int): window size (ms)
+        stride (int): forwarding size (ms)
+
+    Returns: spectrogram
+        - **spectrogram** (torch.Tensor): return Spectrogram feature
+
+    Examples::
+        Generate mel spectrogram from a time series
+
+    >>> get_librosa_spectrogram(filepath)
+    Tensor([[  2.891e-07,   2.548e-03, ...,   8.116e-09,   5.633e-09],
+            [  1.986e-07,   1.162e-02, ...,   9.332e-08,   6.716e-09],
+            ...,
+            [  3.668e-09,   2.029e-08, ...,   3.208e-09,   2.864e-09],
+            [  2.561e-10,   2.096e-09, ...,   7.543e-10,   6.101e-10]])
+    """
     if filepath.endswith('.pcm'):
         pcm = np.memmap(filepath, dtype='h', mode='r')
         signal = np.array([float(x) for x in pcm])

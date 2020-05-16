@@ -2,7 +2,7 @@ import argparse
 
 import torch
 import torch.nn as nn
-from definition import char2id, EOS_token, SOS_token
+#from definition import char2id, EOS_token, SOS_token
 from las.las import ListenAttendSpell
 from las.listener import Listener
 from las.speller import Speller
@@ -21,6 +21,7 @@ supported_convs = [
 
 
 def build_model(args, device):
+    """ build base model """
     if args.load_model:
         model = torch.load(args.model_path).to(device)
 
@@ -53,6 +54,7 @@ def build_model(args, device):
 
 
 def build_las(listener, speller, device, use_multi_gpu=True, init_uniform=True):
+    """ build las model & validate parameters """
     model = ListenAttendSpell(listener, speller)
     model.flatten_parameters()
 
@@ -67,6 +69,7 @@ def build_las(listener, speller, device, use_multi_gpu=True, init_uniform=True):
 
 
 def build_listener(input_size, hidden_dim, dropout_p, num_layers, bidirectional, rnn_type, device, conv_type):
+    """ build listener & validate parameters """
     assert dropout_p >= 0.0, "dropout probability should be positive"
     assert isinstance(input_size, int), "input_size should be inteager type"
     assert isinstance(num_layers, int), "num_layers should be inteager type"
@@ -90,6 +93,7 @@ def build_listener(input_size, hidden_dim, dropout_p, num_layers, bidirectional,
 
 
 def build_speller(num_classes, max_length, hidden_dim, sos_id, eos_id, num_layers, rnn_type, dropout_p, num_heads, device):
+    """ build speller & validate parameters """
     assert isinstance(num_classes, int), "num_classes should be inteager type"
     assert isinstance(num_layers, int), "num_layers should be inteager type"
     assert isinstance(sos_id, int), "sos_id should be inteager type"
@@ -119,6 +123,7 @@ def build_speller(num_classes, max_length, hidden_dim, sos_id, eos_id, num_layer
 
 
 def load_test_model(args, device, use_beamsearch=True):
+    """ load model for performance test """
     model = torch.load(args.model_path)
     model.module.speller.device = device
     model.module.listener.device = device
@@ -131,6 +136,7 @@ def load_test_model(args, device, use_beamsearch=True):
 
 
 def build_args():
+    """ build argements """
     parser = argparse.ArgumentParser(description='End-to-end Speech Recognition')
     parser.add_argument('--mode', type=str, default='train')
     parser.add_argument('--use_multi_gpu', action='store_true', default=False)

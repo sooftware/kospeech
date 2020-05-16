@@ -16,7 +16,7 @@ class Speller(nn.Module):
     Converts higher level features (from listener) into output utterances
     by specifying a probability distribution over sequences of characters.
 
-    Args: num_classes, max_length, hidden_dim, sos_id, eos_id, num_layers, rnn_type, dropout_p
+    Args:
         num_classes (int): the number of classfication
         max_length (int): a maximum allowed length for the sequence to be processed
         hidden_dim (int): the number of features in the hidden state `h`
@@ -42,7 +42,6 @@ class Speller(nn.Module):
     """
     def __init__(self, num_classes, max_length, hidden_dim, sos_id, eos_id,
                  num_heads, num_layers=1, rnn_type='gru', dropout_p=0.5, device=None):
-
         super(Speller, self).__init__()
         self.num_classes = num_classes
         self.rnn_cell = supported_rnns[rnn_type]

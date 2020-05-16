@@ -81,24 +81,25 @@
               
             
             
-              <p class="caption"><span class="caption-text">Notes</span></p>
+              <p class="caption"><span class="caption-text">NOTES</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../notes/intro.html">Intro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notes/Preparation.html">Preparation before Training</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notes/More-details.html">More Details</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notes/Data-Analysis.html">Data-Analysis</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Architecture</span></p>
+<p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../Model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Las.html">Las</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Package</span></p>
+<p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Builder.html">Builder</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Data_loader.html">Data_loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Feature.html">Feature</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Label_loader.html">Label_loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Loss.html">Loss</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../SupervisedTrainer.html">SupervisedTrainer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Utils.html">Utils</a></li>
 </ul>
 
@@ -173,8 +174,8 @@
 
 <span class="sd">    Provides Label-Smoothing loss.</span>
 
-<span class="sd">    Args: n_class, ignore_index, smoothing, dim</span>
-<span class="sd">        n_class (int): the number of classfication</span>
+<span class="sd">    Args:</span>
+<span class="sd">        num_classes (int): the number of classfication</span>
 <span class="sd">        ignore_index (int): Indexes that are ignored when calculating loss</span>
 <span class="sd">        smoothing (float): ratio of smoothing (confidence = 1.0 - smoothing)</span>
 <span class="sd">        dim (int): dimention of calculation loss</span>
@@ -186,18 +187,18 @@
 <span class="sd">    Returns: label_smoothed</span>
 <span class="sd">        - **label_smoothed** (float): sum of loss</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_class</span><span class="p">,</span> <span class="n">ignore_index</span><span class="p">,</span> <span class="n">smoothing</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">,</span> <span class="n">ignore_index</span><span class="p">,</span> <span class="n">smoothing</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">LabelSmoothingLoss</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">confidence</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">smoothing</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">smoothing</span> <span class="o">=</span> <span class="n">smoothing</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">num_class</span> <span class="o">=</span> <span class="n">num_class</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span> <span class="o">=</span> <span class="n">num_classes</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">=</span> <span class="n">dim</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ignore_index</span> <span class="o">=</span> <span class="n">ignore_index</span>
 
 <div class="viewcode-block" id="LabelSmoothingLoss.forward"><a class="viewcode-back" href="../Loss.html#loss.LabelSmoothingLoss.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logit</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
             <span class="n">label_smoothed</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">logit</span><span class="p">)</span>
-            <span class="n">label_smoothed</span><span class="o">.</span><span class="n">fill_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">smoothing</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_class</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="n">label_smoothed</span><span class="o">.</span><span class="n">fill_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">smoothing</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
             <span class="n">label_smoothed</span><span class="o">.</span><span class="n">scatter_</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">target</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">confidence</span><span class="p">)</span>
             <span class="n">label_smoothed</span><span class="p">[</span><span class="n">target</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_index</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">0</span>
 

@@ -2,7 +2,7 @@ import pandas as pd
 import pickle
 import Levenshtein as Lev
 import torch
-from definition import logger, TRAIN_RESULT_PATH, VALID_RESULT_PATH, TRAIN_STEP_RESULT_PATH
+#from definition import logger, TRAIN_RESULT_PATH, VALID_RESULT_PATH, TRAIN_STEP_RESULT_PATH
 
 
 def char_distance(target, y_hat):
@@ -91,7 +91,6 @@ def label_to_string(labels, id2char, eos_id):
     Args:
         labels (list): number label
         id2char (dict): id2char[id] = ch
-        char2id (dict): char2id[ch] = id
         eos_id (int): identification of <end of sequence>
 
     Returns: sentence

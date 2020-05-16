@@ -8,8 +8,8 @@ class LabelSmoothingLoss(nn.Module):
 
     Provides Label-Smoothing loss.
 
-    Args: n_class, ignore_index, smoothing, dim
-        n_class (int): the number of classfication
+    Args:
+        num_classes (int): the number of classfication
         ignore_index (int): Indexes that are ignored when calculating loss
         smoothing (float): ratio of smoothing (confidence = 1.0 - smoothing)
         dim (int): dimention of calculation loss
@@ -21,18 +21,18 @@ class LabelSmoothingLoss(nn.Module):
     Returns: label_smoothed
         - **label_smoothed** (float): sum of loss
     """
-    def __init__(self, num_class, ignore_index, smoothing=0.1, dim=-1):
+    def __init__(self, num_classes, ignore_index, smoothing=0.1, dim=-1):
         super(LabelSmoothingLoss, self).__init__()
         self.confidence = 1.0 - smoothing
         self.smoothing = smoothing
-        self.num_class = num_class
+        self.num_classes = num_classes
         self.dim = dim
         self.ignore_index = ignore_index
 
     def forward(self, logit, target):
         with torch.no_grad():
             label_smoothed = torch.zeros_like(logit)
-            label_smoothed.fill_(self.smoothing / (self.num_class - 1))
+            label_smoothed.fill_(self.smoothing / (self.num_classes - 1))
             label_smoothed.scatter_(1, target.data.unsqueeze(1), self.confidence)
             label_smoothed[target == self.ignore_index, :] = 0
 

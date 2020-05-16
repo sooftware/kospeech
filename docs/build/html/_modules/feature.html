@@ -81,24 +81,25 @@
               
             
             
-              <p class="caption"><span class="caption-text">Notes</span></p>
+              <p class="caption"><span class="caption-text">NOTES</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../notes/intro.html">Intro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notes/Preparation.html">Preparation before Training</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notes/More-details.html">More Details</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notes/Data-Analysis.html">Data-Analysis</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Architecture</span></p>
+<p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../Model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Las.html">Las</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Package</span></p>
+<p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Builder.html">Builder</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Data_loader.html">Data_loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Feature.html">Feature</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Label_loader.html">Label_loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Loss.html">Loss</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../SupervisedTrainer.html">SupervisedTrainer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Utils.html">Utils</a></li>
 </ul>
 
@@ -163,22 +164,26 @@
            <div itemprop="articleBody">
             
   <h1>Source code for feature</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">import</span> <span class="nn">librosa</span>
-<span class="c1"># import torchaudio  # if your os is not Linux, delete this line</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Collection of feature extraction</span>
+<span class="sd">You can use it according to your environment.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">platform</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">random</span>
-<span class="kn">import</span> <span class="nn">from_librosa</span> <span class="k">as</span> <span class="nn">from_librosa</span>
+<span class="kn">import</span> <span class="nn">librosa</span>
 
-
-<span class="c1"># Collection of feature extraction</span>
-<span class="c1"># You can use it according to your environment.</span>
+<span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Linux&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">torchaudio</span>
+    <span class="kn">import</span> <span class="nn">from_librosa</span> <span class="k">as</span> <span class="nn">from_librosa</span>
 
 
 <div class="viewcode-block" id="get_librosa_melspectrogram"><a class="viewcode-back" href="../Feature.html#feature.get_librosa_melspectrogram">[docs]</a><span class="k">def</span> <span class="nf">get_librosa_melspectrogram</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">n_mels</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">del_silence</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">input_reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                                <span class="n">sr</span><span class="o">=</span><span class="mi">16000</span><span class="p">,</span> <span class="n">window_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Compute a mel-scaled soectrigram (or Log-Mel).</span>
+<span class="sd">    get a mel-scaled spectrogram by librosa.</span>
 
 <span class="sd">    Args: filepath, n_mels, del_silence, input_reverse, normalize, sr, wiindow_size, stride</span>
 <span class="sd">        filepath (str): specific path of audio file</span>
@@ -196,7 +201,7 @@
 <span class="sd">    Examples::</span>
 <span class="sd">        Generate mel spectrogram from a time series</span>
 
-<span class="sd">    &gt;&gt;&gt; get_librosa_melspectrogram(&quot;KaiSpeech_021458.pcm&quot;, n_mels=80)</span>
+<span class="sd">    &gt;&gt;&gt; get_librosa_melspectrogram(filepath, n_mels=80)</span>
 <span class="sd">    Tensor([[  2.891e-07,   2.548e-03, ...,   8.116e-09,   5.633e-09],</span>
 <span class="sd">            [  1.986e-07,   1.162e-02, ...,   9.332e-08,   6.716e-09],</span>
 <span class="sd">            ...,</span>
@@ -239,7 +244,7 @@
 <div class="viewcode-block" id="get_librosa_mfcc"><a class="viewcode-back" href="../Feature.html#feature.get_librosa_mfcc">[docs]</a><span class="k">def</span> <span class="nf">get_librosa_mfcc</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">n_mfcc</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">del_silence</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">input_reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                      <span class="n">sr</span><span class="o">=</span><span class="mi">16000</span><span class="p">,</span> <span class="n">window_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;:</span>
-<span class="sd">    Mel-frequency cepstral coefficients (MFCCs)</span>
+<span class="sd">    get Mel-frequency cepstral coefficients (MFCCs) by librosa</span>
 
 <span class="sd">    Args: filepath, n_mfcc, del_silence, input_reverse, normalize</span>
 <span class="sd">        filepath (str): specific path of audio file</span>
@@ -342,8 +347,34 @@
     <span class="k">return</span> <span class="n">spectrogram</span></div>
 
 
-<span class="k">def</span> <span class="nf">get_torchaudio_melspectrogram</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">n_mels</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">del_silence</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">input_reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                                  <span class="n">sr</span><span class="o">=</span><span class="mi">16000</span><span class="p">,</span> <span class="n">window_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<div class="viewcode-block" id="get_torchaudio_melspectrogram"><a class="viewcode-back" href="../Feature.html#feature.get_torchaudio_melspectrogram">[docs]</a><span class="k">def</span> <span class="nf">get_torchaudio_melspectrogram</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">n_mels</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">del_silence</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">input_reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                  <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="mi">16000</span><span class="p">,</span> <span class="n">window_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    get a mel-scaled spectrogram by torchaudio.</span>
+
+<span class="sd">    Args: filepath, n_mels, del_silence, input_reverse, normalize, sr, wiindow_size, stride</span>
+<span class="sd">        filepath (str): specific path of audio file</span>
+<span class="sd">        n_mels (int): number of mel filter</span>
+<span class="sd">        del_silence (bool): flag indication whether to delete silence or not (default: True)</span>
+<span class="sd">        input_reverse (bool): flag indication whether to reverse input or not (default: True)</span>
+<span class="sd">        normalize (bool): flag indication whether to normalize spectrum or not (default:True)</span>
+<span class="sd">        sr (int): sample rate</span>
+<span class="sd">        window_size (int): window size (ms)</span>
+<span class="sd">        stride (int): forwarding size (ms)</span>
+
+<span class="sd">    Returns: spectrogram</span>
+<span class="sd">        - **spectrogram** (torch.Tensor): return Mel-Spectrogram (or Log-Mel) feature</span>
+
+<span class="sd">    Examples::</span>
+<span class="sd">        Generate mel spectrogram from a time series</span>
+
+<span class="sd">    &gt;&gt;&gt; get_torchaudio_melspectrogram(filepath, n_mels=80)</span>
+<span class="sd">    Tensor([[  2.891e-07,   2.548e-03, ...,   8.116e-09,   5.633e-09],</span>
+<span class="sd">            [  1.986e-07,   1.162e-02, ...,   9.332e-08,   6.716e-09],</span>
+<span class="sd">            ...,</span>
+<span class="sd">            [  3.668e-09,   2.029e-08, ...,   3.208e-09,   2.864e-09],</span>
+<span class="sd">            [  2.561e-10,   2.096e-09, ...,   7.543e-10,   6.101e-10]])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">filepath</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.pcm&#39;</span><span class="p">):</span>
         <span class="n">pcm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">memmap</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
         <span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pcm</span><span class="p">])</span>
@@ -380,10 +411,32 @@
     <span class="n">spectrogram</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">spectrogram</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
 
     <span class="k">del</span> <span class="n">transforms</span><span class="p">,</span> <span class="n">amplitude_to_db</span>
-    <span class="k">return</span> <span class="n">spectrogram</span>
+    <span class="k">return</span> <span class="n">spectrogram</span></div>
 
 
-<span class="k">def</span> <span class="nf">get_torch_spectrogram</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="mi">16000</span><span class="p">,</span> <span class="n">window_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<div class="viewcode-block" id="get_torch_spectrogram"><a class="viewcode-back" href="../Feature.html#feature.get_torch_spectrogram">[docs]</a><span class="k">def</span> <span class="nf">get_torch_spectrogram</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="mi">16000</span><span class="p">,</span> <span class="n">window_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    get a spectrogram by torch.</span>
+
+<span class="sd">    Args: filepath, n_mels, del_silence, input_reverse, normalize, sr, wiindow_size, stride</span>
+<span class="sd">        filepath (str): specific path of audio file</span>
+<span class="sd">        sr (int): sample rate</span>
+<span class="sd">        window_size (int): window size (ms)</span>
+<span class="sd">        stride (int): forwarding size (ms)</span>
+
+<span class="sd">    Returns: spectrogram</span>
+<span class="sd">        - **spectrogram** (torch.Tensor): return Spectrogram feature</span>
+
+<span class="sd">    Examples::</span>
+<span class="sd">        Generate mel spectrogram from a time series</span>
+
+<span class="sd">    &gt;&gt;&gt; get_torch_spectrogram(filepath)</span>
+<span class="sd">    Tensor([[  2.891e-07,   2.548e-03, ...,   8.116e-09,   5.633e-09],</span>
+<span class="sd">            [  1.986e-07,   1.162e-02, ...,   9.332e-08,   6.716e-09],</span>
+<span class="sd">            ...,</span>
+<span class="sd">            [  3.668e-09,   2.029e-08, ...,   3.208e-09,   2.864e-09],</span>
+<span class="sd">            [  2.561e-10,   2.096e-09, ...,   7.543e-10,   6.101e-10]])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">filepath</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.pcm&#39;</span><span class="p">):</span>
         <span class="n">pcm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">memmap</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
         <span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pcm</span><span class="p">])</span>
@@ -412,11 +465,35 @@
     <span class="n">spectrogram</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="n">spectrogram</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
     <span class="n">spectrogram</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">(</span><span class="n">spectrogram</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">spectrogram</span> <span class="o">-=</span> <span class="n">spectrogram</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">spectrogram</span>
+    <span class="k">return</span> <span class="n">spectrogram</span></div>
 
 
-<span class="k">def</span> <span class="nf">get_librosa_spectrogram</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">input_reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">del_silence</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                            <span class="n">sr</span><span class="o">=</span><span class="mi">16000</span><span class="p">,</span> <span class="n">window_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<div class="viewcode-block" id="get_librosa_spectrogram"><a class="viewcode-back" href="../Feature.html#feature.get_librosa_spectrogram">[docs]</a><span class="k">def</span> <span class="nf">get_librosa_spectrogram</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">input_reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">del_silence</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="mi">16000</span><span class="p">,</span> <span class="n">window_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    get a spectrogram by librosa.</span>
+
+<span class="sd">    Args: filepath, n_mels, del_silence, input_reverse, normalize, sr, wiindow_size, stride</span>
+<span class="sd">        filepath (str): specific path of audio file</span>
+<span class="sd">        del_silence (bool): flag indication whether to delete silence or not (default: True)</span>
+<span class="sd">        input_reverse (bool): flag indication whether to reverse input or not (default: True)</span>
+<span class="sd">        normalize (bool): flag indication whether to normalize spectrum or not (default:True)</span>
+<span class="sd">        sr (int): sample rate</span>
+<span class="sd">        window_size (int): window size (ms)</span>
+<span class="sd">        stride (int): forwarding size (ms)</span>
+
+<span class="sd">    Returns: spectrogram</span>
+<span class="sd">        - **spectrogram** (torch.Tensor): return Spectrogram feature</span>
+
+<span class="sd">    Examples::</span>
+<span class="sd">        Generate mel spectrogram from a time series</span>
+
+<span class="sd">    &gt;&gt;&gt; get_librosa_spectrogram(filepath)</span>
+<span class="sd">    Tensor([[  2.891e-07,   2.548e-03, ...,   8.116e-09,   5.633e-09],</span>
+<span class="sd">            [  1.986e-07,   1.162e-02, ...,   9.332e-08,   6.716e-09],</span>
+<span class="sd">            ...,</span>
+<span class="sd">            [  3.668e-09,   2.029e-08, ...,   3.208e-09,   2.864e-09],</span>
+<span class="sd">            [  2.561e-10,   2.096e-09, ...,   7.543e-10,   6.101e-10]])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">filepath</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.pcm&#39;</span><span class="p">):</span>
         <span class="n">pcm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">memmap</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
         <span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pcm</span><span class="p">])</span>
@@ -449,7 +526,7 @@
         <span class="n">spectrogram</span> <span class="o">=</span> <span class="n">spectrogram</span><span class="p">[:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
     <span class="n">spectrogram</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">spectrogram</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
-    <span class="k">return</span> <span class="n">spectrogram</span>
+    <span class="k">return</span> <span class="n">spectrogram</span></div>
 </pre></div>
 
            </div>

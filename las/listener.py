@@ -16,7 +16,7 @@ class MaskConv(nn.Module):
     results of the model do not change when batch sizes change during inference.
     Input needs to be in the shape of (BxCxDxT)
 
-    Args: sequential
+    Args:
         sequential (torch.nn): sequential list of convolution layer
 
     Inputs:
@@ -56,7 +56,7 @@ class MaskConv(nn.Module):
 class Listener(nn.Module):
     r"""Converts low level speech signals into higher level features
 
-    Args: input_size, hidden_dim, num_layers, bidirectional, rnn_type, conv_type, dropout_p, device
+    Args:
         input_size (int): size of input
         hidden_dim (int): the number of features in the hidden state `h`
         num_layers (int, optional): number of recurrent layers (default: 1)

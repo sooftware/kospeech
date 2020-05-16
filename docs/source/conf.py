@@ -21,7 +21,7 @@ sys.path.append(os.path.abspath('../..'))
 cwd = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.abspath(os.path.join(cwd, '../../')))
 sys.path.append(os.path.abspath(os.path.join(cwd, '../../../')))
-sys.path.append("C:/SooHwanKim/Desktop/SooHwan/Workspace/python_workspace/Korean-Speech-Recognition/")
+sys.path.append("C:/SooHwanKim/Desktop/SooHwan/Workspace/python_workspace/End-to-end-Speech-Recognition/")
 import sphinx_rtd_theme
 
 

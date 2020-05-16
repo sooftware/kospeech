@@ -34,7 +34,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Trainer" href="Trainer.html" />
+    <link rel="next" title="SupervisedTrainer" href="SupervisedTrainer.html" />
     <link rel="prev" title="Label_loader" href="Label_loader.html" /> 
 </head>
 
@@ -83,24 +83,25 @@
               
             
             
-              <p class="caption"><span class="caption-text">Notes</span></p>
+              <p class="caption"><span class="caption-text">NOTES</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Intro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">Preparation before Training</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notes/More-details.html">More Details</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/Data-Analysis.html">Data-Analysis</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Architecture</span></p>
+<p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Las.html">Las</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Package</span></p>
+<p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Builder.html">Builder</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Data_loader.html">Data_loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Feature.html">Feature</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Label_loader.html">Label_loader</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Loss</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SupervisedTrainer.html">SupervisedTrainer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Utils.html">Utils</a></li>
 </ul>
 
@@ -170,15 +171,24 @@
 <span id="loss"></span><h1>Loss<a class="headerlink" href="#module-loss" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="loss.LabelSmoothingLoss">
-<em class="property">class </em><code class="descclassname">loss.</code><code class="descname">LabelSmoothingLoss</code><span class="sig-paren">(</span><em>num_class</em>, <em>ignore_index</em>, <em>smoothing=0.1</em>, <em>dim=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/loss.html#LabelSmoothingLoss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#loss.LabelSmoothingLoss" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">loss.</code><code class="descname">LabelSmoothingLoss</code><span class="sig-paren">(</span><em>num_classes</em>, <em>ignore_index</em>, <em>smoothing=0.1</em>, <em>dim=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/loss.html#LabelSmoothingLoss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#loss.LabelSmoothingLoss" title="Permalink to this definition">¶</a></dt>
 <dd><p>Copied from <a class="reference external" href="https://github.com/pytorch/pytorch/issues/7455">https://github.com/pytorch/pytorch/issues/7455</a></p>
 <p>Provides Label-Smoothing loss.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>num_classes</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – the number of classfication</li>
+<li><strong>ignore_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Indexes that are ignored when calculating loss</li>
+<li><strong>smoothing</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – ratio of smoothing (confidence = 1.0 - smoothing)</li>
+<li><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – dimention of calculation loss</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="docutils">
-<dt>Args: n_class, ignore_index, smoothing, dim</dt>
-<dd>n_class (int): the number of classfication
-ignore_index (int): Indexes that are ignored when calculating loss
-smoothing (float): ratio of smoothing (confidence = 1.0 - smoothing)
-dim (int): dimention of calculation loss</dd>
 <dt>Inputs: logit, target</dt>
 <dd>logit (torch.Tensor): probability distribution value from model and it has a logarithm shape
 target (torch.Tensor): ground-thruth encoded to integers which directly point a word in label</dd>
@@ -214,7 +224,7 @@ registered hooks while the latter silently ignores them.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="Trainer.html" class="btn btn-neutral float-right" title="Trainer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="SupervisedTrainer.html" class="btn btn-neutral float-right" title="SupervisedTrainer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="Label_loader.html" class="btn btn-neutral float-left" title="Label_loader" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

@@ -35,7 +35,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Label_loader" href="Label_loader.html" />
-    <link rel="prev" title="Data_loader" href="Data_loader.html" /> 
+    <link rel="prev" title="Evaluator" href="Evaluator.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -83,24 +83,25 @@
               
             
             
-              <p class="caption"><span class="caption-text">Notes</span></p>
+              <p class="caption"><span class="caption-text">NOTES</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Intro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">Preparation before Training</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notes/More-details.html">More Details</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/Data-Analysis.html">Data-Analysis</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Architecture</span></p>
+<p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Las.html">Las</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Package</span></p>
+<p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Builder.html">Builder</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Data_loader.html">Data_loader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Feature</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Label_loader.html">Label_loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="SupervisedTrainer.html">SupervisedTrainer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Utils.html">Utils</a></li>
 </ul>
 
@@ -168,10 +169,12 @@
             
   <div class="section" id="module-feature">
 <span id="feature"></span><h1>Feature<a class="headerlink" href="#module-feature" title="Permalink to this headline">¶</a></h1>
+<p>Collection of feature extraction
+You can use it according to your environment.</p>
 <dl class="function">
 <dt id="feature.get_librosa_melspectrogram">
 <code class="descclassname">feature.</code><code class="descname">get_librosa_melspectrogram</code><span class="sig-paren">(</span><em>filepath</em>, <em>n_mels=80</em>, <em>del_silence=False</em>, <em>input_reverse=True</em>, <em>normalize=False</em>, <em>sr=16000</em>, <em>window_size=20</em>, <em>stride=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feature.html#get_librosa_melspectrogram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#feature.get_librosa_melspectrogram" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute a mel-scaled soectrigram (or Log-Mel).</p>
+<dd><p>get a mel-scaled spectrogram by librosa.</p>
 <dl class="docutils">
 <dt>Args: filepath, n_mels, del_silence, input_reverse, normalize, sr, wiindow_size, stride</dt>
 <dd>filepath (str): specific path of audio file
@@ -190,7 +193,7 @@ stride (int): forwarding size (ms)</dd>
 <dt>Examples::</dt>
 <dd>Generate mel spectrogram from a time series</dd>
 </dl>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_librosa_melspectrogram</span><span class="p">(</span><span class="s2">&quot;KaiSpeech_021458.pcm&quot;</span><span class="p">,</span> <span class="n">n_mels</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_librosa_melspectrogram</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">n_mels</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span>
 <span class="go">Tensor([[  2.891e-07,   2.548e-03, ...,   8.116e-09,   5.633e-09],</span>
 <span class="go">        [  1.986e-07,   1.162e-02, ...,   9.332e-08,   6.716e-09],</span>
 <span class="go">        ...,</span>
@@ -204,7 +207,7 @@ stride (int): forwarding size (ms)</dd>
 <dt id="feature.get_librosa_mfcc">
 <code class="descclassname">feature.</code><code class="descname">get_librosa_mfcc</code><span class="sig-paren">(</span><em>filepath</em>, <em>n_mfcc=40</em>, <em>del_silence=False</em>, <em>input_reverse=True</em>, <em>normalize=True</em>, <em>sr=16000</em>, <em>window_size=20</em>, <em>stride=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feature.html#get_librosa_mfcc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#feature.get_librosa_mfcc" title="Permalink to this definition">¶</a></dt>
 <dd><p>:
-Mel-frequency cepstral coefficients (MFCCs)</p>
+get Mel-frequency cepstral coefficients (MFCCs) by librosa</p>
 <dl class="docutils">
 <dt>Args: filepath, n_mfcc, del_silence, input_reverse, normalize</dt>
 <dd>filepath (str): specific path of audio file
@@ -229,6 +232,97 @@ normalize (bool): flag indication whether to normalize spectrum or not (default:
 </div>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="feature.get_librosa_spectrogram">
+<code class="descclassname">feature.</code><code class="descname">get_librosa_spectrogram</code><span class="sig-paren">(</span><em>filepath</em>, <em>input_reverse=True</em>, <em>normalize=False</em>, <em>del_silence=False</em>, <em>sr=16000</em>, <em>window_size=20</em>, <em>stride=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feature.html#get_librosa_spectrogram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#feature.get_librosa_spectrogram" title="Permalink to this definition">¶</a></dt>
+<dd><p>get a spectrogram by librosa.</p>
+<dl class="docutils">
+<dt>Args: filepath, n_mels, del_silence, input_reverse, normalize, sr, wiindow_size, stride</dt>
+<dd>filepath (str): specific path of audio file
+del_silence (bool): flag indication whether to delete silence or not (default: True)
+input_reverse (bool): flag indication whether to reverse input or not (default: True)
+normalize (bool): flag indication whether to normalize spectrum or not (default:True)
+sr (int): sample rate
+window_size (int): window size (ms)
+stride (int): forwarding size (ms)</dd>
+<dt>Returns: spectrogram</dt>
+<dd><ul class="first last simple">
+<li><strong>spectrogram</strong> (torch.Tensor): return Spectrogram feature</li>
+</ul>
+</dd>
+<dt>Examples::</dt>
+<dd>Generate mel spectrogram from a time series</dd>
+</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_librosa_spectrogram</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+<span class="go">Tensor([[  2.891e-07,   2.548e-03, ...,   8.116e-09,   5.633e-09],</span>
+<span class="go">        [  1.986e-07,   1.162e-02, ...,   9.332e-08,   6.716e-09],</span>
+<span class="go">        ...,</span>
+<span class="go">        [  3.668e-09,   2.029e-08, ...,   3.208e-09,   2.864e-09],</span>
+<span class="go">        [  2.561e-10,   2.096e-09, ...,   7.543e-10,   6.101e-10]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="feature.get_torch_spectrogram">
+<code class="descclassname">feature.</code><code class="descname">get_torch_spectrogram</code><span class="sig-paren">(</span><em>filepath</em>, <em>sr=16000</em>, <em>window_size=20</em>, <em>stride=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feature.html#get_torch_spectrogram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#feature.get_torch_spectrogram" title="Permalink to this definition">¶</a></dt>
+<dd><p>get a spectrogram by torch.</p>
+<dl class="docutils">
+<dt>Args: filepath, n_mels, del_silence, input_reverse, normalize, sr, wiindow_size, stride</dt>
+<dd>filepath (str): specific path of audio file
+sr (int): sample rate
+window_size (int): window size (ms)
+stride (int): forwarding size (ms)</dd>
+<dt>Returns: spectrogram</dt>
+<dd><ul class="first last simple">
+<li><strong>spectrogram</strong> (torch.Tensor): return Spectrogram feature</li>
+</ul>
+</dd>
+<dt>Examples::</dt>
+<dd>Generate mel spectrogram from a time series</dd>
+</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_torch_spectrogram</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+<span class="go">Tensor([[  2.891e-07,   2.548e-03, ...,   8.116e-09,   5.633e-09],</span>
+<span class="go">        [  1.986e-07,   1.162e-02, ...,   9.332e-08,   6.716e-09],</span>
+<span class="go">        ...,</span>
+<span class="go">        [  3.668e-09,   2.029e-08, ...,   3.208e-09,   2.864e-09],</span>
+<span class="go">        [  2.561e-10,   2.096e-09, ...,   7.543e-10,   6.101e-10]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="feature.get_torchaudio_melspectrogram">
+<code class="descclassname">feature.</code><code class="descname">get_torchaudio_melspectrogram</code><span class="sig-paren">(</span><em>filepath</em>, <em>n_mels=80</em>, <em>del_silence=False</em>, <em>input_reverse=True</em>, <em>normalize=False</em>, <em>sr=16000</em>, <em>window_size=20</em>, <em>stride=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feature.html#get_torchaudio_melspectrogram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#feature.get_torchaudio_melspectrogram" title="Permalink to this definition">¶</a></dt>
+<dd><p>get a mel-scaled spectrogram by torchaudio.</p>
+<dl class="docutils">
+<dt>Args: filepath, n_mels, del_silence, input_reverse, normalize, sr, wiindow_size, stride</dt>
+<dd>filepath (str): specific path of audio file
+n_mels (int): number of mel filter
+del_silence (bool): flag indication whether to delete silence or not (default: True)
+input_reverse (bool): flag indication whether to reverse input or not (default: True)
+normalize (bool): flag indication whether to normalize spectrum or not (default:True)
+sr (int): sample rate
+window_size (int): window size (ms)
+stride (int): forwarding size (ms)</dd>
+<dt>Returns: spectrogram</dt>
+<dd><ul class="first last simple">
+<li><strong>spectrogram</strong> (torch.Tensor): return Mel-Spectrogram (or Log-Mel) feature</li>
+</ul>
+</dd>
+<dt>Examples::</dt>
+<dd>Generate mel spectrogram from a time series</dd>
+</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_torchaudio_melspectrogram</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">n_mels</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span>
+<span class="go">Tensor([[  2.891e-07,   2.548e-03, ...,   8.116e-09,   5.633e-09],</span>
+<span class="go">        [  1.986e-07,   1.162e-02, ...,   9.332e-08,   6.716e-09],</span>
+<span class="go">        ...,</span>
+<span class="go">        [  3.668e-09,   2.029e-08, ...,   3.208e-09,   2.864e-09],</span>
+<span class="go">        [  2.561e-10,   2.096e-09, ...,   7.543e-10,   6.101e-10]])</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -280,7 +374,7 @@ freq_mask_num (int): how many freq-masked area to make</dd>
         <a href="Label_loader.html" class="btn btn-neutral float-right" title="Label_loader" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="Data_loader.html" class="btn btn-neutral float-left" title="Data_loader" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="Evaluator.html" class="btn btn-neutral float-left" title="Evaluator" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

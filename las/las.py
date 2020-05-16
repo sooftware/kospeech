@@ -9,15 +9,15 @@ class ListenAttendSpell(nn.Module):
         listener (torch.nn.Module): encoder of seq2seq
         speller (torch.nn.Module): decoder of seq2seq
 
-    Inputs: inputs, targets, teacher_forcing_ratio, use_beam_search
+    Inputs: inputs, input_lengths, targets, teacher_forcing_ratio
         - **inputs** (torch.Tensor): tensor of sequences, whose length is the batch size and within which
           each sequence is a list of token IDs. This information is forwarded to the encoder.
+        - **input_lengths** (torch.Tensor): tensor of sequences, whose contains length of inputs.
         - **targets** (torch.Tensor): tensor of sequences, whose length is the batch size and within which
           each sequence is a list of token IDs. This information is forwarded to the decoder.
         - **teacher_forcing_ratio** (float): The probability that teacher forcing will be used. A random number
           is drawn uniformly from 0-1 for every decoding token, and if the sample is smaller than the given value,
           teacher forcing would be used (default is 0.90)
-        - **use_beam_search** (bool): flag indication whether to use beam-search or not (default: false)
 
     Returns: output
             - **output** (seq_len, batch_size, num_classes): list of tensors containing
@@ -25,8 +25,8 @@ class ListenAttendSpell(nn.Module):
 
     Examples::
 
-        >>> listener = Listener(in_features=80, hidden_dim=256, dropout_p=0.5, ...)
-        >>> speller = Speller(num_class, 120, 8, 256 << (1 if use_bidirectional else 0), ...)
+        >>> listener = Listener(...)
+        >>> speller = Speller(...)
         >>> model = ListenAttendSpell(listener, speller)
         >>> logit = model()
     """
