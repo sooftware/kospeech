@@ -2,7 +2,7 @@ import argparse
 
 import torch
 import torch.nn as nn
-#from definition import char2id, EOS_token, SOS_token
+from definition import char2id, EOS_token, SOS_token
 from las.las import ListenAttendSpell
 from las.listener import Listener
 from las.speller import Speller

@@ -5,7 +5,7 @@ import queue
 from torch import optim
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from data_loader import load_data_list, load_pickle, split_dataset, MultiDataLoader, AudioDataLoader
-#from definition import logger, id2char, EOS_token, char2id, PAD_token, TARGET_DICT_PATH, valid_dict, train_dict
+from definition import logger, id2char, EOS_token, char2id, PAD_token, TARGET_DICT_PATH, valid_dict, train_dict
 from label_loader import load_targets
 from loss import LabelSmoothingLoss
 from utils import get_distance, save_step_result, save_epoch_result
