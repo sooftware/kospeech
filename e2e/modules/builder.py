@@ -164,6 +164,5 @@ def build_args():
                         help='to determine whether to store training model every N timesteps (default: 10000)')
     parser.add_argument('--print_every', type=int, default=10,
                         help='to determine whether to store training progress every N timesteps (default: 10')
-    args = parser.parse_args()
 
-    return args
+    return parser.parse_args()
