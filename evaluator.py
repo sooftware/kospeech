@@ -1,14 +1,3 @@
-"""
-    -*- coding: utf-8 -*-
-
-    @source_code{
-      title={Character-unit based End-to-End Korean Speech Recognition},
-      author={Soohwan Kim, Seyoung Bae, Cheolhwang Won},
-      link={https://github.com/sooftware/End-to-End-Korean-Speech-Recognition},
-      year={2020}
-    }
-"""
-
 import queue
 import torch
 from data_loader import SpectrogramDataset, AudioDataLoader, load_data_list
