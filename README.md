@@ -8,7 +8,8 @@
   
 ## Intro
 
-This is project for End-to-end Speech Recognition using LAS (Listen, Attend and Spell) models implemented in [PyTorch](http://pytorch.org).  
+This is project for End-to-end Speech Recognition using LAS (Listen, Attend and Spell) models implemented in [PyTorch](http://pytorch.org).   
+This repository has modularized and extensible components for las models, training and inference, checkpoints etc.   
 We appreciate any kind of feedback or contribution.
   
 <img src="https://user-images.githubusercontent.com/42150335/80630547-5dfc6580-8a8f-11ea-91e8-73fe5e8b9e4b.png" width=450> 
@@ -125,7 +126,7 @@ $ ./run.sh
 $ run.sh
 ```
   
-after training, you want to start testing, you should run by `--mode='eval'`.
+after training, you want to start testing, you should run by `--mode='eval'`.    
 you can set up a arguments at [run.sh](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/run.sh) or at execution time.  
 
 ### Incorporating External Language Model in Performance Test
