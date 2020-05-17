@@ -185,7 +185,7 @@ class SupervisedTrainer:
             if time_step % self.checkpoint_every == 0:
                 Checkpoint(model=model, optimizer=self.optimizer,
                            lr_scheduler=self.lr_scheduler, criterion=self.criterion,
-                           trainset_list=self.trainset_list, validset=self.validset, epoch=epoch)
+                           trainset_list=self.trainset_list, validset=self.validset, epoch=epoch).save()
 
         logger.info('train() completed')
         return epoch_loss_total / total_num, total_dist / total_length
