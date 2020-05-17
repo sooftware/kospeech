@@ -13,8 +13,7 @@ import torch
 import warnings
 from torch import optim, nn
 from torch.optim.lr_scheduler import ReduceLROnPlateau
-from e2e.dataset.data_loader import split_dataset, load_pickle, load_data_list
-from e2e.dataset.label_loader import load_targets
+from e2e.dataset.data_loader import split_dataset, load_data_list
 from e2e.loss.loss import LabelSmoothingLoss
 from e2e.modules.definition import *
 from e2e.evaluator.evaluator import Evaluator
