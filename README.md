@@ -1,6 +1,6 @@
 # **End-to-end Speech Recognition**  
   
-### Character-unit based End-to-end Korean Speech Recognition  
+### Character-unit based End-to-end Speech Recognition in Korean  
    
 [<img src="https://github.com/gentaiscool/end2end-asr-pytorch/raw/master/img/pytorch-logo-dark.png" height=18>](https://pytorch.org/) <img src="https://img.shields.io/badge/License-Apache--2.0-yellow" height=20> [<img src="https://img.shields.io/badge/chat-on%20gitter-4fb99a" height=20>](https://gitter.im/Korean-Speech-Recognition/community)   
   
@@ -8,7 +8,7 @@
   
 ## Intro
 
-This is project for Korean Speech Recognition using LAS (Listen, Attend and Spell) models implemented in [PyTorch](http://pytorch.org).  
+This is project for End-to-end Speech Recognition using LAS (Listen, Attend and Spell) models implemented in [PyTorch](http://pytorch.org).  
 We appreciate any kind of feedback or contribution.
   
 <img src="https://user-images.githubusercontent.com/42150335/80630547-5dfc6580-8a8f-11ea-91e8-73fe5e8b9e4b.png" width=650> 
