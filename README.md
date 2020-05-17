@@ -15,7 +15,9 @@ We appreciate any kind of feedback or contribution.
   
 ## Roadmap
   
-Speech recognition is an interdisciplinary subfield of computational linguistics that develops methodologies and technologies that enables the recognition and translation of spoken language into text by computers.  
+End-to-end (E2E) automatic speech recognition (ASR) is an emerging paradigm in the field of neural network-based speech recognition that offers multiple benefits. Traditional “hybrid” ASR systems, which are comprised of an acoustic model, language model, and pronunciation model, require separate training of these components, each of which can be complex.   
+  
+For example, training of an acoustic model is a multi-stage process of model training and time alignment between the speech acoustic feature sequence and output label sequence. In contrast, E2E ASR is a single integrated approach with a much simpler training pipeline with models that operate at low audio frame rates. This reduces the training time, decoding time, and allows joint optimization with downstream processing such as natural language understanding.  
   
 We mainly referred to following papers.  
   
@@ -68,8 +70,8 @@ ListenAttendSpell(
 )
 ```
   
-We use [KsponSpeech](http://www.aihub.or.kr/aidata/105) dataset which contains 1,000 hours korean voice data. and, our project is currently in progress.   
-At present our top model has recorded an **85.16% CRR**, and we are working for a higher recognition rate.  
+We use [KsponSpeech](http://www.aihub.or.kr/aidata/105) dataset which contains 1,000 hours korean voice data from [AI Hub](http://www.aihub.or.kr/).  
+At present our model has recorded an **85.16% CRR**, and we are working for a higher recognition rate.  
   
 Also our model has recorded **91.0% CRR** in [Kadi-zeroth dataset](https://github.com/goodatlas/zeroth).  
   
