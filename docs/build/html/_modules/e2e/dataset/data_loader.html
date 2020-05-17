@@ -89,7 +89,7 @@
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../Las.html">Las</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../LAS.html">LAS</a></li>
 </ul>
 <p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul>
@@ -169,9 +169,10 @@
 <span class="kn">import</span> <span class="nn">threading</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="k">import</span> <span class="n">Dataset</span>
-<span class="c1">#from e2e.modules.definition import logger, SOS_token, EOS_token, PAD_token</span>
+<span class="kn">from</span> <span class="nn">e2e.dataset.label_loader</span> <span class="k">import</span> <span class="n">load_targets</span>
+<span class="c1">#from e2e.modules.definition import logger, SOS_token, EOS_token, PAD_token, TARGET_DICT_PATH</span>
 <span class="kn">from</span> <span class="nn">e2e.feature.feature</span> <span class="k">import</span> <span class="n">spec_augment</span><span class="p">,</span> <span class="n">get_librosa_melspectrogram</span><span class="p">,</span> <span class="n">get_torchaudio_melspectrogram</span>
-<span class="kn">from</span> <span class="nn">e2e.modules.utils</span> <span class="k">import</span> <span class="n">get_label</span><span class="p">,</span> <span class="n">save_pickle</span>
+<span class="kn">from</span> <span class="nn">e2e.modules.utils</span> <span class="k">import</span> <span class="n">get_label</span>
 
 
 <div class="viewcode-block" id="SpectrogramDataset"><a class="viewcode-back" href="../../../Dataset.html#e2e.dataset.data_loader.SpectrogramDataset">[docs]</a><span class="k">class</span> <span class="nc">SpectrogramDataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
@@ -204,7 +205,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
         <span class="k">if</span> <span class="n">use_augment</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">augment_num</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">augment_num</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">augmentation</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">denote_augment_flags</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">shuffle</span><span class="p">()</span>
 
 <div class="viewcode-block" id="SpectrogramDataset.get_item"><a class="viewcode-back" href="../../../Dataset.html#e2e.dataset.data_loader.SpectrogramDataset.get_item">[docs]</a>    <span class="k">def</span> <span class="nf">get_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
@@ -221,9 +222,6 @@
             <span class="n">stride</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">stride</span>
         <span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">spectrogram</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># exception handling</span>
-            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
-
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">augment_flags</span><span class="p">[</span><span class="n">idx</span><span class="p">]:</span>
             <span class="n">spectrogram</span> <span class="o">=</span> <span class="n">spec_augment</span><span class="p">(</span>
                 <span class="n">spectrogram</span><span class="o">=</span><span class="n">spectrogram</span><span class="p">,</span>
@@ -235,7 +233,7 @@
 
         <span class="k">return</span> <span class="n">spectrogram</span><span class="p">,</span> <span class="n">label</span></div>
 
-<div class="viewcode-block" id="SpectrogramDataset.augmentation"><a class="viewcode-back" href="../../../Dataset.html#e2e.dataset.data_loader.SpectrogramDataset.augmentation">[docs]</a>    <span class="k">def</span> <span class="nf">augmentation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SpectrogramDataset.denote_augment_flags"><a class="viewcode-back" href="../../../Dataset.html#e2e.dataset.data_loader.SpectrogramDataset.denote_augment_flags">[docs]</a>    <span class="k">def</span> <span class="nf">denote_augment_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Note flag for SpecAugment &quot;&quot;&quot;</span>
         <span class="n">augment_end_idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">0</span> <span class="o">+</span> <span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">audio_paths</span><span class="p">)</span> <span class="o">-</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">augment_num</span><span class="p">))</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Applying Augmentation...&quot;</span><span class="p">)</span>
@@ -259,7 +257,7 @@
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">audio_paths</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="split_dataset"><a class="viewcode-back" href="../../../Dataset.html#e2e.dataset.data_loader.split_dataset">[docs]</a><span class="k">def</span> <span class="nf">split_dataset</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">audio_paths</span><span class="p">,</span> <span class="n">label_paths</span><span class="p">,</span> <span class="n">target_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="split_dataset"><a class="viewcode-back" href="../../../Dataset.html#e2e.dataset.data_loader.split_dataset">[docs]</a><span class="k">def</span> <span class="nf">split_dataset</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">audio_paths</span><span class="p">,</span> <span class="n">label_paths</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    split into training set and validation set.</span>
 
@@ -267,15 +265,18 @@
 <span class="sd">        args (utils.args.Arguments): set of arguments</span>
 <span class="sd">        audio_paths (list): set of audio path</span>
 <span class="sd">        label_paths (list): set of label path</span>
-<span class="sd">        target_dict (dict): dictionary of filename and target</span>
 
 <span class="sd">    Returns: train_batch_num, train_dataset_list, valid_dataset</span>
 <span class="sd">        - **train_time_step** (int): number of time step for training</span>
 <span class="sd">        - **trainset_list** (list): list of training dataset</span>
 <span class="sd">        - **validset** (data_loader.SpectrogramDataset): validation dataset</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;split dataset start !!&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">use_pickle</span><span class="p">:</span>
+        <span class="n">target_dict</span> <span class="o">=</span> <span class="n">load_pickle</span><span class="p">(</span><span class="n">TARGET_DICT_PATH</span><span class="p">,</span> <span class="s2">&quot;load all target_dict using pickle complete !!&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">target_dict</span> <span class="o">=</span> <span class="n">load_targets</span><span class="p">(</span><span class="n">label_paths</span><span class="p">)</span>
 
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;split dataset start !!&quot;</span><span class="p">)</span>
     <span class="n">trainset_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
     <span class="n">train_num</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">audio_paths</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">args</span><span class="o">.</span><span class="n">valid_ratio</span><span class="p">))</span>
     <span class="n">total_time_step</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">audio_paths</span><span class="p">)</span> <span class="o">/</span> <span class="n">args</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
@@ -315,9 +316,6 @@
         <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span>
         <span class="n">use_augment</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">)</span>
-
-    <span class="n">save_pickle</span><span class="p">(</span><span class="n">trainset_list</span><span class="p">,</span> <span class="s1">&#39;./data/pickle/trainset_list&#39;</span><span class="p">)</span>
-    <span class="n">save_pickle</span><span class="p">(</span><span class="n">validset</span><span class="p">,</span> <span class="s1">&#39;./data/pickle/validset&#39;</span><span class="p">)</span>
 
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;split dataset complete !!&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">train_time_step</span><span class="p">,</span> <span class="n">trainset_list</span><span class="p">,</span> <span class="n">validset</span></div>
@@ -395,9 +393,7 @@
                     <span class="k">break</span>
 
                 <span class="n">feat</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">get_item</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
-
-                <span class="k">if</span> <span class="n">feat</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">feat</span><span class="p">,</span> <span class="n">label</span><span class="p">))</span>
+                <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">feat</span><span class="p">,</span> <span class="n">label</span><span class="p">))</span>
 
                 <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
 

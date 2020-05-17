@@ -193,5 +193,6 @@ def print_args(args):
     logger.info('--time_mask_num: %s' % str(args.time_mask_num))
     logger.info('--freq_mask_num: %s' % str(args.freq_mask_num))
     logger.info('--save_result_every: %s' % str(args.save_result_every))
-    logger.info('--save_model_every: %s' % str(args.save_model_every))
+    logger.info('--checkpoint_every: %s' % str(args.checkpoint_every))
     logger.info('--print_every: %s' % str(args.print_every))
+    logger.info('--resume: %s' % str(args.resume))

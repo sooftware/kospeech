@@ -5,9 +5,10 @@ import torch
 import threading
 import pandas as pd
 from torch.utils.data import Dataset
-from e2e.modules.definition import logger, SOS_token, EOS_token, PAD_token
+from e2e.dataset.label_loader import load_targets
+from e2e.modules.definition import logger, SOS_token, EOS_token, PAD_token, TARGET_DICT_PATH
 from e2e.feature.feature import spec_augment, get_librosa_melspectrogram, get_torchaudio_melspectrogram
-from e2e.modules.utils import get_label, save_pickle
+from e2e.modules.utils import get_label
 
 
 class SpectrogramDataset(Dataset):
@@ -40,7 +41,7 @@ class SpectrogramDataset(Dataset):
         self.args = args
         if use_augment:
             self.augment_num = args.augment_num
-            self.augmentation()
+            self.denote_augment_flags()
         self.shuffle()
 
     def get_item(self, idx):
@@ -57,9 +58,6 @@ class SpectrogramDataset(Dataset):
             stride=self.args.stride
         )
 
-        if spectrogram is None:  # exception handling
-            return None, None
-
         if self.augment_flags[idx]:
             spectrogram = spec_augment(
                 spectrogram=spectrogram,
@@ -71,7 +69,7 @@ class SpectrogramDataset(Dataset):
 
         return spectrogram, label
 
-    def augmentation(self):
+    def denote_augment_flags(self):
         """ Note flag for SpecAugment """
         augment_end_idx = int(0 + ((len(self.audio_paths) - 0) * self.augment_num))
         logger.info("Applying Augmentation...")
@@ -95,7 +93,7 @@ class SpectrogramDataset(Dataset):
         return len(self.audio_paths)
 
 
-def split_dataset(args, audio_paths, label_paths, target_dict=None):
+def split_dataset(args, audio_paths, label_paths):
     """
     split into training set and validation set.
 
@@ -103,15 +101,18 @@ def split_dataset(args, audio_paths, label_paths, target_dict=None):
         args (utils.args.Arguments): set of arguments
         audio_paths (list): set of audio path
         label_paths (list): set of label path
-        target_dict (dict): dictionary of filename and target
 
     Returns: train_batch_num, train_dataset_list, valid_dataset
         - **train_time_step** (int): number of time step for training
         - **trainset_list** (list): list of training dataset
         - **validset** (data_loader.SpectrogramDataset): validation dataset
     """
-    logger.info("split dataset start !!")
+    if args.use_pickle:
+        target_dict = load_pickle(TARGET_DICT_PATH, "load all target_dict using pickle complete !!")
+    else:
+        target_dict = load_targets(label_paths)
 
+    logger.info("split dataset start !!")
     trainset_list = list()
     train_num = math.ceil(len(audio_paths) * (1 - args.valid_ratio))
     total_time_step = math.ceil(len(audio_paths) / args.batch_size)
@@ -151,9 +152,6 @@ def split_dataset(args, audio_paths, label_paths, target_dict=None):
         args=args,
         use_augment=False
     )
-
-    save_pickle(trainset_list, './data/pickle/trainset_list')
-    save_pickle(validset, './data/pickle/validset')
 
     logger.info("split dataset complete !!")
     return train_time_step, trainset_list, validset
@@ -231,9 +229,7 @@ class AudioDataLoader(threading.Thread):
                     break
 
                 feat, label = self.dataset.get_item(self.index)
-
-                if feat is not None:
-                    items.append((feat, label))
+                items.append((feat, label))
 
                 self.index += 1
 

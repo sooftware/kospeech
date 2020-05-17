@@ -5,6 +5,7 @@ from e2e.dataset.label_loader import load_label
 # If you haven't read https://sooftware.github.io/End-to-end-Speech-Recognition/notes/Preparation.html
 # please read it first before setting definition.py
 
+DATA_DIR = './data'
 DATASET_PATH = "/data1/"  # set your data path
 SAMPLE_DATASET_PATH = "./data/sample/"
 TRAIN_LIST_PATH = "./data/data_list/filter_train_list.csv"   # set your train list

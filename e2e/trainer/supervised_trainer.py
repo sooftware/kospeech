@@ -1,13 +1,9 @@
 import time
 import torch
-import torch.nn as nn
 import queue
-from torch import optim
-from torch.optim.lr_scheduler import ReduceLROnPlateau
-from e2e.dataset.data_loader import load_data_list, load_pickle, split_dataset, MultiDataLoader, AudioDataLoader
-from e2e.modules.definition import logger, id2char, EOS_token, char2id, PAD_token, TARGET_DICT_PATH, valid_dict, train_dict
-from e2e.dataset.label_loader import load_targets
-from e2e.loss.loss import LabelSmoothingLoss
+from e2e.dataset.data_loader import MultiDataLoader, AudioDataLoader
+from e2e.modules.checkpoint import Checkpoint
+from e2e.modules.definition import logger, id2char, EOS_token, valid_dict, train_dict
 from e2e.modules.utils import get_distance, save_step_result, save_epoch_result
 
 train_step_result = {'loss': [], 'cer': []}
@@ -18,70 +14,78 @@ class SupervisedTrainer:
     The SupervisedTrainer class helps in setting up training framework in a supervised setting.
 
     Args:
-        model (torch.nn.Module): model to train
-        args (argparse.ArgumentParser): set of arguments
+        optimizer (torch.optim): optimizer for training
+        lr_scheduler (torch.optim): learning rate scheduler
+        criterion (e2e.loss.LabelSmoothingLoss): loss function
+        trainset_list (list): list of training datset
+        validset (e2e.dataset.data_loader.SpectrogramDataset): validation dataset
+        num_workers (int): number of using cpu cores
         device (torch.device): device - 'cuda' or 'cpu'
+        print_every (int): number of timesteps to print result after
+        save_result_every (int): number of timesteps to save result after
+        checkpoint_every (int): number of timesteps to checkpoint after
     """
-    def __init__(self, model, args, device):
-        self.model = model
-        self.args = args
+    def __init__(self, optimizer, lr_scheduler, criterion, trainset_list, validset,
+                 num_workers, device, print_every, save_result_every, checkpoint_every):
+        self.num_workers = num_workers
+        self.optimizer = optimizer
+        self.lr_scheduler = lr_scheduler
+        self.criterion = criterion
+        self.trainset_list = trainset_list
+        self.validset = validset
+        self.print_every = print_every
+        self.save_result_every = save_result_every
+        self.checkpoint_every = checkpoint_every
         self.device = device
-        self.optimizer = optim.Adam(model.module.parameters(), lr=args.lr)
-        self.lr_scheduler = ReduceLROnPlateau(
-            optimizer=self.optimizer,
-            mode='min',
-            patience=args.lr_patience,
-            factor=args.lr_factor,
-            verbose=True,
-            min_lr=args.min_lr
-        )
 
-        if args.label_smoothing == 0.0:
-            self.criterion = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_token).to(device)
-        else:
-            self.criterion = LabelSmoothingLoss(len(char2id), PAD_token, args.label_smoothing, dim=-1).to(device)
-
-    def train(self, data_list_path, dataset_path, start_epoch):
+    def train(self, model, batch_size, total_time_step, num_epochs, teacher_forcing_ratio=0.99, resume=False):
         """
         Run training for a given model.
 
         Args:
-            data_list_path (str): path of csv file, containing trainset list
-            dataset_path (str): path of dataset
-            start_epoch (int): number of beginning epoch
+            model (torch.nn.Module): model to train
+            batch_size (int): batch size for experiment
+            total_time_step (int): number of time step for training
+            num_epochs (int): number of epochs for training
+            teacher_forcing_ratio (float): teaching forcing ratio (default 0.99)
+            resume(bool, optional): resume training with the latest checkpoint, (default False)
         """
-        audio_paths, label_paths = load_data_list(data_list_path, dataset_path)
+        start_epoch = 0
 
-        if self.args.use_pickle:
-            target_dict = load_pickle(TARGET_DICT_PATH, "load all target_dict using pickle complete !!")
-        else:
-            target_dict = load_targets(label_paths)
-
-        total_time_step, trainset_list, validset = split_dataset(self.args, audio_paths, label_paths, target_dict)
+        if resume:
+            latest_checkpoint_path = Checkpoint.get_latest_checkpoint()
+            resume_checkpoint = Checkpoint.load(latest_checkpoint_path)
+            model = resume_checkpoint.model
+            self.lr_scheduler = resume_checkpoint.lr_scheduler
+            self.criterion = resume_checkpoint.criterion
+            self.trainset_list = resume_checkpoint.trainset_list
+            self.validset = resume_checkpoint.validset
+            start_epoch = resume_checkpoint.epoch
 
         logger.info('start')
         train_begin = time.time()
 
-        for epoch in range(start_epoch, self.args.num_epochs):
-            train_queue = queue.Queue(self.args.num_workers << 1)
-            for trainset in trainset_list:
+        for epoch in range(start_epoch, num_epochs):
+            train_queue = queue.Queue(self.num_workers << 1)
+            for trainset in self.trainset_list:
                 trainset.shuffle()
 
             # Training
-            train_loader = MultiDataLoader(trainset_list, train_queue, self.args.batch_size, self.args.num_workers)
+            train_loader = MultiDataLoader(self.trainset_list, train_queue, batch_size, self.num_workers)
             train_loader.start()
-            train_loss, train_cer = self.train_epoches(epoch, total_time_step, train_begin, train_queue)
+            train_loss, train_cer = self.train_epoches(model, epoch, total_time_step, train_begin,
+                                                       train_queue, teacher_forcing_ratio)
             train_loader.join()
 
-            torch.save(self.model, "./data/weight_file/epoch%s.pt" % str(epoch))
+            torch.save(model, "./data/weight_file/epoch%s.pt" % str(epoch))
             logger.info('Epoch %d (Training) Loss %0.4f CER %0.4f' % (epoch, train_loss, train_cer))
 
             # Validation
-            valid_queue = queue.Queue(self.args.num_workers << 1)
-            valid_loader = AudioDataLoader(validset, valid_queue, self.args.batch_size, 0)
+            valid_queue = queue.Queue(self.num_workers << 1)
+            valid_loader = AudioDataLoader(self.validset, valid_queue, batch_size, 0)
             valid_loader.start()
 
-            valid_loss, valid_cer = self.validate(valid_queue)
+            valid_loss, valid_cer = self.validate(model, valid_queue)
             valid_loader.join()
 
             self.lr_scheduler.step(valid_loss)
@@ -91,15 +95,19 @@ class SupervisedTrainer:
                               valid_result=[valid_dict, valid_loss, valid_cer])
             logger.info('Epoch %d Training result saved as a csv file complete !!' % epoch)
 
-    def train_epoches(self, epoch, epoch_time_step, train_begin, queue):
+        return model
+
+    def train_epoches(self, model, epoch, epoch_time_step, train_begin, queue, teacher_forcing_ratio):
         """
         Run training one epoch
 
         Args:
+            model (torch.nn.Module): model to train
             epoch (int): number of current epoch
             epoch_time_step (int): total time step in one epoch
             train_begin (int): time of train begin
             queue (queue.Queue): training queue, containing input, targets, input_lengths, target_lengths
+            teacher_forcing_ratio (float):
 
         Returns: loss, cer
             - **loss** (float): loss of current epoch
@@ -112,7 +120,7 @@ class SupervisedTrainer:
         time_step = 0
         max_norm = 400
 
-        self.model.train()
+        model.train()
         begin = epoch_begin = time.time()
 
         while True:
@@ -120,10 +128,10 @@ class SupervisedTrainer:
 
             if inputs.shape[0] == 0:
                 # empty feats means closing one loader
-                self.args.num_workers -= 1
-                logger.debug('left train_loader: %d' % self.args.num_workers)
+                self.num_workers -= 1
+                logger.debug('left train_loader: %d' % self.num_workers)
 
-                if self.args.num_workers == 0:
+                if self.num_workers == 0:
                     break
                 else:
                     continue
@@ -132,8 +140,8 @@ class SupervisedTrainer:
             scripts = scripts.to(self.device)
             targets = scripts[:, 1:]
 
-            self.model.module.flatten_parameters()
-            output = self.model(inputs, input_lengths, scripts, teacher_forcing_ratio=self.args.teacher_forcing_ratio)
+            model.module.flatten_parameters()
+            output = model(inputs, input_lengths, scripts, teacher_forcing_ratio=teacher_forcing_ratio)
 
             logit = torch.stack(output, dim=1).to(self.device)
             hypothesis = logit.max(-1)[1]
@@ -149,13 +157,13 @@ class SupervisedTrainer:
 
             self.optimizer.zero_grad()
             loss.backward()
-            torch.nn.utils.clip_grad_norm_(self.model.parameters(), max_norm)
+            torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm)
             self.optimizer.step()
 
             time_step += 1
             torch.cuda.empty_cache()
 
-            if time_step % self.args.print_every == 0:
+            if time_step % self.print_every == 0:
                 current = time.time()
                 elapsed = current - begin
                 epoch_elapsed = (current - epoch_begin) / 60.0
@@ -170,20 +178,24 @@ class SupervisedTrainer:
                 )
                 begin = time.time()
 
-            if time_step % self.args.save_result_every == 0:
+            if time_step % self.save_result_every == 0:
                 save_step_result(train_step_result, epoch_loss_total / total_num, total_dist / total_length)
 
-            if time_step % self.args.save_model_every == 0:
-                torch.save(self.model, "./data/weight_file/epoch_%s_step_%s.pt" % (str(epoch), str(time_step)))
+            # Checkpoint
+            if time_step % self.checkpoint_every == 0:
+                Checkpoint(model=model, optimizer=self.optimizer,
+                           lr_scheduler=self.lr_scheduler, criterion=self.criterion,
+                           trainset_list=self.trainset_list, validset=self.validset, epoch=epoch)
 
         logger.info('train() completed')
         return epoch_loss_total / total_num, total_dist / total_length
 
-    def validate(self, queue):
+    def validate(self, model, queue):
         """
         Run training one epoch
 
         Args:
+            model (torch.nn.Module): model to train
             queue (queue.Queue): validation queue, containing input, targets, input_lengths, target_lengths
 
         Returns: loss, cer
@@ -197,7 +209,7 @@ class SupervisedTrainer:
         total_dist = 0
         total_length = 0
 
-        self.model.eval()
+        model.eval()
 
         with torch.no_grad():
             while True:
@@ -210,8 +222,8 @@ class SupervisedTrainer:
                 scripts = scripts.to(self.device)
                 targets = scripts[:, 1:]
 
-                self.model.module.flatten_parameters()
-                output = self.model(inputs, input_lengths, teacher_forcing_ratio=0.0)
+                model.module.flatten_parameters()
+                output = model(inputs, input_lengths, teacher_forcing_ratio=0.0)
 
                 logit = torch.stack(output, dim=1).to(self.device)
                 hypothesis = logit.max(-1)[1]

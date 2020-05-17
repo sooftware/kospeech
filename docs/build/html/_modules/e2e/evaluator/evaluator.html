@@ -89,7 +89,7 @@
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../Las.html">Las</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../LAS.html">LAS</a></li>
 </ul>
 <p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul>
@@ -175,21 +175,20 @@
 <span class="sd">    Class to evaluate models with given datasets.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        model (las.las): model to evaluate performance</span>
 <span class="sd">        batch_size (int): size of batch. recommended batch size is 1.</span>
 <span class="sd">        device (torch.device): device - &#39;cuda&#39; or &#39;cpu&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">batch_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span>
 
-<div class="viewcode-block" id="Evaluator.evaluate"><a class="viewcode-back" href="../../../Evaluator.html#e2e.evaluator.evaluator.Evaluator.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">data_list_path</span><span class="p">,</span> <span class="n">dataset_path</span><span class="p">):</span>
+<div class="viewcode-block" id="Evaluator.evaluate"><a class="viewcode-back" href="../../../Evaluator.html#e2e.evaluator.evaluator.Evaluator.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">data_list_path</span><span class="p">,</span> <span class="n">dataset_path</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Evaluate a model on given dataset and return performance.</span>
 
 <span class="sd">        Args:</span>
+<span class="sd">            model (torch.nn.Module): model to evaluate performance</span>
 <span class="sd">            args (argparse.ArgumentParser): set of arguments</span>
 <span class="sd">            data_list_path (str): path of csv file, containing testset list</span>
 <span class="sd">            dataset_path (str): path of dataset</span>
@@ -211,15 +210,16 @@
         <span class="n">eval_loader</span> <span class="o">=</span> <span class="n">AudioDataLoader</span><span class="p">(</span><span class="n">testset</span><span class="p">,</span> <span class="n">eval_queue</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="n">eval_loader</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
-        <span class="n">cer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">eval_queue</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Evaluate CER : </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">cer</span><span class="p">)</span>
+        <span class="n">cer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">eval_queue</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Evaluate CER: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">cer</span><span class="p">)</span>
         <span class="n">eval_loader</span><span class="o">.</span><span class="n">join</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Evaluator.predict"><a class="viewcode-back" href="../../../Evaluator.html#e2e.evaluator.evaluator.Evaluator.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">queue</span><span class="p">):</span>
+<div class="viewcode-block" id="Evaluator.predict"><a class="viewcode-back" href="../../../Evaluator.html#e2e.evaluator.evaluator.Evaluator.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">queue</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Make prediction given testset as input.</span>
 
 <span class="sd">        Args:</span>
+<span class="sd">             model (torch.nn.Module): model to evaluate performance</span>
 <span class="sd">             args (argparse.ArgumentParser): set of arguments</span>
 <span class="sd">             queue (queue.Queue): evaluate queue, containing input, targets, input_lengths, target_lengths</span>
 
@@ -232,18 +232,19 @@
         <span class="n">total_sent_num</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">time_step</span> <span class="o">=</span> <span class="mi">0</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
 
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
             <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
                 <span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">,</span> <span class="n">target_lengths</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="k">break</span>
+
                 <span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
                 <span class="n">targets</span> <span class="o">=</span> <span class="n">targets</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
                 <span class="n">scripts</span> <span class="o">=</span> <span class="n">targets</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:]</span>
 
-                <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+                <span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
 
                 <span class="n">logit</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
                 <span class="n">hypothesis</span> <span class="o">=</span> <span class="n">logit</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
@@ -259,9 +260,7 @@
                 <span class="n">time_step</span> <span class="o">+=</span> <span class="mi">1</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;evaluate() completed&#39;</span><span class="p">)</span>
-        <span class="n">cer</span> <span class="o">=</span> <span class="n">total_dist</span> <span class="o">/</span> <span class="n">total_length</span>
-
-        <span class="k">return</span> <span class="n">cer</span></div></div>
+        <span class="k">return</span> <span class="n">total_dist</span> <span class="o">/</span> <span class="n">total_length</span></div></div>
 </pre></div>
 
            </div>

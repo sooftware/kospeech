@@ -64,11 +64,12 @@ def build_las(listener, speller, device, use_multi_gpu=True, init_uniform=True):
 
 def build_listener(input_size, hidden_dim, dropout_p, num_layers, bidirectional, rnn_type, device, conv_type):
     """ build listener & validate parameters """
-    assert dropout_p >= 0.0, "dropout probability should be positive"
     assert isinstance(input_size, int), "input_size should be inteager type"
     assert isinstance(num_layers, int), "num_layers should be inteager type"
+    assert dropout_p >= 0.0, "dropout probability should be positive"
     assert input_size > 0, "input_size should be greater than 0"
     assert hidden_dim > 0, "hidden_dim should be greater than 0"
+    assert num_layers > 0, "num_layers should be greater than 0"
     assert rnn_type.lower() in supported_rnns.keys(), "Unsupported RNN Cell: {0}".format(rnn_type)
     assert conv_type.lower() in supported_convs, "Unsupported Conv: {0}".format(conv_type)
 
@@ -87,6 +88,9 @@ def build_speller(num_classes, max_len, hidden_dim, sos_id, eos_id, num_layers, 
     assert hidden_dim % num_heads == 0, "{0} % {1} should be zero".format(hidden_dim, num_heads)
     assert dropout_p >= 0.0, "dropout probability should be positive"
     assert hidden_dim > 0, "hidden_dim should be greater than 0"
+    assert num_layers > 0, "num_layers should be greater than 0"
+    assert max_len > 0, "max_len should be greater than 0"
+    assert num_classes > 0, "num_classes should be greater than 0"
     assert rnn_type.lower() in supported_rnns.keys(), "Unsupported RNN Cell: {0}".format(rnn_type)
 
     return Speller(num_classes, max_len, hidden_dim, sos_id, eos_id, num_heads, num_layers, rnn_type, dropout_p, device)
@@ -95,12 +99,22 @@ def build_speller(num_classes, max_len, hidden_dim, sos_id, eos_id, num_layers, 
 def load_test_model(args, device, use_beamsearch=True):
     """ load model for performance test """
     model = torch.load(args.model_path)
-    model.module.speller.device = device
-    model.module.listener.device = device
 
-    if use_beamsearch:
-        topk_decoder = TopKDecoder(model.module.speller, args.k)
-        model.module.set_speller(topk_decoder)
+    if isinstance(model, nn.DataParallel):
+        model.module.speller.device = device
+        model.module.listener.device = device
+
+        if use_beamsearch:
+            topk_decoder = TopKDecoder(model.module.speller, args.k)
+            model.module.set_speller(topk_decoder)
+
+    else:
+        model.speller.device = device
+        model.listener.device = device
+
+        if use_beamsearch:
+            topk_decoder = TopKDecoder(model.speller, args.k)
+            model.set_speller(topk_decoder)
 
     return model
 
@@ -116,7 +130,8 @@ def build_args():
     parser.add_argument('--use_augment', action='store_true', default=False)
     parser.add_argument('--use_pickle', action='store_true', default=False)
     parser.add_argument('--use_cuda', action='store_true', default=False)
-    parser.add_argument('--load_model', action='store_true', default=False)
+    parser.add_argument('--load_checkpoint', action='store_true', default=False,
+                        help='The name of the checkpoint to load, usually an encoded time string')
     parser.add_argument('--model_path', type=str, default=None, help='Location to load models (default: None')
     parser.add_argument('--augment_num', type=int, default=1, help='Number of SpecAugemnt per data (default: 1)')
     parser.add_argument('--hidden_dim', type=int, default=256, help='hidden state dimension of model (default: 256)')
@@ -160,9 +175,11 @@ def build_args():
                         help='how many freq-masked area to make (default: 2)')
     parser.add_argument('--save_result_every', type=int, default=1000,
                         help='to determine whether to store training results every N timesteps (default: 1000)')
-    parser.add_argument('--save_model_every', type=int, default=10000,
-                        help='to determine whether to store training model every N timesteps (default: 10000)')
+    parser.add_argument('--checkpoint_every', type=int, default=5000,
+                        help='to determine whether to store training checkpoint every N timesteps (default: 5000)')
     parser.add_argument('--print_every', type=int, default=10,
                         help='to determine whether to store training progress every N timesteps (default: 10')
+    parser.add_argument('--resume', action='store_true', default=False,
+                        help='Indicates if training has to be resumed from the latest checkpoint')
 
     return parser.parse_args()

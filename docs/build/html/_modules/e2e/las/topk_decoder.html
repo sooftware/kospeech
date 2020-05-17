@@ -89,7 +89,7 @@
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../Las.html">Las</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../LAS.html">LAS</a></li>
 </ul>
 <p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul>
@@ -175,7 +175,7 @@
     <span class="k">return</span> <span class="n">tensor</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="o">*</span><span class="n">repeat_dims</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="TopKDecoder"><a class="viewcode-back" href="../../../Las.html#e2e.las.topk_decoder.TopKDecoder">[docs]</a><span class="k">class</span> <span class="nc">TopKDecoder</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<div class="viewcode-block" id="TopKDecoder"><a class="viewcode-back" href="../../../LAS.html#e2e.las.topk_decoder.TopKDecoder">[docs]</a><span class="k">class</span> <span class="nc">TopKDecoder</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Top-K decoding with beam search.</span>
 
 <span class="sd">    Args:</span>
@@ -205,7 +205,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">pos_index</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">decoder</span><span class="o">.</span><span class="n">device</span>
 
-<div class="viewcode-block" id="TopKDecoder.forward"><a class="viewcode-back" href="../../../Las.html#e2e.las.topk_decoder.TopKDecoder.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_var</span><span class="p">,</span> <span class="n">encoder_outputs</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+<div class="viewcode-block" id="TopKDecoder.forward"><a class="viewcode-back" href="../../../LAS.html#e2e.las.topk_decoder.TopKDecoder.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_var</span><span class="p">,</span> <span class="n">encoder_outputs</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
         <span class="n">inputs</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">max_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_args</span><span class="p">(</span><span class="n">input_var</span><span class="p">,</span> <span class="n">encoder_outputs</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pos_index</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">batch_size</span><span class="p">))</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
 

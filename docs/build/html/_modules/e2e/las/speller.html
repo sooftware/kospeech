@@ -89,7 +89,7 @@
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../Las.html">Las</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../LAS.html">LAS</a></li>
 </ul>
 <p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul>
@@ -175,7 +175,7 @@
 <span class="p">}</span>
 
 
-<div class="viewcode-block" id="Speller"><a class="viewcode-back" href="../../../Las.html#e2e.las.speller.Speller">[docs]</a><span class="k">class</span> <span class="nc">Speller</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<div class="viewcode-block" id="Speller"><a class="viewcode-back" href="../../../LAS.html#e2e.las.speller.Speller">[docs]</a><span class="k">class</span> <span class="nc">Speller</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts higher level features (from listener) into output utterances</span>
 <span class="sd">    by specifying a probability distribution over sequences of characters.</span>
@@ -238,7 +238,7 @@
 
         <span class="k">return</span> <span class="n">predicted_softmax</span><span class="p">,</span> <span class="n">hidden</span>
 
-<div class="viewcode-block" id="Speller.forward"><a class="viewcode-back" href="../../../Las.html#e2e.las.speller.Speller.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">listener_outputs</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="mf">0.90</span><span class="p">):</span>
+<div class="viewcode-block" id="Speller.forward"><a class="viewcode-back" href="../../../LAS.html#e2e.las.speller.Speller.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">listener_outputs</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="mf">0.90</span><span class="p">):</span>
         <span class="n">hidden</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">decoder_outputs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
 
@@ -265,7 +265,7 @@
 
         <span class="k">return</span> <span class="n">decoder_outputs</span></div>
 
-<div class="viewcode-block" id="Speller.validate_args"><a class="viewcode-back" href="../../../Las.html#e2e.las.speller.Speller.validate_args">[docs]</a>    <span class="k">def</span> <span class="nf">validate_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">listener_outputs</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="p">):</span>
+<div class="viewcode-block" id="Speller.validate_args"><a class="viewcode-back" href="../../../LAS.html#e2e.las.speller.Speller.validate_args">[docs]</a>    <span class="k">def</span> <span class="nf">validate_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">listener_outputs</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Validate arguments &quot;&quot;&quot;</span>
         <span class="n">batch_size</span> <span class="o">=</span> <span class="n">listener_outputs</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 

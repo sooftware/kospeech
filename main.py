@@ -11,6 +11,11 @@
 import random
 import torch
 import warnings
+from torch import optim, nn
+from torch.optim.lr_scheduler import ReduceLROnPlateau
+from e2e.dataset.data_loader import split_dataset, load_pickle, load_data_list
+from e2e.dataset.label_loader import load_targets
+from e2e.loss.loss import LabelSmoothingLoss
 from e2e.modules.definition import *
 from e2e.evaluator.evaluator import Evaluator
 from e2e.trainer.supervised_trainer import SupervisedTrainer
@@ -36,20 +41,30 @@ def main():
         logger.info("PyTorch version : %s" % torch.__version__)
 
     if args.mode == 'train':
-        if args.load_model:
-            model = torch.load(args.model_path).to(device)
+        audio_paths, label_paths = load_data_list(TRAIN_LIST_PATH, DATASET_PATH)
+        total_time_step, trainset_list, validset = split_dataset(args, audio_paths, label_paths)
+        model = build_model(args, device)
 
+        optimizer = optim.Adam(model.module.parameters(), lr=args.lr)
+        lr_scheduler = ReduceLROnPlateau(optimizer, 'min', patience=args.lr_patience,
+                                         factor=args.lr_factor, verbose=True, min_lr=args.min_lr)
+
+        if args.label_smoothing == 0.0:
+            criterion = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_token).to(device)
         else:
-            model = build_model(args, device)
+            criterion = LabelSmoothingLoss(len(char2id), PAD_token, args.label_smoothing, dim=-1).to(device)
 
-        trainer = SupervisedTrainer(model, args, device)
-        trainer.train(TRAIN_LIST_PATH, DATASET_PATH, 0)
+        trainer = SupervisedTrainer(optimizer, lr_scheduler, criterion, trainset_list, validset,
+                                    args.batch_size, args.num_workers, device,
+                                    args.print_every, args.save_result_every, args.checkpoint_every)
+        model = trainer.train(model, args.batch_size, total_time_step, args.num_epochs,
+                              teacher_forcing_ratio=args.teacher_forcing_ratio, resume=args.resume)
+        torch.save(model, './data/weight_file/model.pt')
 
     elif args.mode == 'eval':
         model = load_test_model(args, device, use_beamsearch=True)
-
-        evaluator = Evaluator(model, batch_size=1, device=device)
-        evaluator.evaluate(args, TEST_LIST_PATH, DATASET_PATH)
+        evaluator = Evaluator(batch_size=1, device=device)
+        evaluator.evaluate(model, args, TEST_LIST_PATH, DATASET_PATH)
 
     else:
         raise ValueError("mode should be one of [train, eval]")

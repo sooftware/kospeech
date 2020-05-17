@@ -33,11 +33,11 @@ FREQ_MASK_PARA=12
 TIME_MASK_NUM=2
 FREQ_MASK_NUM=2
 SAVE_RESULT_EVERY=1000
-SAVE_MODEL_EVERY=10000
+CHECKPOINT_EVERY=5000
 PRINT_EVERY=10
 MODE='train'
 
-# N.B.: assumes las is called from parent directory, as described in README.md
+
 python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epochs $NUM_EPOCHS --use_bidirectional \
 --input_reverse --use_augment --use_cuda --augment_num $AUGMENT_NUM --hidden_dim $HIDDEN_DIM \
 --dropout $DROPOUT --num_heads $NUM_HEADS --label_smoothing $LABEL_SMOOTHING \
@@ -46,5 +46,5 @@ python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epoch
 --window_size $WINDOW_SIZE --stride $STRIDE --n_mels $N_MELS --normalize --del_silence \
 --feature_extract_by $FEATURE_EXTRACT_BY --time_mask_para $TIME_MASK_PARA --freq_mask_para $FREQ_MASK_PARA \
 --time_mask_num $TIME_MASK_NUM --freq_mask_num $FREQ_MASK_NUM --save_result_every $SAVE_RESULT_EVERY \
---save_model_every $SAVE_MODEL_EVERY --print_every $PRINT_EVERY --min_lr $MIN_LR --lr_patience $LR_PATIENCE \
+--checkpoint_every $CHECKPOINT_EVERY --print_every $PRINT_EVERY --min_lr $MIN_LR --lr_patience $LR_PATIENCE \
 --conv_type $CONV_TYPE --use_multi_gpu --init_uniform --mode $MODE

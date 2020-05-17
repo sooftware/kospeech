@@ -1,13 +1,15 @@
 ﻿# Intro
 
-This is project for Korean Speech Recognition using LAS (Listen, Attend and Spell) models implemented in [PyTorch](http://pytorch.org).  
+This is project for End-to-end Speech Recognition using LAS (Listen, Attend and Spell) models implemented in [PyTorch](http://pytorch.org).  
 We appreciate any kind of feedback or contribution.
   
-<img src="https://user-images.githubusercontent.com/42150335/80630547-5dfc6580-8a8f-11ea-91e8-73fe5e8b9e4b.png" width=650> 
+<img src="https://user-images.githubusercontent.com/42150335/80630547-5dfc6580-8a8f-11ea-91e8-73fe5e8b9e4b.png" width=450> 
   
 ## Roadmap
   
-Speech recognition is an interdisciplinary subfield of computational linguistics that develops methodologies and technologies that enables the recognition and translation of spoken language into text by computers.  
+End-to-end (E2E) automatic speech recognition (ASR) is an emerging paradigm in the field of neural network-based speech recognition that offers multiple benefits. Traditional “hybrid” ASR systems, which are comprised of an acoustic model, language model, and pronunciation model, require separate training of these components, each of which can be complex.   
+  
+For example, training of an acoustic model is a multi-stage process of model training and time alignment between the speech acoustic feature sequence and output label sequence. In contrast, E2E ASR is a single integrated approach with a much simpler training pipeline with models that operate at low audio frame rates. This reduces the training time, decoding time, and allows joint optimization with downstream processing such as natural language understanding.  
   
 We mainly referred to following papers.  
   
@@ -60,8 +62,8 @@ ListenAttendSpell(
 )
 ```
   
-We use [KsponSpeech](http://www.aihub.or.kr/aidata/105) dataset which contains 1,000 hours korean voice data. and, our project is currently in progress.   
-At present our top model has recorded an **85.16% CRR**, and we are working for a higher recognition rate.  
+We use [KsponSpeech](http://www.aihub.or.kr/aidata/105) dataset which contains 1,000 hours korean voice data from [AI Hub](http://www.aihub.or.kr/).  
+At present our model has recorded an **85.79% CRR**, and we are working for a higher recognition rate.  
   
 Also our model has recorded **91.0% CRR** in [Kadi-zeroth dataset](https://github.com/goodatlas/zeroth).  
   
@@ -100,7 +102,7 @@ Refer [here](https://github.com/sooftware/End-to-end-Speech-Recognition/wiki/Pre
 The above document is written in Korean.  
 We will also write a document in English as soon as possible, so please wait a little bit.  
   
-If you already have another dataset, please modify the data set path to [definition.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/definition.py) as appropriate.
+If you already have another dataset, please modify the data set path to [definition.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/e2e/modules/definition.py) as appropriate.
 
 ### Train and Test
 you can run by [run.sh](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/run.sh) like following.  
@@ -115,7 +117,7 @@ $ ./run.sh
 $ run.sh
 ```
   
-after training, you want to start testing, you should run [main.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/main.py) by `--mode='eval'`.  
+after training, you want to start testing, you should run by `--mode='eval'`.
 you can set up a arguments at [run.sh](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/run.sh) or at execution time.  
 
 ### Incorporating External Language Model in Performance Test
@@ -145,7 +147,7 @@ We follow [PEP-8](https://www.python.org/dev/peps/pep-0008/) for code style. Esp
 ### Citing
 ```
 @source_code{
-  title={Character-unit based End-to-end Korean Speech Recognition},
+  title={End-to-end Speech Recognition},
   author={Soohwan Kim, Seyoung Bae, Cheolhwang Won},
   year={2020}
 }

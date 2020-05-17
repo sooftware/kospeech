@@ -11,21 +11,20 @@ class Evaluator:
     Class to evaluate models with given datasets.
 
     Args:
-        model (las.las): model to evaluate performance
         batch_size (int): size of batch. recommended batch size is 1.
         device (torch.device): device - 'cuda' or 'cpu'
     """
 
-    def __init__(self, model, batch_size=1, device=None):
-        self.model = model
+    def __init__(self, batch_size=1, device=None):
         self.batch_size = batch_size
         self.device = device
 
-    def evaluate(self, args, data_list_path, dataset_path):
+    def evaluate(self, model, args, data_list_path, dataset_path):
         """
         Evaluate a model on given dataset and return performance.
 
         Args:
+            model (torch.nn.Module): model to evaluate performance
             args (argparse.ArgumentParser): set of arguments
             data_list_path (str): path of csv file, containing testset list
             dataset_path (str): path of dataset
@@ -47,15 +46,16 @@ class Evaluator:
         eval_loader = AudioDataLoader(testset, eval_queue, self.batch_size, 0)
         eval_loader.start()
 
-        cer = self.predict(args, eval_queue)
-        logger.info('Evaluate CER : %s' % cer)
+        cer = self.predict(model, args, eval_queue)
+        logger.info('Evaluate CER: %s' % cer)
         eval_loader.join()
 
-    def predict(self, args, queue):
+    def predict(self, model, args, queue):
         """
         Make prediction given testset as input.
 
         Args:
+             model (torch.nn.Module): model to evaluate performance
              args (argparse.ArgumentParser): set of arguments
              queue (queue.Queue): evaluate queue, containing input, targets, input_lengths, target_lengths
 
@@ -68,18 +68,19 @@ class Evaluator:
         total_sent_num = 0
         time_step = 0
 
-        self.model.eval()
+        model.eval()
 
         with torch.no_grad():
             while True:
                 inputs, targets, input_lengths, target_lengths = queue.get()
                 if inputs.shape[0] == 0:
                     break
+
                 inputs = inputs.to(self.device)
                 targets = targets.to(self.device)
                 scripts = targets[:, 1:]
 
-                output = self.model(inputs, input_lengths, teacher_forcing_ratio=0.0)
+                output = model(inputs, input_lengths, teacher_forcing_ratio=0.0)
 
                 logit = torch.stack(output, dim=1).to(self.device)
                 hypothesis = logit.max(-1)[1]
@@ -95,6 +96,4 @@ class Evaluator:
                 time_step += 1
 
         logger.info('evaluate() completed')
-        cer = total_dist / total_length
-
-        return cer
+        return total_dist / total_length

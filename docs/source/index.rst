@@ -18,7 +18,7 @@ Welcome to End-to-end Speech Recognition's documentation!
    :maxdepth: 1
    :caption: ARCHITECTURE
 
-   Las
+   LAS
 
 .. toctree::
    :maxdepth: 1

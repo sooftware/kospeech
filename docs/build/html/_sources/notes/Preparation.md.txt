@@ -4,7 +4,7 @@
 AI Hub 음성 데이터는 다음 링크에서 신청 후 다운로드 하실 수 있습니다.  
   
 AI Hub 한국어 음성 데이터 : http://www.aihub.or.kr/aidata/105   
-GitHub Repository : https://github.com/sh951011/Korean-Speech-Recognition
+GitHub Repository : https://github.com/sooftware/End-to-end-Speech-Recognition
   
 ## *Data Structure*  
   
