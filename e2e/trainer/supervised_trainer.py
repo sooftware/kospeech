@@ -1,10 +1,11 @@
 import time
 import torch
 import queue
+import pandas as pd
 from e2e.dataset.data_loader import MultiDataLoader, AudioDataLoader
 from e2e.modules.checkpoint import Checkpoint
-from e2e.modules.definition import logger, id2char, EOS_token, valid_dict, train_dict
-from e2e.modules.utils import get_distance, save_step_result, save_epoch_result
+from e2e.modules.definition import logger, id2char, EOS_token, valid_dict, train_dict, TRAIN_STEP_RESULT_PATH, VALID_RESULT_PATH, TRAIN_RESULT_PATH
+from e2e.modules.utils import get_distance
 
 train_step_result = {'loss': [], 'cer': []}
 
@@ -91,8 +92,8 @@ class SupervisedTrainer:
             self.lr_scheduler.step(valid_loss)
 
             logger.info('Epoch %d (Validate) Loss %0.4f CER %0.4f' % (epoch, valid_loss, valid_cer))
-            save_epoch_result(train_result=[train_dict, train_loss, train_cer],
-                              valid_result=[valid_dict, valid_loss, valid_cer])
+            self._save_epoch_result(train_result=[train_dict, train_loss, train_cer],
+                                   valid_result=[valid_dict, valid_loss, valid_cer])
             logger.info('Epoch %d Training result saved as a csv file complete !!' % epoch)
 
         return model
@@ -179,12 +180,12 @@ class SupervisedTrainer:
                 begin = time.time()
 
             if time_step % self.save_result_every == 0:
-                save_step_result(train_step_result, epoch_loss_total / total_num, total_dist / total_length)
+                self._save_step_result(train_step_result, epoch_loss_total / total_num, total_dist / total_length)
 
             # Checkpoint
             if time_step % self.checkpoint_every == 0:
                 Checkpoint(model=model, optimizer=self.optimizer,
-                           lr_scheduler=self.lr_scheduler, criterion=self.criterion,
+                           lr_scheduler=self.lr_scheduler,  criterion=self.criterion,
                            trainset_list=self.trainset_list, validset=self.validset, epoch=epoch).save()
 
         logger.info('train() completed')
@@ -238,3 +239,26 @@ class SupervisedTrainer:
 
         logger.info('validate() completed')
         return total_loss / total_num, total_dist / total_length
+
+    def _save_epoch_result(self, train_result, valid_result):
+        """ Save result of epoch """
+        train_dict, train_loss, train_cer = train_result
+        valid_dict, valid_loss, valid_cer = valid_result
+
+        train_dict["loss"].append(train_loss)
+        train_dict["cer"].append(train_cer)
+        valid_dict["loss"].append(valid_loss)
+        valid_dict["cer"].append(valid_cer)
+
+        train_df = pd.DataFrame(train_dict)
+        valid_df = pd.DataFrame(valid_dict)
+
+        train_df.to_csv(TRAIN_RESULT_PATH, encoding="cp949", index=False)
+        valid_df.to_csv(VALID_RESULT_PATH, encoding="cp949", index=False)
+
+    def _save_step_result(self, train_step_result, loss, cer):
+        """ Save result of --save_result_every step """
+        train_step_result["loss"].append(loss)
+        train_step_result["cer"].append(cer)
+        train_step_df = pd.DataFrame(train_step_result)
+        train_step_df.to_csv(TRAIN_STEP_RESULT_PATH, encoding="cp949", index=False)

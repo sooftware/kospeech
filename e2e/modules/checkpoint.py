@@ -2,7 +2,7 @@ import os
 import time
 import shutil
 import torch
-from e2e.modules.definition import DATA_DIR, logger
+from e2e.modules.definition import logger
 
 
 class Checkpoint(object):
@@ -30,7 +30,7 @@ class Checkpoint(object):
 
     CHECKPOINT_DIR_NAME = 'checkpoints'
     TRAINER_STATE_NAME = 'trainer_states.pt'
-    SAVE_PATH = DATA_DIR
+    SAVE_PATH = './data'
     MODEL_NAME = 'model.pt'
 
     def __init__(self, model, optimizer, lr_scheduler, criterion, trainset_list, validset, epoch):

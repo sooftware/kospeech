@@ -1,8 +1,7 @@
-import pandas as pd
 import pickle
 import Levenshtein as Lev
 import torch
-from e2e.modules.definition import logger, TRAIN_RESULT_PATH, VALID_RESULT_PATH, TRAIN_STEP_RESULT_PATH
+from e2e.modules.definition import logger
 
 
 def char_distance(target, y_hat):
@@ -116,31 +115,6 @@ def label_to_string(labels, id2char, eos_id):
         return sentences
 
 
-def save_epoch_result(train_result, valid_result):
-    """ Save result of epoch """
-    train_dict, train_loss, train_cer = train_result
-    valid_dict, valid_loss, valid_cer = valid_result
-
-    train_dict["loss"].append(train_loss)
-    train_dict["cer"].append(train_cer)
-    valid_dict["loss"].append(valid_loss)
-    valid_dict["cer"].append(valid_cer)
-
-    train_df = pd.DataFrame(train_dict)
-    valid_df = pd.DataFrame(valid_dict)
-
-    train_df.to_csv(TRAIN_RESULT_PATH, encoding="cp949", index=False)
-    valid_df.to_csv(VALID_RESULT_PATH, encoding="cp949", index=False)
-
-
-def save_step_result(train_step_result, loss, cer):
-    """ Save result of --check_every step """
-    train_step_result["loss"].append(loss)
-    train_step_result["cer"].append(cer)
-    train_step_df = pd.DataFrame(train_step_result)
-    train_step_df.to_csv(TRAIN_STEP_RESULT_PATH, encoding="cp949", index=False)
-
-
 def save_pickle(save_var, savepath, message=""):
     """ Save variable using pickle """
     with open(savepath + '.bin', "wb") as f:
@@ -158,7 +132,6 @@ def print_args(args):
     logger.info('--use_augment: %s' % str(args.use_augment))
     logger.info('--use_pickle: %s' % str(args.use_pickle))
     logger.info('--use_cuda: %s' % str(args.use_cuda))
-    logger.info('--load_model: %s' % str(args.load_model))
     logger.info('--model_path: %s' % str(args.model_path))
     logger.info('--augment_num: %s' % str(args.augment_num))
     logger.info('--hidden_dim: %s' % str(args.hidden_dim))

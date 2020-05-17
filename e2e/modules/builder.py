@@ -119,8 +119,8 @@ def load_test_model(args, device, use_beamsearch=True):
     return model
 
 
-def build_args():
-    """ build argements """
+def get_parser():
+    """ get argements parser """
     parser = argparse.ArgumentParser(description='End-to-end Speech Recognition')
     parser.add_argument('--mode', type=str, default='train')
     parser.add_argument('--use_multi_gpu', action='store_true', default=False)

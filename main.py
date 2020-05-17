@@ -20,12 +20,12 @@ from e2e.modules.definition import *
 from e2e.evaluator.evaluator import Evaluator
 from e2e.trainer.supervised_trainer import SupervisedTrainer
 from e2e.modules.utils import print_args
-from e2e.modules.builder import build_model, load_test_model, build_args
+from e2e.modules.builder import build_model, load_test_model, get_parser
 
 
 def main():
     warnings.filterwarnings('ignore')
-    args = build_args()
+    args = get_parser()
     print_args(args)
     random.seed(args.seed)
     torch.manual_seed(args.seed)
@@ -55,7 +55,7 @@ def main():
             criterion = LabelSmoothingLoss(len(char2id), PAD_token, args.label_smoothing, dim=-1).to(device)
 
         trainer = SupervisedTrainer(optimizer, lr_scheduler, criterion, trainset_list, validset,
-                                    args.batch_size, args.num_workers, device,
+                                    args.num_workers, device,
                                     args.print_every, args.save_result_every, args.checkpoint_every)
         model = trainer.train(model, args.batch_size, total_time_step, args.num_epochs,
                               teacher_forcing_ratio=args.teacher_forcing_ratio, resume=args.resume)

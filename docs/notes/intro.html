@@ -114,7 +114,7 @@
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../Las.html">Las</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../LAS.html">LAS</a></li>
 </ul>
 <p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul>
@@ -190,10 +190,11 @@
             
   <div class="section" id="intro">
 <h1>Intro<a class="headerlink" href="#intro" title="Permalink to this headline">¶</a></h1>
-<p>This is project for Korean Speech Recognition using LAS (Listen, Attend and Spell) models implemented in <a class="reference external" href="http://pytorch.org">PyTorch</a>.<br />We appreciate any kind of feedback or contribution.</p>
-<img src="https://user-images.githubusercontent.com/42150335/80630547-5dfc6580-8a8f-11ea-91e8-73fe5e8b9e4b.png" width=650> <div class="section" id="roadmap">
+<p>This is project for End-to-end Speech Recognition using LAS (Listen, Attend and Spell) models implemented in <a class="reference external" href="http://pytorch.org">PyTorch</a>.<br />We appreciate any kind of feedback or contribution.</p>
+<img src="https://user-images.githubusercontent.com/42150335/80630547-5dfc6580-8a8f-11ea-91e8-73fe5e8b9e4b.png" width=450> <div class="section" id="roadmap">
 <h2>Roadmap<a class="headerlink" href="#roadmap" title="Permalink to this headline">¶</a></h2>
-<p>Speech recognition is an interdisciplinary subfield of computational linguistics that develops methodologies and technologies that enables the recognition and translation of spoken language into text by computers.</p>
+<p>End-to-end (E2E) automatic speech recognition (ASR) is an emerging paradigm in the field of neural network-based speech recognition that offers multiple benefits. Traditional “hybrid” ASR systems, which are comprised of an acoustic model, language model, and pronunciation model, require separate training of these components, each of which can be complex.</p>
+<p>For example, training of an acoustic model is a multi-stage process of model training and time alignment between the speech acoustic feature sequence and output label sequence. In contrast, E2E ASR is a single integrated approach with a much simpler training pipeline with models that operate at low audio frame rates. This reduces the training time, decoding time, and allows joint optimization with downstream processing such as natural language understanding.</p>
 <p>We mainly referred to following papers.</p>
 <p><a class="reference external" href="https://arxiv.org/abs/1508.01211">「Listen, Attend and Spell」</a></p>
 <p><a class="reference external" href="https://arxiv.org/abs/1712.01769">「State-of-the-art Speech Recognition with Sequence-to-Sequence Models」</a></p>
@@ -235,7 +236,7 @@
 <span class="p">)</span>
 </pre></div>
 </div>
-<p>We use <a class="reference external" href="http://www.aihub.or.kr/aidata/105">KsponSpeech</a> dataset which contains 1,000 hours korean voice data. and, our project is currently in progress.<br />At present our top model has recorded an <strong>85.16% CRR</strong>, and we are working for a higher recognition rate.</p>
+<p>We use <a class="reference external" href="http://www.aihub.or.kr/aidata/105">KsponSpeech</a> dataset which contains 1,000 hours korean voice data from <a class="reference external" href="http://www.aihub.or.kr/">AI Hub</a>.<br />At present our model has recorded an <strong>85.79% CRR</strong>, and we are working for a higher recognition rate.</p>
 <p>Also our model has recorded <strong>91.0% CRR</strong> in <a class="reference external" href="https://github.com/goodatlas/zeroth">Kadi-zeroth dataset</a>.</p>
 <div class="section" id="crr-character-recognition-rate">
 <h3>( <strong>CRR</strong> : Character Recognition Rate )<a class="headerlink" href="#crr-character-recognition-rate" title="Permalink to this headline">¶</a></h3>
@@ -273,7 +274,7 @@
 <div class="section" id="preparation-before-training">
 <h3>Preparation before Training<a class="headerlink" href="#preparation-before-training" title="Permalink to this headline">¶</a></h3>
 <p>Refer <a class="reference external" href="https://github.com/sooftware/End-to-end-Speech-Recognition/wiki/Preparation-before-Training">here</a> before Training.<br />The above document is written in Korean.<br />We will also write a document in English as soon as possible, so please wait a little bit.</p>
-<p>If you already have another dataset, please modify the data set path to <a class="reference external" href="https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/definition.py">definition.py</a> as appropriate.</p>
+<p>If you already have another dataset, please modify the data set path to <a class="reference external" href="https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/e2e/modules/definition.py">definition.py</a> as appropriate.</p>
 </div>
 <div class="section" id="train-and-test">
 <h3>Train and Test<a class="headerlink" href="#train-and-test" title="Permalink to this headline">¶</a></h3>
@@ -290,7 +291,8 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ run.sh
 </pre></div>
 </div>
-<p>after training, you want to start testing, you should run <a class="reference external" href="https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/main.py">main.py</a> by <code class="docutils literal notranslate"><span class="pre">--mode='eval'</span></code>.<br />you can set up a arguments at <a class="reference external" href="https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/run.sh">run.sh</a> or at execution time.</p>
+<p>after training, you want to start testing, you should run by <code class="docutils literal notranslate"><span class="pre">--mode='eval'</span></code>.
+you can set up a arguments at <a class="reference external" href="https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/run.sh">run.sh</a> or at execution time.</p>
 </div>
 <div class="section" id="incorporating-external-language-model-in-performance-test">
 <h3>Incorporating External Language Model in Performance Test<a class="headerlink" href="#incorporating-external-language-model-in-performance-test" title="Permalink to this headline">¶</a></h3>
@@ -312,7 +314,7 @@
 <div class="section" id="citing">
 <h3>Citing<a class="headerlink" href="#citing" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@source_code</span><span class="p">{</span>
-  <span class="n">title</span><span class="o">=</span><span class="p">{</span><span class="n">Character</span><span class="o">-</span><span class="n">unit</span> <span class="n">based</span> <span class="n">End</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">end</span> <span class="n">Korean</span> <span class="n">Speech</span> <span class="n">Recognition</span><span class="p">},</span>
+  <span class="n">title</span><span class="o">=</span><span class="p">{</span><span class="n">End</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">end</span> <span class="n">Speech</span> <span class="n">Recognition</span><span class="p">},</span>
   <span class="n">author</span><span class="o">=</span><span class="p">{</span><span class="n">Soohwan</span> <span class="n">Kim</span><span class="p">,</span> <span class="n">Seyoung</span> <span class="n">Bae</span><span class="p">,</span> <span class="n">Cheolhwang</span> <span class="n">Won</span><span class="p">},</span>
   <span class="n">year</span><span class="o">=</span><span class="p">{</span><span class="mi">2020</span><span class="p">}</span>
 <span class="p">}</span>
