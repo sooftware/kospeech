@@ -10,7 +10,7 @@
 
 This is project for End-to-end Speech Recognition using LAS (Listen, Attend and Spell) models implemented in [PyTorch](http://pytorch.org).   
 This repository has modularized and extensible components for las models, training and inference, checkpoints etc.   
-We appreciate any kind of feedback or contribution.
+We appreciate any kind of [feedback or contribution](https://github.com/sooftware/End-to-end-Speech-Recognition/issues).
   
 <img src="https://user-images.githubusercontent.com/42150335/80630547-5dfc6580-8a8f-11ea-91e8-73fe5e8b9e4b.png" width=450> 
   
