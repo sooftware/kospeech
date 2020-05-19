@@ -201,8 +201,8 @@
 <p>데이터는 총 123GB로 크게 5개의 폴더로 이루어져 있고, 각 폴더 안에는 124개의 폴더가 있다. 그리고 그 폴더 안에는 1,000개씩의 PCM-TXT 파일로 구성되어 있다.  조용한 환경에서 2,000여명이 발성한 한국어 <strong>1,000시간</strong>의 데이터로 구성되어 있다. 총 파일의 개수는 <strong>622,545</strong>개의 PCM-TXT 파일로 구성되어 있다.</p>
 <p>※ 작업의 편의를 위하여 아래부터 이루어지는 작업은 모든 파일을 하나의 폴더 안에 모아서 작업했습니다 ※</p>
 <ul class="simple">
-<li>KaiSpeech_FileNum.pcm<br /><img alt="signal" src="https://postfiles.pstatic.net/MjAyMDAxMjJfMTYx/MDAxNTc5NjcyNzMyMTkz.Kw1WWrvvv9qLEf-pa0QYOcKYL3GOqXxahw_6sBsjqLgg.nkysalfeHToY9_FbVgxVcOM_Q5_RYlbpfFrAdFsdev4g.PNG.sooftware/audio-signal.png?type=w773" /></li>
-<li>KaiSpeech_FileNum.txt</li>
+<li>KsponSpeech_FILENUM.pcm<br /><img alt="signal" src="https://postfiles.pstatic.net/MjAyMDAxMjJfMTYx/MDAxNTc5NjcyNzMyMTkz.Kw1WWrvvv9qLEf-pa0QYOcKYL3GOqXxahw_6sBsjqLgg.nkysalfeHToY9_FbVgxVcOM_Q5_RYlbpfFrAdFsdev4g.PNG.sooftware/audio-signal.png?type=w773" /></li>
+<li>KsponSpeech_FILENUM.txt</li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;b/ 아/ 모+ 몬 소리야 (70%)/(칠 십 퍼센트) 확률이라니 n/&quot;</span>  
 </pre></div>
@@ -237,8 +237,8 @@
 </pre></div>
 </div>
 <p>텍스트 파일의 경로를 잡아주는 함수를 미리 정의해둔다.<br />Example )</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">BASE_PATH</span> <span class="o">=</span> <span class="s2">&quot;E:/한국어 음성데이터/KaiSpeech/&quot;</span>
-<span class="n">FNAME</span> <span class="o">=</span> <span class="s1">&#39;KaiSpeech_&#39;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">BASE_PATH</span> <span class="o">=</span> <span class="s2">&quot;E:/한국어 음성데이터/KsponScript/&quot;</span>
+<span class="n">FNAME</span> <span class="o">=</span> <span class="s1">&#39;KsponScript_&#39;</span>
 <span class="n">filenum</span> <span class="o">=</span> <span class="mi">1348</span>
 <span class="n">format</span> <span class="o">=</span> <span class="s1">&#39;.txt&#39;</span>
 
@@ -246,7 +246,7 @@
 </pre></div>
 </div>
 <p><strong>Output</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;E:/한국어 음성데이터/KaiSpeech/KaiSpeech_001348.txt&#39;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;E:/한국어 음성데이터/KsponSpeech/KsponScript_001348.txt&#39;</span>
 </pre></div>
 </div>
 </div>
@@ -313,26 +313,29 @@
 <div class="section" id="special-filter">
 <h3><strong>special_filter()</strong><a class="headerlink" href="#special-filter" title="Permalink to this headline">¶</a></h3>
 <p>문자 단위로 특수 문자 및 노이즈 표기 필터링해주는 함수이다.<br />특수 문자를 아예 필터링 해버리면 문제가 되는 ‘#’, ‘%’와 같은 문자를 확인하고, 문제가 되는 특수 문자는 해당 발음으로 바꿔주었다.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">test1</span> <span class="o">=</span> <span class="s2">&quot;o/ 근데 칠십 퍼센트가 커 보이긴 하는데 이백 벌다 백 사십 벌면 빡셀걸? b/&quot;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">re</span>
+
+<span class="n">test1</span> <span class="o">=</span> <span class="s2">&quot;o/ 근데 칠십 퍼센트가 커 보이긴 하는데 이백 벌다 백 사십 벌면 빡셀걸? b/&quot;</span>
 <span class="n">test2</span> <span class="o">=</span> <span class="s2">&quot;c# 배워봤어?&quot;</span>
 
 <span class="k">def</span> <span class="nf">special_filter</span><span class="p">(</span><span class="n">sentence</span><span class="p">):</span>
-    <span class="n">SENTENCE_MARK</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;?&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;!&#39;</span><span class="p">]</span>
+    <span class="n">SENTENCE_MARK</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;?&#39;</span><span class="p">,</span> <span class="s1">&#39;!&#39;</span><span class="p">]</span>
     <span class="n">NOISE</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">]</span>
-    <span class="n">EXCEPT</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;$&#39;</span><span class="p">,</span> <span class="s1">&#39;^&#39;</span><span class="p">,</span> <span class="s1">&#39;&amp;&#39;</span><span class="p">,</span> <span class="s1">&#39;[&#39;</span><span class="p">,</span> <span class="s1">&#39;]&#39;</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="s1">&#39;;&#39;</span><span class="p">]</span>
-    <span class="kn">import</span> <span class="nn">re</span>
+    <span class="n">EXCEPT</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;$&#39;</span><span class="p">,</span> <span class="s1">&#39;^&#39;</span><span class="p">,</span> <span class="s1">&#39;&amp;&#39;</span><span class="p">,</span> <span class="s1">&#39;[&#39;</span><span class="p">,</span> <span class="s1">&#39;]&#39;</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="s1">&#39;;&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">]</span>
+    
     <span class="n">new_sentence</span> <span class="o">=</span> <span class="nb">str</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">ch</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sentence</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">ch</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">SENTENCE_MARK</span><span class="p">:</span>
             <span class="c1"># o/, n/ 등 처리</span>
             <span class="k">if</span> <span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">sentence</span><span class="p">)</span> <span class="ow">and</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">NOISE</span> <span class="ow">and</span> <span class="n">sentence</span><span class="p">[</span><span class="n">idx</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;/&#39;</span><span class="p">:</span> 
                 <span class="k">continue</span> 
-        <span class="k">if</span> <span class="n">ch</span> <span class="o">==</span> <span class="s1">&#39;%&#39;</span><span class="p">:</span> 
-            <span class="n">new_sentence</span> <span class="o">+=</span> <span class="s1">&#39;퍼센트&#39;</span>
-        <span class="k">elif</span> <span class="n">ch</span> <span class="o">==</span> <span class="s1">&#39;#&#39;</span><span class="p">:</span> 
+
+        <span class="k">if</span> <span class="n">ch</span> <span class="o">==</span> <span class="s1">&#39;#&#39;</span><span class="p">:</span> 
             <span class="n">new_sentence</span> <span class="o">+=</span> <span class="s1">&#39;샾&#39;</span>
+
         <span class="k">elif</span> <span class="n">ch</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">EXCEPT</span><span class="p">:</span> 
             <span class="n">new_sentence</span> <span class="o">+=</span> <span class="n">ch</span>
+
     <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\s\s+&#39;</span><span class="p">)</span>
     <span class="n">new_sentence</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">new_sentence</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
     <span class="k">return</span> <span class="n">new_sentence</span>
@@ -346,6 +349,7 @@
 <span class="s1">&#39;c샾 배워봤어?&#39;</span>
 </pre></div>
 </div>
+<p><strong>&lt; . &gt;, &lt; , &gt;</strong> 같은 문장 부호는 음성인식 태스크에서 중요하지 않을 뿐더러 음성신호만으로 예측하기 어렵다고 생각하여 제외하였다. <strong>&lt; ? &gt;, &lt; ! &gt;</strong> 는 음성 신호로부터 예측 가능하고 중요한 문장 부호라고 생각하여 필터링하지 않았다.</p>
 </div>
 <div class="section" id="sentence-filter">
 <h3><strong>sentence_filter()</strong><a class="headerlink" href="#sentence-filter" title="Permalink to this headline">¶</a></h3>
@@ -362,6 +366,7 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;근데 칠십 퍼센트가 커 보이긴 하는데 이백 벌다 백 사십 벌면 빡셀걸?&#39;</span>
 </pre></div>
 </div>
+<p>위의 과정을 끝내면 <strong>&lt; % &gt;</strong> 특수문자가 남게되는데, 해당 특수문자는 <strong>‘프로’, ‘퍼센트’</strong> 두 가지 발음이 가능하므로, 직접 확인한 결과 총 8개의 파일에서 등장했고, 4개의 **’프로’**와 4개의 <strong>‘퍼센트’</strong> 이루어지는 것을 확인하고 수작업으로 변환했다.</p>
 </div>
 </div>
 <div class="section" id="create-character-labels">
@@ -374,8 +379,8 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">trange</span> <span class="c1"># display progress</span>
 
-<span class="n">BASE_PATH</span> <span class="o">=</span> <span class="s2">&quot;E:/한국어 음성데이터/KaiSpeech/&quot;</span>
-<span class="n">FNAME</span> <span class="o">=</span> <span class="s1">&#39;KaiSpeech_&#39;</span>
+<span class="n">BASE_PATH</span> <span class="o">=</span> <span class="s2">&quot;E:/한국어 음성데이터/KsponSpeech/&quot;</span>
+<span class="n">FNAME</span> <span class="o">=</span> <span class="s1">&#39;KsponSpeech_&#39;</span>
 <span class="n">TOTAL_NUM</span> <span class="o">=</span> <span class="mi">622545</span>
 <span class="n">label_list</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">label_freq</span> <span class="o">=</span> <span class="p">[]</span>
@@ -391,6 +396,7 @@
             <span class="n">label_freq</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">label_freq</span><span class="p">[</span><span class="n">label_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">ch</span><span class="p">)]</span> <span class="o">+=</span> <span class="mi">1</span>
+
 <span class="c1"># sort together Using zip</span>
 <span class="n">label_freq</span><span class="p">,</span> <span class="n">label_list</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">label_freq</span><span class="p">,</span> <span class="n">label_list</span><span class="p">),</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
 <span class="n">label</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:[],</span> <span class="s1">&#39;char&#39;</span><span class="p">:[],</span> <span class="s1">&#39;freq&#39;</span> <span class="p">:[]}</span>
@@ -411,12 +417,11 @@
 <p>수동으로 추가해 준 3개의 레이블을 포함하여 총 <strong>2,337</strong>개의 문자 레이블이 완성되었다.<br />우리 팀은 위의 레이블 리스트 중 1번씩 등장한 문자에 주목했다.</p>
 <p>‘갗’, ‘괞’, ‘긃’ 등의 생소한 문자가 약 300개 정도를 차지했는데   우리 팀은 이러한 레이블은 노이즈가 될 것이라고 생각했고, 이에 대한 처리를 고민했다. 1번씩 등장한 파일들을 확인해서 하나하나 수작업으로 레이블을 바꿔주려 했지만, 실제로 음성 파일을 들어보게 되면 바꿔주기가 상당히 애매했다.</p>
 <p>|id|char|freq|<br />|:–:|:—-:|:—-:|<br />|0| |5774462|<br />|1|.|640924|<br />|2|그|556373|<br />|3|이|509291|<br />|.|.|.|<br />|.|.|.|<br />|2037|&lt;s&gt;|0|<br />|2038|&lt;/s&gt;|0|<br />|2039|_|0|</p>
-<p>확인해본 결과, 1번만 등장한 문자가 포함된 파일은 총 297개로, 60만개가 넘는 파일 중 297개는 무시하고 2,040개의 문자 레이블로 학습하는 것이 더 나을 것이라고 판단했다. 그래서 2번 이상 등장한 문자들만 있는 파일들로만 <strong>트레이닝 데이터</strong>를 구성했다. 이렇게 1번씩 등장한 300여개의 문자들이 포함된 파일들을 제외를 해서, 위의 표처럼 <strong>2,040</strong>개의 문자로만 트레이닝을 시킬 수 있었다.</p>
+<p>그래서 우리는 이렇게 1번씩 등장한 문자가 포함된 파일은 <strong>테스트 데이터</strong>로 사용하고, 2번 이상 등장한 문자들만 있는 파일들로만 <strong>트레이닝 데이터</strong>를 구성했다. 이렇게 1번씩 등장한 300여개의 문자들이 포함된 파일들을 제외를 해서, 위의 표처럼 <strong>2,040</strong>개의 문자로만 트레이닝을 시킬 수 있었다.</p>
 <ul class="simple">
 <li>train_labels.csv : 1번씩 등장한 문자를 제외한 <strong>2,040</strong>개의 문자 레이블</li>
+<li>test_labels.csv : 데이터셋에서 등장한 <strong>2,337</strong>개의 문자 레이블<br />링크 : https://github.com/sh951011/Korean-Speech-Recognition/tree/master/data/label</li>
 </ul>
-<p>링크 : https://github.com/sh951011/Korean-Speech-Recognition/tree/master/data/label</p>
-<p>위의 과정 때문에 생겼던 <a class="reference external" href="https://github.com/sh951011/Korean-Speech-Recognition/issues/2">Issue</a>가 있으므로 꼭 해당 링크를 참고바랍니다.</p>
 </div>
 </div>
 <div class="section" id="create-target-text">
@@ -487,15 +492,16 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">trange</span> <span class="c1"># display progress</span>
 
-<span class="n">BASE_PATH</span> <span class="o">=</span> <span class="s2">&quot;E:/한국어 음성데이터/KaiSpeech/&quot;</span>
-<span class="n">FNAME</span> <span class="o">=</span> <span class="s1">&#39;KaiSpeech_&#39;</span>
-<span class="n">NEW_FNAME</span> <span class="o">=</span> <span class="s1">&#39;KaiSpeech_label_&#39;</span>
+<span class="n">BASE_PATH</span> <span class="o">=</span> <span class="s2">&quot;E:/한국어 음성데이터/KsponSpeech/&quot;</span>
+<span class="n">FNAME</span> <span class="o">=</span> <span class="s1">&#39;KsponSpeech_&#39;</span>
+<span class="n">NEW_FNAME</span> <span class="o">=</span> <span class="s1">&#39;KsponScript_&#39;</span>
 <span class="n">TOTAL_NUM</span> <span class="o">=</span> <span class="mi">622545</span>
 <span class="n">char2id</span><span class="p">,</span> <span class="n">id2char</span> <span class="o">=</span> <span class="n">load_label</span><span class="p">(</span><span class="s2">&quot;test_labels.csv&quot;</span><span class="p">)</span>
 
 <span class="k">print</span><span class="p">(</span><span class="s1">&#39;started...&#39;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">filenum</span> <span class="ow">in</span> <span class="n">trange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">TOTAL_NUM</span><span class="p">):</span>
     <span class="n">sentence</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span>
+
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">get_path</span><span class="p">(</span><span class="n">BASE_PATH</span><span class="p">,</span><span class="n">FNAME</span><span class="p">,</span><span class="n">filenum_padding</span><span class="p">(</span><span class="n">filenum</span><span class="p">),</span><span class="s2">&quot;.txt&quot;</span><span class="p">),</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">sentence</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
     
@@ -515,8 +521,10 @@
 <span class="n">TOTAL_NUM</span> <span class="o">=</span> <span class="mi">622545</span>
 <span class="n">TRAIN_NUM</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span> <span class="mi">622545</span> <span class="o">*</span> <span class="mf">0.98</span> <span class="p">)</span>
 <span class="n">TEST_NUM</span> <span class="o">=</span> <span class="n">TOTAL_NUM</span> <span class="o">-</span> <span class="n">TRAIN_NUM</span>
+
 <span class="n">train_data_list</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;audio&#39;</span><span class="p">:[],</span> <span class="s1">&#39;label&#39;</span><span class="p">:[]}</span>
 <span class="n">test_data_list</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;audio&#39;</span><span class="p">:[],</span> <span class="s1">&#39;label&#39;</span><span class="p">:[]}</span>
+
 <span class="n">aihub_labels</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;test_labels.csv&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;cp949&#39;</span><span class="p">)</span>
 <span class="n">rare_labels</span> <span class="o">=</span> <span class="n">aihub_labels</span><span class="p">[</span><span class="s1">&#39;char&#39;</span><span class="p">][</span><span class="mi">2037</span><span class="p">:]</span>
 </pre></div>
@@ -524,8 +532,8 @@
 <p>먼저 우리는 총 1,000시간 중 980시간을 훈련데이터, 20시간을 테스트데이터로 사용할 것이기 때문에 총 파일 개수의 98%에 해당하는 숫자를 TRAIN_NUM으로 계산해주고 나머지 숫자를 TEST_NUM으로 정의해주었다.<br />미리 만들어 둔 test_labels.csv 파일을 불러오고, 1번만 언급된 문자들은 rare_labels에 저장해준다.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">trange</span>
 
-<span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;KaiSpeech_&#39;</span>
-<span class="n">target_fname</span> <span class="o">=</span> <span class="s1">&#39;KaiSpeech_label_&#39;</span>
+<span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;KsponSpeech_&#39;</span>
+<span class="n">target_fname</span> <span class="o">=</span> <span class="s1">&#39;KsponScript_&#39;</span>
 
 <span class="n">audio_paths</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">target_paths</span> <span class="o">=</span> <span class="p">[]</span>
@@ -546,20 +554,29 @@
 <p>1번부터 622545번까지 순서대로 넣었으므로, 순서를 섞어준다.<br />이때, audio_paths와 target_paths를 같은 순서로 섞어주기 위해 zip()을 이용하여 섞어준다.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">trange</span>
 
-<span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;G:/한국어 음성데이터/KaiSpeech/&quot;</span>
+<span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;G:/한국어 음성데이터/KsponSpeech/&quot;</span>
 <span class="n">train_full</span> <span class="o">=</span> <span class="bp">False</span>
-<span class="n">train_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-<span class="n">test_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+<span class="n">train_dict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;audio&#39;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="p">[]</span>
+<span class="p">}</span>
+<span class="n">test_dict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;audio&#39;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="p">[]</span>
+<span class="p">}</span>
 
 <span class="k">print</span><span class="p">(</span><span class="s1">&#39;started...&#39;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">trange</span><span class="p">(</span><span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">audio_paths</span><span class="p">)):</span>
     <span class="n">audio</span> <span class="o">=</span> <span class="n">audio_paths</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
     <span class="n">target</span> <span class="o">=</span> <span class="n">target_paths</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">train_dict</span><span class="p">[</span><span class="s1">&#39;audio&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="n">TRAIN_NUM</span><span class="p">:</span>
         <span class="n">train_full</span> <span class="o">=</span> <span class="bp">True</span>
+
     <span class="k">if</span> <span class="n">train_full</span><span class="p">:</span>
         <span class="n">test_dict</span><span class="p">[</span><span class="s1">&#39;audio&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">audio</span><span class="p">)</span>
         <span class="n">test_dict</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+        
     <span class="k">else</span><span class="p">:</span>
         <span class="n">rare_in</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="n">sentence</span> <span class="o">=</span> <span class="bp">None</span>

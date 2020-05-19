@@ -4,7 +4,8 @@ import queue
 import pandas as pd
 from e2e.dataset.data_loader import MultiDataLoader, AudioDataLoader
 from e2e.modules.checkpoint import Checkpoint
-from e2e.modules.definition import logger, id2char, EOS_token, valid_dict, train_dict, TRAIN_STEP_RESULT_PATH, VALID_RESULT_PATH, TRAIN_RESULT_PATH
+from e2e.modules.definition import logger, id2char, EOS_token, valid_dict, train_dict, TRAIN_STEP_RESULT_PATH, \
+     VALID_RESULT_PATH, TRAIN_RESULT_PATH
 from e2e.modules.utils import get_distance
 
 train_step_result = {'loss': [], 'cer': []}

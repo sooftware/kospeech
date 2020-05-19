@@ -22,7 +22,7 @@ class SpectrogramDataset(Dataset):
         eos_id (int): identification of <end of sequence>
         target_dict (dict): dictionary of filename and labels
         use_augment (bool): flag indication whether to use spec-augmentation or not (default: True)
-        args (ArgumentParser): set of arguments
+        opt (ArgumentParser): set of arguments
     """
 
     feature_extract_funtions = {
@@ -30,17 +30,17 @@ class SpectrogramDataset(Dataset):
         'torchaudio': get_torchaudio_melspectrogram
     }
 
-    def __init__(self, audio_paths, label_paths, sos_id, eos_id, target_dict=None, args=None, use_augment=True):
+    def __init__(self, audio_paths, label_paths, sos_id, eos_id, target_dict=None, opt=None, use_augment=True):
         self.audio_paths = list(audio_paths)
         self.label_paths = list(label_paths)
         self.sos_id = sos_id
         self.eos_id = eos_id
         self.target_dict = target_dict
         self.augment_flags = [False] * len(self.audio_paths)
-        self.get_feature = SpectrogramDataset.feature_extract_funtions[args.feature_extract_by]
-        self.args = args
+        self.get_feature = SpectrogramDataset.feature_extract_funtions[opt.feature_extract_by]
+        self.opt = opt
         if use_augment:
-            self.augment_num = args.augment_num
+            self.augment_num = opt.augment_num
             self.denote_augment_flags()
         self.shuffle()
 
@@ -49,22 +49,22 @@ class SpectrogramDataset(Dataset):
         label = get_label(self.label_paths[idx], self.sos_id, self.eos_id, self.target_dict)
         spectrogram = self.get_feature(
             self.audio_paths[idx],
-            n_mels=self.args.n_mels,
-            input_reverse=self.args.input_reverse,
-            del_silence=self.args.del_silence,
-            normalize=self.args.normalize,
-            sr=self.args.sr,
-            window_size=self.args.window_size,
-            stride=self.args.stride
+            n_mels=self.opt.n_mels,
+            input_reverse=self.opt.input_reverse,
+            del_silence=self.opt.del_silence,
+            normalize=self.opt.normalize,
+            sr=self.opt.sr,
+            window_size=self.opt.window_size,
+            stride=self.opt.stride
         )
 
         if self.augment_flags[idx]:
             spectrogram = spec_augment(
                 spectrogram=spectrogram,
-                time_mask_para=self.args.time_mask_para,
-                freq_mask_para=self.args.freq_mask_para,
-                time_mask_num=self.args.time_mask_num,
-                freq_mask_num=self.args.freq_mask_num
+                time_mask_para=self.opt.time_mask_para,
+                freq_mask_para=self.opt.freq_mask_para,
+                time_mask_num=self.opt.time_mask_num,
+                freq_mask_num=self.opt.freq_mask_num
             )
 
         return spectrogram, label
@@ -93,12 +93,12 @@ class SpectrogramDataset(Dataset):
         return len(self.audio_paths)
 
 
-def split_dataset(args, audio_paths, label_paths):
+def split_dataset(opt, audio_paths, label_paths):
     """
     split into training set and validation set.
 
     Args:
-        args (utils.args.Arguments): set of arguments
+        opt (argparse.ArgumentParser): set of options
         audio_paths (list): set of audio path
         label_paths (list): set of label path
 
@@ -107,22 +107,22 @@ def split_dataset(args, audio_paths, label_paths):
         - **trainset_list** (list): list of training dataset
         - **validset** (data_loader.SpectrogramDataset): validation dataset
     """
-    if args.use_pickle:
+    if opt.use_pickle:
         target_dict = load_pickle(TARGET_DICT_PATH, "load all target_dict using pickle complete !!")
     else:
         target_dict = load_targets(label_paths)
 
     logger.info("split dataset start !!")
     trainset_list = list()
-    train_num = math.ceil(len(audio_paths) * (1 - args.valid_ratio))
-    total_time_step = math.ceil(len(audio_paths) / args.batch_size)
-    valid_time_step = math.ceil(total_time_step * args.valid_ratio)
+    train_num = math.ceil(len(audio_paths) * (1 - opt.valid_ratio))
+    total_time_step = math.ceil(len(audio_paths) / opt.batch_size)
+    valid_time_step = math.ceil(total_time_step * opt.valid_ratio)
     train_time_step = total_time_step - valid_time_step
 
-    if args.use_augment:
-        train_time_step = int(train_time_step * (1 + args.augment_num))
+    if opt.use_augment:
+        train_time_step = int(train_time_step * (1 + opt.augment_num))
 
-    train_num_per_worker = math.ceil(train_num / args.num_workers)
+    train_num_per_worker = math.ceil(train_num / opt.num_workers)
 
     # audio_paths & label_paths shuffled in the same order
     # for seperating train & validation
@@ -131,7 +131,7 @@ def split_dataset(args, audio_paths, label_paths):
     audio_paths, label_paths = zip(*data_paths)
 
     # seperating the train dataset by the number of workers
-    for idx in range(args.num_workers):
+    for idx in range(opt.num_workers):
         train_begin_idx = train_num_per_worker * idx
         train_end_idx = min(train_num_per_worker * (idx + 1), train_num)
 
@@ -140,8 +140,8 @@ def split_dataset(args, audio_paths, label_paths):
             label_paths=label_paths[train_begin_idx:train_end_idx],
             sos_id=SOS_token, eos_id=EOS_token,
             target_dict=target_dict,
-            use_augment=args.use_augment,
-            args=args
+            use_augment=opt.use_augment,
+            opt=opt
         ))
 
     validset = SpectrogramDataset(
@@ -149,7 +149,7 @@ def split_dataset(args, audio_paths, label_paths):
         label_paths=label_paths[train_num:],
         sos_id=SOS_token, eos_id=EOS_token,
         target_dict=target_dict,
-        args=args,
+        opt=opt,
         use_augment=False
     )
 

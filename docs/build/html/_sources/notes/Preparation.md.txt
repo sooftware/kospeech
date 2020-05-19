@@ -15,10 +15,10 @@ GitHub Repository : https://github.com/sooftware/End-to-end-Speech-Recognition
 ※ 작업의 편의를 위하여 아래부터 이루어지는 작업은 모든 파일을 하나의 폴더 안에 모아서 작업했습니다 ※
 
   
-* KaiSpeech_FileNum.pcm  
+* KsponSpeech_FILENUM.pcm  
 ![signal](https://postfiles.pstatic.net/MjAyMDAxMjJfMTYx/MDAxNTc5NjcyNzMyMTkz.Kw1WWrvvv9qLEf-pa0QYOcKYL3GOqXxahw_6sBsjqLgg.nkysalfeHToY9_FbVgxVcOM_Q5_RYlbpfFrAdFsdev4g.PNG.sooftware/audio-signal.png?type=w773)
   
-* KaiSpeech_FileNum.txt 
+* KsponSpeech_FILENUM.txt 
 ```
 "b/ 아/ 모+ 몬 소리야 (70%)/(칠 십 퍼센트) 확률이라니 n/"  
 ```
@@ -56,8 +56,8 @@ def get_path(path, fname, filenum, format):
 텍스트 파일의 경로를 잡아주는 함수를 미리 정의해둔다.  
 Example )
 ```python
-BASE_PATH = "E:/한국어 음성데이터/KaiSpeech/"
-FNAME = 'KaiSpeech_'
+BASE_PATH = "E:/한국어 음성데이터/KsponScript/"
+FNAME = 'KsponScript_'
 filenum = 1348
 format = '.txt'
 
@@ -65,7 +65,7 @@ print(get_path(BASE_PATH,FNAME,filenum_padding(filenum),".txt"))
 ```
 **Output**
 ```python
-'E:/한국어 음성데이터/KaiSpeech/KaiSpeech_001348.txt'
+'E:/한국어 음성데이터/KsponSpeech/KsponScript_001348.txt'
 ```
   
 ## *Data-Preprocess* 
@@ -129,26 +129,29 @@ print(bracket_filter(test2))
 문자 단위로 특수 문자 및 노이즈 표기 필터링해주는 함수이다.  
 특수 문자를 아예 필터링 해버리면 문제가 되는 '#', '%'와 같은 문자를 확인하고, 문제가 되는 특수 문자는 해당 발음으로 바꿔주었다.  
 ```python
+import re
+
 test1 = "o/ 근데 칠십 퍼센트가 커 보이긴 하는데 이백 벌다 백 사십 벌면 빡셀걸? b/"
 test2 = "c# 배워봤어?"
 
 def special_filter(sentence):
-    SENTENCE_MARK = ['.', '?', ',', '!']
+    SENTENCE_MARK = ['?', '!']
     NOISE = ['o', 'n', 'u', 'b', 'l']
-    EXCEPT = ['/', '+', '*', '-', '@', '$', '^', '&', '[', ']', '=', ':', ';']
-    import re
+    EXCEPT = ['/', '+', '*', '-', '@', '$', '^', '&', '[', ']', '=', ':', ';', '.', ',']
+    
     new_sentence = str()
     for idx, ch in enumerate(sentence):
         if ch not in SENTENCE_MARK:
             # o/, n/ 등 처리
             if idx + 1 < len(sentence) and ch in NOISE and sentence[idx+1] == '/': 
                 continue 
-        if ch == '%': 
-            new_sentence += '퍼센트'
-        elif ch == '#': 
+
+        if ch == '#': 
             new_sentence += '샾'
+
         elif ch not in EXCEPT: 
             new_sentence += ch
+
     pattern = re.compile(r'\s\s+')
     new_sentence = re.sub(pattern, ' ', new_sentence.strip())
     return new_sentence
@@ -161,6 +164,8 @@ print(special_filter(test2))
 '근데 칠십 퍼센트가 커 보이긴 하는데 이백 벌다 백 사십 벌면 빡셀걸?'
 'c샾 배워봤어?'
 ```
+  
+**< . >, < , >** 같은 문장 부호는 음성인식 태스크에서 중요하지 않을 뿐더러 음성신호만으로 예측하기 어렵다고 생각하여 제외하였다. **< ? >, < ! >** 는 음성 신호로부터 예측 가능하고 중요한 문장 부호라고 생각하여 필터링하지 않았다.
 
 ### **sentence_filter()**
   
@@ -180,6 +185,7 @@ print(sentence_filter(test))
 '근데 칠십 퍼센트가 커 보이긴 하는데 이백 벌다 백 사십 벌면 빡셀걸?'
 ```
   
+위의 과정을 끝내면 **< % >** 특수문자가 남게되는데, 해당 특수문자는 **'프로', '퍼센트'** 두 가지 발음이 가능하므로, 직접 확인한 결과 총 8개의 파일에서 등장했고, 4개의 **'프로'**와 4개의 **'퍼센트'** 이루어지는 것을 확인하고 수작업으로 변환했다.  
 
 ## *Create Character labels*  
   
@@ -195,8 +201,8 @@ print(sentence_filter(test))
 import pandas as pd
 from tqdm import trange # display progress
 
-BASE_PATH = "E:/한국어 음성데이터/KaiSpeech/"
-FNAME = 'KaiSpeech_'
+BASE_PATH = "E:/한국어 음성데이터/KsponSpeech/"
+FNAME = 'KsponSpeech_'
 TOTAL_NUM = 622545
 label_list = []
 label_freq = []
@@ -212,6 +218,7 @@ for filenum in trange(1,TOTAL_NUM):
             label_freq.append(1)
         else:
             label_freq[label_list.index(ch)] += 1
+
 # sort together Using zip
 label_freq, label_list = zip(*sorted(zip(label_freq, label_list), reverse=True))
 label = {'id':[], 'char':[], 'freq' :[]}
@@ -265,14 +272,12 @@ label_df.to_csv("aihub_labels.csv", encoding="utf-8", index=False)
 |2038|\</s\>|0|   
 |2039|\_|0|    
 
-확인해본 결과, 1번만 등장한 문자가 포함된 파일은 총 297개로, 60만개가 넘는 파일 중 297개는 무시하고 2,040개의 문자 레이블로 학습하는 것이 더 나을 것이라고 판단했다. 그래서 2번 이상 등장한 문자들만 있는 파일들로만 **트레이닝 데이터**를 구성했다. 이렇게 1번씩 등장한 300여개의 문자들이 포함된 파일들을 제외를 해서, 위의 표처럼 **2,040**개의 문자로만 트레이닝을 시킬 수 있었다.
+그래서 우리는 이렇게 1번씩 등장한 문자가 포함된 파일은 **테스트 데이터**로 사용하고, 2번 이상 등장한 문자들만 있는 파일들로만 **트레이닝 데이터**를 구성했다. 이렇게 1번씩 등장한 300여개의 문자들이 포함된 파일들을 제외를 해서, 위의 표처럼 **2,040**개의 문자로만 트레이닝을 시킬 수 있었다.  
 
-* train_labels.csv : 1번씩 등장한 문자를 제외한 **2,040**개의 문자 레이블
-
+* train_labels.csv : 1번씩 등장한 문자를 제외한 **2,040**개의 문자 레이블  
+* test_labels.csv : 데이터셋에서 등장한 **2,337**개의 문자 레이블  
 링크 : https://github.com/sh951011/Korean-Speech-Recognition/tree/master/data/label
-
-위의 과정 때문에 생겼던 [Issue](https://github.com/sh951011/Korean-Speech-Recognition/issues/2)가 있으므로 꼭 해당 링크를 참고바랍니다.
-
+   
 
 ## *Create target text*
   
@@ -349,15 +354,16 @@ print(target_to_sentence(test, id2char))
 import pandas as pd
 from tqdm import trange # display progress
 
-BASE_PATH = "E:/한국어 음성데이터/KaiSpeech/"
-FNAME = 'KaiSpeech_'
-NEW_FNAME = 'KaiSpeech_label_'
+BASE_PATH = "E:/한국어 음성데이터/KsponSpeech/"
+FNAME = 'KsponSpeech_'
+NEW_FNAME = 'KsponScript_'
 TOTAL_NUM = 622545
 char2id, id2char = load_label("test_labels.csv")
 
 print('started...')
 for filenum in trange(1,TOTAL_NUM):
     sentence, target = None, None
+
     with open(get_path(BASE_PATH,FNAME,filenum_padding(filenum),".txt"), "r") as f:
         sentence = f.readline()
     
@@ -377,8 +383,10 @@ import pandas as pd
 TOTAL_NUM = 622545
 TRAIN_NUM = int( 622545 * 0.98 )
 TEST_NUM = TOTAL_NUM - TRAIN_NUM
+
 train_data_list = {'audio':[], 'label':[]}
 test_data_list = {'audio':[], 'label':[]}
+
 aihub_labels = pd.read_csv("test_labels.csv", encoding='cp949')
 rare_labels = aihub_labels['char'][2037:]
 ```
@@ -389,8 +397,8 @@ rare_labels = aihub_labels['char'][2037:]
 ```python
 from tqdm import trange
 
-fname = 'KaiSpeech_'
-target_fname = 'KaiSpeech_label_'
+fname = 'KsponSpeech_'
+target_fname = 'KsponScript_'
 
 audio_paths = []
 target_paths = []
@@ -416,20 +424,29 @@ audio_paths, target_paths = zip(*data_paths)
 ```python
 from tqdm import trange
 
-path = "G:/한국어 음성데이터/KaiSpeech/"
+path = "G:/한국어 음성데이터/KsponSpeech/"
 train_full = False
-train_dict = dict()
-test_dict = dict()
+train_dict = {
+    'audio': [],
+    'label': []
+}
+test_dict = {
+    'audio': [],
+    'label': []
+}
 
 print('started...')
 for idx in trange(length = len(audio_paths)):
     audio = audio_paths[idx]
     target = target_paths[idx]
+
     if len(train_dict['audio']) == TRAIN_NUM:
         train_full = True
+
     if train_full:
         test_dict['audio'].append(audio)
         test_dict['label'].append(label)
+        
     else:
         rare_in = False
         sentence = None

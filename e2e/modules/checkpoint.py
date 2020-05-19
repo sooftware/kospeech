@@ -13,7 +13,7 @@ class Checkpoint(object):
     to write parameters to disk.
 
     Args:
-        model (las.las.ListenAttendSpell): LAS model being trained
+        model (nn.Module): LAS model being trained
         optimizer (Optimizer): stores the state of the optimizer
         lr_scheduler (torch.optim): learning rate scheduler
         criterion (e2e.loss.LabelSmoothingLoss): loss function

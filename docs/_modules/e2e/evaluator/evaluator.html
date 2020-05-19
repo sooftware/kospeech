@@ -183,13 +183,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">batch_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span>
 
-<div class="viewcode-block" id="Evaluator.evaluate"><a class="viewcode-back" href="../../../Evaluator.html#e2e.evaluator.evaluator.Evaluator.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">data_list_path</span><span class="p">,</span> <span class="n">dataset_path</span><span class="p">):</span>
+<div class="viewcode-block" id="Evaluator.evaluate"><a class="viewcode-back" href="../../../Evaluator.html#e2e.evaluator.evaluator.Evaluator.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">data_list_path</span><span class="p">,</span> <span class="n">dataset_path</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Evaluate a model on given dataset and return performance.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            model (torch.nn.Module): model to evaluate performance</span>
-<span class="sd">            args (argparse.ArgumentParser): set of arguments</span>
+<span class="sd">            opt (argparse.ArgumentParser): set of options</span>
 <span class="sd">            data_list_path (str): path of csv file, containing testset list</span>
 <span class="sd">            dataset_path (str): path of dataset</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -202,25 +202,25 @@
             <span class="n">sos_id</span><span class="o">=</span><span class="n">SOS_token</span><span class="p">,</span>
             <span class="n">eos_id</span><span class="o">=</span><span class="n">EOS_token</span><span class="p">,</span>
             <span class="n">target_dict</span><span class="o">=</span><span class="n">target_dict</span><span class="p">,</span>
-            <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span>
+            <span class="n">opt</span><span class="o">=</span><span class="n">opt</span><span class="p">,</span>
             <span class="n">use_augment</span><span class="o">=</span><span class="kc">False</span>
         <span class="p">)</span>
 
-        <span class="n">eval_queue</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">num_workers</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">eval_queue</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">num_workers</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">eval_loader</span> <span class="o">=</span> <span class="n">AudioDataLoader</span><span class="p">(</span><span class="n">testset</span><span class="p">,</span> <span class="n">eval_queue</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="n">eval_loader</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
-        <span class="n">cer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">eval_queue</span><span class="p">)</span>
+        <span class="n">cer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">eval_queue</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Evaluate CER: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">cer</span><span class="p">)</span>
         <span class="n">eval_loader</span><span class="o">.</span><span class="n">join</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Evaluator.predict"><a class="viewcode-back" href="../../../Evaluator.html#e2e.evaluator.evaluator.Evaluator.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">queue</span><span class="p">):</span>
+<div class="viewcode-block" id="Evaluator.predict"><a class="viewcode-back" href="../../../Evaluator.html#e2e.evaluator.evaluator.Evaluator.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">queue</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Make prediction given testset as input.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">             model (torch.nn.Module): model to evaluate performance</span>
-<span class="sd">             args (argparse.ArgumentParser): set of arguments</span>
+<span class="sd">             opt (argparse.ArgumentParser): set of options</span>
 <span class="sd">             queue (queue.Queue): evaluate queue, containing input, targets, input_lengths, target_lengths</span>
 
 <span class="sd">        Returns: cer</span>
@@ -254,7 +254,7 @@
                 <span class="n">total_length</span> <span class="o">+=</span> <span class="n">length</span>
                 <span class="n">total_sent_num</span> <span class="o">+=</span> <span class="n">scripts</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
-                <span class="k">if</span> <span class="n">time_step</span> <span class="o">%</span> <span class="n">args</span><span class="o">.</span><span class="n">print_every</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">time_step</span> <span class="o">%</span> <span class="n">opt</span><span class="o">.</span><span class="n">print_every</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;cer: </span><span class="si">{:.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dist</span> <span class="o">/</span> <span class="n">length</span><span class="p">))</span>
 
                 <span class="n">time_step</span> <span class="o">+=</span> <span class="mi">1</span>

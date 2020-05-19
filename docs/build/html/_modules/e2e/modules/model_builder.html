@@ -1,0 +1,324 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>e2e.modules.model_builder &mdash; End-to-end Speech Recognition 2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> End-to-end Speech Recognition
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">NOTES</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/intro.html">Intro</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/Preparation.html">Preparation before Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/Data-Analysis.html">Data-Analysis</a></li>
+</ul>
+<p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../LAS.html">LAS</a></li>
+</ul>
+<p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../Dataset.html">Dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Evaluator.html">Evaluator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Feature.html">Feature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Loss.html">Loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Modules.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../SupervisedTrainer.html">SupervisedTrainer</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">End-to-end Speech Recognition</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>e2e.modules.model_builder</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for e2e.modules.model_builder</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="c1">#from e2e.modules.definition import char2id, EOS_token, SOS_token</span>
+<span class="kn">from</span> <span class="nn">e2e.las.las</span> <span class="k">import</span> <span class="n">ListenAttendSpell</span>
+<span class="kn">from</span> <span class="nn">e2e.las.listener</span> <span class="k">import</span> <span class="n">Listener</span>
+<span class="kn">from</span> <span class="nn">e2e.las.speller</span> <span class="k">import</span> <span class="n">Speller</span>
+<span class="kn">from</span> <span class="nn">e2e.las.topk_decoder</span> <span class="k">import</span> <span class="n">TopKDecoder</span>
+
+<span class="n">supported_rnns</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;lstm&#39;</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">LSTM</span><span class="p">,</span>
+    <span class="s1">&#39;gru&#39;</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">GRU</span><span class="p">,</span>
+    <span class="s1">&#39;rnn&#39;</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">RNN</span>
+<span class="p">}</span>
+
+<span class="n">supported_convs</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;increase&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;repeat&#39;</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="build_model"><a class="viewcode-back" href="../../../Modules.html#e2e.modules.model_builder.build_model">[docs]</a><span class="k">def</span> <span class="nf">build_model</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; build base model &quot;&quot;&quot;</span>
+    <span class="n">listener</span> <span class="o">=</span> <span class="n">build_listener</span><span class="p">(</span>
+        <span class="n">input_size</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">n_mels</span><span class="p">,</span>
+        <span class="n">hidden_dim</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">,</span>
+        <span class="n">dropout_p</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">dropout</span><span class="p">,</span>
+        <span class="n">num_layers</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">listener_layer_size</span><span class="p">,</span>
+        <span class="n">bidirectional</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">use_bidirectional</span><span class="p">,</span>
+        <span class="n">rnn_type</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">rnn_type</span><span class="p">,</span>
+        <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
+        <span class="n">conv_type</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">conv_type</span>
+    <span class="p">)</span>
+    <span class="n">speller</span> <span class="o">=</span> <span class="n">build_speller</span><span class="p">(</span>
+        <span class="n">num_classes</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">char2id</span><span class="p">),</span>
+        <span class="n">max_len</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">max_len</span><span class="p">,</span>
+        <span class="n">hidden_dim</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">hidden_dim</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">use_bidirectional</span> <span class="k">else</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="n">sos_id</span><span class="o">=</span><span class="n">SOS_token</span><span class="p">,</span>
+        <span class="n">eos_id</span><span class="o">=</span><span class="n">EOS_token</span><span class="p">,</span>
+        <span class="n">num_layers</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">speller_layer_size</span><span class="p">,</span>
+        <span class="n">rnn_type</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">rnn_type</span><span class="p">,</span>
+        <span class="n">dropout_p</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">dropout</span><span class="p">,</span>
+        <span class="n">num_heads</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">num_heads</span><span class="p">,</span>
+        <span class="n">device</span><span class="o">=</span><span class="n">device</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">build_las</span><span class="p">(</span><span class="n">listener</span><span class="p">,</span> <span class="n">speller</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">use_multi_gpu</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">use_multi_gpu</span><span class="p">,</span> <span class="n">init_uniform</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">init_uniform</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="build_las"><a class="viewcode-back" href="../../../Modules.html#e2e.modules.model_builder.build_las">[docs]</a><span class="k">def</span> <span class="nf">build_las</span><span class="p">(</span><span class="n">listener</span><span class="p">,</span> <span class="n">speller</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">use_multi_gpu</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">init_uniform</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; build las model &amp; validate parameters &quot;&quot;&quot;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">ListenAttendSpell</span><span class="p">(</span><span class="n">listener</span><span class="p">,</span> <span class="n">speller</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">flatten_parameters</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">use_multi_gpu</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">DataParallel</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">init_uniform</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">():</span>
+            <span class="n">param</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">uniform_</span><span class="p">(</span><span class="o">-</span><span class="mf">0.08</span><span class="p">,</span> <span class="mf">0.08</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">model</span></div>
+
+
+<div class="viewcode-block" id="build_listener"><a class="viewcode-back" href="../../../Modules.html#e2e.modules.model_builder.build_listener">[docs]</a><span class="k">def</span> <span class="nf">build_listener</span><span class="p">(</span><span class="n">input_size</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">dropout_p</span><span class="p">,</span> <span class="n">num_layers</span><span class="p">,</span> <span class="n">bidirectional</span><span class="p">,</span> <span class="n">rnn_type</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">conv_type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; build listener &amp; validate parameters &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_size</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="s2">&quot;input_size should be inteager type&quot;</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num_layers</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="s2">&quot;num_layers should be inteager type&quot;</span>
+    <span class="k">assert</span> <span class="n">dropout_p</span> <span class="o">&gt;=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;dropout probability should be positive&quot;</span>
+    <span class="k">assert</span> <span class="n">input_size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;input_size should be greater than 0&quot;</span>
+    <span class="k">assert</span> <span class="n">hidden_dim</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;hidden_dim should be greater than 0&quot;</span>
+    <span class="k">assert</span> <span class="n">num_layers</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;num_layers should be greater than 0&quot;</span>
+    <span class="k">assert</span> <span class="n">rnn_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">supported_rnns</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="s2">&quot;Unsupported RNN Cell: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rnn_type</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">conv_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">supported_convs</span><span class="p">,</span> <span class="s2">&quot;Unsupported Conv: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">conv_type</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">Listener</span><span class="p">(</span><span class="n">input_size</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">dropout_p</span><span class="p">,</span> <span class="n">num_layers</span><span class="p">,</span> <span class="n">bidirectional</span><span class="p">,</span> <span class="n">rnn_type</span><span class="p">,</span> <span class="n">conv_type</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="build_speller"><a class="viewcode-back" href="../../../Modules.html#e2e.modules.model_builder.build_speller">[docs]</a><span class="k">def</span> <span class="nf">build_speller</span><span class="p">(</span><span class="n">num_classes</span><span class="p">,</span> <span class="n">max_len</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">sos_id</span><span class="p">,</span> <span class="n">eos_id</span><span class="p">,</span> <span class="n">num_layers</span><span class="p">,</span> <span class="n">rnn_type</span><span class="p">,</span> <span class="n">dropout_p</span><span class="p">,</span> <span class="n">num_heads</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; build speller &amp; validate parameters &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num_classes</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="s2">&quot;num_classes should be inteager type&quot;</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num_layers</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="s2">&quot;num_layers should be inteager type&quot;</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sos_id</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="s2">&quot;sos_id should be inteager type&quot;</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">eos_id</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="s2">&quot;eos_id should be inteager type&quot;</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num_heads</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="s2">&quot;num_heads should be inteager type&quot;</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">max_len</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="s2">&quot;max_len should be inteager type&quot;</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dropout_p</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> <span class="s2">&quot;dropout_p should be inteager type&quot;</span>
+    <span class="k">assert</span> <span class="n">hidden_dim</span> <span class="o">%</span> <span class="n">num_heads</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> % </span><span class="si">{1}</span><span class="s2"> should be zero&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">num_heads</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">dropout_p</span> <span class="o">&gt;=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;dropout probability should be positive&quot;</span>
+    <span class="k">assert</span> <span class="n">hidden_dim</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;hidden_dim should be greater than 0&quot;</span>
+    <span class="k">assert</span> <span class="n">num_layers</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;num_layers should be greater than 0&quot;</span>
+    <span class="k">assert</span> <span class="n">max_len</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;max_len should be greater than 0&quot;</span>
+    <span class="k">assert</span> <span class="n">num_classes</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;num_classes should be greater than 0&quot;</span>
+    <span class="k">assert</span> <span class="n">rnn_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">supported_rnns</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="s2">&quot;Unsupported RNN Cell: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rnn_type</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">Speller</span><span class="p">(</span><span class="n">num_classes</span><span class="p">,</span> <span class="n">max_len</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">sos_id</span><span class="p">,</span> <span class="n">eos_id</span><span class="p">,</span> <span class="n">num_heads</span><span class="p">,</span> <span class="n">num_layers</span><span class="p">,</span> <span class="n">rnn_type</span><span class="p">,</span> <span class="n">dropout_p</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="load_test_model"><a class="viewcode-back" href="../../../Modules.html#e2e.modules.model_builder.load_test_model">[docs]</a><span class="k">def</span> <span class="nf">load_test_model</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">use_beamsearch</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; load model for performance test &quot;&quot;&quot;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">model_path</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">DataParallel</span><span class="p">):</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">speller</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">listener</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span>
+
+        <span class="k">if</span> <span class="n">use_beamsearch</span><span class="p">:</span>
+            <span class="n">topk_decoder</span> <span class="o">=</span> <span class="n">TopKDecoder</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">speller</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">k</span><span class="p">)</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">set_speller</span><span class="p">(</span><span class="n">topk_decoder</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">speller</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">listener</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span>
+
+        <span class="k">if</span> <span class="n">use_beamsearch</span><span class="p">:</span>
+            <span class="n">topk_decoder</span> <span class="o">=</span> <span class="n">TopKDecoder</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">speller</span><span class="p">,</span> <span class="n">opt</span><span class="o">.</span><span class="n">k</span><span class="p">)</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">set_speller</span><span class="p">(</span><span class="n">topk_decoder</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">model</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Soohwan Kim
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

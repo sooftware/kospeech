@@ -18,18 +18,19 @@ from e2e.loss.loss import LabelSmoothingLoss
 from e2e.modules.definition import *
 from e2e.evaluator.evaluator import Evaluator
 from e2e.trainer.supervised_trainer import SupervisedTrainer
-from e2e.modules.utils import print_args
-from e2e.modules.builder import build_model, load_test_model, get_parser
+from e2e.modules.model_builder import build_model, load_test_model
+from e2e.modules.opts import get_parser, print_opts
 
 
 def main():
     warnings.filterwarnings('ignore')
-    args = get_parser()
-    print_args(args)
-    random.seed(args.seed)
-    torch.manual_seed(args.seed)
-    torch.cuda.manual_seed_all(args.seed)
-    cuda = args.use_cuda and torch.cuda.is_available()
+    parser = get_parser()
+    opt = parser.parse_args()
+    print_opts(opt, opt.mode)
+    random.seed(opt.seed)
+    torch.manual_seed(opt.seed)
+    torch.cuda.manual_seed_all(opt.seed)
+    cuda = opt.use_cuda and torch.cuda.is_available()
     device = torch.device('cuda' if cuda else 'cpu')
 
     if str(device) == 'cuda':
@@ -39,34 +40,34 @@ def main():
         logger.info("CUDA version : %s" % torch.version.cuda)
         logger.info("PyTorch version : %s" % torch.__version__)
 
-    if args.mode == 'train':
+    if opt.mode == 'train':
         audio_paths, label_paths = load_data_list(TRAIN_LIST_PATH, DATASET_PATH)
-        total_time_step, trainset_list, validset = split_dataset(args, audio_paths, label_paths)
-        model = build_model(args, device)
+        total_time_step, trainset_list, validset = split_dataset(opt, audio_paths, label_paths)
+        model = build_model(opt, device)
 
-        optimizer = optim.Adam(model.module.parameters(), lr=args.lr)
-        lr_scheduler = ReduceLROnPlateau(optimizer, 'min', patience=args.lr_patience,
-                                         factor=args.lr_factor, verbose=True, min_lr=args.min_lr)
+        optimizer = optim.Adam(model.module.parameters(), lr=opt.lr)
+        lr_scheduler = ReduceLROnPlateau(optimizer, 'min', patience=opt.lr_patience,
+                                         factor=opt.lr_factor, verbose=True, min_lr=opt.min_lr)
 
-        if args.label_smoothing == 0.0:
+        if opt.label_smoothing == 0.0:
             criterion = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_token).to(device)
         else:
-            criterion = LabelSmoothingLoss(len(char2id), PAD_token, args.label_smoothing, dim=-1).to(device)
+            criterion = LabelSmoothingLoss(len(char2id), PAD_token, opt.label_smoothing, dim=-1).to(device)
 
         trainer = SupervisedTrainer(optimizer, lr_scheduler, criterion, trainset_list, validset,
-                                    args.num_workers, device,
-                                    args.print_every, args.save_result_every, args.checkpoint_every)
-        model = trainer.train(model, args.batch_size, total_time_step, args.num_epochs,
-                              teacher_forcing_ratio=args.teacher_forcing_ratio, resume=args.resume)
+                                    opt.num_workers, device,
+                                    opt.print_every, opt.save_result_every, opt.checkpoint_every)
+        model = trainer.train(model, opt.batch_size, total_time_step, opt.num_epochs,
+                              teacher_forcing_ratio=opt.teacher_forcing_ratio, resume=opt.resume)
         torch.save(model, './data/weight_file/model.pt')
 
-    elif args.mode == 'eval':
-        model = load_test_model(args, device, use_beamsearch=True)
+    elif opt.mode == 'eval':
+        model = load_test_model(opt, device, use_beamsearch=True)
         evaluator = Evaluator(batch_size=1, device=device)
-        evaluator.evaluate(model, args, TEST_LIST_PATH, DATASET_PATH)
+        evaluator.evaluate(model, opt, TEST_LIST_PATH, DATASET_PATH)
 
     else:
-        raise ValueError("mode should be one of [train, eval]")
+        raise ValueError("Unsupported mode: {0}".format(opt.mode))
 
 
 if __name__ == '__main__':

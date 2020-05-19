@@ -185,15 +185,15 @@
 </table>
 <dl class="method">
 <dt id="e2e.evaluator.evaluator.Evaluator.evaluate">
-<code class="descname">evaluate</code><span class="sig-paren">(</span><em>model</em>, <em>args</em>, <em>data_list_path</em>, <em>dataset_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/evaluator/evaluator.html#Evaluator.evaluate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.evaluator.evaluator.Evaluator.evaluate" title="Permalink to this definition">¶</a></dt>
+<code class="descname">evaluate</code><span class="sig-paren">(</span><em>model</em>, <em>opt</em>, <em>data_list_path</em>, <em>dataset_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/evaluator/evaluator.html#Evaluator.evaluate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.evaluator.evaluator.Evaluator.evaluate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluate a model on given dataset and return performance.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>model</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.6.0a0+176174a ))"><em>torch.nn.Module</em></a>) – model to evaluate performance</li>
-<li><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser" title="(in Python v3.8)"><em>argparse.ArgumentParser</em></a>) – set of arguments</li>
+<li><strong>model</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.6.0a0+f6f1384 ))"><em>torch.nn.Module</em></a>) – model to evaluate performance</li>
+<li><strong>opt</strong> (<a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser" title="(in Python v3.8)"><em>argparse.ArgumentParser</em></a>) – set of options</li>
 <li><strong>data_list_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – path of csv file, containing testset list</li>
 <li><strong>dataset_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – path of dataset</li>
 </ul>
@@ -205,15 +205,15 @@
 
 <dl class="method">
 <dt id="e2e.evaluator.evaluator.Evaluator.predict">
-<code class="descname">predict</code><span class="sig-paren">(</span><em>model</em>, <em>args</em>, <em>queue</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/evaluator/evaluator.html#Evaluator.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.evaluator.evaluator.Evaluator.predict" title="Permalink to this definition">¶</a></dt>
+<code class="descname">predict</code><span class="sig-paren">(</span><em>model</em>, <em>opt</em>, <em>queue</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/evaluator/evaluator.html#Evaluator.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.evaluator.evaluator.Evaluator.predict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make prediction given testset as input.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>model</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.6.0a0+176174a ))"><em>torch.nn.Module</em></a>) – model to evaluate performance</li>
-<li><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser" title="(in Python v3.8)"><em>argparse.ArgumentParser</em></a>) – set of arguments</li>
+<li><strong>model</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.6.0a0+f6f1384 ))"><em>torch.nn.Module</em></a>) – model to evaluate performance</li>
+<li><strong>opt</strong> (<a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser" title="(in Python v3.8)"><em>argparse.ArgumentParser</em></a>) – set of options</li>
 <li><strong>queue</strong> (<a class="reference external" href="https://docs.python.org/3/library/queue.html#queue.Queue" title="(in Python v3.8)"><em>queue.Queue</em></a>) – evaluate queue, containing input, targets, input_lengths, target_lengths</li>
 </ul>
 </td>

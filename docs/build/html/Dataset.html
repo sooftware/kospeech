@@ -233,7 +233,7 @@
 
 <dl class="class">
 <dt id="e2e.dataset.data_loader.SpectrogramDataset">
-<em class="property">class </em><code class="descclassname">e2e.dataset.data_loader.</code><code class="descname">SpectrogramDataset</code><span class="sig-paren">(</span><em>audio_paths</em>, <em>label_paths</em>, <em>sos_id</em>, <em>eos_id</em>, <em>target_dict=None</em>, <em>args=None</em>, <em>use_augment=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/dataset/data_loader.html#SpectrogramDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.dataset.data_loader.SpectrogramDataset" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">e2e.dataset.data_loader.</code><code class="descname">SpectrogramDataset</code><span class="sig-paren">(</span><em>audio_paths</em>, <em>label_paths</em>, <em>sos_id</em>, <em>eos_id</em>, <em>target_dict=None</em>, <em>opt=None</em>, <em>use_augment=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/dataset/data_loader.html#SpectrogramDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.dataset.data_loader.SpectrogramDataset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dataset for audio &amp; label matching</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -246,7 +246,7 @@
 <li><strong>eos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of &lt;end of sequence&gt;</li>
 <li><strong>target_dict</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – dictionary of filename and labels</li>
 <li><strong>use_augment</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – flag indication whether to use spec-augmentation or not (default: True)</li>
-<li><strong>args</strong> (<em>ArgumentParser</em>) – set of arguments</li>
+<li><strong>opt</strong> (<em>ArgumentParser</em>) – set of arguments</li>
 </ul>
 </td>
 </tr>
@@ -322,14 +322,14 @@
 
 <dl class="function">
 <dt id="e2e.dataset.data_loader.split_dataset">
-<code class="descclassname">e2e.dataset.data_loader.</code><code class="descname">split_dataset</code><span class="sig-paren">(</span><em>args</em>, <em>audio_paths</em>, <em>label_paths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/dataset/data_loader.html#split_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.dataset.data_loader.split_dataset" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">e2e.dataset.data_loader.</code><code class="descname">split_dataset</code><span class="sig-paren">(</span><em>opt</em>, <em>audio_paths</em>, <em>label_paths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/dataset/data_loader.html#split_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.dataset.data_loader.split_dataset" title="Permalink to this definition">¶</a></dt>
 <dd><p>split into training set and validation set.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>args</strong> (<em>utils.args.Arguments</em>) – set of arguments</li>
+<li><strong>opt</strong> (<a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser" title="(in Python v3.8)"><em>argparse.ArgumentParser</em></a>) – set of options</li>
 <li><strong>audio_paths</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – set of audio path</li>
 <li><strong>label_paths</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – set of label path</li>
 </ul>

@@ -100,8 +100,9 @@
 <li class="toctree-l1"><a class="reference internal" href="Feature.html">Feature</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Modules</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-e2e.modules.builder">builder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-e2e.modules.model_builder">model_builder</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-e2e.modules.checkpoint">Checkpoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-e2e.modules.opts">opts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-e2e.modules.utils">utils</a></li>
 </ul>
 </li>
@@ -172,41 +173,35 @@
             
   <div class="section" id="modules">
 <h1>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-e2e.modules.builder">
-<span id="builder"></span><h2>builder<a class="headerlink" href="#module-e2e.modules.builder" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-e2e.modules.model_builder">
+<span id="model-builder"></span><h2>model_builder<a class="headerlink" href="#module-e2e.modules.model_builder" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="e2e.modules.builder.build_las">
-<code class="descclassname">e2e.modules.builder.</code><code class="descname">build_las</code><span class="sig-paren">(</span><em>listener</em>, <em>speller</em>, <em>device</em>, <em>use_multi_gpu=True</em>, <em>init_uniform=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/builder.html#build_las"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.builder.build_las" title="Permalink to this definition">¶</a></dt>
+<dt id="e2e.modules.model_builder.build_las">
+<code class="descclassname">e2e.modules.model_builder.</code><code class="descname">build_las</code><span class="sig-paren">(</span><em>listener</em>, <em>speller</em>, <em>device</em>, <em>use_multi_gpu=True</em>, <em>init_uniform=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/model_builder.html#build_las"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.model_builder.build_las" title="Permalink to this definition">¶</a></dt>
 <dd><p>build las model &amp; validate parameters</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="e2e.modules.builder.build_listener">
-<code class="descclassname">e2e.modules.builder.</code><code class="descname">build_listener</code><span class="sig-paren">(</span><em>input_size</em>, <em>hidden_dim</em>, <em>dropout_p</em>, <em>num_layers</em>, <em>bidirectional</em>, <em>rnn_type</em>, <em>device</em>, <em>conv_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/builder.html#build_listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.builder.build_listener" title="Permalink to this definition">¶</a></dt>
+<dt id="e2e.modules.model_builder.build_listener">
+<code class="descclassname">e2e.modules.model_builder.</code><code class="descname">build_listener</code><span class="sig-paren">(</span><em>input_size</em>, <em>hidden_dim</em>, <em>dropout_p</em>, <em>num_layers</em>, <em>bidirectional</em>, <em>rnn_type</em>, <em>device</em>, <em>conv_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/model_builder.html#build_listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.model_builder.build_listener" title="Permalink to this definition">¶</a></dt>
 <dd><p>build listener &amp; validate parameters</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="e2e.modules.builder.build_model">
-<code class="descclassname">e2e.modules.builder.</code><code class="descname">build_model</code><span class="sig-paren">(</span><em>args</em>, <em>device</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/builder.html#build_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.builder.build_model" title="Permalink to this definition">¶</a></dt>
+<dt id="e2e.modules.model_builder.build_model">
+<code class="descclassname">e2e.modules.model_builder.</code><code class="descname">build_model</code><span class="sig-paren">(</span><em>opt</em>, <em>device</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/model_builder.html#build_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.model_builder.build_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>build base model</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="e2e.modules.builder.build_speller">
-<code class="descclassname">e2e.modules.builder.</code><code class="descname">build_speller</code><span class="sig-paren">(</span><em>num_classes</em>, <em>max_len</em>, <em>hidden_dim</em>, <em>sos_id</em>, <em>eos_id</em>, <em>num_layers</em>, <em>rnn_type</em>, <em>dropout_p</em>, <em>num_heads</em>, <em>device</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/builder.html#build_speller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.builder.build_speller" title="Permalink to this definition">¶</a></dt>
+<dt id="e2e.modules.model_builder.build_speller">
+<code class="descclassname">e2e.modules.model_builder.</code><code class="descname">build_speller</code><span class="sig-paren">(</span><em>num_classes</em>, <em>max_len</em>, <em>hidden_dim</em>, <em>sos_id</em>, <em>eos_id</em>, <em>num_layers</em>, <em>rnn_type</em>, <em>dropout_p</em>, <em>num_heads</em>, <em>device</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/model_builder.html#build_speller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.model_builder.build_speller" title="Permalink to this definition">¶</a></dt>
 <dd><p>build speller &amp; validate parameters</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="e2e.modules.builder.get_parser">
-<code class="descclassname">e2e.modules.builder.</code><code class="descname">get_parser</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/builder.html#get_parser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.builder.get_parser" title="Permalink to this definition">¶</a></dt>
-<dd><p>get argements parser</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="e2e.modules.builder.load_test_model">
-<code class="descclassname">e2e.modules.builder.</code><code class="descname">load_test_model</code><span class="sig-paren">(</span><em>args</em>, <em>device</em>, <em>use_beamsearch=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/builder.html#load_test_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.builder.load_test_model" title="Permalink to this definition">¶</a></dt>
+<dt id="e2e.modules.model_builder.load_test_model">
+<code class="descclassname">e2e.modules.model_builder.</code><code class="descname">load_test_model</code><span class="sig-paren">(</span><em>opt</em>, <em>device</em>, <em>use_beamsearch=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/model_builder.html#load_test_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.model_builder.load_test_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>load model for performance test</p>
 </dd></dl>
 
@@ -225,7 +220,7 @@ to write parameters to disk.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>model</strong> (<a class="reference internal" href="LAS.html#e2e.las.las.ListenAttendSpell" title="e2e.las.las.ListenAttendSpell"><em>las.las.ListenAttendSpell</em></a>) – LAS model being trained</li>
+<li><strong>model</strong> (<em>nn.Module</em>) – LAS model being trained</li>
 <li><strong>optimizer</strong> (<em>Optimizer</em>) – stores the state of the optimizer</li>
 <li><strong>lr_scheduler</strong> (<em>torch.optim</em>) – learning rate scheduler</li>
 <li><strong>criterion</strong> (<em>e2e.loss.LabelSmoothingLoss</em>) – loss function</li>
@@ -280,6 +275,35 @@ The name of the subdirectory is the current local time in Y_M_D_H_M_S format.</p
 </dd></dl>
 
 </div>
+<div class="section" id="module-e2e.modules.opts">
+<span id="opts"></span><h2>opts<a class="headerlink" href="#module-e2e.modules.opts" title="Permalink to this headline">¶</a></h2>
+<p>Implementation of all available options</p>
+<dl class="function">
+<dt id="e2e.modules.opts.infer_opts">
+<code class="descclassname">e2e.modules.opts.</code><code class="descname">infer_opts</code><span class="sig-paren">(</span><em>parser</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/opts.html#infer_opts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.opts.infer_opts" title="Permalink to this definition">¶</a></dt>
+<dd><p>inference options</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="e2e.modules.opts.model_opts">
+<code class="descclassname">e2e.modules.opts.</code><code class="descname">model_opts</code><span class="sig-paren">(</span><em>parser</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/opts.html#model_opts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.opts.model_opts" title="Permalink to this definition">¶</a></dt>
+<dd><p>These options are passed to the construction of the model.
+Be careful with these as they will be used during inference.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="e2e.modules.opts.preprocess_opts">
+<code class="descclassname">e2e.modules.opts.</code><code class="descname">preprocess_opts</code><span class="sig-paren">(</span><em>parser</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/opts.html#preprocess_opts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.opts.preprocess_opts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pre-processing options</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="e2e.modules.opts.train_opts">
+<code class="descclassname">e2e.modules.opts.</code><code class="descname">train_opts</code><span class="sig-paren">(</span><em>parser</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/opts.html#train_opts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.opts.train_opts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Training and saving options</p>
+</dd></dl>
+
+</div>
 <div class="section" id="module-e2e.modules.utils">
 <span id="utils"></span><h2>utils<a class="headerlink" href="#module-e2e.modules.utils" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
@@ -317,8 +341,8 @@ The name of the subdirectory is the current local time in Y_M_D_H_M_S format.</p
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>targets</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+176174a ))"><em>torch.Tensor</em></a>) – set of ground truth</li>
-<li><strong>y_hats</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+176174a ))"><em>torch.Tensor</em></a>) – predicted y values (y_hat) by the model</li>
+<li><strong>targets</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+f6f1384 ))"><em>torch.Tensor</em></a>) – set of ground truth</li>
+<li><strong>y_hats</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+f6f1384 ))"><em>torch.Tensor</em></a>) – predicted y values (y_hat) by the model</li>
 <li><strong>id2char</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – id2char[id] = ch</li>
 <li><strong>eos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of &lt;end of sequence&gt;</li>
 </ul>
@@ -387,12 +411,6 @@ The name of the subdirectory is the current local time in Y_M_D_H_M_S format.</p
 </ul>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="e2e.modules.utils.print_args">
-<code class="descclassname">e2e.modules.utils.</code><code class="descname">print_args</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/utils.html#print_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.utils.print_args" title="Permalink to this definition">¶</a></dt>
-<dd><p>Print arguments</p>
 </dd></dl>
 
 <dl class="function">
