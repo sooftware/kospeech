@@ -4,12 +4,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 from e2e.las.attention import MultiHeadAttention
 
-supported_rnns = {
-    'lstm': nn.LSTM,
-    'gru': nn.GRU,
-    'rnn': nn.RNN
-}
-
 
 class Speller(nn.Module):
     r"""
@@ -40,11 +34,17 @@ class Speller(nn.Module):
         - **decoder_outputs** (seq_len, batch_size, num_classes): list of tensors containing
         the outputs of the decoding function.
     """
+    supported_rnns = {
+        'lstm': nn.LSTM,
+        'gru': nn.GRU,
+        'rnn': nn.RNN
+    }
+
     def __init__(self, num_classes, max_length, hidden_dim, sos_id, eos_id,
                  num_heads, num_layers=1, rnn_type='gru', dropout_p=0.5, device=None):
         super(Speller, self).__init__()
         self.num_classes = num_classes
-        self.rnn_cell = supported_rnns[rnn_type]
+        self.rnn_cell = self.supported_rnns[rnn_type]
         self.rnn = self.rnn_cell(hidden_dim, hidden_dim, num_layers, batch_first=True, dropout=dropout_p).to(device)
         self.max_length = max_length
         self.hidden_dim = hidden_dim
@@ -58,7 +58,7 @@ class Speller(nn.Module):
 
     def forward_step(self, input_var, hidden, listener_outputs):
         batch_size = input_var.size(0)
-        seq_length = input_var.size(1)
+        output_size = input_var.size(1)
 
         embedded = self.embedding(input_var).to(self.device)
         embedded = self.input_dropout(embedded)
@@ -70,7 +70,7 @@ class Speller(nn.Module):
         context = self.attention(output, listener_outputs)
 
         predicted_softmax = F.log_softmax(self.fc(context.contiguous().view(-1, self.hidden_dim)), dim=1)
-        predicted_softmax = predicted_softmax.view(batch_size, seq_length, -1)
+        predicted_softmax = predicted_softmax.view(batch_size, output_size, -1)
 
         return predicted_softmax, hidden
 

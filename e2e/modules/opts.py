@@ -91,6 +91,7 @@ def infer_opts(parser):
 
 
 def get_parser(mode='train'):
+    """ Get arguments parser """
     parser = argparse.ArgumentParser(description='End-to-end Speech Recognition')
 
     if mode == 'train':
@@ -109,6 +110,7 @@ def get_parser(mode='train'):
 
 
 def print_preprocess_opts(opt):
+    """ Print preprocess options """
     logger.info('--sr: %s' % str(opt.sr))
     logger.info('--window_size: %s' % str(opt.window_size))
     logger.info('--stride: %s' % str(opt.stride))
@@ -124,6 +126,7 @@ def print_preprocess_opts(opt):
 
 
 def print_model_opts(opt):
+    """ Print model options """
     logger.info('--use_bidirectional: %s' % str(opt.use_bidirectional))
     logger.info('--hidden_dim: %s' % str(opt.hidden_dim))
     logger.info('--dropout: %s' % str(opt.dropout))
@@ -137,6 +140,7 @@ def print_model_opts(opt):
 
 
 def print_train_opts(opt):
+    """ Print train options """
     logger.info('--use_multi_gpu: %s' % str(opt.use_multi_gpu))
     logger.info('--init_uniform: %s' % str(opt.init_uniform))
     logger.info('--use_augment: %s' % str(opt.use_augment))
@@ -161,6 +165,7 @@ def print_train_opts(opt):
 
 
 def print_infer_opts(opt):
+    """ Print inference options """
     logger.info('--use_multi_gpu: %s' % str(opt.use_multi_gpu))
     logger.info('--num_workers: %s' % str(opt.num_workers))
     logger.info('--use_cuda: %s' % str(opt.use_cuda))
@@ -171,6 +176,7 @@ def print_infer_opts(opt):
 
 
 def print_opts(opt, mode='train'):
+    """ Print options """
     logger.info('--mode: %s' % str(opt.mode))
 
     if mode == 'train':

@@ -185,9 +185,11 @@ class SupervisedTrainer:
 
             # Checkpoint
             if time_step % self.checkpoint_every == 0:
-                Checkpoint(model=model, optimizer=self.optimizer,
-                           lr_scheduler=self.lr_scheduler,  criterion=self.criterion,
-                           trainset_list=self.trainset_list, validset=self.validset, epoch=epoch).save()
+                Checkpoint(model, self.optimizer, self.lr_scheduler,  self.criterion,
+                           self.trainset_list, self.validset, epoch).save()
+
+        Checkpoint(model, self.optimizer, self.lr_scheduler, self.criterion,
+                   self.trainset_list, self.validset, epoch).save()
 
         logger.info('train() completed')
         return epoch_loss_total / total_num, total_dist / total_length
@@ -247,8 +249,9 @@ class SupervisedTrainer:
         valid_dict, valid_loss, valid_cer = valid_result
 
         train_dict["loss"].append(train_loss)
-        train_dict["cer"].append(train_cer)
         valid_dict["loss"].append(valid_loss)
+
+        train_dict["cer"].append(train_cer)
         valid_dict["cer"].append(valid_cer)
 
         train_df = pd.DataFrame(train_dict)
@@ -261,5 +264,6 @@ class SupervisedTrainer:
         """ Save result of --save_result_every step """
         train_step_result["loss"].append(loss)
         train_step_result["cer"].append(cer)
+
         train_step_df = pd.DataFrame(train_step_result)
         train_step_df.to_csv(TRAIN_STEP_RESULT_PATH, encoding="cp949", index=False)

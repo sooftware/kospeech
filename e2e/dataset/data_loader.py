@@ -37,7 +37,7 @@ class SpectrogramDataset(Dataset):
         self.eos_id = eos_id
         self.target_dict = target_dict
         self.augment_flags = [False] * len(self.audio_paths)
-        self.get_feature = SpectrogramDataset.feature_extract_funtions[opt.feature_extract_by]
+        self.get_feature = self.feature_extract_funtions[opt.feature_extract_by]
         self.opt = opt
         if use_augment:
             self.augment_num = opt.augment_num
@@ -135,14 +135,16 @@ def split_dataset(opt, audio_paths, label_paths):
         train_begin_idx = train_num_per_worker * idx
         train_end_idx = min(train_num_per_worker * (idx + 1), train_num)
 
-        trainset_list.append(SpectrogramDataset(
-            audio_paths=audio_paths[train_begin_idx:train_end_idx],
-            label_paths=label_paths[train_begin_idx:train_end_idx],
-            sos_id=SOS_token, eos_id=EOS_token,
-            target_dict=target_dict,
-            use_augment=opt.use_augment,
-            opt=opt
-        ))
+        trainset_list.append(
+            SpectrogramDataset(
+                audio_paths=audio_paths[train_begin_idx:train_end_idx],
+                label_paths=label_paths[train_begin_idx:train_end_idx],
+                sos_id=SOS_token, eos_id=EOS_token,
+                target_dict=target_dict,
+                use_augment=opt.use_augment,
+                opt=opt
+            )
+        )
 
     validset = SpectrogramDataset(
         audio_paths=audio_paths[train_num:],
@@ -257,7 +259,8 @@ def _collate_fn(batch):
     def target_length_(p):
         return len(p[1])
 
-    batch = sorted(batch, key=lambda sample: sample[0].size(0), reverse=True)  # sort by sequence length
+    batch = sorted(batch, key=lambda sample: sample[0].size(0), reverse=True)  # sort by sequence length for
+                                                                               # rnn.pack_padded_sequence()
     seq_lengths = [len(s[0]) for s in batch]
     target_lengths = [len(s[1]) for s in batch]
 

@@ -16,6 +16,7 @@ from torch import optim, nn
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from e2e.dataset.data_loader import split_dataset, load_data_list
 from e2e.loss.loss import LabelSmoothingLoss
+from e2e.modules.checkpoint import Checkpoint
 from e2e.modules.definition import *
 from e2e.evaluator.evaluator import Evaluator
 from e2e.trainer.supervised_trainer import SupervisedTrainer
@@ -88,7 +89,8 @@ def train(opt):
         teacher_forcing_ratio=opt.teacher_forcing_ratio,
         resume=opt.resume
     )
-    torch.save(model, './data/weight_file/model.pt')
+    Checkpoint(model, model.op.optimizer, model.lr_scheduler, model.criterion,
+               model.trainset_list, model.validset, opt.num_epochs).save()
 
 
 def evaluate(opt):

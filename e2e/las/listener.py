@@ -1,12 +1,6 @@
 import torch
 import torch.nn as nn
 
-supported_rnns = {
-    'lstm': nn.LSTM,
-    'gru': nn.GRU,
-    'rnn': nn.RNN
-}
-
 
 class MaskConv(nn.Module):
     """
@@ -15,6 +9,10 @@ class MaskConv(nn.Module):
     Adds padding to the output of the module based on the given lengths. This is to ensure that the
     results of the model do not change when batch sizes change during inference.
     Input needs to be in the shape of (BxCxDxT)
+
+    Copied from https://github.com/SeanNaren/deepspeech.pytorch/blob/master/model.py
+    Copyright (c) 2017 Sean Naren
+    MIT License
 
     Args:
         sequential (torch.nn): sequential list of convolution layer
@@ -25,10 +23,6 @@ class MaskConv(nn.Module):
 
     Returns: x
         - **x**: Masked output from the module
-
-    Copied from https://github.com/SeanNaren/deepspeech.pytorch/blob/master/model.py
-    Copyright (c) 2017 Sean Naren
-    MIT License
     """
     def __init__(self, sequential):
         super(MaskConv, self).__init__()
@@ -73,6 +67,12 @@ class Listener(nn.Module):
     Returns: output
         - **output**: tensor containing the encoded features of the input sequence
     """
+    supported_rnns = {
+        'lstm': nn.LSTM,
+        'gru': nn.GRU,
+        'rnn': nn.RNN
+    }
+
     def __init__(self, input_size, hidden_dim, device, dropout_p=0.5, num_layers=1,
                  bidirectional=True, rnn_type='gru', conv_type='increase'):
         super(Listener, self).__init__()
@@ -81,20 +81,20 @@ class Listener(nn.Module):
 
         if conv_type.lower() == 'increase':
             self.conv = nn.Sequential(
-                    nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1),
-                    nn.Hardtanh(0, 20, inplace=True),
-                    nn.BatchNorm2d(num_features=64),
-                    nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
-                    nn.Hardtanh(0, 20, inplace=True),
-                    nn.MaxPool2d(2, stride=2),
-                    nn.BatchNorm2d(num_features=64),
-                    nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1),
-                    nn.Hardtanh(0, 20, inplace=True),
-                    nn.BatchNorm2d(num_features=128),
-                    nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1),
-                    nn.Hardtanh(0, 20, inplace=True),
-                    nn.MaxPool2d(2, stride=2)
-                )
+                nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1),
+                nn.Hardtanh(0, 20, inplace=True),
+                nn.BatchNorm2d(num_features=64),
+                nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
+                nn.Hardtanh(0, 20, inplace=True),
+                nn.MaxPool2d(2, stride=2),
+                nn.BatchNorm2d(num_features=64),
+                nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1),
+                nn.Hardtanh(0, 20, inplace=True),
+                nn.BatchNorm2d(num_features=128),
+                nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1),
+                nn.Hardtanh(0, 20, inplace=True),
+                nn.MaxPool2d(2, stride=2)
+            )
 
         elif conv_type.lower() == 'repeat':
             self.conv = MaskConv(
@@ -114,7 +114,7 @@ class Listener(nn.Module):
             )
 
         input_size = (input_size - 1) << 5 if input_size % 2 else input_size << 5
-        rnn_cell = supported_rnns[rnn_type]
+        rnn_cell = self.supported_rnns[rnn_type]
         self.rnn = rnn_cell(
             input_size=input_size,
             hidden_size=hidden_dim,

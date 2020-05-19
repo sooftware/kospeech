@@ -21,10 +21,6 @@ class MultiHeadAttention(nn.Module):
 
     Returns: output
         - **output** (batch, output_len, dimensions): tensor containing the attended output features from the decoder.
-
-    Examples::
-        >>> attention = MultiHeadAttention(in_features=512, n_head=4)
-        >>> output = attention(Q, V)
     """
 
     def __init__(self, in_features, num_heads=4):

@@ -6,17 +6,6 @@ from e2e.las.listener import Listener
 from e2e.las.speller import Speller
 from e2e.las.topk_decoder import TopKDecoder
 
-supported_rnns = {
-    'lstm': nn.LSTM,
-    'gru': nn.GRU,
-    'rnn': nn.RNN
-}
-
-supported_convs = [
-    'increase',
-    'repeat'
-]
-
 
 def build_model(opt, device):
     """ build base model """
@@ -69,8 +58,8 @@ def build_listener(input_size, hidden_dim, dropout_p, num_layers, bidirectional,
     assert input_size > 0, "input_size should be greater than 0"
     assert hidden_dim > 0, "hidden_dim should be greater than 0"
     assert num_layers > 0, "num_layers should be greater than 0"
-    assert rnn_type.lower() in supported_rnns.keys(), "Unsupported RNN Cell: {0}".format(rnn_type)
-    assert conv_type.lower() in supported_convs, "Unsupported Conv: {0}".format(conv_type)
+    assert rnn_type.lower() in Listener.supported_rnns.keys(), "Unsupported RNN Cell: {0}".format(rnn_type)
+    assert conv_type.lower() in Listener.supported_convs, "Unsupported Conv: {0}".format(conv_type)
 
     return Listener(input_size, hidden_dim, device, dropout_p, num_layers, bidirectional, rnn_type, conv_type)
 
@@ -90,14 +79,14 @@ def build_speller(num_classes, max_len, hidden_dim, sos_id, eos_id, num_layers, 
     assert num_layers > 0, "num_layers should be greater than 0"
     assert max_len > 0, "max_len should be greater than 0"
     assert num_classes > 0, "num_classes should be greater than 0"
-    assert rnn_type.lower() in supported_rnns.keys(), "Unsupported RNN Cell: {0}".format(rnn_type)
+    assert rnn_type.lower() in Speller.supported_rnns.keys(), "Unsupported RNN Cell: {0}".format(rnn_type)
 
     return Speller(num_classes, max_len, hidden_dim, sos_id, eos_id, num_heads, num_layers, rnn_type, dropout_p, device)
 
 
 def load_test_model(opt, device, use_beamsearch=True):
     """ load model for performance test """
-    model = torch.load(opt.model_path)
+    model = torch.load(opt.model_path, map_location=lambda storage, loc: storage)
 
     if isinstance(model, nn.DataParallel):
         model.module.speller.device = device
