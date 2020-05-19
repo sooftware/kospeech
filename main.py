@@ -11,6 +11,7 @@
 import random
 import torch
 import warnings
+import platform
 from torch import optim, nn
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from e2e.dataset.data_loader import split_dataset, load_data_list
@@ -25,6 +26,8 @@ from e2e.modules.opts import get_parser, print_opts
 def check_envirionment(opt):
     cuda = opt.use_cuda and torch.cuda.is_available()
     device = torch.device('cuda' if cuda else 'cpu')
+
+    logger.info("Operating System : %s" % platform.system())
 
     if str(device) == 'cuda':
         for idx in range(torch.cuda.device_count()):
@@ -77,8 +80,14 @@ def train(opt):
         save_result_every=opt.save_result_every,
         checkpoint_every=opt.checkpoint_every
     )
-    model = trainer.train(model, opt.batch_size, total_time_step, opt.num_epochs,
-                          teacher_forcing_ratio=opt.teacher_forcing_ratio, resume=opt.resume)
+    model = trainer.train(
+        model=model,
+        batch_size=opt.batch_size,
+        total_time_step=total_time_step,
+        num_epochs=opt.num_epochs,
+        teacher_forcing_ratio=opt.teacher_forcing_ratio,
+        resume=opt.resume
+    )
     torch.save(model, './data/weight_file/model.pt')
 
 

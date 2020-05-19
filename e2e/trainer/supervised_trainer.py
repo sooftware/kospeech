@@ -65,7 +65,7 @@ class SupervisedTrainer:
             start_epoch = resume_checkpoint.epoch
 
         logger.info('start')
-        train_begin = time.time()
+        train_begin_time = time.time()
 
         for epoch in range(start_epoch, num_epochs):
             train_queue = queue.Queue(self.num_workers << 1)
@@ -75,7 +75,7 @@ class SupervisedTrainer:
             # Training
             train_loader = MultiDataLoader(self.trainset_list, train_queue, batch_size, self.num_workers)
             train_loader.start()
-            train_loss, train_cer = self.train_epoches(model, epoch, total_time_step, train_begin,
+            train_loss, train_cer = self.train_epoches(model, epoch, total_time_step, train_begin_time,
                                                        train_queue, teacher_forcing_ratio)
             train_loader.join()
 
@@ -94,12 +94,12 @@ class SupervisedTrainer:
 
             logger.info('Epoch %d (Validate) Loss %0.4f CER %0.4f' % (epoch, valid_loss, valid_cer))
             self._save_epoch_result(train_result=[train_dict, train_loss, train_cer],
-                                   valid_result=[valid_dict, valid_loss, valid_cer])
+                                    valid_result=[valid_dict, valid_loss, valid_cer])
             logger.info('Epoch %d Training result saved as a csv file complete !!' % epoch)
 
         return model
 
-    def train_epoches(self, model, epoch, epoch_time_step, train_begin, queue, teacher_forcing_ratio):
+    def train_epoches(self, model, epoch, epoch_time_step, train_begin_time, queue, teacher_forcing_ratio):
         """
         Run training one epoch
 
@@ -107,7 +107,7 @@ class SupervisedTrainer:
             model (torch.nn.Module): model to train
             epoch (int): number of current epoch
             epoch_time_step (int): total time step in one epoch
-            train_begin (int): time of train begin
+            train_begin_time (int): time of train begin
             queue (queue.Queue): training queue, containing input, targets, input_lengths, target_lengths
             teacher_forcing_ratio (float):
 
@@ -123,7 +123,7 @@ class SupervisedTrainer:
         max_norm = 400
 
         model.train()
-        begin = epoch_begin = time.time()
+        begin_time = epoch_begin_time = time.time()
 
         while True:
             inputs, scripts, input_lengths, target_lengths = queue.get()
@@ -166,10 +166,10 @@ class SupervisedTrainer:
             torch.cuda.empty_cache()
 
             if time_step % self.print_every == 0:
-                current = time.time()
-                elapsed = current - begin
-                epoch_elapsed = (current - epoch_begin) / 60.0
-                train_elapsed = (current - train_begin) / 3600.0
+                current_time = time.time()
+                elapsed = current_time - begin_time
+                epoch_elapsed = (current_time - epoch_begin_time) / 60.0
+                train_elapsed = (current_time - train_begin_time) / 3600.0
 
                 logger.info('timestep: {:4d}/{:4d}, loss: {:.4f}, cer: {:.2f}, elapsed: {:.2f}s {:.2f}m {:.2f}h'.format(
                     time_step,
