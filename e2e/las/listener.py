@@ -57,7 +57,7 @@ class MaskCNN(nn.Module):
         elif isinstance(module, nn.MaxPool2d):
             seq_lengths /= 2
 
-        return seq_lengths
+        return seq_lengths.int()
 
 
 class Listener(nn.Module):
