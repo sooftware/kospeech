@@ -17,17 +17,16 @@ class MaskCNN(nn.Module):
         - **inputs**: The input of size BxCxHxS
         - **input_lengths**: The actual length of each sequence in the batch
 
-    Returns: output, output_lengths
-        - **output**: Masked output from the module
-        - **output_lengths**: Length of output from the module
+    Returns: output, seq_lengths
+        - **output**: Masked output from the sequential
+        - **seq_lengths**: Sequence length of output from the sequential
     """
     def __init__(self, sequential):
         super(MaskCNN, self).__init__()
         self.sequential = sequential
 
-    def forward(self, inputs, input_lengths):
+    def forward(self, inputs, seq_lengths):
         output = None
-        output_lengths = None
 
         for module in self.sequential:
             output = module(inputs)
@@ -36,30 +35,29 @@ class MaskCNN(nn.Module):
             if output.is_cuda:
                 mask = mask.cuda()
 
-            output_lengths = self.get_output_lengths(input_lengths, module)
+            seq_lengths = self.get_seq_lengths(module, seq_lengths)
 
-            for i, length in enumerate(output_lengths):
+            for i, length in enumerate(seq_lengths):
                 length = length.item()
 
                 if (mask[i].size(2) - length) > 0:
                     mask[i].narrow(dim=2, start=length, length=mask[i].size(2) - length).fill_(1)
 
             output = output.masked_fill(mask, 0)
-
             inputs = output
-            input_lengths = output_lengths
 
-        return output, output_lengths
+        return output, seq_lengths
 
-    def get_output_lengths(self, lengths, m):
+    def get_seq_lengths(self, module, seq_lengths):
         """ Calculate convolutional neural network receptive formula """
-        if type(m) == nn.modules.conv.Conv2d:
-            lengths = (lengths + 2 * m.padding[1] - m.dilation[1] * (m.kernel_size[1] - 1) - 1) / m.stride[1] + 1
+        if isinstance(module, nn.Conv2d):
+            numerator = seq_lengths + 2 * module.padding[1] - module.dilation[1] * (module.kernel_size[1] - 1) - 1
+            seq_lengths = numerator / module.stride[1] + 1
 
-        elif type(m) == nn.modules.MaxPool2d:
-            lengths /= 2
+        elif isinstance(module, nn.MaxPool2d):
+            seq_lengths /= 2
 
-        return lengths
+        return seq_lengths
 
 
 class Listener(nn.Module):
@@ -120,14 +118,14 @@ class Listener(nn.Module):
 
     def forward(self, inputs, input_lengths):
         inputs = inputs.unsqueeze(1).permute(0, 1, 3, 2)
-        output, output_lengths = self.cnn(inputs, input_lengths)
+        cnn_output, seq_lengths = self.cnn(inputs, input_lengths)
 
-        B, C, H, S = output.size()
+        B, C, H, S = cnn_output.size()
 
-        output = output.view(B, C * H, S)
-        output = output.transpose(1, 2).transpose(0, 1).contiguous()
+        cnn_output = cnn_output.view(B, C * H, S)
+        cnn_output = cnn_output.transpose(1, 2).transpose(0, 1).contiguous()
 
-        inputs = nn.utils.rnn.pack_padded_sequence(output, output_lengths)
+        inputs = nn.utils.rnn.pack_padded_sequence(cnn_output, seq_lengths)
         output, hidden = self.rnn(inputs)
         output, _ = nn.utils.rnn.pad_packed_sequence(output)
 
