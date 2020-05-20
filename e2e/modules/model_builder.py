@@ -42,7 +42,8 @@ def build_las(listener, speller, device, use_multi_gpu=True, init_uniform=True):
     model = ListenAttendSpell(listener, speller)
     model.flatten_parameters()
 
-    model = nn.DataParallel(model).to(device)
+    if use_multi_gpu:
+        model = nn.DataParallel(model).to(device)
 
     if init_uniform:
         for param in model.parameters():

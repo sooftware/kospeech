@@ -56,7 +56,12 @@ def train(opt):
     epoch_time_step, trainset_list, validset = split_dataset(opt, audio_paths, label_paths)
     model = build_model(opt, device)
 
-    optimizer = optim.Adam(model.module.parameters(), lr=opt.lr)
+    if opt.use_multi_gpu:
+        optimizer = optim.Adam(model.module.parameters(), lr=opt.lr)
+
+    else:
+        optimizer = optim.Adam(model.parameters(), lr=opt.lr)
+
     lr_scheduler = ReduceLROnPlateau(
         optimizer=optimizer,
         mode='min',
@@ -99,7 +104,7 @@ def evaluate(opt):
     device = check_envirionment(opt)
 
     model = load_test_model(opt, device, use_beamsearch=opt.use_beam_search)
-    evaluator = Evaluator(batch_size=1, device=device)
+    evaluator = Evaluator(batch_size=opt.batch_size, device=device)
     evaluator.evaluate(model, opt, TEST_LIST_PATH, DATASET_PATH)
 
 
