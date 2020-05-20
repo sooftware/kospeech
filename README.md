@@ -153,7 +153,7 @@ save_dir
    |  +-- trainer_states.pt
    |  +-- model.pt
 ```
-Checkpoint includes resuming and loading from checkpoints.
+You can resume and load from checkpoints.
   
 ### Incorporating External Language Model in Performance Test
 We introduce incorporating external language model in performance test.  
