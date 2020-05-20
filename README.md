@@ -24,6 +24,7 @@ Also our model has recorded **91.0% CRR** in [Kadi-zeroth dataset](https://githu
   
 * [Listen, Attend and Spell Architecture](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html#module-e2e.las.las)
 * [Convolutional encoder](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html#module-e2e.las.listener)
+* [MaskConv & pack_padded_sequence](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html#module-e2e.las.listener)
 * [Multi-Head Attention](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html#module-e2e.las.attention)
 * [Top K Decoding (Beam Search)](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html#module-e2e.las.topk_decoder)
 * [Provides a variety of feature extraction methods](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html)
@@ -33,6 +34,7 @@ Also our model has recorded **91.0% CRR** in [Kadi-zeroth dataset](https://githu
 * [Save & load Checkpoint](https://sooftware.github.io/End-to-end-Speech-Recognition/Modules.html)
 * [Various options can be set using parser](https://sooftware.github.io/End-to-end-Speech-Recognition/Modules.html#module-e2e.modules.opts)
 * [Implement data loader as multi-thread for speed](https://sooftware.github.io/End-to-end-Speech-Recognition/Dataset.html)
+* Inference with batching
 * Multi-GPU training
 * Show training states as log
   
