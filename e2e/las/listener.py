@@ -10,26 +10,24 @@ class MaskCNN(nn.Module):
     This is to ensure that the results of the model do not change when batch sizes change during inference.
     Input needs to be in the shape of (batch_size, channel, hidden_dim, seq_len)
 
-    Refer to https://github.com/SeanNaren/deepspeech.pytorch/blob/master/model.py
-    Copyright (c) 2017 Sean Naren
-    MIT License
-
     Args:
         sequential (torch.nn): sequential list of convolution layer
 
-    Inputs:
-        - **x**: The input of size BxCxHxS
-        - **lengths**: The actual length of each sequence in the batch
+    Inputs: inputs, input_lengths
+        - **inputs**: The input of size BxCxHxS
+        - **input_lengths**: The actual length of each sequence in the batch
 
-    Returns: output
+    Returns: output, output_lengths
         - **output**: Masked output from the module
+        - **output_lengths**: Length of output from the module
     """
     def __init__(self, sequential):
         super(MaskCNN, self).__init__()
         self.sequential = sequential
 
-    def forward(self, inputs, lengths):
+    def forward(self, inputs, input_lengths):
         output = None
+        output_lengths = None
 
         for module in self.sequential:
             output = module(inputs)
@@ -38,18 +36,20 @@ class MaskCNN(nn.Module):
             if output.is_cuda:
                 mask = mask.cuda()
 
-            lengths = self.get_output_lengths(lengths, module)
+            output_lengths = self.get_output_lengths(input_lengths, module)
 
-            for i, length in enumerate(lengths):
+            for i, length in enumerate(output_lengths):
                 length = length.item()
 
                 if (mask[i].size(2) - length) > 0:
                     mask[i].narrow(dim=2, start=length, length=mask[i].size(2) - length).fill_(1)
 
             output = output.masked_fill(mask, 0)
-            inputs = output
 
-        return output, lengths
+            inputs = output
+            input_lengths = output_lengths
+
+        return output, output_lengths
 
     def get_output_lengths(self, lengths, m):
         """ Calculate convolutional neural network receptive formula """
