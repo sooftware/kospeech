@@ -58,7 +58,7 @@ class Speller(nn.Module):
 
     def forward_step(self, input_var, hidden, listener_outputs):
         batch_size = input_var.size(0)
-        output_size = input_var.size(1)
+        output_lengths = input_var.size(1)
 
         embedded = self.embedding(input_var).to(self.device)
         embedded = self.input_dropout(embedded)
@@ -70,7 +70,7 @@ class Speller(nn.Module):
         context = self.attention(output, listener_outputs)
 
         predicted_softmax = F.log_softmax(self.fc(context.contiguous().view(-1, self.hidden_dim)), dim=1)
-        predicted_softmax = predicted_softmax.view(batch_size, output_size, -1)
+        predicted_softmax = predicted_softmax.view(batch_size, output_lengths, -1)
 
         return predicted_softmax, hidden
 
