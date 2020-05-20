@@ -7,7 +7,7 @@ def load_label(label_path, encoding='utf-8'):
     Provides char2id, id2char
 
     Args:
-        label_path (list): csv file with character labels
+        label_path (str): csv file with character labels
         encoding (str): encoding method
 
     Returns: char2id, id2char

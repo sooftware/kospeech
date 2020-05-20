@@ -217,7 +217,6 @@ def print_train_opts(opt):
     logger.info('--min_lr: %s' % str(opt.min_lr))
     logger.info('--lr_factor: %s' % str(opt.lr_factor))
     logger.info('--lr_patience: %s' % str(opt.lr_patience))
-    logger.info('--lr_factor: %s' % str(opt.lr_factor))
     logger.info('--valid_ratio: %s' % str(opt.valid_ratio))
     logger.info('--max_len: %s' % str(opt.max_len))
     logger.info('--seed: %s' % str(opt.seed))
