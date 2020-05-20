@@ -7,6 +7,7 @@ import platform
 import numpy as np
 import random
 import librosa
+from e2e.modules.definition import logger
 
 if platform.system() == 'Linux':
     import torchaudio
@@ -45,6 +46,7 @@ def get_librosa_melspectrogram(filepath, n_mels=80, del_silence=False, input_rev
         try:
             pcm = np.memmap(filepath, dtype='h', mode='r')
         except RuntimeError:
+            logger.info('RuntimeError in {0}'.format(filepath))
             return None
 
         signal = np.array([float(x) for x in pcm])
@@ -104,7 +106,12 @@ def get_librosa_mfcc(filepath, n_mfcc=40, del_silence=False, input_reverse=True,
                 [  3.109e-14,  -5.058e+00, ...,   2.931e-14,   2.931e-14]])
     """
     if filepath.endswith('.pcm'):
-        pcm = np.memmap(filepath, dtype='h', mode='r')
+        try:
+            pcm = np.memmap(filepath, dtype='h', mode='r')
+        except RuntimeError:
+            logger.info('RuntimeError in {0}'.format(filepath))
+            return None
+
         signal = np.array([float(x) for x in pcm])
 
     elif filepath.endswith('.wav'):
@@ -215,8 +222,8 @@ def get_torchaudio_melspectrogram(filepath, n_mels=80, del_silence=False, input_
     if filepath.endswith('.pcm'):
         try:
             pcm = np.memmap(filepath, dtype='h', mode='r')
-
         except RuntimeError:
+            logger.info('RuntimeError in {0}'.format(filepath))
             return None
 
         signal = np.array([float(x) for x in pcm])
@@ -280,7 +287,12 @@ def get_torch_spectrogram(filepath, sr=16000, window_size=20, stride=10):
             [  2.561e-10,   2.096e-09, ...,   7.543e-10,   6.101e-10]])
     """
     if filepath.endswith('.pcm'):
-        pcm = np.memmap(filepath, dtype='h', mode='r')
+        try:
+            pcm = np.memmap(filepath, dtype='h', mode='r')
+        except RuntimeError:
+            logger.info('RuntimeError in {0}'.format(filepath))
+            return None
+
         signal = np.array([float(x) for x in pcm])
 
     elif filepath.endswith('.wav'):
@@ -337,7 +349,12 @@ def get_librosa_spectrogram(filepath, input_reverse=True, normalize=False, del_s
             [  2.561e-10,   2.096e-09, ...,   7.543e-10,   6.101e-10]])
     """
     if filepath.endswith('.pcm'):
-        pcm = np.memmap(filepath, dtype='h', mode='r')
+        try:
+            pcm = np.memmap(filepath, dtype='h', mode='r')
+        except RuntimeError:
+            logger.info('RuntimeError in {0}'.format(filepath))
+            return None
+
         signal = np.array([float(x) for x in pcm])
 
     elif filepath.endswith('.wav'):

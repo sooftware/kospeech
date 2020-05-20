@@ -8,81 +8,167 @@ def model_opts(parser):
     Be careful with these as they will be used during inference.
     """
     group = parser.add_argument_group('Model')
-    group.add_argument('--use_bidirectional', action='store_true', default=False)
-    group.add_argument('--hidden_dim', type=int, default=256, help='hidden state dimension of model (default: 256)')
-    group.add_argument('--dropout', type=float, default=0.3, help='dropout ratio in training (default: 0.3)')
-    group.add_argument('--num_heads', type=int, default=4, help='number of head in attention (default: 4)')
-    group.add_argument('--label_smoothing', type=float, default=0.1, help='ratio of label smoothing (default: 0.1)')
-    group.add_argument('--listener_layer_size', type=int, default=5, help='layer size of encoder (default: 5)')
-    group.add_argument('--speller_layer_size', type=int, default=3, help='layer size of decoder (default: 3)')
-    group.add_argument('--rnn_type', type=str, default='gru', help='type of rnn cell: [gru, lstm, rnn] (default: gru)')
-    group.add_argument('--teacher_forcing_ratio', type=float, default=0.99,
-                       help='teacher forcing ratio in decoder (default: 0.99)')
+    group.add_argument('--use_bidirectional', '-use_bidirectional',
+                       action='store_true', default=False,
+                       help='if True, becomes a bidirectional encoder (defulat: False)')
+    group.add_argument('--hidden_dim', '-hidden_dim',
+                       type=int, default=256,
+                       help='hidden state dimension of model (default: 256)')
+    group.add_argument('--dropout', '-dropout',
+                       type=float, default=0.3,
+                       help='dropout ratio in training (default: 0.3)')
+    group.add_argument('--num_heads', '-num_heads',
+                       type=int, default=4,
+                       help='number of head in attention (default: 4)')
+    group.add_argument('--label_smoothing', '-label_smoothing',
+                       type=float, default=0.1,
+                       help='ratio of label smoothing (default: 0.1)')
+    group.add_argument('--listener_layer_size', '-listener_layer_size',
+                       type=int, default=5,
+                       help='layer size of encoder (default: 5)')
+    group.add_argument('--speller_layer_size', '-speller_layer_size',
+                       type=int, default=3,
+                       help='layer size of decoder (default: 3)')
+    group.add_argument('--rnn_type', '-rnn_type',
+                       type=str, default='gru',
+                       help='type of rnn cell: [gru, lstm, rnn] (default: gru)')
+    group.add_argument('--teacher_forcing_ratio', '-teacher_forcing_ratio',
+                       type=float, default=0.99,
+                       help='teacher forcing ratio in decoding (default: 0.99)')
 
 
 def train_opts(parser):
     """ Training and saving options """
     group = parser.add_argument_group('General')
-    group.add_argument('--use_multi_gpu', action='store_true', default=False)
-    group.add_argument('--init_uniform', action='store_true', default=False)
-    group.add_argument('--use_augment', action='store_true', default=False)
-    group.add_argument('--use_pickle', action='store_true', default=False)
-    group.add_argument('--use_cuda', action='store_true', default=False)
-    group.add_argument('--augment_num', type=int, default=1, help='Number of SpecAugemnt per data (default: 1)')
-    group.add_argument('--batch_size', type=int, default=32, help='batch size in training (default: 32)')
-    group.add_argument('--num_workers', type=int, default=4, help='number of workers in dataset loader (default: 4)')
-    group.add_argument('--num_epochs', type=int, default=20, help='number of epochs in training (default: 20)')
-    group.add_argument('--lr', type=float, default=3e-04, help='initial learning rate (default: 3e-04)')
-    group.add_argument('--min_lr', type=float, default=3e-05, help='minimum learning rate (default: 3e-05)')
-    group.add_argument('--lr_factor', type=float, default=1 / 3, help='minimum learning rate (default: 1/3)')
-    group.add_argument('--lr_patience', type=int, default=1,
+    group.add_argument('--use_multi_gpu', '-use_multi_gpu',
+                       action='store_true', default=False,
+                       help='flag indication whether to use multi-gpu in training')
+    group.add_argument('--init_uniform', '-init_uniform',
+                       action='store_true', default=False,
+                       help='flag indication whether to initiate model`s parameters as uniformly')
+    group.add_argument('--use_augment', '-use_augment',
+                       action='store_true', default=False,
+                       help='flag indication whether to use augmentation or not')
+    group.add_argument('--use_pickle', '-use_pickle',
+                       action='store_true', default=False,
+                       help='flag indication whether to load target_dict using pickle')
+    group.add_argument('--use_cuda', '-use_cuda',
+                       action='store_true', default=False,
+                       help='flag indication whether to use cuda or not')
+    group.add_argument('--augment_num', '-augment_num',
+                       type=int, default=1,
+                       help='number of SpecAugemnt per data (default: 1)')
+    group.add_argument('--batch_size', '-batch_size',
+                       type=int, default=32,
+                       help='batch size in training (default: 32)')
+    group.add_argument('--num_workers', '-num_workers',
+                       type=int, default=4,
+                       help='number of workers in dataset loader (default: 4)')
+    group.add_argument('--num_epochs', '-num_epochs',
+                       type=int, default=20,
+                       help='number of epochs in training (default: 20)')
+    group.add_argument('--lr', '-lr',
+                       type=float, default=3e-04,
+                       help='initial learning rate (default: 3e-04)')
+    group.add_argument('--min_lr', '-min_lr',
+                       type=float, default=3e-05,
+                       help='minimum learning rate (default: 3e-05)')
+    group.add_argument('--lr_factor', '-lr_factor',
+                       type=float, default=1 / 3,
+                       help='factor of learning rate scheduler (default: 1/3)')
+    group.add_argument('--lr_patience', '-lr_patience',
+                       type=int, default=1,
                        help=' Number of epochs with no improvement after which learning rate will be reduced. (default: 1)')
-    group.add_argument('--valid_ratio', type=float, default=0.01, help='validation dataset ratio in training dataset')
-    group.add_argument('--max_len', type=int, default=151, help='maximum characters of sentence (default: 151)')
-    group.add_argument('--seed', type=int, default=7, help='random seed (default: 7)')
-    group.add_argument('--save_result_every', type=int, default=1000,
+    group.add_argument('--valid_ratio', '-valid_ratio',
+                       type=float, default=0.01,
+                       help='validation dataset ratio in training dataset')
+    group.add_argument('--max_len', '-max_len',
+                       type=int, default=151,
+                       help='maximum characters of sentence (default: 151)')
+    group.add_argument('--seed', '-seed',
+                       type=int, default=7,
+                       help='random seed (default: 7)')
+    group.add_argument('--save_result_every', '-save_result_every',
+                       type=int, default=1000,
                        help='to determine whether to store training results every N timesteps (default: 1000)')
-    group.add_argument('--checkpoint_every', type=int, default=5000,
+    group.add_argument('--checkpoint_every', '-checkpoint_every',
+                       type=int, default=5000,
                        help='to determine whether to store training checkpoint every N timesteps (default: 5000)')
-    group.add_argument('--print_every', type=int, default=10,
+    group.add_argument('--print_every', '-print_every',
+                       type=int, default=10,
                        help='to determine whether to store training progress every N timesteps (default: 10')
-    group.add_argument('--resume', action='store_true', default=False,
+    group.add_argument('--resume', '-resume',
+                       action='store_true', default=False,
                        help='Indicates if training has to be resumed from the latest checkpoint')
 
 
 def preprocess_opts(parser):
     """ Pre-processing options """
     group = parser.add_argument_group('Input')
-    group.add_argument('--sr', type=int, default=16000, help='sample rate (default: 16000)')
-    group.add_argument('--window_size', type=int, default=20, help='Window size for spectrogram (default: 20ms)')
-    group.add_argument('--stride', type=int, default=10, help='Window stride for spectrogram (default: 10ms)')
-    group.add_argument('--n_mels', type=int, default=80, help='number of mel filter (default: 80)')
-    group.add_argument('--normalize', action='store_true', default=False)
-    group.add_argument('--del_silence', action='store_true', default=False)
-    group.add_argument('--input_reverse', action='store_true', default=False)
-    group.add_argument('--feature_extract_by', type=str, default='librosa',
+    group.add_argument('--sr', '-sr',
+                       type=int, default=16000,
+                       help='sample rate (default: 16000)')
+    group.add_argument('--window_size', '-window_size',
+                       type=int, default=20,
+                       help='Window size for spectrogram (default: 20ms)')
+    group.add_argument('--stride', '-stride',
+                       type=int, default=10,
+                       help='Window stride for spectrogram (default: 10ms)')
+    group.add_argument('--n_mels', '-n_mels',
+                       type=int, default=80,
+                       help='number of mel filter (default: 80)')
+    group.add_argument('--normalize', '-normalize',
+                       action='store_true', default=False,
+                       help='flag indication whether to normalize spectrogram or not')
+    group.add_argument('--del_silence', '-del_silence',
+                       action='store_true', default=False,
+                       help='flag indication whether to delete silence or not')
+    group.add_argument('--input_reverse', '-input_reverse',
+                       action='store_true', default=False,
+                       help='flag indication whether to reverse input or not')
+    group.add_argument('--feature_extract_by', '-feature_extract_by',
+                       type=str, default='librosa',
                        help='which library to use for feature extraction: [librosa, torchaudio] (default: librosa)')
-    group.add_argument('--time_mask_para', type=int, default=50,
+    group.add_argument('--time_mask_para', '-time_mask_para',
+                       type=int, default=50,
                        help='Hyper Parameter for Time Masking to limit time masking length (default: 50)')
-    group.add_argument('--freq_mask_para', type=int, default=12,
+    group.add_argument('--freq_mask_para', '-freq_mask_para',
+                       type=int, default=12,
                        help='Hyper Parameter for Freq Masking to limit freq masking length (default: 12)')
-    group.add_argument('--time_mask_num', type=int, default=2,
+    group.add_argument('--time_mask_num', '-time_mask_num',
+                       type=int, default=2,
                        help='how many time-masked area to make (default: 2)')
-    group.add_argument('--freq_mask_num', type=int, default=2,
+    group.add_argument('--freq_mask_num', '-freq_mask_num',
+                       type=int, default=2,
                        help='how many freq-masked area to make (default: 2)')
 
 
 def inference_opts(parser):
     """ inference options """
     group = parser.add_argument_group('Infer')
-    group.add_argument('--use_multi_gpu', action='store_true', default=False)
-    group.add_argument('--num_workers', type=int, default=4, help='number of workers in dataset loader (default: 4)')
-    group.add_argument('--use_cuda', action='store_true', default=False)
-    group.add_argument('--model_path', type=str, default=None, help='Location to load models (default: None')
-    group.add_argument('--batch_size', type=int, default=1, help='batch size in inference (default: 1)')
-    group.add_argument('--k', type=int, default=5, help='size of beam (default: 5)')
-    group.add_argument('--use_beam_search', action='store_true', default=True)
-    group.add_argument('--print_every', type=int, default=10,
+    group.add_argument('--use_multi_gpu', '-use_multi_gpu',
+                       action='store_true', default=False,
+                       help='flag indication whether to use multi-gpu in training')
+    group.add_argument('--num_workers', '-num_workers',
+                       type=int, default=4,
+                       help='number of workers in dataset loader (default: 4)')
+    group.add_argument('--use_cuda', '-use_cuda',
+                       action='store_true', default=False,
+                       help='flag indication whether to use cuda or not')
+    group.add_argument('--model_path', '-model_path',
+                       type=str, default=None,
+                       help='path to load models (default: None')
+    group.add_argument('--batch_size', '-batch_size',
+                       type=int, default=1,
+                       help='batch size in inference (default: 1)')
+    group.add_argument('--k', '-k',
+                       type=int, default=5,
+                       help='size of beam (default: 5)')
+    group.add_argument('--use_beam_search', '-use_beam_search',
+                       action='store_true', default=True,
+                       help='flag indication whether to use beam search decoding or not')
+    group.add_argument('--print_every', '-print_every',
+                       type=int, default=10,
                        help='to determine whether to store inference progress every N timesteps (default: 10')
 
 
@@ -160,6 +246,6 @@ def print_opts(opt, mode='train'):
         print_model_opts(opt)
         print_train_opts(opt)
 
-    elif mode == 'eval':
+    elif mode == 'infer':
         print_preprocess_opts(opt)
         print_inference_opts(opt)

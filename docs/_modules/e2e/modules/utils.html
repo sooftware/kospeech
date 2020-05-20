@@ -163,9 +163,31 @@
             
   <h1>Source code for e2e.modules.utils</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">platform</span>
 <span class="kn">import</span> <span class="nn">Levenshtein</span> <span class="k">as</span> <span class="nn">Lev</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="c1">#from e2e.modules.definition import logger</span>
+
+
+<span class="k">def</span> <span class="nf">check_envirionment</span><span class="p">(</span><span class="n">opt</span><span class="p">):</span>
+    <span class="n">cuda</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">use_cuda</span> <span class="ow">and</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span>
+    <span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s1">&#39;cuda&#39;</span> <span class="k">if</span> <span class="n">cuda</span> <span class="k">else</span> <span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Operating System : </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">(),</span> <span class="n">platform</span><span class="o">.</span><span class="n">release</span><span class="p">()))</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Processor : </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">platform</span><span class="o">.</span><span class="n">processor</span><span class="p">())</span>
+
+    <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">device</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;cuda&#39;</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">device_count</span><span class="p">()):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;device : </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">get_device_name</span><span class="p">(</span><span class="n">idx</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;CUDA is available : </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;CUDA version : </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">torch</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">cuda</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;PyTorch version : </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">torch</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;CUDA is available : </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;PyTorch version : </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">torch</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">device</span>
 
 
 <div class="viewcode-block" id="char_distance"><a class="viewcode-back" href="../../../Modules.html#e2e.modules.utils.char_distance">[docs]</a><span class="k">def</span> <span class="nf">char_distance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">y_hat</span><span class="p">):</span>
@@ -231,17 +253,18 @@
 <span class="sd">    Returns: label</span>
 <span class="sd">        - **label** (list): list of bos + sequence of label + eos</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">assert</span> <span class="n">target_dict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;target_dict is None&#39;</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
 
     <span class="n">key</span> <span class="o">=</span> <span class="n">filepath</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-
     <span class="n">script</span> <span class="o">=</span> <span class="n">target_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
     <span class="n">tokens</span> <span class="o">=</span> <span class="n">script</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
 
-    <span class="n">labels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
     <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">sos_id</span><span class="p">))</span>
+
     <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
         <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">token</span><span class="p">))</span>
+
     <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">eos_id</span><span class="p">))</span>
 
     <span class="k">return</span> <span class="n">labels</span></div>
@@ -252,12 +275,12 @@
 <span class="sd">    Converts label to string (number =&gt; Hangeul)</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        labels (list): number label</span>
+<span class="sd">        labels (numpy.ndarray): number label</span>
 <span class="sd">        id2char (dict): id2char[id] = ch</span>
 <span class="sd">        eos_id (int): identification of &lt;end of sequence&gt;</span>
 
 <span class="sd">    Returns: sentence</span>
-<span class="sd">        - **sentence** (str or list): Hangeul representation of labels</span>
+<span class="sd">        - **sentence** (str or list): symbol of labels</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">sentence</span> <span class="o">=</span> <span class="nb">str</span><span class="p">()</span>
@@ -276,7 +299,10 @@
                     <span class="k">break</span>
                 <span class="n">sentence</span> <span class="o">+=</span> <span class="n">id2char</span><span class="p">[</span><span class="n">label</span><span class="o">.</span><span class="n">item</span><span class="p">()]</span>
             <span class="n">sentences</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sentence</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">sentences</span></div>
+        <span class="k">return</span> <span class="n">sentences</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Unsupported shape : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">shape</span><span class="p">)))</span></div>
 
 
 <div class="viewcode-block" id="save_pickle"><a class="viewcode-back" href="../../../Modules.html#e2e.modules.utils.save_pickle">[docs]</a><span class="k">def</span> <span class="nf">save_pickle</span><span class="p">(</span><span class="n">save_var</span><span class="p">,</span> <span class="n">savepath</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>

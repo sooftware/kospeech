@@ -168,7 +168,8 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">e2e.dataset.data_loader</span> <span class="k">import</span> <span class="n">MultiDataLoader</span><span class="p">,</span> <span class="n">AudioDataLoader</span>
 <span class="kn">from</span> <span class="nn">e2e.modules.checkpoint</span> <span class="k">import</span> <span class="n">Checkpoint</span>
-<span class="c1">#from e2e.modules.definition import logger, id2char, EOS_token, valid_dict, train_dict, TRAIN_STEP_RESULT_PATH, VALID_RESULT_PATH, TRAIN_RESULT_PATH</span>
+<span class="c1">#from e2e.modules.definition import logger, id2char, EOS_token, valid_dict, train_dict, TRAIN_STEP_RESULT_PATH, \</span>
+<span class="c1">#     VALID_RESULT_PATH, TRAIN_RESULT_PATH</span>
 <span class="kn">from</span> <span class="nn">e2e.modules.utils</span> <span class="k">import</span> <span class="n">get_distance</span>
 
 <span class="n">train_step_result</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;loss&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;cer&#39;</span><span class="p">:</span> <span class="p">[]}</span>
@@ -181,7 +182,7 @@
 <span class="sd">    Args:</span>
 <span class="sd">        optimizer (torch.optim): optimizer for training</span>
 <span class="sd">        lr_scheduler (torch.optim): learning rate scheduler</span>
-<span class="sd">        criterion (e2e.loss.LabelSmoothingLoss): loss function</span>
+<span class="sd">        criterion (torch.nn.Module): loss function</span>
 <span class="sd">        trainset_list (list): list of training datset</span>
 <span class="sd">        validset (e2e.dataset.data_loader.SpectrogramDataset): validation dataset</span>
 <span class="sd">        num_workers (int): number of using cpu cores</span>
@@ -203,14 +204,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">checkpoint_every</span> <span class="o">=</span> <span class="n">checkpoint_every</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span>
 
-<div class="viewcode-block" id="SupervisedTrainer.train"><a class="viewcode-back" href="../../../SupervisedTrainer.html#e2e.trainer.supervised_trainer.SupervisedTrainer.train">[docs]</a>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">total_time_step</span><span class="p">,</span> <span class="n">num_epochs</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span> <span class="n">resume</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="SupervisedTrainer.train"><a class="viewcode-back" href="../../../SupervisedTrainer.html#e2e.trainer.supervised_trainer.SupervisedTrainer.train">[docs]</a>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">epoch_time_step</span><span class="p">,</span> <span class="n">num_epochs</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span> <span class="n">resume</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run training for a given model.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            model (torch.nn.Module): model to train</span>
 <span class="sd">            batch_size (int): batch size for experiment</span>
-<span class="sd">            total_time_step (int): number of time step for training</span>
+<span class="sd">            epoch_time_step (int): number of time step for training</span>
 <span class="sd">            num_epochs (int): number of epochs for training</span>
 <span class="sd">            teacher_forcing_ratio (float): teaching forcing ratio (default 0.99)</span>
 <span class="sd">            resume(bool, optional): resume training with the latest checkpoint, (default False)</span>
@@ -228,7 +229,7 @@
             <span class="n">start_epoch</span> <span class="o">=</span> <span class="n">resume_checkpoint</span><span class="o">.</span><span class="n">epoch</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;start&#39;</span><span class="p">)</span>
-        <span class="n">train_begin</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">train_begin_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
         <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start_epoch</span><span class="p">,</span> <span class="n">num_epochs</span><span class="p">):</span>
             <span class="n">train_queue</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span>
@@ -238,7 +239,7 @@
             <span class="c1"># Training</span>
             <span class="n">train_loader</span> <span class="o">=</span> <span class="n">MultiDataLoader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trainset_list</span><span class="p">,</span> <span class="n">train_queue</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">)</span>
             <span class="n">train_loader</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-            <span class="n">train_loss</span><span class="p">,</span> <span class="n">train_cer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_epoches</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">total_time_step</span><span class="p">,</span> <span class="n">train_begin</span><span class="p">,</span>
+            <span class="n">train_loss</span><span class="p">,</span> <span class="n">train_cer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_epoches</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">epoch_time_step</span><span class="p">,</span> <span class="n">train_begin_time</span><span class="p">,</span>
                                                        <span class="n">train_queue</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="p">)</span>
             <span class="n">train_loader</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
@@ -257,12 +258,12 @@
 
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Epoch </span><span class="si">%d</span><span class="s1"> (Validate) Loss </span><span class="si">%0.4f</span><span class="s1"> CER </span><span class="si">%0.4f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">valid_loss</span><span class="p">,</span> <span class="n">valid_cer</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_save_epoch_result</span><span class="p">(</span><span class="n">train_result</span><span class="o">=</span><span class="p">[</span><span class="n">train_dict</span><span class="p">,</span> <span class="n">train_loss</span><span class="p">,</span> <span class="n">train_cer</span><span class="p">],</span>
-                                   <span class="n">valid_result</span><span class="o">=</span><span class="p">[</span><span class="n">valid_dict</span><span class="p">,</span> <span class="n">valid_loss</span><span class="p">,</span> <span class="n">valid_cer</span><span class="p">])</span>
+                                    <span class="n">valid_result</span><span class="o">=</span><span class="p">[</span><span class="n">valid_dict</span><span class="p">,</span> <span class="n">valid_loss</span><span class="p">,</span> <span class="n">valid_cer</span><span class="p">])</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Epoch </span><span class="si">%d</span><span class="s1"> Training result saved as a csv file complete !!&#39;</span> <span class="o">%</span> <span class="n">epoch</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">model</span></div>
 
-<div class="viewcode-block" id="SupervisedTrainer.train_epoches"><a class="viewcode-back" href="../../../SupervisedTrainer.html#e2e.trainer.supervised_trainer.SupervisedTrainer.train_epoches">[docs]</a>    <span class="k">def</span> <span class="nf">train_epoches</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">epoch_time_step</span><span class="p">,</span> <span class="n">train_begin</span><span class="p">,</span> <span class="n">queue</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="p">):</span>
+<div class="viewcode-block" id="SupervisedTrainer.train_epoches"><a class="viewcode-back" href="../../../SupervisedTrainer.html#e2e.trainer.supervised_trainer.SupervisedTrainer.train_epoches">[docs]</a>    <span class="k">def</span> <span class="nf">train_epoches</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">epoch_time_step</span><span class="p">,</span> <span class="n">train_begin_time</span><span class="p">,</span> <span class="n">queue</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run training one epoch</span>
 
@@ -270,7 +271,7 @@
 <span class="sd">            model (torch.nn.Module): model to train</span>
 <span class="sd">            epoch (int): number of current epoch</span>
 <span class="sd">            epoch_time_step (int): total time step in one epoch</span>
-<span class="sd">            train_begin (int): time of train begin</span>
+<span class="sd">            train_begin_time (int): time of train begin</span>
 <span class="sd">            queue (queue.Queue): training queue, containing input, targets, input_lengths, target_lengths</span>
 <span class="sd">            teacher_forcing_ratio (float):</span>
 
@@ -286,7 +287,7 @@
         <span class="n">max_norm</span> <span class="o">=</span> <span class="mi">400</span>
 
         <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
-        <span class="n">begin</span> <span class="o">=</span> <span class="n">epoch_begin</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">begin_time</span> <span class="o">=</span> <span class="n">epoch_begin_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">inputs</span><span class="p">,</span> <span class="n">scripts</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">,</span> <span class="n">target_lengths</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
@@ -329,10 +330,10 @@
             <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">empty_cache</span><span class="p">()</span>
 
             <span class="k">if</span> <span class="n">time_step</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_every</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">current</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-                <span class="n">elapsed</span> <span class="o">=</span> <span class="n">current</span> <span class="o">-</span> <span class="n">begin</span>
-                <span class="n">epoch_elapsed</span> <span class="o">=</span> <span class="p">(</span><span class="n">current</span> <span class="o">-</span> <span class="n">epoch_begin</span><span class="p">)</span> <span class="o">/</span> <span class="mf">60.0</span>
-                <span class="n">train_elapsed</span> <span class="o">=</span> <span class="p">(</span><span class="n">current</span> <span class="o">-</span> <span class="n">train_begin</span><span class="p">)</span> <span class="o">/</span> <span class="mf">3600.0</span>
+                <span class="n">current_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+                <span class="n">elapsed</span> <span class="o">=</span> <span class="n">current_time</span> <span class="o">-</span> <span class="n">begin_time</span>
+                <span class="n">epoch_elapsed</span> <span class="o">=</span> <span class="p">(</span><span class="n">current_time</span> <span class="o">-</span> <span class="n">epoch_begin_time</span><span class="p">)</span> <span class="o">/</span> <span class="mf">60.0</span>
+                <span class="n">train_elapsed</span> <span class="o">=</span> <span class="p">(</span><span class="n">current_time</span> <span class="o">-</span> <span class="n">train_begin_time</span><span class="p">)</span> <span class="o">/</span> <span class="mf">3600.0</span>
 
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;timestep: </span><span class="si">{:4d}</span><span class="s1">/</span><span class="si">{:4d}</span><span class="s1">, loss: </span><span class="si">{:.4f}</span><span class="s1">, cer: </span><span class="si">{:.2f}</span><span class="s1">, elapsed: </span><span class="si">{:.2f}</span><span class="s1">s </span><span class="si">{:.2f}</span><span class="s1">m </span><span class="si">{:.2f}</span><span class="s1">h&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">time_step</span><span class="p">,</span>
@@ -341,16 +342,18 @@
                     <span class="n">total_dist</span> <span class="o">/</span> <span class="n">total_length</span><span class="p">,</span>
                     <span class="n">elapsed</span><span class="p">,</span> <span class="n">epoch_elapsed</span><span class="p">,</span> <span class="n">train_elapsed</span><span class="p">)</span>
                 <span class="p">)</span>
-                <span class="n">begin</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+                <span class="n">begin_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
             <span class="k">if</span> <span class="n">time_step</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_result_every</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_save_step_result</span><span class="p">(</span><span class="n">train_step_result</span><span class="p">,</span> <span class="n">epoch_loss_total</span> <span class="o">/</span> <span class="n">total_num</span><span class="p">,</span> <span class="n">total_dist</span> <span class="o">/</span> <span class="n">total_length</span><span class="p">)</span>
 
             <span class="c1"># Checkpoint</span>
             <span class="k">if</span> <span class="n">time_step</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkpoint_every</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">Checkpoint</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span>
-                           <span class="n">lr_scheduler</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lr_scheduler</span><span class="p">,</span>  <span class="n">criterion</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">,</span>
-                           <span class="n">trainset_list</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">trainset_list</span><span class="p">,</span> <span class="n">validset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">validset</span><span class="p">,</span> <span class="n">epoch</span><span class="o">=</span><span class="n">epoch</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                <span class="n">Checkpoint</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lr_scheduler</span><span class="p">,</span>  <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">,</span>
+                           <span class="bp">self</span><span class="o">.</span><span class="n">trainset_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">validset</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+        <span class="n">Checkpoint</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lr_scheduler</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">,</span>
+                   <span class="bp">self</span><span class="o">.</span><span class="n">trainset_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">validset</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;train() completed&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">epoch_loss_total</span> <span class="o">/</span> <span class="n">total_num</span><span class="p">,</span> <span class="n">total_dist</span> <span class="o">/</span> <span class="n">total_length</span></div>
@@ -410,8 +413,9 @@
         <span class="n">valid_dict</span><span class="p">,</span> <span class="n">valid_loss</span><span class="p">,</span> <span class="n">valid_cer</span> <span class="o">=</span> <span class="n">valid_result</span>
 
         <span class="n">train_dict</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">train_loss</span><span class="p">)</span>
-        <span class="n">train_dict</span><span class="p">[</span><span class="s2">&quot;cer&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">train_cer</span><span class="p">)</span>
         <span class="n">valid_dict</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">valid_loss</span><span class="p">)</span>
+
+        <span class="n">train_dict</span><span class="p">[</span><span class="s2">&quot;cer&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">train_cer</span><span class="p">)</span>
         <span class="n">valid_dict</span><span class="p">[</span><span class="s2">&quot;cer&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">valid_cer</span><span class="p">)</span>
 
         <span class="n">train_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">train_dict</span><span class="p">)</span>
@@ -424,6 +428,7 @@
         <span class="sd">&quot;&quot;&quot; Save result of --save_result_every step &quot;&quot;&quot;</span>
         <span class="n">train_step_result</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
         <span class="n">train_step_result</span><span class="p">[</span><span class="s2">&quot;cer&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cer</span><span class="p">)</span>
+
         <span class="n">train_step_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">train_step_result</span><span class="p">)</span>
         <span class="n">train_step_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">TRAIN_STEP_RESULT_PATH</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;cp949&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 </pre></div>

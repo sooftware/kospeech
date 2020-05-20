@@ -185,8 +185,8 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>listener</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.6.0a0+f6f1384 ))"><em>torch.nn.Module</em></a>) – encoder of seq2seq</li>
-<li><strong>speller</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.6.0a0+f6f1384 ))"><em>torch.nn.Module</em></a>) – decoder of seq2seq</li>
+<li><strong>listener</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.6.0a0+42870dd ))"><em>torch.nn.Module</em></a>) – encoder of seq2seq</li>
+<li><strong>speller</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.6.0a0+42870dd ))"><em>torch.nn.Module</em></a>) – decoder of seq2seq</li>
 </ul>
 </td>
 </tr>
@@ -240,7 +240,7 @@ registered hooks while the latter silently ignores them.</p>
 <span id="listener"></span><h2>Listener<a class="headerlink" href="#module-e2e.las.listener" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="e2e.las.listener.Listener">
-<em class="property">class </em><code class="descclassname">e2e.las.listener.</code><code class="descname">Listener</code><span class="sig-paren">(</span><em>input_size</em>, <em>hidden_dim</em>, <em>device</em>, <em>dropout_p=0.5</em>, <em>num_layers=1</em>, <em>bidirectional=True</em>, <em>rnn_type='gru'</em>, <em>conv_type='increase'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/las/listener.html#Listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.las.listener.Listener" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">e2e.las.listener.</code><code class="descname">Listener</code><span class="sig-paren">(</span><em>input_size</em>, <em>hidden_dim</em>, <em>device</em>, <em>dropout_p=0.5</em>, <em>num_layers=1</em>, <em>bidirectional=True</em>, <em>rnn_type='gru'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/las/listener.html#Listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.las.listener.Listener" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts low level speech signals into higher level features</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -252,7 +252,6 @@ registered hooks while the latter silently ignores them.</p>
 <li><strong>num_layers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – number of recurrent layers (default: 1)</li>
 <li><strong>bidirectional</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – if True, becomes a bidirectional encoder (defulat: False)</li>
 <li><strong>rnn_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – type of RNN cell (default: gru)</li>
-<li><strong>conv_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – type of conv in listener [increase, repeat] (default: increase)</li>
 <li><strong>dropout_p</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em>) – dropout probability (default: 0)</li>
 <li><strong>device</strong> (<em>torch.device</em>) – device - ‘cuda’ or ‘cpu’</li>
 </ul>
@@ -287,23 +286,18 @@ registered hooks while the latter silently ignores them.</p>
 </div>
 </dd></dl>
 
-<dl class="method">
-<dt id="e2e.las.listener.Listener.get_seq_lengths">
-<code class="descname">get_seq_lengths</code><span class="sig-paren">(</span><em>input_length</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/las/listener.html#Listener.get_seq_lengths"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.las.listener.Listener.get_seq_lengths" title="Permalink to this definition">¶</a></dt>
-<dd><p>Copied from <a class="reference external" href="https://github.com/SeanNaren/deepspeech.pytorch/blob/master/model.py">https://github.com/SeanNaren/deepspeech.pytorch/blob/master/model.py</a>
-Copyright (c) 2017 Sean Naren
-MIT License</p>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="class">
-<dt id="e2e.las.listener.MaskConv">
-<em class="property">class </em><code class="descclassname">e2e.las.listener.</code><code class="descname">MaskConv</code><span class="sig-paren">(</span><em>sequential</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/las/listener.html#MaskConv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.las.listener.MaskConv" title="Permalink to this definition">¶</a></dt>
-<dd><p>Mask Convolution</p>
-<p>Adds padding to the output of the module based on the given lengths. This is to ensure that the
-results of the model do not change when batch sizes change during inference.
-Input needs to be in the shape of (BxCxDxT)</p>
+<dt id="e2e.las.listener.MaskConvNet">
+<em class="property">class </em><code class="descclassname">e2e.las.listener.</code><code class="descname">MaskConvNet</code><span class="sig-paren">(</span><em>sequential</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/las/listener.html#MaskConvNet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.las.listener.MaskConvNet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Masking Convolutional Network</p>
+<p>Adds padding to the output of the module based on the given lengths.
+This is to ensure that the results of the model do not change when batch sizes change during inference.
+Input needs to be in the shape of (batch_size, channel, hidden_dim, seq_len)</p>
+<p>Refer to <a class="reference external" href="https://github.com/SeanNaren/deepspeech.pytorch/blob/master/model.py">https://github.com/SeanNaren/deepspeech.pytorch/blob/master/model.py</a>
+Copyright (c) 2017 Sean Naren
+MIT License</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -315,7 +309,7 @@ Input needs to be in the shape of (BxCxDxT)</p>
 <dl class="docutils">
 <dt>Inputs:</dt>
 <dd><ul class="first last simple">
-<li><strong>x</strong>: The input of size BxCxDxT</li>
+<li><strong>x</strong>: The input of size BxCxHxS</li>
 <li><strong>lengths</strong>: The actual length of each sequence in the batch</li>
 </ul>
 </dd>
@@ -325,12 +319,9 @@ Input needs to be in the shape of (BxCxDxT)</p>
 </ul>
 </dd>
 </dl>
-<p>Copied from <a class="reference external" href="https://github.com/SeanNaren/deepspeech.pytorch/blob/master/model.py">https://github.com/SeanNaren/deepspeech.pytorch/blob/master/model.py</a>
-Copyright (c) 2017 Sean Naren
-MIT License</p>
 <dl class="method">
-<dt id="e2e.las.listener.MaskConv.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>x</em>, <em>lengths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/las/listener.html#MaskConv.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.las.listener.MaskConv.forward" title="Permalink to this definition">¶</a></dt>
+<dt id="e2e.las.listener.MaskConvNet.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs</em>, <em>lengths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/las/listener.html#MaskConvNet.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.las.listener.MaskConvNet.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -340,6 +331,12 @@ this function, one should call the <code class="xref py py-class docutils litera
 instead of this since the former takes care of running the
 registered hooks while the latter silently ignores them.</p>
 </div>
+</dd></dl>
+
+<dl class="method">
+<dt id="e2e.las.listener.MaskConvNet.get_output_lengths">
+<code class="descname">get_output_lengths</code><span class="sig-paren">(</span><em>lengths</em>, <em>m</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/las/listener.html#MaskConvNet.get_output_lengths"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.las.listener.MaskConvNet.get_output_lengths" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate convolutional neural network receptive formula</p>
 </dd></dl>
 
 </dd></dl>
@@ -493,12 +490,6 @@ This paper applied Multi-Head attention in speech recognition task.</p>
 <dd><ul class="first last simple">
 <li><strong>output</strong> (batch, output_len, dimensions): tensor containing the attended output features from the decoder.</li>
 </ul>
-</dd>
-<dt>Examples::</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">attention</span> <span class="o">=</span> <span class="n">MultiHeadAttention</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">n_head</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">output</span> <span class="o">=</span> <span class="n">attention</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">V</span><span class="p">)</span>
-</pre></div>
-</div>
 </dd>
 </dl>
 <dl class="method">

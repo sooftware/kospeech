@@ -65,7 +65,8 @@ class Checkpoint(object):
         torch.save(trainer_states, os.path.join(path, self.TRAINER_STATE_NAME))
         torch.save(self.model, os.path.join(path, self.MODEL_NAME))
         logger.info('save checkpoints\n%s\n%s'
-                    % (os.path.join(path, self.TRAINER_STATE_NAME), os.path.join(path, self.MODEL_NAME)))
+                    % (os.path.join(path, self.TRAINER_STATE_NAME),
+                       os.path.join(path, self.MODEL_NAME)))
 
     def load(self, path):
         """
@@ -78,7 +79,8 @@ class Checkpoint(object):
             checkpoint (Checkpoint): checkpoint object with fields copied from those stored on disk
        """
         logger.info('load checkpoints\n%s\n%s'
-                    % (os.path.join(path, self.TRAINER_STATE_NAME), os.path.join(path, self.MODEL_NAME)))
+                    % (os.path.join(path, self.TRAINER_STATE_NAME),
+                       os.path.join(path, self.MODEL_NAME)))
 
         if torch.cuda.is_available():
             resume_checkpoint = torch.load(os.path.join(path, self.TRAINER_STATE_NAME))

@@ -1,3 +1,13 @@
+"""
+-*- coding: utf-8 -*-
+
+@source_code{
+  title={End-to-end Speech Recognition},
+  author={Soohwan Kim, Seyoung Bae, Cheolhwang Won},
+  link={https://github.com/sooftware/End-to-end-Speech-Recognition},
+  year={2020}
+}
+"""
 import argparse
 import warnings
 from e2e.evaluator.evaluator import Evaluator
@@ -7,7 +17,7 @@ from e2e.modules.opts import inference_opts, preprocess_opts, print_opts
 from e2e.modules.utils import check_envirionment
 
 
-def evaluate(opt):
+def inference(opt):
     device = check_envirionment(opt)
     model = load_test_model(opt, device, use_beamsearch=opt.use_beam_search)
 
@@ -18,7 +28,7 @@ def evaluate(opt):
 def _get_parser():
     """ Get arguments parser """
     parser = argparse.ArgumentParser(description='End-to-end Speech Recognition')
-    parser.add_argument('--mode', type=str, default='test')
+    parser.add_argument('--mode', type=str, default='infer')
 
     preprocess_opts(parser)
     inference_opts(parser)
@@ -32,7 +42,7 @@ def main():
     opt = parser.parse_args()
     print_opts(opt, opt.mode)
 
-    evaluate(opt)
+    inference(opt)
 
 
 if __name__ == '__main__':

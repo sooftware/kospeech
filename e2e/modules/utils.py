@@ -89,17 +89,18 @@ def get_label(filepath, sos_id, eos_id, target_dict=None):
     Returns: label
         - **label** (list): list of bos + sequence of label + eos
     """
-    assert target_dict is not None, 'target_dict is None'
+    labels = list()
 
     key = filepath.split('/')[-1].split('.')[0]
-
     script = target_dict[key]
+
     tokens = script.split(' ')
 
-    labels = list()
     labels.append(int(sos_id))
+
     for token in tokens:
         labels.append(int(token))
+
     labels.append(int(eos_id))
 
     return labels
@@ -110,12 +111,12 @@ def label_to_string(labels, id2char, eos_id):
     Converts label to string (number => Hangeul)
 
     Args:
-        labels (list): number label
+        labels (numpy.ndarray): number label
         id2char (dict): id2char[id] = ch
         eos_id (int): identification of <end of sequence>
 
     Returns: sentence
-        - **sentence** (str or list): Hangeul representation of labels
+        - **sentence** (str or list): symbol of labels
     """
     if len(labels.shape) == 1:
         sentence = str()
@@ -135,6 +136,9 @@ def label_to_string(labels, id2char, eos_id):
                 sentence += id2char[label.item()]
             sentences.append(sentence)
         return sentences
+
+    else:
+        logger.info("Unsupported shape : {0}".format(str(labels.shape)))
 
 
 def save_pickle(save_var, savepath, message=""):

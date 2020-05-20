@@ -1,12 +1,12 @@
 """
-    -*- coding: utf-8 -*-
+-*- coding: utf-8 -*-
 
-    @source_code{
-      title={End-to-end Speech Recognition},
-      author={Soohwan Kim, Seyoung Bae, Cheolhwang Won},
-      link={https://github.com/sooftware/End-to-end-Speech-Recognition},
-      year={2020}
-    }
+@source_code{
+  title={End-to-end Speech Recognition},
+  author={Soohwan Kim, Seyoung Bae, Cheolhwang Won},
+  link={https://github.com/sooftware/End-to-end-Speech-Recognition},
+  year={2020}
+}
 """
 import argparse
 import random

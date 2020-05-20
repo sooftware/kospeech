@@ -44,8 +44,8 @@ class Speller(nn.Module):
                  num_heads, num_layers=1, rnn_type='gru', dropout_p=0.5, device=None):
         super(Speller, self).__init__()
         self.num_classes = num_classes
-        self.rnn_cell = self.supported_rnns[rnn_type]
-        self.rnn = self.rnn_cell(hidden_dim, hidden_dim, num_layers, batch_first=True, dropout=dropout_p).to(device)
+        rnn_cell = self.supported_rnns[rnn_type]
+        self.rnn = rnn_cell(hidden_dim, hidden_dim, num_layers, batch_first=True, dropout=dropout_p).to(device)
         self.max_length = max_length
         self.hidden_dim = hidden_dim
         self.embedding = nn.Embedding(num_classes, self.hidden_dim)

@@ -2,15 +2,15 @@ import torch
 import torch.nn as nn
 
 
-class MaskConv(nn.Module):
+class MaskConvNet(nn.Module):
     """
-    Mask Convolution
+    Masking Convolutional Network
 
-    Adds padding to the output of the module based on the given lengths. This is to ensure that the
-    results of the model do not change when batch sizes change during inference.
-    Input needs to be in the shape of (BxCxHxS)
+    Adds padding to the output of the module based on the given lengths.
+    This is to ensure that the results of the model do not change when batch sizes change during inference.
+    Input needs to be in the shape of (batch_size, channel, hidden_dim, seq_len)
 
-    Copied from https://github.com/SeanNaren/deepspeech.pytorch/blob/master/model.py
+    Refer to https://github.com/SeanNaren/deepspeech.pytorch/blob/master/model.py
     Copyright (c) 2017 Sean Naren
     MIT License
 
@@ -25,24 +25,18 @@ class MaskConv(nn.Module):
         - **x**: Masked output from the module
     """
     def __init__(self, sequential):
-        super(MaskConv, self).__init__()
+        super(MaskConvNet, self).__init__()
         self.sequential = sequential
 
-    def forward(self, x, lengths):
+    def forward(self, inputs, lengths):
         for module in self.sequential:
-            x = module(x)
-            mask = torch.BoolTensor(x.size()).fill_(0)
+            inputs = module(inputs)
+            mask = torch.BoolTensor(inputs.size()).fill_(0)
 
-            if x.is_cuda:
+            if inputs.is_cuda:
                 mask = mask.cuda()
 
-            if type(module) == nn.modules.conv.Conv2d:
-                # CNN receptive formula
-                numerator = lengths + 2 * module.padding[1] - module.dilation[1] * (module.kernel_size[1] - 1) - 1
-                lengths = numerator / module.stride[1] + 1
-
-            elif type(module) == nn.modules.MaxPool2d:
-                lengths /= 2
+            lengths = self.get_output_lengths(lengths, module)
 
             for i, length in enumerate(lengths):
                 length = length.item()
@@ -50,9 +44,19 @@ class MaskConv(nn.Module):
                 if (mask[i].size(2) - length) > 0:
                     mask[i].narrow(dim=2, start=length, length=mask[i].size(2) - length).fill_(1)
 
-            x = x.masked_fill(mask, 0)
+            inputs = inputs.masked_fill(mask, 0)
 
-        return x, lengths
+        return inputs, lengths
+
+    def get_output_lengths(self, lengths, m):
+        """ Calculate convolutional neural network receptive formula """
+        if type(m) == nn.modules.conv.Conv2d:
+            lengths = (lengths + 2 * m.padding[1] - m.dilation[1] * (m.kernel_size[1] - 1) - 1) / m.stride[1] + 1
+
+        elif type(m) == nn.modules.MaxPool2d:
+            lengths /= 2
+
+        return lengths
 
 
 class Listener(nn.Module):
@@ -79,15 +83,13 @@ class Listener(nn.Module):
         'gru': nn.GRU,
         'rnn': nn.RNN
     }
-    supported_convs = {
-        'increase',
-        'repeat'
-    }
 
     def __init__(self, input_size, hidden_dim, device, dropout_p=0.5, num_layers=1, bidirectional=True, rnn_type='gru'):
         super(Listener, self).__init__()
+        input_size = (input_size - 1) << 5 if input_size % 2 else input_size << 5
+        rnn_cell = self.supported_rnns[rnn_type]
         self.device = device
-        self.conv = MaskConv(
+        self.cnn = MaskConvNet(
             nn.Sequential(
                 nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1),
                 nn.Hardtanh(0, 20, inplace=True),
@@ -104,8 +106,6 @@ class Listener(nn.Module):
                 nn.MaxPool2d(2, stride=2)
             )
         )
-        input_size = (input_size - 1) << 5 if input_size % 2 else input_size << 5
-        rnn_cell = self.supported_rnns[rnn_type]
         self.rnn = rnn_cell(
             input_size=input_size,
             hidden_size=hidden_dim,
@@ -116,15 +116,16 @@ class Listener(nn.Module):
         )
 
     def forward(self, inputs, input_lengths):
-        x = inputs.unsqueeze(1).permute(0, 1, 3, 2)          # (batch_size, 1, hidden_dim, seq_len)
-        x, output_lengths = self.conv(x, input_lengths)      # (batch_size, channel, hidden_dim, seq_len)
+        inputs = inputs.unsqueeze(1).permute(0, 1, 3, 2)            # (batch_size, 1, hidden_dim, seq_len)
+        conv, output_lengths = self.cnn(inputs, input_lengths)      # (batch_size, channel, hidden_dim, seq_len)
 
-        x_size = x.size()
-        x = x.view(x_size[0], x_size[1] * x_size[2], x_size[3])    # (batch_size, channel * hidden_dim, seq_len)
-        x = x.transpose(1, 2).transpose(0, 1).contiguous()         # (seq_len, batch_size, hidden_dim)
+        B, C, H, S = conv.size()
 
-        x = nn.utils.rnn.pack_padded_sequence(x, output_lengths)
-        output, hidden = self.rnn(x)
+        conv = conv.view(B, C * H, S)                                    # (batch_size, channel * hidden_dim, seq_len)
+        conv = conv.transpose(1, 2).transpose(0, 1).contiguous()         # (seq_len, batch_size, hidden_dim)
+
+        conv = nn.utils.rnn.pack_padded_sequence(conv, output_lengths)
+        output, hidden = self.rnn(conv)
         output, _ = nn.utils.rnn.pad_packed_sequence(output)
 
         output = output.transpose(0, 1)   # (batch_size, seq_len, hidden_dim)
