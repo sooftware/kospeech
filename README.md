@@ -16,10 +16,10 @@ We appreciate any kind of [feedback or contribution](https://github.com/sooftwar
   
 ## Features  
   
-* [Listen, Attend and Spell Architecture](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html)
-* [Convolutional encoder](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html)
-* [Multi-Head Attention](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html)
-* [Top K Decoding (Beam Search)](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html)
+* [Listen, Attend and Spell Architecture](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html#module-e2e.las.las)
+* [Convolutional encoder](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html#module-e2e.las.listener)
+* [Multi-Head Attention](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html#module-e2e.las.attention)
+* [Top K Decoding (Beam Search)](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html#module-e2e.las.topk_decoder)
 * [Provides a variety of feature extraction methods](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html)
 * [Delete silence](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html)
 * [SpecAugment](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html)
