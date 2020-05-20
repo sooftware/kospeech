@@ -126,9 +126,9 @@ def split_dataset(opt, audio_paths, label_paths):
 
     # audio_paths & label_paths shuffled in the same order
     # for seperating train & validation
-    data_paths = list(zip(audio_paths, label_paths))
-    random.shuffle(data_paths)
-    audio_paths, label_paths = zip(*data_paths)
+    tmp = list(zip(audio_paths, label_paths))
+    random.shuffle(tmp)
+    audio_paths, label_paths = zip(*tmp)
 
     # seperating the train dataset by the number of workers
     for idx in range(opt.num_workers):

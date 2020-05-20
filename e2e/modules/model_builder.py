@@ -17,7 +17,6 @@ def build_model(opt, device):
         bidirectional=opt.use_bidirectional,
         rnn_type=opt.rnn_type,
         device=device,
-        conv_type=opt.conv_type
     )
     speller = build_speller(
         num_classes=len(char2id),
@@ -43,8 +42,7 @@ def build_las(listener, speller, device, use_multi_gpu=True, init_uniform=True):
     model = ListenAttendSpell(listener, speller)
     model.flatten_parameters()
 
-    if use_multi_gpu:
-        model = nn.DataParallel(model).to(device)
+    model = nn.DataParallel(model).to(device)
 
     if init_uniform:
         for param in model.parameters():
@@ -53,7 +51,7 @@ def build_las(listener, speller, device, use_multi_gpu=True, init_uniform=True):
     return model
 
 
-def build_listener(input_size, hidden_dim, dropout_p, num_layers, bidirectional, rnn_type, device, conv_type):
+def build_listener(input_size, hidden_dim, dropout_p, num_layers, bidirectional, rnn_type, device):
     """ build listener & validate parameters """
     assert isinstance(input_size, int), "input_size should be inteager type"
     assert isinstance(hidden_dim, int), "hidden_dim should be inteager type"
@@ -63,9 +61,8 @@ def build_listener(input_size, hidden_dim, dropout_p, num_layers, bidirectional,
     assert hidden_dim > 0, "hidden_dim should be greater than 0"
     assert num_layers > 0, "num_layers should be greater than 0"
     assert rnn_type.lower() in Listener.supported_rnns.keys(), "Unsupported RNN Cell: {0}".format(rnn_type)
-    assert conv_type.lower() in Listener.supported_convs, "Unsupported Conv: {0}".format(conv_type)
 
-    return Listener(input_size, hidden_dim, device, dropout_p, num_layers, bidirectional, rnn_type, conv_type)
+    return Listener(input_size, hidden_dim, device, dropout_p, num_layers, bidirectional, rnn_type)
 
 
 def build_speller(num_classes, max_len, hidden_dim, sos_id, eos_id, num_layers, rnn_type, dropout_p, num_heads, device):

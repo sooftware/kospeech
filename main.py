@@ -52,7 +52,8 @@ def train(opt):
     device = check_envirionment(opt)
 
     audio_paths, label_paths = load_data_list(TRAIN_LIST_PATH, DATASET_PATH)
-    total_time_step, trainset_list, validset = split_dataset(opt, audio_paths, label_paths)
+
+    epoch_time_step, trainset_list, validset = split_dataset(opt, audio_paths, label_paths)
     model = build_model(opt, device)
 
     optimizer = optim.Adam(model.module.parameters(), lr=opt.lr)
@@ -85,7 +86,7 @@ def train(opt):
     model = trainer.train(
         model=model,
         batch_size=opt.batch_size,
-        total_time_step=total_time_step,
+        epoch_time_step=epoch_time_step,
         num_epochs=opt.num_epochs,
         teacher_forcing_ratio=opt.teacher_forcing_ratio,
         resume=opt.resume
@@ -104,7 +105,7 @@ def evaluate(opt):
 
 def main():
     warnings.filterwarnings('ignore')
-    parser = get_parser('train')  # or 'eval'
+    parser = get_parser()
     opt = parser.parse_args()
     print_opts(opt, opt.mode)
 

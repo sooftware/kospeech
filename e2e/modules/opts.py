@@ -15,8 +15,6 @@ def model_opts(parser):
     group.add_argument('--dropout', type=float, default=0.3, help='dropout ratio in training (default: 0.3)')
     group.add_argument('--num_heads', type=int, default=4, help='number of head in attention (default: 4)')
     group.add_argument('--label_smoothing', type=float, default=0.1, help='ratio of label smoothing (default: 0.1)')
-    group.add_argument('--conv_type', type=str, default='increase',
-                       help='type of conv in listener [increase, repeat] (default: increase')
     group.add_argument('--listener_layer_size', type=int, default=5, help='layer size of encoder (default: 5)')
     group.add_argument('--speller_layer_size', type=int, default=3, help='layer size of decoder (default: 3)')
     group.add_argument('--rnn_type', type=str, default='gru', help='type of rnn cell: [gru, lstm, rnn] (default: gru)')
@@ -79,7 +77,6 @@ def preprocess_opts(parser):
 def infer_opts(parser):
     """ inference options """
     group = parser.add_argument_group('Infer')
-    group.add_argument('--mode', type=str, default='train')
     group.add_argument('--use_multi_gpu', action='store_true', default=False)
     group.add_argument('--num_workers', type=int, default=4, help='number of workers in dataset loader (default: 4)')
     group.add_argument('--use_cuda', action='store_true', default=False)
@@ -91,21 +88,23 @@ def infer_opts(parser):
                        help='to determine whether to store inference progress every N timesteps (default: 10')
 
 
-def get_parser(mode='train'):
+def get_parser():
     """ Get arguments parser """
     parser = argparse.ArgumentParser(description='End-to-end Speech Recognition')
+    parser.add_argument('--mode', type=str, default='train')
+    opt = parser.parse_args()
 
-    if mode == 'train':
+    if opt.mode == 'train':
         preprocess_opts(parser)
         model_opts(parser)
         train_opts(parser)
 
-    elif mode == 'eval':
+    elif opt.mode == 'eval':
         preprocess_opts(parser)
         infer_opts(parser)
 
     else:
-        raise ValueError("Unsupported mode: {0}".format(mode))
+        raise ValueError("Unsupported mode: {0}".format(opt.mode))
 
     return parser
 
@@ -133,7 +132,6 @@ def print_model_opts(opt):
     logger.info('--dropout: %s' % str(opt.dropout))
     logger.info('--num_heads: %s' % str(opt.num_heads))
     logger.info('--label_smoothing: %s' % str(opt.label_smoothing))
-    logger.info('--conv_type: %s' % str(opt.conv_type))
     logger.info('--listener_layer_size: %s' % str(opt.listener_layer_size))
     logger.info('--speller_layer_size: %s' % str(opt.speller_layer_size))
     logger.info('--rnn_type: %s' % str(opt.rnn_type))

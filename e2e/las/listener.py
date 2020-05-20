@@ -8,7 +8,7 @@ class MaskConv(nn.Module):
 
     Adds padding to the output of the module based on the given lengths. This is to ensure that the
     results of the model do not change when batch sizes change during inference.
-    Input needs to be in the shape of (BxCxDxT)
+    Input needs to be in the shape of (BxCxHxS)
 
     Copied from https://github.com/SeanNaren/deepspeech.pytorch/blob/master/model.py
     Copyright (c) 2017 Sean Naren
@@ -18,7 +18,7 @@ class MaskConv(nn.Module):
         sequential (torch.nn): sequential list of convolution layer
 
     Inputs:
-        - **x**: The input of size BxCxDxT
+        - **x**: The input of size BxCxHxS
         - **lengths**: The actual length of each sequence in the batch
 
     Returns: x
@@ -36,15 +36,23 @@ class MaskConv(nn.Module):
             if x.is_cuda:
                 mask = mask.cuda()
 
+            if type(module) == nn.modules.conv.Conv2d:
+                # CNN receptive formula
+                numerator = lengths + 2 * module.padding[1] - module.dilation[1] * (module.kernel_size[1] - 1) - 1
+                lengths = numerator / module.stride[1] + 1
+
+            elif type(module) == nn.modules.MaxPool2d:
+                lengths /= 2
+
             for i, length in enumerate(lengths):
                 length = length.item()
 
                 if (mask[i].size(2) - length) > 0:
-                    mask[i].narrow(2, length, mask[i].size(2) - length).fill_(1)
+                    mask[i].narrow(dim=2, start=length, length=mask[i].size(2) - length).fill_(1)
 
             x = x.masked_fill(mask, 0)
 
-        return x
+        return x, lengths
 
 
 class Listener(nn.Module):
@@ -56,7 +64,6 @@ class Listener(nn.Module):
         num_layers (int, optional): number of recurrent layers (default: 1)
         bidirectional (bool, optional): if True, becomes a bidirectional encoder (defulat: False)
         rnn_type (str, optional): type of RNN cell (default: gru)
-        conv_type(str, optional): type of conv in listener [increase, repeat] (default: increase)
         dropout_p (float, optional): dropout probability (default: 0)
         device (torch.device): device - 'cuda' or 'cpu'
 
@@ -72,15 +79,16 @@ class Listener(nn.Module):
         'gru': nn.GRU,
         'rnn': nn.RNN
     }
+    supported_convs = {
+        'increase',
+        'repeat'
+    }
 
-    def __init__(self, input_size, hidden_dim, device, dropout_p=0.5, num_layers=1,
-                 bidirectional=True, rnn_type='gru', conv_type='increase'):
+    def __init__(self, input_size, hidden_dim, device, dropout_p=0.5, num_layers=1, bidirectional=True, rnn_type='gru'):
         super(Listener, self).__init__()
         self.device = device
-        self.conv_type = conv_type
-
-        if conv_type.lower() == 'increase':
-            self.conv = nn.Sequential(
+        self.conv = MaskConv(
+            nn.Sequential(
                 nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1),
                 nn.Hardtanh(0, 20, inplace=True),
                 nn.BatchNorm2d(num_features=64),
@@ -95,24 +103,7 @@ class Listener(nn.Module):
                 nn.Hardtanh(0, 20, inplace=True),
                 nn.MaxPool2d(2, stride=2)
             )
-
-        elif conv_type.lower() == 'repeat':
-            self.conv = MaskConv(
-                nn.Sequential(
-                    nn.Conv2d(1, 32, kernel_size=3, stride=1, padding=1),
-                    nn.Hardtanh(0, 20, inplace=True),
-                    nn.BatchNorm2d(num_features=32),
-                    nn.Conv2d(32, 32, kernel_size=3, stride=1, padding=1),
-                    nn.Hardtanh(0, 20, inplace=True),
-                    nn.BatchNorm2d(num_features=32),
-                    nn.Conv2d(32, 32, kernel_size=3, stride=1, padding=1),
-                    nn.Hardtanh(0, 20, inplace=True),
-                    nn.BatchNorm2d(num_features=32),
-                    nn.Conv2d(32, 32, kernel_size=3, stride=1, padding=1),
-                    nn.Hardtanh(0, 20, inplace=True)
-                )
-            )
-
+        )
         input_size = (input_size - 1) << 5 if input_size % 2 else input_size << 5
         rnn_cell = self.supported_rnns[rnn_type]
         self.rnn = rnn_cell(
@@ -125,49 +116,20 @@ class Listener(nn.Module):
         )
 
     def forward(self, inputs, input_lengths):
-        if self.conv_type == 'increase':
-            x = self.conv(inputs.unsqueeze(1)).to(self.device)
-            x = x.transpose(1, 2)
-            x = x.contiguous().view(x.size(0), x.size(1), x.size(2) * x.size(3)).to(self.device)
+        x = inputs.unsqueeze(1).permute(0, 1, 3, 2)          # (batch_size, 1, hidden_dim, seq_len)
+        x, output_lengths = self.conv(x, input_lengths)      # (batch_size, channel, hidden_dim, seq_len)
 
-            if self.training:
-                self.flatten_parameters()
+        x_size = x.size()
+        x = x.view(x_size[0], x_size[1] * x_size[2], x_size[3])    # (batch_size, channel * hidden_dim, seq_len)
+        x = x.transpose(1, 2).transpose(0, 1).contiguous()         # (seq_len, batch_size, hidden_dim)
 
-            output, hidden = self.rnn(x)
+        x = nn.utils.rnn.pack_padded_sequence(x, output_lengths)
+        output, hidden = self.rnn(x)
+        output, _ = nn.utils.rnn.pad_packed_sequence(output)
 
-        elif self.conv_type == 'repeat':
-            output_lengths = self.get_seq_lengths(input_lengths)
-
-            x = inputs.unsqueeze(1).permute(0, 1, 3, 2)    # (batch_size, 1, hidden_dim, seq_len)
-            x = self.conv(x, output_lengths)               # (batch_size, conv_out, hidden_dim, seq_len)
-
-            x_size = x.size()
-            x = x.view(x_size[0], x_size[1] * x_size[2], x_size[3])    # (batch_size, conv_out * hidden_dim, seq_len)
-            x = x.transpose(1, 2).transpose(0, 1).contiguous()         # (seq_len, batch_size, hidden_dim)
-
-            x = nn.utils.rnn.pack_padded_sequence(x, output_lengths)
-            output, hidden = self.rnn(x)
-            output, _ = nn.utils.rnn.pad_packed_sequence(output)
-
-            output = output.transpose(0, 1)  # (batch_size, seq_len, hidden_dim)
-
-        else:
-            raise ValueError("Unsupported Conv Type: {0}".format(self.conv_type))
+        output = output.transpose(0, 1)   # (batch_size, seq_len, hidden_dim)
 
         return output, hidden
-
-    def get_seq_lengths(self, input_length):
-        """
-        Copied from https://github.com/SeanNaren/deepspeech.pytorch/blob/master/model.py
-        Copyright (c) 2017 Sean Naren
-        MIT License
-        """
-        seq_len = input_length
-        for m in self.conv.modules():
-            if type(m) == nn.modules.conv.Conv2d:
-                seq_len = ((seq_len + 2 * m.padding[1] - m.dilation[1] * (m.kernel_size[1] - 1) - 1) / m.stride[1] + 1)
-
-        return seq_len.int()
 
     def flatten_parameters(self):
         self.rnn.flatten_parameters()

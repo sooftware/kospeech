@@ -40,14 +40,14 @@ class SupervisedTrainer:
         self.checkpoint_every = checkpoint_every
         self.device = device
 
-    def train(self, model, batch_size, total_time_step, num_epochs, teacher_forcing_ratio=0.99, resume=False):
+    def train(self, model, batch_size, epoch_time_step, num_epochs, teacher_forcing_ratio=0.99, resume=False):
         """
         Run training for a given model.
 
         Args:
             model (torch.nn.Module): model to train
             batch_size (int): batch size for experiment
-            total_time_step (int): number of time step for training
+            epoch_time_step (int): number of time step for training
             num_epochs (int): number of epochs for training
             teacher_forcing_ratio (float): teaching forcing ratio (default 0.99)
             resume(bool, optional): resume training with the latest checkpoint, (default False)
@@ -75,7 +75,7 @@ class SupervisedTrainer:
             # Training
             train_loader = MultiDataLoader(self.trainset_list, train_queue, batch_size, self.num_workers)
             train_loader.start()
-            train_loss, train_cer = self.train_epoches(model, epoch, total_time_step, train_begin_time,
+            train_loss, train_cer = self.train_epoches(model, epoch, epoch_time_step, train_begin_time,
                                                        train_queue, teacher_forcing_ratio)
             train_loader.join()
 
