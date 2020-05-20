@@ -1,6 +1,4 @@
 """ Implementation of all available options """
-
-import argparse
 from e2e.modules.definition import logger
 
 
@@ -74,7 +72,7 @@ def preprocess_opts(parser):
                        help='how many freq-masked area to make (default: 2)')
 
 
-def infer_opts(parser):
+def inference_opts(parser):
     """ inference options """
     group = parser.add_argument_group('Infer')
     group.add_argument('--use_multi_gpu', action='store_true', default=False)
@@ -88,29 +86,9 @@ def infer_opts(parser):
                        help='to determine whether to store inference progress every N timesteps (default: 10')
 
 
-def get_parser():
-    """ Get arguments parser """
-    parser = argparse.ArgumentParser(description='End-to-end Speech Recognition')
-    parser.add_argument('--mode', type=str, default='train')
-    opt = parser.parse_args()
-
-    if opt.mode == 'train':
-        preprocess_opts(parser)
-        model_opts(parser)
-        train_opts(parser)
-
-    elif opt.mode == 'eval':
-        preprocess_opts(parser)
-        infer_opts(parser)
-
-    else:
-        raise ValueError("Unsupported mode: {0}".format(opt.mode))
-
-    return parser
-
-
 def print_preprocess_opts(opt):
     """ Print preprocess options """
+    logger.info('--mode: %s' % str(opt.mode))
     logger.info('--sr: %s' % str(opt.sr))
     logger.info('--window_size: %s' % str(opt.window_size))
     logger.info('--stride: %s' % str(opt.stride))
@@ -163,7 +141,7 @@ def print_train_opts(opt):
     logger.info('--resume: %s' % str(opt.resume))
 
 
-def print_infer_opts(opt):
+def print_inference_opts(opt):
     """ Print inference options """
     logger.info('--use_multi_gpu: %s' % str(opt.use_multi_gpu))
     logger.info('--num_workers: %s' % str(opt.num_workers))
@@ -177,8 +155,6 @@ def print_infer_opts(opt):
 
 def print_opts(opt, mode='train'):
     """ Print options """
-    logger.info('--mode: %s' % str(opt.mode))
-
     if mode == 'train':
         print_preprocess_opts(opt)
         print_model_opts(opt)
@@ -186,4 +162,4 @@ def print_opts(opt, mode='train'):
 
     elif mode == 'eval':
         print_preprocess_opts(opt)
-        print_infer_opts(opt)
+        print_inference_opts(opt)

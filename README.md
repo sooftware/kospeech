@@ -131,7 +131,7 @@ We will also write a document in English as soon as possible, so please wait a l
 If you already have another dataset, please modify the data set path to [definition.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/e2e/modules/definition.py) as appropriate.
 
 ### Train and Test
-you can run by [run.sh](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/run.sh) like following.  
+you can train by [run.sh](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/run.sh) like following.  
   
 * Linux
 ```
@@ -143,8 +143,8 @@ $ ./run.sh
 $ run.sh
 ```
   
-after training, you want to start testing, you should run by `--mode='eval'`.    
-you can set up a arguments at [run.sh](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/run.sh) or at execution time.  
+after training, you can start inference, you can inference by [inference.sh](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/inference.sh).    
+you can set up a options at [run.sh](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/run.sh) or [inference.sh](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/inference.sh).   
   
 ### Checkpoints   
 Checkpoints are organized by experiments and timestamps as shown in the following file structure.  

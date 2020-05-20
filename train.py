@@ -8,41 +8,20 @@
       year={2020}
     }
 """
+import argparse
 import random
 import torch
 import warnings
-import platform
 from torch import optim, nn
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from e2e.dataset.data_loader import split_dataset, load_data_list
 from e2e.loss.loss import LabelSmoothingLoss
 from e2e.modules.checkpoint import Checkpoint
 from e2e.modules.definition import *
-from e2e.evaluator.evaluator import Evaluator
+from e2e.modules.utils import check_envirionment
 from e2e.trainer.supervised_trainer import SupervisedTrainer
-from e2e.modules.model_builder import build_model, load_test_model
-from e2e.modules.opts import get_parser, print_opts
-
-
-def check_envirionment(opt):
-    cuda = opt.use_cuda and torch.cuda.is_available()
-    device = torch.device('cuda' if cuda else 'cpu')
-
-    logger.info("Operating System : %s %s" % (platform.system(), platform.release()))
-    logger.info("Processor : %s" % platform.processor())
-
-    if str(device) == 'cuda':
-        for idx in range(torch.cuda.device_count()):
-            logger.info("device : %s" % torch.cuda.get_device_name(idx))
-        logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
-        logger.info("CUDA version : %s" % torch.version.cuda)
-        logger.info("PyTorch version : %s" % torch.__version__)
-
-    else:
-        logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
-        logger.info("PyTorch version : %s" % torch.__version__)
-
-    return device
+from e2e.modules.model_builder import build_model
+from e2e.modules.opts import print_opts, train_opts, model_opts, preprocess_opts
 
 
 def train(opt):
@@ -100,28 +79,25 @@ def train(opt):
                model.trainset_list, model.validset, opt.num_epochs).save()
 
 
-def evaluate(opt):
-    device = check_envirionment(opt)
+def _get_parser():
+    """ Get arguments parser """
+    parser = argparse.ArgumentParser(description='End-to-end Speech Recognition')
+    parser.add_argument('--mode', type=str, default='train')
 
-    model = load_test_model(opt, device, use_beamsearch=opt.use_beam_search)
-    evaluator = Evaluator(batch_size=opt.batch_size, device=device)
-    evaluator.evaluate(model, opt, TEST_LIST_PATH, DATASET_PATH)
+    preprocess_opts(parser)
+    model_opts(parser)
+    train_opts(parser)
+
+    return parser
 
 
 def main():
     warnings.filterwarnings('ignore')
-    parser = get_parser()
+    parser = _get_parser()
     opt = parser.parse_args()
     print_opts(opt, opt.mode)
 
-    if opt.mode == 'train':
-        train(opt)
-
-    elif opt.mode == 'eval':
-        evaluate(opt)
-
-    else:
-        raise ValueError("Unsupported mode: {0}".format(opt.mode))
+    train(opt)
 
 
 if __name__ == '__main__':
