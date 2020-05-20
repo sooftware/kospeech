@@ -26,8 +26,8 @@ We appreciate any kind of [feedback or contribution](https://github.com/sooftwar
 * [Label Smoothing](https://sooftware.github.io/End-to-end-Speech-Recognition/Loss.html)
 * [Save & load Checkpoint](https://sooftware.github.io/End-to-end-Speech-Recognition/Modules.html)
 * [Various options can be set using parser](https://sooftware.github.io/End-to-end-Speech-Recognition/Modules.html#module-e2e.modules.opts)
+* [Implement data loader as multi-thread for speed](https://sooftware.github.io/End-to-end-Speech-Recognition/Dataset.html)
 * Multi-GPU training
-* Implement data loader as multi-thread for speed
 * Show training states as log
   
 ## Roadmap
