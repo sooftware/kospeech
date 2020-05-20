@@ -12,6 +12,12 @@ This is project for End-to-end Speech Recognition using LAS (Listen, Attend and 
 This repository has modularized and extensible components for las models, training and inference, checkpoints etc.   
 We appreciate any kind of [feedback or contribution](https://github.com/sooftware/End-to-end-Speech-Recognition/issues).
   
+We use [KsponSpeech](http://www.aihub.or.kr/aidata/105) dataset which contains 1,000 hours korean voice data from [AI Hub](http://www.aihub.or.kr/).  
+At present our model has recorded an **85.85% CRR**, and we are working for a higher recognition rate.  
+Also our model has recorded **91.0% CRR** in [Kadi-zeroth dataset](https://github.com/goodatlas/zeroth).  
+  
+###### ( **CRR** : Character Recognition Rate ) 
+  
 <img src="https://user-images.githubusercontent.com/42150335/80630547-5dfc6580-8a8f-11ea-91e8-73fe5e8b9e4b.png" width=450> 
   
 ## Features  
@@ -85,14 +91,7 @@ ListenAttendSpell(
     )
   )
 )
-```
-  
-We use [KsponSpeech](http://www.aihub.or.kr/aidata/105) dataset which contains 1,000 hours korean voice data from [AI Hub](http://www.aihub.or.kr/).  
-At present our model has recorded an **85.85% CRR**, and we are working for a higher recognition rate.  
-  
-Also our model has recorded **91.0% CRR** in [Kadi-zeroth dataset](https://github.com/goodatlas/zeroth).  
-  
-###### ( **CRR** : Character Recognition Rate )  
+``` 
   
 We are constantly updating the progress of the project on the [Wiki page](https://github.com/sooftware/End-to-end-Speech-Recognition/wiki).  Please check this page.  
   
