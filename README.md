@@ -12,7 +12,29 @@ This is project for End-to-end Speech Recognition using LAS (Listen, Attend and 
 This repository has modularized and extensible components for las models, training and inference, checkpoints etc.   
 We appreciate any kind of [feedback or contribution](https://github.com/sooftware/End-to-end-Speech-Recognition/issues).
   
+We use [KsponSpeech](http://www.aihub.or.kr/aidata/105) dataset which contains 1,000 hours korean voice data from [AI Hub](http://www.aihub.or.kr/).  
+At present our model has recorded an **85.85% CRR**, and we are working for a higher recognition rate.  
+Also our model has recorded **91.0% CRR** in [Kadi-zeroth dataset](https://github.com/goodatlas/zeroth).  
+  
+###### ( **CRR** : Character Recognition Rate ) 
+  
 <img src="https://user-images.githubusercontent.com/42150335/80630547-5dfc6580-8a8f-11ea-91e8-73fe5e8b9e4b.png" width=450> 
+  
+## Features  
+  
+* [Listen, Attend and Spell Architecture](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html#module-e2e.las.las)
+* [Convolutional encoder](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html#module-e2e.las.listener)
+* [Multi-Head Attention](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html#module-e2e.las.attention)
+* [Top K Decoding (Beam Search)](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html#module-e2e.las.topk_decoder)
+* [Provides a variety of feature extraction methods](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html)
+* [Delete silence](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html)
+* [SpecAugment](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html)
+* [Label Smoothing](https://sooftware.github.io/End-to-end-Speech-Recognition/Loss.html)
+* [Save & load Checkpoint](https://sooftware.github.io/End-to-end-Speech-Recognition/Modules.html)
+* [Various options can be set using parser](https://sooftware.github.io/End-to-end-Speech-Recognition/Modules.html#module-e2e.modules.opts)
+* [Implement data loader as multi-thread for speed](https://sooftware.github.io/End-to-end-Speech-Recognition/Dataset.html)
+* Multi-GPU training
+* Show training states as log
   
 ## Roadmap
   
@@ -69,14 +91,7 @@ ListenAttendSpell(
     )
   )
 )
-```
-  
-We use [KsponSpeech](http://www.aihub.or.kr/aidata/105) dataset which contains 1,000 hours korean voice data from [AI Hub](http://www.aihub.or.kr/).  
-At present our model has recorded an **85.85% CRR**, and we are working for a higher recognition rate.  
-  
-Also our model has recorded **91.0% CRR** in [Kadi-zeroth dataset](https://github.com/goodatlas/zeroth).  
-  
-###### ( **CRR** : Character Recognition Rate )  
+``` 
   
 We are constantly updating the progress of the project on the [Wiki page](https://github.com/sooftware/End-to-end-Speech-Recognition/wiki).  Please check this page.  
   
@@ -128,7 +143,18 @@ $ run.sh
   
 after training, you want to start testing, you should run by `--mode='eval'`.    
 you can set up a arguments at [run.sh](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/run.sh) or at execution time.  
-
+  
+### Checkpoints   
+Checkpoints are organized by experiments and timestamps as shown in the following file structure.  
+```
+save_dir
++-- checkpoints
+|  +-- YYYY_mm_dd_HH_MM_SS
+   |  +-- trainer_states.pt
+   |  +-- model.pt
+```
+You can resume and load from checkpoints.
+  
 ### Incorporating External Language Model in Performance Test
 We introduce incorporating external language model in performance test.  
 if you are interested in this content, please check [here](https://github.com/sooftware/char-rnnlm).
