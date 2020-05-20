@@ -18,7 +18,7 @@ class SupervisedTrainer:
     Args:
         optimizer (torch.optim): optimizer for training
         lr_scheduler (torch.optim): learning rate scheduler
-        criterion (e2e.loss.LabelSmoothingLoss): loss function
+        criterion (torch.nn.Module): loss function
         trainset_list (list): list of training datset
         validset (e2e.dataset.data_loader.SpectrogramDataset): validation dataset
         num_workers (int): number of using cpu cores
@@ -178,7 +178,7 @@ class SupervisedTrainer:
                     total_dist / total_length,
                     elapsed, epoch_elapsed, train_elapsed)
                 )
-                begin = time.time()
+                begin_time = time.time()
 
             if time_step % self.save_result_every == 0:
                 self._save_step_result(train_step_result, epoch_loss_total / total_num, total_dist / total_length)

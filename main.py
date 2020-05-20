@@ -28,7 +28,8 @@ def check_envirionment(opt):
     cuda = opt.use_cuda and torch.cuda.is_available()
     device = torch.device('cuda' if cuda else 'cpu')
 
-    logger.info("Operating System : %s" % platform.system())
+    logger.info("Operating System : %s %s" % (platform.system(), platform.release()))
+    logger.info("Processor : %s" % platform.processor())
 
     if str(device) == 'cuda':
         for idx in range(torch.cuda.device_count()):
@@ -96,14 +97,14 @@ def train(opt):
 def evaluate(opt):
     device = check_envirionment(opt)
 
-    model = load_test_model(opt, device, use_beamsearch=True)
+    model = load_test_model(opt, device, use_beamsearch=opt.use_beam_search)
     evaluator = Evaluator(batch_size=1, device=device)
     evaluator.evaluate(model, opt, TEST_LIST_PATH, DATASET_PATH)
 
 
 def main():
     warnings.filterwarnings('ignore')
-    parser = get_parser()
+    parser = get_parser('train')  # or 'eval'
     opt = parser.parse_args()
     print_opts(opt, opt.mode)
 

@@ -32,11 +32,14 @@ def build_model(opt, device):
         device=device
     )
 
-    return build_las(listener, speller, device, use_multi_gpu=opt.use_multi_gpu, init_uniform=opt.init_uniform)
+    return build_las(listener, speller, device, opt.use_multi_gpu, opt.init_uniform)
 
 
 def build_las(listener, speller, device, use_multi_gpu=True, init_uniform=True):
     """ build las model & validate parameters """
+    assert listener is not None, "listener is None"
+    assert speller is not None, "speller is None"
+
     model = ListenAttendSpell(listener, speller)
     model.flatten_parameters()
 
@@ -53,6 +56,7 @@ def build_las(listener, speller, device, use_multi_gpu=True, init_uniform=True):
 def build_listener(input_size, hidden_dim, dropout_p, num_layers, bidirectional, rnn_type, device, conv_type):
     """ build listener & validate parameters """
     assert isinstance(input_size, int), "input_size should be inteager type"
+    assert isinstance(hidden_dim, int), "hidden_dim should be inteager type"
     assert isinstance(num_layers, int), "num_layers should be inteager type"
     assert dropout_p >= 0.0, "dropout probability should be positive"
     assert input_size > 0, "input_size should be greater than 0"
@@ -68,6 +72,7 @@ def build_speller(num_classes, max_len, hidden_dim, sos_id, eos_id, num_layers, 
     """ build speller & validate parameters """
     assert isinstance(num_classes, int), "num_classes should be inteager type"
     assert isinstance(num_layers, int), "num_layers should be inteager type"
+    assert isinstance(hidden_dim, int), "hidden_dim should be inteager type"
     assert isinstance(sos_id, int), "sos_id should be inteager type"
     assert isinstance(eos_id, int), "eos_id should be inteager type"
     assert isinstance(num_heads, int), "num_heads should be inteager type"
@@ -75,11 +80,13 @@ def build_speller(num_classes, max_len, hidden_dim, sos_id, eos_id, num_layers, 
     assert isinstance(dropout_p, float), "dropout_p should be inteager type"
     assert hidden_dim % num_heads == 0, "{0} % {1} should be zero".format(hidden_dim, num_heads)
     assert dropout_p >= 0.0, "dropout probability should be positive"
+    assert num_heads > 0, "num_heads should be greater than 0"
     assert hidden_dim > 0, "hidden_dim should be greater than 0"
     assert num_layers > 0, "num_layers should be greater than 0"
     assert max_len > 0, "max_len should be greater than 0"
     assert num_classes > 0, "num_classes should be greater than 0"
     assert rnn_type.lower() in Speller.supported_rnns.keys(), "Unsupported RNN Cell: {0}".format(rnn_type)
+    assert device is not None, "device is None"
 
     return Speller(num_classes, max_len, hidden_dim, sos_id, eos_id, num_heads, num_layers, rnn_type, dropout_p, device)
 

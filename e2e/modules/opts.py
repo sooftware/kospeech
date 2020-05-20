@@ -79,15 +79,16 @@ def preprocess_opts(parser):
 def infer_opts(parser):
     """ inference options """
     group = parser.add_argument_group('Infer')
-    parser.add_argument('--mode', type=str, default='train')
-    parser.add_argument('--use_multi_gpu', action='store_true', default=False)
+    group.add_argument('--mode', type=str, default='train')
+    group.add_argument('--use_multi_gpu', action='store_true', default=False)
     group.add_argument('--num_workers', type=int, default=4, help='number of workers in dataset loader (default: 4)')
-    parser.add_argument('--use_cuda', action='store_true', default=False)
-    parser.add_argument('--model_path', type=str, default=None, help='Location to load models (default: None')
-    parser.add_argument('--batch_size', type=int, default=1, help='batch size in inference (default: 1)')
-    parser.add_argument('--k', type=int, default=5, help='size of beam (default: 5)')
-    parser.add_argument('--print_every', type=int, default=10,
-                        help='to determine whether to store inference progress every N timesteps (default: 10')
+    group.add_argument('--use_cuda', action='store_true', default=False)
+    group.add_argument('--model_path', type=str, default=None, help='Location to load models (default: None')
+    group.add_argument('--batch_size', type=int, default=1, help='batch size in inference (default: 1)')
+    group.add_argument('--k', type=int, default=5, help='size of beam (default: 5)')
+    group.add_argument('--use_beam_search', action='store_true', default=True)
+    group.add_argument('--print_every', type=int, default=10,
+                       help='to determine whether to store inference progress every N timesteps (default: 10')
 
 
 def get_parser(mode='train'):
@@ -171,6 +172,7 @@ def print_infer_opts(opt):
     logger.info('--use_cuda: %s' % str(opt.use_cuda))
     logger.info('--model_path: %s' % str(opt.model_path))
     logger.info('--batch_size: %s' % str(opt.batch_size))
+    logger.info('--use_beam_search: %s' % str(opt.use_beam_search))
     logger.info('--k: %s' % str(opt.k))
     logger.info('--print_every: %s' % str(opt.print_every))
 
