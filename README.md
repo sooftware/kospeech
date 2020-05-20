@@ -14,6 +14,22 @@ We appreciate any kind of [feedback or contribution](https://github.com/sooftwar
   
 <img src="https://user-images.githubusercontent.com/42150335/80630547-5dfc6580-8a8f-11ea-91e8-73fe5e8b9e4b.png" width=450> 
   
+## Features  
+  
+* [Listen, Attend and Spell Architecture](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html)
+* [Convolutional encoder](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html)
+* [Multi-Head Attention](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html)
+* [Top K Decoding (Beam Search)](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html)
+* [Provides a variety of feature extraction methods](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html)
+* [Delete silence](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html)
+* [SpecAugment](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html)
+* [Label Smoothing](https://sooftware.github.io/End-to-end-Speech-Recognition/Loss.html)
+* [Save & load Checkpoint](https://sooftware.github.io/End-to-end-Speech-Recognition/Modules.html)
+* [Various options can be set using parser](https://sooftware.github.io/End-to-end-Speech-Recognition/Modules.html#module-e2e.modules.opts)
+* Multi-GPU training
+* Implement data loader as multi-thread for speed
+* Show training states as log
+  
 ## Roadmap
   
 End-to-end (E2E) automatic speech recognition (ASR) is an emerging paradigm in the field of neural network-based speech recognition that offers multiple benefits. Traditional “hybrid” ASR systems, which are comprised of an acoustic model, language model, and pronunciation model, require separate training of these components, each of which can be complex.   
@@ -128,7 +144,18 @@ $ run.sh
   
 after training, you want to start testing, you should run by `--mode='eval'`.    
 you can set up a arguments at [run.sh](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/run.sh) or at execution time.  
-
+  
+### Checkpoints   
+Checkpoints are organized by experiments and timestamps as shown in the following file structure.  
+```
+save_dir
++-- checkpoints
+|  +-- YYYY_mm_dd_HH_MM_SS
+   |  +-- trainer_states.pt
+   |  +-- model.pt
+```
+Checkpoint includes resuming and loading from checkpoints.
+  
 ### Incorporating External Language Model in Performance Test
 We introduce incorporating external language model in performance test.  
 if you are interested in this content, please check [here](https://github.com/sooftware/char-rnnlm).
