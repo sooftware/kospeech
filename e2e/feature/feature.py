@@ -2,7 +2,6 @@
 Collection of feature extraction
 You can use it according to your environment.
 """
-
 import torch
 import platform
 import numpy as np
@@ -43,7 +42,11 @@ def get_librosa_melspectrogram(filepath, n_mels=80, del_silence=False, input_rev
             [  2.561e-10,   2.096e-09, ...,   7.543e-10,   6.101e-10]])
     """
     if filepath.endswith('.pcm'):
-        pcm = np.memmap(filepath, dtype='h', mode='r')
+        try:
+            pcm = np.memmap(filepath, dtype='h', mode='r')
+        except RuntimeError:
+            return None
+
         signal = np.array([float(x) for x in pcm])
 
     elif filepath.endswith('.wav'):
@@ -210,7 +213,12 @@ def get_torchaudio_melspectrogram(filepath, n_mels=80, del_silence=False, input_
             [  2.561e-10,   2.096e-09, ...,   7.543e-10,   6.101e-10]])
     """
     if filepath.endswith('.pcm'):
-        pcm = np.memmap(filepath, dtype='h', mode='r')
+        try:
+            pcm = np.memmap(filepath, dtype='h', mode='r')
+
+        except RuntimeError:
+            return None
+
         signal = np.array([float(x) for x in pcm])
 
     elif filepath.endswith('.wav'):

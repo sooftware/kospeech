@@ -58,6 +58,9 @@ class SpectrogramDataset(Dataset):
             stride=self.opt.stride
         )
 
+        if spectrogram is None:
+            return None, None
+
         if self.augment_flags[idx]:
             spectrogram = spec_augment(
                 spectrogram=spectrogram,
@@ -231,7 +234,9 @@ class AudioDataLoader(threading.Thread):
                     break
 
                 feat, label = self.dataset.get_item(self.index)
-                items.append((feat, label))
+
+                if feat is not None:
+                    items.append((feat, label))
 
                 self.index += 1
 
