@@ -143,7 +143,7 @@ python ./train.py -use_multi_gpu -init_uniform -mode 'train' -batch_size 32 -num
                   -label_smoothing 0.1 -save_result_every 1000 -print_every 10 -checkpoint_every 5000 \
                   -use_bidirectional -hidden_dim 256 -dropout 0.3 -num_heads 8 -rnn_type 'gru' \
                   -listener_layer_size 5 -speller_layer_size 3 -teacher_forcing_ratio 0.99 \ 
-                  -input_reverse -normalize -del_silence -sr 16000 -window_size 20 -stride 10 -n_mels 80 \
+                  -input_reverse -normalize -del_silence -sample_rate 16000 -window_size 20 -stride 10 -n_mels 80 \
                   -feature_extract_by 'librosa' -time_mask_para 50 -freq_mask_para 12 \
                   -time_mask_num 2 -freq_mask_num 2
 ```
@@ -162,7 +162,7 @@ $ ./infer.sh
 ```
 python ./infer.py -mode 'infer' -use_multi_gpu -use_cuda -batch_size 32 -num_workers 4 \
                   -use_beam_search -k 5 -print_every 100 \
-                  -sr 16000 --window_size 20 --stride 10 --n_mels 80 -feature_extract_by 'librosa' \
+                  -sample_rate 16000 --window_size 20 --stride 10 --n_mels 80 -feature_extract_by 'librosa' \
                   -normalize -del_silence -input_reverse 
 ```
 Now you have a model which you can use to predict on new data. We do this by running beam search (or greedy search).  

@@ -76,36 +76,6 @@ def get_distance(targets, y_hats, id2char, eos_id):
     return total_dist, total_length
 
 
-def get_label(filepath, sos_id, eos_id, target_dict=None):
-    """
-    Provides specific file`s label to list format.
-
-    Args:
-        filepath (str): specific path of label file
-        sos_id (int): identification of <start of sequence>
-        eos_id (int): identification of <end of sequence>
-        target_dict (dict): dictionary of filename and labels
-
-    Returns: label
-        - **label** (list): list of bos + sequence of label + eos
-    """
-    labels = list()
-
-    key = filepath.split('/')[-1].split('.')[0]
-    script = target_dict[key]
-
-    tokens = script.split(' ')
-
-    labels.append(int(sos_id))
-
-    for token in tokens:
-        labels.append(int(token))
-
-    labels.append(int(eos_id))
-
-    return labels
-
-
 def label_to_string(labels, id2char, eos_id):
     """
     Converts label to string (number => Hangeul)

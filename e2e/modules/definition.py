@@ -1,6 +1,6 @@
 import logging
 import sys
-from e2e.dataset.label_loader import load_label
+from e2e.data.label_loader import load_label
 
 # If you haven't read https://sooftware.github.io/End-to-end-Speech-Recognition/notes/Preparation.html
 # please read it first before setting definition.py

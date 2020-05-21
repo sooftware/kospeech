@@ -14,7 +14,7 @@ import torch
 import warnings
 from torch import optim, nn
 from torch.optim.lr_scheduler import ReduceLROnPlateau
-from e2e.dataset.data_loader import split_dataset, load_data_list
+from e2e.data.data_loader import split_dataset, load_data_list
 from e2e.loss.loss import LabelSmoothingLoss
 from e2e.modules.checkpoint import Checkpoint
 from e2e.modules.definition import *
@@ -30,9 +30,9 @@ def train(opt):
     torch.cuda.manual_seed_all(opt.seed)
     device = check_envirionment(opt)
 
-    audio_paths, label_paths = load_data_list(TRAIN_LIST_PATH, DATASET_PATH)
+    audio_paths, script_paths = load_data_list(TRAIN_LIST_PATH, DATASET_PATH)
 
-    epoch_time_step, trainset_list, validset = split_dataset(opt, audio_paths, label_paths)
+    epoch_time_step, trainset_list, validset = split_dataset(opt, audio_paths, script_paths)
     model = build_model(opt, device)
 
     if opt.use_multi_gpu:

@@ -105,7 +105,7 @@ def train_opts(parser):
 def preprocess_opts(parser):
     """ Pre-processing options """
     group = parser.add_argument_group('Input')
-    group.add_argument('--sr', '-sr',
+    group.add_argument('--sample_rate', '-sample_rate',
                        type=int, default=16000,
                        help='sample rate (default: 16000)')
     group.add_argument('--window_size', '-window_size',
@@ -175,7 +175,7 @@ def inference_opts(parser):
 def print_preprocess_opts(opt):
     """ Print preprocess options """
     logger.info('--mode: %s' % str(opt.mode))
-    logger.info('--sr: %s' % str(opt.sr))
+    logger.info('--sample_rate: %s' % str(opt.sample_rate))
     logger.info('--window_size: %s' % str(opt.window_size))
     logger.info('--stride: %s' % str(opt.stride))
     logger.info('--n_mels: %s' % str(opt.n_mels))

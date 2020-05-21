@@ -1,8 +1,8 @@
 import queue
 import torch
-from e2e.dataset.data_loader import SpectrogramDataset, AudioDataLoader, load_data_list
+from e2e.data.data_loader import SpectrogramDataset, AudioDataLoader, load_data_list
 from e2e.modules.definition import logger, id2char, EOS_token, SOS_token
-from e2e.dataset.label_loader import load_targets
+from e2e.data.label_loader import load_targets
 from e2e.modules.utils import get_distance
 
 
@@ -29,12 +29,12 @@ class Evaluator:
             data_list_path (str): path of csv file, containing testset list
             dataset_path (str): path of dataset
         """
-        audio_paths, label_paths = load_data_list(data_list_path, dataset_path)
-        target_dict = load_targets(label_paths)
+        audio_paths, script_paths = load_data_list(data_list_path, dataset_path)
+        target_dict = load_targets(script_paths)
 
         testset = SpectrogramDataset(
             audio_paths=audio_paths,
-            label_paths=label_paths,
+            script_paths=script_paths,
             sos_id=SOS_token,
             eos_id=EOS_token,
             target_dict=target_dict,
