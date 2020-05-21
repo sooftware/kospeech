@@ -9,7 +9,7 @@
 ## Intro
 
 This is project for End-to-end Speech Recognition using LAS (Listen, Attend and Spell) models implemented in [PyTorch](http://pytorch.org).   
-This repositㅑory has modularized and extensible components for las models, training and inference, checkpoints etc.   
+This repository has modularized and extensible components for las models, training and inference, checkpoints etc.   
 We appreciate any kind of [feedback or contribution](https://github.com/sooftware/End-to-end-Speech-Recognition/issues).
   
 We use [KsponSpeech](http://www.aihub.or.kr/aidata/105) which contains 1,000 hours korean voice data.  
