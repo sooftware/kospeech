@@ -22,7 +22,7 @@ Also our model has recorded **91.0% CRR** in [Kadi-zeroth dataset](https://githu
   
 ## Features  
   
-* [Listen, Attend and Spell Architecture](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html#module-e2e.las.las)
+* [E2E automatic speech recognition](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html#module-e2e.las.las)
 * [Convolutional encoder](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html#module-e2e.las.listener)
 * [MaskConv & pack_padded_sequence](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html#module-e2e.las.listener)
 * [Multi-Head Attention](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html#module-e2e.las.attention)
