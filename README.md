@@ -52,7 +52,7 @@ We mainly referred to following papers.
    
 [「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」](https://arxiv.org/abs/1904.08779).   
   
-f you want to study the feature of audio, we recommend this papers.  
+If you want to study the feature of audio, we recommend this papers.  
   
 [「Voice Recognition Using MFCC Algirithm」](https://ijirae.com/volumes/vol1/issue10/27.NVEC10086.pdf).  
   
