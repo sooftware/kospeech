@@ -12,7 +12,7 @@ This is project for End-to-end Speech Recognition using LAS (Listen, Attend and 
 This repository has modularized and extensible components for las models, training and inference, checkpoints etc.   
 We appreciate any kind of [feedback or contribution](https://github.com/sooftware/End-to-end-Speech-Recognition/issues).
   
-We use [KsponSpeech corpus](http://www.aihub.or.kr/aidata/105) which contains 1,000 hours korean voice data from [AI Hub](http://www.aihub.or.kr/).  
+We use [KsponSpeech](http://www.aihub.or.kr/aidata/105) which contains 1,000 hours korean voice data from [AI Hub](http://www.aihub.or.kr/).  
 At present our model has recorded an **86.09% CRR**, and we are working for a higher recognition rate.  
 Also our model has recorded **91.0% CRR** in [Kadi-zeroth dataset](https://github.com/goodatlas/zeroth).  
   
@@ -124,7 +124,7 @@ python setup.py install
 ## Get Started
 ### Step 1: Preparation dataset
 
-Refer [here](https://github.com/sooftware/End-to-end-Speech-Recognition/wiki/Preparation-before-Training) before training. this document contains information regarding the preprocessing of [KsponSpeech corpus](http://www.aihub.or.kr/aidata/105).   
+Refer [here](https://github.com/sooftware/End-to-end-Speech-Recognition/wiki/Preparation-before-Training) before training. this document contains information regarding the preprocessing of [KsponSpeech](http://www.aihub.or.kr/aidata/105).   
 The above document is written in Korean.  
 We will also write a document in English as soon as possible, so please wait a little bit.  
   
