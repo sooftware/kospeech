@@ -1,3 +1,9 @@
+"""
+Copied from https://github.com/IBM/pytorch-seq2seq/blob/master/seq2seq/models/TopKDecoder.py
+Copyright (c) 2017 IBM
+Apache 2.0 License
+"""
+
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
@@ -12,7 +18,8 @@ def _inflate(tensor, n_repeat, dim):
 
 
 class TopKDecoder(nn.Module):
-    r"""Top-K decoding with beam search.
+    r"""
+    Top-K decoding with beam search.
 
     Args:
         decoder (nn.Module): decoder to which beam search will be applied

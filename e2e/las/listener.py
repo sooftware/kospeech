@@ -10,6 +10,10 @@ class MaskCNN(nn.Module):
     This is to ensure that the results of the model do not change when batch sizes change during inference.
     Input needs to be in the shape of (batch_size, channel, hidden_dim, seq_len)
 
+    Refer to https://github.com/SeanNaren/deepspeech.pytorch/blob/master/model.py
+    Copyright (c) 2017 Sean Naren
+    MIT License
+
     Args:
         sequential (torch.nn): sequential list of convolution layer
 
