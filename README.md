@@ -52,7 +52,7 @@ We mainly referred to following papers.
    
 [「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」](https://arxiv.org/abs/1904.08779).   
   
-if you want to study the feature of audio, we recommend this papers.  
+f you want to study the feature of audio, we recommend this papers.  
   
 [「Voice Recognition Using MFCC Algirithm」](https://ijirae.com/volumes/vol1/issue10/27.NVEC10086.pdf).  
   
@@ -150,7 +150,7 @@ python ./train.py -use_multi_gpu -init_uniform -mode 'train' -batch_size 32 -num
   
 You can train the model by above command.  
  If you want to train by default setting, you can train by `Defaulting setting` command.   
- or you want to train by custom setting, you can designate hyperparameters by `Custom setting` command.
+ Or if you want to train by custom setting, you can designate hyperparameters by `Custom setting` command.
 
 
 ### Step 3: Run `infer.py`
@@ -166,7 +166,7 @@ python ./infer.py -mode 'infer' -use_multi_gpu -use_cuda -batch_size 32 -num_wor
                   -normalize -del_silence -input_reverse 
 ```
 Now you have a model whuch you can use to predict on new data. We do this by running beam search (or greedy search).  
-
+Like training, you can choose between `Default setting` or `Custom setting`.  
   
 ### Checkpoints   
 Checkpoints are organized by experiments and timestamps as shown in the following file structure.  
@@ -181,7 +181,7 @@ You can resume and load from checkpoints.
   
 ### Incorporating External Language Model in Performance Test
 We introduce incorporating external language model in performance test.  
-if you are interested in this content, please check [here](https://github.com/sooftware/char-rnnlm).
+If you are interested in this content, please check [here](https://github.com/sooftware/char-rnnlm).
   
 ## Troubleshoots and Contributing
 If you have any questions, bug reports, and feature requests, please [open an issue](https://github.com/sooftware/End-to-end-Speech-Recognition/issues) on Github.   
