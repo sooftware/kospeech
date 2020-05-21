@@ -17,9 +17,9 @@ class MaskCNN(nn.Module):
     Args:
         sequential (torch.nn): sequential list of convolution layer
 
-    Inputs: inputs, input_lengths
-        - **inputs**: The input of size BxCxHxS
-        - **input_lengths**: The actual length of each sequence in the batch
+    Inputs: inputs, seq_lengths
+        - **inputs** (torch.FloatTensor): The input of size BxCxHxS
+        - **seq_lengths** (torch.IntTensor): The actual length of each sequence in the batch
 
     Returns: output, seq_lengths
         - **output**: Masked output from the sequential
@@ -53,7 +53,16 @@ class MaskCNN(nn.Module):
         return output, seq_lengths
 
     def get_seq_lengths(self, module, seq_lengths):
-        """ Calculate convolutional neural network receptive formula """
+        """
+        Calculate convolutional neural network receptive formula
+
+        Args:
+            module (torch.nn.Module): module of CNN
+            seq_lengths (torch.IntTensor): The actual length of each sequence in the batch
+
+        Returns: seq_lengths
+            - **seq_lengths**: Sequence length of output from the module
+        """
         if isinstance(module, nn.Conv2d):
             numerator = seq_lengths + 2 * module.padding[1] - module.dilation[1] * (module.kernel_size[1] - 1) - 1
             seq_lengths = numerator / module.stride[1] + 1
@@ -91,9 +100,6 @@ class Listener(nn.Module):
 
     def __init__(self, input_size, hidden_dim, device, dropout_p=0.5, num_layers=1, bidirectional=True, rnn_type='gru'):
         super(Listener, self).__init__()
-        input_size = (input_size - 1) << 5 if input_size % 2 else input_size << 5
-        rnn_cell = self.supported_rnns[rnn_type]
-        self.device = device
         self.cnn = MaskCNN(
             nn.Sequential(
                 nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1),
@@ -111,14 +117,10 @@ class Listener(nn.Module):
                 nn.MaxPool2d(2, stride=2)
             )
         )
-        self.rnn = rnn_cell(
-            input_size=input_size,
-            hidden_size=hidden_dim,
-            num_layers=num_layers,
-            batch_first=True,
-            bidirectional=bidirectional,
-            dropout=dropout_p
-        )
+        input_size = (input_size - 1) << 5 if input_size % 2 else input_size << 5
+        rnn_cell = self.supported_rnns[rnn_type]
+        self.rnn = rnn_cell(input_size, hidden_dim, num_layers, True, True, dropout_p, bidirectional)
+        self.device = device
 
     def forward(self, inputs, input_lengths):
         inputs = inputs.unsqueeze(1).permute(0, 1, 3, 2)
@@ -136,6 +138,3 @@ class Listener(nn.Module):
         output = output.transpose(0, 1)   # (batch_size, seq_len, hidden_dim)
 
         return output, hidden
-
-    def flatten_parameters(self):
-        self.rnn.flatten_parameters()

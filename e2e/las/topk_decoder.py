@@ -30,22 +30,19 @@ class TopKDecoder(nn.Module):
         - **encoder_outputs** : tensor containing the encoded features of the input sequence
 
     Returns: decoder_outputs
-        - **decoder_outputs** : result of beam search
+        - **decoder_outputs** :  list of tensors containing the outputs of the decoding function.
     """
 
     def __init__(self, decoder, k):
         super(TopKDecoder, self).__init__()
-
-        assert k > 1, "k should be greater than 1"
-
-        self.sos_id = decoder.sos_id
-        self.eos_id = decoder.eos_id
-        self.k = k
-        self.max_length = decoder.max_length
         self.num_classes = decoder.num_classes
+        self.max_length = decoder.max_length
         self.hidden_dim = decoder.hidden_dim
         self.forward_step = decoder.forward_step
         self.pos_index = None
+        self.k = k
+        self.sos_id = decoder.sos_id
+        self.eos_id = decoder.eos_id
         self.device = decoder.device
 
     def forward(self, input_var, encoder_outputs, teacher_forcing_ratio=0.0):

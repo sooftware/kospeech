@@ -31,8 +31,7 @@ class Speller(nn.Module):
           teacher forcing would be used (default is 0).
 
     Returns: decoder_outputs
-        - **decoder_outputs** (seq_len, batch_size, num_classes): list of tensors containing
-        the outputs of the decoding function.
+        - **decoder_outputs**: list of tensors containing the outputs of the decoding function.
     """
     supported_rnns = {
         'lstm': nn.LSTM,
@@ -49,7 +48,7 @@ class Speller(nn.Module):
         self.max_length = max_length
         self.hidden_dim = hidden_dim
         self.embedding = nn.Embedding(num_classes, self.hidden_dim)
-        self.input_dropout = nn.Dropout(p=dropout_p)
+        self.input_dropout = nn.Dropout(dropout_p)
         self.eos_id = eos_id
         self.sos_id = sos_id
         self.device = device

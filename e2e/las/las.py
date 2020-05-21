@@ -42,7 +42,7 @@ class ListenAttendSpell(nn.Module):
         return output
 
     def flatten_parameters(self):
-        self.listener.flatten_parameters()
+        self.listener.rnn.flatten_parameters()
         self.speller.rnn.flatten_parameters()
 
     def set_speller(self, decoder):
