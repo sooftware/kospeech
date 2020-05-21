@@ -165,7 +165,7 @@ python ./infer.py -mode 'infer' -use_multi_gpu -use_cuda -batch_size 32 -num_wor
                   -sr 16000 --window_size 20 --stride 10 --n_mels 80 -feature_extract_by 'librosa' \
                   -normalize -del_silence -input_reverse 
 ```
-Now you have a model whuch you can use to predict on new data. We do this by running beam search (or greedy search).  
+Now you have a model which you can use to predict on new data. We do this by running beam search (or greedy search).  
 Like training, you can choose between `Default setting` or `Custom setting`.  
   
 ### Checkpoints   
