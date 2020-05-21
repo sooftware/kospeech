@@ -184,8 +184,9 @@ We follow [PEP-8](https://www.python.org/dev/peps/pep-0008/) for code style. Esp
 ### Citing
 ```
 @source_code{
-  title={End-to-end Speech Recognition},
-  author={Soohwan Kim, Seyoung Bae, Cheolhwang Won},
-  year={2020}
+  title = {End-to-end Speech Recognition},
+  author = {Soohwan Kim, Seyoung Bae, Cheolhwang Won},
+  publisher = {GitHub},
+  year = {2020}
 }
 ```
