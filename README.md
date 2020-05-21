@@ -12,7 +12,7 @@ This is project for End-to-end Speech Recognition using LAS (Listen, Attend and 
 This repository has modularized and extensible components for las models, training and inference, checkpoints etc.   
 We appreciate any kind of [feedback or contribution](https://github.com/sooftware/End-to-end-Speech-Recognition/issues).
   
-We use [KsponSpeech](http://www.aihub.or.kr/aidata/105) which contains 1,000 hours korean voice data from [AI Hub](http://www.aihub.or.kr/).  
+We use [KsponSpeech](http://www.aihub.or.kr/aidata/105) which contains 1,000 hours korean voice data.  
 At present our model has recorded an **86.09% CRR**, and we are working for a higher recognition rate.  
 Also our model has recorded **91.0% CRR** in [Kadi-zeroth dataset](https://github.com/goodatlas/zeroth).  
   
@@ -52,7 +52,7 @@ We mainly referred to following papers.
    
 [「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」](https://arxiv.org/abs/1904.08779).   
   
-f you want to study the feature of audio, we recommend this papers.  
+If you want to study the feature of audio, we recommend this papers.  
   
 [「Voice Recognition Using MFCC Algirithm」](https://ijirae.com/volumes/vol1/issue10/27.NVEC10086.pdf).  
   
