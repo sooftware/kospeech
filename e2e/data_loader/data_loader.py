@@ -24,13 +24,13 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
         opt (ArgumentParser): set of arguments
     """
     def __init__(self, audio_paths, script_paths, sos_id, eos_id, target_dict=None, opt=None, use_augment=True):
-        super(SpectrogramParser, self).__init__(feature_extract_by=opt.feature_extract_by, sample_rate=opt.sample_rate,
-                                                n_mels=opt.n_mels, window_size=opt.window_size, stride=opt.stride,
-                                                del_silence=opt.del_silence, input_reverse=opt.input_reverse,
-                                                normalize=opt.normalize,
-                                                time_mask_para=opt.time_mask_para, freq_mask_para=opt.freq_mask_para,
-                                                time_mask_num=opt.time_mask_num, freq_mask_num=opt.freq_mask_num,
-                                                sos_id=sos_id, eos_id=eos_id, target_dict=target_dict)
+        super(SpectrogramDataset, self).__init__(feature_extract_by=opt.feature_extract_by, sample_rate=opt.sample_rate,
+                                                 n_mels=opt.n_mels, window_size=opt.window_size, stride=opt.stride,
+                                                 del_silence=opt.del_silence, input_reverse=opt.input_reverse,
+                                                 normalize=opt.normalize,
+                                                 time_mask_para=opt.time_mask_para, freq_mask_para=opt.freq_mask_para,
+                                                 time_mask_num=opt.time_mask_num, freq_mask_num=opt.freq_mask_num,
+                                                 sos_id=sos_id, eos_id=eos_id, target_dict=target_dict)
         self.audio_paths = list(audio_paths)
         self.script_paths = list(script_paths)
         self.augment_methods = [self.VANILLA] * len(self.audio_paths)

@@ -1,9 +1,9 @@
-from abc import abstractmethod
 import librosa
 import torch
 import platform
 import random
 import numpy as np
+from abc import abstractmethod
 from e2e.feature.core import split
 from e2e.modules.global_var import logger
 
@@ -56,10 +56,13 @@ class SpectrogramParser(AudioParser):
         freq_mask_para (int): Hyper Parameter for Freq Masking to limit freq masking length
         time_mask_num (int): how many time-masked area to make
         freq_mask_num (int): how many freq-masked area to make
+        sos_id (int): start of sentence token`s identification
+        eos_id (int): end of sentence token`s identification
+        target_dict (dict): dictionary of filename and labels
     """
-    VANILLA = 0  # Not apply augmentation
-    SPEC_AUGMENT = 1  # SpecAugment
-    NOISE_INJECTION = 2  # Noise Injection
+    VANILLA = 0           # Not apply augmentation
+    SPEC_AUGMENT = 1      # SpecAugment
+    NOISE_INJECTION = 2   # Noise Injection
 
     def __init__(self, feature_extract_by='librosa', sample_rate=16000, n_mels=80, window_size=20, stride=10,
                  del_silence=False, input_reverse=True, normalize=False,
