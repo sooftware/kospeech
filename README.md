@@ -128,8 +128,6 @@ python setup.py install
 Refer [here](https://github.com/sooftware/End-to-end-Speech-Recognition/wiki/Preparation-before-Training) before training. this document contains information regarding the preprocessing of [KsponSpeech](http://www.aihub.or.kr/aidata/105).   
 The above document is written in Korean.  
 We will also write a document in English as soon as possible, so please wait a little bit.  
-  
-If you already have another dataset, please modify the data set path to [definition.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/e2e/modules/definition.py) as appropriate.
 
 ### Step 2: Run `train.py`
 * Default setting  
@@ -138,14 +136,15 @@ $ ./train.sh
 ```
 * Custom setting
 ```
-python ./train.py -use_multi_gpu -init_uniform -mode 'train' -batch_size 32 -num_workers 4 \
+python ./train.py -dataset_path /data1/ -data_list_path ./data/data_list/filter_train_list.csv \
+                  -use_multi_gpu -init_uniform -mode train -batch_size 32 -num_workers 4 \
                   -num_epochs 20 -use_augment -augment_num 1 -max_len 151 \
                   -use_cuda -lr 3e-04 -min_lr 1e-05 -lr_patience 1/3 -valid_ratio 0.01 \
                   -label_smoothing 0.1 -save_result_every 1000 -print_every 10 -checkpoint_every 5000 \
                   -use_bidirectional -hidden_dim 256 -dropout 0.3 -num_heads 8 -rnn_type 'gru' \
                   -listener_layer_size 5 -speller_layer_size 3 -teacher_forcing_ratio 0.99 \ 
                   -input_reverse -normalize -del_silence -sample_rate 16000 -window_size 20 -stride 10 -n_mels 80 \
-                  -feature_extract_by 'librosa' -time_mask_para 50 -freq_mask_para 12 \
+                  -feature_extract_by librosa -time_mask_para 50 -freq_mask_para 12 \
                   -time_mask_num 2 -freq_mask_num 2
 ```
   
@@ -161,7 +160,8 @@ $ ./infer.sh
 ```
 * Custom setting
 ```
-python ./infer.py -mode 'infer' -use_multi_gpu -use_cuda -batch_size 32 -num_workers 4 \
+python ./infer.py -dataset_path /data1/ -data_list_path ./data/data_list/filter_test_list.csv \
+                  -mode 'infer' -use_multi_gpu -use_cuda -batch_size 32 -num_workers 4 \
                   -use_beam_search -k 5 -print_every 100 \
                   -sample_rate 16000 --window_size 20 --stride 10 --n_mels 80 -feature_extract_by 'librosa' \
                   -normalize -del_silence -input_reverse 
