@@ -5,15 +5,28 @@ import random
 import numpy as np
 from abc import abstractmethod
 from e2e.feature.core import split
-from e2e.modules.global_var import logger
+#from e2e.modules.global_var import logger
 
 if platform.system() == 'Linux':
     import torchaudio
 
 
 class AudioParser(object):
-    """ Parses audio file """
+    """
+    This class provides only load_audio() function. This class acts as an interface.
+    parse_audio() & parse_script() are abstract method. If you want to inherit this class,
+    you have to override this 2 method and use it.
+
+    Method:
+        load_audio(): load audio file to signal. (PCM)
+        parse_audio(): parses audio file. you have to override this method.
+        parse_script(): parses script file. you have to override this method.
+    """
     def load_audio(self, audio_path, del_silence):
+        """
+        Load audio file to signal. (PCM)
+        if del_silence is True, Eliminate all signals below 30dB
+        """
         try:
             pcm = np.memmap(audio_path, dtype='h', mode='r')
         except RuntimeError:
@@ -31,11 +44,11 @@ class AudioParser(object):
         return signal
 
     @abstractmethod
-    def parse_script(self, script_path):
+    def parse_audio(self, audio_path, augment_method):
         raise NotImplementedError
 
     @abstractmethod
-    def parse_audio(self, audio_path, augment_method):
+    def parse_script(self, script_path):
         raise NotImplementedError
 
 
@@ -93,6 +106,17 @@ class SpectrogramParser(AudioParser):
             self.amplitude_to_db = torchaudio.transforms.AmplitudeToDB()
 
     def parse_audio(self, audio_path, augment_method):
+        """
+        Parsing audio (Get Mel-Spectrogram features).
+
+        Args:
+             audio_path (str): path of audio file
+             augment_method (int): VINILLA => Not apply augmentation, SPEC_AUGMENT => SpecAugment,
+              NOISE_INJECTION => Noise Augmentation
+
+        Returns: spectrogram
+            - **spectrogram** (torch.FloatTensor): Mel-Spectrogram feature from audio file.
+        """
         signal = self.load_audio(audio_path, self.del_silence)
 
         if signal is None:  # Exception handling
@@ -110,7 +134,8 @@ class SpectrogramParser(AudioParser):
                                                          n_fft=self.n_fft, hop_length=self.hop_length)
             spectrogram = librosa.amplitude_to_db(spectrogram, ref=np.max)
 
-        if self.normalize:  # standard-wise normalization
+        # standard-wise normalization
+        if self.normalize:
             mean = np.mean(spectrogram)
             std = np.std(spectrogram)
             spectrogram -= mean
@@ -122,6 +147,7 @@ class SpectrogramParser(AudioParser):
 
         spectrogram = torch.FloatTensor(np.ascontiguousarray(np.swapaxes(spectrogram, 0, 1)))
 
+        # SpecAugment
         if augment_method == self.SPEC_AUGMENT:
             spectrogram = self.spec_augment(spectrogram)
 

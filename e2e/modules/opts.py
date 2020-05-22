@@ -1,5 +1,5 @@
 """ Implementation of all available options """
-from e2e.modules.global_var import logger
+#from e2e.modules.global_var import logger
 
 
 def model_opts(parser):
@@ -102,7 +102,7 @@ def train_opts(parser):
                        help='to determine whether to store training checkpoint every N timesteps (default: 5000)')
     group.add_argument('--print_every', '-print_every',
                        type=int, default=10,
-                       help='to determine whether to store training progress every N timesteps (default: 10')
+                       help='to determine whether to store training progress every N timesteps (default: 10)')
     group.add_argument('--resume', '-resume',
                        action='store_true', default=False,
                        help='Indicates if training has to be resumed from the latest checkpoint')

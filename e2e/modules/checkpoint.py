@@ -2,23 +2,23 @@ import os
 import time
 import shutil
 import torch
-from e2e.modules.global_var import logger
+#from e2e.modules.global_var import logger
 
 
 class Checkpoint(object):
     """
-    The Checkpoint class manages the saving and loading of a model during training. It allows training to be suspended
-    and resumed at a later time (e.g. when running on a cluster using sequential jobs).
+    The Checkpoint class manages the saving and loading of a model during training.
+    It allows training to be suspended and resumed at a later time (e.g. when running on a cluster using sequential jobs).
     To make a checkpoint, initialize a Checkpoint object with the following args; then call that object's save() method
     to write parameters to disk.
 
     Args:
         model (nn.Module): LAS model being trained
-        optimizer (Optimizer): stores the state of the optimizer
+        optimizer (torch.optim): stores the state of the optimizer
         lr_scheduler (torch.optim): learning rate scheduler
-        criterion (e2e.loss.LabelSmoothingLoss): loss function
+        criterion (nn.Module): loss function
         trainset_list (list): list of trainset
-        validset (dataset.data_loader.SpectrogramDataset): set of validation
+        validset (e2e.data_loader.data_loader.SpectrogramDataset): validation dataset
         epoch (int): current epoch (an epoch is a loop through the full training data)
 
     Attributes:

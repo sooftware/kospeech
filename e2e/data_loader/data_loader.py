@@ -7,7 +7,7 @@ import random
 from torch.utils.data import Dataset
 from e2e.data_loader.label_loader import load_targets
 from e2e.feature.parser import SpectrogramParser
-from e2e.modules.global_var import PAD_token, SOS_token, EOS_token, logger
+#from e2e.modules.global_var import PAD_token, SOS_token, EOS_token, logger
 
 
 class SpectrogramDataset(Dataset, SpectrogramParser):
@@ -49,6 +49,7 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
         return spectrogram, script
 
     def parse_script(self, script_path):
+        """ Parsing transcript """
         scripts = list()
 
         key = script_path.split('/')[-1].split('.')[0]
@@ -100,7 +101,7 @@ class AudioDataLoader(threading.Thread):
     Audio Data Loader
 
     Args:
-        dataset (data_loader.SpectrogramDataset): object of SpectrogramDataset
+        dataset (e2e.data_loader.SpectrogramDataset): dataset for spectrogram & script matching
         queue (Queue.queue): queue for threading
         batch_size (int): size of batch
         thread_id (int): identification of thread

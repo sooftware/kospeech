@@ -4,11 +4,11 @@ from e2e.model.las import ListenAttendSpell
 from e2e.model.listener import Listener
 from e2e.model.speller import Speller
 from e2e.model.topk_decoder import TopKDecoder
-from e2e.modules.global_var import char2id, EOS_token, SOS_token
+#from e2e.modules.global_var import char2id, EOS_token, SOS_token
 
 
 def build_model(opt, device):
-    """ build base model """
+    """ build LAS model """
     listener = build_listener(
         input_size=opt.n_mels,
         hidden_dim=opt.hidden_dim,

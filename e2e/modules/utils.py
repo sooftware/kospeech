@@ -1,11 +1,14 @@
-import pickle
 import platform
 import torch
 import Levenshtein as Lev
-from e2e.modules.global_var import logger
+#from e2e.modules.global_var import logger
 
 
 def check_envirionment(opt):
+    """
+    Check execution envirionment.
+    OS, Processor, CUDA version, Pytorch version, ... etc.
+    """
     cuda = opt.use_cuda and torch.cuda.is_available()
     device = torch.device('cuda' if cuda else 'cpu')
 
@@ -109,10 +112,3 @@ def label_to_string(labels, id2char, eos_id):
 
     else:
         logger.info("Unsupported shape : {0}".format(str(labels.shape)))
-
-
-def save_pickle(save_var, savepath, message=""):
-    """ Save variable using pickle """
-    with open(savepath + '.bin', "wb") as f:
-        pickle.dump(save_var, f)
-    logger.info(message)

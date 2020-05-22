@@ -5,7 +5,7 @@ import pandas as pd
 from e2e.data_loader.data_loader import MultiDataLoader, AudioDataLoader
 from e2e.modules.checkpoint import Checkpoint
 from e2e.modules.utils import get_distance
-from e2e.modules.global_var import EOS_token, logger, id2char
+#from e2e.modules.global_var import EOS_token, logger, id2char
 
 
 class SupervisedTrainer:

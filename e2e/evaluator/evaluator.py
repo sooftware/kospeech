@@ -2,7 +2,7 @@ import queue
 import torch
 from e2e.data_loader.data_loader import AudioDataLoader
 from e2e.modules.utils import get_distance
-from e2e.modules.global_var import id2char, EOS_token, logger
+#from e2e.modules.global_var import id2char, EOS_token, logger
 
 
 class Evaluator:
@@ -10,8 +10,11 @@ class Evaluator:
     Class to evaluate models with given datasets.
 
     Args:
+        dataset (e2e.data_loader.SpectrogramDataset): dataset for spectrogram & script matching
         batch_size (int): size of batch. recommended batch size is 1.
         device (torch.device): device - 'cuda' or 'cpu'
+        num_workers (int): the number of cpu cores used
+        print_every (int): to determine whether to store training progress every N timesteps (default: 10)
     """
 
     def __init__(self, dataset, batch_size=1, device=None, num_workers=1, print_every=100):
@@ -22,13 +25,7 @@ class Evaluator:
         self.print_every = print_every
 
     def evaluate(self, model):
-        """
-        Evaluate a model on given dataset and return performance.
-
-        Args:
-            model (torch.nn.Module): model to evaluate performance
-        """
-
+        """ Evaluate a model on given dataset and return performance. """
         eval_queue = queue.Queue(self.num_workers << 1)
         eval_loader = AudioDataLoader(self.dataset, eval_queue, self.batch_size, 0)
         eval_loader.start()
@@ -38,16 +35,7 @@ class Evaluator:
         eval_loader.join()
 
     def predict(self, model, queue):
-        """
-        Make prediction given testset as input.
-
-        Args:
-             model (torch.nn.Module): model to evaluate performance
-             queue (queue.Queue): evaluate queue, containing input, targets, input_lengths, target_lengths
-
-        Returns: cer
-            - **cer** (float): character error rate of predict
-        """
+        """ Make prediction given testset as input. """
         logger.info('evaluate() start')
         total_dist = 0
         total_length = 0

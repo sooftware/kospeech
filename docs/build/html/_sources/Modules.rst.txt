@@ -7,22 +7,27 @@ Checkpoint
 .. automodule:: e2e.modules.checkpoint
     :members:
 
+Global_var
+-------------------------------------------
+.. automodule:: e2e.modules.global_var
+    :members:
+
 Logger
 -------------------------------------------
 .. automodule:: e2e.modules.logger
     :members:
 
-model_builder
+Model_builder
 -------------------------------------------
 .. automodule:: e2e.modules.model_builder
     :members:
 
-opts
+Opts
 -------------------------------------------
 .. automodule:: e2e.modules.opts
     :members:
 
-utils
+Utils
 -------------------------------------------
 .. automodule:: e2e.modules.utils
     :members:
