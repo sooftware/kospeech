@@ -96,11 +96,11 @@
 <li class="toctree-l1"><a class="reference internal" href="Feature.html">Feature</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Modules</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-e2e.modules.checkpoint">Checkpoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#checkpoint">Checkpoint</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-e2e.modules.logger">Logger</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#model-builder">model_builder</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-e2e.modules.opts">opts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-e2e.modules.utils">utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#opts">opts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#utils">utils</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
@@ -170,74 +170,8 @@
             
   <div class="section" id="modules">
 <h1>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-e2e.modules.checkpoint">
-<span id="checkpoint"></span><h2>Checkpoint<a class="headerlink" href="#module-e2e.modules.checkpoint" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="e2e.modules.checkpoint.Checkpoint">
-<em class="property">class </em><code class="descclassname">e2e.modules.checkpoint.</code><code class="descname">Checkpoint</code><span class="sig-paren">(</span><em>model</em>, <em>optimizer</em>, <em>lr_scheduler</em>, <em>criterion</em>, <em>trainset_list</em>, <em>validset</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/checkpoint.html#Checkpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.checkpoint.Checkpoint" title="Permalink to this definition">¶</a></dt>
-<dd><p>The Checkpoint class manages the saving and loading of a model during training. It allows training to be suspended
-and resumed at a later time (e.g. when running on a cluster using sequential jobs).
-To make a checkpoint, initialize a Checkpoint object with the following args; then call that object’s save() method
-to write parameters to disk.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>model</strong> (<em>nn.Module</em>) – LAS model being trained</li>
-<li><strong>optimizer</strong> (<em>Optimizer</em>) – stores the state of the optimizer</li>
-<li><strong>lr_scheduler</strong> (<em>torch.optim</em>) – learning rate scheduler</li>
-<li><strong>criterion</strong> (<em>e2e.loss.LabelSmoothingLoss</em>) – loss function</li>
-<li><strong>trainset_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – list of trainset</li>
-<li><strong>validset</strong> (<em>dataset.data_loader.SpectrogramDataset</em>) – set of validation</li>
-<li><strong>epoch</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – current epoch (an epoch is a loop through the full training data)</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
-<li><strong>CHECKPOINT_DIR_NAME</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – name of the checkpoint directory</li>
-<li><strong>TRAINER_STATE_NAME</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – name of the file storing trainer states</li>
-<li><strong>SAVE_PATH</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – path of save directory</li>
-<li><strong>MODEL_NAME</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – name of the file storing model</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="e2e.modules.checkpoint.Checkpoint.get_latest_checkpoint">
-<code class="descname">get_latest_checkpoint</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/checkpoint.html#Checkpoint.get_latest_checkpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.checkpoint.Checkpoint.get_latest_checkpoint" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns the path to the last saved checkpoint’s subdirectory.
-Precondition: at least one checkpoint has been made (i.e., latest checkpoint subdirectory exists).</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="e2e.modules.checkpoint.Checkpoint.load">
-<code class="descname">load</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/checkpoint.html#Checkpoint.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.checkpoint.Checkpoint.load" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads a Checkpoint object that was previously saved to disk.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – path to the checkpoint subdirectory</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">checkpoint object with fields copied from those stored on disk</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">checkpoint (<a class="reference internal" href="#e2e.modules.checkpoint.Checkpoint" title="e2e.modules.checkpoint.Checkpoint">Checkpoint</a>)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="e2e.modules.checkpoint.Checkpoint.save">
-<code class="descname">save</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/checkpoint.html#Checkpoint.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.checkpoint.Checkpoint.save" title="Permalink to this definition">¶</a></dt>
-<dd><p>Saves the current model and related training parameters into a subdirectory of the checkpoint directory.
-The name of the subdirectory is the current local time in Y_M_D_H_M_S format.</p>
-</dd></dl>
-
-</dd></dl>
-
+<div class="section" id="checkpoint">
+<h2>Checkpoint<a class="headerlink" href="#checkpoint" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-e2e.modules.logger">
 <span id="logger"></span><h2>Logger<a class="headerlink" href="#module-e2e.modules.logger" title="Permalink to this headline">¶</a></h2>
@@ -251,153 +185,11 @@ The name of the subdirectory is the current local time in Y_M_D_H_M_S format.</p
 <div class="section" id="model-builder">
 <h2>model_builder<a class="headerlink" href="#model-builder" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-e2e.modules.opts">
-<span id="opts"></span><h2>opts<a class="headerlink" href="#module-e2e.modules.opts" title="Permalink to this headline">¶</a></h2>
-<p>Implementation of all available options</p>
-<dl class="function">
-<dt id="e2e.modules.opts.inference_opts">
-<code class="descclassname">e2e.modules.opts.</code><code class="descname">inference_opts</code><span class="sig-paren">(</span><em>parser</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/opts.html#inference_opts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.opts.inference_opts" title="Permalink to this definition">¶</a></dt>
-<dd><p>inference options</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="e2e.modules.opts.model_opts">
-<code class="descclassname">e2e.modules.opts.</code><code class="descname">model_opts</code><span class="sig-paren">(</span><em>parser</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/opts.html#model_opts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.opts.model_opts" title="Permalink to this definition">¶</a></dt>
-<dd><p>These options are passed to the construction of the model.
-Be careful with these as they will be used during inference.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="e2e.modules.opts.preprocess_opts">
-<code class="descclassname">e2e.modules.opts.</code><code class="descname">preprocess_opts</code><span class="sig-paren">(</span><em>parser</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/opts.html#preprocess_opts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.opts.preprocess_opts" title="Permalink to this definition">¶</a></dt>
-<dd><p>Pre-processing options</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="e2e.modules.opts.print_inference_opts">
-<code class="descclassname">e2e.modules.opts.</code><code class="descname">print_inference_opts</code><span class="sig-paren">(</span><em>opt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/opts.html#print_inference_opts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.opts.print_inference_opts" title="Permalink to this definition">¶</a></dt>
-<dd><p>Print inference options</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="e2e.modules.opts.print_model_opts">
-<code class="descclassname">e2e.modules.opts.</code><code class="descname">print_model_opts</code><span class="sig-paren">(</span><em>opt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/opts.html#print_model_opts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.opts.print_model_opts" title="Permalink to this definition">¶</a></dt>
-<dd><p>Print model options</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="e2e.modules.opts.print_opts">
-<code class="descclassname">e2e.modules.opts.</code><code class="descname">print_opts</code><span class="sig-paren">(</span><em>opt</em>, <em>mode='train'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/opts.html#print_opts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.opts.print_opts" title="Permalink to this definition">¶</a></dt>
-<dd><p>Print options</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="e2e.modules.opts.print_preprocess_opts">
-<code class="descclassname">e2e.modules.opts.</code><code class="descname">print_preprocess_opts</code><span class="sig-paren">(</span><em>opt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/opts.html#print_preprocess_opts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.opts.print_preprocess_opts" title="Permalink to this definition">¶</a></dt>
-<dd><p>Print preprocess options</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="e2e.modules.opts.print_train_opts">
-<code class="descclassname">e2e.modules.opts.</code><code class="descname">print_train_opts</code><span class="sig-paren">(</span><em>opt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/opts.html#print_train_opts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.opts.print_train_opts" title="Permalink to this definition">¶</a></dt>
-<dd><p>Print train options</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="e2e.modules.opts.train_opts">
-<code class="descclassname">e2e.modules.opts.</code><code class="descname">train_opts</code><span class="sig-paren">(</span><em>parser</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/opts.html#train_opts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.opts.train_opts" title="Permalink to this definition">¶</a></dt>
-<dd><p>Training and saving options</p>
-</dd></dl>
-
+<div class="section" id="opts">
+<h2>opts<a class="headerlink" href="#opts" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-e2e.modules.utils">
-<span id="utils"></span><h2>utils<a class="headerlink" href="#module-e2e.modules.utils" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="e2e.modules.utils.char_distance">
-<code class="descclassname">e2e.modules.utils.</code><code class="descname">char_distance</code><span class="sig-paren">(</span><em>target</em>, <em>y_hat</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/utils.html#char_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.utils.char_distance" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculating charater distance between target &amp; y_hat</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>target</strong> – sequence of target</li>
-<li><strong>y_hat</strong> – sequence of y_Hat</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Returns: distance, length</dt>
-<dd><ul class="first last simple">
-<li><strong>dist</strong>: distance between target &amp; y_hat</li>
-<li><strong>length</strong>: length of target sequence</li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="e2e.modules.utils.get_distance">
-<code class="descclassname">e2e.modules.utils.</code><code class="descname">get_distance</code><span class="sig-paren">(</span><em>targets</em>, <em>y_hats</em>, <em>id2char</em>, <em>eos_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/utils.html#get_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.utils.get_distance" title="Permalink to this definition">¶</a></dt>
-<dd><p>Provides total character distance between targets &amp; y_hats</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>targets</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+d035d05 ))"><em>torch.Tensor</em></a>) – set of ground truth</li>
-<li><strong>y_hats</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+d035d05 ))"><em>torch.Tensor</em></a>) – predicted y values (y_hat) by the model</li>
-<li><strong>id2char</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – id2char[id] = ch</li>
-<li><strong>eos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of &lt;end of sequence&gt;</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Returns: total_dist, total_length</dt>
-<dd><ul class="first last simple">
-<li><strong>total_dist</strong>: total distance between targets &amp; y_hats</li>
-<li><strong>total_length</strong>: total length of targets sequence</li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="e2e.modules.utils.label_to_string">
-<code class="descclassname">e2e.modules.utils.</code><code class="descname">label_to_string</code><span class="sig-paren">(</span><em>labels</em>, <em>id2char</em>, <em>eos_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/utils.html#label_to_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.utils.label_to_string" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts label to string (number =&gt; Hangeul)</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>labels</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><em>numpy.ndarray</em></a>) – number label</li>
-<li><strong>id2char</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – id2char[id] = ch</li>
-<li><strong>eos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of &lt;end of sequence&gt;</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Returns: sentence</dt>
-<dd><ul class="first last simple">
-<li><strong>sentence</strong> (str or list): symbol of labels</li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="e2e.modules.utils.save_pickle">
-<code class="descclassname">e2e.modules.utils.</code><code class="descname">save_pickle</code><span class="sig-paren">(</span><em>save_var</em>, <em>savepath</em>, <em>message=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/utils.html#save_pickle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.utils.save_pickle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save variable using pickle</p>
-</dd></dl>
-
+<div class="section" id="utils">
+<h2>utils<a class="headerlink" href="#utils" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 

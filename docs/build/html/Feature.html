@@ -94,7 +94,7 @@
 <li class="toctree-l1"><a class="reference internal" href="Data_loader.html">Data_loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Feature</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-e2e.feature.parser">Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#parser">Parser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-e2e.feature.core">core</a></li>
 </ul>
 </li>
@@ -167,122 +167,8 @@
             
   <div class="section" id="feature">
 <h1>Feature<a class="headerlink" href="#feature" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-e2e.feature.parser">
-<span id="parser"></span><h2>Parser<a class="headerlink" href="#module-e2e.feature.parser" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="e2e.feature.parser.AudioParser">
-<em class="property">class </em><code class="descclassname">e2e.feature.parser.</code><code class="descname">AudioParser</code><a class="reference internal" href="_modules/e2e/feature/parser.html#AudioParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.feature.parser.AudioParser" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parses audio file</p>
-<dl class="method">
-<dt id="e2e.feature.parser.AudioParser.parse_audio">
-<code class="descname">parse_audio</code><span class="sig-paren">(</span><em>audio_path</em>, <em>augment_method</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/feature/parser.html#AudioParser.parse_audio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.feature.parser.AudioParser.parse_audio" title="Permalink to this definition">¶</a></dt>
-<dd><p>Abstract method</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>audio_path</strong> – Path where audio is stored from the manifest file</li>
-<li><strong>augment_method</strong> – augmentation method</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Audio in training/testing format</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="e2e.feature.parser.AudioParser.parse_script">
-<code class="descname">parse_script</code><span class="sig-paren">(</span><em>script_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/feature/parser.html#AudioParser.parse_script"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.feature.parser.AudioParser.parse_script" title="Permalink to this definition">¶</a></dt>
-<dd><p>Abstract method</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>script_path</strong> – Path where script is stored from the manifest file</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Transcript in training/testing format</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="e2e.feature.parser.SpectrogramParser">
-<em class="property">class </em><code class="descclassname">e2e.feature.parser.</code><code class="descname">SpectrogramParser</code><span class="sig-paren">(</span><em>feature_extract_by='librosa'</em>, <em>sample_rate=16000</em>, <em>n_mels=80</em>, <em>window_size=20</em>, <em>stride=10</em>, <em>del_silence=False</em>, <em>input_reverse=True</em>, <em>normalize=False</em>, <em>time_mask_para=70</em>, <em>freq_mask_para=12</em>, <em>time_mask_num=2</em>, <em>freq_mask_num=2</em>, <em>sos_id=1</em>, <em>eos_id=2</em>, <em>target_dict=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/feature/parser.html#SpectrogramParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.feature.parser.SpectrogramParser" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parses audio file into spectrogram with various options.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>feature_extract_by</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – which library to use for feature extraction: [librosa, torchaudio] (default: librosa)</li>
-<li><strong>sample_rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – sample rate</li>
-<li><strong>n_mels</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of mel filter</li>
-<li><strong>window_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – window size (ms)</li>
-<li><strong>stride</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – forwarding size (ms)</li>
-<li><strong>del_silence</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – flag indication whether to delete silence or not (default: True)</li>
-<li><strong>input_reverse</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – flag indication whether to reverse input or not (default: True)</li>
-<li><strong>normalize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – flag indication whether to normalize spectrum or not (default:True)</li>
-<li><strong>time_mask_para</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Hyper Parameter for Time Masking to limit time masking length</li>
-<li><strong>freq_mask_para</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Hyper Parameter for Freq Masking to limit freq masking length</li>
-<li><strong>time_mask_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – how many time-masked area to make</li>
-<li><strong>freq_mask_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – how many freq-masked area to make</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="e2e.feature.parser.SpectrogramParser.parse_audio">
-<code class="descname">parse_audio</code><span class="sig-paren">(</span><em>audio_path</em>, <em>augment_method</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/feature/parser.html#SpectrogramParser.parse_audio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.feature.parser.SpectrogramParser.parse_audio" title="Permalink to this definition">¶</a></dt>
-<dd><p>Abstract method</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>audio_path</strong> – Path where audio is stored from the manifest file</li>
-<li><strong>augment_method</strong> – augmentation method</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Audio in training/testing format</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="e2e.feature.parser.SpectrogramParser.parse_script">
-<code class="descname">parse_script</code><span class="sig-paren">(</span><em>script_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/feature/parser.html#SpectrogramParser.parse_script"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.feature.parser.SpectrogramParser.parse_script" title="Permalink to this definition">¶</a></dt>
-<dd><p>Abstract method</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>script_path</strong> – Path where script is stored from the manifest file</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Transcript in training/testing format</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="e2e.feature.parser.SpectrogramParser.spec_augment">
-<code class="descname">spec_augment</code><span class="sig-paren">(</span><em>spectrogram</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/feature/parser.html#SpectrogramParser.spec_augment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.feature.parser.SpectrogramParser.spec_augment" title="Permalink to this definition">¶</a></dt>
-<dd><p>Provides SpecAugmentation for audio</p>
-</dd></dl>
-
-</dd></dl>
-
+<div class="section" id="parser">
+<h2>Parser<a class="headerlink" href="#parser" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-e2e.feature.core">
 <span id="core"></span><h2>core<a class="headerlink" href="#module-e2e.feature.core" title="Permalink to this headline">¶</a></h2>

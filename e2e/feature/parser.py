@@ -1,3 +1,4 @@
+from abc import abstractmethod
 import librosa
 import torch
 import platform
@@ -29,29 +30,12 @@ class AudioParser(object):
 
         return signal
 
+    @abstractmethod
     def parse_script(self, script_path):
-        """
-        Abstract method
-
-        Args:
-            script_path: Path where script is stored from the manifest file
-
-        Returns:
-            Transcript in training/testing format
-        """
         raise NotImplementedError
 
+    @abstractmethod
     def parse_audio(self, audio_path, augment_method):
-        """
-        Abstract method
-
-        Args:
-            audio_path: Path where audio is stored from the manifest file
-            augment_method: augmentation method
-
-        Returns:
-            Audio in training/testing format
-        """
         raise NotImplementedError
 
 
@@ -110,7 +94,7 @@ class SpectrogramParser(AudioParser):
 
         if signal is None:  # Exception handling
             return None
-        elif augment_method == self.NOISE_INJECTION:
+        elif augment_method == self.NOISE_INJECTION:  # Noise injection
             signal = self.inject_noise(signal)
 
         if self.feature_extract_by == 'torchaudio':
@@ -123,12 +107,13 @@ class SpectrogramParser(AudioParser):
                                                          n_fft=self.n_fft, hop_length=self.hop_length)
             spectrogram = librosa.amplitude_to_db(spectrogram, ref=np.max)
 
-        if self.normalize:
+        if self.normalize:  # standard-wise normalization
             mean = np.mean(spectrogram)
             std = np.std(spectrogram)
             spectrogram -= mean
             spectrogram /= std
 
+        # Refer to "Sequence to Sequence Learning with Neural Network" paper
         if self.input_reverse:
             spectrogram = spectrogram[:, ::-1]
 
@@ -139,6 +124,7 @@ class SpectrogramParser(AudioParser):
 
         return spectrogram
 
+    @abstractmethod
     def parse_script(self, script_path):
         raise NotImplementedError
 

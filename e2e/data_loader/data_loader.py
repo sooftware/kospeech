@@ -7,8 +7,7 @@ import random
 from torch.utils.data import Dataset
 from e2e.data_loader.label_loader import load_targets
 from e2e.feature.parser import SpectrogramParser
-from e2e.modules import logger
-from e2e.modules.global_var import PAD_token, SOS_token, EOS_token
+from e2e.modules.global_var import PAD_token, SOS_token, EOS_token, logger
 
 
 class SpectrogramDataset(Dataset, SpectrogramParser):

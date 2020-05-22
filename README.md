@@ -161,9 +161,9 @@ $ ./infer.sh
 * Custom setting
 ```
 python ./infer.py -dataset_path /data1/ -data_list_path ./data/data_list/filter_test_list.csv \
-                  -mode 'infer' -use_multi_gpu -use_cuda -batch_size 32 -num_workers 4 \
+                  -mode infer -use_multi_gpu -use_cuda -batch_size 32 -num_workers 4 \
                   -use_beam_search -k 5 -print_every 100 \
-                  -sample_rate 16000 --window_size 20 --stride 10 --n_mels 80 -feature_extract_by 'librosa' \
+                  -sample_rate 16000 --window_size 20 --stride 10 --n_mels 80 -feature_extract_by librosa \
                   -normalize -del_silence -input_reverse 
 ```
 Now you have a model which you can use to predict on new data. We do this by running beam search (or greedy search).  
