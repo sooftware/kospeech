@@ -90,18 +90,14 @@
 <li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">Preparation before Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/Data-Analysis.html">Data-Analysis</a></li>
 </ul>
-<p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="LAS.html">LAS</a></li>
-</ul>
 <p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Dataset.html">Dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Data_loader.html">Data_loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Feature.html">Feature</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Modules.html">Modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="SupervisedTrainer.html">SupervisedTrainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
 </ul>
 
             
@@ -182,52 +178,17 @@
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="Dataset.html#module-e2e.dataset.data_loader"><code class="xref">e2e.dataset.data_loader</code></a></td><td>
+       <a href="Data_loader.html#module-e2e.data_loader.label_loader"><code class="xref">e2e.data_loader.label_loader</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="Dataset.html#module-e2e.dataset.label_loader"><code class="xref">e2e.dataset.label_loader</code></a></td><td>
+       <a href="Feature.html#module-e2e.feature.core"><code class="xref">e2e.feature.core</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="Evaluator.html#module-e2e.evaluator.evaluator"><code class="xref">e2e.evaluator.evaluator</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-1">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="Feature.html#module-e2e.feature.feature"><code class="xref">e2e.feature.feature</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-1">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="Feature.html#module-e2e.feature.from_librosa"><code class="xref">e2e.feature.from_librosa</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-1">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="LAS.html#module-e2e.las.attention"><code class="xref">e2e.las.attention</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-1">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="LAS.html#module-e2e.las.las"><code class="xref">e2e.las.las</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-1">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="LAS.html#module-e2e.las.listener"><code class="xref">e2e.las.listener</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-1">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="LAS.html#module-e2e.las.speller"><code class="xref">e2e.las.speller</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-1">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="LAS.html#module-e2e.las.topk_decoder"><code class="xref">e2e.las.topk_decoder</code></a></td><td>
+       <a href="Feature.html#module-e2e.feature.parser"><code class="xref">e2e.feature.parser</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
@@ -237,12 +198,37 @@
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
+       <a href="model.html#module-e2e.model.attention"><code class="xref">e2e.model.attention</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="model.html#module-e2e.model.las"><code class="xref">e2e.model.las</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="model.html#module-e2e.model.listener"><code class="xref">e2e.model.listener</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="model.html#module-e2e.model.speller"><code class="xref">e2e.model.speller</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="model.html#module-e2e.model.topk_decoder"><code class="xref">e2e.model.topk_decoder</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
        <a href="Modules.html#module-e2e.modules.checkpoint"><code class="xref">e2e.modules.checkpoint</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="Modules.html#module-e2e.modules.model_builder"><code class="xref">e2e.modules.model_builder</code></a></td><td>
+       <a href="Modules.html#module-e2e.modules.logger"><code class="xref">e2e.modules.logger</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
@@ -253,11 +239,6 @@
        <td></td>
        <td>&#160;&#160;&#160;
        <a href="Modules.html#module-e2e.modules.utils"><code class="xref">e2e.modules.utils</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-1">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="SupervisedTrainer.html#module-e2e.trainer.supervised_trainer"><code class="xref">e2e.trainer.supervised_trainer</code></a></td><td>
        <em></em></td></tr>
    </table>
 

@@ -30,6 +30,7 @@ Also our model has recorded **91.0% CRR** in [Kadi-zeroth dataset](https://githu
 * [Provides a variety of feature extraction methods](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html)
 * [Delete silence](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html)
 * [SpecAugment](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html)
+* [Noise Injection](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html)
 * [Label Smoothing](https://sooftware.github.io/End-to-end-Speech-Recognition/Loss.html)
 * [Save & load Checkpoint](https://sooftware.github.io/End-to-end-Speech-Recognition/Modules.html)
 * [Various options can be set using parser](https://sooftware.github.io/End-to-end-Speech-Recognition/Modules.html#module-e2e.modules.opts)
@@ -108,7 +109,7 @@ We recommend creating a new virtual environment for this project (using virtual 
 * Pandas: `pip install pandas` (Refer [here](https://github.com/pandas-dev/pandas) for problem installing Pandas)  
 * librosa: `pip install librosa` (Refer [here](https://github.com/librosa/librosa) for problem installing librosa)
 * torchaudio: `pip install torchaudio` (Refer [here](https://github.com/pytorch/pytorch) for problem installing torchaudio)
-* tqdm: `pip install tqdm` (Refer [here](https://github.com/tqdm/tqdm) for problem installing tqdm)  
+* tqdm: `pip install tqdm` (Refer [here](https://github.com/tqdm/tqdm) for problem installing tqdm)
   
 ### Install from source
 Currently we only support installation from source code using setuptools. Checkout the source code and run the   

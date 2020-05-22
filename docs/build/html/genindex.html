@@ -88,18 +88,14 @@
 <li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">Preparation before Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/Data-Analysis.html">Data-Analysis</a></li>
 </ul>
-<p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="LAS.html">LAS</a></li>
-</ul>
 <p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Dataset.html">Dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Data_loader.html">Data_loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Feature.html">Feature</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Modules.html">Modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="SupervisedTrainer.html">SupervisedTrainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
 </ul>
 
             
@@ -167,18 +163,14 @@
 
 <div class="genindex-jumpbox">
  <a href="#A"><strong>A</strong></a>
- | <a href="#B"><strong>B</strong></a>
  | <a href="#C"><strong>C</strong></a>
- | <a href="#D"><strong>D</strong></a>
  | <a href="#E"><strong>E</strong></a>
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
  | <a href="#I"><strong>I</strong></a>
- | <a href="#J"><strong>J</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#P"><strong>P</strong></a>
- | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
  | <a href="#V"><strong>V</strong></a>
@@ -187,23 +179,7 @@
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Dataset.html#e2e.dataset.data_loader.AudioDataLoader">AudioDataLoader (class in e2e.dataset.data_loader)</a>
-</li>
-  </ul></td>
-</tr></table>
-
-<h2 id="B">B</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Modules.html#e2e.modules.model_builder.build_las">build_las() (in module e2e.modules.model_builder)</a>
-</li>
-      <li><a href="Modules.html#e2e.modules.model_builder.build_listener">build_listener() (in module e2e.modules.model_builder)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Modules.html#e2e.modules.model_builder.build_model">build_model() (in module e2e.modules.model_builder)</a>
-</li>
-      <li><a href="Modules.html#e2e.modules.model_builder.build_speller">build_speller() (in module e2e.modules.model_builder)</a>
+      <li><a href="Feature.html#e2e.feature.parser.AudioParser">AudioParser (class in e2e.feature.parser)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -220,54 +196,36 @@
   </ul></td>
 </tr></table>
 
-<h2 id="D">D</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Dataset.html#e2e.dataset.data_loader.SpectrogramDataset.denote_augment_flags">denote_augment_flags() (e2e.dataset.data_loader.SpectrogramDataset method)</a>
-</li>
-  </ul></td>
-</tr></table>
-
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Dataset.html#module-e2e.dataset.data_loader">e2e.dataset.data_loader (module)</a>
+      <li><a href="Data_loader.html#module-e2e.data_loader.label_loader">e2e.data_loader.label_loader (module)</a>
 </li>
-      <li><a href="Dataset.html#module-e2e.dataset.label_loader">e2e.dataset.label_loader (module)</a>
+      <li><a href="Feature.html#module-e2e.feature.core">e2e.feature.core (module)</a>
 </li>
-      <li><a href="Evaluator.html#module-e2e.evaluator.evaluator">e2e.evaluator.evaluator (module)</a>
-</li>
-      <li><a href="Feature.html#module-e2e.feature.feature">e2e.feature.feature (module)</a>
-</li>
-      <li><a href="Feature.html#module-e2e.feature.from_librosa">e2e.feature.from_librosa (module)</a>
-</li>
-      <li><a href="LAS.html#module-e2e.las.attention">e2e.las.attention (module)</a>
-</li>
-      <li><a href="LAS.html#module-e2e.las.las">e2e.las.las (module)</a>
-</li>
-      <li><a href="LAS.html#module-e2e.las.listener">e2e.las.listener (module)</a>
-</li>
-      <li><a href="LAS.html#module-e2e.las.speller">e2e.las.speller (module)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="LAS.html#module-e2e.las.topk_decoder">e2e.las.topk_decoder (module)</a>
+      <li><a href="Feature.html#module-e2e.feature.parser">e2e.feature.parser (module)</a>
 </li>
       <li><a href="Loss.html#module-e2e.loss.loss">e2e.loss.loss (module)</a>
 </li>
+      <li><a href="model.html#module-e2e.model.attention">e2e.model.attention (module)</a>
+</li>
+      <li><a href="model.html#module-e2e.model.las">e2e.model.las (module)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="model.html#module-e2e.model.listener">e2e.model.listener (module)</a>
+</li>
+      <li><a href="model.html#module-e2e.model.speller">e2e.model.speller (module)</a>
+</li>
+      <li><a href="model.html#module-e2e.model.topk_decoder">e2e.model.topk_decoder (module)</a>
+</li>
       <li><a href="Modules.html#module-e2e.modules.checkpoint">e2e.modules.checkpoint (module)</a>
 </li>
-      <li><a href="Modules.html#module-e2e.modules.model_builder">e2e.modules.model_builder (module)</a>
+      <li><a href="Modules.html#module-e2e.modules.logger">e2e.modules.logger (module)</a>
 </li>
       <li><a href="Modules.html#module-e2e.modules.opts">e2e.modules.opts (module)</a>
 </li>
       <li><a href="Modules.html#module-e2e.modules.utils">e2e.modules.utils (module)</a>
-</li>
-      <li><a href="SupervisedTrainer.html#module-e2e.trainer.supervised_trainer">e2e.trainer.supervised_trainer (module)</a>
-</li>
-      <li><a href="Evaluator.html#e2e.evaluator.evaluator.Evaluator.evaluate">evaluate() (e2e.evaluator.evaluator.Evaluator method)</a>
-</li>
-      <li><a href="Evaluator.html#e2e.evaluator.evaluator.Evaluator">Evaluator (class in e2e.evaluator.evaluator)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -275,20 +233,20 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="LAS.html#e2e.las.attention.MultiHeadAttention.forward">forward() (e2e.las.attention.MultiHeadAttention method)</a>
+      <li><a href="Loss.html#e2e.loss.loss.LabelSmoothingLoss.forward">forward() (e2e.loss.loss.LabelSmoothingLoss method)</a>
 
       <ul>
-        <li><a href="LAS.html#e2e.las.las.ListenAttendSpell.forward">(e2e.las.las.ListenAttendSpell method)</a>
+        <li><a href="model.html#e2e.model.attention.MultiHeadAttention.forward">(e2e.model.attention.MultiHeadAttention method)</a>
 </li>
-        <li><a href="LAS.html#e2e.las.listener.Listener.forward">(e2e.las.listener.Listener method)</a>
+        <li><a href="model.html#e2e.model.las.ListenAttendSpell.forward">(e2e.model.las.ListenAttendSpell method)</a>
 </li>
-        <li><a href="LAS.html#e2e.las.listener.MaskConvNet.forward">(e2e.las.listener.MaskConvNet method)</a>
+        <li><a href="model.html#e2e.model.listener.Listener.forward">(e2e.model.listener.Listener method)</a>
 </li>
-        <li><a href="LAS.html#e2e.las.speller.Speller.forward">(e2e.las.speller.Speller method)</a>
+        <li><a href="model.html#e2e.model.listener.MaskCNN.forward">(e2e.model.listener.MaskCNN method)</a>
 </li>
-        <li><a href="LAS.html#e2e.las.topk_decoder.TopKDecoder.forward">(e2e.las.topk_decoder.TopKDecoder method)</a>
+        <li><a href="model.html#e2e.model.speller.Speller.forward">(e2e.model.speller.Speller method)</a>
 </li>
-        <li><a href="Loss.html#e2e.loss.loss.LabelSmoothingLoss.forward">(e2e.loss.loss.LabelSmoothingLoss method)</a>
+        <li><a href="model.html#e2e.model.topk_decoder.TopKDecoder.forward">(e2e.model.topk_decoder.TopKDecoder method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -299,25 +257,11 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="Modules.html#e2e.modules.utils.get_distance">get_distance() (in module e2e.modules.utils)</a>
 </li>
-      <li><a href="Dataset.html#e2e.dataset.data_loader.SpectrogramDataset.get_item">get_item() (e2e.dataset.data_loader.SpectrogramDataset method)</a>
-</li>
-      <li><a href="Modules.html#e2e.modules.utils.get_label">get_label() (in module e2e.modules.utils)</a>
-</li>
-      <li><a href="Modules.html#e2e.modules.checkpoint.Checkpoint.get_latest_checkpoint">get_latest_checkpoint() (e2e.modules.checkpoint.Checkpoint method)</a>
-</li>
-      <li><a href="Feature.html#e2e.feature.feature.get_librosa_melspectrogram">get_librosa_melspectrogram() (in module e2e.feature.feature)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Feature.html#e2e.feature.feature.get_librosa_mfcc">get_librosa_mfcc() (in module e2e.feature.feature)</a>
+      <li><a href="Modules.html#e2e.modules.checkpoint.Checkpoint.get_latest_checkpoint">get_latest_checkpoint() (e2e.modules.checkpoint.Checkpoint method)</a>
 </li>
-      <li><a href="Feature.html#e2e.feature.feature.get_librosa_spectrogram">get_librosa_spectrogram() (in module e2e.feature.feature)</a>
-</li>
-      <li><a href="LAS.html#e2e.las.listener.MaskConvNet.get_output_lengths">get_output_lengths() (e2e.las.listener.MaskConvNet method)</a>
-</li>
-      <li><a href="Feature.html#e2e.feature.feature.get_torch_spectrogram">get_torch_spectrogram() (in module e2e.feature.feature)</a>
-</li>
-      <li><a href="Feature.html#e2e.feature.feature.get_torchaudio_melspectrogram">get_torchaudio_melspectrogram() (in module e2e.feature.feature)</a>
+      <li><a href="model.html#e2e.model.listener.MaskCNN.get_seq_lengths">get_seq_lengths() (e2e.model.listener.MaskCNN method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -330,14 +274,6 @@
   </ul></td>
 </tr></table>
 
-<h2 id="J">J</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Dataset.html#e2e.dataset.data_loader.MultiDataLoader.join">join() (e2e.dataset.data_loader.MultiDataLoader method)</a>
-</li>
-  </ul></td>
-</tr></table>
-
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -345,23 +281,19 @@
 </li>
       <li><a href="Loss.html#e2e.loss.loss.LabelSmoothingLoss">LabelSmoothingLoss (class in e2e.loss.loss)</a>
 </li>
-      <li><a href="LAS.html#e2e.las.las.ListenAttendSpell">ListenAttendSpell (class in e2e.las.las)</a>
+      <li><a href="model.html#e2e.model.las.ListenAttendSpell">ListenAttendSpell (class in e2e.model.las)</a>
 </li>
-      <li><a href="LAS.html#e2e.las.listener.Listener">Listener (class in e2e.las.listener)</a>
-</li>
-      <li><a href="Modules.html#e2e.modules.checkpoint.Checkpoint.load">load() (e2e.modules.checkpoint.Checkpoint method)</a>
+      <li><a href="model.html#e2e.model.listener.Listener">Listener (class in e2e.model.listener)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Dataset.html#e2e.dataset.data_loader.load_data_list">load_data_list() (in module e2e.dataset.data_loader)</a>
+      <li><a href="Modules.html#e2e.modules.checkpoint.Checkpoint.load">load() (e2e.modules.checkpoint.Checkpoint method)</a>
 </li>
-      <li><a href="Dataset.html#e2e.dataset.label_loader.load_label">load_label() (in module e2e.dataset.label_loader)</a>
+      <li><a href="Data_loader.html#e2e.data_loader.label_loader.load_label">load_label() (in module e2e.data_loader.label_loader)</a>
 </li>
-      <li><a href="Dataset.html#e2e.dataset.data_loader.load_pickle">load_pickle() (in module e2e.dataset.data_loader)</a>
+      <li><a href="Data_loader.html#e2e.data_loader.label_loader.load_targets">load_targets() (in module e2e.data_loader.label_loader)</a>
 </li>
-      <li><a href="Dataset.html#e2e.dataset.label_loader.load_targets">load_targets() (in module e2e.dataset.label_loader)</a>
-</li>
-      <li><a href="Modules.html#e2e.modules.model_builder.load_test_model">load_test_model() (in module e2e.modules.model_builder)</a>
+      <li><a href="Modules.html#e2e.modules.logger.Logger">Logger (class in e2e.modules.logger)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -369,15 +301,13 @@
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="LAS.html#e2e.las.listener.MaskConvNet">MaskConvNet (class in e2e.las.listener)</a>
-</li>
-      <li><a href="Modules.html#e2e.modules.opts.model_opts">model_opts() (in module e2e.modules.opts)</a>
+      <li><a href="model.html#e2e.model.listener.MaskCNN">MaskCNN (class in e2e.model.listener)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Dataset.html#e2e.dataset.data_loader.MultiDataLoader">MultiDataLoader (class in e2e.dataset.data_loader)</a>
+      <li><a href="Modules.html#e2e.modules.opts.model_opts">model_opts() (in module e2e.modules.opts)</a>
 </li>
-      <li><a href="LAS.html#e2e.las.attention.MultiHeadAttention">MultiHeadAttention (class in e2e.las.attention)</a>
+      <li><a href="model.html#e2e.model.attention.MultiHeadAttention">MultiHeadAttention (class in e2e.model.attention)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -385,14 +315,24 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Evaluator.html#e2e.evaluator.evaluator.Evaluator.predict">predict() (e2e.evaluator.evaluator.Evaluator method)</a>
+      <li><a href="Feature.html#e2e.feature.parser.AudioParser.parse_audio">parse_audio() (e2e.feature.parser.AudioParser method)</a>
+
+      <ul>
+        <li><a href="Feature.html#e2e.feature.parser.SpectrogramParser.parse_audio">(e2e.feature.parser.SpectrogramParser method)</a>
 </li>
+      </ul></li>
+      <li><a href="Feature.html#e2e.feature.parser.AudioParser.parse_script">parse_script() (e2e.feature.parser.AudioParser method)</a>
+
+      <ul>
+        <li><a href="Feature.html#e2e.feature.parser.SpectrogramParser.parse_script">(e2e.feature.parser.SpectrogramParser method)</a>
+</li>
+      </ul></li>
       <li><a href="Modules.html#e2e.modules.opts.preprocess_opts">preprocess_opts() (in module e2e.modules.opts)</a>
-</li>
-      <li><a href="Modules.html#e2e.modules.opts.print_inference_opts">print_inference_opts() (in module e2e.modules.opts)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Modules.html#e2e.modules.opts.print_inference_opts">print_inference_opts() (in module e2e.modules.opts)</a>
+</li>
       <li><a href="Modules.html#e2e.modules.opts.print_model_opts">print_model_opts() (in module e2e.modules.opts)</a>
 </li>
       <li><a href="Modules.html#e2e.modules.opts.print_opts">print_opts() (in module e2e.modules.opts)</a>
@@ -404,14 +344,6 @@
   </ul></td>
 </tr></table>
 
-<h2 id="R">R</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Dataset.html#e2e.dataset.data_loader.AudioDataLoader.run">run() (e2e.dataset.data_loader.AudioDataLoader method)</a>
-</li>
-  </ul></td>
-</tr></table>
-
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -419,21 +351,15 @@
 </li>
       <li><a href="Modules.html#e2e.modules.utils.save_pickle">save_pickle() (in module e2e.modules.utils)</a>
 </li>
-      <li><a href="Dataset.html#e2e.dataset.data_loader.SpectrogramDataset.shuffle">shuffle() (e2e.dataset.data_loader.SpectrogramDataset method)</a>
-</li>
-      <li><a href="Feature.html#e2e.feature.feature.spec_augment">spec_augment() (in module e2e.feature.feature)</a>
+      <li><a href="Feature.html#e2e.feature.parser.SpectrogramParser.spec_augment">spec_augment() (e2e.feature.parser.SpectrogramParser method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Dataset.html#e2e.dataset.data_loader.SpectrogramDataset">SpectrogramDataset (class in e2e.dataset.data_loader)</a>
+      <li><a href="Feature.html#e2e.feature.parser.SpectrogramParser">SpectrogramParser (class in e2e.feature.parser)</a>
 </li>
-      <li><a href="LAS.html#e2e.las.speller.Speller">Speller (class in e2e.las.speller)</a>
+      <li><a href="model.html#e2e.model.speller.Speller">Speller (class in e2e.model.speller)</a>
 </li>
-      <li><a href="Dataset.html#e2e.dataset.data_loader.split_dataset">split_dataset() (in module e2e.dataset.data_loader)</a>
-</li>
-      <li><a href="Dataset.html#e2e.dataset.data_loader.MultiDataLoader.start">start() (e2e.dataset.data_loader.MultiDataLoader method)</a>
-</li>
-      <li><a href="SupervisedTrainer.html#e2e.trainer.supervised_trainer.SupervisedTrainer">SupervisedTrainer (class in e2e.trainer.supervised_trainer)</a>
+      <li><a href="Feature.html#e2e.feature.core.split">split() (in module e2e.feature.core)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -441,14 +367,10 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="LAS.html#e2e.las.topk_decoder.TopKDecoder">TopKDecoder (class in e2e.las.topk_decoder)</a>
-</li>
-      <li><a href="SupervisedTrainer.html#e2e.trainer.supervised_trainer.SupervisedTrainer.train">train() (e2e.trainer.supervised_trainer.SupervisedTrainer method)</a>
+      <li><a href="model.html#e2e.model.topk_decoder.TopKDecoder">TopKDecoder (class in e2e.model.topk_decoder)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="SupervisedTrainer.html#e2e.trainer.supervised_trainer.SupervisedTrainer.train_epoches">train_epoches() (e2e.trainer.supervised_trainer.SupervisedTrainer method)</a>
-</li>
       <li><a href="Modules.html#e2e.modules.opts.train_opts">train_opts() (in module e2e.modules.opts)</a>
 </li>
   </ul></td>
@@ -457,11 +379,7 @@
 <h2 id="V">V</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="SupervisedTrainer.html#e2e.trainer.supervised_trainer.SupervisedTrainer.validate">validate() (e2e.trainer.supervised_trainer.SupervisedTrainer method)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="LAS.html#e2e.las.speller.Speller.validate_args">validate_args() (e2e.las.speller.Speller method)</a>
+      <li><a href="model.html#e2e.model.speller.Speller.validate_args">validate_args() (e2e.model.speller.Speller method)</a>
 </li>
   </ul></td>
 </tr></table>

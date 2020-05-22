@@ -87,18 +87,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/Preparation.html">Preparation before Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/Data-Analysis.html">Data-Analysis</a></li>
 </ul>
-<p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../LAS.html">LAS</a></li>
-</ul>
 <p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../Dataset.html">Dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Data_loader.html">Data_loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Feature.html">Feature</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Loss.html">Loss</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Modules.html">Modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../SupervisedTrainer.html">SupervisedTrainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Trainer.html">Trainer</a></li>
 </ul>
 
             
@@ -163,7 +159,9 @@
             
   <h1>Source code for e2e.modules.opts</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot; Implementation of all available options &quot;&quot;&quot;</span>
-<span class="c1">#from e2e.modules.definition import logger</span>
+<span class="kn">from</span> <span class="nn">e2e.modules.logger</span> <span class="k">import</span> <span class="n">Logger</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">()</span>
 
 
 <div class="viewcode-block" id="model_opts"><a class="viewcode-back" href="../../../Modules.html#e2e.modules.opts.model_opts">[docs]</a><span class="k">def</span> <span class="nf">model_opts</span><span class="p">(</span><span class="n">parser</span><span class="p">):</span>
@@ -269,7 +267,7 @@
 <div class="viewcode-block" id="preprocess_opts"><a class="viewcode-back" href="../../../Modules.html#e2e.modules.opts.preprocess_opts">[docs]</a><span class="k">def</span> <span class="nf">preprocess_opts</span><span class="p">(</span><span class="n">parser</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Pre-processing options &quot;&quot;&quot;</span>
     <span class="n">group</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">add_argument_group</span><span class="p">(</span><span class="s1">&#39;Input&#39;</span><span class="p">)</span>
-    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--sr&#39;</span><span class="p">,</span> <span class="s1">&#39;-sr&#39;</span><span class="p">,</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--sample_rate&#39;</span><span class="p">,</span> <span class="s1">&#39;-sample_rate&#39;</span><span class="p">,</span>
                        <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">16000</span><span class="p">,</span>
                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;sample rate (default: 16000)&#39;</span><span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--window_size&#39;</span><span class="p">,</span> <span class="s1">&#39;-window_size&#39;</span><span class="p">,</span>
@@ -339,7 +337,7 @@
 <div class="viewcode-block" id="print_preprocess_opts"><a class="viewcode-back" href="../../../Modules.html#e2e.modules.opts.print_preprocess_opts">[docs]</a><span class="k">def</span> <span class="nf">print_preprocess_opts</span><span class="p">(</span><span class="n">opt</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Print preprocess options &quot;&quot;&quot;</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--mode: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">mode</span><span class="p">))</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--sr: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">sr</span><span class="p">))</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--sample_rate: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">sample_rate</span><span class="p">))</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--window_size: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">window_size</span><span class="p">))</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--stride: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">stride</span><span class="p">))</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--n_mels: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">n_mels</span><span class="p">))</span>
@@ -381,7 +379,6 @@
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--min_lr: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">min_lr</span><span class="p">))</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--lr_factor: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">lr_factor</span><span class="p">))</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--lr_patience: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">lr_patience</span><span class="p">))</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--lr_factor: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">lr_factor</span><span class="p">))</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--valid_ratio: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">valid_ratio</span><span class="p">))</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--max_len: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">max_len</span><span class="p">))</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--seed: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">seed</span><span class="p">))</span>

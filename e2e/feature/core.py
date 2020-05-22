@@ -1,26 +1,7 @@
 import warnings
 import numpy as np
-from e2e.modules.definition import logger
 from astropy.modeling import ParameterError
 from numpy.lib.stride_tricks import as_strided
-
-
-def load_audio(audio_path, del_silence):
-    try:
-        pcm = np.memmap(audio_path, dtype='h', mode='r')
-    except RuntimeError:
-        logger.info('RuntimeError in {0}'.format(audio_path))
-        return None
-
-    signal = np.array([float(x) for x in pcm])
-
-    if del_silence:
-        non_silence_indices = split(y=signal, top_db=30)
-        signal = np.concatenate([signal[start:end] for start, end in non_silence_indices])
-
-    signal = signal.astype('float32') / 32767  # normalize audio
-
-    return signal
 
 
 def __power_to_db(S, ref=1.0, amin=1e-10, top_db=80.0):

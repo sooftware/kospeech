@@ -1,10 +1,10 @@
 import torch
 import torch.nn as nn
-from e2e.modules.definition import char2id, EOS_token, SOS_token
-from e2e.las.las import ListenAttendSpell
-from e2e.las.listener import Listener
-from e2e.las.speller import Speller
-from e2e.las.topk_decoder import TopKDecoder
+from e2e.model.las import ListenAttendSpell
+from e2e.model.listener import Listener
+from e2e.model.speller import Speller
+from e2e.model.topk_decoder import TopKDecoder
+from e2e.modules.global_var import char2id, EOS_token, SOS_token
 
 
 def build_model(opt, device):

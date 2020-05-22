@@ -9,19 +9,20 @@
 }
 """
 import argparse
+import inspect
 import random
 import torch
 import warnings
 from torch import optim, nn
 from torch.optim.lr_scheduler import ReduceLROnPlateau
-from e2e.data.data_loader import split_dataset, load_data_list
+from e2e.data_loader.data_loader import split_dataset, load_data_list
 from e2e.loss.loss import LabelSmoothingLoss
 from e2e.modules.checkpoint import Checkpoint
-from e2e.modules.definition import *
 from e2e.modules.utils import check_envirionment
 from e2e.trainer.supervised_trainer import SupervisedTrainer
 from e2e.modules.model_builder import build_model
 from e2e.modules.opts import print_opts, train_opts, model_opts, preprocess_opts
+from e2e.modules.global_var import PAD_token, char2id
 
 
 def train(opt):
@@ -30,7 +31,7 @@ def train(opt):
     torch.cuda.manual_seed_all(opt.seed)
     device = check_envirionment(opt)
 
-    audio_paths, script_paths = load_data_list(TRAIN_LIST_PATH, DATASET_PATH)
+    audio_paths, script_paths = load_data_list(opt.data_list_path, opt.dataset_path)
 
     epoch_time_step, trainset_list, validset = split_dataset(opt, audio_paths, script_paths)
     model = build_model(opt, device)

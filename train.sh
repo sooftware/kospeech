@@ -6,6 +6,8 @@
 #      year={2020}
 #  }
 
+DATASET_PATH='/data1/'
+DATA_LIST_PATH='./data/data_list/filter_train_list.csv'
 BATCH_SIZE=32
 NUM_WORKERS=4
 NUM_EPOCHS=20
@@ -47,4 +49,5 @@ python ./train.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epoc
 --feature_extract_by $FEATURE_EXTRACT_BY --time_mask_para $TIME_MASK_PARA --freq_mask_para $FREQ_MASK_PARA \
 --time_mask_num $TIME_MASK_NUM --freq_mask_num $FREQ_MASK_NUM --save_result_every $SAVE_RESULT_EVERY \
 --checkpoint_every $CHECKPOINT_EVERY --print_every $PRINT_EVERY --min_lr $MIN_LR --lr_patience $LR_PATIENCE \
---use_multi_gpu --init_uniform --mode $MODE
+--use_multi_gpu --init_uniform --mode $MODE --dataset_path $DATASET_PATH --data_list_path $DATA_LIST_PATH
+

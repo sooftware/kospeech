@@ -3,15 +3,36 @@ import torch
 import platform
 import random
 import numpy as np
-from e2e.feature.core import load_audio
+from e2e.feature.core import split
+from e2e.modules.global_var import logger
 
 if platform.system() == 'Linux':
     import torchaudio
 
 
 class AudioParser(object):
+    """ Parses audio file """
+    def load_audio(self, audio_path, del_silence):
+        try:
+            pcm = np.memmap(audio_path, dtype='h', mode='r')
+        except RuntimeError:
+            logger.debug('RuntimeError in {0}'.format(audio_path))
+            return None
+
+        signal = np.array([float(x) for x in pcm])
+
+        if del_silence:
+            non_silence_indices = split(y=signal, top_db=30)
+            signal = np.concatenate([signal[start:end] for start, end in non_silence_indices])
+
+        signal = signal.astype('float32') / 32767  # normalize audio
+
+        return signal
+
     def parse_script(self, script_path):
         """
+        Abstract method
+
         Args:
             script_path: Path where script is stored from the manifest file
 
@@ -22,6 +43,8 @@ class AudioParser(object):
 
     def parse_audio(self, audio_path, augment_method):
         """
+        Abstract method
+
         Args:
             audio_path: Path where audio is stored from the manifest file
             augment_method: augmentation method
@@ -83,7 +106,7 @@ class SpectrogramParser(AudioParser):
             self.amplitude_to_db = torchaudio.transforms.AmplitudeToDB()
 
     def parse_audio(self, audio_path, augment_method):
-        signal = load_audio(audio_path, self.del_silence)
+        signal = self.load_audio(audio_path, self.del_silence)
 
         if signal is None:  # Exception handling
             return None

@@ -1,9 +1,8 @@
 import queue
 import torch
-from e2e.data.data_loader import SpectrogramDataset, AudioDataLoader, load_data_list
-from e2e.modules.definition import logger, id2char, EOS_token, SOS_token
-from e2e.data.label_loader import load_targets
+from e2e.data_loader.data_loader import AudioDataLoader
 from e2e.modules.utils import get_distance
+from e2e.modules.global_var import id2char, EOS_token, logger
 
 
 class Evaluator:
@@ -15,48 +14,35 @@ class Evaluator:
         device (torch.device): device - 'cuda' or 'cpu'
     """
 
-    def __init__(self, batch_size=1, device=None):
+    def __init__(self, dataset, batch_size=1, device=None, num_workers=1, print_every=100):
+        self.dataset = dataset
         self.batch_size = batch_size
         self.device = device
+        self.num_workers = num_workers
+        self.print_every = print_every
 
-    def evaluate(self, model, opt, data_list_path, dataset_path):
+    def evaluate(self, model):
         """
         Evaluate a model on given dataset and return performance.
 
         Args:
             model (torch.nn.Module): model to evaluate performance
-            opt (argparse.ArgumentParser): set of options
-            data_list_path (str): path of csv file, containing testset list
-            dataset_path (str): path of dataset
         """
-        audio_paths, script_paths = load_data_list(data_list_path, dataset_path)
-        target_dict = load_targets(script_paths)
 
-        testset = SpectrogramDataset(
-            audio_paths=audio_paths,
-            script_paths=script_paths,
-            sos_id=SOS_token,
-            eos_id=EOS_token,
-            target_dict=target_dict,
-            opt=opt,
-            use_augment=False
-        )
-
-        eval_queue = queue.Queue(opt.num_workers << 1)
-        eval_loader = AudioDataLoader(testset, eval_queue, self.batch_size, 0)
+        eval_queue = queue.Queue(self.num_workers << 1)
+        eval_loader = AudioDataLoader(self.dataset, eval_queue, self.batch_size, 0)
         eval_loader.start()
 
-        cer = self.predict(model, opt, eval_queue)
+        cer = self.predict(model, eval_queue)
         logger.info('Evaluate CER: %s' % cer)
         eval_loader.join()
 
-    def predict(self, model, opt, queue):
+    def predict(self, model, queue):
         """
         Make prediction given testset as input.
 
         Args:
              model (torch.nn.Module): model to evaluate performance
-             opt (argparse.ArgumentParser): set of options
              queue (queue.Queue): evaluate queue, containing input, targets, input_lengths, target_lengths
 
         Returns: cer
@@ -90,7 +76,7 @@ class Evaluator:
                 total_length += length
                 total_sent_num += scripts.size(0)
 
-                if time_step % opt.print_every == 0:
+                if time_step % self.print_every == 0:
                     logger.info('cer: {:.2f}'.format(dist / length))
 
                 time_step += 1

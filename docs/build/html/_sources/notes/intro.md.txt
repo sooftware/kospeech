@@ -1,9 +1,35 @@
 ﻿# Intro
 
-This is project for End-to-end Speech Recognition using LAS (Listen, Attend and Spell) models implemented in [PyTorch](http://pytorch.org).  
-We appreciate any kind of feedback or contribution.
+This is project for End-to-end Speech Recognition using LAS (Listen, Attend and Spell) models implemented in [PyTorch](http://pytorch.org).   
+This repository has modularized and extensible components for las models, training and inference, checkpoints etc.   
+We appreciate any kind of [feedback or contribution](https://github.com/sooftware/End-to-end-Speech-Recognition/issues).
+  
+We use [KsponSpeech](http://www.aihub.or.kr/aidata/105) which contains 1,000 hours korean voice data.  
+At present our model has recorded an **86.09% CRR**, and we are working for a higher recognition rate.  
+Also our model has recorded **91.0% CRR** in [Kadi-zeroth dataset](https://github.com/goodatlas/zeroth).  
+  
+###### ( **CRR** : Character Recognition Rate ) 
   
 <img src="https://user-images.githubusercontent.com/42150335/80630547-5dfc6580-8a8f-11ea-91e8-73fe5e8b9e4b.png" width=450> 
+  
+## Features  
+  
+* [E2E automatic speech recognition](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html#module-e2e.las.las)
+* [Convolutional encoder](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html#module-e2e.las.listener)
+* [MaskConv & pack_padded_sequence](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html#module-e2e.las.listener)
+* [Multi-Head Attention](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html#module-e2e.las.attention)
+* [Top K Decoding (Beam Search)](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html#module-e2e.las.topk_decoder)
+* [Provides a variety of feature extraction methods](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html)
+* [Delete silence](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html)
+* [SpecAugment](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html)
+* [Noise Injection](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html)
+* [Label Smoothing](https://sooftware.github.io/End-to-end-Speech-Recognition/Loss.html)
+* [Save & load Checkpoint](https://sooftware.github.io/End-to-end-Speech-Recognition/Modules.html)
+* [Various options can be set using parser](https://sooftware.github.io/End-to-end-Speech-Recognition/Modules.html#module-e2e.modules.opts)
+* [Implement data loader as multi-thread for speed](https://sooftware.github.io/End-to-end-Speech-Recognition/Dataset.html)
+* Inference with batching
+* Multi-GPU training
+* Show training states as log
   
 ## Roadmap
   
@@ -19,7 +45,7 @@ We mainly referred to following papers.
    
 [「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」](https://arxiv.org/abs/1904.08779).   
   
-if you want to study the feature of audio, we recommend this papers.  
+If you want to study the feature of audio, we recommend this papers.  
   
 [「Voice Recognition Using MFCC Algirithm」](https://ijirae.com/volumes/vol1/issue10/27.NVEC10086.pdf).  
   
@@ -60,14 +86,7 @@ ListenAttendSpell(
     )
   )
 )
-```
-  
-We use [KsponSpeech](http://www.aihub.or.kr/aidata/105) dataset which contains 1,000 hours korean voice data from [AI Hub](http://www.aihub.or.kr/).  
-At present our model has recorded an **85.79% CRR**, and we are working for a higher recognition rate.  
-  
-Also our model has recorded **91.0% CRR** in [Kadi-zeroth dataset](https://github.com/goodatlas/zeroth).  
-  
-###### ( **CRR** : Character Recognition Rate )  
+``` 
   
 We are constantly updating the progress of the project on the [Wiki page](https://github.com/sooftware/End-to-end-Speech-Recognition/wiki).  Please check this page.  
   
@@ -82,7 +101,7 @@ We recommend creating a new virtual environment for this project (using virtual 
 * Pandas: `pip install pandas` (Refer [here](https://github.com/pandas-dev/pandas) for problem installing Pandas)  
 * librosa: `pip install librosa` (Refer [here](https://github.com/librosa/librosa) for problem installing librosa)
 * torchaudio: `pip install torchaudio` (Refer [here](https://github.com/pytorch/pytorch) for problem installing torchaudio)
-* tqdm: `pip install tqdm` (Refer [here](https://github.com/tqdm/tqdm) for problem installing tqdm)  
+* tqdm: `pip install tqdm` (Refer [here](https://github.com/tqdm/tqdm) for problem installing tqdm)
   
 ### Install from source
 Currently we only support installation from source code using setuptools. Checkout the source code and run the   
@@ -96,33 +115,66 @@ python setup.py install
 ```
   
 ## Get Started
-### Preparation before Training
+### Step 1: Preparation dataset
 
-Refer [here](https://github.com/sooftware/End-to-end-Speech-Recognition/wiki/Preparation-before-Training) before Training.  
+Refer [here](https://github.com/sooftware/End-to-end-Speech-Recognition/wiki/Preparation-before-Training) before training. this document contains information regarding the preprocessing of [KsponSpeech](http://www.aihub.or.kr/aidata/105).   
 The above document is written in Korean.  
 We will also write a document in English as soon as possible, so please wait a little bit.  
   
 If you already have another dataset, please modify the data set path to [definition.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/e2e/modules/definition.py) as appropriate.
 
-### Train and Test
-you can run by [run.sh](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/run.sh) like following.  
+### Step 2: Run `train.py`
+* Default setting  
+```
+$ ./train.sh
+```
+* Custom setting
+```
+python ./train.py -use_multi_gpu -init_uniform -mode 'train' -batch_size 32 -num_workers 4 \
+                  -num_epochs 20 -use_augment -augment_num 1 -max_len 151 \
+                  -use_cuda -lr 3e-04 -min_lr 1e-05 -lr_patience 1/3 -valid_ratio 0.01 \
+                  -label_smoothing 0.1 -save_result_every 1000 -print_every 10 -checkpoint_every 5000 \
+                  -use_bidirectional -hidden_dim 256 -dropout 0.3 -num_heads 8 -rnn_type 'gru' \
+                  -listener_layer_size 5 -speller_layer_size 3 -teacher_forcing_ratio 0.99 \ 
+                  -input_reverse -normalize -del_silence -sample_rate 16000 -window_size 20 -stride 10 -n_mels 80 \
+                  -feature_extract_by 'librosa' -time_mask_para 50 -freq_mask_para 12 \
+                  -time_mask_num 2 -freq_mask_num 2
+```
   
-* Linux
-```
-$ ./run.sh
-```
-  
-* Window  
-```
-$ run.sh
-```
-  
-after training, you want to start testing, you should run by `--mode='eval'`.
-you can set up a arguments at [run.sh](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/run.sh) or at execution time.  
+You can train the model by above command.  
+ If you want to train by default setting, you can train by `Defaulting setting` command.   
+ Or if you want to train by custom setting, you can designate hyperparameters by `Custom setting` command.
 
+
+### Step 3: Run `infer.py`
+* Default setting
+```
+$ ./infer.sh
+```
+* Custom setting
+```
+python ./infer.py -mode 'infer' -use_multi_gpu -use_cuda -batch_size 32 -num_workers 4 \
+                  -use_beam_search -k 5 -print_every 100 \
+                  -sample_rate 16000 --window_size 20 --stride 10 --n_mels 80 -feature_extract_by 'librosa' \
+                  -normalize -del_silence -input_reverse 
+```
+Now you have a model which you can use to predict on new data. We do this by running beam search (or greedy search).  
+Like training, you can choose between `Default setting` or `Custom setting`.  
+  
+### Checkpoints   
+Checkpoints are organized by experiments and timestamps as shown in the following file structure.  
+```
+save_dir
++-- checkpoints
+|  +-- YYYY_mm_dd_HH_MM_SS
+   |  +-- trainer_states.pt
+   |  +-- model.pt
+```
+You can resume and load from checkpoints.
+  
 ### Incorporating External Language Model in Performance Test
 We introduce incorporating external language model in performance test.  
-if you are interested in this content, please check [here](https://github.com/sooftware/char-rnnlm).
+If you are interested in this content, please check [here](https://github.com/sooftware/char-rnnlm).
   
 ## Troubleshoots and Contributing
 If you have any questions, bug reports, and feature requests, please [open an issue](https://github.com/sooftware/End-to-end-Speech-Recognition/issues) on Github.   
@@ -146,9 +198,12 @@ We follow [PEP-8](https://www.python.org/dev/peps/pep-0008/) for code style. Esp
    
 ### Citing
 ```
-@source_code{
-  title={End-to-end Speech Recognition},
-  author={Soohwan Kim, Seyoung Bae, Cheolhwang Won},
-  year={2020}
+@github{
+  title = {End-to-end Speech Recognition},
+  author = {Soohwan Kim, Seyoung Bae, Cheolhwang Won},
+  publisher = {GitHub},
+  docs = {https://sooftware.github.io/End-to-end-Speech-Recognition/},
+  url = {https://github.com/sooftware/End-to-end-Speech-Recognition},
+  year = {2020}
 }
 ```

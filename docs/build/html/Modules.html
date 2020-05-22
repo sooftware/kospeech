@@ -34,7 +34,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="SupervisedTrainer" href="SupervisedTrainer.html" />
+    <link rel="next" title="Trainer" href="Trainer.html" />
     <link rel="prev" title="Loss" href="Loss.html" /> 
 </head>
 
@@ -89,24 +89,21 @@
 <li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">Preparation before Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/Data-Analysis.html">Data-Analysis</a></li>
 </ul>
-<p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="LAS.html">LAS</a></li>
-</ul>
 <p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="Dataset.html">Dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Data_loader.html">Data_loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Feature.html">Feature</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Modules</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-e2e.modules.model_builder">model_builder</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-e2e.modules.checkpoint">Checkpoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-e2e.modules.logger">Logger</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#model-builder">model_builder</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-e2e.modules.opts">opts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-e2e.modules.utils">utils</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="SupervisedTrainer.html">SupervisedTrainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
 </ul>
 
             
@@ -173,39 +170,6 @@
             
   <div class="section" id="modules">
 <h1>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-e2e.modules.model_builder">
-<span id="model-builder"></span><h2>model_builder<a class="headerlink" href="#module-e2e.modules.model_builder" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="e2e.modules.model_builder.build_las">
-<code class="descclassname">e2e.modules.model_builder.</code><code class="descname">build_las</code><span class="sig-paren">(</span><em>listener</em>, <em>speller</em>, <em>device</em>, <em>use_multi_gpu=True</em>, <em>init_uniform=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/model_builder.html#build_las"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.model_builder.build_las" title="Permalink to this definition">¶</a></dt>
-<dd><p>build las model &amp; validate parameters</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="e2e.modules.model_builder.build_listener">
-<code class="descclassname">e2e.modules.model_builder.</code><code class="descname">build_listener</code><span class="sig-paren">(</span><em>input_size</em>, <em>hidden_dim</em>, <em>dropout_p</em>, <em>num_layers</em>, <em>bidirectional</em>, <em>rnn_type</em>, <em>device</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/model_builder.html#build_listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.model_builder.build_listener" title="Permalink to this definition">¶</a></dt>
-<dd><p>build listener &amp; validate parameters</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="e2e.modules.model_builder.build_model">
-<code class="descclassname">e2e.modules.model_builder.</code><code class="descname">build_model</code><span class="sig-paren">(</span><em>opt</em>, <em>device</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/model_builder.html#build_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.model_builder.build_model" title="Permalink to this definition">¶</a></dt>
-<dd><p>build base model</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="e2e.modules.model_builder.build_speller">
-<code class="descclassname">e2e.modules.model_builder.</code><code class="descname">build_speller</code><span class="sig-paren">(</span><em>num_classes</em>, <em>max_len</em>, <em>hidden_dim</em>, <em>sos_id</em>, <em>eos_id</em>, <em>num_layers</em>, <em>rnn_type</em>, <em>dropout_p</em>, <em>num_heads</em>, <em>device</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/model_builder.html#build_speller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.model_builder.build_speller" title="Permalink to this definition">¶</a></dt>
-<dd><p>build speller &amp; validate parameters</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="e2e.modules.model_builder.load_test_model">
-<code class="descclassname">e2e.modules.model_builder.</code><code class="descname">load_test_model</code><span class="sig-paren">(</span><em>opt</em>, <em>device</em>, <em>use_beamsearch=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/model_builder.html#load_test_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.model_builder.load_test_model" title="Permalink to this definition">¶</a></dt>
-<dd><p>load model for performance test</p>
-</dd></dl>
-
-</div>
 <div class="section" id="module-e2e.modules.checkpoint">
 <span id="checkpoint"></span><h2>Checkpoint<a class="headerlink" href="#module-e2e.modules.checkpoint" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
@@ -225,7 +189,7 @@ to write parameters to disk.</p>
 <li><strong>lr_scheduler</strong> (<em>torch.optim</em>) – learning rate scheduler</li>
 <li><strong>criterion</strong> (<em>e2e.loss.LabelSmoothingLoss</em>) – loss function</li>
 <li><strong>trainset_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – list of trainset</li>
-<li><strong>validset</strong> (<a class="reference internal" href="Dataset.html#e2e.dataset.data_loader.SpectrogramDataset" title="e2e.dataset.data_loader.SpectrogramDataset"><em>dataset.data_loader.SpectrogramDataset</em></a>) – set of validation</li>
+<li><strong>validset</strong> (<em>dataset.data_loader.SpectrogramDataset</em>) – set of validation</li>
 <li><strong>epoch</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – current epoch (an epoch is a loop through the full training data)</li>
 </ul>
 </td>
@@ -274,6 +238,18 @@ The name of the subdirectory is the current local time in Y_M_D_H_M_S format.</p
 
 </dd></dl>
 
+</div>
+<div class="section" id="module-e2e.modules.logger">
+<span id="logger"></span><h2>Logger<a class="headerlink" href="#module-e2e.modules.logger" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="e2e.modules.logger.Logger">
+<em class="property">class </em><code class="descclassname">e2e.modules.logger.</code><code class="descname">Logger</code><a class="reference internal" href="_modules/e2e/modules/logger.html#Logger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.logger.Logger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print log message in format</p>
+</dd></dl>
+
+</div>
+<div class="section" id="model-builder">
+<h2>model_builder<a class="headerlink" href="#model-builder" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-e2e.modules.opts">
 <span id="opts"></span><h2>opts<a class="headerlink" href="#module-e2e.modules.opts" title="Permalink to this headline">¶</a></h2>
@@ -371,8 +347,8 @@ Be careful with these as they will be used during inference.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>targets</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+42870dd ))"><em>torch.Tensor</em></a>) – set of ground truth</li>
-<li><strong>y_hats</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+42870dd ))"><em>torch.Tensor</em></a>) – predicted y values (y_hat) by the model</li>
+<li><strong>targets</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+d035d05 ))"><em>torch.Tensor</em></a>) – set of ground truth</li>
+<li><strong>y_hats</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+d035d05 ))"><em>torch.Tensor</em></a>) – predicted y values (y_hat) by the model</li>
 <li><strong>id2char</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – id2char[id] = ch</li>
 <li><strong>eos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of &lt;end of sequence&gt;</li>
 </ul>
@@ -385,33 +361,6 @@ Be careful with these as they will be used during inference.</p>
 <dd><ul class="first last simple">
 <li><strong>total_dist</strong>: total distance between targets &amp; y_hats</li>
 <li><strong>total_length</strong>: total length of targets sequence</li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="e2e.modules.utils.get_label">
-<code class="descclassname">e2e.modules.utils.</code><code class="descname">get_label</code><span class="sig-paren">(</span><em>filepath</em>, <em>sos_id</em>, <em>eos_id</em>, <em>target_dict=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/utils.html#get_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.utils.get_label" title="Permalink to this definition">¶</a></dt>
-<dd><p>Provides specific file`s label to list format.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>filepath</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – specific path of label file</li>
-<li><strong>sos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of &lt;start of sequence&gt;</li>
-<li><strong>eos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of &lt;end of sequence&gt;</li>
-<li><strong>target_dict</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – dictionary of filename and labels</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Returns: label</dt>
-<dd><ul class="first last simple">
-<li><strong>label</strong> (list): list of bos + sequence of label + eos</li>
 </ul>
 </dd>
 </dl>
@@ -460,7 +409,7 @@ Be careful with these as they will be used during inference.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="SupervisedTrainer.html" class="btn btn-neutral float-right" title="SupervisedTrainer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="Trainer.html" class="btn btn-neutral float-right" title="Trainer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="Loss.html" class="btn btn-neutral float-left" title="Loss" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

@@ -1,8 +1,8 @@
 import pickle
 import platform
-import Levenshtein as Lev
 import torch
-from e2e.modules.definition import logger
+import Levenshtein as Lev
+from e2e.modules.global_var import logger
 
 
 def check_envirionment(opt):

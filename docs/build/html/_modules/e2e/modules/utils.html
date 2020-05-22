@@ -87,18 +87,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/Preparation.html">Preparation before Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/Data-Analysis.html">Data-Analysis</a></li>
 </ul>
-<p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../LAS.html">LAS</a></li>
-</ul>
 <p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../Dataset.html">Dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Data_loader.html">Data_loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Feature.html">Feature</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Loss.html">Loss</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Modules.html">Modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../SupervisedTrainer.html">SupervisedTrainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Trainer.html">Trainer</a></li>
 </ul>
 
             
@@ -164,9 +160,11 @@
   <h1>Source code for e2e.modules.utils</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">pickle</span>
 <span class="kn">import</span> <span class="nn">platform</span>
-<span class="kn">import</span> <span class="nn">Levenshtein</span> <span class="k">as</span> <span class="nn">Lev</span>
 <span class="kn">import</span> <span class="nn">torch</span>
-<span class="c1">#from e2e.modules.definition import logger</span>
+<span class="kn">import</span> <span class="nn">Levenshtein</span> <span class="k">as</span> <span class="nn">Lev</span>
+<span class="kn">from</span> <span class="nn">e2e.modules.logger</span> <span class="k">import</span> <span class="n">Logger</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">()</span>
 
 
 <span class="k">def</span> <span class="nf">check_envirionment</span><span class="p">(</span><span class="n">opt</span><span class="p">):</span>
@@ -238,36 +236,6 @@
         <span class="n">total_length</span> <span class="o">+=</span> <span class="n">length</span>
 
     <span class="k">return</span> <span class="n">total_dist</span><span class="p">,</span> <span class="n">total_length</span></div>
-
-
-<div class="viewcode-block" id="get_label"><a class="viewcode-back" href="../../../Modules.html#e2e.modules.utils.get_label">[docs]</a><span class="k">def</span> <span class="nf">get_label</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">sos_id</span><span class="p">,</span> <span class="n">eos_id</span><span class="p">,</span> <span class="n">target_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Provides specific file`s label to list format.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        filepath (str): specific path of label file</span>
-<span class="sd">        sos_id (int): identification of &lt;start of sequence&gt;</span>
-<span class="sd">        eos_id (int): identification of &lt;end of sequence&gt;</span>
-<span class="sd">        target_dict (dict): dictionary of filename and labels</span>
-
-<span class="sd">    Returns: label</span>
-<span class="sd">        - **label** (list): list of bos + sequence of label + eos</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">labels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-
-    <span class="n">key</span> <span class="o">=</span> <span class="n">filepath</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">script</span> <span class="o">=</span> <span class="n">target_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-
-    <span class="n">tokens</span> <span class="o">=</span> <span class="n">script</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
-
-    <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">sos_id</span><span class="p">))</span>
-
-    <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
-        <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">token</span><span class="p">))</span>
-
-    <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">eos_id</span><span class="p">))</span>
-
-    <span class="k">return</span> <span class="n">labels</span></div>
 
 
 <div class="viewcode-block" id="label_to_string"><a class="viewcode-back" href="../../../Modules.html#e2e.modules.utils.label_to_string">[docs]</a><span class="k">def</span> <span class="nf">label_to_string</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">id2char</span><span class="p">,</span> <span class="n">eos_id</span><span class="p">):</span>

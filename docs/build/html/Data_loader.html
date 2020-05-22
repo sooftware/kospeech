@@ -1,0 +1,274 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Data_loader &mdash; End-to-end Speech Recognition 2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Evaluator" href="Evaluator.html" />
+    <link rel="prev" title="Data-Analysis" href="notes/Data-Analysis.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> End-to-end Speech Recognition
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">NOTES</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Intro</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">Preparation before Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/Data-Analysis.html">Data-Analysis</a></li>
+</ul>
+<p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Data_loader</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">data_loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-e2e.data_loader.label_loader">label_loader</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Feature.html">Feature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modules.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">End-to-end Speech Recognition</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Data_loader</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Data_loader.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="data-loader">
+<h1>Data_loader<a class="headerlink" href="#data-loader" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="id1">
+<h2>data_loader<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-e2e.data_loader.label_loader">
+<span id="label-loader"></span><h2>label_loader<a class="headerlink" href="#module-e2e.data_loader.label_loader" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="e2e.data_loader.label_loader.load_label">
+<code class="descclassname">e2e.data_loader.label_loader.</code><code class="descname">load_label</code><span class="sig-paren">(</span><em>label_path</em>, <em>encoding='utf-8'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/data_loader/label_loader.html#load_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.data_loader.label_loader.load_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides char2id, id2char</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>label_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – csv file with character labels</li>
+<li><strong>encoding</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – encoding method</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Returns: char2id, id2char</dt>
+<dd><ul class="first last simple">
+<li><strong>char2id</strong> (dict): char2id[ch] = id</li>
+<li><strong>id2char</strong> (dict): id2char[id] = ch</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="e2e.data_loader.label_loader.load_targets">
+<code class="descclassname">e2e.data_loader.label_loader.</code><code class="descname">load_targets</code><span class="sig-paren">(</span><em>label_paths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/data_loader/label_loader.html#load_targets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.data_loader.label_loader.load_targets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides dictionary of filename and labels</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>label_paths</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – set of label paths</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Returns: target_dict</dt>
+<dd><ul class="first last simple">
+<li><strong>target_dict</strong> (dict): dictionary of filename and labels</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Evaluator.html" class="btn btn-neutral float-right" title="Evaluator" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="notes/Data-Analysis.html" class="btn btn-neutral float-left" title="Data-Analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Soohwan Kim
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -87,18 +87,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/Preparation.html">Preparation before Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/Data-Analysis.html">Data-Analysis</a></li>
 </ul>
-<p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../LAS.html">LAS</a></li>
-</ul>
 <p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../Dataset.html">Dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Data_loader.html">Data_loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Feature.html">Feature</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Loss.html">Loss</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Modules.html">Modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../SupervisedTrainer.html">SupervisedTrainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Trainer.html">Trainer</a></li>
 </ul>
 
             
@@ -166,7 +162,7 @@
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
 <span class="kn">import</span> <span class="nn">torch</span>
-<span class="c1">#from e2e.modules.definition import logger</span>
+<span class="kn">from</span> <span class="nn">e2e.modules.logger</span> <span class="k">import</span> <span class="n">Logger</span>
 
 
 <div class="viewcode-block" id="Checkpoint"><a class="viewcode-back" href="../../../Modules.html#e2e.modules.checkpoint.Checkpoint">[docs]</a><span class="k">class</span> <span class="nc">Checkpoint</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -205,6 +201,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">trainset_list</span> <span class="o">=</span> <span class="n">trainset_list</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">validset</span> <span class="o">=</span> <span class="n">validset</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">epoch</span> <span class="o">=</span> <span class="n">epoch</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Checkpoint.save"><a class="viewcode-back" href="../../../Modules.html#e2e.modules.checkpoint.Checkpoint.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -228,7 +225,7 @@
         <span class="p">}</span>
         <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">trainer_states</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">TRAINER_STATE_NAME</span><span class="p">))</span>
         <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">MODEL_NAME</span><span class="p">))</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;save checkpoints</span><span class="se">\n</span><span class="si">%s</span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;save checkpoints</span><span class="se">\n</span><span class="si">%s</span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span>
                     <span class="o">%</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">TRAINER_STATE_NAME</span><span class="p">),</span>
                        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">MODEL_NAME</span><span class="p">)))</span></div>
 
@@ -242,7 +239,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            checkpoint (Checkpoint): checkpoint object with fields copied from those stored on disk</span>
 <span class="sd">       &quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;load checkpoints</span><span class="se">\n</span><span class="si">%s</span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;load checkpoints</span><span class="se">\n</span><span class="si">%s</span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span>
                     <span class="o">%</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">TRAINER_STATE_NAME</span><span class="p">),</span>
                        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">MODEL_NAME</span><span class="p">)))</span>
 

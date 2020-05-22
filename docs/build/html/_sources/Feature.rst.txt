@@ -2,12 +2,12 @@
 Feature
 =====================================================
 
-feature
+Parser
 --------------------------------------------
-.. automodule:: e2e.feature.feature
+.. automodule:: e2e.feature.parser
     :members:
 
-from_librosa
+core
 --------------------------------------------
-.. automodule:: e2e.feature.from_librosa
+.. automodule:: e2e.feature.core
     :members:

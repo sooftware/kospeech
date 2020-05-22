@@ -2,7 +2,7 @@ import os
 import time
 import shutil
 import torch
-from e2e.modules.definition import logger
+from e2e.modules.global_var import logger
 
 
 class Checkpoint(object):

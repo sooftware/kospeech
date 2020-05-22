@@ -86,18 +86,19 @@
               <p class="caption"><span class="caption-text">NOTES</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Intro</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#roadmap">Roadmap</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#crr-character-recognition-rate">( <strong>CRR</strong> : Character Recognition Rate )</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="#crr-character-recognition-rate">( <strong>CRR</strong> : Character Recognition Rate )</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#features">Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#roadmap">Roadmap</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#install-from-source">Install from source</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#get-started">Get Started</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#preparation-before-training">Preparation before Training</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#train-and-test">Train and Test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-1-preparation-dataset">Step 1: Preparation dataset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-2-run-train-py">Step 2: Run <code class="docutils literal notranslate"><span class="pre">train.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-3-run-infer-py">Step 3: Run <code class="docutils literal notranslate"><span class="pre">infer.py</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#checkpoints">Checkpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#incorporating-external-language-model-in-performance-test">Incorporating External Language Model in Performance Test</a></li>
 </ul>
 </li>
@@ -112,18 +113,14 @@
 <li class="toctree-l1"><a class="reference internal" href="Preparation.html">Preparation before Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Data-Analysis.html">Data-Analysis</a></li>
 </ul>
-<p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../LAS.html">LAS</a></li>
-</ul>
 <p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../Dataset.html">Dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Data_loader.html">Data_loader</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Feature.html">Feature</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Loss.html">Loss</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Modules.html">Modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../SupervisedTrainer.html">SupervisedTrainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Trainer.html">Trainer</a></li>
 </ul>
 
             
@@ -190,8 +187,33 @@
             
   <div class="section" id="intro">
 <h1>Intro<a class="headerlink" href="#intro" title="Permalink to this headline">¶</a></h1>
-<p>This is project for End-to-end Speech Recognition using LAS (Listen, Attend and Spell) models implemented in <a class="reference external" href="http://pytorch.org">PyTorch</a>.<br />We appreciate any kind of feedback or contribution.</p>
-<img src="https://user-images.githubusercontent.com/42150335/80630547-5dfc6580-8a8f-11ea-91e8-73fe5e8b9e4b.png" width=450> <div class="section" id="roadmap">
+<p>This is project for End-to-end Speech Recognition using LAS (Listen, Attend and Spell) models implemented in <a class="reference external" href="http://pytorch.org">PyTorch</a>.<br />This repository has modularized and extensible components for las models, training and inference, checkpoints etc.<br />We appreciate any kind of <a class="reference external" href="https://github.com/sooftware/End-to-end-Speech-Recognition/issues">feedback or contribution</a>.</p>
+<p>We use <a class="reference external" href="http://www.aihub.or.kr/aidata/105">KsponSpeech</a> which contains 1,000 hours korean voice data.<br />At present our model has recorded an <strong>86.09% CRR</strong>, and we are working for a higher recognition rate.<br />Also our model has recorded <strong>91.0% CRR</strong> in <a class="reference external" href="https://github.com/goodatlas/zeroth">Kadi-zeroth dataset</a>.</p>
+<div class="section" id="crr-character-recognition-rate">
+<h2>( <strong>CRR</strong> : Character Recognition Rate )<a class="headerlink" href="#crr-character-recognition-rate" title="Permalink to this headline">¶</a></h2>
+<img src="https://user-images.githubusercontent.com/42150335/80630547-5dfc6580-8a8f-11ea-91e8-73fe5e8b9e4b.png" width=450> </div>
+<div class="section" id="features">
+<h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html#module-e2e.las.las">E2E automatic speech recognition</a></li>
+<li><a class="reference external" href="https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html#module-e2e.las.listener">Convolutional encoder</a></li>
+<li><a class="reference external" href="https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html#module-e2e.las.listener">MaskConv &amp; pack_padded_sequence</a></li>
+<li><a class="reference external" href="https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html#module-e2e.las.attention">Multi-Head Attention</a></li>
+<li><a class="reference external" href="https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html#module-e2e.las.topk_decoder">Top K Decoding (Beam Search)</a></li>
+<li><a class="reference external" href="https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html">Provides a variety of feature extraction methods</a></li>
+<li><a class="reference external" href="https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html">Delete silence</a></li>
+<li><a class="reference external" href="https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html">SpecAugment</a></li>
+<li><a class="reference external" href="https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html">Noise Injection</a></li>
+<li><a class="reference external" href="https://sooftware.github.io/End-to-end-Speech-Recognition/Loss.html">Label Smoothing</a></li>
+<li><a class="reference external" href="https://sooftware.github.io/End-to-end-Speech-Recognition/Modules.html">Save &amp; load Checkpoint</a></li>
+<li><a class="reference external" href="https://sooftware.github.io/End-to-end-Speech-Recognition/Modules.html#module-e2e.modules.opts">Various options can be set using parser</a></li>
+<li><a class="reference external" href="https://sooftware.github.io/End-to-end-Speech-Recognition/Dataset.html">Implement data loader as multi-thread for speed</a></li>
+<li>Inference with batching</li>
+<li>Multi-GPU training</li>
+<li>Show training states as log</li>
+</ul>
+</div>
+<div class="section" id="roadmap">
 <h2>Roadmap<a class="headerlink" href="#roadmap" title="Permalink to this headline">¶</a></h2>
 <p>End-to-end (E2E) automatic speech recognition (ASR) is an emerging paradigm in the field of neural network-based speech recognition that offers multiple benefits. Traditional “hybrid” ASR systems, which are comprised of an acoustic model, language model, and pronunciation model, require separate training of these components, each of which can be complex.</p>
 <p>For example, training of an acoustic model is a multi-stage process of model training and time alignment between the speech acoustic feature sequence and output label sequence. In contrast, E2E ASR is a single integrated approach with a much simpler training pipeline with models that operate at low audio frame rates. This reduces the training time, decoding time, and allows joint optimization with downstream processing such as natural language understanding.</p>
@@ -199,7 +221,7 @@
 <p><a class="reference external" href="https://arxiv.org/abs/1508.01211">「Listen, Attend and Spell」</a></p>
 <p><a class="reference external" href="https://arxiv.org/abs/1712.01769">「State-of-the-art Speech Recognition with Sequence-to-Sequence Models」</a></p>
 <p><a class="reference external" href="https://arxiv.org/abs/1904.08779">「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」</a>.</p>
-<p>if you want to study the feature of audio, we recommend this papers.</p>
+<p>If you want to study the feature of audio, we recommend this papers.</p>
 <p><a class="reference external" href="https://ijirae.com/volumes/vol1/issue10/27.NVEC10086.pdf">「Voice Recognition Using MFCC Algirithm」</a>.</p>
 <p>Our project based on Seq2seq with Attention Architecture.</p>
 <p>Sequence to sequence architecture is a field that is still actively studied in the field of speech recognition.<br />Our model architeuture is as follows.</p>
@@ -236,12 +258,7 @@
 <span class="p">)</span>
 </pre></div>
 </div>
-<p>We use <a class="reference external" href="http://www.aihub.or.kr/aidata/105">KsponSpeech</a> dataset which contains 1,000 hours korean voice data from <a class="reference external" href="http://www.aihub.or.kr/">AI Hub</a>.<br />At present our model has recorded an <strong>85.79% CRR</strong>, and we are working for a higher recognition rate.</p>
-<p>Also our model has recorded <strong>91.0% CRR</strong> in <a class="reference external" href="https://github.com/goodatlas/zeroth">Kadi-zeroth dataset</a>.</p>
-<div class="section" id="crr-character-recognition-rate">
-<h3>( <strong>CRR</strong> : Character Recognition Rate )<a class="headerlink" href="#crr-character-recognition-rate" title="Permalink to this headline">¶</a></h3>
 <p>We are constantly updating the progress of the project on the <a class="reference external" href="https://github.com/sooftware/End-to-end-Speech-Recognition/wiki">Wiki page</a>.  Please check this page.</p>
-</div>
 </div>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
@@ -271,32 +288,69 @@
 </div>
 <div class="section" id="get-started">
 <h2>Get Started<a class="headerlink" href="#get-started" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="preparation-before-training">
-<h3>Preparation before Training<a class="headerlink" href="#preparation-before-training" title="Permalink to this headline">¶</a></h3>
-<p>Refer <a class="reference external" href="https://github.com/sooftware/End-to-end-Speech-Recognition/wiki/Preparation-before-Training">here</a> before Training.<br />The above document is written in Korean.<br />We will also write a document in English as soon as possible, so please wait a little bit.</p>
+<div class="section" id="step-1-preparation-dataset">
+<h3>Step 1: Preparation dataset<a class="headerlink" href="#step-1-preparation-dataset" title="Permalink to this headline">¶</a></h3>
+<p>Refer <a class="reference external" href="https://github.com/sooftware/End-to-end-Speech-Recognition/wiki/Preparation-before-Training">here</a> before training. this document contains information regarding the preprocessing of <a class="reference external" href="http://www.aihub.or.kr/aidata/105">KsponSpeech</a>.<br />The above document is written in Korean.<br />We will also write a document in English as soon as possible, so please wait a little bit.</p>
 <p>If you already have another dataset, please modify the data set path to <a class="reference external" href="https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/e2e/modules/definition.py">definition.py</a> as appropriate.</p>
 </div>
-<div class="section" id="train-and-test">
-<h3>Train and Test<a class="headerlink" href="#train-and-test" title="Permalink to this headline">¶</a></h3>
-<p>you can run by <a class="reference external" href="https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/run.sh">run.sh</a> like following.</p>
+<div class="section" id="step-2-run-train-py">
+<h3>Step 2: Run <code class="docutils literal notranslate"><span class="pre">train.py</span></code><a class="headerlink" href="#step-2-run-train-py" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>Linux</li>
+<li>Default setting</li>
 </ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ./run.sh
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ./train.sh
 </pre></div>
 </div>
 <ul class="simple">
-<li>Window</li>
+<li>Custom setting</li>
 </ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ run.sh
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">./</span><span class="n">train</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">use_multi_gpu</span> <span class="o">-</span><span class="n">init_uniform</span> <span class="o">-</span><span class="n">mode</span> <span class="s1">&#39;train&#39;</span> <span class="o">-</span><span class="n">batch_size</span> <span class="mi">32</span> <span class="o">-</span><span class="n">num_workers</span> <span class="mi">4</span> \
+                  <span class="o">-</span><span class="n">num_epochs</span> <span class="mi">20</span> <span class="o">-</span><span class="n">use_augment</span> <span class="o">-</span><span class="n">augment_num</span> <span class="mi">1</span> <span class="o">-</span><span class="n">max_len</span> <span class="mi">151</span> \
+                  <span class="o">-</span><span class="n">use_cuda</span> <span class="o">-</span><span class="n">lr</span> <span class="mf">3e-04</span> <span class="o">-</span><span class="n">min_lr</span> <span class="mf">1e-05</span> <span class="o">-</span><span class="n">lr_patience</span> <span class="mi">1</span><span class="o">/</span><span class="mi">3</span> <span class="o">-</span><span class="n">valid_ratio</span> <span class="mf">0.01</span> \
+                  <span class="o">-</span><span class="n">label_smoothing</span> <span class="mf">0.1</span> <span class="o">-</span><span class="n">save_result_every</span> <span class="mi">1000</span> <span class="o">-</span><span class="n">print_every</span> <span class="mi">10</span> <span class="o">-</span><span class="n">checkpoint_every</span> <span class="mi">5000</span> \
+                  <span class="o">-</span><span class="n">use_bidirectional</span> <span class="o">-</span><span class="n">hidden_dim</span> <span class="mi">256</span> <span class="o">-</span><span class="n">dropout</span> <span class="mf">0.3</span> <span class="o">-</span><span class="n">num_heads</span> <span class="mi">8</span> <span class="o">-</span><span class="n">rnn_type</span> <span class="s1">&#39;gru&#39;</span> \
+                  <span class="o">-</span><span class="n">listener_layer_size</span> <span class="mi">5</span> <span class="o">-</span><span class="n">speller_layer_size</span> <span class="mi">3</span> <span class="o">-</span><span class="n">teacher_forcing_ratio</span> <span class="mf">0.99</span> \ 
+                  <span class="o">-</span><span class="n">input_reverse</span> <span class="o">-</span><span class="n">normalize</span> <span class="o">-</span><span class="n">del_silence</span> <span class="o">-</span><span class="n">sample_rate</span> <span class="mi">16000</span> <span class="o">-</span><span class="n">window_size</span> <span class="mi">20</span> <span class="o">-</span><span class="n">stride</span> <span class="mi">10</span> <span class="o">-</span><span class="n">n_mels</span> <span class="mi">80</span> \
+                  <span class="o">-</span><span class="n">feature_extract_by</span> <span class="s1">&#39;librosa&#39;</span> <span class="o">-</span><span class="n">time_mask_para</span> <span class="mi">50</span> <span class="o">-</span><span class="n">freq_mask_para</span> <span class="mi">12</span> \
+                  <span class="o">-</span><span class="n">time_mask_num</span> <span class="mi">2</span> <span class="o">-</span><span class="n">freq_mask_num</span> <span class="mi">2</span>
 </pre></div>
 </div>
-<p>after training, you want to start testing, you should run by <code class="docutils literal notranslate"><span class="pre">--mode='eval'</span></code>.
-you can set up a arguments at <a class="reference external" href="https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/run.sh">run.sh</a> or at execution time.</p>
+<p>You can train the model by above command.<br />If you want to train by default setting, you can train by <code class="docutils literal notranslate"><span class="pre">Defaulting</span> <span class="pre">setting</span></code> command.<br />Or if you want to train by custom setting, you can designate hyperparameters by <code class="docutils literal notranslate"><span class="pre">Custom</span> <span class="pre">setting</span></code> command.</p>
+</div>
+<div class="section" id="step-3-run-infer-py">
+<h3>Step 3: Run <code class="docutils literal notranslate"><span class="pre">infer.py</span></code><a class="headerlink" href="#step-3-run-infer-py" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Default setting</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ./infer.sh
+</pre></div>
+</div>
+<ul class="simple">
+<li>Custom setting</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">./</span><span class="n">infer</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">mode</span> <span class="s1">&#39;infer&#39;</span> <span class="o">-</span><span class="n">use_multi_gpu</span> <span class="o">-</span><span class="n">use_cuda</span> <span class="o">-</span><span class="n">batch_size</span> <span class="mi">32</span> <span class="o">-</span><span class="n">num_workers</span> <span class="mi">4</span> \
+                  <span class="o">-</span><span class="n">use_beam_search</span> <span class="o">-</span><span class="n">k</span> <span class="mi">5</span> <span class="o">-</span><span class="n">print_every</span> <span class="mi">100</span> \
+                  <span class="o">-</span><span class="n">sample_rate</span> <span class="mi">16000</span> <span class="o">--</span><span class="n">window_size</span> <span class="mi">20</span> <span class="o">--</span><span class="n">stride</span> <span class="mi">10</span> <span class="o">--</span><span class="n">n_mels</span> <span class="mi">80</span> <span class="o">-</span><span class="n">feature_extract_by</span> <span class="s1">&#39;librosa&#39;</span> \
+                  <span class="o">-</span><span class="n">normalize</span> <span class="o">-</span><span class="n">del_silence</span> <span class="o">-</span><span class="n">input_reverse</span> 
+</pre></div>
+</div>
+<p>Now you have a model which you can use to predict on new data. We do this by running beam search (or greedy search).<br />Like training, you can choose between <code class="docutils literal notranslate"><span class="pre">Default</span> <span class="pre">setting</span></code> or <code class="docutils literal notranslate"><span class="pre">Custom</span> <span class="pre">setting</span></code>.</p>
+</div>
+<div class="section" id="checkpoints">
+<h3>Checkpoints<a class="headerlink" href="#checkpoints" title="Permalink to this headline">¶</a></h3>
+<p>Checkpoints are organized by experiments and timestamps as shown in the following file structure.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">save_dir</span>
+<span class="o">+--</span> <span class="n">checkpoints</span>
+<span class="o">|</span>  <span class="o">+--</span> <span class="n">YYYY_mm_dd_HH_MM_SS</span>
+   <span class="o">|</span>  <span class="o">+--</span> <span class="n">trainer_states</span><span class="o">.</span><span class="n">pt</span>
+   <span class="o">|</span>  <span class="o">+--</span> <span class="n">model</span><span class="o">.</span><span class="n">pt</span>
+</pre></div>
+</div>
+<p>You can resume and load from checkpoints.</p>
 </div>
 <div class="section" id="incorporating-external-language-model-in-performance-test">
 <h3>Incorporating External Language Model in Performance Test<a class="headerlink" href="#incorporating-external-language-model-in-performance-test" title="Permalink to this headline">¶</a></h3>
-<p>We introduce incorporating external language model in performance test.<br />if you are interested in this content, please check <a class="reference external" href="https://github.com/sooftware/char-rnnlm">here</a>.</p>
+<p>We introduce incorporating external language model in performance test.<br />If you are interested in this content, please check <a class="reference external" href="https://github.com/sooftware/char-rnnlm">here</a>.</p>
 </div>
 </div>
 <div class="section" id="troubleshoots-and-contributing">
@@ -313,10 +367,13 @@ you can set up a arguments at <a class="reference external" href="https://github
 </div>
 <div class="section" id="citing">
 <h3>Citing<a class="headerlink" href="#citing" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@source_code</span><span class="p">{</span>
-  <span class="n">title</span><span class="o">=</span><span class="p">{</span><span class="n">End</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">end</span> <span class="n">Speech</span> <span class="n">Recognition</span><span class="p">},</span>
-  <span class="n">author</span><span class="o">=</span><span class="p">{</span><span class="n">Soohwan</span> <span class="n">Kim</span><span class="p">,</span> <span class="n">Seyoung</span> <span class="n">Bae</span><span class="p">,</span> <span class="n">Cheolhwang</span> <span class="n">Won</span><span class="p">},</span>
-  <span class="n">year</span><span class="o">=</span><span class="p">{</span><span class="mi">2020</span><span class="p">}</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@github</span><span class="p">{</span>
+  <span class="n">title</span> <span class="o">=</span> <span class="p">{</span><span class="n">End</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">end</span> <span class="n">Speech</span> <span class="n">Recognition</span><span class="p">},</span>
+  <span class="n">author</span> <span class="o">=</span> <span class="p">{</span><span class="n">Soohwan</span> <span class="n">Kim</span><span class="p">,</span> <span class="n">Seyoung</span> <span class="n">Bae</span><span class="p">,</span> <span class="n">Cheolhwang</span> <span class="n">Won</span><span class="p">},</span>
+  <span class="n">publisher</span> <span class="o">=</span> <span class="p">{</span><span class="n">GitHub</span><span class="p">},</span>
+  <span class="n">docs</span> <span class="o">=</span> <span class="p">{</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">sooftware</span><span class="o">.</span><span class="n">github</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">End</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">end</span><span class="o">-</span><span class="n">Speech</span><span class="o">-</span><span class="n">Recognition</span><span class="o">/</span><span class="p">},</span>
+  <span class="n">url</span> <span class="o">=</span> <span class="p">{</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">sooftware</span><span class="o">/</span><span class="n">End</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">end</span><span class="o">-</span><span class="n">Speech</span><span class="o">-</span><span class="n">Recognition</span><span class="p">},</span>
+  <span class="n">year</span> <span class="o">=</span> <span class="p">{</span><span class="mi">2020</span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 </div>

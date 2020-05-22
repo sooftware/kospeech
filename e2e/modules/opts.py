@@ -1,5 +1,5 @@
 """ Implementation of all available options """
-from e2e.modules.definition import logger
+from e2e.modules.global_var import logger
 
 
 def model_opts(parser):
@@ -40,6 +40,15 @@ def model_opts(parser):
 def train_opts(parser):
     """ Training and saving options """
     group = parser.add_argument_group('General')
+    group.add_argument('--dataset_path', '-dataset_path',
+                       type=str, default='/data1/',
+                       help='path of dataset')
+    group.add_argument('--data_list_path', '-data_list_path',
+                       type=str, default='./data/data_list/filter_train_list.csv',
+                       help='list of training / test set')
+    group.add_argument('--label_path', '-label_path',
+                       type=str, default='./data/label/aihub_labels.csv',
+                       help='path of character labels')
     group.add_argument('--use_multi_gpu', '-use_multi_gpu',
                        action='store_true', default=False,
                        help='flag indication whether to use multi-gpu in training')
@@ -49,9 +58,6 @@ def train_opts(parser):
     group.add_argument('--use_augment', '-use_augment',
                        action='store_true', default=False,
                        help='flag indication whether to use augmentation or not')
-    group.add_argument('--use_pickle', '-use_pickle',
-                       action='store_true', default=False,
-                       help='flag indication whether to load target_dict using pickle')
     group.add_argument('--use_cuda', '-use_cuda',
                        action='store_true', default=False,
                        help='flag indication whether to use cuda or not')
@@ -146,6 +152,15 @@ def preprocess_opts(parser):
 def inference_opts(parser):
     """ inference options """
     group = parser.add_argument_group('Infer')
+    group.add_argument('--dataset_path', '-dataset_path',
+                       type=str, default='/data1/',
+                       help='path of dataset')
+    group.add_argument('--data_list_path', '-data_list_path',
+                       type=str, default='./data/data_list/filter_train_list.csv',
+                       help='list of training / test set')
+    group.add_argument('--label_path', '-label_path',
+                       type=str, default='./data/label/aihub_labels.csv',
+                       help='path of character labels')
     group.add_argument('--use_multi_gpu', '-use_multi_gpu',
                        action='store_true', default=False,
                        help='flag indication whether to use multi-gpu in training')
@@ -204,10 +219,12 @@ def print_model_opts(opt):
 
 def print_train_opts(opt):
     """ Print train options """
+    logger.info('--dataset_path: %s' % str(opt.dataset_path))
+    logger.info('--data_list_path: %s' % str(opt.data_list_path))
+    logger.info('--label_path: %s' % str(opt.label_path))
     logger.info('--use_multi_gpu: %s' % str(opt.use_multi_gpu))
     logger.info('--init_uniform: %s' % str(opt.init_uniform))
     logger.info('--use_augment: %s' % str(opt.use_augment))
-    logger.info('--use_pickle: %s' % str(opt.use_pickle))
     logger.info('--use_cuda: %s' % str(opt.use_cuda))
     logger.info('--augment_num: %s' % str(opt.augment_num))
     logger.info('--batch_size: %s' % str(opt.batch_size))
@@ -228,6 +245,9 @@ def print_train_opts(opt):
 
 def print_inference_opts(opt):
     """ Print inference options """
+    logger.info('--dataset_path: %s' % str(opt.dataset_path))
+    logger.info('--data_list_path: %s' % str(opt.data_list_path))
+    logger.info('--label_path: %s' % str(opt.label_path))
     logger.info('--use_multi_gpu: %s' % str(opt.use_multi_gpu))
     logger.info('--num_workers: %s' % str(opt.num_workers))
     logger.info('--use_cuda: %s' % str(opt.use_cuda))
