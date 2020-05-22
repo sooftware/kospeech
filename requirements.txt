@@ -1,3 +1,4 @@
+astropy
 torch
 numpy
 pandas

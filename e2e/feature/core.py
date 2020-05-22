@@ -1,16 +1,34 @@
-"""
-    codes from https://github.com/librosa/librosa
-    use this code fragments instead of importing librosa package,
-    because of our server has a problem with importing librosa.
-"""
-
 import warnings
 import numpy as np
+from e2e.modules.definition import logger
 from astropy.modeling import ParameterError
 from numpy.lib.stride_tricks import as_strided
 
 
+def load_audio(audio_path, del_silence):
+    try:
+        pcm = np.memmap(audio_path, dtype='h', mode='r')
+    except RuntimeError:
+        logger.info('RuntimeError in {0}'.format(audio_path))
+        return None
+
+    signal = np.array([float(x) for x in pcm])
+
+    if del_silence:
+        non_silence_indices = split(y=signal, top_db=30)
+        signal = np.concatenate([signal[start:end] for start, end in non_silence_indices])
+
+    signal = signal.astype('float32') / 32767  # normalize audio
+
+    return signal
+
+
 def __power_to_db(S, ref=1.0, amin=1e-10, top_db=80.0):
+    """
+    codes from https://github.com/librosa/librosa
+    use this code fragments instead of importing librosa package,
+    because of our server has a problem with importing librosa.
+    """
     S = np.asarray(S)
 
     if amin <= 0:
@@ -42,6 +60,11 @@ def __power_to_db(S, ref=1.0, amin=1e-10, top_db=80.0):
 
 
 def __to_mono(y):
+    """
+    codes from https://github.com/librosa/librosa
+    use this code fragments instead of importing librosa package,
+    because of our server has a problem with importing librosa.
+    """
     def valid_audio(y, mono=True):
         if not isinstance(y, np.ndarray):
             raise ParameterError('Audio data must be of type numpy.ndarray')
@@ -79,6 +102,11 @@ def __to_mono(y):
 
 
 def __frame(x, frame_length=2048, hop_length=512, axis=-1):
+    """
+    codes from https://github.com/librosa/librosa
+    use this code fragments instead of importing librosa package,
+    because of our server has a problem with importing librosa.
+    """
     if not isinstance(x, np.ndarray):
         raise ParameterError('Input must be of type numpy.ndarray, '
                              'given type(x)={}'.format(type(x)))
@@ -118,6 +146,11 @@ def __frame(x, frame_length=2048, hop_length=512, axis=-1):
 
 def __rms(y=None, S=None, frame_length=2048, hop_length=512,
           center=True, pad_mode='reflect'):
+    """
+    codes from https://github.com/librosa/librosa
+    use this code fragments instead of importing librosa package,
+    because of our server has a problem with importing librosa.
+    """
     if y is not None:
         y = __to_mono(y)
         if center:
@@ -158,6 +191,11 @@ def __rms(y=None, S=None, frame_length=2048, hop_length=512,
 
 def _signal_to_frame_nonsilent(y, frame_length=2048, hop_length=512, top_db=60,
                                ref=np.max):
+    """
+    codes from https://github.com/librosa/librosa
+    use this code fragments instead of importing librosa package,
+    because of our server has a problem with importing librosa.
+    """
     # Convert to mono
     y_mono = __to_mono(y)
 
@@ -170,6 +208,11 @@ def _signal_to_frame_nonsilent(y, frame_length=2048, hop_length=512, top_db=60,
 
 
 def _frames_to_samples(frames, hop_length=512, n_fft=None):
+    """
+    codes from https://github.com/librosa/librosa
+    use this code fragments instead of importing librosa package,
+    because of our server has a problem with importing librosa.
+    """
     offset = 0
     if n_fft is not None:
         offset = int(n_fft // 2)
@@ -178,6 +221,11 @@ def _frames_to_samples(frames, hop_length=512, n_fft=None):
 
 
 def split(y, top_db=60, ref=np.max, frame_length=2048, hop_length=512):
+    """
+    codes from https://github.com/librosa/librosa
+    use this code fragments instead of importing librosa package,
+    because of our server has a problem with importing librosa.
+    """
     non_silent = _signal_to_frame_nonsilent(y,
                                             frame_length=frame_length,
                                             hop_length=hop_length,

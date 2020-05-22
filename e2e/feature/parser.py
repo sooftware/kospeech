@@ -1,13 +1,12 @@
-import numpy as np
 import librosa
 import torch
 import platform
 import random
-from e2e.modules.definition import logger
+import numpy as np
+from e2e.feature.core import load_audio
 
 if platform.system() == 'Linux':
     import torchaudio
-    import from_librosa
 
 
 class AudioParser(object):
@@ -21,10 +20,11 @@ class AudioParser(object):
         """
         raise NotImplementedError
 
-    def parse_audio(self, audio_path):
+    def parse_audio(self, audio_path, augment_method):
         """
         Args:
             audio_path: Path where audio is stored from the manifest file
+            augment_method: augmentation method
 
         Returns:
             Audio in training/testing format
@@ -50,6 +50,9 @@ class SpectrogramParser(AudioParser):
         time_mask_num (int): how many time-masked area to make
         freq_mask_num (int): how many freq-masked area to make
     """
+    VANILLA = 0  # Not apply augmentation
+    SPEC_AUGMENT = 1  # SpecAugment
+    NOISE_INJECTION = 2  # Noise Injection
 
     def __init__(self, feature_extract_by='librosa', sample_rate=16000, n_mels=80, window_size=20, stride=10,
                  del_silence=False, input_reverse=True, normalize=False,
@@ -79,33 +82,13 @@ class SpectrogramParser(AudioParser):
                                                                    n_mels=n_mels)
             self.amplitude_to_db = torchaudio.transforms.AmplitudeToDB()
 
-    def load_audio(self, audio_path):
-        if audio_path.endswith('.pcm'):
-            try:
-                pcm = np.memmap(audio_path, dtype='h', mode='r')
-            except RuntimeError:
-                logger.info('RuntimeError in {0}'.format(audio_path))
-                return None
-
-            signal = np.array([float(x) for x in pcm])
-
-        elif audio_path.endswith('.wav'):
-            signal, _ = librosa.core.load(audio_path, sr=self.sample_rate)
-
-        else:
-            raise ValueError("Unsupported format: {0}".format(audio_path.split('.')[-1]))
-
-        return signal
-
-    def parse_audio(self, audio_path):
-        signal = self.load_audio(audio_path)
+    def parse_audio(self, audio_path, augment_method):
+        signal = load_audio(audio_path, self.del_silence)
 
         if signal is None:  # Exception handling
             return None
-
-        if self.del_silence:
-            non_silence_ids = from_librosa.split(y=signal, top_db=30)
-            signal = np.concatenate([signal[start:end] for start, end in non_silence_ids])
+        elif augment_method == self.NOISE_INJECTION:
+            signal = self.inject_noise(signal)
 
         if self.feature_extract_by == 'torchaudio':
             spectrogram = self.transforms(torch.FloatTensor(signal))
@@ -127,23 +110,14 @@ class SpectrogramParser(AudioParser):
             spectrogram = spectrogram[:, ::-1]
 
         spectrogram = torch.FloatTensor(np.ascontiguousarray(np.swapaxes(spectrogram, 0, 1)))
+
+        if augment_method == self.SPEC_AUGMENT:
+            spectrogram = self.spec_augment(spectrogram)
+
         return spectrogram
 
     def parse_script(self, script_path):
-        scripts = list()
-
-        key = script_path.split('/')[-1].split('.')[0]
-        script = self.target_dict[key]
-
-        tokens = script.split(' ')
-
-        scripts.append(int(self.sos_id))
-
-        for token in tokens:
-            scripts.append(int(token))
-
-        scripts.append(int(self.eos_id))
-        return scripts
+        raise NotImplementedError
 
     def spec_augment(self, spectrogram):
         """ Provides SpecAugmentation for audio """
@@ -166,3 +140,9 @@ class SpectrogramParser(AudioParser):
             spectrogram[:, f0: f0 + f] = 0
 
         return spectrogram
+
+    def inject_noise(self, signal):
+        noise = np.random.randn(len(signal))
+        signal += noise * 0.005
+
+        return signal
