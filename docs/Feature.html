@@ -181,9 +181,12 @@ parse_audio() &amp; parse_script() are abstract method. If you want to inherit t
 you have to override this 2 method and use it.</p>
 <dl class="docutils">
 <dt>Method:</dt>
-<dd>load_audio(): load audio file to signal. (PCM)
-parse_audio(): parses audio file. you have to override this method.
-parse_script(): parses script file. you have to override this method.</dd>
+<dd><ul class="first last simple">
+<li><strong>load_audio()</strong>: load audio file to signal. (PCM)</li>
+<li><strong>parse_audio()</strong>: parses audio file. you have to override this method.</li>
+<li><strong>parse_script()</strong>: parses script file. you have to override this method.</li>
+</ul>
+</dd>
 </dl>
 <dl class="method">
 <dt id="e2e.feature.parser.AudioParser.load_audio">

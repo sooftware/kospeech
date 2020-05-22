@@ -5,7 +5,7 @@ import random
 import numpy as np
 from abc import abstractmethod
 from e2e.feature.core import split
-#from e2e.modules.global_var import logger
+from e2e.modules.global_var import logger
 
 if platform.system() == 'Linux':
     import torchaudio
@@ -18,9 +18,9 @@ class AudioParser(object):
     you have to override this 2 method and use it.
 
     Method:
-        load_audio(): load audio file to signal. (PCM)
-        parse_audio(): parses audio file. you have to override this method.
-        parse_script(): parses script file. you have to override this method.
+        - **load_audio()**: load audio file to signal. (PCM)
+        - **parse_audio()**: parses audio file. you have to override this method.
+        - **parse_script()**: parses script file. you have to override this method.
     """
     def load_audio(self, audio_path, del_silence):
         """

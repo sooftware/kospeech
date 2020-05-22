@@ -1,5 +1,5 @@
 """ Implementation of all available options """
-#from e2e.modules.global_var import logger
+from e2e.modules.global_var import logger
 
 
 def model_opts(parser):

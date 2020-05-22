@@ -1,7 +1,7 @@
 import platform
 import torch
 import Levenshtein as Lev
-#from e2e.modules.global_var import logger
+from e2e.modules.global_var import logger
 
 
 def check_envirionment(opt):
