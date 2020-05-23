@@ -20,10 +20,11 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
         sos_id (int): identification of <start of sequence>
         eos_id (int): identification of <end of sequence>
         target_dict (dict): dictionary of filename and labels
-        use_augment (bool): flag indication whether to use spec-augmentation or not (default: True)
+        spec_augment (bool): flag indication whether to use spec-augmentation or not (default: True)
+        noise_augment (bool): flag indication whether to use noise-augmentation or not (default: True)
         opt (ArgumentParser): set of arguments
     """
-    def __init__(self, audio_paths, script_paths, sos_id, eos_id, target_dict=None, opt=None, use_augment=True):
+    def __init__(self, audio_paths, script_paths, sos_id, eos_id, target_dict, opt, spec_augment, noise_augment):
         super(SpectrogramDataset, self).__init__(feature_extract_by=opt.feature_extract_by, sample_rate=opt.sample_rate,
                                                  n_mels=opt.n_mels, window_size=opt.window_size, stride=opt.stride,
                                                  del_silence=opt.del_silence, input_reverse=opt.input_reverse,
@@ -34,8 +35,7 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
         self.audio_paths = list(audio_paths)
         self.script_paths = list(script_paths)
         self.augment_methods = [self.VANILLA] * len(self.audio_paths)
-        if use_augment:
-            self.augmentation(opt.augment_num)
+        self.augmentation(spec_augment, noise_augment)
         self.shuffle()
 
     def get_item(self, idx):
@@ -49,7 +49,7 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
         return spectrogram, script
 
     def parse_script(self, script_path):
-        """ Parsing transcript """
+        """ Parses scripts """
         scripts = list()
 
         key = script_path.split('/')[-1].split('.')[0]
@@ -64,21 +64,20 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
 
         return scripts
 
-    def augmentation(self, augment_num):
-        """ Note flag for SpecAugment """
-        augment_end_idx = int(0 + ((len(self.audio_paths) - 0) * augment_num))
-        logger.info("Applying Spec Augmentation...")
+    def augmentation(self, spec_augment, noise_augment):
+        """ Spec & Noise Augmentation """
+        if spec_augment:
+            logger.info("Applying Spec Augmentation...")
 
-        for _ in range(augment_num):
-            for idx in range(augment_end_idx):
+            for idx in range(len(self.audio_paths)):
                 self.augment_methods.append(self.SPEC_AUGMENT)
                 self.audio_paths.append(self.audio_paths[idx])
                 self.script_paths.append(self.script_paths[idx])
 
-        logger.info("Applying Noise Augmentation...")
+        if noise_augment:
+            logger.info("Applying Noise Augmentation...")
 
-        for _ in range(augment_num):
-            for idx in range(augment_end_idx):
+            for idx in range(len(self.audio_paths)):
                 self.augment_methods.append(self.NOISE_INJECTION)
                 self.audio_paths.append(self.audio_paths[idx])
                 self.script_paths.append(self.script_paths[idx])
@@ -235,7 +234,7 @@ def split_dataset(opt, audio_paths, script_paths):
     split into training set and validation set.
 
     Args:
-        opt (argparse.ArgumentParser): set of options
+        opt (ArgumentParser): set of options
         audio_paths (list): set of audio path
         script_paths (list): set of script path
 
@@ -253,8 +252,11 @@ def split_dataset(opt, audio_paths, script_paths):
     valid_time_step = math.ceil(total_time_step * opt.valid_ratio)
     train_time_step = total_time_step - valid_time_step
 
-    if opt.use_augment:
-        train_time_step = int(train_time_step * (1 + opt.augment_num * 2))
+    if opt.spec_augment:
+        train_time_step <<= 1
+
+    if opt.noise_augment:
+        train_time_step <<= 1
 
     train_num_per_worker = math.ceil(train_num / opt.num_workers)
 
@@ -271,12 +273,13 @@ def split_dataset(opt, audio_paths, script_paths):
 
         trainset_list.append(
             SpectrogramDataset(
-                audio_paths=audio_paths[train_begin_idx:train_end_idx],
-                script_paths=script_paths[train_begin_idx:train_end_idx],
-                sos_id=SOS_token, eos_id=EOS_token,
+                audio_paths[train_begin_idx:train_end_idx],
+                script_paths[train_begin_idx:train_end_idx],
+                SOS_token, EOS_token,
                 target_dict=target_dict,
-                use_augment=opt.use_augment,
-                opt=opt
+                opt=opt,
+                spec_augment=opt.spec_augment,
+                noise_augment=opt.noise_augment
             )
         )
 
@@ -286,7 +289,8 @@ def split_dataset(opt, audio_paths, script_paths):
         sos_id=SOS_token, eos_id=EOS_token,
         target_dict=target_dict,
         opt=opt,
-        use_augment=False
+        spec_augment=False,
+        noise_augment=False
     )
 
     logger.info("split dataset complete !!")

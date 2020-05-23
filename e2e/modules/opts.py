@@ -55,15 +55,15 @@ def train_opts(parser):
     group.add_argument('--init_uniform', '-init_uniform',
                        action='store_true', default=False,
                        help='flag indication whether to initiate model`s parameters as uniformly')
-    group.add_argument('--use_augment', '-use_augment',
+    group.add_argument('--spec_augment', '-spec_augment',
                        action='store_true', default=False,
-                       help='flag indication whether to use augmentation or not')
+                       help='flag indication whether to use spec augmentation or not')
+    group.add_argument('--noise_augment', '-noise_augment',
+                       action='store_true', default=False,
+                       help='flag indication whether to use noise augmentation or not')
     group.add_argument('--use_cuda', '-use_cuda',
                        action='store_true', default=False,
                        help='flag indication whether to use cuda or not')
-    group.add_argument('--augment_num', '-augment_num',
-                       type=int, default=1,
-                       help='number of SpecAugemnt per data (default: 1)')
     group.add_argument('--batch_size', '-batch_size',
                        type=int, default=32,
                        help='batch size in training (default: 32)')
@@ -224,9 +224,9 @@ def print_train_opts(opt):
     logger.info('--label_path: %s' % str(opt.label_path))
     logger.info('--use_multi_gpu: %s' % str(opt.use_multi_gpu))
     logger.info('--init_uniform: %s' % str(opt.init_uniform))
-    logger.info('--use_augment: %s' % str(opt.use_augment))
+    logger.info('--spec_augment: %s' % str(opt.spec_augment))
+    logger.info('--noise_augment: %s' % str(opt.noise_augment))
     logger.info('--use_cuda: %s' % str(opt.use_cuda))
-    logger.info('--augment_num: %s' % str(opt.augment_num))
     logger.info('--batch_size: %s' % str(opt.batch_size))
     logger.info('--num_workers: %s' % str(opt.num_workers))
     logger.info('--num_epochs: %s' % str(opt.num_epochs))

@@ -5,7 +5,7 @@ from e2e.modules.utils import get_distance
 from e2e.modules.global_var import id2char, EOS_token, logger
 
 
-class Evaluator:
+class Evaluator(object):
     """
     Class to evaluate models with given datasets.
 

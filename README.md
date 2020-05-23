@@ -138,7 +138,7 @@ $ ./train.sh
 ```
 python ./train.py -dataset_path /data1/ -data_list_path ./data/data_list/filter_train_list.csv \
                   -use_multi_gpu -init_uniform -mode train -batch_size 32 -num_workers 4 \
-                  -num_epochs 20 -use_augment -augment_num 1 -max_len 151 \
+                  -num_epochs 20 -spec_augment -noise_augment -max_len 151 \
                   -use_cuda -lr 3e-04 -min_lr 1e-05 -lr_patience 1/3 -valid_ratio 0.01 \
                   -label_smoothing 0.1 -save_result_every 1000 -print_every 10 -checkpoint_every 5000 \
                   -use_bidirectional -hidden_dim 256 -dropout 0.3 -num_heads 8 -rnn_type gru \

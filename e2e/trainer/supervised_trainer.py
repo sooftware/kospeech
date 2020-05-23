@@ -8,7 +8,7 @@ from e2e.modules.utils import get_distance
 from e2e.modules.global_var import EOS_token, logger, id2char
 
 
-class SupervisedTrainer:
+class SupervisedTrainer(object):
     """
     The SupervisedTrainer class helps in setting up training framework in a supervised setting.
 

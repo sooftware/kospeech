@@ -41,7 +41,7 @@ MODE='train'
 
 
 python ./train.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epochs $NUM_EPOCHS --use_bidirectional \
---input_reverse --use_augment --use_cuda --augment_num $AUGMENT_NUM --hidden_dim $HIDDEN_DIM \
+--input_reverse --spec_augment --noise_augment --use_cuda --augment_num $AUGMENT_NUM --hidden_dim $HIDDEN_DIM \
 --dropout $DROPOUT --num_heads $NUM_HEADS --label_smoothing $LABEL_SMOOTHING \
 --listener_layer_size $LISTENER_LAYER_SIZE --speller_layer_size $SPELLER_LAYER_SIZE --rnn_type $RNN_TYPE \
 --lr $LR --teacher_forcing_ratio $TEACHER_FORCING_RATIO --valid_ratio $VALID_RATIO --max_len $MAX_LEN \

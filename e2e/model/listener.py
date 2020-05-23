@@ -73,7 +73,7 @@ class MaskCNN(nn.Module):
         return seq_lengths.int()
 
 
-class Listener(nn.Module):
+class Listener(BaseRNN):
     r"""Converts low level speech signals into higher level features
 
     Args:

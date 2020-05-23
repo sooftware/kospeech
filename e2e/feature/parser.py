@@ -15,12 +15,13 @@ class AudioParser(object):
     """
     This class provides load_audio(), inject_noise(), instancewise_standardization(), spec_audment() function.
     This class acts as an interface. parse_audio() & parse_script() are abstract method.
-    If you want to inherit this class, you have to override this 2 method and use it.
+    If you want to inherit this class, you have to override this 2 method.
 
     Method:
+        - **parse_audio()**: abstract method. you have to override this method.
+        - **parse_script()**: abstract method. you have to override this method.
         - **load_audio()**: load audio file to signal. (PCM)
-        - **parse_audio()**: parses audio file. you have to override this method.
-        - **parse_script()**: parses script file. you have to override this method.
+        - **instancewise_standardization**: provides instance-wise standardization normalization.
     """
     def load_audio(self, audio_path, del_silence):
         """
@@ -28,7 +29,7 @@ class AudioParser(object):
         if del_silence is True, Eliminate all signals below 30dB
         """
         try:
-            pcm = np.memmap(audio_path, dtype='h', mode='r')
+            signal = np.memmap(audio_path, dtype='h', mode='r').astype('float32')
         except ValueError:
             logger.debug('ValueError in {0}'.format(audio_path))
             return None
@@ -36,14 +37,11 @@ class AudioParser(object):
             logger.debug('RuntimeError in {0}'.format(audio_path))
             return None
 
-        signal = np.array([float(x) for x in pcm])
-
         if del_silence:
-            non_silence_indices = split(y=signal, top_db=30)
+            non_silence_indices = split(signal, top_db=30)
             signal = np.concatenate([signal[start:end] for start, end in non_silence_indices])
 
-        signal = signal.astype('float32') / 32767  # normalize audio
-
+        signal = signal / 32767  # normalize audio
         return signal
 
     @staticmethod
@@ -52,14 +50,12 @@ class AudioParser(object):
         std = np.std(spectrogram)
         spectrogram -= mean
         spectrogram /= std
-
         return spectrogram
 
     @staticmethod
-    def inject_noise(signal):
+    def inject_noise(signal, noise_factor):
         noise = np.random.randn(len(signal))
-        signal += noise * 0.005
-
+        signal += noise * noise_factor
         return signal
 
     @abstractmethod
@@ -153,8 +149,7 @@ class SpectrogramParser(AudioParser):
 
         Args:
              audio_path (str): path of audio file
-             augment_method (int): VINILLA => Not apply augmentation, SPEC_AUGMENT => SpecAugment,
-              NOISE_INJECTION => Noise Augmentation
+             augment_method (int): flag indication which augmentation method to use.
 
         Returns: spectrogram
             - **spectrogram** (torch.FloatTensor): Mel-Spectrogram feature from audio file.
@@ -164,7 +159,7 @@ class SpectrogramParser(AudioParser):
         if signal is None:  # Exception handling
             return None
         elif augment_method == self.NOISE_INJECTION:  # Noise injection
-            signal = self.inject_noise(signal)
+            signal = self.inject_noise(signal, noise_factor=0.01)
 
         if self.feature_extract_by == 'torchaudio':
             spectrogram = self.transforms(torch.FloatTensor(signal))
@@ -184,11 +179,9 @@ class SpectrogramParser(AudioParser):
 
         spectrogram = torch.FloatTensor(np.ascontiguousarray(np.swapaxes(spectrogram, 0, 1)))
 
-        # SpecAugment
         if augment_method == self.SPEC_AUGMENT:
             spectrogram = self.spec_augment(spectrogram, self.time_mask_para, self.freq_mask_para,
                                             self.time_mask_num, self.freq_mask_num)
-
         return spectrogram
 
     @abstractmethod

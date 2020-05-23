@@ -33,7 +33,8 @@ def inference(opt):
         eos_id=EOS_token,
         target_dict=target_dict,
         opt=opt,
-        use_augment=False
+        spec_augment=False,
+        noise_augment=False
     )
 
     evaluator = Evaluator(testset, opt.batch_size, device, opt.num_workers, opt.print_every)
