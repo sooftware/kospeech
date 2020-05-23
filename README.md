@@ -200,7 +200,7 @@ We follow [PEP-8](https://www.python.org/dev/peps/pep-0008/) for code style. Esp
 [[4] 「An analysis of incorporating an external language model into a sequence-to-sequence model」  Paper](https://arxiv.org/abs/1712.01996)  
 [[5] 「Voice Recognition Using MFCC Algorithm」  Paper](https://ijirae.com/volumes/vol1/issue10/27.NVEC10086.pdf)        
 [[6] 「IBM pytorch-seq2seq」](https://github.com/IBM/pytorch-seq2seq)   
-[[7] 「SeanNaren deepspeech.pytorch」](https://github.com/SeanNaren/deepspeech.pytorch)
+[[7] 「SeanNaren deepspeech.pytorch」](https://github.com/SeanNaren/deepspeech.pytorch)   
 [[8] 「Character RNN Language Model」](https://github.com/sooftware/char-rnnlm)  
 [[9] 「KsponSpeech」](http://www.aihub.or.kr/aidata/105)    
 [[10] 「Documentation」](https://sooftware.github.io/End-to-End-Korean-Speech-Recognition/)  
