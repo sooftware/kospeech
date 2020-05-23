@@ -30,7 +30,7 @@ Also our model has recorded **91.0% CRR** in [Kadi-zeroth dataset](https://githu
 * [Provides a variety of feature extraction methods](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html)
 * [Delete silence](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html)
 * [SpecAugment](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html)
-* [Noise Injection](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html)
+* [NoiseAugment](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html)
 * [Label Smoothing](https://sooftware.github.io/End-to-end-Speech-Recognition/Loss.html)
 * [Save & load Checkpoint](https://sooftware.github.io/End-to-end-Speech-Recognition/Modules.html)
 * [Various options can be set using parser](https://sooftware.github.io/End-to-end-Speech-Recognition/Modules.html#module-e2e.modules.opts)
