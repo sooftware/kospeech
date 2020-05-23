@@ -22,19 +22,19 @@ Also our model has recorded **91.0% CRR** in [Kadi-zeroth dataset](https://githu
   
 ## Features  
   
-* [End-to-end (E2E) automatic speech recognition](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html#module-e2e.las.las)
-* [Convolutional encoder](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html#module-e2e.las.listener)
-* [MaskConv & pack_padded_sequence](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html#module-e2e.las.listener)
-* [Multi-Head Attention](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html#module-e2e.las.attention)
-* [Top K Decoding (Beam Search)](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html#module-e2e.las.topk_decoder)
-* [Provides a variety of feature extraction methods](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html)
-* [Delete silence](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html)
-* [SpecAugment](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html)
-* [NoiseAugment](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html)
+* [End-to-end (E2E) automatic speech recognition](https://sooftware.github.io/End-to-end-Speech-Recognition/)
+* [Convolutional encoder](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.listener)
+* [MaskConv & pack_padded_sequence](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.listener)
+* [Multi-Head Attention](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.attention)
+* [Top K Decoding (Beam Search)](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.topk_decoder)
+* [Spectrogram Parser](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.parser)
+* [Delete silence](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.parser)
+* [SpecAugment](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.parser)
+* [NoiseAugment](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.parser)
 * [Label Smoothing](https://sooftware.github.io/End-to-end-Speech-Recognition/Loss.html)
-* [Save & load Checkpoint](https://sooftware.github.io/End-to-end-Speech-Recognition/Modules.html)
+* [Save & load Checkpoint](https://sooftware.github.io/End-to-end-Speech-Recognition/Modules.html#module-e2e.modules.checkpoint)
 * [Various options can be set using parser](https://sooftware.github.io/End-to-end-Speech-Recognition/Modules.html#module-e2e.modules.opts)
-* [Implement data loader as multi-thread for speed](https://sooftware.github.io/End-to-end-Speech-Recognition/Dataset.html)
+* [Implement data loader as multi-thread for speed](https://sooftware.github.io/End-to-end-Speech-Recognition/Data_loader.html#id1)
 * Inference with batching
 * Multi-GPU training
 * Show training states as log
