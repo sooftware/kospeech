@@ -141,7 +141,7 @@ python ./train.py -dataset_path /data1/ -data_list_path ./data/data_list/filter_
                   -num_epochs 20 -use_augment -augment_num 1 -max_len 151 \
                   -use_cuda -lr 3e-04 -min_lr 1e-05 -lr_patience 1/3 -valid_ratio 0.01 \
                   -label_smoothing 0.1 -save_result_every 1000 -print_every 10 -checkpoint_every 5000 \
-                  -use_bidirectional -hidden_dim 256 -dropout 0.3 -num_heads 8 -rnn_type 'gru' \
+                  -use_bidirectional -hidden_dim 256 -dropout 0.3 -num_heads 8 -rnn_type gru \
                   -listener_layer_size 5 -speller_layer_size 3 -teacher_forcing_ratio 0.99 \ 
                   -input_reverse -normalize -del_silence -sample_rate 16000 -window_size 20 -stride 10 -n_mels 80 \
                   -feature_extract_by librosa -time_mask_para 50 -freq_mask_para 12 \
@@ -200,9 +200,10 @@ We follow [PEP-8](https://www.python.org/dev/peps/pep-0008/) for code style. Esp
 [[4] 「An analysis of incorporating an external language model into a sequence-to-sequence model」  Paper](https://arxiv.org/abs/1712.01996)  
 [[5] 「Voice Recognition Using MFCC Algorithm」  Paper](https://ijirae.com/volumes/vol1/issue10/27.NVEC10086.pdf)        
 [[6]    IBM pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)   
-[[7]    Character RNN Language Model](https://github.com/sooftware/char-rnnlm)  
-[[8]    KsponSpeech](http://www.aihub.or.kr/aidata/105)    
-[[9]    Documentation](https://sooftware.github.io/End-to-End-Korean-Speech-Recognition/)  
+[[7]    SeanNaren deepspeech.pytorch](https://github.com/SeanNaren/deepspeech.pytorch)
+[[8]    Character RNN Language Model](https://github.com/sooftware/char-rnnlm)  
+[[9]    KsponSpeech](http://www.aihub.or.kr/aidata/105)    
+[[10]    Documentation](https://sooftware.github.io/End-to-End-Korean-Speech-Recognition/)  
    
 ### Citing
 ```
