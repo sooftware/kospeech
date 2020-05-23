@@ -96,6 +96,13 @@ ListenAttendSpell(
 )
 ``` 
   
+### e2e module
+
+<img src="https://user-images.githubusercontent.com/42150335/82733873-f960bd80-9d51-11ea-83ec-658ed0f90142.png" width=800>   
+  
+Our e2e (End-to-end) module's structure is implement as above.   
+e2e module has modularized and extensible components for las models, trainer, evaluator, checkpoints, data_loader etc...  
+  
 We are constantly updating the progress of the project on the [Wiki page](https://github.com/sooftware/End-to-end-Speech-Recognition/wiki).  Please check this page.  
   
 ## Installation
@@ -179,13 +186,6 @@ save_dir
    |  +-- model.pt
 ```
 You can resume and load from checkpoints.
-  
-### e2e module
-
-<img src="https://user-images.githubusercontent.com/42150335/82733873-f960bd80-9d51-11ea-83ec-658ed0f90142.png" width=800>   
-  
-Our e2e (End-to-end) module's structure is implement as above.   
-e2e module has modularized and extensible components for las models, trainer, evaluator, checkpoints, data_loader etc...  
   
 ### Incorporating External Language Model in Performance Test
 We introduce incorporating external language model in performance test.  
