@@ -13,9 +13,9 @@ if platform.system() == 'Linux':
 
 class AudioParser(object):
     """
-    This class provides only load_audio() function. This class acts as an interface.
-    parse_audio() & parse_script() are abstract method. If you want to inherit this class,
-    you have to override this 2 method and use it.
+    This class provides load_audio(), inject_noise(), instancewise_standardization(), spec_audment() function.
+    This class acts as an interface. parse_audio() & parse_script() are abstract method.
+    If you want to inherit this class, you have to override this 2 method and use it.
 
     Method:
         - **load_audio()**: load audio file to signal. (PCM)
@@ -29,6 +29,9 @@ class AudioParser(object):
         """
         try:
             pcm = np.memmap(audio_path, dtype='h', mode='r')
+        except ValueError:
+            logger.debug('ValueError in {0}'.format(audio_path))
+            return None
         except RuntimeError:
             logger.debug('RuntimeError in {0}'.format(audio_path))
             return None
@@ -43,6 +46,22 @@ class AudioParser(object):
 
         return signal
 
+    @staticmethod
+    def instancewise_standardization(spectrogram):
+        mean = np.mean(spectrogram)
+        std = np.std(spectrogram)
+        spectrogram -= mean
+        spectrogram /= std
+
+        return spectrogram
+
+    @staticmethod
+    def inject_noise(signal):
+        noise = np.random.randn(len(signal))
+        signal += noise * 0.005
+
+        return signal
+
     @abstractmethod
     def parse_audio(self, audio_path, augment_method):
         raise NotImplementedError
@@ -50,6 +69,29 @@ class AudioParser(object):
     @abstractmethod
     def parse_script(self, script_path):
         raise NotImplementedError
+
+    @staticmethod
+    def spec_augment(spectrogram, time_mask_para, freq_mask_para, time_mask_num, freq_mask_num):
+        """ Provides SpecAugmentation for audio """
+        length = spectrogram.size(0)
+        n_mels = spectrogram.size(1)
+
+        # time mask
+        for _ in range(time_mask_num):
+            t = np.random.uniform(low=0.0, high=time_mask_para)
+            t = int(t)
+            if length - t > 0:
+                t0 = random.randint(0, length - t)
+                spectrogram[t0: t0 + t, :] = 0
+
+        # freq mask
+        for _ in range(freq_mask_num):
+            f = np.random.uniform(low=0.0, high=freq_mask_para)
+            f = int(f)
+            f0 = random.randint(0, n_mels - f)
+            spectrogram[:, f0: f0 + f] = 0
+
+        return spectrogram
 
 
 class SpectrogramParser(AudioParser):
@@ -103,7 +145,7 @@ class SpectrogramParser(AudioParser):
             self.transforms = torchaudio.transforms.MelSpectrogram(sample_rate=sample_rate,  win_length=window_size,
                                                                    hop_length=self.hop_length,  n_fft=self.n_fft,
                                                                    n_mels=n_mels)
-            self.amplitude_to_db = torchaudio.transforms.AmplitudeToDB()
+            self.amplitude_to_db = torchaudio.transforms.AmplitudeToDB(top_db=80)
 
     def parse_audio(self, audio_path, augment_method):
         """
@@ -134,53 +176,21 @@ class SpectrogramParser(AudioParser):
                                                          n_fft=self.n_fft, hop_length=self.hop_length)
             spectrogram = librosa.amplitude_to_db(spectrogram, ref=np.max)
 
-        # standard-wise normalization
         if self.normalize:
-            mean = np.mean(spectrogram)
-            std = np.std(spectrogram)
-            spectrogram -= mean
-            spectrogram /= std
+            spectrogram = self.instancewise_standardization(spectrogram)
 
-        # Refer to "Sequence to Sequence Learning with Neural Network" paper
-        if self.input_reverse:
+        if self.input_reverse:   # Refer to "Sequence to Sequence Learning with Neural Network" paper
             spectrogram = spectrogram[:, ::-1]
 
         spectrogram = torch.FloatTensor(np.ascontiguousarray(np.swapaxes(spectrogram, 0, 1)))
 
         # SpecAugment
         if augment_method == self.SPEC_AUGMENT:
-            spectrogram = self.spec_augment(spectrogram)
+            spectrogram = self.spec_augment(spectrogram, self.time_mask_para, self.freq_mask_para,
+                                            self.time_mask_num, self.freq_mask_num)
 
         return spectrogram
 
     @abstractmethod
     def parse_script(self, script_path):
         raise NotImplementedError
-
-    def spec_augment(self, spectrogram):
-        """ Provides SpecAugmentation for audio """
-        length = spectrogram.size(0)
-        n_mels = spectrogram.size(1)
-
-        # time mask
-        for _ in range(self.time_mask_num):
-            t = np.random.uniform(low=0.0, high=self.time_mask_para)
-            t = int(t)
-            if length - t > 0:
-                t0 = random.randint(0, length - t)
-                spectrogram[t0: t0 + t, :] = 0
-
-        # freq mask
-        for _ in range(self.freq_mask_num):
-            f = np.random.uniform(low=0.0, high=self.freq_mask_para)
-            f = int(f)
-            f0 = random.randint(0, n_mels - f)
-            spectrogram[:, f0: f0 + f] = 0
-
-        return spectrogram
-
-    def inject_noise(self, signal):
-        noise = np.random.randn(len(signal))
-        signal += noise * 0.005
-
-        return signal
