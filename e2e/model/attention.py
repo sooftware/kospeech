@@ -29,9 +29,9 @@ class MultiHeadLocationAwareAttention(nn.Module):
         self.num_heads = num_heads
         self.dim = int(in_features / num_heads)
         self.conv = nn.Conv1d(in_channels=1, out_channels=k, kernel_size=3, padding=1)
-        self.W_Q = nn.Linear(in_features, self.dim * num_heads, bias=False)
-        self.W_V = nn.Linear(in_features, self.dim * num_heads, bias=False)
-        self.W_U = nn.Linear(k, self.dim * num_heads, bias=False)
+        self.W_Q = nn.Linear(in_features, self.dim * num_heads)
+        self.W_V = nn.Linear(in_features, self.dim * num_heads)
+        self.W_U = nn.Linear(k, self.dim * num_heads)
         self.bias = nn.Parameter(torch.FloatTensor(self.dim * num_heads).uniform_(-0.1, 0.1))
         self.fc = nn.Linear(in_features << 1, in_features)
         self.softmax = nn.Softmax(dim=-1)
@@ -44,15 +44,11 @@ class MultiHeadLocationAwareAttention(nn.Module):
         residual = Q
         U = torch.transpose(self.conv(last_align.unsqueeze(1)), 1, 2)
 
-        q_s = self.W_Q(Q).view(batch_size, q_len, self.num_heads * self.dim)
+        q_s = self.W_Q(Q).view(batch_size, q_len, self.num_heads * self.dim) + self.W_U(U) + self.bias
         v_s = self.W_V(V).view(batch_size, v_len, self.num_heads * self.dim)
-        u_s = self.W_U(U) + self.bias
 
-        q_s += u_s
-        v_s += u_s
-
-        q_s = self.W_Q(Q).view(batch_size, q_len, self.num_heads, self.dim).permute(2, 0, 1, 3)
-        v_s = self.W_V(V).view(batch_size, v_len, self.num_heads, self.dim).permute(2, 0, 1, 3)
+        q_s = q_s.view(batch_size, q_len, self.num_heads, self.dim).permute(2, 0, 1, 3)
+        v_s = v_s.view(batch_size, v_len, self.num_heads, self.dim).permute(2, 0, 1, 3)
 
         q_s = q_s.contiguous().view(-1, q_len, self.dim)  # (batch_size * num_heads, q_len, dim)
         v_s = v_s.contiguous().view(-1, v_len, self.dim)  # (batch_size * num_heads, v_len, dim)
