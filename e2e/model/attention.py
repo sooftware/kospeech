@@ -5,7 +5,7 @@ import numpy as np
 
 class ScaledDotProductAttention(nn.Module):
     """
-    Implementation of Scaled Dot-product Attention
+    Scaled Dot-product Attention
 
     Args:
         dim (int): dimention of attention
@@ -78,22 +78,18 @@ class MultiLocAwareAttention(nn.Module):
         q_s = self.W_Q(Q).view(batch_size, q_len, self.num_heads * self.dim)
         v_s = self.W_V(V).view(batch_size, v_len, self.num_heads * self.dim) + loc_energy
 
-        q_s = q_s.view(batch_size, q_len, self.num_heads, self.dim).permute(2, 0, 1, 3)
-        v_s = v_s.view(batch_size, v_len, self.num_heads, self.dim).permute(2, 0, 1, 3)
-
-        q_s = q_s.contiguous().view(-1, q_len, self.dim)  # (batch_size * num_heads, q_len, dim)
-        v_s = v_s.contiguous().view(-1, v_len, self.dim)  # (batch_size * num_heads, v_len, dim)
+        q_s = q_s.view(batch_size, q_len, self.num_heads, self.dim).permute(2, 0, 1, 3).reshape(-1, q_len, self.dim)
+        v_s = v_s.view(batch_size, v_len, self.num_heads, self.dim).permute(2, 0, 1, 3).reshape(-1, v_len, self.dim)
 
         context, align = self.scaled_dot(q_s, v_s)
-        context = context.view(self.num_heads, batch_size, q_len, self.dim)
 
+        context = context.view(self.num_heads, batch_size, q_len, self.dim)
         context = context.permute(1, 2, 0, 3).contiguous().view(batch_size, q_len, -1)
-        align = align.squeeze()
 
         combined = torch.cat([context, residual], dim=2)
         output = self.norm(self.fc(combined.view(-1, self.in_features << 1))).view(batch_size, -1, self.in_features)
 
-        return output, align
+        return output, align.squeeze()
 
     def get_loc_energy(self, prev_align, batch_size, v_len):
         conv_feat = self.conv1d(prev_align.unsqueeze(1))
