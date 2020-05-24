@@ -2,7 +2,7 @@ import random
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from e2e.model.attention import MultiHeadAttention
+from e2e.model.attention import MultiHeadLocationAwareAttention
 
 
 class Speller(nn.Module):
@@ -52,10 +52,10 @@ class Speller(nn.Module):
         self.eos_id = eos_id
         self.sos_id = sos_id
         self.device = device
-        self.attention = MultiHeadAttention(hidden_dim, num_heads)
+        self.attention = MultiHeadLocationAwareAttention(hidden_dim, num_heads, k=10, smoothing=True)
         self.fc = nn.Linear(self.hidden_dim, num_classes)
 
-    def forward_step(self, input_var, hidden, listener_outputs):
+    def forward_step(self, input_var, hidden, listener_outputs, align):
         batch_size = input_var.size(0)
         output_lengths = input_var.size(1)
 
@@ -66,12 +66,12 @@ class Speller(nn.Module):
             self.rnn.flatten_parameters()
 
         output, hidden = self.rnn(embedded, hidden)
-        context = self.attention(output, listener_outputs)
+        context, align = self.attention(output, listener_outputs, align)
 
         predicted_softmax = F.log_softmax(self.fc(context.contiguous().view(-1, self.hidden_dim)), dim=1)
         predicted_softmax = predicted_softmax.view(batch_size, output_lengths, -1)
 
-        return predicted_softmax, hidden
+        return predicted_softmax, hidden, align
 
     def forward(self, inputs, listener_outputs, teacher_forcing_ratio=0.90):
         hidden = None
@@ -80,9 +80,11 @@ class Speller(nn.Module):
         inputs, batch_size, max_length = self.validate_args(inputs, listener_outputs, teacher_forcing_ratio)
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
 
+        align = listener_outputs.new_zeros(batch_size, listener_outputs.size(1))
+
         if use_teacher_forcing:
             input_var = inputs[inputs != self.eos_id].view(batch_size, -1)
-            predicted_softmax, hidden = self.forward_step(input_var, hidden, listener_outputs)
+            predicted_softmax, hidden, align = self.forward_step(input_var, hidden, listener_outputs, align)
 
             for di in range(predicted_softmax.size(1)):
                 step_output = predicted_softmax[:, di, :]
@@ -92,7 +94,7 @@ class Speller(nn.Module):
             input_var = inputs[:, 0].unsqueeze(1)
 
             for di in range(max_length):
-                predicted_softmax, hidden = self.forward_step(input_var, hidden, listener_outputs)
+                predicted_softmax, hidden, align = self.forward_step(input_var, hidden, listener_outputs, align)
                 step_output = predicted_softmax.squeeze(1)
 
                 decoder_outputs.append(step_output)

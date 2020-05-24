@@ -51,6 +51,7 @@ class TopKDecoder(nn.Module):
 
         hidden = None
         inflated_encoder_outputs = _inflate(encoder_outputs, self.k, 0)
+        align = encoder_outputs.new_zeros(batch_size, encoder_outputs.size(1))
 
         # Initialize the scores; for the first step,
         # ignore the inflated copies to avoid duplicate entries in the top k
@@ -74,7 +75,7 @@ class TopKDecoder(nn.Module):
 
         for _ in range(max_length):
             # Run the RNN one step forward
-            predicted_softmax, hidden = self.forward_step(input_var, hidden, inflated_encoder_outputs)
+            predicted_softmax, hidden, align = self.forward_step(input_var, hidden, inflated_encoder_outputs, align)
 
             stored_outputs.append(predicted_softmax)
 
