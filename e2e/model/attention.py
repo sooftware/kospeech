@@ -72,8 +72,8 @@ class MultiLocAwareAttention(nn.Module):
 
         loc_energy = self.get_loc_energy(prev_align, batch_size, v_len)
 
-        q_s = self.W_Q(query).view(batch_size, q_len, self.num_heads * self.dim)
-        v_s = self.W_V(value).view(batch_size, v_len, self.num_heads * self.dim) + loc_energy
+        q_s = self.W_Q(query).view(batch_size, q_len, self.num_heads * self.dim) + loc_energy
+        v_s = self.W_V(value).view(batch_size, v_len, self.num_heads * self.dim)
 
         q_s = q_s.view(batch_size, q_len, self.num_heads, self.dim).permute(2, 0, 1, 3).reshape(-1, q_len, self.dim)
         v_s = v_s.view(batch_size, v_len, self.num_heads, self.dim).permute(2, 0, 1, 3).reshape(-1, v_len, self.dim)
