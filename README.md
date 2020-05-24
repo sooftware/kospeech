@@ -13,7 +13,7 @@ This repository has modularized and extensible components for las models, traini
 We appreciate any kind of [feedback or contribution](https://github.com/sooftware/End-to-end-Speech-Recognition/issues).
   
 We used [KsponSpeech](http://www.aihub.or.kr/aidata/105) corpus which containing **1000h** of Korean speech data.   
-At present our model has recorded an **86.19% CRR**, and we are working for a higher recognition rate.  
+At present our model has recorded an **86.23% CRR**, and we are working for a higher recognition rate.  
 Also our model has recorded **91.0% CRR** in [Kadi-zeroth dataset](https://github.com/goodatlas/zeroth).  
   
 ###### ( **CRR** : Character Recognition Rate ) 
