@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import numpy as np
+import torch.nn.functional as F
 
 
 class ScaledDotProductAttention(nn.Module):
@@ -21,11 +22,10 @@ class ScaledDotProductAttention(nn.Module):
     def __init__(self, dim):
         super(ScaledDotProductAttention, self).__init__()
         self.dim = dim
-        self.softmax = nn.Softmax(dim=-1)
 
     def forward(self, query, value):
         score = torch.bmm(query, value.transpose(1, 2)) / np.sqrt(self.dim)
-        align = self.softmax(score)
+        align = F.softmax(score, dim=2)
         context = torch.bmm(align, value)
         return context, align
 
