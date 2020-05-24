@@ -2,7 +2,7 @@ import random
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from e2e.model.attention import MultiHeadLocationAwareAttention
+from e2e.model.attention import MultiLocAwareAttention
 
 
 class Speller(nn.Module):
@@ -44,6 +44,7 @@ class Speller(nn.Module):
         super(Speller, self).__init__()
         self.num_classes = num_classes
         rnn_cell = self.supported_rnns[rnn_type]
+        self.num_heads = num_heads
         self.rnn = rnn_cell(hidden_dim, hidden_dim, num_layers, batch_first=True, dropout=dropout_p).to(device)
         self.max_length = max_length
         self.hidden_dim = hidden_dim
@@ -52,7 +53,7 @@ class Speller(nn.Module):
         self.eos_id = eos_id
         self.sos_id = sos_id
         self.device = device
-        self.attention = MultiHeadLocationAwareAttention(hidden_dim, num_heads, k=10, smoothing=True)
+        self.attention = MultiLocAwareAttention(hidden_dim, num_heads, k=10, smoothing=True)
         self.fc = nn.Linear(self.hidden_dim, num_classes)
 
     def forward_step(self, input_var, hidden, listener_outputs, align):
@@ -79,15 +80,16 @@ class Speller(nn.Module):
 
         inputs, batch_size, max_length = self.validate_args(inputs, listener_outputs, teacher_forcing_ratio)
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
-
-        align = listener_outputs.new_zeros(batch_size, listener_outputs.size(1))
+        align = torch.zeros(batch_size * self.num_heads, listener_outputs.size(1)).to(self.device)
 
         if use_teacher_forcing:
-            input_var = inputs[inputs != self.eos_id].view(batch_size, -1)
-            predicted_softmax, hidden, align = self.forward_step(input_var, hidden, listener_outputs, align)
+            inputs = inputs[inputs != self.eos_id].view(batch_size, -1)
 
-            for di in range(predicted_softmax.size(1)):
-                step_output = predicted_softmax[:, di, :]
+            for di in range(inputs.size(1)):
+                input_var = inputs[:, di].unsqueeze(1)
+                predicted_softmax, hidden, align = self.forward_step(input_var, hidden, listener_outputs, align)
+
+                step_output = predicted_softmax.squeeze(1)
                 decoder_outputs.append(step_output)
 
         else:
