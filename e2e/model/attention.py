@@ -70,10 +70,10 @@ class MultiLocAwareAttention(nn.Module):
         batch_size, q_len, v_len = value.size(0), query.size(1), value.size(1)
         residual = query
 
-        loc_energy = self.get_loc_energy(prev_align, batch_size, q_len)
+        loc_energy = self.get_loc_energy(prev_align, batch_size, v_len)
 
-        q_s = self.W_Q(query).view(batch_size, q_len, self.num_heads * self.dim) + loc_energy
-        v_s = self.W_V(value).view(batch_size, v_len, self.num_heads * self.dim)
+        q_s = self.W_Q(query).view(batch_size, q_len, self.num_heads * self.dim)
+        v_s = self.W_V(value).view(batch_size, v_len, self.num_heads * self.dim) + loc_energy
 
         q_s = q_s.view(batch_size, q_len, self.num_heads, self.dim).permute(2, 0, 1, 3).reshape(-1, q_len, self.dim)
         v_s = v_s.view(batch_size, v_len, self.num_heads, self.dim).permute(2, 0, 1, 3).reshape(-1, v_len, self.dim)
@@ -88,11 +88,11 @@ class MultiLocAwareAttention(nn.Module):
 
         return output, align.squeeze()
 
-    def get_loc_energy(self, prev_align, batch_size, q_len):
+    def get_loc_energy(self, prev_align, batch_size, v_len):
         conv_feat = self.conv1d(prev_align.unsqueeze(1))
-        conv_feat = conv_feat.view(batch_size, self.num_heads, -1, q_len).permute(0, 1, 3, 2)
+        conv_feat = conv_feat.view(batch_size, self.num_heads, -1, v_len).permute(0, 1, 3, 2)
 
-        loc_energy = self.W_U(conv_feat).view(batch_size, self.num_heads, q_len, self.dim)
-        loc_energy = loc_energy.permute(0, 2, 1, 3).reshape(batch_size, q_len, self.num_heads * self.dim)
+        loc_energy = self.W_U(conv_feat).view(batch_size, self.num_heads, v_len, self.dim)
+        loc_energy = loc_energy.permute(0, 2, 1, 3).reshape(batch_size, v_len, self.num_heads * self.dim)
 
         return loc_energy
