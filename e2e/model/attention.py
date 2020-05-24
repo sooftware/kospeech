@@ -13,6 +13,7 @@ class MultiHeadLocationAwareAttention(nn.Module):
     Args:
         in_features (int): The number of expected features in the output
         num_heads (int): number of heads. (default: 4)
+        k (int):
 
     Inputs: Q, V
         - **Q** (batch, output_len, dimensions): tensor containing the output features from the decoder.
@@ -44,8 +45,8 @@ class MultiHeadLocationAwareAttention(nn.Module):
         residual = Q
         U = torch.transpose(self.conv(last_align.unsqueeze(1)), 1, 2)
 
-        q_s = self.W_Q(Q).view(batch_size, q_len, self.num_heads * self.dim) + self.W_U(U) + self.bias
-        v_s = self.W_V(V).view(batch_size, v_len, self.num_heads * self.dim)
+        q_s = self.W_Q(Q).view(batch_size, q_len, self.num_heads * self.dim)
+        v_s = self.W_V(V).view(batch_size, v_len, self.num_heads * self.dim) + self.W_U(U) + self.bias
 
         q_s = q_s.view(batch_size, q_len, self.num_heads, self.dim).permute(2, 0, 1, 3)
         v_s = v_s.view(batch_size, v_len, self.num_heads, self.dim).permute(2, 0, 1, 3)
