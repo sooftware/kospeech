@@ -83,7 +83,8 @@ class SupervisedTrainer(object):
                                                        train_queue, teacher_forcing_ratio)
             train_loader.join()
 
-            torch.save(model, "./data/weight_file/epoch%s.pt" % str(epoch))
+            Checkpoint(model, self.optimizer, self.lr_scheduler, self.criterion,
+                       self.trainset_list, self.validset, epoch).save()
             logger.info('Epoch %d (Training) Loss %0.4f CER %0.4f' % (epoch, train_loss, train_cer))
 
             # Validation
@@ -210,14 +211,13 @@ class SupervisedTrainer(object):
             - **loss** (float): loss of validation
             - **cer** (float): character error rate of validation
         """
-        logger.info('validate() start')
-
         total_loss = 0.
         total_num = 0
         total_dist = 0
         total_length = 0
 
         model.eval()
+        logger.info('validate() start')
 
         with torch.no_grad():
             while True:

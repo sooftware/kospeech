@@ -105,7 +105,7 @@ class Speller(nn.Module):
         batch_size = listener_outputs.size(0)
 
         if inputs is None:  # inference
-            inputs = torch.LongTensor([self.sos_id] * batch_size).view(batch_size, 1)
+            inputs = torch.IntTensor([self.sos_id] * batch_size).view(batch_size, 1)
             max_length = self.max_length
 
             if torch.cuda.is_available():

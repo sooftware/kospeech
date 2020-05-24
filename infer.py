@@ -20,7 +20,7 @@ from e2e.modules.utils import check_envirionment
 
 
 def inference(opt):
-    device = check_envirionment(opt)
+    device = check_envirionment(opt.use_cuda)
     model = load_test_model(opt, device, use_beamsearch=opt.use_beam_search)
 
     audio_paths, script_paths = load_data_list(opt.data_list_path, opt.dataset_path)

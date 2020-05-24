@@ -29,7 +29,7 @@ def train(opt):
     random.seed(opt.seed)
     torch.manual_seed(opt.seed)
     torch.cuda.manual_seed_all(opt.seed)
-    device = check_envirionment(opt)
+    device = check_envirionment(opt.use_cuda)
 
     audio_paths, script_paths = load_data_list(opt.data_list_path, opt.dataset_path)
 

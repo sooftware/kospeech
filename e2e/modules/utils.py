@@ -4,12 +4,12 @@ import Levenshtein as Lev
 from e2e.modules.global_var import logger
 
 
-def check_envirionment(opt):
+def check_envirionment(use_cuda):
     """
     Check execution envirionment.
     OS, Processor, CUDA version, Pytorch version, ... etc.
     """
-    cuda = opt.use_cuda and torch.cuda.is_available()
+    cuda = use_cuda and torch.cuda.is_available()
     device = torch.device('cuda' if cuda else 'cpu')
 
     logger.info("Operating System : %s %s" % (platform.system(), platform.release()))
