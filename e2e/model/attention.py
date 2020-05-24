@@ -23,10 +23,10 @@ class ScaledDotProductAttention(nn.Module):
         self.dim = dim
         self.softmax = nn.Softmax(dim=-1)
 
-    def forward(self, Q, V):
-        score = torch.bmm(Q, V.transpose(1, 2)) / np.sqrt(self.dim)
+    def forward(self, query, value):
+        score = torch.bmm(query, value.transpose(1, 2)) / np.sqrt(self.dim)
         align = self.softmax(score)
-        context = torch.bmm(align, V)
+        context = torch.bmm(align, value)
         return context, align
 
 
