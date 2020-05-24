@@ -67,10 +67,7 @@ class MultiLocAwareAttention(nn.Module):
         self.norm = nn.LayerNorm(in_features)
 
     def forward(self, Q, V, prev_align):  # (batch_size * num_heads, v_len)
-        batch_size = V.size(0)
-        q_len = Q.size(1)
-        v_len = V.size(1)
-
+        batch_size, q_len, v_len = V.size(0), Q.size(1), V.size(1)
         residual = Q
 
         loc_energy = self.get_loc_energy(prev_align, batch_size, v_len)
