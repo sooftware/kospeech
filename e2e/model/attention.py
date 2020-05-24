@@ -44,9 +44,9 @@ class MultiLocAwareAttention(nn.Module):
         num_heads (int): The number of heads. (default: )
         k (int): The dimension of convolution
 
-    Inputs: Q, V, prev_align
-        - **Q** (batch_size, q_len, hidden_dim): tensor containing the output features from the decoder.
-        - **V** (batch_size, v_len, hidden_dim): tensor containing features of the encoded input sequence.
+    Inputs: query, value, prev_align
+        - **query** (batch_size, q_len, hidden_dim): tensor containing the output features from the decoder.
+        - **value** (batch_size, v_len, hidden_dim): tensor containing features of the encoded input sequence.
         - **prev_align** (batch_size * num_heads, v_len): tensor containing previous timestep`s alignment
 
     Returns: output
@@ -66,14 +66,14 @@ class MultiLocAwareAttention(nn.Module):
         self.fc = nn.Linear(in_features << 1, in_features, bias=True)
         self.norm = nn.LayerNorm(in_features)
 
-    def forward(self, Q, V, prev_align):  # (batch_size * num_heads, v_len)
-        batch_size, q_len, v_len = V.size(0), Q.size(1), V.size(1)
-        residual = Q
+    def forward(self, query, value, prev_align):  # (batch_size * num_heads, v_len)
+        batch_size, q_len, v_len = value.size(0), query.size(1), value.size(1)
+        residual = query
 
         loc_energy = self.get_loc_energy(prev_align, batch_size, v_len)
 
-        q_s = self.W_Q(Q).view(batch_size, q_len, self.num_heads * self.dim)
-        v_s = self.W_V(V).view(batch_size, v_len, self.num_heads * self.dim) + loc_energy
+        q_s = self.W_Q(query).view(batch_size, q_len, self.num_heads * self.dim)
+        v_s = self.W_V(value).view(batch_size, v_len, self.num_heads * self.dim) + loc_energy
 
         q_s = q_s.view(batch_size, q_len, self.num_heads, self.dim).permute(2, 0, 1, 3).reshape(-1, q_len, self.dim)
         v_s = v_s.view(batch_size, v_len, self.num_heads, self.dim).permute(2, 0, 1, 3).reshape(-1, v_len, self.dim)
