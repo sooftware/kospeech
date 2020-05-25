@@ -30,9 +30,9 @@ class ScaledDotProductAttention(nn.Module):
         return context, align
 
 
-class MultiLocAwareAttention(nn.Module):
+class MultiHybridAttention(nn.Module):
     r"""
-    Multi-Head + Location-Aware Attention
+    Multi-Head + Location-Aware (Hybrid) Attention
 
     Applies a multi-head + location-aware attention mechanism on the output features from the decoder.
     Multi-head attention proposed in "Attention Is All You Need" paper.
@@ -54,7 +54,7 @@ class MultiLocAwareAttention(nn.Module):
     """
 
     def __init__(self, in_features, num_heads=8, k=10):
-        super(MultiLocAwareAttention, self).__init__()
+        super(MultiHybridAttention, self).__init__()
         self.in_features = in_features
         self.num_heads = num_heads
         self.dim = int(in_features / num_heads)

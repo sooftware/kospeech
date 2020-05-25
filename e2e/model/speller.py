@@ -2,7 +2,7 @@ import random
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from e2e.model.attention import MultiLocAwareAttention
+from e2e.model.attention import MultiHybridAttention
 
 
 class Speller(nn.Module):
@@ -53,7 +53,7 @@ class Speller(nn.Module):
         self.eos_id = eos_id
         self.sos_id = sos_id
         self.device = device
-        self.attention = MultiLocAwareAttention(hidden_dim, num_heads, k=10)
+        self.attention = MultiHybridAttention(hidden_dim, num_heads, k=10)
         self.fc = nn.Linear(self.hidden_dim, num_classes)
 
     def forward_step(self, input_var, hidden, listener_outputs, align):

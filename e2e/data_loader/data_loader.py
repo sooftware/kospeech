@@ -49,7 +49,7 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
         return spectrogram, script
 
     def parse_script(self, script_path):
-        """ Parses scripts """
+        """ Parses scripts @Override """
         scripts = list()
 
         key = script_path.split('/')[-1].split('.')[0]

@@ -23,7 +23,8 @@ class AudioParser(object):
         - **load_audio()**: load audio file to signal. (PCM)
         - **instancewise_standardization**: provides instance-wise standardization normalization.
     """
-    def load_audio(self, audio_path, del_silence):
+    @staticmethod
+    def load_audio(audio_path, del_silence):
         """
         Load audio file to signal. (PCM)
         if del_silence is True, Eliminate all signals below 30dB
@@ -145,7 +146,7 @@ class SpectrogramParser(AudioParser):
 
     def parse_audio(self, audio_path, augment_method):
         """
-        Parsing audio (Get Mel-Spectrogram features).
+        Parses audio (Get Mel-Spectrogram features). @Override
 
         Args:
              audio_path (str): path of audio file
