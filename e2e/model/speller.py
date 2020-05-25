@@ -54,7 +54,7 @@ class Speller(nn.Module):
         self.sos_id = sos_id
         self.device = device
         self.attention = MultiHybridAttention(hidden_dim, num_heads, k=10)
-        self.fc = nn.Linear(self.hidden_dim, num_classes)
+        self.out_proj = nn.Linear(self.hidden_dim, num_classes)
 
     def forward_step(self, input_var, hidden, listener_outputs, align):
         batch_size = input_var.size(0)
@@ -69,7 +69,7 @@ class Speller(nn.Module):
         output, hidden = self.rnn(embedded, hidden)
         context, align = self.attention(output, listener_outputs, align)
 
-        predicted_softmax = F.log_softmax(self.fc(context.contiguous().view(-1, self.hidden_dim)), dim=1)
+        predicted_softmax = F.log_softmax(self.out_proj(context.contiguous().view(-1, self.hidden_dim)), dim=1)
         predicted_softmax = predicted_softmax.view(batch_size, output_lengths, -1)
 
         return predicted_softmax, hidden, align

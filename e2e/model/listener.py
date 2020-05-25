@@ -102,17 +102,17 @@ class Listener(nn.Module):
         super(Listener, self).__init__()
         self.cnn = MaskCNN(
             nn.Sequential(
-                nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1),
+                nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1, bias=False),
                 nn.Hardtanh(0, 20, inplace=True),
                 nn.BatchNorm2d(num_features=64),
-                nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
+                nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
                 nn.Hardtanh(0, 20, inplace=True),
                 nn.MaxPool2d(2, stride=2),
                 nn.BatchNorm2d(num_features=64),
-                nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1),
+                nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1, bias=False),
                 nn.Hardtanh(0, 20, inplace=True),
                 nn.BatchNorm2d(num_features=128),
-                nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1),
+                nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1, bias=False),
                 nn.Hardtanh(0, 20, inplace=True),
                 nn.MaxPool2d(2, stride=2)
             )
@@ -126,9 +126,9 @@ class Listener(nn.Module):
         inputs = inputs.unsqueeze(1).permute(0, 1, 3, 2)
         cnn_output, seq_lengths = self.cnn(inputs, input_lengths)
 
-        B, C, H, S = cnn_output.size()
+        batch_size, channel, hidden_dim, seq_len = cnn_output.size()
 
-        cnn_output = cnn_output.view(B, C * H, S)
+        cnn_output = cnn_output.view(batch_size, channel * hidden_dim, seq_len)
         cnn_output = cnn_output.transpose(1, 2).transpose(0, 1).contiguous()
 
         inputs = nn.utils.rnn.pack_padded_sequence(cnn_output, seq_lengths)
