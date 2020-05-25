@@ -88,13 +88,13 @@ ListenAttendSpell(
     (rnn): GRU(512, 512, num_layers=3, batch_first=True, dropout=0.3)
     (embedding): Embedding(2038, 512)
     (input_dropout): Dropout(p=0.3, inplace=False)
-    (attention): MultiHeadLocationAwareAttention(
-      (conv): Conv1d(1, 10, kernel_size=(3,), stride=(1,), padding=(1,))
+    (attention): MultiLocAwareAttention(
+      (conv1d): Conv1d(1, 10, kernel_size=(3,), stride=(1,), padding=(1,))
       (W_Q): Linear(in_features=512, out_features=512, bias=True)
-      (W_V): Linear(in_features=512, out_features=512, bias=False)
-      (W_U): Linear(in_features=10, out_features=512, bias=False)
+      (W_V): Linear(in_features=512, out_features=512, bias=True)
+      (W_U): Linear(in_features=10, out_features=64, bias=True)
       (fc): Linear(in_features=1024, out_features=512, bias=True)
-      (softmax): Softmax(dim=-1)
+      (norm): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
     )
     (fc): Linear(in_features=512, out_features=2038, bias=True)
   )
