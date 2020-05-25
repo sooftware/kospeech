@@ -168,12 +168,24 @@
 <span class="c1">#from e2e.modules.global_var import logger</span>
 
 
-<div class="viewcode-block" id="check_envirionment"><a class="viewcode-back" href="../../../Modules.html#e2e.modules.utils.check_envirionment">[docs]</a><span class="k">def</span> <span class="nf">check_envirionment</span><span class="p">(</span><span class="n">opt</span><span class="p">):</span>
+<div class="viewcode-block" id="set_lr"><a class="viewcode-back" href="../../../Modules.html#e2e.modules.utils.set_lr">[docs]</a><span class="k">def</span> <span class="nf">set_lr</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">lr</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; set learning rate &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">param_groups</span><span class="p">:</span>
+        <span class="n">g</span><span class="p">[</span><span class="s1">&#39;lr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lr</span></div>
+
+
+<div class="viewcode-block" id="get_lr"><a class="viewcode-back" href="../../../Modules.html#e2e.modules.utils.get_lr">[docs]</a><span class="k">def</span> <span class="nf">get_lr</span><span class="p">(</span><span class="n">optimizer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; get learning rate &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">param_groups</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">g</span><span class="p">[</span><span class="s1">&#39;lr&#39;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="check_envirionment"><a class="viewcode-back" href="../../../Modules.html#e2e.modules.utils.check_envirionment">[docs]</a><span class="k">def</span> <span class="nf">check_envirionment</span><span class="p">(</span><span class="n">use_cuda</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Check execution envirionment.</span>
 <span class="sd">    OS, Processor, CUDA version, Pytorch version, ... etc.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">cuda</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">use_cuda</span> <span class="ow">and</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span>
+    <span class="n">cuda</span> <span class="o">=</span> <span class="n">use_cuda</span> <span class="ow">and</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span>
     <span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s1">&#39;cuda&#39;</span> <span class="k">if</span> <span class="n">cuda</span> <span class="k">else</span> <span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
 
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Operating System : </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">(),</span> <span class="n">platform</span><span class="o">.</span><span class="n">release</span><span class="p">()))</span>

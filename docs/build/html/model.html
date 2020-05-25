@@ -483,40 +483,93 @@ registered hooks while the latter silently ignores them.</p>
 <div class="section" id="module-e2e.model.attention">
 <span id="attention"></span><h2>Attention<a class="headerlink" href="#module-e2e.model.attention" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="e2e.model.attention.MultiHeadAttention">
-<em class="property">class </em><code class="descclassname">e2e.model.attention.</code><code class="descname">MultiHeadAttention</code><span class="sig-paren">(</span><em>in_features</em>, <em>num_heads=4</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/model/attention.html#MultiHeadAttention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.model.attention.MultiHeadAttention" title="Permalink to this definition">¶</a></dt>
-<dd><p>Applies a multi-head attention mechanism on the output features from the decoder.
-This attention proposed in “Attention Is All You Need” paper.
-We refer to “State-of-the-art Speech Recognition With Sequence-to-Sequence Models” paper.
-This paper applied Multi-Head attention in speech recognition task.</p>
+<dt id="e2e.model.attention.MultiHybridAttention">
+<em class="property">class </em><code class="descclassname">e2e.model.attention.</code><code class="descname">MultiHybridAttention</code><span class="sig-paren">(</span><em>in_features</em>, <em>num_heads=8</em>, <em>k=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/model/attention.html#MultiHybridAttention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.model.attention.MultiHybridAttention" title="Permalink to this definition">¶</a></dt>
+<dd><p>Multi-Head + Location-Aware (Hybrid) Attention</p>
+<p>Applies a multi-head + location-aware attention mechanism on the output features from the decoder.
+Multi-head attention proposed in “Attention Is All You Need” paper.
+Location-aware attention proposed in “Attention-Based Models for Speech Recognition” paper.
+We combined these two attention mechanisms as custom.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>in_features</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The number of expected features in the output</li>
-<li><strong>num_heads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of heads. (default: 4)</li>
+<li><strong>num_heads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The number of heads. (default: )</li>
+<li><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The dimension of convolution</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
 <dl class="docutils">
-<dt>Inputs: Q, V</dt>
+<dt>Inputs: query, value, prev_align</dt>
 <dd><ul class="first last simple">
-<li><strong>Q</strong> (batch, output_len, dimensions): tensor containing the output features from the decoder.</li>
-<li><strong>V</strong> (batch, input_len, dimensions): tensor containing features of the encoded input sequence.</li>
+<li><strong>query</strong> (batch, q_len, hidden_dim): tensor containing the output features from the decoder.</li>
+<li><strong>value</strong> (batch, v_len, hidden_dim): tensor containing features of the encoded input sequence.</li>
+<li><strong>prev_align</strong> (batch_size * num_heads, v_len): tensor containing previous timestep`s alignment</li>
 </ul>
 </dd>
-<dt>Returns: output</dt>
+<dt>Returns: output, aligng</dt>
 <dd><ul class="first last simple">
 <li><strong>output</strong> (batch, output_len, dimensions): tensor containing the attended output features from the decoder.</li>
+<li><strong>align</strong> (batch * num_heads, v_len): tensor containing the alignment from the encoder outputs.</li>
+</ul>
+</dd>
+<dt>Reference:</dt>
+<dd><ul class="first last simple">
+<li><strong>Attention Is All You Need</strong>: <a class="reference external" href="https://arxiv.org/abs/1706.03762">https://arxiv.org/abs/1706.03762</a></li>
+<li><strong>Attention-Based Models for Speech Recognition</strong>: <a class="reference external" href="https://arxiv.org/abs/1506.07503">https://arxiv.org/abs/1506.07503</a></li>
+<li><strong>State-Of-The-Art Speech Recognition with Sequence-to-Sequence Models</strong>: <a class="reference external" href="https://arxiv.org/abs/1712.01769">https://arxiv.org/abs/1712.01769</a></li>
 </ul>
 </dd>
 </dl>
 <dl class="method">
-<dt id="e2e.model.attention.MultiHeadAttention.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>Q</em>, <em>V</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/model/attention.html#MultiHeadAttention.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.model.attention.MultiHeadAttention.forward" title="Permalink to this definition">¶</a></dt>
+<dt id="e2e.model.attention.MultiHybridAttention.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>query</em>, <em>value</em>, <em>prev_align</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/model/attention.html#MultiHybridAttention.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.model.attention.MultiHybridAttention.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="e2e.model.attention.ScaledDotProductAttention">
+<em class="property">class </em><code class="descclassname">e2e.model.attention.</code><code class="descname">ScaledDotProductAttention</code><span class="sig-paren">(</span><em>dim</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/model/attention.html#ScaledDotProductAttention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.model.attention.ScaledDotProductAttention" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scaled Dot-product Attention</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – dimention of attention</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Inputs: query, value</dt>
+<dd><ul class="first last simple">
+<li><strong>query</strong> (batch_size, q_len, hidden_dim): tensor containing the output features from the decoder.</li>
+<li><strong>value</strong> (batch_size, v_len, hidden_dim): tensor containing features of the encoded input sequence.</li>
+</ul>
+</dd>
+<dt>Returns: context, align</dt>
+<dd><ul class="first last simple">
+<li><strong>context</strong>: tensor containing the context vector from attention mechanism.</li>
+<li><strong>align</strong>: tensor containing the alignment from the encoder outputs.</li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="e2e.model.attention.ScaledDotProductAttention.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>query</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/model/attention.html#ScaledDotProductAttention.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.model.attention.ScaledDotProductAttention.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">

@@ -184,10 +184,11 @@
 <span class="sd">        sos_id (int): identification of &lt;start of sequence&gt;</span>
 <span class="sd">        eos_id (int): identification of &lt;end of sequence&gt;</span>
 <span class="sd">        target_dict (dict): dictionary of filename and labels</span>
-<span class="sd">        use_augment (bool): flag indication whether to use spec-augmentation or not (default: True)</span>
+<span class="sd">        spec_augment (bool): flag indication whether to use spec-augmentation or not (default: True)</span>
+<span class="sd">        noise_augment (bool): flag indication whether to use noise-augmentation or not (default: True)</span>
 <span class="sd">        opt (ArgumentParser): set of arguments</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">audio_paths</span><span class="p">,</span> <span class="n">script_paths</span><span class="p">,</span> <span class="n">sos_id</span><span class="p">,</span> <span class="n">eos_id</span><span class="p">,</span> <span class="n">target_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">opt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_augment</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">audio_paths</span><span class="p">,</span> <span class="n">script_paths</span><span class="p">,</span> <span class="n">sos_id</span><span class="p">,</span> <span class="n">eos_id</span><span class="p">,</span> <span class="n">target_dict</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">spec_augment</span><span class="p">,</span> <span class="n">noise_augment</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">SpectrogramDataset</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">feature_extract_by</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">feature_extract_by</span><span class="p">,</span> <span class="n">sample_rate</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">sample_rate</span><span class="p">,</span>
                                                  <span class="n">n_mels</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">n_mels</span><span class="p">,</span> <span class="n">window_size</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">window_size</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">stride</span><span class="p">,</span>
                                                  <span class="n">del_silence</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">del_silence</span><span class="p">,</span> <span class="n">input_reverse</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">input_reverse</span><span class="p">,</span>
@@ -198,8 +199,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">audio_paths</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">audio_paths</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">script_paths</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">script_paths</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">augment_methods</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">VANILLA</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">audio_paths</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">use_augment</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">augmentation</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">augment_num</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">augmentation</span><span class="p">(</span><span class="n">spec_augment</span><span class="p">,</span> <span class="n">noise_augment</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">shuffle</span><span class="p">()</span>
 
 <div class="viewcode-block" id="SpectrogramDataset.get_item"><a class="viewcode-back" href="../../../Data_loader.html#e2e.data_loader.data_loader.SpectrogramDataset.get_item">[docs]</a>    <span class="k">def</span> <span class="nf">get_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
@@ -213,7 +213,7 @@
         <span class="k">return</span> <span class="n">spectrogram</span><span class="p">,</span> <span class="n">script</span></div>
 
 <div class="viewcode-block" id="SpectrogramDataset.parse_script"><a class="viewcode-back" href="../../../Data_loader.html#e2e.data_loader.data_loader.SpectrogramDataset.parse_script">[docs]</a>    <span class="k">def</span> <span class="nf">parse_script</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">script_path</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Parsing transcript &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot; Parses scripts @Override &quot;&quot;&quot;</span>
         <span class="n">scripts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
 
         <span class="n">key</span> <span class="o">=</span> <span class="n">script_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
@@ -228,21 +228,20 @@
 
         <span class="k">return</span> <span class="n">scripts</span></div>
 
-<div class="viewcode-block" id="SpectrogramDataset.augmentation"><a class="viewcode-back" href="../../../Data_loader.html#e2e.data_loader.data_loader.SpectrogramDataset.augmentation">[docs]</a>    <span class="k">def</span> <span class="nf">augmentation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">augment_num</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Note flag for SpecAugment &quot;&quot;&quot;</span>
-        <span class="n">augment_end_idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">0</span> <span class="o">+</span> <span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">audio_paths</span><span class="p">)</span> <span class="o">-</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">augment_num</span><span class="p">))</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Applying Spec Augmentation...&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="SpectrogramDataset.augmentation"><a class="viewcode-back" href="../../../Data_loader.html#e2e.data_loader.data_loader.SpectrogramDataset.augmentation">[docs]</a>    <span class="k">def</span> <span class="nf">augmentation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spec_augment</span><span class="p">,</span> <span class="n">noise_augment</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Spec &amp; Noise Augmentation &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">spec_augment</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Applying Spec Augmentation...&quot;</span><span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">augment_num</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">augment_end_idx</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">audio_paths</span><span class="p">)):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">augment_methods</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SPEC_AUGMENT</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">audio_paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">audio_paths</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">script_paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">script_paths</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Applying Noise Augmentation...&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">noise_augment</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Applying Noise Augmentation...&quot;</span><span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">augment_num</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">augment_end_idx</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">audio_paths</span><span class="p">)):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">augment_methods</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">NOISE_INJECTION</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">audio_paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">audio_paths</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">script_paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">script_paths</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span></div>
@@ -399,7 +398,7 @@
 <span class="sd">    split into training set and validation set.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        opt (argparse.ArgumentParser): set of options</span>
+<span class="sd">        opt (ArgumentParser): set of options</span>
 <span class="sd">        audio_paths (list): set of audio path</span>
 <span class="sd">        script_paths (list): set of script path</span>
 
@@ -417,8 +416,11 @@
     <span class="n">valid_time_step</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">total_time_step</span> <span class="o">*</span> <span class="n">opt</span><span class="o">.</span><span class="n">valid_ratio</span><span class="p">)</span>
     <span class="n">train_time_step</span> <span class="o">=</span> <span class="n">total_time_step</span> <span class="o">-</span> <span class="n">valid_time_step</span>
 
-    <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">use_augment</span><span class="p">:</span>
-        <span class="n">train_time_step</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">train_time_step</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">opt</span><span class="o">.</span><span class="n">augment_num</span> <span class="o">*</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">spec_augment</span><span class="p">:</span>
+        <span class="n">train_time_step</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">noise_augment</span><span class="p">:</span>
+        <span class="n">train_time_step</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span>
 
     <span class="n">train_num_per_worker</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">train_num</span> <span class="o">/</span> <span class="n">opt</span><span class="o">.</span><span class="n">num_workers</span><span class="p">)</span>
 
@@ -435,12 +437,13 @@
 
         <span class="n">trainset_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
             <span class="n">SpectrogramDataset</span><span class="p">(</span>
-                <span class="n">audio_paths</span><span class="o">=</span><span class="n">audio_paths</span><span class="p">[</span><span class="n">train_begin_idx</span><span class="p">:</span><span class="n">train_end_idx</span><span class="p">],</span>
-                <span class="n">script_paths</span><span class="o">=</span><span class="n">script_paths</span><span class="p">[</span><span class="n">train_begin_idx</span><span class="p">:</span><span class="n">train_end_idx</span><span class="p">],</span>
-                <span class="n">sos_id</span><span class="o">=</span><span class="n">SOS_token</span><span class="p">,</span> <span class="n">eos_id</span><span class="o">=</span><span class="n">EOS_token</span><span class="p">,</span>
+                <span class="n">audio_paths</span><span class="p">[</span><span class="n">train_begin_idx</span><span class="p">:</span><span class="n">train_end_idx</span><span class="p">],</span>
+                <span class="n">script_paths</span><span class="p">[</span><span class="n">train_begin_idx</span><span class="p">:</span><span class="n">train_end_idx</span><span class="p">],</span>
+                <span class="n">SOS_token</span><span class="p">,</span> <span class="n">EOS_token</span><span class="p">,</span>
                 <span class="n">target_dict</span><span class="o">=</span><span class="n">target_dict</span><span class="p">,</span>
-                <span class="n">use_augment</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">use_augment</span><span class="p">,</span>
-                <span class="n">opt</span><span class="o">=</span><span class="n">opt</span>
+                <span class="n">opt</span><span class="o">=</span><span class="n">opt</span><span class="p">,</span>
+                <span class="n">spec_augment</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">spec_augment</span><span class="p">,</span>
+                <span class="n">noise_augment</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">noise_augment</span>
             <span class="p">)</span>
         <span class="p">)</span>
 
@@ -450,7 +453,8 @@
         <span class="n">sos_id</span><span class="o">=</span><span class="n">SOS_token</span><span class="p">,</span> <span class="n">eos_id</span><span class="o">=</span><span class="n">EOS_token</span><span class="p">,</span>
         <span class="n">target_dict</span><span class="o">=</span><span class="n">target_dict</span><span class="p">,</span>
         <span class="n">opt</span><span class="o">=</span><span class="n">opt</span><span class="p">,</span>
-        <span class="n">use_augment</span><span class="o">=</span><span class="kc">False</span>
+        <span class="n">spec_augment</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">noise_augment</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">)</span>
 
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;split dataset complete !!&quot;</span><span class="p">)</span>

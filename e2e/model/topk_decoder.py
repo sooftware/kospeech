@@ -52,7 +52,7 @@ class TopKDecoder(nn.Module):
 
         hidden = None
         inflated_encoder_outputs = _inflate(encoder_outputs, self.k, 0)
-        align = torch.zeros(batch_size * self.num_heads, encoder_outputs.size(1)).to(self.device)
+        align = encoder_outputs.new_zeros(batch_size * self.num_heads, encoder_outputs.size(1))
 
         # Initialize the scores; for the first step,
         # ignore the inflated copies to avoid duplicate entries in the top k

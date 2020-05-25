@@ -176,23 +176,30 @@
 <dl class="class">
 <dt id="e2e.feature.parser.AudioParser">
 <em class="property">class </em><code class="descclassname">e2e.feature.parser.</code><code class="descname">AudioParser</code><a class="reference internal" href="_modules/e2e/feature/parser.html#AudioParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.feature.parser.AudioParser" title="Permalink to this definition">¶</a></dt>
-<dd><p>This class provides only load_audio() function. This class acts as an interface.
-parse_audio() &amp; parse_script() are abstract method. If you want to inherit this class,
-you have to override this 2 method and use it.</p>
+<dd><p>This class provides load_audio(), inject_noise(), instancewise_standardization(), spec_audment() function.
+This class acts as an interface. parse_audio() &amp; parse_script() are abstract method.
+If you want to inherit this class, you have to override this 2 method.</p>
 <dl class="docutils">
 <dt>Method:</dt>
 <dd><ul class="first last simple">
+<li><strong>parse_audio()</strong>: abstract method. you have to override this method.</li>
+<li><strong>parse_script()</strong>: abstract method. you have to override this method.</li>
 <li><strong>load_audio()</strong>: load audio file to signal. (PCM)</li>
-<li><strong>parse_audio()</strong>: parses audio file. you have to override this method.</li>
-<li><strong>parse_script()</strong>: parses script file. you have to override this method.</li>
+<li><strong>instancewise_standardization</strong>: provides instance-wise standardization normalization.</li>
 </ul>
 </dd>
 </dl>
-<dl class="method">
+<dl class="staticmethod">
 <dt id="e2e.feature.parser.AudioParser.load_audio">
-<code class="descname">load_audio</code><span class="sig-paren">(</span><em>audio_path</em>, <em>del_silence</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/feature/parser.html#AudioParser.load_audio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.feature.parser.AudioParser.load_audio" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">load_audio</code><span class="sig-paren">(</span><em>audio_path</em>, <em>del_silence</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/feature/parser.html#AudioParser.load_audio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.feature.parser.AudioParser.load_audio" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load audio file to signal. (PCM)
 if del_silence is True, Eliminate all signals below 30dB</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="e2e.feature.parser.AudioParser.spec_augment">
+<em class="property">static </em><code class="descname">spec_augment</code><span class="sig-paren">(</span><em>spectrogram</em>, <em>time_mask_para</em>, <em>freq_mask_para</em>, <em>time_mask_num</em>, <em>freq_mask_num</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/feature/parser.html#AudioParser.spec_augment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.feature.parser.AudioParser.spec_augment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides SpecAugmentation for audio</p>
 </dd></dl>
 
 </dd></dl>
@@ -229,15 +236,14 @@ if del_silence is True, Eliminate all signals below 30dB</p>
 <dl class="method">
 <dt id="e2e.feature.parser.SpectrogramParser.parse_audio">
 <code class="descname">parse_audio</code><span class="sig-paren">(</span><em>audio_path</em>, <em>augment_method</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/feature/parser.html#SpectrogramParser.parse_audio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.feature.parser.SpectrogramParser.parse_audio" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parsing audio (Get Mel-Spectrogram features).</p>
+<dd><p>Parses audio (Get Mel-Spectrogram features). &#64;Override</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>audio_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – path of audio file</li>
-<li><strong>augment_method</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – VINILLA =&gt; Not apply augmentation, SPEC_AUGMENT =&gt; SpecAugment,
-NOISE_INJECTION =&gt; Noise Augmentation</li>
+<li><strong>augment_method</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – flag indication which augmentation method to use.</li>
 </ul>
 </td>
 </tr>
@@ -250,12 +256,6 @@ NOISE_INJECTION =&gt; Noise Augmentation</li>
 </ul>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="e2e.feature.parser.SpectrogramParser.spec_augment">
-<code class="descname">spec_augment</code><span class="sig-paren">(</span><em>spectrogram</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/feature/parser.html#SpectrogramParser.spec_augment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.feature.parser.SpectrogramParser.spec_augment" title="Permalink to this definition">¶</a></dt>
-<dd><p>Provides SpecAugmentation for audio</p>
 </dd></dl>
 
 </dd></dl>

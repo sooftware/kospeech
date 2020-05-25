@@ -168,11 +168,11 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">e2e.data_loader.data_loader</span> <span class="k">import</span> <span class="n">MultiDataLoader</span><span class="p">,</span> <span class="n">AudioDataLoader</span>
 <span class="kn">from</span> <span class="nn">e2e.modules.checkpoint</span> <span class="k">import</span> <span class="n">Checkpoint</span>
-<span class="kn">from</span> <span class="nn">e2e.modules.utils</span> <span class="k">import</span> <span class="n">get_distance</span>
+<span class="kn">from</span> <span class="nn">e2e.modules.utils</span> <span class="k">import</span> <span class="n">get_distance</span><span class="p">,</span> <span class="n">set_lr</span>
 <span class="c1">#from e2e.modules.global_var import EOS_token, logger, id2char</span>
 
 
-<div class="viewcode-block" id="SupervisedTrainer"><a class="viewcode-back" href="../../../Trainer.html#e2e.trainer.supervised_trainer.SupervisedTrainer">[docs]</a><span class="k">class</span> <span class="nc">SupervisedTrainer</span><span class="p">:</span>
+<div class="viewcode-block" id="SupervisedTrainer"><a class="viewcode-back" href="../../../Trainer.html#e2e.trainer.supervised_trainer.SupervisedTrainer">[docs]</a><span class="k">class</span> <span class="nc">SupervisedTrainer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The SupervisedTrainer class helps in setting up training framework in a supervised setting.</span>
 
@@ -195,7 +195,7 @@
     <span class="n">VALID_RESULT_PATH</span> <span class="o">=</span> <span class="s2">&quot;./data/train_result/eval_result.csv&quot;</span>
     <span class="n">TRAIN_STEP_RESULT_PATH</span> <span class="o">=</span> <span class="s2">&quot;./data/train_result/train_step_result.csv&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">lr_scheduler</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">trainset_list</span><span class="p">,</span> <span class="n">validset</span><span class="p">,</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">lr_scheduler</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">trainset_list</span><span class="p">,</span> <span class="n">validset</span><span class="p">,</span> <span class="n">high_plateau_lr</span><span class="p">,</span>
                  <span class="n">num_workers</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">print_every</span><span class="p">,</span> <span class="n">save_result_every</span><span class="p">,</span> <span class="n">checkpoint_every</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span> <span class="o">=</span> <span class="n">num_workers</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">optimizer</span>
@@ -203,6 +203,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span> <span class="o">=</span> <span class="n">criterion</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">trainset_list</span> <span class="o">=</span> <span class="n">trainset_list</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">validset</span> <span class="o">=</span> <span class="n">validset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">high_plateau_lr</span> <span class="o">=</span> <span class="n">high_plateau_lr</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">print_every</span> <span class="o">=</span> <span class="n">print_every</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save_result_every</span> <span class="o">=</span> <span class="n">save_result_every</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">checkpoint_every</span> <span class="o">=</span> <span class="n">checkpoint_every</span>
@@ -247,7 +248,8 @@
                                                        <span class="n">train_queue</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="p">)</span>
             <span class="n">train_loader</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
-            <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s2">&quot;./data/weight_file/epoch</span><span class="si">%s</span><span class="s2">.pt&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">epoch</span><span class="p">))</span>
+            <span class="n">Checkpoint</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lr_scheduler</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">,</span>
+                       <span class="bp">self</span><span class="o">.</span><span class="n">trainset_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">validset</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Epoch </span><span class="si">%d</span><span class="s1"> (Training) Loss </span><span class="si">%0.4f</span><span class="s1"> CER </span><span class="si">%0.4f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">train_loss</span><span class="p">,</span> <span class="n">train_cer</span><span class="p">))</span>
 
             <span class="c1"># Validation</span>
@@ -288,16 +290,23 @@
         <span class="n">total_dist</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">total_length</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">time_step</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">max_norm</span> <span class="o">=</span> <span class="mi">400</span>
+
+        <span class="n">MAX_NORM</span> <span class="o">=</span> <span class="mi">400</span>
+        <span class="n">RAMPUP_POWER</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="n">RAMPUP_PERIOD</span> <span class="o">=</span> <span class="mi">1000</span>
 
         <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
         <span class="n">begin_time</span> <span class="o">=</span> <span class="n">epoch_begin_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="c1"># Learning Rate Ramp Up</span>
+            <span class="k">if</span> <span class="n">epoch</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">time_step</span> <span class="o">&lt;</span> <span class="n">RAMPUP_PERIOD</span><span class="p">:</span>
+                <span class="n">set_lr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">high_plateau_lr</span> <span class="o">*</span> <span class="p">((</span><span class="n">time_step</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">RAMPUP_PERIOD</span><span class="p">)</span> <span class="o">**</span> <span class="n">RAMPUP_POWER</span><span class="p">)</span>
+
             <span class="n">inputs</span><span class="p">,</span> <span class="n">scripts</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">,</span> <span class="n">target_lengths</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 
             <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="c1"># empty feats means closing one loader</span>
+                <span class="c1"># Empty feats means closing one loader</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span> <span class="o">-=</span> <span class="mi">1</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;left train_loader: </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">)</span>
 
@@ -327,7 +336,7 @@
 
             <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
             <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">clip_grad_norm_</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">max_norm</span><span class="p">)</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">clip_grad_norm_</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">MAX_NORM</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
 
             <span class="n">time_step</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -374,14 +383,13 @@
 <span class="sd">            - **loss** (float): loss of validation</span>
 <span class="sd">            - **cer** (float): character error rate of validation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;validate() start&#39;</span><span class="p">)</span>
-
         <span class="n">total_loss</span> <span class="o">=</span> <span class="mf">0.</span>
         <span class="n">total_num</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">total_dist</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">total_length</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;validate() start&#39;</span><span class="p">)</span>
 
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
             <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>

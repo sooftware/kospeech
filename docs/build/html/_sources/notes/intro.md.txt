@@ -4,8 +4,8 @@ This is project for End-to-end Speech Recognition using LAS (Listen, Attend and 
 This repository has modularized and extensible components for las models, training and inference, checkpoints etc.   
 We appreciate any kind of [feedback or contribution](https://github.com/sooftware/End-to-end-Speech-Recognition/issues).
   
-We use [KsponSpeech](http://www.aihub.or.kr/aidata/105) which contains 1,000 hours korean voice data.  
-At present our model has recorded an **86.09% CRR**, and we are working for a higher recognition rate.  
+We used [KsponSpeech](http://www.aihub.or.kr/aidata/105) corpus which containing **1000h** of Korean speech data.   
+At present our model has recorded an **86.78% CRR**, and we are working for a higher recognition rate.  
 Also our model has recorded **91.0% CRR** in [Kadi-zeroth dataset](https://github.com/goodatlas/zeroth).  
   
 ###### ( **CRR** : Character Recognition Rate ) 
@@ -14,19 +14,19 @@ Also our model has recorded **91.0% CRR** in [Kadi-zeroth dataset](https://githu
   
 ## Features  
   
-* [E2E automatic speech recognition](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html#module-e2e.las.las)
-* [Convolutional encoder](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html#module-e2e.las.listener)
-* [MaskConv & pack_padded_sequence](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html#module-e2e.las.listener)
-* [Multi-Head Attention](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html#module-e2e.las.attention)
-* [Top K Decoding (Beam Search)](https://sooftware.github.io/End-to-end-Speech-Recognition/LAS.html#module-e2e.las.topk_decoder)
-* [Provides a variety of feature extraction methods](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html)
-* [Delete silence](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html)
-* [SpecAugment](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html)
-* [Noise Injection](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html)
+* [End-to-end (E2E) automatic speech recognition](https://sooftware.github.io/End-to-end-Speech-Recognition/)
+* [Convolutional encoder](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.listener)
+* [MaskConv & pack_padded_sequence](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.listener)
+* [Multi-Head Attention](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.attention)
+* [Top K Decoding (Beam Search)](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.topk_decoder)
+* [Spectrogram Parser](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.parser)
+* [Delete silence](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.parser)
+* [SpecAugment](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.parser)
+* [NoiseAugment](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.parser)
 * [Label Smoothing](https://sooftware.github.io/End-to-end-Speech-Recognition/Loss.html)
-* [Save & load Checkpoint](https://sooftware.github.io/End-to-end-Speech-Recognition/Modules.html)
+* [Save & load Checkpoint](https://sooftware.github.io/End-to-end-Speech-Recognition/Modules.html#module-e2e.modules.checkpoint)
 * [Various options can be set using parser](https://sooftware.github.io/End-to-end-Speech-Recognition/Modules.html#module-e2e.modules.opts)
-* [Implement data loader as multi-thread for speed](https://sooftware.github.io/End-to-end-Speech-Recognition/Dataset.html)
+* [Implement data loader as multi-thread for speed](https://sooftware.github.io/End-to-end-Speech-Recognition/Data_loader.html#id1)
 * Inference with batching
 * Multi-GPU training
 * Show training states as log
@@ -57,36 +57,49 @@ Our model architeuture is as follows.
 ```python
 ListenAttendSpell(
   (listener): Listener(
-    (conv): Sequential(
-      (0): Conv2d(1, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-      (1): Hardtanh(min_val=0, max_val=20, inplace=True)
-      (2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-      (3): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-      (4): Hardtanh(min_val=0, max_val=20, inplace=True)
-      (5): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
-      (6): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-      (7): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-      (8): Hardtanh(min_val=0, max_val=20, inplace=True)
-      (9): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-      (10): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-      (11): Hardtanh(min_val=0, max_val=20, inplace=True)
-      (12): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
-    )
     (rnn): GRU(2560, 256, num_layers=5, batch_first=True, dropout=0.3, bidirectional=True)
+    (cnn): MaskCNN(
+      (sequential): Sequential(
+        (0): Conv2d(1, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (1): Hardtanh(min_val=0, max_val=20, inplace=True)
+        (2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (3): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (4): Hardtanh(min_val=0, max_val=20, inplace=True)
+        (5): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+        (6): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (7): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (8): Hardtanh(min_val=0, max_val=20, inplace=True)
+        (9): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (10): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (11): Hardtanh(min_val=0, max_val=20, inplace=True)
+        (12): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+      )
+    )
   )
   (speller): Speller(
     (rnn): GRU(512, 512, num_layers=3, batch_first=True, dropout=0.3)
-    (embedding): Embedding(2040, 512)
+    (embedding): Embedding(2038, 512)
     (input_dropout): Dropout(p=0.3, inplace=False)
-    (fc): Linear(in_features=512, out_features=2040, bias=True)
-    (attention): MultiHeadAttention(
-      (W_Q): Linear(in_features=512, out_features=512, bias=True)
-      (W_V): Linear(in_features=512, out_features=512, bias=True)
-      (fc): Linear(in_features=1024, out_features=512, bias=True)
+    (attention): MultiHybridAttention(
+      (scaled_dot): ScaledDotProductAttention()
+      (conv1d): Conv1d(1, 10, kernel_size=(3,), stride=(1,), padding=(1,))
+      (linear_q): Linear(in_features=512, out_features=512, bias=True)
+      (linear_v): Linear(in_features=512, out_features=512, bias=False)
+      (linear_u): Linear(in_features=10, out_features=64, bias=False)
+      (linear_out): Linear(in_features=1024, out_features=512, bias=True)
+      (normalize): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
     )
+    (linear_out): Linear(in_features=512, out_features=2038, bias=True)
   )
 )
 ``` 
+  
+### e2e module
+
+<img src="https://user-images.githubusercontent.com/42150335/82733873-f960bd80-9d51-11ea-83ec-658ed0f90142.png" width=800>   
+  
+Our e2e (End-to-end) module's structure is implement as above.   
+e2e module has modularized and extensible components for las models, trainer, evaluator, checkpoints, data_loader etc...  
   
 We are constantly updating the progress of the project on the [Wiki page](https://github.com/sooftware/End-to-end-Speech-Recognition/wiki).  Please check this page.  
   
@@ -120,8 +133,6 @@ python setup.py install
 Refer [here](https://github.com/sooftware/End-to-end-Speech-Recognition/wiki/Preparation-before-Training) before training. this document contains information regarding the preprocessing of [KsponSpeech](http://www.aihub.or.kr/aidata/105).   
 The above document is written in Korean.  
 We will also write a document in English as soon as possible, so please wait a little bit.  
-  
-If you already have another dataset, please modify the data set path to [definition.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/e2e/modules/definition.py) as appropriate.
 
 ### Step 2: Run `train.py`
 * Default setting  
@@ -130,14 +141,15 @@ $ ./train.sh
 ```
 * Custom setting
 ```
-python ./train.py -use_multi_gpu -init_uniform -mode 'train' -batch_size 32 -num_workers 4 \
-                  -num_epochs 20 -use_augment -augment_num 1 -max_len 151 \
+python ./train.py -dataset_path /data1/ -data_list_path ./data/data_list/filter_train_list.csv \
+                  -use_multi_gpu -init_uniform -mode train -batch_size 32 -num_workers 4 \
+                  -num_epochs 20 -spec_augment -noise_augment -max_len 151 \
                   -use_cuda -lr 3e-04 -min_lr 1e-05 -lr_patience 1/3 -valid_ratio 0.01 \
                   -label_smoothing 0.1 -save_result_every 1000 -print_every 10 -checkpoint_every 5000 \
-                  -use_bidirectional -hidden_dim 256 -dropout 0.3 -num_heads 8 -rnn_type 'gru' \
+                  -use_bidirectional -hidden_dim 256 -dropout 0.3 -num_heads 8 -rnn_type gru \
                   -listener_layer_size 5 -speller_layer_size 3 -teacher_forcing_ratio 0.99 \ 
                   -input_reverse -normalize -del_silence -sample_rate 16000 -window_size 20 -stride 10 -n_mels 80 \
-                  -feature_extract_by 'librosa' -time_mask_para 50 -freq_mask_para 12 \
+                  -feature_extract_by librosa -time_mask_para 50 -freq_mask_para 12 \
                   -time_mask_num 2 -freq_mask_num 2
 ```
   
@@ -153,9 +165,10 @@ $ ./infer.sh
 ```
 * Custom setting
 ```
-python ./infer.py -mode 'infer' -use_multi_gpu -use_cuda -batch_size 32 -num_workers 4 \
+python ./infer.py -dataset_path /data1/ -data_list_path ./data/data_list/filter_test_list.csv \
+                  -mode infer -use_multi_gpu -use_cuda -batch_size 32 -num_workers 4 \
                   -use_beam_search -k 5 -print_every 100 \
-                  -sample_rate 16000 --window_size 20 --stride 10 --n_mels 80 -feature_extract_by 'librosa' \
+                  -sample_rate 16000 --window_size 20 --stride 10 --n_mels 80 -feature_extract_by librosa \
                   -normalize -del_silence -input_reverse 
 ```
 Now you have a model which you can use to predict on new data. We do this by running beam search (or greedy search).  
@@ -191,10 +204,11 @@ We follow [PEP-8](https://www.python.org/dev/peps/pep-0008/) for code style. Esp
 [[3] 「A Simple Data Augmentation Method for Automatic Speech Recognition」  Paper](https://arxiv.org/abs/1904.08779)  
 [[4] 「An analysis of incorporating an external language model into a sequence-to-sequence model」  Paper](https://arxiv.org/abs/1712.01996)  
 [[5] 「Voice Recognition Using MFCC Algorithm」  Paper](https://ijirae.com/volumes/vol1/issue10/27.NVEC10086.pdf)        
-[[6]    IBM pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)   
-[[7]    Character RNN Language Model](https://github.com/sooftware/char-rnnlm)  
-[[8]    KsponSpeech](http://www.aihub.or.kr/aidata/105)    
-[[9]    Documentation](https://sooftware.github.io/End-to-End-Korean-Speech-Recognition/)  
+[[6] 「IBM pytorch-seq2seq」](https://github.com/IBM/pytorch-seq2seq)   
+[[7] 「SeanNaren deepspeech.pytorch」](https://github.com/SeanNaren/deepspeech.pytorch)   
+[[8] 「Character RNN Language Model」](https://github.com/sooftware/char-rnnlm)  
+[[9] 「KsponSpeech」](http://www.aihub.or.kr/aidata/105)    
+[[10] 「Documentation」](https://sooftware.github.io/End-to-End-Korean-Speech-Recognition/)  
    
 ### Citing
 ```

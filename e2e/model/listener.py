@@ -124,17 +124,14 @@ class Listener(nn.Module):
 
     def forward(self, inputs, input_lengths):
         inputs = inputs.unsqueeze(1).permute(0, 1, 3, 2)
-        cnn_output, seq_lengths = self.cnn(inputs, input_lengths)
+        conv_feat, seq_lengths = self.cnn(inputs, input_lengths)
 
-        batch_size, channel, hidden_dim, seq_len = cnn_output.size()
+        batch_size, channel, hidden_dim, seq_length = conv_feat.size()
+        conv_feat = conv_feat.view(batch_size, channel * hidden_dim, seq_length).permute(2, 0, 1).contiguous()
 
-        cnn_output = cnn_output.view(batch_size, channel * hidden_dim, seq_len)
-        cnn_output = cnn_output.transpose(1, 2).transpose(0, 1).contiguous()
-
-        inputs = nn.utils.rnn.pack_padded_sequence(cnn_output, seq_lengths)
+        inputs = nn.utils.rnn.pack_padded_sequence(conv_feat, seq_lengths)
         output, hidden = self.rnn(inputs)
         output, _ = nn.utils.rnn.pad_packed_sequence(output)
-
         output = output.transpose(0, 1)   # (batch_size, seq_len, hidden_dim)
 
         return output, hidden

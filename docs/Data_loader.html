@@ -233,7 +233,7 @@
 
 <dl class="class">
 <dt id="e2e.data_loader.data_loader.SpectrogramDataset">
-<em class="property">class </em><code class="descclassname">e2e.data_loader.data_loader.</code><code class="descname">SpectrogramDataset</code><span class="sig-paren">(</span><em>audio_paths</em>, <em>script_paths</em>, <em>sos_id</em>, <em>eos_id</em>, <em>target_dict=None</em>, <em>opt=None</em>, <em>use_augment=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/data_loader/data_loader.html#SpectrogramDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.data_loader.data_loader.SpectrogramDataset" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">e2e.data_loader.data_loader.</code><code class="descname">SpectrogramDataset</code><span class="sig-paren">(</span><em>audio_paths</em>, <em>script_paths</em>, <em>sos_id</em>, <em>eos_id</em>, <em>target_dict</em>, <em>opt</em>, <em>spec_augment</em>, <em>noise_augment</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/data_loader/data_loader.html#SpectrogramDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.data_loader.data_loader.SpectrogramDataset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dataset for spectrogram &amp; script matching</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -245,7 +245,8 @@
 <li><strong>sos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of &lt;start of sequence&gt;</li>
 <li><strong>eos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of &lt;end of sequence&gt;</li>
 <li><strong>target_dict</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – dictionary of filename and labels</li>
-<li><strong>use_augment</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – flag indication whether to use spec-augmentation or not (default: True)</li>
+<li><strong>spec_augment</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – flag indication whether to use spec-augmentation or not (default: True)</li>
+<li><strong>noise_augment</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – flag indication whether to use noise-augmentation or not (default: True)</li>
 <li><strong>opt</strong> (<em>ArgumentParser</em>) – set of arguments</li>
 </ul>
 </td>
@@ -254,8 +255,8 @@
 </table>
 <dl class="method">
 <dt id="e2e.data_loader.data_loader.SpectrogramDataset.augmentation">
-<code class="descname">augmentation</code><span class="sig-paren">(</span><em>augment_num</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/data_loader/data_loader.html#SpectrogramDataset.augmentation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.data_loader.data_loader.SpectrogramDataset.augmentation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Note flag for SpecAugment</p>
+<code class="descname">augmentation</code><span class="sig-paren">(</span><em>spec_augment</em>, <em>noise_augment</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/data_loader/data_loader.html#SpectrogramDataset.augmentation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.data_loader.data_loader.SpectrogramDataset.augmentation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Spec &amp; Noise Augmentation</p>
 </dd></dl>
 
 <dl class="method">
@@ -267,7 +268,7 @@
 <dl class="method">
 <dt id="e2e.data_loader.data_loader.SpectrogramDataset.parse_script">
 <code class="descname">parse_script</code><span class="sig-paren">(</span><em>script_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/data_loader/data_loader.html#SpectrogramDataset.parse_script"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.data_loader.data_loader.SpectrogramDataset.parse_script" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parsing transcript</p>
+<dd><p>Parses scripts &#64;Override</p>
 </dd></dl>
 
 <dl class="method">
@@ -335,7 +336,7 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>opt</strong> (<a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser" title="(in Python v3.8)"><em>argparse.ArgumentParser</em></a>) – set of options</li>
+<li><strong>opt</strong> (<em>ArgumentParser</em>) – set of options</li>
 <li><strong>audio_paths</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – set of audio path</li>
 <li><strong>script_paths</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – set of script path</li>
 </ul>

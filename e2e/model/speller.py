@@ -85,6 +85,7 @@ class Speller(nn.Module):
         if use_teacher_forcing:
             inputs = inputs[inputs != self.eos_id].view(batch_size, -1)
 
+            # Call forward_step() at every timestep because MultiHybridAttention requires previous alignment.
             for di in range(inputs.size(1)):
                 input_var = inputs[:, di].unsqueeze(1)
                 predicted_softmax, hidden, align = self.forward_step(input_var, hidden, listener_outputs, align)

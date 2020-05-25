@@ -207,6 +207,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">=</span> <span class="n">k</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sos_id</span> <span class="o">=</span> <span class="n">decoder</span><span class="o">.</span><span class="n">sos_id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">eos_id</span> <span class="o">=</span> <span class="n">decoder</span><span class="o">.</span><span class="n">eos_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_heads</span> <span class="o">=</span> <span class="n">decoder</span><span class="o">.</span><span class="n">num_heads</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">decoder</span><span class="o">.</span><span class="n">device</span>
 
 <div class="viewcode-block" id="TopKDecoder.forward"><a class="viewcode-back" href="../../../Model.html#e2e.model.topk_decoder.TopKDecoder.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_var</span><span class="p">,</span> <span class="n">encoder_outputs</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
@@ -215,6 +216,7 @@
 
         <span class="n">hidden</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">inflated_encoder_outputs</span> <span class="o">=</span> <span class="n">_inflate</span><span class="p">(</span><span class="n">encoder_outputs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">align</span> <span class="o">=</span> <span class="n">encoder_outputs</span><span class="o">.</span><span class="n">new_zeros</span><span class="p">(</span><span class="n">batch_size</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_heads</span><span class="p">,</span> <span class="n">encoder_outputs</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
 
         <span class="c1"># Initialize the scores; for the first step,</span>
         <span class="c1"># ignore the inflated copies to avoid duplicate entries in the top k</span>
@@ -238,7 +240,7 @@
 
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_length</span><span class="p">):</span>
             <span class="c1"># Run the RNN one step forward</span>
-            <span class="n">predicted_softmax</span><span class="p">,</span> <span class="n">hidden</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_step</span><span class="p">(</span><span class="n">input_var</span><span class="p">,</span> <span class="n">hidden</span><span class="p">,</span> <span class="n">inflated_encoder_outputs</span><span class="p">)</span>
+            <span class="n">predicted_softmax</span><span class="p">,</span> <span class="n">hidden</span><span class="p">,</span> <span class="n">align</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_step</span><span class="p">(</span><span class="n">input_var</span><span class="p">,</span> <span class="n">hidden</span><span class="p">,</span> <span class="n">inflated_encoder_outputs</span><span class="p">,</span> <span class="n">align</span><span class="p">)</span>
 
             <span class="n">stored_outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">predicted_softmax</span><span class="p">)</span>
 
