@@ -67,12 +67,12 @@ class MultiHybridAttention(nn.Module):
         self.dim = int(in_features / num_heads)
         self.scaled_dot = ScaledDotProductAttention(self.dim)
         self.conv1d = nn.Conv1d(in_channels=1, out_channels=k, kernel_size=3, padding=1)
-        self.q_proj = nn.Linear(in_features, self.dim * num_heads, bias=True)
-        self.v_proj = nn.Linear(in_features, self.dim * num_heads, bias=False)
-        self.u_proj = nn.Linear(k, self.dim, bias=False)
+        self.linear_q = nn.Linear(in_features, self.dim * num_heads, bias=True)
+        self.linear_v = nn.Linear(in_features, self.dim * num_heads, bias=False)
+        self.linear_u = nn.Linear(k, self.dim, bias=False)
         self.bias = nn.Parameter(torch.rand(self.dim * num_heads).uniform_(-0.1, 0.1))
-        self.fc = nn.Linear(in_features << 1, in_features, bias=True)
-        self.out_proj = nn.LayerNorm(in_features)
+        self.linear_out = nn.Linear(in_features << 1, in_features, bias=True)
+        self.normalize = nn.LayerNorm(in_features)
 
     def forward(self, query, value, prev_align):
         batch_size, q_len, v_len = value.size(0), query.size(1), value.size(1)
@@ -80,8 +80,8 @@ class MultiHybridAttention(nn.Module):
 
         loc_energy = self.get_loc_energy(prev_align, batch_size, v_len)  # get location energy
 
-        query = self.q_proj(query).view(batch_size, q_len, self.num_heads * self.dim)
-        value = self.v_proj(value).view(batch_size, v_len, self.num_heads * self.dim) + loc_energy + self.bias
+        query = self.linear_q(query).view(batch_size, q_len, self.num_heads * self.dim)
+        value = self.linear_v(value).view(batch_size, v_len, self.num_heads * self.dim) + loc_energy + self.bias
 
         query = query.view(batch_size, q_len, self.num_heads, self.dim).permute(2, 0, 1, 3)
         value = value.view(batch_size, v_len, self.num_heads, self.dim).permute(2, 0, 1, 3)
@@ -94,7 +94,7 @@ class MultiHybridAttention(nn.Module):
         context = context.contiguous().view(batch_size, q_len, -1)
 
         combined = torch.cat([context, residual], dim=2)
-        output = self.out_proj(combined.view(-1, self.in_features << 1))
+        output = self.linear_out(combined.view(-1, self.in_features << 1))
         output = self.normalize(output).view(batch_size, -1, self.in_features)
 
         return output, align.squeeze()
@@ -103,7 +103,7 @@ class MultiHybridAttention(nn.Module):
         conv_feat = self.conv1d(prev_align.unsqueeze(1))
         conv_feat = conv_feat.view(batch_size, self.num_heads, -1, v_len).permute(0, 1, 3, 2)
 
-        loc_energy = self.u_proj(conv_feat).view(batch_size, self.num_heads, v_len, self.dim).permute(0, 2, 1, 3)
+        loc_energy = self.linear_u(conv_feat).view(batch_size, self.num_heads, v_len, self.dim).permute(0, 2, 1, 3)
         loc_energy = loc_energy.contiguous().view(batch_size, v_len, self.num_heads * self.dim)
 
         return loc_energy

@@ -100,6 +100,9 @@ class Listener(nn.Module):
 
     def __init__(self, input_size, hidden_dim, device, dropout_p=0.5, num_layers=1, bidirectional=True, rnn_type='gru'):
         super(Listener, self).__init__()
+        input_size = (input_size - 1) << 5 if input_size % 2 else input_size << 5
+        rnn_cell = self.supported_rnns[rnn_type]
+        self.rnn = rnn_cell(input_size, hidden_dim, num_layers, True, True, dropout_p, bidirectional)
         self.cnn = MaskCNN(
             nn.Sequential(
                 nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1, bias=False),
@@ -117,9 +120,6 @@ class Listener(nn.Module):
                 nn.MaxPool2d(2, stride=2)
             )
         )
-        input_size = (input_size - 1) << 5 if input_size % 2 else input_size << 5
-        rnn_cell = self.supported_rnns[rnn_type]
-        self.rnn = rnn_cell(input_size, hidden_dim, num_layers, True, True, dropout_p, bidirectional)
         self.device = device
 
     def forward(self, inputs, input_lengths):

@@ -44,17 +44,17 @@ class Speller(nn.Module):
         super(Speller, self).__init__()
         self.num_classes = num_classes
         rnn_cell = self.supported_rnns[rnn_type]
-        self.num_heads = num_heads
         self.rnn = rnn_cell(hidden_dim, hidden_dim, num_layers, batch_first=True, dropout=dropout_p).to(device)
+        self.num_heads = num_heads
         self.max_length = max_length
         self.hidden_dim = hidden_dim
-        self.embedding = nn.Embedding(num_classes, self.hidden_dim)
-        self.input_dropout = nn.Dropout(dropout_p)
         self.eos_id = eos_id
         self.sos_id = sos_id
         self.device = device
+        self.embedding = nn.Embedding(num_classes, hidden_dim)
+        self.input_dropout = nn.Dropout(dropout_p)
         self.attention = MultiHybridAttention(hidden_dim, num_heads, k=10)
-        self.out_proj = nn.Linear(self.hidden_dim, num_classes)
+        self.linear_out = nn.Linear(self.hidden_dim, num_classes)
 
     def forward_step(self, input_var, hidden, listener_outputs, align):
         batch_size = input_var.size(0)
@@ -69,7 +69,7 @@ class Speller(nn.Module):
         output, hidden = self.rnn(embedded, hidden)
         context, align = self.attention(output, listener_outputs, align)
 
-        predicted_softmax = F.log_softmax(self.out_proj(context.contiguous().view(-1, self.hidden_dim)), dim=1)
+        predicted_softmax = F.log_softmax(self.linear_out(context.contiguous().view(-1, self.hidden_dim)), dim=1)
         predicted_softmax = predicted_softmax.view(batch_size, output_lengths, -1)
 
         return predicted_softmax, hidden, align
@@ -80,7 +80,7 @@ class Speller(nn.Module):
 
         inputs, batch_size, max_length = self.validate_args(inputs, listener_outputs, teacher_forcing_ratio)
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
-        align = torch.zeros(batch_size * self.num_heads, listener_outputs.size(1)).to(self.device)
+        align = listener_outputs.new_zeros(batch_size * self.num_heads, listener_outputs.size(1))
 
         if use_teacher_forcing:
             inputs = inputs[inputs != self.eos_id].view(batch_size, -1)
