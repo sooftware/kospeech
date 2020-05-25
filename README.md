@@ -9,7 +9,7 @@
 ## Intro
 
 `End-to-end Speech Recognition` is project for E2E automatic speech recognition implemented in [PyTorch](http://pytorch.org).   
-`e2e` has modularized and extensible components for las models, training and inference, checkpoints etc.   
+`e2e` has modularized and extensible components for las models, training and inference, checkpoints, parsing etc.   
 We appreciate any kind of [feedback or contribution](https://github.com/sooftware/End-to-end-Speech-Recognition/issues).
   
 We used `KsponSpeech` corpus which containing **1000h** of Korean speech data.   
