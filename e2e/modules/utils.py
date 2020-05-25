@@ -4,6 +4,18 @@ import Levenshtein as Lev
 from e2e.modules.global_var import logger
 
 
+def set_lr(optimizer, lr):
+    """ set learning rate """
+    for g in optimizer.param_groups:
+        g['lr'] = lr
+
+
+def get_lr(optimizer):
+    """ get learning rate """
+    for g in optimizer.param_groups:
+        return g['lr']
+
+
 def check_envirionment(use_cuda):
     """
     Check execution envirionment.

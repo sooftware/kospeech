@@ -4,7 +4,7 @@ import queue
 import pandas as pd
 from e2e.data_loader.data_loader import MultiDataLoader, AudioDataLoader
 from e2e.modules.checkpoint import Checkpoint
-from e2e.modules.utils import get_distance
+from e2e.modules.utils import get_distance, set_lr
 from e2e.modules.global_var import EOS_token, logger, id2char
 
 
@@ -31,7 +31,7 @@ class SupervisedTrainer(object):
     VALID_RESULT_PATH = "./data/train_result/eval_result.csv"
     TRAIN_STEP_RESULT_PATH = "./data/train_result/train_step_result.csv"
 
-    def __init__(self, optimizer, lr_scheduler, criterion, trainset_list, validset,
+    def __init__(self, optimizer, lr_scheduler, criterion, trainset_list, validset, high_plateau_lr,
                  num_workers, device, print_every, save_result_every, checkpoint_every):
         self.num_workers = num_workers
         self.optimizer = optimizer
@@ -39,6 +39,7 @@ class SupervisedTrainer(object):
         self.criterion = criterion
         self.trainset_list = trainset_list
         self.validset = validset
+        self.high_plateau_lr = high_plateau_lr
         self.print_every = print_every
         self.save_result_every = save_result_every
         self.checkpoint_every = checkpoint_every
@@ -125,16 +126,23 @@ class SupervisedTrainer(object):
         total_dist = 0
         total_length = 0
         time_step = 0
-        max_norm = 400
+
+        MAX_NORM = 400
+        RAMPUP_POWER = 3
+        RAMPUP_PERIOD = 1000
 
         model.train()
         begin_time = epoch_begin_time = time.time()
 
         while True:
+            # Learning Rate Ramp Up
+            if epoch == 0 and time_step < RAMPUP_PERIOD:
+                set_lr(self.optimizer, lr=self.high_plateau_lr * ((time_step + 1) / RAMPUP_PERIOD) ** RAMPUP_POWER)
+
             inputs, scripts, input_lengths, target_lengths = queue.get()
 
             if inputs.shape[0] == 0:
-                # empty feats means closing one loader
+                # Empty feats means closing one loader
                 self.num_workers -= 1
                 logger.debug('left train_loader: %d' % self.num_workers)
 
@@ -164,7 +172,7 @@ class SupervisedTrainer(object):
 
             self.optimizer.zero_grad()
             loss.backward()
-            torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm)
+            torch.nn.utils.clip_grad_norm_(model.parameters(), MAX_NORM)
             self.optimizer.step()
 
             time_step += 1

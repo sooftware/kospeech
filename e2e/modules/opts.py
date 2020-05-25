@@ -73,11 +73,11 @@ def train_opts(parser):
     group.add_argument('--num_epochs', '-num_epochs',
                        type=int, default=20,
                        help='number of epochs in training (default: 20)')
-    group.add_argument('--lr', '-lr',
+    group.add_argument('--high_plateau_lr', '-high_plateau_lr',
                        type=float, default=3e-04,
                        help='initial learning rate (default: 3e-04)')
     group.add_argument('--min_lr', '-min_lr',
-                       type=float, default=3e-05,
+                       type=float, default=1e-05,
                        help='minimum learning rate (default: 3e-05)')
     group.add_argument('--lr_factor', '-lr_factor',
                        type=float, default=1 / 3,
@@ -230,7 +230,7 @@ def print_train_opts(opt):
     logger.info('--batch_size: %s' % str(opt.batch_size))
     logger.info('--num_workers: %s' % str(opt.num_workers))
     logger.info('--num_epochs: %s' % str(opt.num_epochs))
-    logger.info('--lr: %s' % str(opt.lr))
+    logger.info('--high_plateau_lr: %s' % str(opt.lr))
     logger.info('--min_lr: %s' % str(opt.min_lr))
     logger.info('--lr_factor: %s' % str(opt.lr_factor))
     logger.info('--lr_patience: %s' % str(opt.lr_patience))

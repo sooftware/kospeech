@@ -9,7 +9,6 @@
 }
 """
 import argparse
-import inspect
 import random
 import torch
 import warnings
@@ -37,10 +36,10 @@ def train(opt):
     model = build_model(opt, device)
 
     if opt.use_multi_gpu:
-        optimizer = optim.Adam(model.module.parameters(), lr=opt.lr)
+        optimizer = optim.Adam(model.module.parameters(), lr=opt.high_plateau_lr)
 
     else:
-        optimizer = optim.Adam(model.parameters(), lr=opt.lr)
+        optimizer = optim.Adam(model.parameters(), lr=opt.high_plateau_lr)
 
     lr_scheduler = ReduceLROnPlateau(
         optimizer=optimizer,
@@ -63,6 +62,7 @@ def train(opt):
         trainset_list=trainset_list,
         validset=validset,
         num_workers=opt.num_workers,
+        high_plateau_lr=opt.high_plateau_lr,
         device=device,
         print_every=opt.print_every,
         save_result_every=opt.save_result_every,
