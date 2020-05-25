@@ -8,13 +8,13 @@
   
 ## Intro
 
-This is project for End-to-end Speech Recognition using LAS (Listen, Attend and Spell) models implemented in [PyTorch](http://pytorch.org).   
-This repository has modularized and extensible components for las models, training and inference, checkpoints etc.   
+`End-to-end Speech Recognition` is project for E2E automatic speech recognition implemented in [PyTorch](http://pytorch.org).   
+`e2e` has modularized and extensible components for las models, training and inference, checkpoints etc.   
 We appreciate any kind of [feedback or contribution](https://github.com/sooftware/End-to-end-Speech-Recognition/issues).
   
-We used [KsponSpeech](http://www.aihub.or.kr/aidata/105) corpus which containing **1000h** of Korean speech data.   
+We used `KsponSpeech` corpus which containing **1000h** of Korean speech data.   
 At present our model has recorded an **86.78% CRR**, and we are working for a higher recognition rate.  
-Also our model has recorded **91.0% CRR** in [Kadi-zeroth dataset](https://github.com/goodatlas/zeroth).  
+Also our model has recorded **91.0% CRR** in `Kadi-zeroth dataset`    
   
 ###### ( **CRR** : Character Recognition Rate ) 
   
@@ -106,8 +106,8 @@ ListenAttendSpell(
 
 <img src="https://user-images.githubusercontent.com/42150335/82842192-93239880-9f13-11ea-80d6-ed1358218d5e.png" width=800>   
   
-Our e2e (End-to-end) module's structure is implement as above.   
-e2e module has modularized and extensible components for las models, trainer, evaluator, checkpoints, data_loader etc...  
+`e2e` (End-to-end) module's structure is implement as above.   
+`e2e` module has modularized and extensible components for las models, trainer, evaluator, checkpoints, data_loader etc...  
   
 We are constantly updating the progress of the project on the [Wiki page](https://github.com/sooftware/End-to-end-Speech-Recognition/wiki).  Please check this page.  
   
@@ -138,7 +138,7 @@ python setup.py install
 ## Get Started
 ### Step 1: Preparation dataset
 
-Refer [here](https://github.com/sooftware/End-to-end-Speech-Recognition/wiki/Preparation-before-Training) before training. this document contains information regarding the preprocessing of [KsponSpeech](http://www.aihub.or.kr/aidata/105).   
+Refer [here](https://github.com/sooftware/End-to-end-Speech-Recognition/wiki/Preparation-before-Training) before training. this document contains information regarding the preprocessing of `KsponSpeech`
 The above document is written in Korean.  
 We will also write a document in English as soon as possible, so please wait a little bit.  
 
