@@ -53,7 +53,7 @@ class Speller(nn.Module):
         self.eos_id = eos_id
         self.sos_id = sos_id
         self.device = device
-        self.attention = MultiLocAwareAttention(hidden_dim, num_heads, k=10, smoothing=True)
+        self.attention = MultiLocAwareAttention(hidden_dim, num_heads, k=10)
         self.fc = nn.Linear(self.hidden_dim, num_classes)
 
     def forward_step(self, input_var, hidden, listener_outputs, align):
