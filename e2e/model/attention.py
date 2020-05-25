@@ -93,8 +93,7 @@ class MultiHybridAttention(nn.Module):
         context = context.view(self.num_heads, batch_size, q_len, self.dim).permute(1, 2, 0, 3)
         context = context.contiguous().view(batch_size, q_len, -1)
 
-        combined = torch.cat([context, residual], dim=2)
-        output = self.linear_out(combined.view(-1, self.in_features << 1))
+        output = self.linear_out(torch.cat([context, residual], dim=2).view(-1, self.in_features << 1))
         output = self.normalize(output).view(batch_size, -1, self.in_features)
 
         return output, align.squeeze()
