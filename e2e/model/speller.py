@@ -2,10 +2,11 @@ import random
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from e2e.model.baseRNN import BaseRNN
 from e2e.model.attention import MultiHybridAttention
 
 
-class Speller(nn.Module):
+class Speller(BaseRNN):
     r"""
     Converts higher level features (from listener) into output utterances
     by specifying a probability distribution over sequences of characters.
@@ -33,24 +34,14 @@ class Speller(nn.Module):
     Returns: decoder_outputs
         - **decoder_outputs**: list of tensors containing the outputs of the decoding function.
     """
-    supported_rnns = {
-        'lstm': nn.LSTM,
-        'gru': nn.GRU,
-        'rnn': nn.RNN
-    }
-
     def __init__(self, num_classes, max_length, hidden_dim, sos_id, eos_id,
                  num_heads, num_layers=1, rnn_type='gru', dropout_p=0.5, device=None):
-        super(Speller, self).__init__()
+        super(Speller, self).__init__(hidden_dim, hidden_dim, num_layers, rnn_type, dropout_p, False, device)
         self.num_classes = num_classes
-        rnn_cell = self.supported_rnns[rnn_type]
-        self.rnn = rnn_cell(hidden_dim, hidden_dim, num_layers, batch_first=True, dropout=dropout_p).to(device)
         self.num_heads = num_heads
         self.max_length = max_length
-        self.hidden_dim = hidden_dim
         self.eos_id = eos_id
         self.sos_id = sos_id
-        self.device = device
         self.embedding = nn.Embedding(num_classes, hidden_dim)
         self.input_dropout = nn.Dropout(dropout_p)
         self.attention = MultiHybridAttention(hidden_dim, num_heads, k=10)

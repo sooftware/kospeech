@@ -209,7 +209,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">checkpoint_every</span> <span class="o">=</span> <span class="n">checkpoint_every</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span>
 
-<div class="viewcode-block" id="SupervisedTrainer.train"><a class="viewcode-back" href="../../../Trainer.html#e2e.trainer.supervised_trainer.SupervisedTrainer.train">[docs]</a>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">epoch_time_step</span><span class="p">,</span> <span class="n">num_epochs</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span> <span class="n">resume</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="SupervisedTrainer.train"><a class="viewcode-back" href="../../../Trainer.html#e2e.trainer.supervised_trainer.SupervisedTrainer.train">[docs]</a>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">epoch_time_step</span><span class="p">,</span> <span class="n">num_epochs</span><span class="p">,</span>
+              <span class="n">max_norm</span><span class="p">,</span> <span class="n">rampup_period</span><span class="p">,</span> <span class="n">rampup_power</span><span class="p">,</span>
+              <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span> <span class="n">resume</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run training for a given model.</span>
 
@@ -218,6 +220,9 @@
 <span class="sd">            batch_size (int): batch size for experiment</span>
 <span class="sd">            epoch_time_step (int): number of time step for training</span>
 <span class="sd">            num_epochs (int): number of epochs for training</span>
+<span class="sd">            max_norm (int): If the norm of the gradient vector exceeds this, remormalize it to have the norm equal to</span>
+<span class="sd">            rampup_period (int): Period of learning rate rampup</span>
+<span class="sd">            rampup_power (int): Power of rampup. two means linear, three means exponential.</span>
 <span class="sd">            teacher_forcing_ratio (float): teaching forcing ratio (default 0.99)</span>
 <span class="sd">            resume(bool, optional): resume training with the latest checkpoint, (default False)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -245,7 +250,8 @@
             <span class="n">train_loader</span> <span class="o">=</span> <span class="n">MultiDataLoader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trainset_list</span><span class="p">,</span> <span class="n">train_queue</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">)</span>
             <span class="n">train_loader</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
             <span class="n">train_loss</span><span class="p">,</span> <span class="n">train_cer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_epoches</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">epoch_time_step</span><span class="p">,</span> <span class="n">train_begin_time</span><span class="p">,</span>
-                                                       <span class="n">train_queue</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="p">)</span>
+                                                       <span class="n">train_queue</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="p">,</span>
+                                                       <span class="n">max_norm</span><span class="p">,</span> <span class="n">rampup_period</span><span class="p">,</span> <span class="n">rampup_power</span><span class="p">)</span>
             <span class="n">train_loader</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
             <span class="n">Checkpoint</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lr_scheduler</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">,</span>
@@ -269,7 +275,8 @@
 
         <span class="k">return</span> <span class="n">model</span></div>
 
-<div class="viewcode-block" id="SupervisedTrainer.train_epoches"><a class="viewcode-back" href="../../../Trainer.html#e2e.trainer.supervised_trainer.SupervisedTrainer.train_epoches">[docs]</a>    <span class="k">def</span> <span class="nf">train_epoches</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">epoch_time_step</span><span class="p">,</span> <span class="n">train_begin_time</span><span class="p">,</span> <span class="n">queue</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="p">):</span>
+<div class="viewcode-block" id="SupervisedTrainer.train_epoches"><a class="viewcode-back" href="../../../Trainer.html#e2e.trainer.supervised_trainer.SupervisedTrainer.train_epoches">[docs]</a>    <span class="k">def</span> <span class="nf">train_epoches</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">epoch_time_step</span><span class="p">,</span> <span class="n">train_begin_time</span><span class="p">,</span> <span class="n">queue</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="p">,</span>
+                      <span class="n">max_norm</span><span class="p">,</span> <span class="n">rampup_period</span><span class="p">,</span> <span class="n">rampup_power</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run training one epoch</span>
 
@@ -279,7 +286,10 @@
 <span class="sd">            epoch_time_step (int): total time step in one epoch</span>
 <span class="sd">            train_begin_time (int): time of train begin</span>
 <span class="sd">            queue (queue.Queue): training queue, containing input, targets, input_lengths, target_lengths</span>
-<span class="sd">            teacher_forcing_ratio (float):</span>
+<span class="sd">            teacher_forcing_ratio (float): teaching forcing ratio (default 0.99)</span>
+<span class="sd">            max_norm (int): If the norm of the gradient vector exceeds this, remormalize it to have the norm equal to</span>
+<span class="sd">            rampup_period (int): Period of learning rate rampup</span>
+<span class="sd">            rampup_power (int): Power of rampup. two means linear, three means exponential.</span>
 
 <span class="sd">        Returns: loss, cer</span>
 <span class="sd">            - **loss** (float): loss of current epoch</span>
@@ -291,17 +301,13 @@
         <span class="n">total_length</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">time_step</span> <span class="o">=</span> <span class="mi">0</span>
 
-        <span class="n">MAX_NORM</span> <span class="o">=</span> <span class="mi">400</span>
-        <span class="n">RAMPUP_POWER</span> <span class="o">=</span> <span class="mi">3</span>
-        <span class="n">RAMPUP_PERIOD</span> <span class="o">=</span> <span class="mi">1000</span>
-
         <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
         <span class="n">begin_time</span> <span class="o">=</span> <span class="n">epoch_begin_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="c1"># Learning Rate Ramp Up</span>
-            <span class="k">if</span> <span class="n">epoch</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">time_step</span> <span class="o">&lt;</span> <span class="n">RAMPUP_PERIOD</span><span class="p">:</span>
-                <span class="n">set_lr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">high_plateau_lr</span> <span class="o">*</span> <span class="p">((</span><span class="n">time_step</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">RAMPUP_PERIOD</span><span class="p">)</span> <span class="o">**</span> <span class="n">RAMPUP_POWER</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">epoch</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">time_step</span> <span class="o">&lt;</span> <span class="n">rampup_period</span><span class="p">:</span>
+                <span class="n">set_lr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">high_plateau_lr</span> <span class="o">*</span> <span class="p">((</span><span class="n">time_step</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">rampup_period</span><span class="p">)</span> <span class="o">**</span> <span class="n">rampup_power</span><span class="p">)</span>
 
             <span class="n">inputs</span><span class="p">,</span> <span class="n">scripts</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">,</span> <span class="n">target_lengths</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 
@@ -336,7 +342,7 @@
 
             <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
             <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">clip_grad_norm_</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">MAX_NORM</span><span class="p">)</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">clip_grad_norm_</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">max_norm</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
 
             <span class="n">time_step</span> <span class="o">+=</span> <span class="mi">1</span>

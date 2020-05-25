@@ -73,6 +73,9 @@ def train(opt):
         batch_size=opt.batch_size,
         epoch_time_step=epoch_time_step,
         num_epochs=opt.num_epochs,
+        max_norm=opt.max_norm,
+        rampup_period=opt.rampup_period,
+        rampup_power=opt.rampup_power,
         teacher_forcing_ratio=opt.teacher_forcing_ratio,
         resume=opt.resume
     )

@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+from e2e.model.baseRNN import BaseRNN
 from e2e.model.las import ListenAttendSpell
 from e2e.model.listener import Listener
 from e2e.model.speller import Speller
@@ -61,7 +62,7 @@ def build_listener(input_size, hidden_dim, dropout_p, num_layers, bidirectional,
     assert input_size > 0, "input_size should be greater than 0"
     assert hidden_dim > 0, "hidden_dim should be greater than 0"
     assert num_layers > 0, "num_layers should be greater than 0"
-    assert rnn_type.lower() in Listener.supported_rnns.keys(), "Unsupported RNN Cell: {0}".format(rnn_type)
+    assert rnn_type.lower() in BaseRNN.supported_rnns.keys(), "Unsupported RNN Cell: {0}".format(rnn_type)
 
     return Listener(input_size, hidden_dim, device, dropout_p, num_layers, bidirectional, rnn_type)
 
@@ -83,7 +84,7 @@ def build_speller(num_classes, max_len, hidden_dim, sos_id, eos_id, num_layers, 
     assert num_layers > 0, "num_layers should be greater than 0"
     assert max_len > 0, "max_len should be greater than 0"
     assert num_classes > 0, "num_classes should be greater than 0"
-    assert rnn_type.lower() in Speller.supported_rnns.keys(), "Unsupported RNN Cell: {0}".format(rnn_type)
+    assert rnn_type.lower() in BaseRNN.supported_rnns.keys(), "Unsupported RNN Cell: {0}".format(rnn_type)
     assert device is not None, "device is None"
 
     return Speller(num_classes, max_len, hidden_dim, sos_id, eos_id, num_heads, num_layers, rnn_type, dropout_p, device)

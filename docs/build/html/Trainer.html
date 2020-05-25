@@ -192,7 +192,7 @@
 </table>
 <dl class="method">
 <dt id="e2e.trainer.supervised_trainer.SupervisedTrainer.train">
-<code class="descname">train</code><span class="sig-paren">(</span><em>model</em>, <em>batch_size</em>, <em>epoch_time_step</em>, <em>num_epochs</em>, <em>teacher_forcing_ratio=0.99</em>, <em>resume=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/trainer/supervised_trainer.html#SupervisedTrainer.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.trainer.supervised_trainer.SupervisedTrainer.train" title="Permalink to this definition">¶</a></dt>
+<code class="descname">train</code><span class="sig-paren">(</span><em>model</em>, <em>batch_size</em>, <em>epoch_time_step</em>, <em>num_epochs</em>, <em>max_norm</em>, <em>rampup_period</em>, <em>rampup_power</em>, <em>teacher_forcing_ratio=0.99</em>, <em>resume=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/trainer/supervised_trainer.html#SupervisedTrainer.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.trainer.supervised_trainer.SupervisedTrainer.train" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run training for a given model.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -203,6 +203,9 @@
 <li><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – batch size for experiment</li>
 <li><strong>epoch_time_step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of time step for training</li>
 <li><strong>num_epochs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of epochs for training</li>
+<li><strong>max_norm</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – If the norm of the gradient vector exceeds this, remormalize it to have the norm equal to</li>
+<li><strong>rampup_period</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Period of learning rate rampup</li>
+<li><strong>rampup_power</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Power of rampup. two means linear, three means exponential.</li>
 <li><strong>teacher_forcing_ratio</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – teaching forcing ratio (default 0.99)</li>
 <li><strong>resume</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – resume training with the latest checkpoint, (default False)</li>
 </ul>
@@ -214,7 +217,7 @@
 
 <dl class="method">
 <dt id="e2e.trainer.supervised_trainer.SupervisedTrainer.train_epoches">
-<code class="descname">train_epoches</code><span class="sig-paren">(</span><em>model</em>, <em>epoch</em>, <em>epoch_time_step</em>, <em>train_begin_time</em>, <em>queue</em>, <em>teacher_forcing_ratio</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/trainer/supervised_trainer.html#SupervisedTrainer.train_epoches"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.trainer.supervised_trainer.SupervisedTrainer.train_epoches" title="Permalink to this definition">¶</a></dt>
+<code class="descname">train_epoches</code><span class="sig-paren">(</span><em>model</em>, <em>epoch</em>, <em>epoch_time_step</em>, <em>train_begin_time</em>, <em>queue</em>, <em>teacher_forcing_ratio</em>, <em>max_norm</em>, <em>rampup_period</em>, <em>rampup_power</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/trainer/supervised_trainer.html#SupervisedTrainer.train_epoches"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.trainer.supervised_trainer.SupervisedTrainer.train_epoches" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run training one epoch</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -226,7 +229,10 @@
 <li><strong>epoch_time_step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – total time step in one epoch</li>
 <li><strong>train_begin_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – time of train begin</li>
 <li><strong>queue</strong> (<a class="reference external" href="https://docs.python.org/3/library/queue.html#queue.Queue" title="(in Python v3.8)"><em>queue.Queue</em></a>) – training queue, containing input, targets, input_lengths, target_lengths</li>
-<li><strong>teacher_forcing_ratio</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – </li>
+<li><strong>teacher_forcing_ratio</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – teaching forcing ratio (default 0.99)</li>
+<li><strong>max_norm</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – If the norm of the gradient vector exceeds this, remormalize it to have the norm equal to</li>
+<li><strong>rampup_period</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Period of learning rate rampup</li>
+<li><strong>rampup_power</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Power of rampup. two means linear, three means exponential.</li>
 </ul>
 </td>
 </tr>

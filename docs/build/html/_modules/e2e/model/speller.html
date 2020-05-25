@@ -166,10 +166,11 @@
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
 <span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
+<span class="kn">from</span> <span class="nn">e2e.model.baseRNN</span> <span class="k">import</span> <span class="n">BaseRNN</span>
 <span class="kn">from</span> <span class="nn">e2e.model.attention</span> <span class="k">import</span> <span class="n">MultiHybridAttention</span>
 
 
-<div class="viewcode-block" id="Speller"><a class="viewcode-back" href="../../../Model.html#e2e.model.speller.Speller">[docs]</a><span class="k">class</span> <span class="nc">Speller</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<div class="viewcode-block" id="Speller"><a class="viewcode-back" href="../../../Model.html#e2e.model.speller.Speller">[docs]</a><span class="k">class</span> <span class="nc">Speller</span><span class="p">(</span><span class="n">BaseRNN</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts higher level features (from listener) into output utterances</span>
 <span class="sd">    by specifying a probability distribution over sequences of characters.</span>
@@ -197,24 +198,14 @@
 <span class="sd">    Returns: decoder_outputs</span>
 <span class="sd">        - **decoder_outputs**: list of tensors containing the outputs of the decoding function.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">supported_rnns</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;lstm&#39;</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">LSTM</span><span class="p">,</span>
-        <span class="s1">&#39;gru&#39;</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">GRU</span><span class="p">,</span>
-        <span class="s1">&#39;rnn&#39;</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">RNN</span>
-    <span class="p">}</span>
-
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">,</span> <span class="n">max_length</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">sos_id</span><span class="p">,</span> <span class="n">eos_id</span><span class="p">,</span>
                  <span class="n">num_heads</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">rnn_type</span><span class="o">=</span><span class="s1">&#39;gru&#39;</span><span class="p">,</span> <span class="n">dropout_p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Speller</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Speller</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">num_layers</span><span class="p">,</span> <span class="n">rnn_type</span><span class="p">,</span> <span class="n">dropout_p</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span> <span class="o">=</span> <span class="n">num_classes</span>
-        <span class="n">rnn_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">supported_rnns</span><span class="p">[</span><span class="n">rnn_type</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rnn</span> <span class="o">=</span> <span class="n">rnn_cell</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">num_layers</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="n">dropout_p</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_heads</span> <span class="o">=</span> <span class="n">num_heads</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_length</span> <span class="o">=</span> <span class="n">max_length</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span> <span class="o">=</span> <span class="n">hidden_dim</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">eos_id</span> <span class="o">=</span> <span class="n">eos_id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sos_id</span> <span class="o">=</span> <span class="n">sos_id</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">num_classes</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_dropout</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">dropout_p</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">attention</span> <span class="o">=</span> <span class="n">MultiHybridAttention</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">num_heads</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>

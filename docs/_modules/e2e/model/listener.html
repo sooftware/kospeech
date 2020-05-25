@@ -164,80 +164,11 @@
   <h1>Source code for e2e.model.listener</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">from</span> <span class="nn">e2e.model.baseRNN</span> <span class="k">import</span> <span class="n">BaseRNN</span>
+<span class="kn">from</span> <span class="nn">e2e.model.maskCNN</span> <span class="k">import</span> <span class="n">MaskCNN</span>
 
 
-<div class="viewcode-block" id="MaskCNN"><a class="viewcode-back" href="../../../Model.html#e2e.model.listener.MaskCNN">[docs]</a><span class="k">class</span> <span class="nc">MaskCNN</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Masking Convolutional Neural Network</span>
-
-<span class="sd">    Adds padding to the output of the module based on the given lengths.</span>
-<span class="sd">    This is to ensure that the results of the model do not change when batch sizes change during inference.</span>
-<span class="sd">    Input needs to be in the shape of (batch_size, channel, hidden_dim, seq_len)</span>
-
-<span class="sd">    Refer to https://github.com/SeanNaren/deepspeech.pytorch/blob/master/model.py</span>
-<span class="sd">    Copyright (c) 2017 Sean Naren</span>
-<span class="sd">    MIT License</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        sequential (torch.nn): sequential list of convolution layer</span>
-
-<span class="sd">    Inputs: inputs, seq_lengths</span>
-<span class="sd">        - **inputs** (torch.FloatTensor): The input of size BxCxHxS</span>
-<span class="sd">        - **seq_lengths** (torch.IntTensor): The actual length of each sequence in the batch</span>
-
-<span class="sd">    Returns: output, seq_lengths</span>
-<span class="sd">        - **output**: Masked output from the sequential</span>
-<span class="sd">        - **seq_lengths**: Sequence length of output from the sequential</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sequential</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">MaskCNN</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sequential</span> <span class="o">=</span> <span class="n">sequential</span>
-
-<div class="viewcode-block" id="MaskCNN.forward"><a class="viewcode-back" href="../../../Model.html#e2e.model.listener.MaskCNN.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">seq_lengths</span><span class="p">):</span>
-        <span class="n">output</span> <span class="o">=</span> <span class="kc">None</span>
-
-        <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sequential</span><span class="p">:</span>
-            <span class="n">output</span> <span class="o">=</span> <span class="n">module</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
-            <span class="n">mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">BoolTensor</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">size</span><span class="p">())</span><span class="o">.</span><span class="n">fill_</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">output</span><span class="o">.</span><span class="n">is_cuda</span><span class="p">:</span>
-                <span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
-
-            <span class="n">seq_lengths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_seq_lengths</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">seq_lengths</span><span class="p">)</span>
-
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">length</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">seq_lengths</span><span class="p">):</span>
-                <span class="n">length</span> <span class="o">=</span> <span class="n">length</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
-
-                <span class="k">if</span> <span class="p">(</span><span class="n">mask</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="n">length</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">mask</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">narrow</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">length</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="n">mask</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="n">length</span><span class="p">)</span><span class="o">.</span><span class="n">fill_</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-
-            <span class="n">output</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">masked_fill</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-            <span class="n">inputs</span> <span class="o">=</span> <span class="n">output</span>
-
-        <span class="k">return</span> <span class="n">output</span><span class="p">,</span> <span class="n">seq_lengths</span></div>
-
-<div class="viewcode-block" id="MaskCNN.get_seq_lengths"><a class="viewcode-back" href="../../../Model.html#e2e.model.listener.MaskCNN.get_seq_lengths">[docs]</a>    <span class="k">def</span> <span class="nf">get_seq_lengths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module</span><span class="p">,</span> <span class="n">seq_lengths</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Calculate convolutional neural network receptive formula</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            module (torch.nn.Module): module of CNN</span>
-<span class="sd">            seq_lengths (torch.IntTensor): The actual length of each sequence in the batch</span>
-
-<span class="sd">        Returns: seq_lengths</span>
-<span class="sd">            - **seq_lengths**: Sequence length of output from the module</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">):</span>
-            <span class="n">numerator</span> <span class="o">=</span> <span class="n">seq_lengths</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">module</span><span class="o">.</span><span class="n">padding</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">module</span><span class="o">.</span><span class="n">dilation</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">kernel_size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
-            <span class="n">seq_lengths</span> <span class="o">=</span> <span class="n">numerator</span> <span class="o">/</span> <span class="n">module</span><span class="o">.</span><span class="n">stride</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
-
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">MaxPool2d</span><span class="p">):</span>
-            <span class="n">seq_lengths</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
-
-        <span class="k">return</span> <span class="n">seq_lengths</span><span class="o">.</span><span class="n">int</span><span class="p">()</span></div></div>
-
-
-<div class="viewcode-block" id="Listener"><a class="viewcode-back" href="../../../Model.html#e2e.model.listener.Listener">[docs]</a><span class="k">class</span> <span class="nc">Listener</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<div class="viewcode-block" id="Listener"><a class="viewcode-back" href="../../../Model.html#e2e.model.listener.Listener">[docs]</a><span class="k">class</span> <span class="nc">Listener</span><span class="p">(</span><span class="n">BaseRNN</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Converts low level speech signals into higher level features</span>
 
 <span class="sd">    Args:</span>
@@ -256,17 +187,9 @@
 <span class="sd">    Returns: output</span>
 <span class="sd">        - **output**: tensor containing the encoded features of the input sequence</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">supported_rnns</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;lstm&#39;</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">LSTM</span><span class="p">,</span>
-        <span class="s1">&#39;gru&#39;</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">GRU</span><span class="p">,</span>
-        <span class="s1">&#39;rnn&#39;</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">RNN</span>
-    <span class="p">}</span>
-
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_size</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">dropout_p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rnn_type</span><span class="o">=</span><span class="s1">&#39;gru&#39;</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Listener</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="n">input_size</span> <span class="o">=</span> <span class="p">(</span><span class="n">input_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">5</span> <span class="k">if</span> <span class="n">input_size</span> <span class="o">%</span> <span class="mi">2</span> <span class="k">else</span> <span class="n">input_size</span> <span class="o">&lt;&lt;</span> <span class="mi">5</span>
-        <span class="n">rnn_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">supported_rnns</span><span class="p">[</span><span class="n">rnn_type</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rnn</span> <span class="o">=</span> <span class="n">rnn_cell</span><span class="p">(</span><span class="n">input_size</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">num_layers</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">dropout_p</span><span class="p">,</span> <span class="n">bidirectional</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Listener</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">input_size</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">num_layers</span><span class="p">,</span> <span class="n">rnn_type</span><span class="p">,</span> <span class="n">dropout_p</span><span class="p">,</span> <span class="n">bidirectional</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cnn</span> <span class="o">=</span> <span class="n">MaskCNN</span><span class="p">(</span>
             <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
                 <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
@@ -284,7 +207,6 @@
                 <span class="n">nn</span><span class="o">.</span><span class="n">MaxPool2d</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
             <span class="p">)</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span>
 
 <div class="viewcode-block" id="Listener.forward"><a class="viewcode-back" href="../../../Model.html#e2e.model.listener.Listener.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">permute</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>

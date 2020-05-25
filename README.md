@@ -149,7 +149,7 @@ $ ./train.sh
 ```
 * Custom setting
 ```
-python ./train.py -dataset_path /data1/ -data_list_path ./data/data_list/filter_train_list.csv \
+python ./train.py -dataset_path dataset_path -data_list_path data_list_path \
                   -use_multi_gpu -init_uniform -mode train -batch_size 32 -num_workers 4 \
                   -num_epochs 20 -spec_augment -noise_augment -max_len 151 \
                   -use_cuda -lr 3e-04 -min_lr 1e-05 -lr_patience 1/3 -valid_ratio 0.01 \
@@ -158,7 +158,7 @@ python ./train.py -dataset_path /data1/ -data_list_path ./data/data_list/filter_
                   -listener_layer_size 5 -speller_layer_size 3 -teacher_forcing_ratio 0.99 \ 
                   -input_reverse -normalize -del_silence -sample_rate 16000 -window_size 20 -stride 10 -n_mels 80 \
                   -feature_extract_by librosa -time_mask_para 50 -freq_mask_para 12 \
-                  -time_mask_num 2 -freq_mask_num 2
+                  -time_mask_num 2 -freq_mask_num 2 -max_norm 400 -rampup_period 1000 -rampup_power 3
 ```
   
 You can train the model by above command.  
@@ -173,7 +173,7 @@ $ ./infer.sh
 ```
 * Custom setting
 ```
-python ./infer.py -dataset_path /data1/ -data_list_path ./data/data_list/filter_test_list.csv \
+python ./infer.py -dataset_path dataset_path -data_list_path data_list_path \
                   -mode infer -use_multi_gpu -use_cuda -batch_size 32 -num_workers 4 \
                   -use_beam_search -k 5 -print_every 100 \
                   -sample_rate 16000 --window_size 20 --stride 10 --n_mels 80 -feature_extract_by librosa \

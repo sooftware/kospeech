@@ -31,3 +31,15 @@ Attention
 
 .. automodule:: e2e.model.attention
     :members:
+
+BaseRNN
+--------------------------------------------
+
+.. automodule:: e2e.model.baseRNN
+    :members:
+
+MaskCNN
+--------------------------------------------
+
+.. automodule:: e2e.model.maskCNN
+    :members:

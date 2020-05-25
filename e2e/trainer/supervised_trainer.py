@@ -45,7 +45,9 @@ class SupervisedTrainer(object):
         self.checkpoint_every = checkpoint_every
         self.device = device
 
-    def train(self, model, batch_size, epoch_time_step, num_epochs, teacher_forcing_ratio=0.99, resume=False):
+    def train(self, model, batch_size, epoch_time_step, num_epochs,
+              max_norm, rampup_period, rampup_power,
+              teacher_forcing_ratio=0.99, resume=False):
         """
         Run training for a given model.
 
@@ -54,6 +56,9 @@ class SupervisedTrainer(object):
             batch_size (int): batch size for experiment
             epoch_time_step (int): number of time step for training
             num_epochs (int): number of epochs for training
+            max_norm (int): If the norm of the gradient vector exceeds this, remormalize it to have the norm equal to
+            rampup_period (int): Period of learning rate rampup
+            rampup_power (int): Power of rampup. two means linear, three means exponential.
             teacher_forcing_ratio (float): teaching forcing ratio (default 0.99)
             resume(bool, optional): resume training with the latest checkpoint, (default False)
         """
@@ -81,7 +86,8 @@ class SupervisedTrainer(object):
             train_loader = MultiDataLoader(self.trainset_list, train_queue, batch_size, self.num_workers)
             train_loader.start()
             train_loss, train_cer = self.train_epoches(model, epoch, epoch_time_step, train_begin_time,
-                                                       train_queue, teacher_forcing_ratio)
+                                                       train_queue, teacher_forcing_ratio,
+                                                       max_norm, rampup_period, rampup_power)
             train_loader.join()
 
             Checkpoint(model, self.optimizer, self.lr_scheduler, self.criterion,
@@ -105,7 +111,8 @@ class SupervisedTrainer(object):
 
         return model
 
-    def train_epoches(self, model, epoch, epoch_time_step, train_begin_time, queue, teacher_forcing_ratio):
+    def train_epoches(self, model, epoch, epoch_time_step, train_begin_time, queue, teacher_forcing_ratio,
+                      max_norm, rampup_period, rampup_power):
         """
         Run training one epoch
 
@@ -115,7 +122,10 @@ class SupervisedTrainer(object):
             epoch_time_step (int): total time step in one epoch
             train_begin_time (int): time of train begin
             queue (queue.Queue): training queue, containing input, targets, input_lengths, target_lengths
-            teacher_forcing_ratio (float):
+            teacher_forcing_ratio (float): teaching forcing ratio (default 0.99)
+            max_norm (int): If the norm of the gradient vector exceeds this, remormalize it to have the norm equal to
+            rampup_period (int): Period of learning rate rampup
+            rampup_power (int): Power of rampup. two means linear, three means exponential.
 
         Returns: loss, cer
             - **loss** (float): loss of current epoch
@@ -127,17 +137,13 @@ class SupervisedTrainer(object):
         total_length = 0
         time_step = 0
 
-        MAX_NORM = 400
-        RAMPUP_POWER = 3
-        RAMPUP_PERIOD = 1000
-
         model.train()
         begin_time = epoch_begin_time = time.time()
 
         while True:
             # Learning Rate Ramp Up
-            if epoch == 0 and time_step < RAMPUP_PERIOD:
-                set_lr(self.optimizer, lr=self.high_plateau_lr * ((time_step + 1) / RAMPUP_PERIOD) ** RAMPUP_POWER)
+            if epoch == 0 and time_step < rampup_period:
+                set_lr(self.optimizer, lr=self.high_plateau_lr * ((time_step + 1) / rampup_period) ** rampup_power)
 
             inputs, scripts, input_lengths, target_lengths = queue.get()
 
@@ -172,7 +178,7 @@ class SupervisedTrainer(object):
 
             self.optimizer.zero_grad()
             loss.backward()
-            torch.nn.utils.clip_grad_norm_(model.parameters(), MAX_NORM)
+            torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm)
             self.optimizer.step()
 
             time_step += 1

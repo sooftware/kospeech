@@ -13,9 +13,10 @@ if platform.system() == 'Linux':
 
 class AudioParser(object):
     """
-    This class provides load_audio(), inject_noise(), instancewise_standardization(), spec_audment() function.
-    This class acts as an interface. parse_audio() & parse_script() are abstract method.
-    If you want to inherit this class, you have to override this 2 method.
+    Provides load_audio(), inject_noise(), instancewise_standardization(), spec_audment() function.
+
+    Note:
+        Do not use this class directly, use one of the sub classes.
 
     Method:
         - **parse_audio()**: abstract method. you have to override this method.

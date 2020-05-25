@@ -97,6 +97,8 @@
 <li class="toctree-l2"><a class="reference internal" href="#module-e2e.model.speller">Speller</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-e2e.model.topk_decoder">TopKDecoder</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-e2e.model.attention">Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-e2e.model.baseRNN">BaseRNN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-e2e.model.maskCNN">MaskCNN</a></li>
 </ul>
 </li>
 </ul>
@@ -284,79 +286,6 @@ this function, one should call the <code class="xref py py-class docutils litera
 instead of this since the former takes care of running the
 registered hooks while the latter silently ignores them.</p>
 </div>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="e2e.model.listener.MaskCNN">
-<em class="property">class </em><code class="descclassname">e2e.model.listener.</code><code class="descname">MaskCNN</code><span class="sig-paren">(</span><em>sequential</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/model/listener.html#MaskCNN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.model.listener.MaskCNN" title="Permalink to this definition">¶</a></dt>
-<dd><p>Masking Convolutional Neural Network</p>
-<p>Adds padding to the output of the module based on the given lengths.
-This is to ensure that the results of the model do not change when batch sizes change during inference.
-Input needs to be in the shape of (batch_size, channel, hidden_dim, seq_len)</p>
-<p>Refer to <a class="reference external" href="https://github.com/SeanNaren/deepspeech.pytorch/blob/master/model.py">https://github.com/SeanNaren/deepspeech.pytorch/blob/master/model.py</a>
-Copyright (c) 2017 Sean Naren
-MIT License</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sequential</strong> (<em>torch.nn</em>) – sequential list of convolution layer</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Inputs: inputs, seq_lengths</dt>
-<dd><ul class="first last simple">
-<li><strong>inputs</strong> (torch.FloatTensor): The input of size BxCxHxS</li>
-<li><strong>seq_lengths</strong> (torch.IntTensor): The actual length of each sequence in the batch</li>
-</ul>
-</dd>
-<dt>Returns: output, seq_lengths</dt>
-<dd><ul class="first last simple">
-<li><strong>output</strong>: Masked output from the sequential</li>
-<li><strong>seq_lengths</strong>: Sequence length of output from the sequential</li>
-</ul>
-</dd>
-</dl>
-<dl class="method">
-<dt id="e2e.model.listener.MaskCNN.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs</em>, <em>seq_lengths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/model/listener.html#MaskCNN.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.model.listener.MaskCNN.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Although the recipe for forward pass needs to be defined within
-this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
-instead of this since the former takes care of running the
-registered hooks while the latter silently ignores them.</p>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="e2e.model.listener.MaskCNN.get_seq_lengths">
-<code class="descname">get_seq_lengths</code><span class="sig-paren">(</span><em>module</em>, <em>seq_lengths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/model/listener.html#MaskCNN.get_seq_lengths"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.model.listener.MaskCNN.get_seq_lengths" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate convolutional neural network receptive formula</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>module</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.6.0a0+d035d05 ))"><em>torch.nn.Module</em></a>) – module of CNN</li>
-<li><strong>seq_lengths</strong> (<em>torch.IntTensor</em>) – The actual length of each sequence in the batch</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Returns: seq_lengths</dt>
-<dd><ul class="first last simple">
-<li><strong>seq_lengths</strong>: Sequence length of output from the module</li>
-</ul>
-</dd>
-</dl>
 </dd></dl>
 
 </dd></dl>
@@ -579,6 +508,129 @@ this function, one should call the <code class="xref py py-class docutils litera
 instead of this since the former takes care of running the
 registered hooks while the latter silently ignores them.</p>
 </div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-e2e.model.baseRNN">
+<span id="basernn"></span><h2>BaseRNN<a class="headerlink" href="#module-e2e.model.baseRNN" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="e2e.model.baseRNN.BaseRNN">
+<em class="property">class </em><code class="descclassname">e2e.model.baseRNN.</code><code class="descname">BaseRNN</code><span class="sig-paren">(</span><em>input_size</em>, <em>hidden_dim</em>, <em>num_layers</em>, <em>rnn_type</em>, <em>dropout_p</em>, <em>bidirectional</em>, <em>device</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/model/baseRNN.html#BaseRNN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.model.baseRNN.BaseRNN" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies a multi-layer RNN to an input sequence.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Do not use this class directly, use one of the sub classes.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>input_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – size of input</li>
+<li><strong>hidden_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – the number of features in the hidden state <cite>h</cite></li>
+<li><strong>num_layers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – number of recurrent layers (default: 1)</li>
+<li><strong>bidirectional</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – if True, becomes a bidirectional encoder (defulat: False)</li>
+<li><strong>rnn_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – type of RNN cell (default: gru)</li>
+<li><strong>dropout_p</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em>) – dropout probability (default: 0)</li>
+<li><strong>device</strong> (<em>torch.device</em>) – device - ‘cuda’ or ‘cpu’</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><p class="first last"><strong>= Dictionary of supported rnns</strong> (<em>supported_rnns</em>) – </p>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="e2e.model.baseRNN.BaseRNN.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/model/baseRNN.html#BaseRNN.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.model.baseRNN.BaseRNN.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-e2e.model.maskCNN">
+<span id="maskcnn"></span><h2>MaskCNN<a class="headerlink" href="#module-e2e.model.maskCNN" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="e2e.model.maskCNN.MaskCNN">
+<em class="property">class </em><code class="descclassname">e2e.model.maskCNN.</code><code class="descname">MaskCNN</code><span class="sig-paren">(</span><em>sequential</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/model/maskCNN.html#MaskCNN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.model.maskCNN.MaskCNN" title="Permalink to this definition">¶</a></dt>
+<dd><p>Masking Convolutional Neural Network</p>
+<p>Adds padding to the output of the module based on the given lengths.
+This is to ensure that the results of the model do not change when batch sizes change during inference.
+Input needs to be in the shape of (batch_size, channel, hidden_dim, seq_len)</p>
+<p>Refer to <a class="reference external" href="https://github.com/SeanNaren/deepspeech.pytorch/blob/master/model.py">https://github.com/SeanNaren/deepspeech.pytorch/blob/master/model.py</a>
+Copyright (c) 2017 Sean Naren
+MIT License</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sequential</strong> (<em>torch.nn</em>) – sequential list of convolution layer</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Inputs: inputs, seq_lengths</dt>
+<dd><ul class="first last simple">
+<li><strong>inputs</strong> (torch.FloatTensor): The input of size BxCxHxS</li>
+<li><strong>seq_lengths</strong> (torch.IntTensor): The actual length of each sequence in the batch</li>
+</ul>
+</dd>
+<dt>Returns: output, seq_lengths</dt>
+<dd><ul class="first last simple">
+<li><strong>output</strong>: Masked output from the sequential</li>
+<li><strong>seq_lengths</strong>: Sequence length of output from the sequential</li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="e2e.model.maskCNN.MaskCNN.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs</em>, <em>seq_lengths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/model/maskCNN.html#MaskCNN.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.model.maskCNN.MaskCNN.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="e2e.model.maskCNN.MaskCNN.get_seq_lengths">
+<code class="descname">get_seq_lengths</code><span class="sig-paren">(</span><em>module</em>, <em>seq_lengths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/model/maskCNN.html#MaskCNN.get_seq_lengths"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.model.maskCNN.MaskCNN.get_seq_lengths" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate convolutional neural network receptive formula</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>module</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.6.0a0+d035d05 ))"><em>torch.nn.Module</em></a>) – module of CNN</li>
+<li><strong>seq_lengths</strong> (<em>torch.IntTensor</em>) – The actual length of each sequence in the batch</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Returns: seq_lengths</dt>
+<dd><ul class="first last simple">
+<li><strong>seq_lengths</strong>: Sequence length of output from the module</li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>

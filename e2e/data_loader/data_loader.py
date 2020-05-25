@@ -198,7 +198,7 @@ def _collate_fn(batch):
     return seqs, targets, seq_lengths, target_lengths
 
 
-class MultiDataLoader:
+class MultiDataLoader(object):
     """
     Multi Data Loader using Threads.
 

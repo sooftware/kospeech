@@ -91,6 +91,15 @@ def train_opts(parser):
     group.add_argument('--max_len', '-max_len',
                        type=int, default=151,
                        help='maximum characters of sentence (default: 151)')
+    group.add_argument('--max_norm', '-max_norm',
+                       type=int, default=400,
+                       help='If the norm of the gradient vector exceeds this, remormalize it to have the norm equal to (default: 400)')
+    group.add_argument('--rampup_period', '-rampup_period',
+                       type=int, default=1000,
+                       help='Period of learning rate rampup (defaultL 1000)')
+    group.add_argument('--rampup_power', '-rampup_power',
+                       type=int, default=3,
+                       help='Power of rampup. two means linear, three means exponential. (default: 3)')
     group.add_argument('--seed', '-seed',
                        type=int, default=7,
                        help='random seed (default: 7)')
@@ -236,6 +245,9 @@ def print_train_opts(opt):
     logger.info('--lr_patience: %s' % str(opt.lr_patience))
     logger.info('--valid_ratio: %s' % str(opt.valid_ratio))
     logger.info('--max_len: %s' % str(opt.max_len))
+    logger.info('--max_norm: %s' % str(opt.max_norm))
+    logger.info('--rampup_period: %s' % str(opt.rampup_period))
+    logger.info('--rampup_power: %s' % str(opt.rampup_power))
     logger.info('--seed: %s' % str(opt.seed))
     logger.info('--save_result_every: %s' % str(opt.save_result_every))
     logger.info('--checkpoint_every: %s' % str(opt.checkpoint_every))
