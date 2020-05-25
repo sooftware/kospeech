@@ -1,6 +1,6 @@
 # **End-to-end Speech Recognition**  
   
-### Character unit based E2E automatic speech recognition in Korean  
+### Character unit based end2end automatic speech recognition in Korean  
    
 [<img src="https://github.com/gentaiscool/end2end-asr-pytorch/raw/master/img/pytorch-logo-dark.png" height=18>](https://pytorch.org/) <img src="https://img.shields.io/badge/License-Apache--2.0-yellow" height=20> [<img src="https://img.shields.io/badge/chat-on%20gitter-4fb99a" height=20>](https://gitter.im/Korean-Speech-Recognition/community)   
   
