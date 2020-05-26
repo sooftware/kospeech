@@ -45,8 +45,7 @@ class Speller(BaseRNN):
         self.embedding = nn.Embedding(num_classes, hidden_dim)
         self.input_dropout = nn.Dropout(dropout_p)
         self.attention = LocationAwareAttention(hidden_dim, num_heads, conv_out_channel=10)
-        self.fc1 = nn.Linear(hidden_dim << 1, hidden_dim, bias=True)
-        self.fc2 = nn.Linear(self.hidden_dim, num_classes, bias=True)
+        self.output_proj = nn.Linear(self.hidden_dim, num_classes, bias=True)
 
     def forward_step(self, input_var, hidden, listener_outputs, align):
         batch_size = input_var.size(0)
@@ -59,13 +58,9 @@ class Speller(BaseRNN):
             self.rnn.flatten_parameters()
 
         output, hidden = self.rnn(embedded, hidden)
-        context, align = self.attention(output, listener_outputs, align)
+        output, align = self.attention(output, listener_outputs, align)
 
-        combined = torch.cat([context, output], dim=2)
-        output = self.fc1(combined.view(-1, self.hidden_dim << 1)).view(batch_size, -1, self.hidden_dim)
-        output = self.fc2(output.contiguous().view(-1, self.hidden_dim))
-
-        step_output = F.log_softmax(output, dim=1)
+        step_output = F.log_softmax(self.output_proj(output.contiguous().view(-1, self.hidden_dim)), dim=1)
         step_output = step_output.view(batch_size, output_lengths, -1).squeeze(1)
 
         return step_output, hidden, align

@@ -131,7 +131,7 @@ class TopKDecoder(nn.Module):
             from the last layer of the RNN, for every n = [0, ... , seq_len - 1]
         """
 
-        lstm = isinstance(nw_hidden[0], tuple)
+        islstm = isinstance(nw_hidden[0], tuple)
 
         # initialize return variables given different types
         output = list()
@@ -140,7 +140,7 @@ class TopKDecoder(nn.Module):
         # its hidden state when it sees EOS.  Otherwise, `h_n` contains
         # the last hidden state of decoding.
 
-        if lstm:
+        if islstm:
             state_size = nw_hidden[0][0].size()
             h_n = tuple([torch.zeros(state_size), torch.zeros(state_size)])
         else:
@@ -168,7 +168,7 @@ class TopKDecoder(nn.Module):
         while t >= 0:
             # Re-order the variables with the back pointer
             current_output = nw_output[t].index_select(0, t_predecessors)
-            if lstm:
+            if islstm:
                 current_hidden = tuple([h.index_select(1, t_predecessors) for h in nw_hidden[t]])
             else:
                 current_hidden = nw_hidden[t].index_select(1, t_predecessors)
@@ -212,7 +212,7 @@ class TopKDecoder(nn.Module):
                     # with the new ended sequence information
                     t_predecessors[res_idx] = predecessors[t][idx[0]]
                     current_output[res_idx, :] = nw_output[t][idx[0], :]
-                    if lstm:
+                    if islstm:
                         current_hidden[0][:, res_idx, :] = nw_hidden[t][0][:, idx[0], :]
                         current_hidden[1][:, res_idx, :] = nw_hidden[t][1][:, idx[0], :]
                         h_n[0][:, res_idx, :] = nw_hidden[t][0][:, idx[0], :].data
