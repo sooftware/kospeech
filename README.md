@@ -23,7 +23,7 @@ Also our model has recorded **91.0% CRR** in `Kaldi-zeroth dataset`
 * [End-to-end (E2E) automatic speech recognition](https://sooftware.github.io/End-to-end-Speech-Recognition/)
 * [Convolutional encoder](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.listener)
 * [MaskConv & pack_padded_sequence](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.maskCNN)
-* [Location-Aware Attention (Multi-head)](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.attention)
+* [Multi-headed Location-Aware Attention](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.attention)
 * [Top K Decoding (Beam Search)](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.topk_decoder)
 * [Spectrogram Parser](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.parser)
 * [Delete silence](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.parser)
@@ -214,9 +214,10 @@ We follow [PEP-8](https://www.python.org/dev/peps/pep-0008/) for code style. Esp
 [[5] 「Voice Recognition Using MFCC Algorithm」  Paper](https://ijirae.com/volumes/vol1/issue10/27.NVEC10086.pdf)        
 [[6] 「IBM pytorch-seq2seq」](https://github.com/IBM/pytorch-seq2seq)   
 [[7] 「SeanNaren deepspeech.pytorch」](https://github.com/SeanNaren/deepspeech.pytorch)   
-[[8] 「Character RNN Language Model」](https://github.com/sooftware/char-rnnlm)  
-[[9] 「KsponSpeech」](http://www.aihub.or.kr/aidata/105)    
-[[10] 「Documentation」](https://sooftware.github.io/End-to-End-Korean-Speech-Recognition/)  
+[[8] 「Alexander-H-Liu End-to-end-ASR-Pytorch](https://github.com/Alexander-H-Liu/End-to-end-ASR-Pytorch)   
+[[9] 「Character RNN Language Model」](https://github.com/sooftware/char-rnnlm)  
+[[10] 「KsponSpeech」](http://www.aihub.or.kr/aidata/105)    
+[[11] 「Documentation」](https://sooftware.github.io/End-to-End-Korean-Speech-Recognition/)  
    
 ### Citing
 ```
