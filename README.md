@@ -18,8 +18,6 @@ Also our model has recorded **91.0% CRR** in `Kaldi-zeroth dataset`
   
 ###### ( **CRR** : Character Recognition Rate ) 
   
-<img src="https://user-images.githubusercontent.com/42150335/80630547-5dfc6580-8a8f-11ea-91e8-73fe5e8b9e4b.png" width=450> 
-  
 ## Features  
   
 * [End-to-end (E2E) automatic speech recognition](https://sooftware.github.io/End-to-end-Speech-Recognition/)
@@ -40,6 +38,8 @@ Also our model has recorded **91.0% CRR** in `Kaldi-zeroth dataset`
 * Show training states as log
   
 ## Roadmap
+  
+<img src="https://user-images.githubusercontent.com/42150335/80630547-5dfc6580-8a8f-11ea-91e8-73fe5e8b9e4b.png" width=450> 
   
 End-to-end (E2E) automatic speech recognition (ASR) is an emerging paradigm in the field of neural network-based speech recognition that offers multiple benefits. Traditional “hybrid” ASR systems, which are comprised of an acoustic model, language model, and pronunciation model, require separate training of these components, each of which can be complex.   
   
