@@ -47,7 +47,7 @@ class Speller(BaseRNN):
         self.attention = LocationAwareAttention(hidden_dim, num_heads, conv_out_channel=10)
         self.out_projection = nn.Linear(self.hidden_dim, num_classes, bias=True)
 
-    def forward_step(self, input_var, hidden, listener_outputs, align):
+    def forward_step(self, input_var, hidden, listener_outputs, attn):
         batch_size = input_var.size(0)
         output_lengths = input_var.size(1)
 
@@ -58,15 +58,15 @@ class Speller(BaseRNN):
             self.rnn.flatten_parameters()
 
         output, hidden = self.rnn(embedded, hidden)
-        output, align = self.attention(output, listener_outputs, align)
+        output, attn = self.attention(output, listener_outputs, attn)
 
         step_output = F.log_softmax(self.out_projection(output.contiguous().view(-1, self.hidden_dim)), dim=1)
         step_output = step_output.view(batch_size, output_lengths, -1).squeeze(1)
 
-        return step_output, hidden, align
+        return step_output, hidden, attn
 
     def forward(self, inputs, listener_outputs, teacher_forcing_ratio=0.90):
-        hidden, align = None, None
+        hidden, attn = None, None
         decoder_outputs = list()
 
         inputs, batch_size, max_length = self.validate_args(inputs, listener_outputs, teacher_forcing_ratio)
@@ -75,19 +75,18 @@ class Speller(BaseRNN):
         if use_teacher_forcing:
             inputs = inputs[inputs != self.eos_id].view(batch_size, -1)
 
-            # Call forward_step() at every timestep because MultiHybridAttention requires previous alignment.
+            # Call forward_step() at every timestep because Location-aware attention requires previous attention.
             for di in range(inputs.size(1)):
                 input_var = inputs[:, di].unsqueeze(1)
-                step_output, hidden, align = self.forward_step(input_var, hidden, listener_outputs, align)
+                step_output, hidden, attn = self.forward_step(input_var, hidden, listener_outputs, attn)
                 decoder_outputs.append(step_output)
 
         else:
             input_var = inputs[:, 0].unsqueeze(1)
 
             for di in range(max_length):
-                step_output, hidden, align = self.forward_step(input_var, hidden, listener_outputs, align)
+                step_output, hidden, attn = self.forward_step(input_var, hidden, listener_outputs, attn)
                 decoder_outputs.append(step_output)
-
                 input_var = decoder_outputs[-1].topk(1)[1]
 
         return decoder_outputs

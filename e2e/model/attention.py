@@ -16,14 +16,14 @@ class LocationAwareAttention(nn.Module):
         num_heads (int): The number of heads. (default: )
         conv_out_channel (int): The number of out channel in convolution
 
-    Inputs: query, value, prev_align
+    Inputs: query, value, prev_attn
         - **query** (batch, q_len, hidden_dim): tensor containing the output features from the decoder.
         - **value** (batch, v_len, hidden_dim): tensor containing features of the encoded input sequence.
-        - **prev_align** (batch_size * num_heads, v_len): tensor containing previous timestep`s alignment
+        - **prev_attn** (batch_size * num_heads, v_len): tensor containing previous timestep`s attention (alignment)
 
-    Returns: output, align
+    Returns: output, attn
         - **output** (batch, output_len, dimensions): tensor containing the feature from encoder outputs
-        - **align** (batch * num_heads, v_len): tensor containing the alignment from the encoder outputs.
+        - **attn** (batch * num_heads, v_len): tensor containing the attention (alignment) from the encoder outputs.
 
     Reference:
         - **Attention Is All You Need**: https://arxiv.org/abs/1706.03762
@@ -42,16 +42,16 @@ class LocationAwareAttention(nn.Module):
         self.score_projection = nn.Linear(self.dim, 1, bias=True)
         self.out_projection = nn.Linear(hidden_dim << 1, hidden_dim, bias=True)
 
-    def forward(self, query, value, prev_align):
+    def forward(self, query, value, prev_attn):
         batch_size, seq_len = value.size(0), value.size(1)
         residual = query
 
-        # Initialize previous alignment to zeros
-        if prev_align is None:
-            prev_align = value.new_zeros(batch_size, self.num_heads, seq_len)
+        # Initialize previous attn (alignment) to zeros
+        if prev_attn is None:
+            prev_attn = value.new_zeros(batch_size, self.num_heads, seq_len)
 
         # Calculate location energy
-        loc_energy = torch.tanh(self.loc_projection(self.loc_conv(prev_align).transpose(1, 2)))  # BxNxT => BxTxD
+        loc_energy = torch.tanh(self.loc_projection(self.loc_conv(prev_attn).transpose(1, 2)))  # BxNxT => BxTxD
         loc_energy = loc_energy.unsqueeze(1).repeat(1, self.num_heads, 1, 1).view(-1, seq_len, self.dim)  # BxTxD => BxNxTxD
 
         # Shape matching
@@ -60,19 +60,19 @@ class LocationAwareAttention(nn.Module):
         query = query.contiguous().view(-1, 1, self.dim)        # BNx1xD
         value = value.contiguous().view(-1, seq_len, self.dim)  # BNxTxD
 
-        # Get attention score, alignment
+        # Get attention score, attn
         score = self.score_projection(torch.tanh(value + query + loc_energy + self.bias)).squeeze(2)  # BNxT
-        align = F.softmax(score, dim=1)  # BNxT
+        attn = F.softmax(score, dim=1)  # BNxT
 
         value = value.view(batch_size, seq_len, self.num_heads, self.dim).permute(0, 2, 1, 3)  # BxTxNxD => BxNxTxD
         value = value.contiguous().view(-1, seq_len, self.dim)  # BxNxTxD => BNxTxD
 
         # Get context vector
-        context = torch.bmm(align.unsqueeze(1), value).view(batch_size, -1, self.num_heads * self.dim)  # BNx1xT x BNxTxD => BxND
-        align = align.view(batch_size, self.num_heads, -1)  # BNxT => BxNxT
+        context = torch.bmm(attn.unsqueeze(1), value).view(batch_size, -1, self.num_heads * self.dim)  # BNx1xT x BNxTxD => BxND
+        attn = attn.view(batch_size, self.num_heads, -1)  # BNxT => BxNxT
 
         # Get output
         combined = torch.cat([context, residual], dim=2)
         output = self.out_projection(combined.view(-1, self.hidden_dim << 1)).view(batch_size, -1, self.hidden_dim)
 
-        return output, align
+        return output, attn
