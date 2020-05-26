@@ -50,9 +50,8 @@ class TopKDecoder(nn.Module):
         inputs, batch_size, max_length = self.validate_args(input_var, encoder_outputs, 0.0)
         self.pos_index = Variable(torch.LongTensor(range(batch_size)) * self.k).view(-1, 1).to(self.device)
 
-        hidden = None
+        hidden, align = None, None
         inflated_encoder_outputs = _inflate(encoder_outputs, self.k, 0)
-        align = encoder_outputs.new_zeros(batch_size * self.num_heads, encoder_outputs.size(1))
 
         # Initialize the scores; for the first step,
         # ignore the inflated copies to avoid duplicate entries in the top k
@@ -76,7 +75,8 @@ class TopKDecoder(nn.Module):
 
         for _ in range(max_length):
             # Run the RNN one step forward
-            step_output, hidden, align = self.forward_step(input_var, hidden, inflated_encoder_outputs, align)
+            step_output, hidden, align = self.forward_step(input_var, hidden, inflated_encoder_outputs,
+                                                           inflated_encoder_outputs, align)
 
             stored_outputs.append(step_output.unsqueeze(1))
 

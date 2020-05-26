@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
-from e2e.model.baseRNN import BaseRNN
-from e2e.model.maskCNN import MaskCNN
+from e2e.model.module import BaseRNN, MaskCNN, VGGExtractor
 
 
 class Listener(BaseRNN):
@@ -26,27 +25,11 @@ class Listener(BaseRNN):
     def __init__(self, input_size, hidden_dim, device, dropout_p=0.5, num_layers=1, bidirectional=True, rnn_type='gru'):
         input_size = (input_size - 1) << 5 if input_size % 2 else input_size << 5
         super(Listener, self).__init__(input_size, hidden_dim, num_layers, rnn_type, dropout_p, bidirectional, device)
-        self.cnn = MaskCNN(
-            nn.Sequential(
-                nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1, bias=False),
-                nn.Hardtanh(0, 20, inplace=True),
-                nn.BatchNorm2d(num_features=64),
-                nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
-                nn.Hardtanh(0, 20, inplace=True),
-                nn.MaxPool2d(2, stride=2),
-                nn.BatchNorm2d(num_features=64),
-                nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1, bias=False),
-                nn.Hardtanh(0, 20, inplace=True),
-                nn.BatchNorm2d(num_features=128),
-                nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1, bias=False),
-                nn.Hardtanh(0, 20, inplace=True),
-                nn.MaxPool2d(2, stride=2)
-            )
-        )
+        self.extractor = VGGExtractor(in_channel=1)
 
     def forward(self, inputs, input_lengths):
         inputs = inputs.unsqueeze(1).permute(0, 1, 3, 2)
-        conv_feat, seq_lengths = self.cnn(inputs, input_lengths)
+        conv_feat, seq_lengths = self.extractor(inputs, input_lengths)
 
         batch_size, channel, hidden_dim, seq_length = conv_feat.size()
         conv_feat = conv_feat.view(batch_size, channel * hidden_dim, seq_length).permute(2, 0, 1).contiguous()

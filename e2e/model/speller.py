@@ -2,8 +2,8 @@ import random
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from e2e.model.baseRNN import BaseRNN
-from e2e.model.attention import MultiHybridAttention
+from e2e.model.module import BaseRNN
+from e2e.model.attention import LocationAwareAttention
 
 
 class Speller(BaseRNN):
@@ -31,8 +31,8 @@ class Speller(BaseRNN):
           drawn uniformly from 0-1 for every decoding token, and if the sample is smaller than the given value,
           teacher forcing would be used (default is 0).
 
-    Returns: outputs
-        - **outputs**: list of tensors containing the outputs of the decoding function.
+    Returns: decoder_outputs
+        - **decoder_outputs**: list of tensors containing the outputs of the decoding function.
     """
     def __init__(self, num_classes, max_length, hidden_dim, sos_id, eos_id,
                  num_heads, num_layers=1, rnn_type='gru', dropout_p=0.5, device=None):
@@ -44,7 +44,7 @@ class Speller(BaseRNN):
         self.sos_id = sos_id
         self.embedding = nn.Embedding(num_classes, hidden_dim)
         self.input_dropout = nn.Dropout(dropout_p)
-        self.attention = MultiHybridAttention(hidden_dim, num_heads, k=10)
+        self.attention = LocationAwareAttention(hidden_dim, num_heads, num_kernels=10)
         self.linear_out = nn.Linear(self.hidden_dim, num_classes)
 
     def forward_step(self, input_var, hidden, listener_outputs, align):
@@ -58,7 +58,7 @@ class Speller(BaseRNN):
             self.rnn.flatten_parameters()
 
         output, hidden = self.rnn(embedded, hidden)
-        context, align = self.attention(output, listener_outputs, align)
+        context, align = self.attention(output, listener_outputs, listener_outputs, align)
 
         step_output = F.log_softmax(self.linear_out(context.contiguous().view(-1, self.hidden_dim)), dim=1)
         step_output = step_output.view(batch_size, output_lengths, -1).squeeze(1)
@@ -66,12 +66,11 @@ class Speller(BaseRNN):
         return step_output, hidden, align
 
     def forward(self, inputs, listener_outputs, teacher_forcing_ratio=0.90):
-        hidden = None
-        outputs = list()
+        hidden, align = None, None
+        decoder_outputs = list()
 
         inputs, batch_size, max_length = self.validate_args(inputs, listener_outputs, teacher_forcing_ratio)
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
-        align = listener_outputs.new_zeros(batch_size * self.num_heads, listener_outputs.size(1))
 
         if use_teacher_forcing:
             inputs = inputs[inputs != self.eos_id].view(batch_size, -1)
@@ -80,18 +79,18 @@ class Speller(BaseRNN):
             for di in range(inputs.size(1)):
                 input_var = inputs[:, di].unsqueeze(1)
                 step_output, hidden, align = self.forward_step(input_var, hidden, listener_outputs, align)
-                outputs.append(step_output)
+                decoder_outputs.append(step_output)
 
         else:
             input_var = inputs[:, 0].unsqueeze(1)
 
             for di in range(max_length):
                 step_output, hidden, align = self.forward_step(input_var, hidden, listener_outputs, align)
-                outputs.append(step_output)
+                decoder_outputs.append(step_output)
 
-                input_var = outputs[-1].topk(1)[1]
+                input_var = decoder_outputs[-1].topk(1)[1]
 
-        return outputs
+        return decoder_outputs
 
     def validate_args(self, inputs, listener_outputs, teacher_forcing_ratio):
         """ Validate arguments """
