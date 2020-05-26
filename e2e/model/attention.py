@@ -51,25 +51,25 @@ class LocationAwareAttention(nn.Module):
             prev_align = value.new_zeros(batch_size, self.num_heads, seq_len)
 
         # Calculate location energy
-        loc_energy = torch.tanh(self.loc_projection(self.loc_conv(prev_align).transpose(1, 2)))
-        loc_energy = loc_energy.unsqueeze(1).repeat(1, self.num_heads, 1, 1).view(-1, seq_len, self.dim)
+        loc_energy = torch.tanh(self.loc_projection(self.loc_conv(prev_align).transpose(1, 2)))  # BxNxT => BxTxD
+        loc_energy = loc_energy.unsqueeze(1).repeat(1, self.num_heads, 1, 1).view(-1, seq_len, self.dim)  # BxTxD => BxNxTxD
 
         # Shape matching
-        query = self.query_projection(query).view(batch_size, -1, self.num_heads, self.dim).permute(0, 2, 1, 3)
-        value = self.value_projection(value).view(batch_size, -1, self.num_heads, self.dim).permute(0, 2, 1, 3)
-        query = query.contiguous().view(-1, 1, self.dim)
-        value = value.contiguous().view(-1, seq_len, self.dim)
+        query = self.query_projection(query).view(batch_size, -1, self.num_heads, self.dim).permute(0, 2, 1, 3)  # Bx1xNxD
+        value = self.value_projection(value).view(batch_size, -1, self.num_heads, self.dim).permute(0, 2, 1, 3)  # BxTxNxD
+        query = query.contiguous().view(-1, 1, self.dim)        # BNx1xD
+        value = value.contiguous().view(-1, seq_len, self.dim)  # BNxTxD
 
         # Get attention score, alignment
-        score = self.score_projection(torch.tanh(value + query + loc_energy + self.bias)).squeeze(2)
-        align = F.softmax(score, dim=1)
+        score = self.score_projection(torch.tanh(value + query + loc_energy + self.bias)).squeeze(2)  # BNxT
+        align = F.softmax(score, dim=1)  # BNxT
 
-        value = value.view(batch_size, seq_len, self.num_heads, self.dim).permute(0, 2, 1, 3)
-        value = value.contiguous().view(-1, seq_len, self.dim)
+        value = value.view(batch_size, seq_len, self.num_heads, self.dim).permute(0, 2, 1, 3)  # BxTxNxD => BxNxTxD
+        value = value.contiguous().view(-1, seq_len, self.dim)  # BxNxTxD => BNxTxD
 
         # Get context vector
-        context = torch.bmm(align.unsqueeze(1), value).view(batch_size, -1, self.num_heads * self.dim)
-        align = align.view(batch_size, self.num_heads, -1)
+        context = torch.bmm(align.unsqueeze(1), value).view(batch_size, -1, self.num_heads * self.dim)  # BNx1xT x BNxTxD => BxND
+        align = align.view(batch_size, self.num_heads, -1)  # BNxT => BxNxT
 
         # Get output
         combined = torch.cat([context, residual], dim=2)
