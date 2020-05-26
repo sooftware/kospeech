@@ -36,14 +36,14 @@ class LocationAwareAttention(nn.Module):
         self.num_heads = num_heads
         self.dim = int(in_features / num_heads)
         self.conv1d = nn.Conv1d(num_heads, conv_out_channel, kernel_size=3, padding=1)
-        self.loc_proj = nn.Linear(conv_out_channel, self.dim, bias=False)
-        self.q_proj = nn.Linear(in_features, self.dim * num_heads, bias=False)
-        self.v_proj = nn.Linear(in_features, self.dim * num_heads, bias=False)
+        self.W_U = nn.Linear(conv_out_channel, self.dim, bias=False)
+        self.W_Q = nn.Linear(in_features, self.dim * num_heads, bias=False)
+        self.W_V = nn.Linear(in_features, self.dim * num_heads, bias=False)
         self.bias = nn.Parameter(torch.rand(self.dim).uniform_(-0.1, 0.1))
-        self.score_proj = nn.Linear(self.dim, 1, bias=True)
-        self.out_proj = nn.Linear(in_features << 1, in_features, bias=True)
+        self.fc = nn.Linear(self.dim, 1, bias=True)
+        self.out = nn.Linear(in_features << 1, in_features, bias=True)
 
-    def forward(self, query, value, prev_align):  # value : BxTxD
+    def forward(self, query, value, prev_align):
         batch_size, seq_len = value.size(0), value.size(1)
 
         if prev_align is None:
@@ -59,18 +59,18 @@ class LocationAwareAttention(nn.Module):
         align = align.view(batch_size, self.num_heads, -1)  # BNxT => BxNxT
 
         combined = torch.cat([context, query], dim=2)
-        output = self.out_proj(combined.view(-1, self.in_features << 1)).view(batch_size, -1, self.in_features)
+        output = self.out(combined.view(-1, self.in_features << 1)).view(batch_size, -1, self.in_features)
 
         return output, align
 
     def get_attn_score(self, query, value, prev_align, batch_size, seq_len):
-        loc_energy = torch.tanh(self.loc_proj(self.conv1d(prev_align).transpose(1, 2)))  # BxNxT => BxTxD
+        loc_energy = torch.tanh(self.W_U(self.conv1d(prev_align).transpose(1, 2)))  # BxNxT => BxTxD
         loc_energy = loc_energy.unsqueeze(1).repeat(1, self.num_heads, 1, 1).view(-1, seq_len, self.dim)  # BxNxTxD => BNxTxD
 
-        query = self.q_proj(query).view(batch_size, -1, self.num_heads, self.dim).permute(0, 2, 1, 3)  # BxNxTxD
-        value = self.v_proj(value).view(batch_size, -1, self.num_heads, self.dim).permute(0, 2, 1, 3)  # BxNxTxD
+        query = self.W_Q(query).view(batch_size, -1, self.num_heads, self.dim).permute(0, 2, 1, 3)  # BxNxTxD
+        value = self.W_V(value).view(batch_size, -1, self.num_heads, self.dim).permute(0, 2, 1, 3)  # BxNxTxD
         query = query.contiguous().view(-1, 1, self.dim)  # BNx1xD
         value = value.contiguous().view(-1, seq_len, self.dim)  # BNxTxD
 
-        score = self.score_proj(torch.tanh(value + query + loc_energy + self.bias)).squeeze(2)  # BNxTxD => BNxT
+        score = self.fc(torch.tanh(value + query + loc_energy + self.bias)).squeeze(2)  # BNxTxD => BNxT
         return score

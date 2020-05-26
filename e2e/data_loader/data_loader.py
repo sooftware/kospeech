@@ -35,6 +35,7 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
         self.audio_paths = list(audio_paths)
         self.script_paths = list(script_paths)
         self.augment_methods = [self.VANILLA] * len(self.audio_paths)
+        self.dataset_size = len(self.audio_paths)
         self.augmentation(spec_augment, noise_augment)
         self.shuffle()
 
@@ -69,7 +70,7 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
         if spec_augment:
             logger.info("Applying Spec Augmentation...")
 
-            for idx in range(len(self.audio_paths)):
+            for idx in range(self.dataset_size):
                 self.augment_methods.append(self.SPEC_AUGMENT)
                 self.audio_paths.append(self.audio_paths[idx])
                 self.script_paths.append(self.script_paths[idx])
@@ -77,7 +78,7 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
         if noise_augment:
             logger.info("Applying Noise Augmentation...")
 
-            for idx in range(len(self.audio_paths)):
+            for idx in range(self.dataset_size):
                 self.augment_methods.append(self.NOISE_INJECTION)
                 self.audio_paths.append(self.audio_paths[idx])
                 self.script_paths.append(self.script_paths[idx])
