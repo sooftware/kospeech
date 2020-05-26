@@ -31,8 +31,8 @@ class Speller(BaseRNN):
           drawn uniformly from 0-1 for every decoding token, and if the sample is smaller than the given value,
           teacher forcing would be used (default is 0).
 
-    Returns: decoder_outputs
-        - **decoder_outputs**: list of tensors containing the outputs of the decoding function.
+    Returns: outputs
+        - **outputs**: list of tensors containing the outputs of the decoding function.
     """
     def __init__(self, num_classes, max_length, hidden_dim, sos_id, eos_id,
                  num_heads, num_layers=1, rnn_type='gru', dropout_p=0.5, device=None):
@@ -60,14 +60,14 @@ class Speller(BaseRNN):
         output, hidden = self.rnn(embedded, hidden)
         context, align = self.attention(output, listener_outputs, align)
 
-        predicted_softmax = F.log_softmax(self.linear_out(context.contiguous().view(-1, self.hidden_dim)), dim=1)
-        predicted_softmax = predicted_softmax.view(batch_size, output_lengths, -1)
+        step_output = F.log_softmax(self.linear_out(context.contiguous().view(-1, self.hidden_dim)), dim=1)
+        step_output = step_output.view(batch_size, output_lengths, -1).squeeze(1)
 
-        return predicted_softmax, hidden, align
+        return step_output, hidden, align
 
     def forward(self, inputs, listener_outputs, teacher_forcing_ratio=0.90):
         hidden = None
-        decoder_outputs = list()
+        outputs = list()
 
         inputs, batch_size, max_length = self.validate_args(inputs, listener_outputs, teacher_forcing_ratio)
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
@@ -79,22 +79,19 @@ class Speller(BaseRNN):
             # Call forward_step() at every timestep because MultiHybridAttention requires previous alignment.
             for di in range(inputs.size(1)):
                 input_var = inputs[:, di].unsqueeze(1)
-                predicted_softmax, hidden, align = self.forward_step(input_var, hidden, listener_outputs, align)
-
-                step_output = predicted_softmax.squeeze(1)
-                decoder_outputs.append(step_output)
+                step_output, hidden, align = self.forward_step(input_var, hidden, listener_outputs, align)
+                outputs.append(step_output)
 
         else:
             input_var = inputs[:, 0].unsqueeze(1)
 
             for di in range(max_length):
-                predicted_softmax, hidden, align = self.forward_step(input_var, hidden, listener_outputs, align)
-                step_output = predicted_softmax.squeeze(1)
+                step_output, hidden, align = self.forward_step(input_var, hidden, listener_outputs, align)
+                outputs.append(step_output)
 
-                decoder_outputs.append(step_output)
-                input_var = decoder_outputs[-1].topk(1)[1]
+                input_var = outputs[-1].topk(1)[1]
 
-        return decoder_outputs
+        return outputs
 
     def validate_args(self, inputs, listener_outputs, teacher_forcing_ratio):
         """ Validate arguments """

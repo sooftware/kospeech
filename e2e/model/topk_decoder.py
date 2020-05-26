@@ -76,12 +76,12 @@ class TopKDecoder(nn.Module):
 
         for _ in range(max_length):
             # Run the RNN one step forward
-            predicted_softmax, hidden, align = self.forward_step(input_var, hidden, inflated_encoder_outputs, align)
+            step_output, hidden, align = self.forward_step(input_var, hidden, inflated_encoder_outputs, align)
 
-            stored_outputs.append(predicted_softmax)
+            stored_outputs.append(step_output.unsqueeze(1))
 
             sequence_scores = _inflate(sequence_scores, self.num_classes, 1)
-            sequence_scores += predicted_softmax.squeeze(1)
+            sequence_scores += step_output
             scores, candidates = sequence_scores.view(batch_size, -1).topk(self.k, dim=1)
 
             # Reshape input = (bk, 1) and sequence_scores = (bk, 1)
