@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from e2e.model.baseRNN import BaseRNN
+from e2e.model.module import BaseRNN
 from e2e.model.las import ListenAttendSpell
 from e2e.model.listener import Listener
 from e2e.model.speller import Speller
