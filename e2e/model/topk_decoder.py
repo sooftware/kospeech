@@ -75,9 +75,7 @@ class TopKDecoder(nn.Module):
 
         for _ in range(max_length):
             # Run the RNN one step forward
-            step_output, hidden, align = self.forward_step(input_var, hidden, inflated_encoder_outputs,
-                                                           inflated_encoder_outputs, align)
-
+            step_output, hidden, align = self.forward_step(input_var, hidden, inflated_encoder_outputs, align)
             stored_outputs.append(step_output.unsqueeze(1))
 
             sequence_scores = _inflate(sequence_scores, self.num_classes, 1)

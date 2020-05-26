@@ -44,7 +44,7 @@ class Speller(BaseRNN):
         self.sos_id = sos_id
         self.embedding = nn.Embedding(num_classes, hidden_dim)
         self.input_dropout = nn.Dropout(dropout_p)
-        self.attention = LocationAwareAttention(hidden_dim, num_heads, num_kernels=10)
+        self.attention = LocationAwareAttention(hidden_dim, num_heads, conv_out_channel=10)
         self.linear_out = nn.Linear(self.hidden_dim, num_classes)
 
     def forward_step(self, input_var, hidden, listener_outputs, align):
@@ -58,9 +58,9 @@ class Speller(BaseRNN):
             self.rnn.flatten_parameters()
 
         output, hidden = self.rnn(embedded, hidden)
-        context, align = self.attention(output, listener_outputs, listener_outputs, align)
+        output, align = self.attention(output, listener_outputs, align)
 
-        step_output = F.log_softmax(self.linear_out(context.contiguous().view(-1, self.hidden_dim)), dim=1)
+        step_output = F.log_softmax(self.linear_out(output.contiguous().view(-1, self.hidden_dim)), dim=1)
         step_output = step_output.view(batch_size, output_lengths, -1).squeeze(1)
 
         return step_output, hidden, align

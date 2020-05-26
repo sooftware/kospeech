@@ -116,24 +116,26 @@ class VGGExtractor(nn.Module):
     - https://arxiv.org/pdf/1706.02737.pdf
     """
     def __init__(self, in_channel=1):
-        super(VGGExtractor).__init__()
-        self.extractor = nn.Sequential(
-            nn.Conv2d(in_channel, 64, kernel_size=3, stride=1, padding=1, bias=False),
-            nn.Hardtanh(0, 20, inplace=True),
-            nn.BatchNorm2d(num_features=64),
-            nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
-            nn.Hardtanh(0, 20, inplace=True),
-            nn.MaxPool2d(2, stride=2),
-            nn.BatchNorm2d(num_features=64),
-            nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1, bias=False),
-            nn.Hardtanh(0, 20, inplace=True),
-            nn.BatchNorm2d(num_features=128),
-            nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1, bias=False),
-            nn.Hardtanh(0, 20, inplace=True),
-            nn.MaxPool2d(2, stride=2)
+        super(VGGExtractor, self).__init__()
+        self.extractor = MaskCNN(
+            nn.Sequential(
+                nn.Conv2d(in_channel, 64, kernel_size=3, stride=1, padding=1, bias=False),
+                nn.Hardtanh(0, 20, inplace=True),
+                nn.BatchNorm2d(num_features=64),
+                nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
+                nn.Hardtanh(0, 20, inplace=True),
+                nn.MaxPool2d(2, stride=2),
+                nn.BatchNorm2d(num_features=64),
+                nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1, bias=False),
+                nn.Hardtanh(0, 20, inplace=True),
+                nn.BatchNorm2d(num_features=128),
+                nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1, bias=False),
+                nn.Hardtanh(0, 20, inplace=True),
+                nn.MaxPool2d(2, stride=2)
+            )
         )
 
     def forward(self, inputs, input_lengths):
-        inputs = inputs.unsqueeze(1).permute(0, 1, 3, 2)
+        inputs = inputs
         conv_feat, seq_lengths = self.extractor(inputs, input_lengths)
         return conv_feat, seq_lengths

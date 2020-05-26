@@ -239,7 +239,7 @@ def print_train_opts(opt):
     logger.info('--batch_size: %s' % str(opt.batch_size))
     logger.info('--num_workers: %s' % str(opt.num_workers))
     logger.info('--num_epochs: %s' % str(opt.num_epochs))
-    logger.info('--high_plateau_lr: %s' % str(opt.lr))
+    logger.info('--high_plateau_lr: %s' % str(opt.high_plateau_lr))
     logger.info('--min_lr: %s' % str(opt.min_lr))
     logger.info('--lr_factor: %s' % str(opt.lr_factor))
     logger.info('--lr_patience: %s' % str(opt.lr_patience))
