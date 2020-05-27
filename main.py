@@ -13,15 +13,15 @@ import random
 import torch
 import warnings
 from torch import optim, nn
-from torch.optim.lr_scheduler import ReduceLROnPlateau
 from e2e.data_loader.data_loader import split_dataset, load_data_list
 from e2e.loss.loss import LabelSmoothingLoss
 from e2e.modules.checkpoint import Checkpoint
-from e2e.modules.utils import check_envirionment
+from e2e.optim.lr_scheduler import RampUpLR
+from e2e.optim.optim import Optimizer
 from e2e.trainer.supervised_trainer import SupervisedTrainer
 from e2e.modules.model_builder import build_model
 from e2e.modules.opts import print_opts, train_opts, model_opts, preprocess_opts
-from e2e.modules.global_var import PAD_token, char2id
+from e2e.modules.global_ import PAD_token, char2id, check_envirionment
 
 
 def train(opt):
@@ -36,19 +36,14 @@ def train(opt):
     model = build_model(opt, device)
 
     if opt.use_multi_gpu:
-        optimizer = optim.Adam(model.module.parameters(), lr=opt.high_plateau_lr)
+        optimizer = optim.Adam(model.module.parameters(), lr=opt.init_lr)
+        scheduler = RampUpLR(optimizer, opt.init_lr, opt.high_plateau_lr, opt.rampup_period)
+        optimizer = Optimizer(optimizer, scheduler, opt.rampup_period, opt.max_grad_norm)
 
     else:
         optimizer = optim.Adam(model.parameters(), lr=opt.high_plateau_lr)
-
-    lr_scheduler = ReduceLROnPlateau(
-        optimizer=optimizer,
-        mode='min',
-        patience=opt.lr_patience,
-        factor=opt.lr_factor,
-        verbose=True,
-        min_lr=opt.min_lr
-    )
+        scheduler = RampUpLR(optimizer, opt.init_lr, opt.high_plateau_lr, opt.rampup_period)
+        optimizer = Optimizer(optimizer, scheduler, opt.rampup_period, opt.max_grad_norm)
 
     if opt.label_smoothing == 0.0:
         criterion = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_token).to(device)
@@ -57,12 +52,13 @@ def train(opt):
 
     trainer = SupervisedTrainer(
         optimizer=optimizer,
-        lr_scheduler=lr_scheduler,
         criterion=criterion,
         trainset_list=trainset_list,
         validset=validset,
         num_workers=opt.num_workers,
         high_plateau_lr=opt.high_plateau_lr,
+        low_plateau_lr=opt.low_plateau_lr,
+        exp_decay_period=opt.exp_decay_period,
         device=device,
         print_every=opt.print_every,
         save_result_every=opt.save_result_every,
@@ -79,8 +75,7 @@ def train(opt):
         teacher_forcing_ratio=opt.teacher_forcing_ratio,
         resume=opt.resume
     )
-    Checkpoint(model, model.op.optimizer, model.lr_scheduler, model.criterion,
-               model.trainset_list, model.validset, opt.num_epochs).save()
+    Checkpoint(model, model.optimizer, model.criterion, model.trainset_list, model.validset, opt.num_epochs).save()
 
 
 def _get_parser():

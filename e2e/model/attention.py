@@ -34,13 +34,13 @@ class LocationAwareAttention(nn.Module):
         super().__init__()
         self.num_heads = num_heads
         self.dim = int(hidden_dim / num_heads)
-        self.query_projection = nn.Linear(hidden_dim, self.dim * num_heads, bias=False)
-        self.value_projection = nn.Linear(hidden_dim, self.dim * num_heads, bias=False)
         self.loc_projection = nn.Linear(conv_out_channel, self.dim, bias=False)
         self.loc_conv = nn.Conv1d(num_heads, conv_out_channel, kernel_size=3, padding=1)
-        self.bias = nn.Parameter(torch.rand(self.dim).uniform_(-0.1, 0.1))
+        self.query_projection = nn.Linear(hidden_dim, self.dim * num_heads, bias=False)
+        self.value_projection = nn.Linear(hidden_dim, self.dim * num_heads, bias=False)
         self.score_projection = nn.Linear(self.dim, 1, bias=True)
         self.out_projection = nn.Linear(hidden_dim << 1, hidden_dim, bias=True)
+        self.bias = nn.Parameter(torch.rand(self.dim).uniform_(-0.1, 0.1))
 
     def forward(self, query, value, prev_attn):
         batch_size, seq_len = value.size(0), value.size(1)

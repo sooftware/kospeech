@@ -2,7 +2,7 @@ import os
 import time
 import shutil
 import torch
-from e2e.modules.global_var import logger
+from e2e.modules.global_ import logger
 
 
 class Checkpoint(object):
@@ -15,7 +15,6 @@ class Checkpoint(object):
     Args:
         model (nn.Module): LAS model being trained
         optimizer (torch.optim): stores the state of the optimizer
-        lr_scheduler (torch.optim): learning rate scheduler
         criterion (nn.Module): loss function
         trainset_list (list): list of trainset
         validset (e2e.data_loader.data_loader.SpectrogramDataset): validation dataset
@@ -33,10 +32,9 @@ class Checkpoint(object):
     SAVE_PATH = './data'
     MODEL_NAME = 'model.pt'
 
-    def __init__(self, model, optimizer, lr_scheduler, criterion, trainset_list, validset, epoch):
+    def __init__(self, model, optimizer, criterion, trainset_list, validset, epoch):
         self.model = model
         self.optimizer = optimizer
-        self.lr_scheduler = lr_scheduler
         self.criterion = criterion
         self.trainset_list = trainset_list
         self.validset = validset
@@ -56,7 +54,6 @@ class Checkpoint(object):
 
         trainer_states = {
             'optimizer': self.optimizer,
-            'lr_scheduler': self.lr_scheduler,
             'criterion': self.criterion,
             'trainset_list': self.trainset_list,
             'validset': self.validset,
@@ -93,8 +90,8 @@ class Checkpoint(object):
         model.flatten_parameters()  # make RNN parameters contiguous
 
         return Checkpoint(model=model, optimizer=resume_checkpoint['optimizer'], epoch=resume_checkpoint['epoch'],
-                          lr_scheduler=resume_checkpoint['lr_scheduler'], criterion=resume_checkpoint['criterion'],
-                          trainset_list=resume_checkpoint['trainset_list'], validset=resume_checkpoint['validset'])
+                          criterion=resume_checkpoint['criterion'], trainset_list=resume_checkpoint['trainset_list'],
+                          validset=resume_checkpoint['validset'])
 
     def get_latest_checkpoint(self):
         """

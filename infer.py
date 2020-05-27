@@ -13,10 +13,9 @@ import warnings
 from e2e.data_loader.data_loader import load_data_list, SpectrogramDataset
 from e2e.data_loader.label_loader import load_targets
 from e2e.evaluator.evaluator import Evaluator
-from e2e.modules.global_var import EOS_token, SOS_token
+from e2e.modules.global_ import check_envirionment, EOS_token, SOS_token
 from e2e.modules.model_builder import load_test_model
 from e2e.modules.opts import inference_opts, preprocess_opts, print_opts
-from e2e.modules.utils import check_envirionment
 
 
 def inference(opt):

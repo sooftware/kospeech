@@ -1,5 +1,5 @@
 """ Implementation of all available options """
-from e2e.modules.global_var import logger
+from e2e.modules.global_ import logger
 
 
 def model_opts(parser):
@@ -73,33 +73,30 @@ def train_opts(parser):
     group.add_argument('--num_epochs', '-num_epochs',
                        type=int, default=20,
                        help='number of epochs in training (default: 20)')
+    group.add_argument('--init_lr', '-init_lr',
+                       type=float, default=1e-15,
+                       help='initial learning rate => before ramp up lr (default: 1e-15)')
     group.add_argument('--high_plateau_lr', '-high_plateau_lr',
                        type=float, default=3e-04,
-                       help='initial learning rate (default: 3e-04)')
-    group.add_argument('--min_lr', '-min_lr',
+                       help='high plateau learning rate => after rampup lr (default: 3e-04)')
+    group.add_argument('--low_plateau', '-low_plateau',
                        type=float, default=1e-05,
-                       help='minimum learning rate (default: 3e-05)')
-    group.add_argument('--lr_factor', '-lr_factor',
-                       type=float, default=1 / 3,
-                       help='factor of learning rate scheduler (default: 1/3)')
-    group.add_argument('--lr_patience', '-lr_patience',
-                       type=int, default=1,
-                       help=' Number of epochs with no improvement after which learning rate will be reduced. (default: 1)')
+                       help='low plateau learning rate => after exponential decay (default: 1e-05)')
     group.add_argument('--valid_ratio', '-valid_ratio',
                        type=float, default=0.01,
                        help='validation dataset ratio in training dataset')
     group.add_argument('--max_len', '-max_len',
                        type=int, default=151,
                        help='maximum characters of sentence (default: 151)')
-    group.add_argument('--max_norm', '-max_norm',
+    group.add_argument('--max_grad_norm', '-max_grad_norm',
                        type=int, default=400,
                        help='If the norm of the gradient vector exceeds this, remormalize it to have the norm equal to (default: 400)')
     group.add_argument('--rampup_period', '-rampup_period',
                        type=int, default=1000,
-                       help='Period of learning rate rampup (defaultL 1000)')
-    group.add_argument('--rampup_power', '-rampup_power',
-                       type=int, default=3,
-                       help='Power of rampup. two means linear, three means exponential. (default: 3)')
+                       help='Timestep of learning rate rampup (default: 1000)')
+    group.add_argument('--exp_decay_period', '-exp_decay_period',
+                       type=int, default=100000,
+                       help='Timestep of learning rate decay (default: 100000)')
     group.add_argument('--seed', '-seed',
                        type=int, default=7,
                        help='random seed (default: 7)')
@@ -239,15 +236,14 @@ def print_train_opts(opt):
     logger.info('--batch_size: %s' % str(opt.batch_size))
     logger.info('--num_workers: %s' % str(opt.num_workers))
     logger.info('--num_epochs: %s' % str(opt.num_epochs))
+    logger.info('--init_lr: %s' % str(opt.init_lr))
     logger.info('--high_plateau_lr: %s' % str(opt.high_plateau_lr))
-    logger.info('--min_lr: %s' % str(opt.min_lr))
-    logger.info('--lr_factor: %s' % str(opt.lr_factor))
-    logger.info('--lr_patience: %s' % str(opt.lr_patience))
+    logger.info('--low_plateau_lr: %s' % str(opt.low_plateau_lr))
+    logger.info('--rampup_period: %s' % str(opt.rampup_period))
+    logger.info('--exp_decay_period: %s' % str(opt.exp_decay_period))
     logger.info('--valid_ratio: %s' % str(opt.valid_ratio))
     logger.info('--max_len: %s' % str(opt.max_len))
-    logger.info('--max_norm: %s' % str(opt.max_norm))
-    logger.info('--rampup_period: %s' % str(opt.rampup_period))
-    logger.info('--rampup_power: %s' % str(opt.rampup_power))
+    logger.info('--max_grad_norm: %s' % str(opt.max_grad_norm))
     logger.info('--seed: %s' % str(opt.seed))
     logger.info('--save_result_every: %s' % str(opt.save_result_every))
     logger.info('--checkpoint_every: %s' % str(opt.checkpoint_every))
