@@ -34,7 +34,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Trainer" href="Trainer.html" />
+    <link rel="next" title="Optim" href="Optim.html" />
     <link rel="prev" title="Loss" href="Loss.html" /> 
 </head>
 
@@ -101,13 +101,15 @@
 <li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Modules</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#module-e2e.modules.checkpoint">Checkpoint</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-e2e.modules.global_var">Global_var</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-e2e.modules.error_rate">Error_rate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#global-var">Global_var</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-e2e.modules.logger">Logger</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-e2e.modules.model_builder">Model_builder</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-e2e.modules.opts">Opts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-e2e.modules.utils">Utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#utils">Utils</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="Optim.html">Optim</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
 </ul>
 
@@ -179,7 +181,7 @@
 <span id="checkpoint"></span><h2>Checkpoint<a class="headerlink" href="#module-e2e.modules.checkpoint" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="e2e.modules.checkpoint.Checkpoint">
-<em class="property">class </em><code class="descclassname">e2e.modules.checkpoint.</code><code class="descname">Checkpoint</code><span class="sig-paren">(</span><em>model</em>, <em>optimizer</em>, <em>lr_scheduler</em>, <em>criterion</em>, <em>trainset_list</em>, <em>validset</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/checkpoint.html#Checkpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.checkpoint.Checkpoint" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">e2e.modules.checkpoint.</code><code class="descname">Checkpoint</code><span class="sig-paren">(</span><em>model</em>, <em>optimizer</em>, <em>criterion</em>, <em>trainset_list</em>, <em>validset</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/checkpoint.html#Checkpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.checkpoint.Checkpoint" title="Permalink to this definition">¶</a></dt>
 <dd><p>The Checkpoint class manages the saving and loading of a model during training.
 It allows training to be suspended and resumed at a later time (e.g. when running on a cluster using sequential jobs).
 To make a checkpoint, initialize a Checkpoint object with the following args; then call that object’s save() method
@@ -191,7 +193,6 @@ to write parameters to disk.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>model</strong> (<em>nn.Module</em>) – LAS model being trained</li>
 <li><strong>optimizer</strong> (<em>torch.optim</em>) – stores the state of the optimizer</li>
-<li><strong>lr_scheduler</strong> (<em>torch.optim</em>) – learning rate scheduler</li>
 <li><strong>criterion</strong> (<em>nn.Module</em>) – loss function</li>
 <li><strong>trainset_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – list of trainset</li>
 <li><strong>validset</strong> (<a class="reference internal" href="Data_loader.html#e2e.data_loader.data_loader.SpectrogramDataset" title="e2e.data_loader.data_loader.SpectrogramDataset"><em>e2e.data_loader.data_loader.SpectrogramDataset</em></a>) – validation dataset</li>
@@ -244,10 +245,42 @@ The name of the subdirectory is the current local time in Y_M_D_H_M_S format.</p
 </dd></dl>
 
 </div>
-<div class="section" id="module-e2e.modules.global_var">
-<span id="global-var"></span><h2>Global_var<a class="headerlink" href="#module-e2e.modules.global_var" title="Permalink to this headline">¶</a></h2>
-<p>This file provides logger, char2id, id2char, SOS_token, EOS_token, PAD_token.
-Global variables are defined in this file.</p>
+<div class="section" id="module-e2e.modules.error_rate">
+<span id="error-rate"></span><h2>Error_rate<a class="headerlink" href="#module-e2e.modules.error_rate" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="e2e.modules.error_rate.CharacterErrorRate">
+<em class="property">class </em><code class="descclassname">e2e.modules.error_rate.</code><code class="descname">CharacterErrorRate</code><span class="sig-paren">(</span><em>id2char</em>, <em>eos_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/error_rate.html#CharacterErrorRate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.error_rate.CharacterErrorRate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides a character error rate calculation to evaluate performance of sppech recognizer.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>id2char</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – id2char[id] = char</li>
+<li><strong>eos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – end of sentence identification</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Inputs: target, y_hat</dt>
+<dd><ul class="first last simple">
+<li><strong>target</strong>: ground truth</li>
+<li><strong>y_hat</strong>: prediction of recognizer</li>
+</ul>
+</dd>
+<dt>Returns: cer</dt>
+<dd><ul class="first last simple">
+<li><strong>cer</strong>: character error rate</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="global-var">
+<h2>Global_var<a class="headerlink" href="#global-var" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-e2e.modules.logger">
 <span id="logger"></span><h2>Logger<a class="headerlink" href="#module-e2e.modules.logger" title="Permalink to this headline">¶</a></h2>
@@ -293,7 +326,7 @@ FORMAT: [%(asctime)s %(filename)s:%(lineno)s - %(funcName)s()] %(message)s</p>
 
 <dl class="function">
 <dt id="e2e.modules.model_builder.build_speller">
-<code class="descclassname">e2e.modules.model_builder.</code><code class="descname">build_speller</code><span class="sig-paren">(</span><em>num_classes</em>, <em>max_len</em>, <em>hidden_dim</em>, <em>sos_id</em>, <em>eos_id</em>, <em>num_layers</em>, <em>rnn_type</em>, <em>dropout_p</em>, <em>num_heads</em>, <em>device</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/model_builder.html#build_speller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.model_builder.build_speller" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">e2e.modules.model_builder.</code><code class="descname">build_speller</code><span class="sig-paren">(</span><em>num_classes</em>, <em>max_len</em>, <em>hidden_dim</em>, <em>sos_id</em>, <em>eos_id</em>, <em>attn_mechanism</em>, <em>num_layers</em>, <em>rnn_type</em>, <em>dropout_p</em>, <em>num_heads</em>, <em>device</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/model_builder.html#build_speller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.model_builder.build_speller" title="Permalink to this definition">¶</a></dt>
 <dd><p>build speller &amp; validate parameters</p>
 </dd></dl>
 
@@ -363,107 +396,8 @@ Be careful with these as they will be used during inference.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-e2e.modules.utils">
-<span id="utils"></span><h2>Utils<a class="headerlink" href="#module-e2e.modules.utils" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="e2e.modules.utils.char_distance">
-<code class="descclassname">e2e.modules.utils.</code><code class="descname">char_distance</code><span class="sig-paren">(</span><em>target</em>, <em>y_hat</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/utils.html#char_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.utils.char_distance" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculating charater distance between target &amp; y_hat</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>target</strong> – sequence of target</li>
-<li><strong>y_hat</strong> – sequence of y_Hat</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Returns: distance, length</dt>
-<dd><ul class="first last simple">
-<li><strong>dist</strong>: distance between target &amp; y_hat</li>
-<li><strong>length</strong>: length of target sequence</li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="e2e.modules.utils.check_envirionment">
-<code class="descclassname">e2e.modules.utils.</code><code class="descname">check_envirionment</code><span class="sig-paren">(</span><em>use_cuda</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/utils.html#check_envirionment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.utils.check_envirionment" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check execution envirionment.
-OS, Processor, CUDA version, Pytorch version, … etc.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="e2e.modules.utils.get_distance">
-<code class="descclassname">e2e.modules.utils.</code><code class="descname">get_distance</code><span class="sig-paren">(</span><em>targets</em>, <em>y_hats</em>, <em>id2char</em>, <em>eos_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/utils.html#get_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.utils.get_distance" title="Permalink to this definition">¶</a></dt>
-<dd><p>Provides total character distance between targets &amp; y_hats</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>targets</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+d035d05 ))"><em>torch.Tensor</em></a>) – set of ground truth</li>
-<li><strong>y_hats</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+d035d05 ))"><em>torch.Tensor</em></a>) – predicted y values (y_hat) by the model</li>
-<li><strong>id2char</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – id2char[id] = ch</li>
-<li><strong>eos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of &lt;end of sequence&gt;</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Returns: total_dist, total_length</dt>
-<dd><ul class="first last simple">
-<li><strong>total_dist</strong>: total distance between targets &amp; y_hats</li>
-<li><strong>total_length</strong>: total length of targets sequence</li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="e2e.modules.utils.get_lr">
-<code class="descclassname">e2e.modules.utils.</code><code class="descname">get_lr</code><span class="sig-paren">(</span><em>optimizer</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/utils.html#get_lr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.utils.get_lr" title="Permalink to this definition">¶</a></dt>
-<dd><p>get learning rate</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="e2e.modules.utils.label_to_string">
-<code class="descclassname">e2e.modules.utils.</code><code class="descname">label_to_string</code><span class="sig-paren">(</span><em>labels</em>, <em>id2char</em>, <em>eos_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/utils.html#label_to_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.utils.label_to_string" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts label to string (number =&gt; Hangeul)</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>labels</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><em>numpy.ndarray</em></a>) – number label</li>
-<li><strong>id2char</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – id2char[id] = ch</li>
-<li><strong>eos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of &lt;end of sequence&gt;</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Returns: sentence</dt>
-<dd><ul class="first last simple">
-<li><strong>sentence</strong> (str or list): symbol of labels</li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="e2e.modules.utils.set_lr">
-<code class="descclassname">e2e.modules.utils.</code><code class="descname">set_lr</code><span class="sig-paren">(</span><em>optimizer</em>, <em>lr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/modules/utils.html#set_lr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.modules.utils.set_lr" title="Permalink to this definition">¶</a></dt>
-<dd><p>set learning rate</p>
-</dd></dl>
-
+<div class="section" id="utils">
+<h2>Utils<a class="headerlink" href="#utils" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -475,7 +409,7 @@ OS, Processor, CUDA version, Pytorch version, … etc.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="Trainer.html" class="btn btn-neutral float-right" title="Trainer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="Optim.html" class="btn btn-neutral float-right" title="Optim" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="Loss.html" class="btn btn-neutral float-left" title="Loss" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

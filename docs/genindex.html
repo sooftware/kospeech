@@ -99,6 +99,7 @@
 <li class="toctree-l1"><a class="reference internal" href="Feature.html">Feature</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Modules.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Optim.html">Optim</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
 </ul>
 
@@ -177,6 +178,8 @@
  | <a href="#J"><strong>J</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
+ | <a href="#N"><strong>N</strong></a>
+ | <a href="#O"><strong>O</strong></a>
  | <a href="#P"><strong>P</strong></a>
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
@@ -201,7 +204,7 @@
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Model.html#e2e.model.baseRNN.BaseRNN">BaseRNN (class in e2e.model.baseRNN)</a>
+      <li><a href="Model.html#e2e.model.sub_layers.BaseRNN">BaseRNN (class in e2e.model.sub_layers)</a>
 </li>
       <li><a href="Modules.html#e2e.modules.model_builder.build_las">build_las() (in module e2e.modules.model_builder)</a>
 </li>
@@ -219,12 +222,10 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Modules.html#e2e.modules.utils.char_distance">char_distance() (in module e2e.modules.utils)</a>
+      <li><a href="Modules.html#e2e.modules.error_rate.CharacterErrorRate">CharacterErrorRate (class in e2e.modules.error_rate)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Modules.html#e2e.modules.utils.check_envirionment">check_envirionment() (in module e2e.modules.utils)</a>
-</li>
       <li><a href="Modules.html#e2e.modules.checkpoint.Checkpoint">Checkpoint (class in e2e.modules.checkpoint)</a>
 </li>
   </ul></td>
@@ -247,6 +248,8 @@
 </li>
       <li><a href="Evaluator.html#module-e2e.evaluator.evaluator">e2e.evaluator.evaluator (module)</a>
 </li>
+      <li><a href="Feature.html#module-e2e.feature.augment">e2e.feature.augment (module)</a>
+</li>
       <li><a href="Feature.html#module-e2e.feature.core">e2e.feature.core (module)</a>
 </li>
       <li><a href="Feature.html#module-e2e.feature.parser">e2e.feature.parser (module)</a>
@@ -255,23 +258,21 @@
 </li>
       <li><a href="Model.html#module-e2e.model.attention">e2e.model.attention (module)</a>
 </li>
-      <li><a href="Model.html#module-e2e.model.baseRNN">e2e.model.baseRNN (module)</a>
-</li>
       <li><a href="Model.html#module-e2e.model.las">e2e.model.las (module)</a>
 </li>
       <li><a href="Model.html#module-e2e.model.listener">e2e.model.listener (module)</a>
 </li>
-      <li><a href="Model.html#module-e2e.model.maskCNN">e2e.model.maskCNN (module)</a>
+      <li><a href="Model.html#module-e2e.model.speller">e2e.model.speller (module)</a>
+</li>
+      <li><a href="Model.html#module-e2e.model.sub_layers">e2e.model.sub_layers (module)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Model.html#module-e2e.model.speller">e2e.model.speller (module)</a>
-</li>
       <li><a href="Model.html#module-e2e.model.topk_decoder">e2e.model.topk_decoder (module)</a>
 </li>
       <li><a href="Modules.html#module-e2e.modules.checkpoint">e2e.modules.checkpoint (module)</a>
 </li>
-      <li><a href="Modules.html#module-e2e.modules.global_var">e2e.modules.global_var (module)</a>
+      <li><a href="Modules.html#module-e2e.modules.error_rate">e2e.modules.error_rate (module)</a>
 </li>
       <li><a href="Modules.html#module-e2e.modules.logger">e2e.modules.logger (module)</a>
 </li>
@@ -279,13 +280,17 @@
 </li>
       <li><a href="Modules.html#module-e2e.modules.opts">e2e.modules.opts (module)</a>
 </li>
-      <li><a href="Modules.html#module-e2e.modules.utils">e2e.modules.utils (module)</a>
+      <li><a href="Optim.html#module-e2e.optim.lr_scheduler">e2e.optim.lr_scheduler (module)</a>
+</li>
+      <li><a href="Optim.html#module-e2e.optim.optim">e2e.optim.optim (module)</a>
 </li>
       <li><a href="Trainer.html#module-e2e.trainer.supervised_trainer">e2e.trainer.supervised_trainer (module)</a>
 </li>
       <li><a href="Evaluator.html#e2e.evaluator.evaluator.Evaluator.evaluate">evaluate() (e2e.evaluator.evaluator.Evaluator method)</a>
 </li>
       <li><a href="Evaluator.html#e2e.evaluator.evaluator.Evaluator">Evaluator (class in e2e.evaluator.evaluator)</a>
+</li>
+      <li><a href="Optim.html#e2e.optim.lr_scheduler.ExponentialDecayLR">ExponentialDecayLR (class in e2e.optim.lr_scheduler)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -296,19 +301,23 @@
       <li><a href="Loss.html#e2e.loss.loss.LabelSmoothingLoss.forward">forward() (e2e.loss.loss.LabelSmoothingLoss method)</a>
 
       <ul>
-        <li><a href="Model.html#e2e.model.attention.MultiHybridAttention.forward">(e2e.model.attention.MultiHybridAttention method)</a>
+        <li><a href="Model.html#e2e.model.attention.LocationAwareAttention.forward">(e2e.model.attention.LocationAwareAttention method)</a>
+</li>
+        <li><a href="Model.html#e2e.model.attention.MultiHeadAttention.forward">(e2e.model.attention.MultiHeadAttention method)</a>
 </li>
         <li><a href="Model.html#e2e.model.attention.ScaledDotProductAttention.forward">(e2e.model.attention.ScaledDotProductAttention method)</a>
-</li>
-        <li><a href="Model.html#e2e.model.baseRNN.BaseRNN.forward">(e2e.model.baseRNN.BaseRNN method)</a>
 </li>
         <li><a href="Model.html#e2e.model.las.ListenAttendSpell.forward">(e2e.model.las.ListenAttendSpell method)</a>
 </li>
         <li><a href="Model.html#e2e.model.listener.Listener.forward">(e2e.model.listener.Listener method)</a>
 </li>
-        <li><a href="Model.html#e2e.model.maskCNN.MaskCNN.forward">(e2e.model.maskCNN.MaskCNN method)</a>
-</li>
         <li><a href="Model.html#e2e.model.speller.Speller.forward">(e2e.model.speller.Speller method)</a>
+</li>
+        <li><a href="Model.html#e2e.model.sub_layers.BaseRNN.forward">(e2e.model.sub_layers.BaseRNN method)</a>
+</li>
+        <li><a href="Model.html#e2e.model.sub_layers.MaskCNN.forward">(e2e.model.sub_layers.MaskCNN method)</a>
+</li>
+        <li><a href="Model.html#e2e.model.sub_layers.VGGExtractor.forward">(e2e.model.sub_layers.VGGExtractor method)</a>
 </li>
         <li><a href="Model.html#e2e.model.topk_decoder.TopKDecoder.forward">(e2e.model.topk_decoder.TopKDecoder method)</a>
 </li>
@@ -319,17 +328,13 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Modules.html#e2e.modules.utils.get_distance">get_distance() (in module e2e.modules.utils)</a>
-</li>
       <li><a href="Data_loader.html#e2e.data_loader.data_loader.SpectrogramDataset.get_item">get_item() (e2e.data_loader.data_loader.SpectrogramDataset method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="Modules.html#e2e.modules.checkpoint.Checkpoint.get_latest_checkpoint">get_latest_checkpoint() (e2e.modules.checkpoint.Checkpoint method)</a>
 </li>
-      <li><a href="Modules.html#e2e.modules.utils.get_lr">get_lr() (in module e2e.modules.utils)</a>
-</li>
-      <li><a href="Model.html#e2e.model.maskCNN.MaskCNN.get_seq_lengths">get_seq_lengths() (e2e.model.maskCNN.MaskCNN method)</a>
+      <li><a href="Model.html#e2e.model.sub_layers.MaskCNN.get_seq_lengths">get_seq_lengths() (e2e.model.sub_layers.MaskCNN method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -357,9 +362,9 @@
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Modules.html#e2e.modules.utils.label_to_string">label_to_string() (in module e2e.modules.utils)</a>
-</li>
       <li><a href="Loss.html#e2e.loss.loss.LabelSmoothingLoss">LabelSmoothingLoss (class in e2e.loss.loss)</a>
+</li>
+      <li><a href="Optim.html#e2e.optim.lr_scheduler.LearningRateScheduler">LearningRateScheduler (class in e2e.optim.lr_scheduler)</a>
 </li>
       <li><a href="Model.html#e2e.model.las.ListenAttendSpell">ListenAttendSpell (class in e2e.model.las)</a>
 </li>
@@ -375,11 +380,11 @@
 </li>
       <li><a href="Data_loader.html#e2e.data_loader.label_loader.load_label">load_label() (in module e2e.data_loader.label_loader)</a>
 </li>
-      <li><a href="Data_loader.html#e2e.data_loader.data_loader.load_pickle">load_pickle() (in module e2e.data_loader.data_loader)</a>
-</li>
       <li><a href="Data_loader.html#e2e.data_loader.label_loader.load_targets">load_targets() (in module e2e.data_loader.label_loader)</a>
 </li>
       <li><a href="Modules.html#e2e.modules.model_builder.load_test_model">load_test_model() (in module e2e.modules.model_builder)</a>
+</li>
+      <li><a href="Model.html#e2e.model.attention.LocationAwareAttention">LocationAwareAttention (class in e2e.model.attention)</a>
 </li>
       <li><a href="Modules.html#e2e.modules.logger.Logger">Logger (class in e2e.modules.logger)</a>
 </li>
@@ -389,7 +394,7 @@
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Model.html#e2e.model.maskCNN.MaskCNN">MaskCNN (class in e2e.model.maskCNN)</a>
+      <li><a href="Model.html#e2e.model.sub_layers.MaskCNN">MaskCNN (class in e2e.model.sub_layers)</a>
 </li>
       <li><a href="Modules.html#e2e.modules.opts.model_opts">model_opts() (in module e2e.modules.opts)</a>
 </li>
@@ -397,7 +402,23 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="Data_loader.html#e2e.data_loader.data_loader.MultiDataLoader">MultiDataLoader (class in e2e.data_loader.data_loader)</a>
 </li>
-      <li><a href="Model.html#e2e.model.attention.MultiHybridAttention">MultiHybridAttention (class in e2e.model.attention)</a>
+      <li><a href="Model.html#e2e.model.attention.MultiHeadAttention">MultiHeadAttention (class in e2e.model.attention)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="N">N</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Feature.html#e2e.feature.augment.NoiseInjector">NoiseInjector (class in e2e.feature.augment)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="O">O</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Optim.html#e2e.optim.optim.Optimizer">Optimizer (class in e2e.optim.optim)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -431,6 +452,10 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Optim.html#e2e.optim.lr_scheduler.RampUpLR">RampUpLR (class in e2e.optim.lr_scheduler)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="Data_loader.html#e2e.data_loader.data_loader.AudioDataLoader.run">run() (e2e.data_loader.data_loader.AudioDataLoader method)</a>
 </li>
   </ul></td>
@@ -443,11 +468,9 @@
 </li>
       <li><a href="Model.html#e2e.model.attention.ScaledDotProductAttention">ScaledDotProductAttention (class in e2e.model.attention)</a>
 </li>
-      <li><a href="Modules.html#e2e.modules.utils.set_lr">set_lr() (in module e2e.modules.utils)</a>
-</li>
       <li><a href="Data_loader.html#e2e.data_loader.data_loader.SpectrogramDataset.shuffle">shuffle() (e2e.data_loader.data_loader.SpectrogramDataset method)</a>
 </li>
-      <li><a href="Feature.html#e2e.feature.parser.AudioParser.spec_augment">spec_augment() (e2e.feature.parser.AudioParser static method)</a>
+      <li><a href="Feature.html#e2e.feature.augment.SpecAugment">SpecAugment (class in e2e.feature.augment)</a>
 </li>
       <li><a href="Data_loader.html#e2e.data_loader.data_loader.SpectrogramDataset">SpectrogramDataset (class in e2e.data_loader.data_loader)</a>
 </li>
@@ -492,6 +515,8 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="Model.html#e2e.model.speller.Speller.validate_args">validate_args() (e2e.model.speller.Speller method)</a>
+</li>
+      <li><a href="Model.html#e2e.model.sub_layers.VGGExtractor">VGGExtractor (class in e2e.model.sub_layers)</a>
 </li>
   </ul></td>
 </tr></table>

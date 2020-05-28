@@ -98,6 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../Feature.html">Feature</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Loss.html">Loss</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Modules.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Optim.html">Optim</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Trainer.html">Trainer</a></li>
 </ul>
 
@@ -171,7 +172,7 @@
 <span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="k">import</span> <span class="n">Dataset</span>
 <span class="kn">from</span> <span class="nn">e2e.data_loader.label_loader</span> <span class="k">import</span> <span class="n">load_targets</span>
 <span class="kn">from</span> <span class="nn">e2e.feature.parser</span> <span class="k">import</span> <span class="n">SpectrogramParser</span>
-<span class="c1">#from e2e.modules.global_var import PAD_token, SOS_token, EOS_token, logger</span>
+<span class="c1">#from e2e.modules.global_ import PAD_token, SOS_token, EOS_token, logger</span>
 
 
 <div class="viewcode-block" id="SpectrogramDataset"><a class="viewcode-back" href="../../../Data_loader.html#e2e.data_loader.data_loader.SpectrogramDataset">[docs]</a><span class="k">class</span> <span class="nc">SpectrogramDataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">,</span> <span class="n">SpectrogramParser</span><span class="p">):</span>
@@ -188,17 +189,20 @@
 <span class="sd">        noise_augment (bool): flag indication whether to use noise-augmentation or not (default: True)</span>
 <span class="sd">        opt (ArgumentParser): set of arguments</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">audio_paths</span><span class="p">,</span> <span class="n">script_paths</span><span class="p">,</span> <span class="n">sos_id</span><span class="p">,</span> <span class="n">eos_id</span><span class="p">,</span> <span class="n">target_dict</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">spec_augment</span><span class="p">,</span> <span class="n">noise_augment</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">audio_paths</span><span class="p">,</span> <span class="n">script_paths</span><span class="p">,</span> <span class="n">sos_id</span><span class="p">,</span> <span class="n">eos_id</span><span class="p">,</span> <span class="n">target_dict</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">spec_augment</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">noise_augment</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dataset_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">noiseset_size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">noise_level</span><span class="o">=</span><span class="mf">0.7</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">SpectrogramDataset</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">feature_extract_by</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">feature_extract_by</span><span class="p">,</span> <span class="n">sample_rate</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">sample_rate</span><span class="p">,</span>
                                                  <span class="n">n_mels</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">n_mels</span><span class="p">,</span> <span class="n">window_size</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">window_size</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">stride</span><span class="p">,</span>
                                                  <span class="n">del_silence</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">del_silence</span><span class="p">,</span> <span class="n">input_reverse</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">input_reverse</span><span class="p">,</span>
-                                                 <span class="n">normalize</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">normalize</span><span class="p">,</span>
+                                                 <span class="n">normalize</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">normalize</span><span class="p">,</span> <span class="n">target_dict</span><span class="o">=</span><span class="n">target_dict</span><span class="p">,</span>
                                                  <span class="n">time_mask_para</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">time_mask_para</span><span class="p">,</span> <span class="n">freq_mask_para</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">freq_mask_para</span><span class="p">,</span>
                                                  <span class="n">time_mask_num</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">time_mask_num</span><span class="p">,</span> <span class="n">freq_mask_num</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">freq_mask_num</span><span class="p">,</span>
-                                                 <span class="n">sos_id</span><span class="o">=</span><span class="n">sos_id</span><span class="p">,</span> <span class="n">eos_id</span><span class="o">=</span><span class="n">eos_id</span><span class="p">,</span> <span class="n">target_dict</span><span class="o">=</span><span class="n">target_dict</span><span class="p">)</span>
+                                                 <span class="n">sos_id</span><span class="o">=</span><span class="n">sos_id</span><span class="p">,</span> <span class="n">eos_id</span><span class="o">=</span><span class="n">eos_id</span><span class="p">,</span> <span class="n">dataset_path</span><span class="o">=</span><span class="n">dataset_path</span><span class="p">,</span>
+                                                 <span class="n">noiseset_size</span><span class="o">=</span><span class="n">noiseset_size</span><span class="p">,</span> <span class="n">noise_level</span><span class="o">=</span><span class="n">noise_level</span><span class="p">,</span> <span class="n">noise_augment</span><span class="o">=</span><span class="n">noise_augment</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">audio_paths</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">audio_paths</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">script_paths</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">script_paths</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">augment_methods</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">VANILLA</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">audio_paths</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">audio_paths</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">augmentation</span><span class="p">(</span><span class="n">spec_augment</span><span class="p">,</span> <span class="n">noise_augment</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">shuffle</span><span class="p">()</span>
 
@@ -233,7 +237,7 @@
         <span class="k">if</span> <span class="n">spec_augment</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Applying Spec Augmentation...&quot;</span><span class="p">)</span>
 
-            <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">audio_paths</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_size</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">augment_methods</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SPEC_AUGMENT</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">audio_paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">audio_paths</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">script_paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">script_paths</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
@@ -241,7 +245,7 @@
         <span class="k">if</span> <span class="n">noise_augment</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Applying Noise Augmentation...&quot;</span><span class="p">)</span>
 
-            <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">audio_paths</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_size</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">augment_methods</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">NOISE_INJECTION</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">audio_paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">audio_paths</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">script_paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">script_paths</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span></div>
@@ -443,7 +447,10 @@
                 <span class="n">target_dict</span><span class="o">=</span><span class="n">target_dict</span><span class="p">,</span>
                 <span class="n">opt</span><span class="o">=</span><span class="n">opt</span><span class="p">,</span>
                 <span class="n">spec_augment</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">spec_augment</span><span class="p">,</span>
-                <span class="n">noise_augment</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">noise_augment</span>
+                <span class="n">noise_augment</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">noise_augment</span><span class="p">,</span>
+                <span class="n">dataset_path</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">dataset_path</span><span class="p">,</span>
+                <span class="n">noiseset_size</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">noiseset_size</span><span class="p">,</span>
+                <span class="n">noise_level</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">noise_level</span>
             <span class="p">)</span>
         <span class="p">)</span>
 
@@ -478,23 +485,6 @@
     <span class="n">script_paths</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dataset_path</span> <span class="o">+</span> <span class="n">data_list</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">])</span>
 
     <span class="k">return</span> <span class="n">audio_paths</span><span class="p">,</span> <span class="n">script_paths</span></div>
-
-
-<div class="viewcode-block" id="load_pickle"><a class="viewcode-back" href="../../../Data_loader.html#e2e.data_loader.data_loader.load_pickle">[docs]</a><span class="k">def</span> <span class="nf">load_pickle</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    load pickle file</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        filepath (str): Path to pickle file to load</span>
-<span class="sd">        message (str): message to print</span>
-
-<span class="sd">    Returns: load_result</span>
-<span class="sd">        -**load_result** : load result of pickle</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-        <span class="n">load_result</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">load_result</span></div>
 </pre></div>
 
            </div>

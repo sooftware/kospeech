@@ -29,4 +29,5 @@ Welcome to End-to-end Speech Recognition's documentation!
    Feature
    Loss
    Modules
+   Optim
    Trainer

@@ -98,6 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../Feature.html">Feature</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Loss.html">Loss</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Modules.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Optim.html">Optim</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Trainer.html">Trainer</a></li>
 </ul>
 
@@ -165,11 +166,11 @@
 <span></span><span class="kn">import</span> <span class="nn">librosa</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">platform</span>
-<span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">abc</span> <span class="k">import</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">e2e.feature.augment</span> <span class="k">import</span> <span class="n">SpecAugment</span><span class="p">,</span> <span class="n">NoiseInjector</span>
 <span class="kn">from</span> <span class="nn">e2e.feature.core</span> <span class="k">import</span> <span class="n">split</span>
-<span class="c1">#from e2e.modules.global_var import logger</span>
+<span class="c1">#from e2e.modules.global_ import logger</span>
 
 <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Linux&#39;</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">torchaudio</span>
@@ -177,7 +178,7 @@
 
 <div class="viewcode-block" id="AudioParser"><a class="viewcode-back" href="../../../Feature.html#e2e.feature.parser.AudioParser">[docs]</a><span class="k">class</span> <span class="nc">AudioParser</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Provides load_audio(), inject_noise(), instancewise_standardization(), spec_audment() function.</span>
+<span class="sd">    Provides inteface of audio parser.</span>
 
 <span class="sd">    Note:</span>
 <span class="sd">        Do not use this class directly, use one of the sub classes.</span>
@@ -186,8 +187,11 @@
 <span class="sd">        - **parse_audio()**: abstract method. you have to override this method.</span>
 <span class="sd">        - **parse_script()**: abstract method. you have to override this method.</span>
 <span class="sd">        - **load_audio()**: load audio file to signal. (PCM)</span>
-<span class="sd">        - **instancewise_standardization**: provides instance-wise standardization normalization.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_path</span><span class="p">,</span> <span class="n">noiseset_size</span><span class="p">,</span> <span class="n">sample_rate</span><span class="o">=</span><span class="mi">16000</span><span class="p">,</span> <span class="n">noise_level</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">noise_augment</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">noise_augment</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">noise_injector</span> <span class="o">=</span> <span class="n">NoiseInjector</span><span class="p">(</span><span class="n">dataset_path</span><span class="p">,</span> <span class="n">noiseset_size</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">,</span> <span class="n">noise_level</span><span class="p">)</span>
+
 <div class="viewcode-block" id="AudioParser.load_audio"><a class="viewcode-back" href="../../../Feature.html#e2e.feature.parser.AudioParser.load_audio">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">load_audio</span><span class="p">(</span><span class="n">audio_path</span><span class="p">,</span> <span class="n">del_silence</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -196,33 +200,19 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">memmap</span><span class="p">(</span><span class="n">audio_path</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">del_silence</span><span class="p">:</span>
+                <span class="n">non_silence_indices</span> <span class="o">=</span> <span class="n">split</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">top_db</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+                <span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">signal</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span> <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="ow">in</span> <span class="n">non_silence_indices</span><span class="p">])</span>
+
+            <span class="n">signal</span> <span class="o">/=</span> <span class="mi">32767</span>  <span class="c1"># normalize audio</span>
+            <span class="k">return</span> <span class="n">signal</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;ValueError in </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">audio_path</span><span class="p">))</span>
             <span class="k">return</span> <span class="kc">None</span>
         <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;RuntimeError in </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">audio_path</span><span class="p">))</span>
-            <span class="k">return</span> <span class="kc">None</span>
-
-        <span class="k">if</span> <span class="n">del_silence</span><span class="p">:</span>
-            <span class="n">non_silence_indices</span> <span class="o">=</span> <span class="n">split</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">top_db</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
-            <span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">signal</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span> <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="ow">in</span> <span class="n">non_silence_indices</span><span class="p">])</span>
-
-        <span class="n">signal</span> <span class="o">=</span> <span class="n">signal</span> <span class="o">/</span> <span class="mi">32767</span>  <span class="c1"># normalize audio</span>
-        <span class="k">return</span> <span class="n">signal</span></div>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">instancewise_standardization</span><span class="p">(</span><span class="n">spectrogram</span><span class="p">):</span>
-        <span class="n">mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">spectrogram</span><span class="p">)</span>
-        <span class="n">std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">spectrogram</span><span class="p">)</span>
-        <span class="n">spectrogram</span> <span class="o">-=</span> <span class="n">mean</span>
-        <span class="n">spectrogram</span> <span class="o">/=</span> <span class="n">std</span>
-        <span class="k">return</span> <span class="n">spectrogram</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">inject_noise</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">noise_factor</span><span class="p">):</span>
-        <span class="n">noise</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">signal</span><span class="p">))</span>
-        <span class="n">signal</span> <span class="o">+=</span> <span class="n">noise</span> <span class="o">*</span> <span class="n">noise_factor</span>
-        <span class="k">return</span> <span class="n">signal</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
 
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">parse_audio</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">audio_path</span><span class="p">,</span> <span class="n">augment_method</span><span class="p">):</span>
@@ -230,30 +220,7 @@
 
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">parse_script</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">script_path</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-
-<div class="viewcode-block" id="AudioParser.spec_augment"><a class="viewcode-back" href="../../../Feature.html#e2e.feature.parser.AudioParser.spec_augment">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">spec_augment</span><span class="p">(</span><span class="n">spectrogram</span><span class="p">,</span> <span class="n">time_mask_para</span><span class="p">,</span> <span class="n">freq_mask_para</span><span class="p">,</span> <span class="n">time_mask_num</span><span class="p">,</span> <span class="n">freq_mask_num</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Provides SpecAugmentation for audio &quot;&quot;&quot;</span>
-        <span class="n">length</span> <span class="o">=</span> <span class="n">spectrogram</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">n_mels</span> <span class="o">=</span> <span class="n">spectrogram</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-
-        <span class="c1"># time mask</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">time_mask_num</span><span class="p">):</span>
-            <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="n">time_mask_para</span><span class="p">)</span>
-            <span class="n">t</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">length</span> <span class="o">-</span> <span class="n">t</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">t0</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">length</span> <span class="o">-</span> <span class="n">t</span><span class="p">)</span>
-                <span class="n">spectrogram</span><span class="p">[</span><span class="n">t0</span><span class="p">:</span> <span class="n">t0</span> <span class="o">+</span> <span class="n">t</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">0</span>
-
-        <span class="c1"># freq mask</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">freq_mask_num</span><span class="p">):</span>
-            <span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="n">freq_mask_para</span><span class="p">)</span>
-            <span class="n">f</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-            <span class="n">f0</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_mels</span> <span class="o">-</span> <span class="n">f</span><span class="p">)</span>
-            <span class="n">spectrogram</span><span class="p">[:,</span> <span class="n">f0</span><span class="p">:</span> <span class="n">f0</span> <span class="o">+</span> <span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-
-        <span class="k">return</span> <span class="n">spectrogram</span></div></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 
 <div class="viewcode-block" id="SpectrogramParser"><a class="viewcode-back" href="../../../Feature.html#e2e.feature.parser.SpectrogramParser">[docs]</a><span class="k">class</span> <span class="nc">SpectrogramParser</span><span class="p">(</span><span class="n">AudioParser</span><span class="p">):</span>
@@ -284,8 +251,9 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_extract_by</span><span class="o">=</span><span class="s1">&#39;librosa&#39;</span><span class="p">,</span> <span class="n">sample_rate</span><span class="o">=</span><span class="mi">16000</span><span class="p">,</span> <span class="n">n_mels</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">window_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
                  <span class="n">del_silence</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">input_reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                  <span class="n">time_mask_para</span><span class="o">=</span><span class="mi">70</span><span class="p">,</span> <span class="n">freq_mask_para</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">time_mask_num</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">freq_mask_num</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-                 <span class="n">sos_id</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">eos_id</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">target_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">SpectrogramParser</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+                 <span class="n">sos_id</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">eos_id</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">target_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">noise_augment</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dataset_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">noiseset_size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">noise_level</span><span class="o">=</span><span class="mf">0.7</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SpectrogramParser</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dataset_path</span><span class="p">,</span> <span class="n">noiseset_size</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">,</span> <span class="n">noise_level</span><span class="p">,</span> <span class="n">noise_augment</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span> <span class="o">=</span> <span class="n">sample_rate</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_mels</span> <span class="o">=</span> <span class="n">n_mels</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span> <span class="o">=</span> <span class="n">window_size</span>
@@ -294,14 +262,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">normalize</span> <span class="o">=</span> <span class="n">normalize</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_fft</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sample_rate</span> <span class="o">*</span> <span class="mf">0.001</span> <span class="o">*</span> <span class="n">window_size</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hop_length</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sample_rate</span> <span class="o">*</span> <span class="mf">0.001</span> <span class="o">*</span> <span class="n">stride</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">time_mask_para</span> <span class="o">=</span> <span class="n">time_mask_para</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">freq_mask_para</span> <span class="o">=</span> <span class="n">freq_mask_para</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">time_mask_num</span> <span class="o">=</span> <span class="n">time_mask_num</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">freq_mask_num</span> <span class="o">=</span> <span class="n">freq_mask_num</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">feature_extract_by</span> <span class="o">=</span> <span class="n">feature_extract_by</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sos_id</span> <span class="o">=</span> <span class="n">sos_id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">eos_id</span> <span class="o">=</span> <span class="n">eos_id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">target_dict</span> <span class="o">=</span> <span class="n">target_dict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spec_augment</span> <span class="o">=</span> <span class="n">SpecAugment</span><span class="p">(</span><span class="n">time_mask_para</span><span class="p">,</span> <span class="n">freq_mask_para</span><span class="p">,</span> <span class="n">time_mask_num</span><span class="p">,</span> <span class="n">freq_mask_num</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">feature_extract_by</span> <span class="o">==</span> <span class="s1">&#39;torchaudio&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span> <span class="o">=</span> <span class="n">torchaudio</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">MelSpectrogram</span><span class="p">(</span><span class="n">sample_rate</span><span class="o">=</span><span class="n">sample_rate</span><span class="p">,</span>  <span class="n">win_length</span><span class="o">=</span><span class="n">window_size</span><span class="p">,</span>
@@ -325,7 +290,9 @@
         <span class="k">if</span> <span class="n">signal</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># Exception handling</span>
             <span class="k">return</span> <span class="kc">None</span>
         <span class="k">elif</span> <span class="n">augment_method</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">NOISE_INJECTION</span><span class="p">:</span>  <span class="c1"># Noise injection</span>
-            <span class="n">signal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inject_noise</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">noise_factor</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+            <span class="n">signal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">noise_injector</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">signal</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_extract_by</span> <span class="o">==</span> <span class="s1">&#39;torchaudio&#39;</span><span class="p">:</span>
             <span class="n">spectrogram</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">(</span><span class="n">signal</span><span class="p">))</span>
@@ -346,13 +313,20 @@
         <span class="n">spectrogram</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">spectrogram</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
 
         <span class="k">if</span> <span class="n">augment_method</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">SPEC_AUGMENT</span><span class="p">:</span>
-            <span class="n">spectrogram</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spec_augment</span><span class="p">(</span><span class="n">spectrogram</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_mask_para</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">freq_mask_para</span><span class="p">,</span>
-                                            <span class="bp">self</span><span class="o">.</span><span class="n">time_mask_num</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">freq_mask_num</span><span class="p">)</span>
+            <span class="n">spectrogram</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spec_augment</span><span class="p">(</span><span class="n">spectrogram</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="n">spectrogram</span></div>
 
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">parse_script</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">script_path</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">instancewise_standardization</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spectrogram</span><span class="p">):</span>
+        <span class="n">mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">spectrogram</span><span class="p">)</span>
+        <span class="n">std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">spectrogram</span><span class="p">)</span>
+        <span class="n">spectrogram</span> <span class="o">-=</span> <span class="n">mean</span>
+        <span class="n">spectrogram</span> <span class="o">/=</span> <span class="n">std</span>
+        <span class="k">return</span> <span class="n">spectrogram</span></div>
 </pre></div>
 
            </div>

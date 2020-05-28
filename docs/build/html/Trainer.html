@@ -34,7 +34,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Modules" href="Modules.html" /> 
+    <link rel="prev" title="Optim" href="Optim.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -99,6 +99,7 @@
 <li class="toctree-l1"><a class="reference internal" href="Feature.html">Feature</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Modules.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Optim.html">Optim</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Trainer</a></li>
 </ul>
 
@@ -168,16 +169,15 @@
 <span id="trainer"></span><h1>Trainer<a class="headerlink" href="#module-e2e.trainer.supervised_trainer" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="e2e.trainer.supervised_trainer.SupervisedTrainer">
-<em class="property">class </em><code class="descclassname">e2e.trainer.supervised_trainer.</code><code class="descname">SupervisedTrainer</code><span class="sig-paren">(</span><em>optimizer</em>, <em>lr_scheduler</em>, <em>criterion</em>, <em>trainset_list</em>, <em>validset</em>, <em>high_plateau_lr</em>, <em>num_workers</em>, <em>device</em>, <em>print_every</em>, <em>save_result_every</em>, <em>checkpoint_every</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/trainer/supervised_trainer.html#SupervisedTrainer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.trainer.supervised_trainer.SupervisedTrainer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">e2e.trainer.supervised_trainer.</code><code class="descname">SupervisedTrainer</code><span class="sig-paren">(</span><em>optimizer</em>, <em>criterion</em>, <em>trainset_list</em>, <em>validset</em>, <em>high_plateau_lr</em>, <em>low_plateau_lr</em>, <em>exp_decay_period</em>, <em>num_workers</em>, <em>device</em>, <em>decay_threshold</em>, <em>print_every</em>, <em>save_result_every</em>, <em>checkpoint_every</em>, <em>teacher_forcing_step=0.0</em>, <em>min_teacher_forcing_ratio=0.7</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/trainer/supervised_trainer.html#SupervisedTrainer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.trainer.supervised_trainer.SupervisedTrainer" title="Permalink to this definition">¶</a></dt>
 <dd><p>The SupervisedTrainer class helps in setting up training framework in a supervised setting.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>optimizer</strong> (<em>torch.optim</em>) – optimizer for training</li>
-<li><strong>lr_scheduler</strong> (<em>torch.optim</em>) – learning rate scheduler</li>
-<li><strong>criterion</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.6.0a0+d035d05 ))"><em>torch.nn.Module</em></a>) – loss function</li>
+<li><strong>optimizer</strong> (<a class="reference internal" href="Optim.html#e2e.optim.optim.Optimizer" title="e2e.optim.optim.Optimizer"><em>e2e.optim.optim.Optimizer</em></a>) – optimizer for training</li>
+<li><strong>criterion</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.6.0a0+bfcb687 ))"><em>torch.nn.Module</em></a>) – loss function</li>
 <li><strong>trainset_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – list of training datset</li>
 <li><strong>validset</strong> (<em>e2e.dataset.data_loader.SpectrogramDataset</em>) – validation dataset</li>
 <li><strong>num_workers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of using cpu cores</li>
@@ -192,20 +192,17 @@
 </table>
 <dl class="method">
 <dt id="e2e.trainer.supervised_trainer.SupervisedTrainer.train">
-<code class="descname">train</code><span class="sig-paren">(</span><em>model</em>, <em>batch_size</em>, <em>epoch_time_step</em>, <em>num_epochs</em>, <em>max_norm</em>, <em>rampup_period</em>, <em>rampup_power</em>, <em>teacher_forcing_ratio=0.99</em>, <em>resume=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/trainer/supervised_trainer.html#SupervisedTrainer.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.trainer.supervised_trainer.SupervisedTrainer.train" title="Permalink to this definition">¶</a></dt>
+<code class="descname">train</code><span class="sig-paren">(</span><em>model</em>, <em>batch_size</em>, <em>epoch_time_step</em>, <em>num_epochs</em>, <em>teacher_forcing_ratio=0.99</em>, <em>resume=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/trainer/supervised_trainer.html#SupervisedTrainer.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.trainer.supervised_trainer.SupervisedTrainer.train" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run training for a given model.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>model</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.6.0a0+d035d05 ))"><em>torch.nn.Module</em></a>) – model to train</li>
+<li><strong>model</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.6.0a0+bfcb687 ))"><em>torch.nn.Module</em></a>) – model to train</li>
 <li><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – batch size for experiment</li>
 <li><strong>epoch_time_step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of time step for training</li>
 <li><strong>num_epochs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of epochs for training</li>
-<li><strong>max_norm</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – If the norm of the gradient vector exceeds this, remormalize it to have the norm equal to</li>
-<li><strong>rampup_period</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Period of learning rate rampup</li>
-<li><strong>rampup_power</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Power of rampup. two means linear, three means exponential.</li>
 <li><strong>teacher_forcing_ratio</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – teaching forcing ratio (default 0.99)</li>
 <li><strong>resume</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – resume training with the latest checkpoint, (default False)</li>
 </ul>
@@ -217,22 +214,19 @@
 
 <dl class="method">
 <dt id="e2e.trainer.supervised_trainer.SupervisedTrainer.train_epoches">
-<code class="descname">train_epoches</code><span class="sig-paren">(</span><em>model</em>, <em>epoch</em>, <em>epoch_time_step</em>, <em>train_begin_time</em>, <em>queue</em>, <em>teacher_forcing_ratio</em>, <em>max_norm</em>, <em>rampup_period</em>, <em>rampup_power</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/trainer/supervised_trainer.html#SupervisedTrainer.train_epoches"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.trainer.supervised_trainer.SupervisedTrainer.train_epoches" title="Permalink to this definition">¶</a></dt>
+<code class="descname">train_epoches</code><span class="sig-paren">(</span><em>model</em>, <em>epoch</em>, <em>epoch_time_step</em>, <em>train_begin_time</em>, <em>queue</em>, <em>teacher_forcing_ratio</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/trainer/supervised_trainer.html#SupervisedTrainer.train_epoches"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.trainer.supervised_trainer.SupervisedTrainer.train_epoches" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run training one epoch</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>model</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.6.0a0+d035d05 ))"><em>torch.nn.Module</em></a>) – model to train</li>
+<li><strong>model</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.6.0a0+bfcb687 ))"><em>torch.nn.Module</em></a>) – model to train</li>
 <li><strong>epoch</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of current epoch</li>
 <li><strong>epoch_time_step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – total time step in one epoch</li>
 <li><strong>train_begin_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – time of train begin</li>
 <li><strong>queue</strong> (<a class="reference external" href="https://docs.python.org/3/library/queue.html#queue.Queue" title="(in Python v3.8)"><em>queue.Queue</em></a>) – training queue, containing input, targets, input_lengths, target_lengths</li>
 <li><strong>teacher_forcing_ratio</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – teaching forcing ratio (default 0.99)</li>
-<li><strong>max_norm</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – If the norm of the gradient vector exceeds this, remormalize it to have the norm equal to</li>
-<li><strong>rampup_period</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Period of learning rate rampup</li>
-<li><strong>rampup_power</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Power of rampup. two means linear, three means exponential.</li>
 </ul>
 </td>
 </tr>
@@ -257,7 +251,7 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>model</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.6.0a0+d035d05 ))"><em>torch.nn.Module</em></a>) – model to train</li>
+<li><strong>model</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.6.0a0+bfcb687 ))"><em>torch.nn.Module</em></a>) – model to train</li>
 <li><strong>queue</strong> (<a class="reference external" href="https://docs.python.org/3/library/queue.html#queue.Queue" title="(in Python v3.8)"><em>queue.Queue</em></a>) – validation queue, containing input, targets, input_lengths, target_lengths</li>
 </ul>
 </td>
@@ -287,7 +281,7 @@
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
       
-        <a href="Modules.html" class="btn btn-neutral float-left" title="Modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="Optim.html" class="btn btn-neutral float-left" title="Optim" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

@@ -9,6 +9,18 @@ class SpecAugment(object):
     """
     Provides Spec Augment. A simple data augmentation method for speech recognition.
     This concept proposed in https://arxiv.org/abs/1904.08779
+
+    Args:
+        time_mask_para (int): maximum time masking length
+        freq_mask_para (int): maximum frequency masking length
+        time_mask_num (int): how many times to apply time masking
+        freq_mask_num (int): how many times to apply frequency masking
+
+    Inputs: spectrogram
+        - **spectrogram** (torch.FloatTensor): spectrogram feature from audio file.
+
+    Returns: spectrogram:
+        - **spectrogram**: masked spectrogram feature.
     """
     def __init__(self, time_mask_para, freq_mask_para, time_mask_num, freq_mask_num):
         self.time_mask_para = time_mask_para
@@ -53,6 +65,12 @@ class NoiseInjector(object):
         noiseset_size (int): size of noise dataset
         sample_rate (int): sampling rate
         noise_level (float): level of noise
+
+    Inputs: signal
+        - **signal**: signal from pcm file
+
+    Returns: signal
+        - **signal**: noise added signal
     """
     def __init__(self, dataset_path, noiseset_size, sample_rate=16000, noise_level=0.7):
         if not os.path.exists(dataset_path):

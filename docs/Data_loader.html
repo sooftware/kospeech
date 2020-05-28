@@ -104,6 +104,7 @@
 <li class="toctree-l1"><a class="reference internal" href="Feature.html">Feature</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Modules.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Optim.html">Optim</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
 </ul>
 
@@ -233,7 +234,7 @@
 
 <dl class="class">
 <dt id="e2e.data_loader.data_loader.SpectrogramDataset">
-<em class="property">class </em><code class="descclassname">e2e.data_loader.data_loader.</code><code class="descname">SpectrogramDataset</code><span class="sig-paren">(</span><em>audio_paths</em>, <em>script_paths</em>, <em>sos_id</em>, <em>eos_id</em>, <em>target_dict</em>, <em>opt</em>, <em>spec_augment</em>, <em>noise_augment</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/data_loader/data_loader.html#SpectrogramDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.data_loader.data_loader.SpectrogramDataset" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">e2e.data_loader.data_loader.</code><code class="descname">SpectrogramDataset</code><span class="sig-paren">(</span><em>audio_paths</em>, <em>script_paths</em>, <em>sos_id</em>, <em>eos_id</em>, <em>target_dict</em>, <em>opt</em>, <em>spec_augment=False</em>, <em>noise_augment=False</em>, <em>dataset_path=None</em>, <em>noiseset_size=0</em>, <em>noise_level=0.7</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/data_loader/data_loader.html#SpectrogramDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.data_loader.data_loader.SpectrogramDataset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dataset for spectrogram &amp; script matching</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -302,28 +303,6 @@
 <li><strong>script_paths</strong> (list): set of label path</li>
 </ul>
 </dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="e2e.data_loader.data_loader.load_pickle">
-<code class="descclassname">e2e.data_loader.data_loader.</code><code class="descname">load_pickle</code><span class="sig-paren">(</span><em>filepath</em>, <em>message=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/data_loader/data_loader.html#load_pickle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.data_loader.data_loader.load_pickle" title="Permalink to this definition">¶</a></dt>
-<dd><p>load pickle file</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>filepath</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Path to pickle file to load</li>
-<li><strong>message</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – message to print</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Returns: load_result</dt>
-<dd>-<strong>load_result</strong> : load result of pickle</dd>
 </dl>
 </dd></dl>
 

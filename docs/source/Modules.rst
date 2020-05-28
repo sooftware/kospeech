@@ -7,6 +7,11 @@ Checkpoint
 .. automodule:: e2e.modules.checkpoint
     :members:
 
+Error_rate
+-------------------------------------------
+.. automodule:: e2e.modules.error_rate
+    :members:
+
 Global_var
 -------------------------------------------
 .. automodule:: e2e.modules.global_var

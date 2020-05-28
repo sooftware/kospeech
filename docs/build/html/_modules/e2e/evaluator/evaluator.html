@@ -98,6 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../Feature.html">Feature</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Loss.html">Loss</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Modules.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Optim.html">Optim</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Trainer.html">Trainer</a></li>
 </ul>
 
@@ -165,8 +166,8 @@
 <span></span><span class="kn">import</span> <span class="nn">queue</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">e2e.data_loader.data_loader</span> <span class="k">import</span> <span class="n">AudioDataLoader</span>
-<span class="kn">from</span> <span class="nn">e2e.modules.utils</span> <span class="k">import</span> <span class="n">get_distance</span>
-<span class="c1">#from e2e.modules.global_var import id2char, EOS_token, logger</span>
+<span class="kn">from</span> <span class="nn">e2e.modules.error_rate</span> <span class="k">import</span> <span class="n">CharacterErrorRate</span>
+<span class="c1">#from e2e.modules.global_ import id2char, EOS_token, logger</span>
 
 
 <div class="viewcode-block" id="Evaluator"><a class="viewcode-back" href="../../../Evaluator.html#e2e.evaluator.evaluator.Evaluator">[docs]</a><span class="k">class</span> <span class="nc">Evaluator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -200,11 +201,11 @@
 
 <div class="viewcode-block" id="Evaluator.predict"><a class="viewcode-back" href="../../../Evaluator.html#e2e.evaluator.evaluator.Evaluator.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">queue</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Make prediction given testset as input. &quot;&quot;&quot;</span>
+        <span class="n">rater</span> <span class="o">=</span> <span class="n">CharacterErrorRate</span><span class="p">(</span><span class="n">id2char</span><span class="p">,</span> <span class="n">EOS_token</span><span class="p">)</span>
+        <span class="n">cer</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;evaluate() start&#39;</span><span class="p">)</span>
-        <span class="n">total_dist</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">total_length</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">total_sent_num</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">time_step</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">timestep</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
 
@@ -223,18 +224,16 @@
                 <span class="n">logit</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
                 <span class="n">hypothesis</span> <span class="o">=</span> <span class="n">logit</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
 
-                <span class="n">dist</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="n">get_distance</span><span class="p">(</span><span class="n">scripts</span><span class="p">,</span> <span class="n">hypothesis</span><span class="p">,</span> <span class="n">id2char</span><span class="p">,</span> <span class="n">EOS_token</span><span class="p">)</span>
-                <span class="n">total_dist</span> <span class="o">+=</span> <span class="n">dist</span>
-                <span class="n">total_length</span> <span class="o">+=</span> <span class="n">length</span>
+                <span class="n">cer</span> <span class="o">=</span> <span class="n">rater</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">hypothesis</span><span class="p">)</span>
                 <span class="n">total_sent_num</span> <span class="o">+=</span> <span class="n">scripts</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
-                <span class="k">if</span> <span class="n">time_step</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_every</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;cer: </span><span class="si">{:.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dist</span> <span class="o">/</span> <span class="n">length</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">timestep</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_every</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;cer: </span><span class="si">{:.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cer</span><span class="p">))</span>
 
-                <span class="n">time_step</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">timestep</span> <span class="o">+=</span> <span class="mi">1</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;evaluate() completed&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">total_dist</span> <span class="o">/</span> <span class="n">total_length</span></div></div>
+        <span class="k">return</span> <span class="n">cer</span></div></div>
 </pre></div>
 
            </div>

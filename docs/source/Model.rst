@@ -32,14 +32,8 @@ Attention
 .. automodule:: e2e.model.attention
     :members:
 
-BaseRNN
+Sub_layers
 --------------------------------------------
 
-.. automodule:: e2e.model.baseRNN
-    :members:
-
-MaskCNN
---------------------------------------------
-
-.. automodule:: e2e.model.maskCNN
+.. automodule:: e2e.model.sub_layers
     :members:

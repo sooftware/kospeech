@@ -10,7 +10,7 @@ class CharacterErrorRate(object):
         id2char (dict): id2char[id] = char
         eos_id (int): end of sentence identification
 
-    Input: target, y_hat
+    Inputs: target, y_hat
         - **target**: ground truth
         - **y_hat**: prediction of recognizer
 
@@ -24,6 +24,7 @@ class CharacterErrorRate(object):
         self.eos_id = eos_id
 
     def __call__(self, targets, hypothesis):
+        """ Calculating character error rate """
         dist, length = self._get_distance(targets, hypothesis)
         self.total_dist += dist
         self.total_length += length

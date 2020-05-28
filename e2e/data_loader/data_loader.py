@@ -1,5 +1,4 @@
 import math
-import pickle
 import threading
 import pandas as pd
 import torch
@@ -320,20 +319,3 @@ def load_data_list(data_list_path, dataset_path):
     script_paths = list(dataset_path + data_list["label"])
 
     return audio_paths, script_paths
-
-
-def load_pickle(filepath, message=""):
-    """
-    load pickle file
-
-    Args:
-        filepath (str): Path to pickle file to load
-        message (str): message to print
-
-    Returns: load_result
-        -**load_result** : load result of pickle
-    """
-    with open(filepath, "rb") as f:
-        load_result = pickle.load(f)
-        logger.info(message)
-        return load_result

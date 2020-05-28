@@ -99,11 +99,13 @@
 <li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Feature</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#module-e2e.feature.parser">Parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-e2e.feature.core">core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-e2e.feature.augment">Augment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-e2e.feature.core">Core</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Modules.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Optim.html">Optim</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
 </ul>
 
@@ -175,8 +177,8 @@
 <span id="parser"></span><h2>Parser<a class="headerlink" href="#module-e2e.feature.parser" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="e2e.feature.parser.AudioParser">
-<em class="property">class </em><code class="descclassname">e2e.feature.parser.</code><code class="descname">AudioParser</code><a class="reference internal" href="_modules/e2e/feature/parser.html#AudioParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.feature.parser.AudioParser" title="Permalink to this definition">¶</a></dt>
-<dd><p>Provides load_audio(), inject_noise(), instancewise_standardization(), spec_audment() function.</p>
+<em class="property">class </em><code class="descclassname">e2e.feature.parser.</code><code class="descname">AudioParser</code><span class="sig-paren">(</span><em>dataset_path</em>, <em>noiseset_size</em>, <em>sample_rate=16000</em>, <em>noise_level=0.7</em>, <em>noise_augment=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/feature/parser.html#AudioParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.feature.parser.AudioParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides inteface of audio parser.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Do not use this class directly, use one of the sub classes.</p>
@@ -187,7 +189,6 @@
 <li><strong>parse_audio()</strong>: abstract method. you have to override this method.</li>
 <li><strong>parse_script()</strong>: abstract method. you have to override this method.</li>
 <li><strong>load_audio()</strong>: load audio file to signal. (PCM)</li>
-<li><strong>instancewise_standardization</strong>: provides instance-wise standardization normalization.</li>
 </ul>
 </dd>
 </dl>
@@ -198,17 +199,11 @@
 if del_silence is True, Eliminate all signals below 30dB</p>
 </dd></dl>
 
-<dl class="staticmethod">
-<dt id="e2e.feature.parser.AudioParser.spec_augment">
-<em class="property">static </em><code class="descname">spec_augment</code><span class="sig-paren">(</span><em>spectrogram</em>, <em>time_mask_para</em>, <em>freq_mask_para</em>, <em>time_mask_num</em>, <em>freq_mask_num</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/feature/parser.html#AudioParser.spec_augment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.feature.parser.AudioParser.spec_augment" title="Permalink to this definition">¶</a></dt>
-<dd><p>Provides SpecAugmentation for audio</p>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="class">
 <dt id="e2e.feature.parser.SpectrogramParser">
-<em class="property">class </em><code class="descclassname">e2e.feature.parser.</code><code class="descname">SpectrogramParser</code><span class="sig-paren">(</span><em>feature_extract_by='librosa'</em>, <em>sample_rate=16000</em>, <em>n_mels=80</em>, <em>window_size=20</em>, <em>stride=10</em>, <em>del_silence=False</em>, <em>input_reverse=True</em>, <em>normalize=False</em>, <em>time_mask_para=70</em>, <em>freq_mask_para=12</em>, <em>time_mask_num=2</em>, <em>freq_mask_num=2</em>, <em>sos_id=1</em>, <em>eos_id=2</em>, <em>target_dict=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/feature/parser.html#SpectrogramParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.feature.parser.SpectrogramParser" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">e2e.feature.parser.</code><code class="descname">SpectrogramParser</code><span class="sig-paren">(</span><em>feature_extract_by='librosa'</em>, <em>sample_rate=16000</em>, <em>n_mels=80</em>, <em>window_size=20</em>, <em>stride=10</em>, <em>del_silence=False</em>, <em>input_reverse=True</em>, <em>normalize=False</em>, <em>time_mask_para=70</em>, <em>freq_mask_para=12</em>, <em>time_mask_num=2</em>, <em>freq_mask_num=2</em>, <em>sos_id=1</em>, <em>eos_id=2</em>, <em>target_dict=None</em>, <em>noise_augment=False</em>, <em>dataset_path=None</em>, <em>noiseset_size=0</em>, <em>noise_level=0.7</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/feature/parser.html#SpectrogramParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.feature.parser.SpectrogramParser" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parses audio file into spectrogram with various options.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -263,8 +258,80 @@ if del_silence is True, Eliminate all signals below 30dB</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-e2e.feature.augment">
+<span id="augment"></span><h2>Augment<a class="headerlink" href="#module-e2e.feature.augment" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="e2e.feature.augment.NoiseInjector">
+<em class="property">class </em><code class="descclassname">e2e.feature.augment.</code><code class="descname">NoiseInjector</code><span class="sig-paren">(</span><em>dataset_path</em>, <em>noiseset_size</em>, <em>sample_rate=16000</em>, <em>noise_level=0.7</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/feature/augment.html#NoiseInjector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.feature.augment.NoiseInjector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides noise injection for noise augmentation.
+The noise augmentation process is as follows:</p>
+<p>Step 1: Randomly sample audios by <cite>noise_size</cite> from dataset
+Step 2: Extract noise from <cite>audio_paths</cite>
+Step 3: Add noise to signal</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dataset_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – path of dataset</li>
+<li><strong>noiseset_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – size of noise dataset</li>
+<li><strong>sample_rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – sampling rate</li>
+<li><strong>noise_level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – level of noise</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Inputs: signal</dt>
+<dd><ul class="first last simple">
+<li><strong>signal</strong>: signal from pcm file</li>
+</ul>
+</dd>
+<dt>Returns: signal</dt>
+<dd><ul class="first last simple">
+<li><strong>signal</strong>: noise added signal</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="e2e.feature.augment.SpecAugment">
+<em class="property">class </em><code class="descclassname">e2e.feature.augment.</code><code class="descname">SpecAugment</code><span class="sig-paren">(</span><em>time_mask_para</em>, <em>freq_mask_para</em>, <em>time_mask_num</em>, <em>freq_mask_num</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/feature/augment.html#SpecAugment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.feature.augment.SpecAugment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides Spec Augment. A simple data augmentation method for speech recognition.
+This concept proposed in <a class="reference external" href="https://arxiv.org/abs/1904.08779">https://arxiv.org/abs/1904.08779</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>time_mask_para</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – maximum time masking length</li>
+<li><strong>freq_mask_para</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – maximum frequency masking length</li>
+<li><strong>time_mask_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – how many times to apply time masking</li>
+<li><strong>freq_mask_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – how many times to apply frequency masking</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Inputs: spectrogram</dt>
+<dd><ul class="first last simple">
+<li><strong>spectrogram</strong> (torch.FloatTensor): spectrogram feature from audio file.</li>
+</ul>
+</dd>
+<dt>Returns: spectrogram:</dt>
+<dd><ul class="first last simple">
+<li><strong>spectrogram</strong>: masked spectrogram feature.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
 <div class="section" id="module-e2e.feature.core">
-<span id="core"></span><h2>core<a class="headerlink" href="#module-e2e.feature.core" title="Permalink to this headline">¶</a></h2>
+<span id="core"></span><h2>Core<a class="headerlink" href="#module-e2e.feature.core" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="e2e.feature.core.split">
 <code class="descclassname">e2e.feature.core.</code><code class="descname">split</code><span class="sig-paren">(</span><em>y</em>, <em>top_db=60</em>, <em>ref=&lt;function amax&gt;</em>, <em>frame_length=2048</em>, <em>hop_length=512</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/feature/core.html#split"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.feature.core.split" title="Permalink to this definition">¶</a></dt>
