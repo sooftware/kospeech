@@ -1,10 +1,8 @@
-"""
-e2e.optim.lr_scheduler provides RampUp & ExponentialDecay method to adjust learning rate.
-"""
+""" e2e.optim.lr_scheduler provides RampUp & ExponentialDecay method to adjust learning rate. """
 
 
 class LearningRateScheduler(object):
-    """ Interface of lr scheduler """
+    """ Super class of lr scheduler """
     def __init__(self, optimizer, init_lr):
         self.optimizer = optimizer
         self.init_lr = init_lr
@@ -23,21 +21,43 @@ class LearningRateScheduler(object):
 
 
 class RampUpLR(LearningRateScheduler):
-    """ Ramp up (Warm up) learning rate scheduler """
+    """
+    Ramp up learning rate for the `period` from `init_lr` to `high_plateau_lr`.
+
+    Args:
+        optimizer (torch.optim.Optimizer): optimizer object, the parameters to be optimized
+            should be given when instantiating the object, e.g. torch.optim.Adam, torch.optim
+        init_lr (float): initial learning rate
+        high_plateau_lr (float): target learning rate
+        period (int): timestep for which the scheduler is applied
+
+    ATTRIBUTES:
+        POWER (int): power of ramp up. three means exponential.
+    """
+    POWER = 3
+
     def __init__(self, optimizer, init_lr, high_plateau_lr, period):
         super(RampUpLR, self).__init__(optimizer, init_lr)
         self.timestep = 1
-        self.power = 3
         self.period = period
         self.high_plateau_lr = high_plateau_lr
 
     def step(self):
-        self.set_lr(self.optimizer, lr=self.high_plateau_lr * (self.timestep / self.period) ** self.power)
+        self.set_lr(self.optimizer, lr=self.high_plateau_lr * (self.timestep / self.period) ** self.POWER)
         self.timestep += 1
 
 
 class ExponentialDecayLR(LearningRateScheduler):
-    """ Exponential decay learning rate scheduler """
+    """
+    Exponential decay learning rate for the `period` from `init_lr` to `low_plateau_lr`.
+
+    Args:
+        optimizer (torch.optim.Optimizer): optimizer object, the parameters to be optimized
+            should be given when instantiating the object, e.g. torch.optim.Adam, torch.optim
+        init_lr (float): initial learning rate
+        low_plateau_lr (float): target learning rate
+        period (int): timestep for which the scheduler is applied
+    """
     def __init__(self, optimizer, init_lr, low_plateau_lr, period):
         super(ExponentialDecayLR, self).__init__(optimizer, init_lr)
         decay_rate = low_plateau_lr / init_lr

@@ -32,6 +32,9 @@ def model_opts(parser):
     group.add_argument('--rnn_type', '-rnn_type',
                        type=str, default='gru',
                        help='type of rnn cell: [gru, lstm, rnn] (default: gru)')
+    group.add_argument('--attn_mechanism', '-attn_mechanism',
+                       type=str, default='loc',
+                       help='Option to specify the attention mechanism method')
     group.add_argument('--teacher_forcing_ratio', '-teacher_forcing_ratio',
                        type=float, default=0.99,
                        help='teacher forcing ratio in decoding (default: 0.99)')
@@ -61,6 +64,9 @@ def train_opts(parser):
     group.add_argument('--noise_augment', '-noise_augment',
                        action='store_true', default=False,
                        help='flag indication whether to use noise augmentation or not')
+    group.add_argument('--noiseset_size', '-noiseset_size',
+                       type=int, default=5000,
+                       help='size of noise dataset for noise augmentation')
     group.add_argument('--use_cuda', '-use_cuda',
                        action='store_true', default=False,
                        help='flag indication whether to use cuda or not')
@@ -90,10 +96,13 @@ def train_opts(parser):
                        help='maximum characters of sentence (default: 151)')
     group.add_argument('--max_grad_norm', '-max_grad_norm',
                        type=int, default=400,
-                       help='If the norm of the gradient vector exceeds this, remormalize it to have the norm equal to (default: 400)')
+                       help='value used for gradient norm clipping (default: 400)')
     group.add_argument('--rampup_period', '-rampup_period',
                        type=int, default=1000,
                        help='Timestep of learning rate rampup (default: 1000)')
+    group.add_argument('--decay_threshold', '-decay_threshold',
+                       type=float, default=0.02,
+                       help='If the improvement of cer less than this, exponential decay lr start. (default: 0.02)')
     group.add_argument('--exp_decay_period', '-exp_decay_period',
                        type=int, default=100000,
                        help='Timestep of learning rate decay (default: 100000)')
@@ -215,6 +224,7 @@ def print_model_opts(opt):
     logger.info('--use_bidirectional: %s' % str(opt.use_bidirectional))
     logger.info('--hidden_dim: %s' % str(opt.hidden_dim))
     logger.info('--dropout: %s' % str(opt.dropout))
+    logger.info('--attn_mechanism: %s' % str(opt.attn_mechanism))
     logger.info('--num_heads: %s' % str(opt.num_heads))
     logger.info('--label_smoothing: %s' % str(opt.label_smoothing))
     logger.info('--listener_layer_size: %s' % str(opt.listener_layer_size))
@@ -232,6 +242,7 @@ def print_train_opts(opt):
     logger.info('--init_uniform: %s' % str(opt.init_uniform))
     logger.info('--spec_augment: %s' % str(opt.spec_augment))
     logger.info('--noise_augment: %s' % str(opt.noise_augment))
+    logger.info('--noiseset_size: %s' % str(opt.noiseset_size))
     logger.info('--use_cuda: %s' % str(opt.use_cuda))
     logger.info('--batch_size: %s' % str(opt.batch_size))
     logger.info('--num_workers: %s' % str(opt.num_workers))
@@ -239,6 +250,7 @@ def print_train_opts(opt):
     logger.info('--init_lr: %s' % str(opt.init_lr))
     logger.info('--high_plateau_lr: %s' % str(opt.high_plateau_lr))
     logger.info('--low_plateau_lr: %s' % str(opt.low_plateau_lr))
+    logger.info('--decay_threshold: %s' % str(opt.decay_threshold))
     logger.info('--rampup_period: %s' % str(opt.rampup_period))
     logger.info('--exp_decay_period: %s' % str(opt.exp_decay_period))
     logger.info('--valid_ratio: %s' % str(opt.valid_ratio))
@@ -276,3 +288,6 @@ def print_opts(opt, mode='train'):
     elif mode == 'infer':
         print_preprocess_opts(opt)
         print_inference_opts(opt)
+
+    else:
+        raise ValueError("Unsupported mode: {0}".format(mode))

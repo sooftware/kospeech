@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from e2e.model.module import BaseRNN
+from e2e.model.sub_layers import BaseRNN
 from e2e.model.las import ListenAttendSpell
 from e2e.model.listener import Listener
 from e2e.model.speller import Speller
@@ -29,6 +29,7 @@ def build_model(opt, device):
         rnn_type=opt.rnn_type,
         dropout_p=opt.dropout,
         num_heads=opt.num_heads,
+        attn_mechanism=opt.attn_mechanism,
         device=device
     )
 
@@ -64,10 +65,13 @@ def build_listener(input_size, hidden_dim, dropout_p, num_layers, bidirectional,
     assert num_layers > 0, "num_layers should be greater than 0"
     assert rnn_type.lower() in BaseRNN.supported_rnns.keys(), "Unsupported RNN Cell: {0}".format(rnn_type)
 
-    return Listener(input_size, hidden_dim, device, dropout_p, num_layers, bidirectional, rnn_type)
+    return Listener(input_size=input_size, hidden_dim=hidden_dim,
+                    dropout_p=dropout_p, num_layers=num_layers,
+                    bidirectional=bidirectional, rnn_type=rnn_type, device=device)
 
 
-def build_speller(num_classes, max_len, hidden_dim, sos_id, eos_id, num_layers, rnn_type, dropout_p, num_heads, device):
+def build_speller(num_classes, max_len, hidden_dim, sos_id, eos_id, attn_mechanism,
+                  num_layers, rnn_type, dropout_p, num_heads, device):
     """ build speller & validate parameters """
     assert isinstance(num_classes, int), "num_classes should be inteager type"
     assert isinstance(num_layers, int), "num_layers should be inteager type"
@@ -87,7 +91,11 @@ def build_speller(num_classes, max_len, hidden_dim, sos_id, eos_id, num_layers, 
     assert rnn_type.lower() in BaseRNN.supported_rnns.keys(), "Unsupported RNN Cell: {0}".format(rnn_type)
     assert device is not None, "device is None"
 
-    return Speller(num_classes, max_len, hidden_dim, sos_id, eos_id, num_heads, num_layers, rnn_type, dropout_p, device)
+    return Speller(num_classes=num_classes, max_length=max_len,
+                   hidden_dim=hidden_dim, sos_id=sos_id, eos_id=eos_id,
+                   attn_mechanism=attn_mechanism, num_heads=num_heads,
+                   num_layers=num_layers, rnn_type=rnn_type,
+                   dropout_p=dropout_p, device=device)
 
 
 def load_test_model(opt, device, use_beamsearch=True):

@@ -152,13 +152,13 @@ $ ./main.sh
 python ./main.py -dataset_path dataset_path -data_list_path data_list_path \
                  -use_multi_gpu -init_uniform -mode train -batch_size 32 -num_workers 4 \
                  -num_epochs 20 -spec_augment -noise_augment -max_len 151 \
-                 -use_cuda -lr 3e-04 -min_lr 1e-05 -lr_patience 1/3 -valid_ratio 0.01 \
+                 -use_cuda -valid_ratio 0.01 -max_grad_norm 400 -rampup_period 1000 \
                  -label_smoothing 0.1 -save_result_every 1000 -print_every 10 -checkpoint_every 5000 \
                  -use_bidirectional -hidden_dim 256 -dropout 0.3 -num_heads 8 -rnn_type gru \
                  -listener_layer_size 5 -speller_layer_size 3 -teacher_forcing_ratio 0.99 \ 
                  -input_reverse -normalize -del_silence -sample_rate 16000 -window_size 20 -stride 10 -n_mels 80 \
                  -feature_extract_by librosa -time_mask_para 50 -freq_mask_para 12 \
-                 -time_mask_num 2 -freq_mask_num 2 -max_norm 400 -rampup_period 1000 -rampup_power 3
+                 -time_mask_num 2 -freq_mask_num 2
 ```
   
 You can train the model by above command.  

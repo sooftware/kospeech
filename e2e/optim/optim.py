@@ -3,17 +3,18 @@ import torch
 
 class Optimizer(object):
     """
-    The Optimizer class provides functionalities for learning rate scheduling and gradient norm clipping.
+    This is wrapper classs of torch.optim.Optimizer.
+    This class provides functionalities for learning rate scheduling and gradient norm clipping.
 
     Args:
-        optimizer (torch.optim.Optimizer): optimizer object, the parameters to be optimized
+        optim (torch.optim.Optimizer): optimizer object, the parameters to be optimized
             should be given when instantiating the object, e.g. torch.optim.Adam, torch.optim.SGD
-        scheduler (e2e.optim.lr_scheduler): learning rate scheduler
-        scheduler_period (int): timestep with learning rate scheduler
-        max_grad_norm (int): If the norm of the gradient vector exceeds this, remormalize it to have the norm equal to
+        scheduler (e2e.optim.lr_scheduler, optional): learning rate scheduler
+        scheduler_period (int, optional): timestep with learning rate scheduler
+        max_grad_norm (int, optional): value used for gradient norm clipping
     """
-    def __init__(self, optimizer, scheduler=None, scheduler_period=None, max_grad_norm=0):
-        self.optimizer = optimizer
+    def __init__(self, optim, scheduler=None, scheduler_period=None, max_grad_norm=0):
+        self.optimizer = optim
         self.scheduler = scheduler
         self.scheduler_period = scheduler_period
         self.max_grad_norm = max_grad_norm
@@ -39,9 +40,7 @@ class Optimizer(object):
         self.count = 0
 
     def update(self, loss):
-        if self.scheduler is None:
-            pass
-        elif isinstance(self.scheduler, torch.optim.lr_scheduler.ReduceLROnPlateau):
+        if isinstance(self.scheduler, torch.optim.lr_scheduler.ReduceLROnPlateau):
             self.scheduler.step(loss)
 
         else:

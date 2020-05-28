@@ -18,13 +18,16 @@ LABEL_SMOOTHING=0.1
 LISTENER_LAYER_SIZE=5
 SPELLER_LAYER_SIZE=3
 RNN_TYPE='gru'
-INIT_LR=1e-15
-HIGH_PLATEAU_LR=3e-04
 TEACHER_FORCING_RATIO=0.99
 VALID_RATIO=0.003
 MAX_LEN=71
 MAX_GRAD_NORM=400
+INIT_LR=1e-15
+HIGH_PLATEAU_LR=3e-03
+LOW_PLATEAU_LR=1e-05
 RAMPUP_PERIOD=1000
+DECAY_START_IMPROVEMENT=0.02
+EXP_DECAY_PERIOD=160000
 WINDOW_SIZE=20
 SAMPLE_RATE=16000
 STRIDE=10
@@ -37,6 +40,7 @@ FREQ_MASK_NUM=2
 SAVE_RESULT_EVERY=1000
 CHECKPOINT_EVERY=5000
 PRINT_EVERY=10
+NOISESET_SIZE=5000
 MODE='train'
 
 
@@ -50,4 +54,5 @@ python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epoch
 --time_mask_num $TIME_MASK_NUM --freq_mask_num $FREQ_MASK_NUM --save_result_every $SAVE_RESULT_EVERY \
 --checkpoint_every $CHECKPOINT_EVERY --print_every $PRINT_EVERY --init_lr $INIT_LR  \
 --use_multi_gpu --init_uniform --mode $MODE --dataset_path $DATASET_PATH --data_list_path $DATA_LIST_PATH \
---max_grad_norm $MAX_GRAD_NORM --rampup_period $RAMPUP_PERIOD --max_len $MAX_LEN
+--max_grad_norm $MAX_GRAD_NORM --rampup_period $RAMPUP_PERIOD --max_len $MAX_LEN --decay_start_improvement $DECAY_START_IMPROVEMENT \
+--exp_decay_period  $EXP_DECAY_PERIOD --low_plateau_lr $LOW_PLATEAU_LR --noiseset_size $NOISESET_SIZE

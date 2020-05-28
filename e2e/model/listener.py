@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from e2e.model.module import BaseRNN, VGGExtractor
+from e2e.model.sub_layers import BaseRNN, VGGExtractor
 
 
 class Listener(BaseRNN):

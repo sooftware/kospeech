@@ -2,8 +2,8 @@ import random
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from e2e.model.module import BaseRNN
-from e2e.model.attention import LocationAwareAttention
+from e2e.model.sub_layers import BaseRNN
+from e2e.model.attention import LocationAwareAttention, MultiHeadAttention
 
 
 class Speller(BaseRNN):
@@ -34,8 +34,8 @@ class Speller(BaseRNN):
     Returns: decoder_outputs
         - **decoder_outputs**: list of tensors containing the outputs of the decoding function.
     """
-    def __init__(self, num_classes, max_length, hidden_dim, sos_id, eos_id,
-                 num_heads, num_layers=1, rnn_type='gru', dropout_p=0.5, device=None):
+    def __init__(self, num_classes, max_length, hidden_dim, sos_id, eos_id, attn_mechanism='loc',
+                 num_heads=8, num_layers=1, rnn_type='gru', dropout_p=0.5, device=None):
         super(Speller, self).__init__(hidden_dim, hidden_dim, num_layers, rnn_type, dropout_p, False, device)
         self.num_classes = num_classes
         self.num_heads = num_heads
@@ -44,8 +44,14 @@ class Speller(BaseRNN):
         self.sos_id = sos_id
         self.embedding = nn.Embedding(num_classes, hidden_dim)
         self.input_dropout = nn.Dropout(dropout_p)
-        self.attention = LocationAwareAttention(hidden_dim, num_heads, conv_out_channel=10)
         self.out_projection = nn.Linear(self.hidden_dim, num_classes, bias=True)
+
+        if attn_mechanism == 'loc':
+            self.attention = LocationAwareAttention(hidden_dim, num_heads, conv_out_channel=10)
+        elif attn_mechanism == 'dot':
+            self.attention = MultiHeadAttention(hidden_dim, num_heads)
+        else:
+            raise ValueError("Unsupported attention: %s".format(attn_mechanism))
 
     def forward_step(self, input_var, hidden, listener_outputs, attn):
         batch_size = input_var.size(0)

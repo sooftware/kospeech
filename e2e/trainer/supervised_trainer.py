@@ -32,7 +32,8 @@ class SupervisedTrainer(object):
     TRAIN_STEP_RESULT_PATH = "./data/train_result/train_step_result.csv"
 
     def __init__(self, optimizer, criterion, trainset_list, validset, high_plateau_lr, low_plateau_lr,
-                 exp_decay_period, num_workers, device, print_every, save_result_every, checkpoint_every):
+                 exp_decay_period, num_workers, device, decay_threshold,
+                 print_every, save_result_every, checkpoint_every):
         self.num_workers = num_workers
         self.optimizer = optimizer
         self.criterion = criterion
@@ -44,6 +45,7 @@ class SupervisedTrainer(object):
         self.print_every = print_every
         self.save_result_every = save_result_every
         self.checkpoint_every = checkpoint_every
+        self.decay_threshold = decay_threshold
         self.device = device
 
     def train(self, model, batch_size, epoch_time_step, num_epochs, teacher_forcing_ratio=0.99, resume=False):
@@ -89,10 +91,16 @@ class SupervisedTrainer(object):
             Checkpoint(model, self.optimizer, self.criterion, self.trainset_list, self.validset, epoch).save()
             logger.info('Epoch %d (Training) Loss %0.4f CER %0.4f' % (epoch, train_loss, train_cer))
 
-            if prev_train_cer - train_cer < 0.01:
-                scheduler = ExponentialDecayLR(self.optimizer.optimizer, self.optimizer.get_lr(),
-                                               self.low_plateau_lr, self.exp_decay_period)
-                self.optimizer.set_scheduler(scheduler, self.exp_decay_period)
+            if prev_train_cer - train_cer < self.decay_threshold:
+                self.optimizer.set_scheduler(
+                    ExponentialDecayLR(
+                        self.optimizer.optimizer,
+                        self.optimizer.get_lr(),
+                        self.low_plateau_lr,
+                        self.exp_decay_period
+                    ),
+                    self.exp_decay_period
+                )
 
             prev_train_cer = train_cer
 

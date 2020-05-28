@@ -37,16 +37,15 @@ def train(opt):
 
     if opt.use_multi_gpu:
         optimizer = optim.Adam(model.module.parameters(), lr=opt.init_lr)
-        scheduler = RampUpLR(optimizer, opt.init_lr, opt.high_plateau_lr, opt.rampup_period)
-        optimizer = Optimizer(optimizer, scheduler, opt.rampup_period, opt.max_grad_norm)
 
     else:
         optimizer = optim.Adam(model.parameters(), lr=opt.high_plateau_lr)
-        scheduler = RampUpLR(optimizer, opt.init_lr, opt.high_plateau_lr, opt.rampup_period)
-        optimizer = Optimizer(optimizer, scheduler, opt.rampup_period, opt.max_grad_norm)
+
+    scheduler = RampUpLR(optimizer, opt.init_lr, opt.high_plateau_lr, opt.rampup_period)
+    optimizer = Optimizer(optimizer, scheduler, opt.rampup_period, opt.max_grad_norm)
 
     if opt.label_smoothing == 0.0:
-        criterion = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_token).to(device)
+        criterion = nn.NLLLoss(reduction='sum', ignore_index=PAD_token).to(device)
     else:
         criterion = LabelSmoothingLoss(len(char2id), PAD_token, opt.label_smoothing, dim=-1).to(device)
 
@@ -58,6 +57,7 @@ def train(opt):
         num_workers=opt.num_workers,
         high_plateau_lr=opt.high_plateau_lr,
         low_plateau_lr=opt.low_plateau_lr,
+        decay_threshold=opt.decay_threshold,
         exp_decay_period=opt.exp_decay_period,
         device=device,
         print_every=opt.print_every,

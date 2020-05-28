@@ -1,6 +1,5 @@
 """
-This file provides logger, char2id, id2char, SOS_token, EOS_token, PAD_token.
-Global variables are defined in this file.
+globally used collections of variables and functions.
 """
 import torch
 import platform
@@ -38,3 +37,38 @@ def check_envirionment(use_cuda):
         logger.info("PyTorch version : %s" % torch.__version__)
 
     return device
+
+
+def label_to_string(labels, id2char, eos_id):
+    """
+    Converts label to string (number => Hangeul)
+
+    Args:
+        labels (numpy.ndarray): number label
+        id2char (dict): id2char[id] = ch
+        eos_id (int): identification of <end of sequence>
+
+    Returns: sentence
+        - **sentence** (str or list): symbol of labels
+    """
+    if len(labels.shape) == 1:
+        sentence = str()
+        for label in labels:
+            if label.item() == eos_id:
+                break
+            sentence += id2char[label.item()]
+        return sentence
+
+    elif len(labels.shape) == 2:
+        sentences = list()
+        for batch in labels:
+            sentence = str()
+            for label in batch:
+                if label.item() == eos_id:
+                    break
+                sentence += id2char[label.item()]
+            sentences.append(sentence)
+        return sentences
+
+    else:
+        logger.info("Unsupported shape : {0}".format(str(labels.shape)))

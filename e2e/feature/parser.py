@@ -1,3 +1,4 @@
+import os
 import librosa
 import torch
 import platform
@@ -11,9 +12,80 @@ if platform.system() == 'Linux':
     import torchaudio
 
 
+class NoiseInjector(object):
+    def __init__(self, dataset_path, dataset_size, sample_rate, noise_level=(0, 0.7)):
+        if not os.path.exists(dataset_path):
+            logger.info("Directory doesn`t exist: {0}".format(dataset_path))
+            raise IOError
+        self.audio_paths = self.create_audio_paths(dataset_path)
+        self.dataset = self.create_noiseset(dataset_path)
+        self.dataset_size = dataset_size
+        self.sample_rate = sample_rate
+        self.noise_level = noise_level
+
+    def create_audio_paths(self, dataset_path):
+        audio_paths = list()
+        data_list = os.listdir(dataset_path)
+        data_list_size = len(data_list)
+
+        while True:
+            index = int(random.random() * data_list_size)
+
+            if data_list[index].endswith('.pcm'):
+                audio_paths.append(data_list[index])
+
+            if len(audio_paths) == self.dataset_size:
+                break
+
+        return audio_paths
+
+    def create_noiseset(self, dataset_path):
+        dataset = list()
+
+        for audio_path in range(self.audio_paths):
+            path = os.path.join(dataset_path, audio_path)
+            dataset.append(self.parse_audio(path))
+
+        return dataset
+
+    def parse_audio(self, audio_path):
+        try:
+            signal = np.memmap(audio_path, dtupe='h', mode='r').astype('float32')
+            non_silence_indices = split(signal, top_db=30)
+            # print(non_silence_indices)
+            for (start, end) in non_silence_indices:
+                signal[start:end] = 0
+
+            noise = signal[signal != 0]
+            noise /= 32767
+            return
+        except RuntimeError:
+            logger.info("RuntimeError in {0}".format(audio_path))
+            return None
+        except ValueError:
+            logger.info("RuntimeError in {0}".format(audio_path))
+            return None
+
+    def inject_noise(self, signal):
+        noise = np.random.choice(self.dataset)
+        noise_level = np.random.uniform(*self.noise_level)
+
+        signal_length = len(signal)
+        noise_length = len(noise)
+
+        if signal_length >= noise_length:
+            noise_start = np.random.rand() * (signal_length - noise_length)
+            noise_end = noise_start + noise_length
+            signal[noise_start, noise_end] += noise * noise_level
+        else:
+            signal += noise[:signal_length] * noise_level
+
+        return signal
+
+
 class AudioParser(object):
     """
-    Provides load_audio(), inject_noise(), instancewise_standardization(), spec_audment() function.
+    Provides load_audio(), instancewise_standardization(), spec_audment() function.
 
     Note:
         Do not use this class directly, use one of the sub classes.
@@ -24,6 +96,10 @@ class AudioParser(object):
         - **load_audio()**: load audio file to signal. (PCM)
         - **instancewise_standardization**: provides instance-wise standardization normalization.
     """
+    def __init__(self, dataset_path, dataset_size, sample_rate, noise_level=(0, 0.7), noise_augment=False):
+        if noise_augment:
+            self.noise_injector = NoiseInjector(dataset_path, dataset_size, sample_rate, noise_level)
+
     @staticmethod
     def load_audio(audio_path, del_silence):
         """
@@ -37,7 +113,7 @@ class AudioParser(object):
                 non_silence_indices = split(signal, top_db=30)
                 signal = np.concatenate([signal[start:end] for start, end in non_silence_indices])
 
-            signal = signal / 32767  # normalize audio
+            signal /= 32767  # normalize audio
             return signal
         except ValueError:
             logger.debug('ValueError in {0}'.format(audio_path))
@@ -53,12 +129,6 @@ class AudioParser(object):
         spectrogram -= mean
         spectrogram /= std
         return spectrogram
-
-    @staticmethod
-    def inject_noise(signal, noise_factor):
-        noise = np.random.randn(len(signal))
-        signal += noise * noise_factor
-        return signal
 
     @abstractmethod
     def parse_audio(self, audio_path, augment_method):
@@ -120,8 +190,9 @@ class SpectrogramParser(AudioParser):
     def __init__(self, feature_extract_by='librosa', sample_rate=16000, n_mels=80, window_size=20, stride=10,
                  del_silence=False, input_reverse=True, normalize=False,
                  time_mask_para=70, freq_mask_para=12, time_mask_num=2, freq_mask_num=2,
-                 sos_id=1, eos_id=2, target_dict=None):
-        super(SpectrogramParser, self).__init__()
+                 sos_id=1, eos_id=2, target_dict=None,
+                 noise_augment=False, dataset_path=None, dataset_size=0, noise_level=(0, 0.7)):
+        super(SpectrogramParser, self).__init__(dataset_path, dataset_size, sample_rate, noise_level, noise_augment)
         self.sample_rate = sample_rate
         self.n_mels = n_mels
         self.window_size = window_size
@@ -161,7 +232,7 @@ class SpectrogramParser(AudioParser):
         if signal is None:  # Exception handling
             return None
         elif augment_method == self.NOISE_INJECTION:  # Noise injection
-            signal = self.inject_noise(signal, noise_factor=0.01)
+            signal = self.noise_injector.inject_noise(signal)
 
         if self.feature_extract_by == 'torchaudio':
             spectrogram = self.transforms(torch.FloatTensor(signal))

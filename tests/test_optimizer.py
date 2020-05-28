@@ -16,21 +16,30 @@ class Model(nn.Module):
         return 0
 
 
+INIT_LR = 1e-15
+HIGH_PLATEAU_LR = 3e-04
+LOW_PLATEAU_LR = 1e-05
+RAMPUP_PERIOD = 1000
+MAX_GRAD_NORM = 400
+TOTAL_TIME_STEP = 7000
+EXP_DECAY_START = 4500
+EXP_DECAY_PERIOD = 1000
+
 model = Model()
 
-optimizer = optim.Adam(model.parameters(), lr=1e-15)
-scheduler = RampUpLR(optimizer, 1e-15, 3e-04, 1000)
-optimizer = Optimizer(optimizer, scheduler, 1000, 400)
+optimizer = optim.Adam(model.parameters(), lr=INIT_LR)
+scheduler = RampUpLR(optimizer, INIT_LR, HIGH_PLATEAU_LR, RAMPUP_PERIOD)
+optimizer = Optimizer(optimizer, scheduler, RAMPUP_PERIOD, MAX_GRAD_NORM)
 
 lr_processes = list()
 
-for timestep in range(7000):
+for timestep in range(TOTAL_TIME_STEP):
     optimizer.step(model, 0.0)
     lr_processes.append(optimizer.get_lr())
 
-    if timestep == 4500:
-        scheduler = ExponentialDecayLR(optimizer.optimizer, optimizer.get_lr(), 1e-05, 1000)
-        optimizer.set_scheduler(scheduler, 100000)
+    if timestep == EXP_DECAY_START:
+        scheduler = ExponentialDecayLR(optimizer.optim, optimizer.get_lr(), LOW_PLATEAU_LR, EXP_DECAY_PERIOD)
+        optimizer.set_scheduler(scheduler, EXP_DECAY_PERIOD)
 
 plt.title('Test Optimizer class')
 plt.plot(lr_processes)
