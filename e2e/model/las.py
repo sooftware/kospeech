@@ -21,7 +21,7 @@ class ListenAttendSpell(nn.Module):
 
     Returns: output
             - **output** (seq_len, batch_size, num_classes): list of tensors containing
-            the outputs of the decoding function.
+              the outputs of the decoding function.
 
     Examples::
 

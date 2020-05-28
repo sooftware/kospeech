@@ -19,7 +19,9 @@ LABEL_SMOOTHING=0.1
 LISTENER_LAYER_SIZE=5
 SPELLER_LAYER_SIZE=3
 RNN_TYPE='gru'
-TEACHER_FORCING_RATIO=0.99
+TEACHER_FORCING_RATIO=1.0
+TEACHER_FORCING_STEP=0.05
+MIN_TEACHER_FORCING_RATIO=0.7
 VALID_RATIO=0.003
 MAX_LEN=71
 MAX_GRAD_NORM=400
@@ -58,4 +60,5 @@ python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epoch
 --use_multi_gpu --init_uniform --mode $MODE --dataset_path $DATASET_PATH --data_list_path $DATA_LIST_PATH \
 --max_grad_norm $MAX_GRAD_NORM --rampup_period $RAMPUP_PERIOD --max_len $MAX_LEN --decay_threshold $DECAY_THRESHOLD \
 --exp_decay_period  $EXP_DECAY_PERIOD --low_plateau_lr $LOW_PLATEAU_LR --noiseset_size $NOISESET_SIZE \
---noise_level $NOISE_LEVEL --attn_mechanism $ATTN_MECHANISM
+--noise_level $NOISE_LEVEL --attn_mechanism $ATTN_MECHANISM --teacher_forcing_step $TEACHER_FORCING_STEP \
+--min_teacher_forcing_ratio $MIN_TEACHER_FORCING_RATIO

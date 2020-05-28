@@ -33,7 +33,8 @@ class SupervisedTrainer(object):
 
     def __init__(self, optimizer, criterion, trainset_list, validset, high_plateau_lr, low_plateau_lr,
                  exp_decay_period, num_workers, device, decay_threshold,
-                 print_every, save_result_every, checkpoint_every):
+                 print_every, save_result_every, checkpoint_every,
+                 teacher_forcing_step=0.0, min_teacher_forcing_ratio=0.7):
         self.num_workers = num_workers
         self.optimizer = optimizer
         self.criterion = criterion
@@ -47,6 +48,8 @@ class SupervisedTrainer(object):
         self.checkpoint_every = checkpoint_every
         self.decay_threshold = decay_threshold
         self.device = device
+        self.teacher_forcing_step = teacher_forcing_step
+        self.min_teacher_forcing_ratio = min_teacher_forcing_ratio
 
     def train(self, model, batch_size, epoch_time_step, num_epochs, teacher_forcing_ratio=0.99, resume=False):
         """
@@ -103,6 +106,8 @@ class SupervisedTrainer(object):
                 )
 
             prev_train_cer = train_cer
+            teacher_forcing_ratio -= self.teacher_forcing_step
+            teacher_forcing_ratio = max(self.min_teacher_forcing_ratio, teacher_forcing_ratio)
 
             # Validation
             valid_queue = queue.Queue(self.num_workers << 1)

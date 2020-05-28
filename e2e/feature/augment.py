@@ -1,9 +1,8 @@
 import os
 import random
 import numpy as np
-
 from e2e.feature.core import split
-from e2e.modules import logger
+from e2e.modules.global_ import logger
 
 
 class SpecAugment(object):
@@ -60,13 +59,15 @@ class NoiseInjector(object):
             logger.info("Directory doesn`t exist: {0}".format(dataset_path))
             raise IOError
 
-        logger.info("Create Noise Injector...")
+        logger.info("Create Noise injector...")
 
         self.audio_paths = self.create_audio_paths(dataset_path)
         self.dataset = self.create_noiseset(dataset_path)
         self.noiseset_size = noiseset_size
         self.sample_rate = sample_rate
         self.noise_level = noise_level
+
+        logger.info("Noise injector created !!")
 
     def __call__(self, signal):
         noise = np.random.choice(self.dataset)
@@ -119,7 +120,7 @@ class NoiseInjector(object):
 
             noise = signal[signal != 0]
             noise /= 32767
-            return
+            return noise
         except RuntimeError:
             logger.info("RuntimeError in {0}".format(audio_path))
             return None

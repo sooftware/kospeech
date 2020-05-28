@@ -3,7 +3,20 @@ from e2e.modules.global_ import label_to_string
 
 
 class CharacterErrorRate(object):
+    """
+    Provides a character error rate calculation to evaluate performance of sppech recognizer.
 
+    Args:
+        id2char (dict): id2char[id] = char
+        eos_id (int): end of sentence identification
+
+    Input: target, y_hat
+        - **target**: ground truth
+        - **y_hat**: prediction of recognizer
+
+    Returns: cer
+        - **cer**: character error rate
+    """
     def __init__(self, id2char, eos_id):
         self.total_dist = 0.0
         self.total_length = 0.0

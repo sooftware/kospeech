@@ -60,6 +60,8 @@ def train(opt):
         decay_threshold=opt.decay_threshold,
         exp_decay_period=opt.exp_decay_period,
         device=device,
+        teacher_forcing_step=opt.teacher_forcing_step,
+        min_teacher_forcing_ratio=opt.min_teacher_forcing_ratio,
         print_every=opt.print_every,
         save_result_every=opt.save_result_every,
         checkpoint_every=opt.checkpoint_every
@@ -69,9 +71,6 @@ def train(opt):
         batch_size=opt.batch_size,
         epoch_time_step=epoch_time_step,
         num_epochs=opt.num_epochs,
-        max_norm=opt.max_norm,
-        rampup_period=opt.rampup_period,
-        rampup_power=opt.rampup_power,
         teacher_forcing_ratio=opt.teacher_forcing_ratio,
         resume=opt.resume
     )

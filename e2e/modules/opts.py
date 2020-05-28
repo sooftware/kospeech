@@ -18,8 +18,8 @@ def model_opts(parser):
                        type=float, default=0.3,
                        help='dropout ratio in training (default: 0.3)')
     group.add_argument('--num_heads', '-num_heads',
-                       type=int, default=4,
-                       help='number of head in attention (default: 4)')
+                       type=int, default=8,
+                       help='number of head in attention (default: 8)')
     group.add_argument('--label_smoothing', '-label_smoothing',
                        type=float, default=0.1,
                        help='ratio of label smoothing (default: 0.1)')
@@ -68,7 +68,7 @@ def train_opts(parser):
                        type=int, default=5000,
                        help='size of noise dataset for noise augmentation')
     group.add_argument('--noise_level', '-noise_level',
-                       tupe=float, default=0.7,
+                       type=float, default=0.7,
                        help='set level of noise')
     group.add_argument('--use_cuda', '-use_cuda',
                        action='store_true', default=False,
@@ -88,7 +88,7 @@ def train_opts(parser):
     group.add_argument('--high_plateau_lr', '-high_plateau_lr',
                        type=float, default=3e-04,
                        help='high plateau learning rate => after rampup lr (default: 3e-04)')
-    group.add_argument('--low_plateau', '-low_plateau',
+    group.add_argument('--low_plateau_lr', '-low_plateau_lr',
                        type=float, default=1e-05,
                        help='low plateau learning rate => after exponential decay (default: 1e-05)')
     group.add_argument('--valid_ratio', '-valid_ratio',
@@ -107,8 +107,14 @@ def train_opts(parser):
                        type=float, default=0.02,
                        help='If the improvement of cer less than this, exponential decay lr start. (default: 0.02)')
     group.add_argument('--exp_decay_period', '-exp_decay_period',
-                       type=int, default=100000,
-                       help='Timestep of learning rate decay (default: 100000)')
+                       type=int, default=160000,
+                       help='Timestep of learning rate decay (default: 160000)')
+    group.add_argument('--teacher_forcing_step', '-teacher_forcing_step',
+                       type=float, default=0.05,
+                       help='The value at which teacher forcing ratio will be reducing')
+    group.add_argument('--min_teacher_forcing_ratio', '-min_teacher_forcing_ratio',
+                       type=float, default=0.7,
+                       help='The minimum value of teacher forcing ratio')
     group.add_argument('--seed', '-seed',
                        type=int, default=7,
                        help='random seed (default: 7)')
@@ -260,6 +266,8 @@ def print_train_opts(opt):
     logger.info('--valid_ratio: %s' % str(opt.valid_ratio))
     logger.info('--max_len: %s' % str(opt.max_len))
     logger.info('--max_grad_norm: %s' % str(opt.max_grad_norm))
+    logger.info('--teacher_forcing_step: %s' % str(opt.teacher_forcing_step))
+    logger.info('--min_teacher_forcing_ratio: %s' % str(opt.min_teacher_forcing_ratio))
     logger.info('--seed: %s' % str(opt.seed))
     logger.info('--save_result_every: %s' % str(opt.save_result_every))
     logger.info('--checkpoint_every: %s' % str(opt.checkpoint_every))

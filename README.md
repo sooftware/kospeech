@@ -21,15 +21,16 @@ Also our model has recorded **91.0% CRR** in `Kaldi-zeroth corpus`
 ## Features  
   
 * [End-to-end (E2E) automatic speech recognition](https://sooftware.github.io/End-to-end-Speech-Recognition/)
-* [Convolutional encoder](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.listener)
+* [VGG Extractor](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.listener)
 * [MaskConv & pack_padded_sequence](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.maskCNN)
-* [Multi-headed Location-Aware Attention](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.attention)
+* [Multi-headed Location-aware & dot Attention](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.attention)
 * [Top K Decoding (Beam Search)](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.topk_decoder)
 * [Spectrogram Parser](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.parser)
 * [Delete silence](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.parser)
 * [SpecAugment](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.parser)
 * [NoiseAugment](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.parser)
 * [Label Smoothing](https://sooftware.github.io/End-to-end-Speech-Recognition/Loss.html)
+* [Learning Rate Scheduling]()  
 * [Save & load Checkpoint](https://sooftware.github.io/End-to-end-Speech-Recognition/Modules.html#module-e2e.modules.checkpoint)
 * [Various options can be set using parser](https://sooftware.github.io/End-to-end-Speech-Recognition/Modules.html#module-e2e.modules.opts)
 * [Implement data loader as multi-thread for speed](https://sooftware.github.io/End-to-end-Speech-Recognition/Data_loader.html#id1)
@@ -148,17 +149,21 @@ We will also write a document in English as soon as possible, so please wait a l
 $ ./main.sh
 ```
 * Custom setting
-```
-python ./main.py -dataset_path dataset_path -data_list_path data_list_path \
-                 -use_multi_gpu -init_uniform -mode train -batch_size 32 -num_workers 4 \
-                 -num_epochs 20 -spec_augment -noise_augment -max_len 151 \
-                 -use_cuda -valid_ratio 0.01 -max_grad_norm 400 -rampup_period 1000 \
-                 -label_smoothing 0.1 -save_result_every 1000 -print_every 10 -checkpoint_every 5000 \
-                 -use_bidirectional -hidden_dim 256 -dropout 0.3 -num_heads 8 -rnn_type gru \
-                 -listener_layer_size 5 -speller_layer_size 3 -teacher_forcing_ratio 0.99 \ 
-                 -input_reverse -normalize -del_silence -sample_rate 16000 -window_size 20 -stride 10 -n_mels 80 \
-                 -feature_extract_by librosa -time_mask_para 50 -freq_mask_para 12 \
-                 -time_mask_num 2 -freq_mask_num 2
+```shell
+python ./main.py --batch_size 32 --num_workers 4 --num_epochs 20  --use_bidirectional \
+                 --input_reverse --spec_augment --noise_augment --use_cuda --hidden_dim 256 \
+                 --dropout 0.3 --num_heads 8 --label_smoothing 0.1 \
+                 --listener_layer_size 5 --speller_layer_size 3 --rnn_type gru \
+                 --high_plateau_lr $HIGH_PLATEAU_LR --teacher_forcing_ratio 1.0 --valid_ratio 0.01 \
+                 --sample_rate 16000 --window_size 20 --stride 10 --n_mels 80 --normalize --del_silence \
+                 --feature_extract_by torchaudio --time_mask_para 30 --freq_mask_para 12 \
+                 --time_mask_num 2 --freq_mask_num 2 --save_result_every 1000 \
+                 --checkpoint_every 5000 --print_every 10 --init_lr 1e-15  --use_multi_gpu --init_uniform  \
+                 --mode train --dataset_path /data3/ --data_list_path ./data/data_list/xxx.csv \
+                 --max_grad_norm 400 --rampup_period 1000 --max_len 80 --decay_threshold 0.02 \
+                 --exp_decay_period  160000 --low_plateau_lr 1e-05 --noiseset_size 1000 \
+                 --noise_level 0.7 --attn_mechanism loc --teacher_forcing_step 0.05 \
+                 --min_teacher_forcing_ratio 0.7
 ```
   
 You can train the model by above command.  

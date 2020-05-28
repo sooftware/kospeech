@@ -32,6 +32,7 @@ class LocationAwareAttention(nn.Module):
     """
     def __init__(self, hidden_dim, num_heads=8, conv_out_channel=10):
         super(LocationAwareAttention, self).__init__()
+        self.hidden_dim = hidden_dim
         self.num_heads = num_heads
         self.dim = int(hidden_dim / num_heads)
         self.loc_projection = nn.Linear(conv_out_channel, self.dim, bias=False)

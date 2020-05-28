@@ -23,7 +23,7 @@ class AudioParser(object):
         - **parse_script()**: abstract method. you have to override this method.
         - **load_audio()**: load audio file to signal. (PCM)
     """
-    def __init__(self, dataset_path, noiseset_size, sample_rate, noise_level=(0, 0.7), noise_augment=False):
+    def __init__(self, dataset_path, noiseset_size, sample_rate=16000, noise_level=0.7, noise_augment=False):
         if noise_augment:
             self.noise_injector = NoiseInjector(dataset_path, noiseset_size, sample_rate, noise_level)
 
@@ -87,7 +87,7 @@ class SpectrogramParser(AudioParser):
                  del_silence=False, input_reverse=True, normalize=False,
                  time_mask_para=70, freq_mask_para=12, time_mask_num=2, freq_mask_num=2,
                  sos_id=1, eos_id=2, target_dict=None,
-                 noise_augment=False, dataset_path=None, noiseset_size=0, noise_level=(0, 0.7)):
+                 noise_augment=False, dataset_path=None, noiseset_size=0, noise_level=0.7):
         super(SpectrogramParser, self).__init__(dataset_path, noiseset_size, sample_rate, noise_level, noise_augment)
         self.sample_rate = sample_rate
         self.n_mels = n_mels
@@ -126,6 +126,8 @@ class SpectrogramParser(AudioParser):
             return None
         elif augment_method == self.NOISE_INJECTION:  # Noise injection
             signal = self.noise_injector(signal)
+            if signal is None:
+                return None
 
         if self.feature_extract_by == 'torchaudio':
             spectrogram = self.transforms(torch.FloatTensor(signal))

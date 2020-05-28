@@ -33,7 +33,7 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
                                                  time_mask_para=opt.time_mask_para, freq_mask_para=opt.freq_mask_para,
                                                  time_mask_num=opt.time_mask_num, freq_mask_num=opt.freq_mask_num,
                                                  sos_id=sos_id, eos_id=eos_id, dataset_path=dataset_path,
-                                                 noiseset_size=noiseset_size, noise_level=noise_level)
+                                                 noiseset_size=noiseset_size, noise_level=noise_level, noise_augment=noise_augment)
         self.audio_paths = list(audio_paths)
         self.script_paths = list(script_paths)
         self.augment_methods = [self.VANILLA] * len(self.audio_paths)
