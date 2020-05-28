@@ -2,7 +2,7 @@ import Levenshtein as Lev
 from e2e.modules.global_ import label_to_string
 
 
-class CharacterErrorRater(object):
+class CharacterErrorRate(object):
 
     def __init__(self, id2char, eos_id):
         self.total_dist = 0.0
@@ -10,7 +10,7 @@ class CharacterErrorRater(object):
         self.id2char = id2char
         self.eos_id = eos_id
 
-    def calc_error_rate(self, targets, hypothesis):
+    def __call__(self, targets, hypothesis):
         dist, length = self._get_distance(targets, hypothesis)
         self.total_dist += dist
         self.total_length += length

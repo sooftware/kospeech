@@ -1,6 +1,4 @@
-"""
-globally used collections of variables and functions.
-"""
+""" globally used collections of variables and functions. """
 import torch
 import platform
 from e2e.modules.logger import Logger

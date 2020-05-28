@@ -4,7 +4,7 @@ import queue
 import pandas as pd
 from e2e.data_loader.data_loader import MultiDataLoader, AudioDataLoader
 from e2e.modules.checkpoint import Checkpoint
-from e2e.modules.error_rate import CharacterErrorRater
+from e2e.modules.error_rate import CharacterErrorRate
 from e2e.modules.global_ import EOS_token, logger, id2char
 from e2e.optim.lr_scheduler import ExponentialDecayLR
 
@@ -135,7 +135,7 @@ class SupervisedTrainer(object):
             - **loss** (float): loss of current epoch
             - **cer** (float): character error rate of current epoch
         """
-        rater = CharacterErrorRater(id2char, EOS_token)
+        rater = CharacterErrorRate(id2char, EOS_token)
         cer = 1.0
         epoch_loss_total = 0.
         total_num = 0
@@ -170,7 +170,7 @@ class SupervisedTrainer(object):
             loss = self.criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
             epoch_loss_total += loss.item()
 
-            cer = rater.calc_error_rate(targets, hypothesis)
+            cer = rater(targets, hypothesis)
             total_num += int(input_lengths.sum())
 
             self.optimizer.zero_grad()
@@ -220,8 +220,8 @@ class SupervisedTrainer(object):
         """
         total_loss = 0.
         total_num = 0
-        total_dist = 0
-        total_length = 0
+        cer = 1.0
+        rater = CharacterErrorRate(id2char, EOS_token)
 
         model.eval()
         logger.info('validate() start')
@@ -246,13 +246,10 @@ class SupervisedTrainer(object):
                 loss = self.criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
                 total_loss += loss.item()
                 total_num += sum(input_lengths)
-
-                dist, length = get_distance(targets, hypothesis, id2char, EOS_token)
-                total_dist += dist
-                total_length += length
+                cer = rater(targets, hypothesis)
 
         logger.info('validate() completed')
-        return total_loss / total_num, total_dist / total_length
+        return total_loss / total_num, cer
 
     def _save_epoch_result(self, train_result, valid_result):
         """ Save result of epoch """

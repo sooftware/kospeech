@@ -1,7 +1,7 @@
 import queue
 import torch
 from e2e.data_loader.data_loader import AudioDataLoader
-from e2e.modules.error_rate import CharacterErrorRater
+from e2e.modules.error_rate import CharacterErrorRate
 from e2e.modules.global_ import id2char, EOS_token, logger
 
 
@@ -36,7 +36,7 @@ class Evaluator(object):
 
     def predict(self, model, queue):
         """ Make prediction given testset as input. """
-        rater = CharacterErrorRater(id2char, EOS_token)
+        rater = CharacterErrorRate(id2char, EOS_token)
         cer = 0
         logger.info('evaluate() start')
         total_sent_num = 0
@@ -59,7 +59,7 @@ class Evaluator(object):
                 logit = torch.stack(output, dim=1).to(self.device)
                 hypothesis = logit.max(-1)[1]
 
-                cer = rater.calc_error_rate(targets, hypothesis)
+                cer = rater(targets, hypothesis)
                 total_sent_num += scripts.size(0)
 
                 if timestep % self.print_every == 0:

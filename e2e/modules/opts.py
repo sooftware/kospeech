@@ -67,6 +67,9 @@ def train_opts(parser):
     group.add_argument('--noiseset_size', '-noiseset_size',
                        type=int, default=5000,
                        help='size of noise dataset for noise augmentation')
+    group.add_argument('--noise_level', '-noise_level',
+                       tupe=float, default=0.7,
+                       help='set level of noise')
     group.add_argument('--use_cuda', '-use_cuda',
                        action='store_true', default=False,
                        help='flag indication whether to use cuda or not')
@@ -243,6 +246,7 @@ def print_train_opts(opt):
     logger.info('--spec_augment: %s' % str(opt.spec_augment))
     logger.info('--noise_augment: %s' % str(opt.noise_augment))
     logger.info('--noiseset_size: %s' % str(opt.noiseset_size))
+    logger.info('--noise_level: %s' % str(opt.noise_level))
     logger.info('--use_cuda: %s' % str(opt.use_cuda))
     logger.info('--batch_size: %s' % str(opt.batch_size))
     logger.info('--num_workers: %s' % str(opt.num_workers))
