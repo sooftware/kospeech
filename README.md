@@ -21,20 +21,20 @@ Also our model has recorded **91.0% CRR** in `Kaldi-zeroth corpus`
 ## Features  
   
 * [End-to-end (E2E) automatic speech recognition](https://sooftware.github.io/End-to-end-Speech-Recognition/)
-* [VGG Extractor]()
-* [MaskConv & pack_padded_sequence](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.maskCNN)
+* [VGG Extractor](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.sub_layers)
+* [MaskConv & pack_padded_sequence](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.sub_layers)
 * [Multi-headed Location-aware & dot Attention](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.attention)
 * [Top K Decoding (Beam Search)](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.topk_decoder)
 * [Spectrogram Parser](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.parser)
 * [Delete silence](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.parser)
-* [SpecAugment](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.parser)
-* [NoiseAugment](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.parser)
+* [SpecAugment]https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.augment)
+* [NoiseAugment](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.augment)
 * [Label Smoothing](https://sooftware.github.io/End-to-end-Speech-Recognition/Loss.html)
 
 * [Save & load Checkpoint](https://sooftware.github.io/End-to-end-Speech-Recognition/Modules.html#module-e2e.modules.checkpoint)
 * [Various options can be set using parser](https://sooftware.github.io/End-to-end-Speech-Recognition/Modules.html#module-e2e.modules.opts)
 * [Implement data loader as multi-thread for speed](https://sooftware.github.io/End-to-end-Speech-Recognition/Data_loader.html#id1)
-* [Learning Rate Scheduling]()  
+* [Learning Rate Scheduling](https://sooftware.github.io/End-to-end-Speech-Recognition/Optim.html#module-e2e.optim.lr_scheduler)  
 * Teacher forcing scheduling
 * Inference with batching
 * Multi-GPU training
