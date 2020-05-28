@@ -27,7 +27,7 @@ Also our model has recorded **91.0% CRR** in `Kaldi-zeroth corpus`
 * [Top K Decoding (Beam Search)](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.topk_decoder)
 * [Spectrogram Parser](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.parser)
 * [Delete silence](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.parser)
-* [SpecAugment]https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.augment)
+* [SpecAugment](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.augment)
 * [NoiseAugment](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.augment)
 * [Label Smoothing](https://sooftware.github.io/End-to-end-Speech-Recognition/Loss.html)
 
