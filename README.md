@@ -14,7 +14,7 @@ We appreciate any kind of [feedback or contribution](https://github.com/sooftwar
   
 We used `KsponSpeech` corpus which containing **1000h** of Korean speech data.   
 At present our model has recorded an **86.98% CRR**, and we are working for a higher recognition rate.  
-Also our model has recorded **91.0% CRR** in `Kaldi-zeroth dataset`    
+Also our model has recorded **91.0% CRR** in `Kaldi-zeroth corpus`    
   
 ###### ( **CRR** : Character Recognition Rate ) 
   
@@ -138,7 +138,7 @@ python setup.py install
 ## Get Started
 ### Step 1: Preparation dataset
 
-Refer [here](https://github.com/sooftware/End-to-end-Speech-Recognition/wiki/Preparation-before-Training) before training. this document contains information regarding the preprocessing of `KsponSpeech`
+Refer [here](https://github.com/sooftware/End-to-end-Speech-Recognition/wiki/Preparation-before-Training) before training. this document contains information regarding the preprocessing of `KsponSpeech`  
 The above document is written in Korean.  
 We will also write a document in English as soon as possible, so please wait a little bit.  
 
