@@ -147,7 +147,7 @@ class MultiHeadAttention(nn.Module):
         value = value.permute(2, 0, 1, 3).contiguous().view(batch_size * self.num_heads, -1, self.dim)
 
         context, attn = self.scaled_dot(query, value)
-        context = context.view(self.num_head, batch_size, -1, self.dim)
+        context = context.view(self.num_heads, batch_size, -1, self.dim)
 
         context = context.permute(1, 2, 0, 3).contiguous().view(batch_size, -1, self.num_heads * self.dim)
         combined = torch.cat([context, residual], dim=2)
