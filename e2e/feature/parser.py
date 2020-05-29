@@ -145,10 +145,10 @@ class SpectrogramParser(AudioParser):
         if self.input_reverse:   # Refer to "Sequence to Sequence Learning with Neural Network" paper
             spectrogram = spectrogram[:, ::-1]
 
+        spectrogram = torch.FloatTensor(np.ascontiguousarray(np.swapaxes(spectrogram, 0, 1)))
+
         if augment_method == self.SPEC_AUGMENT:
             spectrogram = self.spec_augment(spectrogram)
-
-        spectrogram = torch.FloatTensor(np.ascontiguousarray(np.swapaxes(spectrogram, 0, 1)))
 
         return spectrogram
 
