@@ -12,7 +12,7 @@ Welcome to End-to-end Speech Recognition's documentation!
 
    notes/intro
    notes/Preparation
-   notes/Data-Analysis
+   notes/opts
 
 .. toctree::
    :maxdepth: 1

@@ -85,7 +85,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/intro.html">Intro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/Preparation.html">Preparation before Training</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notes/Data-Analysis.html">Data-Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/opts.html">Options</a></li>
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
@@ -199,7 +199,7 @@
                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;type of rnn cell: [gru, lstm, rnn] (default: gru)&#39;</span><span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--attn_mechanism&#39;</span><span class="p">,</span> <span class="s1">&#39;-attn_mechanism&#39;</span><span class="p">,</span>
                        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;loc&#39;</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Option to specify the attention mechanism method&#39;</span><span class="p">)</span>
+                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;option to specify the attention mechanism method&#39;</span><span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--teacher_forcing_ratio&#39;</span><span class="p">,</span> <span class="s1">&#39;-teacher_forcing_ratio&#39;</span><span class="p">,</span>
                        <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span>
                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;teacher forcing ratio in decoding (default: 0.99)&#39;</span><span class="p">)</span></div>
@@ -230,11 +230,11 @@
                        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;flag indication whether to use noise augmentation or not&#39;</span><span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--noiseset_size&#39;</span><span class="p">,</span> <span class="s1">&#39;-noiseset_size&#39;</span><span class="p">,</span>
-                       <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;size of noise dataset for noise augmentation&#39;</span><span class="p">)</span>
+                       <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;size of noise dataset for noise augmentation (default: 1000)&#39;</span><span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--noise_level&#39;</span><span class="p">,</span> <span class="s1">&#39;-noise_level&#39;</span><span class="p">,</span>
                        <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;set level of noise&#39;</span><span class="p">)</span>
+                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;set level of noise (default: 0.7)&#39;</span><span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--use_cuda&#39;</span><span class="p">,</span> <span class="s1">&#39;-use_cuda&#39;</span><span class="p">,</span>
                        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;flag indication whether to use cuda or not&#39;</span><span class="p">)</span>
@@ -258,7 +258,7 @@
                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;low plateau learning rate =&gt; after exponential decay (default: 1e-05)&#39;</span><span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--valid_ratio&#39;</span><span class="p">,</span> <span class="s1">&#39;-valid_ratio&#39;</span><span class="p">,</span>
                        <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;validation dataset ratio in training dataset&#39;</span><span class="p">)</span>
+                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;validation dataset ratio in training dataset (default: 0.01)&#39;</span><span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--max_len&#39;</span><span class="p">,</span> <span class="s1">&#39;-max_len&#39;</span><span class="p">,</span>
                        <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">151</span><span class="p">,</span>
                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;maximum characters of sentence (default: 151)&#39;</span><span class="p">)</span>
@@ -267,7 +267,7 @@
                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;value used for gradient norm clipping (default: 400)&#39;</span><span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--rampup_period&#39;</span><span class="p">,</span> <span class="s1">&#39;-rampup_period&#39;</span><span class="p">,</span>
                        <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Timestep of learning rate rampup (default: 1000)&#39;</span><span class="p">)</span>
+                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;timestep of learning rate rampup (default: 1000)&#39;</span><span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--decay_threshold&#39;</span><span class="p">,</span> <span class="s1">&#39;-decay_threshold&#39;</span><span class="p">,</span>
                        <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span>
                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;If the improvement of cer less than this, exponential decay lr start. (default: 0.02)&#39;</span><span class="p">)</span>
@@ -361,7 +361,7 @@
                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;flag indication whether to use cuda or not&#39;</span><span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--model_path&#39;</span><span class="p">,</span> <span class="s1">&#39;-model_path&#39;</span><span class="p">,</span>
                        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;path to load models (default: None&#39;</span><span class="p">)</span>
+                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;path to load models (default: None)&#39;</span><span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--batch_size&#39;</span><span class="p">,</span> <span class="s1">&#39;-batch_size&#39;</span><span class="p">,</span>
                        <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;batch size in inference (default: 1)&#39;</span><span class="p">)</span>

@@ -12,9 +12,9 @@ Error_rate
 .. automodule:: e2e.modules.error_rate
     :members:
 
-Global_var
+Global_
 -------------------------------------------
-.. automodule:: e2e.modules.global_var
+.. automodule:: e2e.modules.global_
     :members:
 
 Logger
@@ -30,9 +30,4 @@ Model_builder
 Opts
 -------------------------------------------
 .. automodule:: e2e.modules.opts
-    :members:
-
-Utils
--------------------------------------------
-.. automodule:: e2e.modules.utils
     :members:

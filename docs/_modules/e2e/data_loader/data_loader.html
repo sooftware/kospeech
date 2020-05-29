@@ -85,7 +85,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/intro.html">Intro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/Preparation.html">Preparation before Training</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notes/Data-Analysis.html">Data-Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/opts.html">Options</a></li>
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
@@ -164,7 +164,6 @@
             
   <h1>Source code for e2e.data_loader.data_loader</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">math</span>
-<span class="kn">import</span> <span class="nn">pickle</span>
 <span class="kn">import</span> <span class="nn">threading</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">torch</span>
@@ -419,12 +418,13 @@
     <span class="n">total_time_step</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">audio_paths</span><span class="p">)</span> <span class="o">/</span> <span class="n">opt</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
     <span class="n">valid_time_step</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">total_time_step</span> <span class="o">*</span> <span class="n">opt</span><span class="o">.</span><span class="n">valid_ratio</span><span class="p">)</span>
     <span class="n">train_time_step</span> <span class="o">=</span> <span class="n">total_time_step</span> <span class="o">-</span> <span class="n">valid_time_step</span>
+    <span class="n">residual</span> <span class="o">=</span> <span class="n">train_time_step</span>
 
     <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">spec_augment</span><span class="p">:</span>
-        <span class="n">train_time_step</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span>
+        <span class="n">train_time_step</span> <span class="o">+=</span> <span class="n">residual</span>
 
     <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">noise_augment</span><span class="p">:</span>
-        <span class="n">train_time_step</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span>
+        <span class="n">train_time_step</span> <span class="o">+=</span> <span class="n">residual</span>
 
     <span class="n">train_num_per_worker</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">train_num</span> <span class="o">/</span> <span class="n">opt</span><span class="o">.</span><span class="n">num_workers</span><span class="p">)</span>
 
