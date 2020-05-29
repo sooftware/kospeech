@@ -35,10 +35,10 @@ Also our model has recorded **91.0% CRR** in `Kaldi-zeroth corpus`
 * [Various options can be set using parser](https://sooftware.github.io/End-to-end-Speech-Recognition/Modules.html#module-e2e.modules.opts)
 * [Implement data loader as multi-thread for speed](https://sooftware.github.io/End-to-end-Speech-Recognition/Data_loader.html#id1)
 * [Learning Rate Scheduling](https://sooftware.github.io/End-to-end-Speech-Recognition/Optim.html#module-e2e.optim.lr_scheduler)  
+* [Show training states as log](https://sooftware.github.io/End-to-end-Speech-Recognition/Modules.html#module-e2e.modules.logger)
 * Teacher forcing scheduling
 * Inference with batching
 * Multi-GPU training
-* Show training states as log
   
 ## Roadmap
   
