@@ -34,7 +34,7 @@ def model_opts(parser):
                        help='type of rnn cell: [gru, lstm, rnn] (default: gru)')
     group.add_argument('--attn_mechanism', '-attn_mechanism',
                        type=str, default='loc',
-                       help='Option to specify the attention mechanism method')
+                       help='option to specify the attention mechanism method')
     group.add_argument('--teacher_forcing_ratio', '-teacher_forcing_ratio',
                        type=float, default=0.99,
                        help='teacher forcing ratio in decoding (default: 0.99)')
@@ -102,7 +102,7 @@ def train_opts(parser):
                        help='value used for gradient norm clipping (default: 400)')
     group.add_argument('--rampup_period', '-rampup_period',
                        type=int, default=1000,
-                       help='Timestep of learning rate rampup (default: 1000)')
+                       help='timestep of learning rate rampup (default: 1000)')
     group.add_argument('--decay_threshold', '-decay_threshold',
                        type=float, default=0.02,
                        help='If the improvement of cer less than this, exponential decay lr start. (default: 0.02)')
@@ -196,7 +196,7 @@ def inference_opts(parser):
                        help='flag indication whether to use cuda or not')
     group.add_argument('--model_path', '-model_path',
                        type=str, default=None,
-                       help='path to load models (default: None')
+                       help='path to load models (default: None)')
     group.add_argument('--batch_size', '-batch_size',
                        type=int, default=1,
                        help='batch size in inference (default: 1)')
