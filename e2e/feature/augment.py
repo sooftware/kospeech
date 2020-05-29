@@ -95,9 +95,10 @@ class NoiseInjector(object):
         noise_length = len(noise)
 
         if signal_length >= noise_length:
-            noise_start = np.random.rand() * (signal_length - noise_length)
-            noise_end = noise_start + noise_length
-            signal[noise_start, noise_end] += noise * noise_level
+            noise_start = int(np.random.rand() * (signal_length - noise_length))
+            noise_end = int(noise_start + noise_length)
+            signal[noise_start: noise_end] += noise * noise_level
+
         else:
             signal += noise[:signal_length] * noise_level
 
@@ -124,7 +125,10 @@ class NoiseInjector(object):
 
         for audio_path in self.audio_paths:
             path = os.path.join(dataset_path, audio_path)
-            dataset.append(self.parse_audio(path))
+            noise = self.parse_audio(path)
+
+            if noise is not None:
+                dataset.append(noise)
 
         return dataset
 
