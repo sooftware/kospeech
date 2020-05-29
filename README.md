@@ -23,7 +23,7 @@ Also our model has recorded **91.0% CRR** in `Kaldi-zeroth corpus`
 * [End-to-end (E2E) automatic speech recognition](https://sooftware.github.io/End-to-end-Speech-Recognition/)
 * [VGG Extractor](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.sub_layers)
 * [MaskConv & pack_padded_sequence](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.sub_layers)
-* [Multi-headed Location-aware & dot Attention](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.attention)
+* [Multi-headed (location-aware / dot) Attention](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.attention)
 * [Top K Decoding (Beam Search)](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.topk_decoder)
 * [Spectrogram Parser](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.parser)
 * [Delete silence](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.parser)
