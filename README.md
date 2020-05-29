@@ -21,6 +21,7 @@ Also our model has recorded **91.0% CRR** in `Kaldi-zeroth corpus`
 ## Features  
   
 * [End-to-end (E2E) automatic speech recognition](https://sooftware.github.io/End-to-end-Speech-Recognition/)
+* [Various Options](https://sooftware.github.io/End-to-end-Speech-Recognition/notes/opts.html)
 * [VGG Extractor](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.sub_layers)
 * [MaskConv & pack_padded_sequence](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.sub_layers)
 * [Multi-headed (location-aware / scaled dot-product) Attention](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.attention)
@@ -69,7 +70,7 @@ Our project based on Seq2seq with Attention Architecture.
 ![image](https://user-images.githubusercontent.com/42150335/83260135-36b2c880-a1f4-11ea-8b38-ef88dca214bf.png)
   
 `Attention mechanism` helps finding speech alignment. We apply multi-headed (`location-aware` / `scaled dot-product`) attention which you can choose. Location-aware attention proposed in `Attention Based Models for Speech Recognition` paper and we expanded this attention to multi-head. Multi-headed scaled dot attention proposed in `Attention Is All You Need` paper.  
- You can choose between these two options as `attn_mechanism` option.    
+ You can choose between these two options as `attn_mechanism` option. Please [check](https://sooftware.github.io/End-to-end-Speech-Recognition/notes/opts.html) this page.    
   
 Our model architeuture is as follows.
   
