@@ -79,11 +79,11 @@ class NoiseInjector(object):
 
         logger.info("Create Noise injector...")
 
-        self.audio_paths = self.create_audio_paths(dataset_path)
-        self.dataset = self.create_noiseset(dataset_path)
         self.noiseset_size = noiseset_size
         self.sample_rate = sample_rate
         self.noise_level = noise_level
+        self.audio_paths = self.create_audio_paths(dataset_path)
+        self.dataset = self.create_noiseset(dataset_path)
 
         logger.info("Noise injector created !!")
 
@@ -122,7 +122,7 @@ class NoiseInjector(object):
     def create_noiseset(self, dataset_path):
         dataset = list()
 
-        for audio_path in range(self.audio_paths):
+        for audio_path in self.audio_paths:
             path = os.path.join(dataset_path, audio_path)
             dataset.append(self.parse_audio(path))
 
@@ -130,7 +130,7 @@ class NoiseInjector(object):
 
     def parse_audio(self, audio_path):
         try:
-            signal = np.memmap(audio_path, dtupe='h', mode='r').astype('float32')
+            signal = np.memmap(audio_path, dtype='h', mode='r').astype('float32')
             non_silence_indices = split(signal, top_db=30)
             # print(non_silence_indices)
             for (start, end) in non_silence_indices:
