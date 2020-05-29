@@ -23,7 +23,7 @@ Also our model has recorded **91.0% CRR** in `Kaldi-zeroth corpus`
 * [End-to-end (E2E) automatic speech recognition](https://sooftware.github.io/End-to-end-Speech-Recognition/)
 * [VGG Extractor](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.sub_layers)
 * [MaskConv & pack_padded_sequence](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.sub_layers)
-* [Multi-headed (location-aware / dot-product) Attention](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.attention)
+* [Multi-headed (location-aware / scaled dot-product) Attention](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.attention)
 * [Top K Decoding (Beam Search)](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.topk_decoder)
 * [Spectrogram Parser](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.parser)
 * [Delete silence](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.parser)
@@ -40,6 +40,8 @@ Also our model has recorded **91.0% CRR** in `Kaldi-zeroth corpus`
 * Inference with batching
 * Multi-GPU training
   
+We have referred to many papers to develop the best model possible. And tried to make the code as efficient and easy to use as possible. If you have any minor inconvenience, please let us know anytime. We will response as soon as possible.
+
 ## Roadmap
   
 <img src="https://user-images.githubusercontent.com/42150335/80630547-5dfc6580-8a8f-11ea-91e8-73fe5e8b9e4b.png" width=450> 
@@ -51,7 +53,9 @@ For example, training of an acoustic model is a multi-stage process of model tra
 We mainly referred to following papers.  
   
  [「Listen, Attend and Spell」](https://arxiv.org/abs/1508.01211)  
- 
+   
+[「Attention Based Models for Speech Recognition」](https://arxiv.org/abs/1506.07503)  
+
 [「State-of-the-art Speech Recognition with Sequence-to-Sequence Models」](https://arxiv.org/abs/1712.01769)
    
 [「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」](https://arxiv.org/abs/1904.08779).   
@@ -61,29 +65,35 @@ If you want to study the feature of audio, we recommend this papers.
 [「Voice Recognition Using MFCC Algirithm」](https://ijirae.com/volumes/vol1/issue10/27.NVEC10086.pdf).  
   
 Our project based on Seq2seq with Attention Architecture.  
-
-Sequence to sequence architecture is a field that is still actively studied in the field of speech recognition.    
+  
+![image](https://user-images.githubusercontent.com/42150335/83260135-36b2c880-a1f4-11ea-8b38-ef88dca214bf.png)
+  
+`Attention mechanism` helps finding speech alignment. We apply multi-headed (`location-aware` / `scaled dot-product`) attention which you can choose. Location-aware attention proposed in `Attention Based Models for Speech Recognition` paper and we expanded this attention to multi-head. Multi-headed scaled dot attention proposed in `Attention Is All You Need` paper.  
+ You can choose between these two options as `attn_mechanism` option.    
+  
 Our model architeuture is as follows.
   
 ```python
 ListenAttendSpell(
   (listener): Listener(
     (rnn): GRU(2560, 256, num_layers=5, batch_first=True, dropout=0.3, bidirectional=True)
-    (cnn): MaskCNN(
-      (sequential): Sequential(
-        (0): Conv2d(1, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-        (1): Hardtanh(min_val=0, max_val=20, inplace=True)
-        (2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-        (3): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-        (4): Hardtanh(min_val=0, max_val=20, inplace=True)
-        (5): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
-        (6): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-        (7): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-        (8): Hardtanh(min_val=0, max_val=20, inplace=True)
-        (9): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-        (10): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-        (11): Hardtanh(min_val=0, max_val=20, inplace=True)
-        (12): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (extractor): VGGExtractor(
+      (extractor): MaskCNN(
+        (sequential): Sequential(
+          (0): Conv2d(1, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (1): Hardtanh(min_val=0, max_val=20, inplace=True)
+          (2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (3): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (4): Hardtanh(min_val=0, max_val=20, inplace=True)
+          (5): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+          (6): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (7): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (8): Hardtanh(min_val=0, max_val=20, inplace=True)
+          (9): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (10): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (11): Hardtanh(min_val=0, max_val=20, inplace=True)
+          (12): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+        )
       )
     )
   )
@@ -91,23 +101,22 @@ ListenAttendSpell(
     (rnn): GRU(512, 512, num_layers=3, batch_first=True, dropout=0.3)
     (embedding): Embedding(2038, 512)
     (input_dropout): Dropout(p=0.3, inplace=False)
-    (attention): MultiHybridAttention(
-      (scaled_dot): ScaledDotProductAttention()
-      (conv1d): Conv1d(1, 10, kernel_size=(3,), stride=(1,), padding=(1,))
-      (linear_q): Linear(in_features=512, out_features=512, bias=True)
-      (linear_v): Linear(in_features=512, out_features=512, bias=False)
-      (linear_u): Linear(in_features=10, out_features=64, bias=False)
-      (linear_out): Linear(in_features=1024, out_features=512, bias=True)
-      (normalize): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+    (out_projection): Linear(in_features=512, out_features=2038, bias=True)
+    (attention): LocationAwareAttention(
+      (loc_projection): Linear(in_features=10, out_features=64, bias=False)
+      (loc_conv): Conv1d(8, 10, kernel_size=(3,), stride=(1,), padding=(1,))
+      (query_projection): Linear(in_features=512, out_features=512, bias=False)
+      (value_projection): Linear(in_features=512, out_features=512, bias=False)
+      (score_projection): Linear(in_features=64, out_features=1, bias=True)
+      (out_projection): Linear(in_features=1024, out_features=512, bias=True)
     )
-    (linear_out): Linear(in_features=512, out_features=2038, bias=True)
   )
 )
 ``` 
   
 ### e2e module
 
-<img src="https://user-images.githubusercontent.com/42150335/82842192-93239880-9f13-11ea-80d6-ed1358218d5e.png" width=800>   
+<img src="https://user-images.githubusercontent.com/42150335/83259833-b68c6300-a1f3-11ea-8524-50d618129da0.png" width=800>   
   
 `e2e` (End-to-end) module's structure is implement as above.   
 `e2e` module has modularized and extensible components for las models, trainer, evaluator, checkpoints, data_loader etc...  
@@ -158,7 +167,7 @@ python ./main.py --batch_size 32 --num_workers 4 --num_epochs 20  --use_bidirect
                  --listener_layer_size 5 --speller_layer_size 3 --rnn_type gru \
                  --high_plateau_lr $HIGH_PLATEAU_LR --teacher_forcing_ratio 1.0 --valid_ratio 0.01 \
                  --sample_rate 16000 --window_size 20 --stride 10 --n_mels 80 --normalize --del_silence \
-                 --feature_extract_by torchaudio --time_mask_para 30 --freq_mask_para 12 \
+                 --feature_extract_by torchaudio --time_mask_para 70 --freq_mask_para 12 \
                  --time_mask_num 2 --freq_mask_num 2 --save_result_every 1000 \
                  --checkpoint_every 5000 --print_every 10 --init_lr 1e-15  --use_multi_gpu --init_uniform  \
                  --mode train --dataset_path /data3/ --data_list_path ./data/data_list/xxx.csv \
@@ -214,17 +223,17 @@ We appreciate any kind of feedback or contribution.  Feel free to proceed with s
 We follow [PEP-8](https://www.python.org/dev/peps/pep-0008/) for code style. Especially the style of docstrings is important to generate documentation.  
     
 ### Reference   
-[[1] 「Listen, Attend and Spell」  Paper](https://arxiv.org/abs/1508.01211)   
-[[2] 「State-of-the-art Speech Recognition with Sequence-to-Sequence Models」   Paper](https://arxiv.org/abs/1712.01769)  
-[[3] 「A Simple Data Augmentation Method for Automatic Speech Recognition」  Paper](https://arxiv.org/abs/1904.08779)  
-[[4] 「An analysis of incorporating an external language model into a sequence-to-sequence model」  Paper](https://arxiv.org/abs/1712.01996)  
-[[5] 「Voice Recognition Using MFCC Algorithm」  Paper](https://ijirae.com/volumes/vol1/issue10/27.NVEC10086.pdf)        
-[[6] 「IBM pytorch-seq2seq」](https://github.com/IBM/pytorch-seq2seq)   
-[[7] 「SeanNaren deepspeech.pytorch」](https://github.com/SeanNaren/deepspeech.pytorch)   
-[[8] 「Alexander-H-Liu End-to-end-ASR-Pytorch](https://github.com/Alexander-H-Liu/End-to-end-ASR-Pytorch)   
-[[9] 「Character RNN Language Model」](https://github.com/sooftware/char-rnnlm)  
-[[10] 「KsponSpeech」](http://www.aihub.or.kr/aidata/105)    
-[[11] 「Documentation」](https://sooftware.github.io/End-to-End-Korean-Speech-Recognition/)  
+[[1] 「Listen, Attend and Spell」  @Paper](https://arxiv.org/abs/1508.01211)   
+[[2] 「Attention Based Models for Speech Recognition」  @Paper](https://arxiv.org/abs/1506.07503)  
+[[3] 「State-of-the-art Speech Recognition with Sequence-to-Sequence Models」   @Paper](https://arxiv.org/abs/1712.01769)  
+[[4] 「A Simple Data Augmentation Method for Automatic Speech Recognition」  @Paper](https://arxiv.org/abs/1904.08779)  
+[[5] 「Voice Recognition Using MFCC Algorithm」  @Paper](https://ijirae.com/volumes/vol1/issue10/27.NVEC10086.pdf)        
+[[6] IBM/pytorch-seq2seq @gitHub](https://github.com/IBM/pytorch-seq2seq)   
+[[7] SeanNaren/deepspeech.pytorch @github](https://github.com/SeanNaren/deepspeech.pytorch)   
+[[8] Alexander-H-Liu/End-to-end-ASR-Pytorch @github](https://github.com/Alexander-H-Liu/End-to-end-ASR-Pytorch)   
+[[9] clovaai/ClovaCall @github](https://github.com/clovaai/ClovaCall)  
+[[10] KsponSpeech @AIHub](http://www.aihub.or.kr/aidata/105)    
+[[11] Documentation](https://sooftware.github.io/End-to-End-Korean-Speech-Recognition/)  
    
 ### Citing
 ```
