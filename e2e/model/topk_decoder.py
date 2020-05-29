@@ -55,7 +55,7 @@ class TopKDecoder(nn.Module):
 
         # Initialize the scores; for the first step,
         # ignore the inflated copies to avoid duplicate entries in the top k
-        sequence_scores = torch.Tensor(batch_size * self.k, 1).to(self.device)
+        sequence_scores = encoder_outputs.new_zeros(batch_size * self.k, 1)
         sequence_scores.fill_(-float('Inf'))
 
         fill_index = torch.LongTensor([i * self.k for i in range(0, batch_size)]).to(self.device)

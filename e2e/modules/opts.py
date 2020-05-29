@@ -65,11 +65,11 @@ def train_opts(parser):
                        action='store_true', default=False,
                        help='flag indication whether to use noise augmentation or not')
     group.add_argument('--noiseset_size', '-noiseset_size',
-                       type=int, default=5000,
-                       help='size of noise dataset for noise augmentation')
+                       type=int, default=1000,
+                       help='size of noise dataset for noise augmentation (default: 1000)')
     group.add_argument('--noise_level', '-noise_level',
                        type=float, default=0.7,
-                       help='set level of noise')
+                       help='set level of noise (default: 0.7)')
     group.add_argument('--use_cuda', '-use_cuda',
                        action='store_true', default=False,
                        help='flag indication whether to use cuda or not')
@@ -93,7 +93,7 @@ def train_opts(parser):
                        help='low plateau learning rate => after exponential decay (default: 1e-05)')
     group.add_argument('--valid_ratio', '-valid_ratio',
                        type=float, default=0.01,
-                       help='validation dataset ratio in training dataset')
+                       help='validation dataset ratio in training dataset (default: 0.01)')
     group.add_argument('--max_len', '-max_len',
                        type=int, default=151,
                        help='maximum characters of sentence (default: 151)')

@@ -85,7 +85,7 @@ class NoiseInjector(object):
         self.audio_paths = self.create_audio_paths(dataset_path)
         self.dataset = self.create_noiseset(dataset_path)
 
-        logger.info("Noise injector created !!")
+        logger.info("Create Noise injector complete !!")
 
     def __call__(self, signal):
         noise = np.random.choice(self.dataset)
