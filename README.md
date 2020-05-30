@@ -6,6 +6,8 @@
   
 ### [**Documentation**](https://sooftware.github.io/End-to-end-Speech-Recognition/)   
   
+[Korean.ver](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/README_ko.md)  
+
 ## Intro
 
 `End-to-end Speech Recognition` is project for E2E automatic speech recognition implemented in [PyTorch](http://pytorch.org).   
@@ -196,7 +198,7 @@ python ./infer.py -dataset_path dataset_path -data_list_path data_list_path \
                   -sample_rate 16000 --window_size 20 --stride 10 --n_mels 80 -feature_extract_by librosa \
                   -normalize -del_silence -input_reverse 
 ```
-Now you have a model which you can use to predict on new data. We do this by running beam search (or greedy search).  
+Now you have a model which you can use to predict on new data. We do this by running `beam search` (or `greedy search`).  
 Like training, you can choose between `Default setting` or `Custom setting`.  
   
 ### Checkpoints   

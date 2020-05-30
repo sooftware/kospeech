@@ -9,11 +9,9 @@
   
 ## Intro
 
-- `End-to-end Speech Recognition` 은 [PyTorch](http://pytorch.org)를 통해 구현된 종단간 자동 한국어 음성인식 프로젝트입니다.   
-- `e2e`는 LAS 모델, 학습과 추론, 체크포인트에 따른 모델 저장, 파싱까지 여러 확장 가능한 요소로 모듈화 되어있습니다.  
-- KAI.Lib은 다양한 [feedback or contribution](https://github.com/sooftware/End-to-end-Speech-Recognition/issues)을 기대하고 있습니다.
+`End-to-end Speech Recognition` 은 [PyTorch](http://pytorch.org)를 이용하여 구현한 E2E 방식의 `한국어 음성인식` 프로젝트입니다. `e2e` 모듈은 LAS 모델, 학습 및 추론, 체크포인트 기능 등 여러 확장 가능한 요소로 모듈화 되어있습니다.  저희는 다양한 [feedback or contribution](https://github.com/sooftware/End-to-end-Speech-Recognition/issues)을 기대하고 있습니다.
   
-저희는 **1000시간**의 한국어 발화 데이터 `KsponSpeech` 코퍼스를 사용했습니다. 현재 저희 모델은 **86.98% CRR**을 기록하고 있으며 더욱 높은 인식 기록을 목표로 학습 중에 있습니다. 또한 `Kaldi-zeroth dataset` 테스트 결과 **91.0% CRR**을 기록한 바 있습니다.    
+저희는 AI Hub에서 제공하는 **1000시간**의 한국어 음성 데이터인 `KsponSpeech` 코퍼스를 사용했습니다. 현재 저희 모델은 해당 데이터셋에서 **86.98% CRR**을 기록했으며 더욱 높은 인식률을 위해 지속적으로 연구중에 있습니다. 또한 `Kaldi-zeroth corpus` 테스트 결과 **91.0% CRR**을 기록했습니다.    
   
 ##### ( **CRR** : Character Recognition Rate ) 
   
@@ -44,11 +42,11 @@
   
 <img src="https://user-images.githubusercontent.com/42150335/80630547-5dfc6580-8a8f-11ea-91e8-73fe5e8b9e4b.png" width=450> 
   
-종단간 음성 인식은 신경망 기반 음성인식 분야에서 새롭게 부상하는 패러다임으로 여러 장점을 제공합니다. 음향모델, 언어모델, 발음 전사 모델로 구성된 전통적인 하이브리드 음성인식 모델은 각 모델들에 맞는 복잡한 학습을 필요로 했습니다.   
+E2E 방식의 음성 인식은 신경망 기반 음성인식 분야에서 새롭게 부상하는 패러다임으로 여러 장점을 제공합니다. 음향모델, 언어모델, 발음 전사 모델로 구성된 전통적인 하이브리드 음성인식 모델은 각 모델들에 맞는 복잡한 학습을 필요로 했습니다.   
   
-예를 들어, 음향 모델의 학습은 다단계 모델 학습 과정과 음성 피쳐 시퀀스와 레이블 시퀀스 사이의 시간적 정렬 과정으로 이루어져 있습니다. 반대로 종단간 음성인식은 훨씬 간단한 학습 파이프라인을 갖춘 단일화된 접근 방식입니다. 이로써 학습 시간, 디코딩 시간을 줄일 수 있으며 자연어 이해와 같은 다운스트림 처리 능력이 결합된 최적화가 가능합니다.  
+예를 들어, 음향 모델의 학습은 다단계 모델 학습 과정과 음성 피쳐 시퀀스와 레이블 시퀀스 사이의 정렬 과정 등으로 이루어져 있습니다. 이와 다르게 E2E 방식의 음성인식은 훨씬 간단한 학습 파이프라인을 갖춘 단일화된 접근 방식으로 학습 시간과 디코딩 시간을 줄일 수 있으며 자연어 이해와 같은 처리 능력이 결합된 최적화가 가능합니다.  
   
-저희는 아래와 같은 논문들을 참조했습니다.  
+저희는 아래 논문들을 참조했습니다.  
   
 [「Listen, Attend and Spell」](https://arxiv.org/abs/1508.01211)  
    
@@ -58,7 +56,7 @@
    
 [「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」](https://arxiv.org/abs/1904.08779).   
   
-오디오 피쳐에 관한 공부를 원하시는 분은 아래 논문을 참고해주시기 바랍니다.  
+음성 피쳐에 대한 공부를 원하시는 분은 아래 논문을 추천합니다.  
   
 [「Voice Recognition Using MFCC Algirithm」](https://ijirae.com/volumes/vol1/issue10/27.NVEC10086.pdf).  
   
@@ -66,8 +64,7 @@
   
 ![image](https://user-images.githubusercontent.com/42150335/83260135-36b2c880-a1f4-11ea-8b38-ef88dca214bf.png)
   
-`Attention mechanism` 는 발화 순서를 정렬하는 데 도움을 줍니다. 저희는 multi-head (`location-aware` / `scaled dot-product`) Attention을 지원하며 두 가지 방식 중 하나를 선택할 수 있습니다. `Location-aware` Attention은 `Attention Based Models for Speech Recognition` 논문에서 제안되었으며 저희는 이 부분을 multi-head 방식을 추가해 구현하였습니다. Multi-headed scaled dot attention `Attention Is All You Need` 논문에서 제안되었습니다.  
- 사용자는 `attn_mechanism` 옵션에서 두 가지 방식을 결정할 수 있습니다. [Check](https://sooftware.github.io/End-to-end-Speech-Recognition/notes/opts.html)를 확인해주시기 바랍니다.    
+`Attention mechanism` 는 음성을 정렬 (alignment) 하는 데 도움을 줍니다. 저희는 multi-head (`location-aware` / `scaled dot-product`) Attention을 지원하며 두 가지 방식 중 하나를 선택할 수 있습니다. `Location-aware` Attention은 `Attention Based Models for Speech Recognition` 논문에서 제안되었으며 저희는 이 부분을 multi-head 방식을 추가해 구현하였습니다. Multi-headed scaled dot attention `Attention Is All You Need` 논문에서 제안되었습니다. 사용시 `attn_mechanism` 옵션에서 두 가지 방식 중 선택할 수 있습니다. [check](https://sooftware.github.io/End-to-end-Speech-Recognition/notes/opts.html)를 확인해주시기 바랍니다.    
   
 모델 구조는 아래와 같습니다.
   
@@ -119,10 +116,10 @@ ListenAttendSpell(
 `e2e` 모듈 구조는 위와 같이 구성되어 있습니다.   
 `e2e` 는 확장성 있는 LAS 모델, 학습기, 평가기, 체크포인트, 데이터 로더 등을 제공합니다.  
   
-저희는 [Wiki page](https://github.com/sooftware/End-to-end-Speech-Recognition/wiki)에 프로젝트 진행 상황을 끊임없이 업데이트하고 있습니다.   
+저희는 [Wiki page](https://github.com/sooftware/End-to-end-Speech-Recognition/wiki)에 프로젝트 진행 상황을 지속적으로 업데이트하고 있습니다.   
   
 ## Installation
-이 프로젝트는 Python 3.7 이상의 버전을 필요로 합니다. 또한 본 프로젝트를 위한 새로운 가상환경을 만드시길 권장하는 바 입니다.  
+이 프로젝트는 Python 3.7 이상의 버전을 필요로 합니다. 또한 본 프로젝트를 위한 새로운 가상환경을 만드시길 권장합니다.  
 
 ### Prerequisite
  
@@ -147,8 +144,7 @@ python setup.py install
 ## Get Started
 ### Step 1: Preparation dataset
 
-학습 전 [이곳](https://github.com/sooftware/End-to-end-Speech-Recognition/wiki/Preparation-before-Training) 을 확인해 주시기 바랍니다. 해당 문서는 `KsponSpeech` 에 대한 전처리 내용을 설명하고 있습니다.
-위 문서는 한국어로 기술되어 있으며, 빠른 시일 내에 영어 설명을 첨부할 예정입니다.  
+학습 전 [이곳](https://github.com/sooftware/End-to-end-Speech-Recognition/wiki/Preparation-before-Training) 을 확인해 주시기 바랍니다. 해당 문서에서는 `KsponSpeech` 에 대한 전처리 내용을 담고 있습니다. 
 
 ### Step 2: Run `main.py`
 * Default setting  
@@ -170,8 +166,7 @@ python ./main.py -dataset_path dataset_path -data_list_path data_list_path \
 ```
   
 위의 명령어에 따라 모델을 학습 가능합니다.  
- `Defaulting setting` 를 통해 기본 설정으로 모델 학습을 진행하실 수 있습니다.   
- 또는 `Custom setting` 명령어를 통해 하이퍼 파라미터를 설정하실 수 있습니다.
+ `Defaulting setting`과 같이 디폴트 값으로 설정된 모델 학습을 진행하실 수 있으며, `Custom setting`과 같은 명령어를 통해 하이퍼 파라미터를 원하는대로 설정하여 사용할 수 있습니다.
 
 
 ### Step 3: Run `infer.py`
@@ -187,7 +182,7 @@ python ./infer.py -dataset_path dataset_path -data_list_path data_list_path \
                   -sample_rate 16000 --window_size 20 --stride 10 --n_mels 80 -feature_extract_by librosa \
                   -normalize -del_silence -input_reverse 
 ```
-학습이 끝났다면 해당 모델을 통해 새로운 데이터에 대한 추론을 진행할 수 있습니다. 저희는 추론 과정에서 탐욕 알고리즘과 빔탐색 알고리즘 모두를 지원하고 있습니다.  
+학습이 끝났다면 해당 모델을 통해 새로운 데이터에 대한 추론을 진행할 수 있습니다. 저희는 `Greedy Search`와 `Beam Search` 모두 지원하고 있습니다.  
 학습과 마찬가지로 `Default setting` 과 `Custom setting` 중 하나를 선택하실 수 있습니다.
 
 ### Checkpoints
@@ -208,7 +203,7 @@ save_dir
 ## Troubleshoots and Contributing
 
 어떠한 질문이나 버그 리포트, 피쳐 요청이 있으시면 깃허브의 [open an issue](https://github.com/sooftware/End-to-end-Speech-Recognition/issues) 로 등록해주시면 감사하겠습니다.   
-또한 즉각적인 피드백이나 대화를 원하시는 분들은 저희 [지터](https://gitter.im/Korean-Speech-Recognition/community) 또는 sh951011@gmail.com 로 연락주시면 감사하겠습니다.
+또한 즉각적인 피드백이나 대화를 원하시는 분들은 저희 [gitter](https://gitter.im/Korean-Speech-Recognition/community) 또는 sh951011@gmail.com 로 연락주시면 감사하겠습니다.
   
 저희는 모델에 대한 여러분의 기여나 피드백을 기대하고 있습니다. 부담스럽게 생각하지 마시고 개선사항이라고 생각되는 부분을 말씀해주시면 감사하겠습니다. 부디 여러분들께서 보내주신 주요 컨트리뷰트나 여러 피쳐 이슈들에 관해 저희와 많은 대화 나눌 수 있으면 좋겠습니다.  
 
