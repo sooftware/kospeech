@@ -9,7 +9,9 @@
   
 ## Intro
 
-`End-to-end Speech Recognition` 은 [PyTorch](http://pytorch.org)를 이용하여 구현한 E2E 방식의 `한국어 음성인식` 프로젝트입니다. `e2e` 모듈은 LAS 모델, 학습 및 추론, 체크포인트 기능 등 여러 확장 가능한 요소로 모듈화 되어있습니다.  저희는 다양한 [feedback or contribution](https://github.com/sooftware/End-to-end-Speech-Recognition/issues)을 기대하고 있습니다.
+`End-to-end Speech Recognition` 은 [PyTorch](http://pytorch.org)를 이용하여 구현한 E2E 방식의 `한국어 음성인식` 프로젝트입니다.  
+`e2e` 모듈은 LAS 모델, 학습 및 추론, 체크포인트 기능 등 여러 확장 가능한 요소로 모듈화 되어있습니다.    
+저희는 다양한 [feedback or contribution](https://github.com/sooftware/End-to-end-Speech-Recognition/issues)을 기대하고 있습니다.
   
 저희는 AI Hub에서 제공하는 **1000시간**의 한국어 음성 데이터인 `KsponSpeech` 코퍼스를 사용했습니다. 현재 저희 모델은 해당 데이터셋에서 **86.98% CRR**을 기록했으며 더욱 높은 인식률을 위해 지속적으로 연구중에 있습니다. 또한 `Kaldi-zeroth corpus` 테스트 결과 **91.0% CRR**을 기록했습니다.    
   
