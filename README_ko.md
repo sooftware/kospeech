@@ -1,13 +1,13 @@
 
 # **End-to-end Speech Recognition**  
   
-### 문자 단위 기반 종단간 한국어 음성인식  
+### Character unit based end2end automatic speech recognition in Korean  
    
 [<img src="https://github.com/gentaiscool/end2end-asr-pytorch/raw/master/img/pytorch-logo-dark.png" height=18>](https://pytorch.org/) <img src="https://img.shields.io/badge/License-Apache--2.0-yellow" height=20> [<img src="https://img.shields.io/badge/chat-on%20gitter-4fb99a" height=20>](https://gitter.im/Korean-Speech-Recognition/community)   
   
-### [**문서**](https://sooftware.github.io/End-to-end-Speech-Recognition/)   
+### [**Documentation**](https://sooftware.github.io/End-to-end-Speech-Recognition/)   
   
-## 소개
+## Intro
 
 - `End-to-end Speech Recognition` 은 [PyTorch](http://pytorch.org)를 통해 구현된 종단간 자동 한국어 음성인식 프로젝트입니다.   
 - `e2e`는 LAS 모델, 학습과 추론, 체크포인트에 따른 모델 저장, 파싱까지 여러 확장 가능한 요소로 모듈화 되어있습니다.  
@@ -17,26 +17,30 @@
   
 ##### ( **CRR** : Character Recognition Rate ) 
   
-## 피쳐  
+## Features  
   
 * [End-to-end (E2E) automatic speech recognition](https://sooftware.github.io/End-to-end-Speech-Recognition/)
-* [Convolutional encoder](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.listener)
-* [MaskConv & pack_padded_sequence](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.maskCNN)
-* [Multi-headed Location-Aware Attention](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.attention)
+* [Various Options](https://sooftware.github.io/End-to-end-Speech-Recognition/notes/opts.html)
+* [VGG Extractor](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.sub_layers)
+* [MaskConv & pack_padded_sequence](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.sub_layers)
+* [Multi-headed (location-aware / scaled dot-product) Attention](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.attention)
 * [Top K Decoding (Beam Search)](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.topk_decoder)
 * [Spectrogram Parser](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.parser)
 * [Delete silence](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.parser)
-* [SpecAugment](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.parser)
-* [NoiseAugment](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.parser)
+* [SpecAugment](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.augment)
+* [NoiseAugment](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.augment)
 * [Label Smoothing](https://sooftware.github.io/End-to-end-Speech-Recognition/Loss.html)
+
 * [Save & load Checkpoint](https://sooftware.github.io/End-to-end-Speech-Recognition/Modules.html#module-e2e.modules.checkpoint)
 * [Various options can be set using parser](https://sooftware.github.io/End-to-end-Speech-Recognition/Modules.html#module-e2e.modules.opts)
 * [Implement data loader as multi-thread for speed](https://sooftware.github.io/End-to-end-Speech-Recognition/Data_loader.html#id1)
+* [Learning Rate Scheduling](https://sooftware.github.io/End-to-end-Speech-Recognition/Optim.html#module-e2e.optim.lr_scheduler)  
+* [Show training states as log](https://sooftware.github.io/End-to-end-Speech-Recognition/Modules.html#module-e2e.modules.logger)
+* Teacher forcing scheduling
 * Inference with batching
 * Multi-GPU training
-* Show training states as log
   
-## 로드맵
+## Roadmap
   
 <img src="https://user-images.githubusercontent.com/42150335/80630547-5dfc6580-8a8f-11ea-91e8-73fe5e8b9e4b.png" width=450> 
   
@@ -46,40 +50,48 @@
   
 저희는 아래와 같은 논문들을 참조했습니다.  
   
- [「Listen, Attend and Spell」](https://arxiv.org/abs/1508.01211)  
- 
+[「Listen, Attend and Spell」](https://arxiv.org/abs/1508.01211)  
+   
+[「Attention Based Models for Speech Recognition」](https://arxiv.org/abs/1506.07503)  
+
 [「State-of-the-art Speech Recognition with Sequence-to-Sequence Models」](https://arxiv.org/abs/1712.01769)
    
 [「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」](https://arxiv.org/abs/1904.08779).   
   
-오디오 피쳐에 관해 공부하고 싶은 분들에게는 아래 논문을 추천합니다.  
+오디오 피쳐에 관한 공부를 원하시는 분은 아래 논문을 참고해주시기 바랍니다.  
   
 [「Voice Recognition Using MFCC Algirithm」](https://ijirae.com/volumes/vol1/issue10/27.NVEC10086.pdf).  
   
-저희 프로젝트는 `seq2seq with Attention Archtecture` 에 기반을 두고 있습니다.  
+저희 프로젝트는 `Seq2seq with Attention Architecture` 에 기반을 두고 있습니다.  
   
-시퀀스 투 시퀀스 구조는 음성인식 분야에서 현재까지도 활발히 연구되는 영역입니다.    
-저희 모델 구조는 다음과 같습니다.
+![image](https://user-images.githubusercontent.com/42150335/83260135-36b2c880-a1f4-11ea-8b38-ef88dca214bf.png)
+  
+`Attention mechanism` 는 발화 순서를 정렬하는 데 도움을 줍니다. 저희는 multi-head (`location-aware` / `scaled dot-product`) Attention을 지원하며 두 가지 방식 중 하나를 선택할 수 있습니다. `Location-aware` Attention은 `Attention Based Models for Speech Recognition` 논문에서 제안되었으며 저희는 이 부분을 multi-head 방식을 추가해 구현하였습니다. Multi-headed scaled dot attention `Attention Is All You Need` 논문에서 제안되었습니다.  
+ 사용자는 `attn_mechanism` 옵션에서 두 가지 방식을 결정할 수 있습니다. [Check](https://sooftware.github.io/End-to-end-Speech-Recognition/notes/opts.html)를 확인해주시기 바랍니다.    
+  
+모델 구조는 아래와 같습니다.
   
 ```python
 ListenAttendSpell(
   (listener): Listener(
     (rnn): GRU(2560, 256, num_layers=5, batch_first=True, dropout=0.3, bidirectional=True)
-    (cnn): MaskCNN(
-      (sequential): Sequential(
-        (0): Conv2d(1, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-        (1): Hardtanh(min_val=0, max_val=20, inplace=True)
-        (2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-        (3): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-        (4): Hardtanh(min_val=0, max_val=20, inplace=True)
-        (5): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
-        (6): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-        (7): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-        (8): Hardtanh(min_val=0, max_val=20, inplace=True)
-        (9): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-        (10): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-        (11): Hardtanh(min_val=0, max_val=20, inplace=True)
-        (12): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (extractor): VGGExtractor(
+      (extractor): MaskCNN(
+        (sequential): Sequential(
+          (0): Conv2d(1, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (1): Hardtanh(min_val=0, max_val=20, inplace=True)
+          (2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (3): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (4): Hardtanh(min_val=0, max_val=20, inplace=True)
+          (5): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+          (6): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (7): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (8): Hardtanh(min_val=0, max_val=20, inplace=True)
+          (9): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          (10): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (11): Hardtanh(min_val=0, max_val=20, inplace=True)
+          (12): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+        )
       )
     )
   )
@@ -87,16 +99,15 @@ ListenAttendSpell(
     (rnn): GRU(512, 512, num_layers=3, batch_first=True, dropout=0.3)
     (embedding): Embedding(2038, 512)
     (input_dropout): Dropout(p=0.3, inplace=False)
-    (attention): MultiHybridAttention(
-      (scaled_dot): ScaledDotProductAttention()
-      (conv1d): Conv1d(1, 10, kernel_size=(3,), stride=(1,), padding=(1,))
-      (linear_q): Linear(in_features=512, out_features=512, bias=True)
-      (linear_v): Linear(in_features=512, out_features=512, bias=False)
-      (linear_u): Linear(in_features=10, out_features=64, bias=False)
-      (linear_out): Linear(in_features=1024, out_features=512, bias=True)
-      (normalize): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+    (out_projection): Linear(in_features=512, out_features=2038, bias=True)
+    (attention): LocationAwareAttention(
+      (loc_projection): Linear(in_features=10, out_features=64, bias=False)
+      (loc_conv): Conv1d(8, 10, kernel_size=(3,), stride=(1,), padding=(1,))
+      (query_projection): Linear(in_features=512, out_features=512, bias=False)
+      (value_projection): Linear(in_features=512, out_features=512, bias=False)
+      (score_projection): Linear(in_features=64, out_features=1, bias=True)
+      (out_projection): Linear(in_features=1024, out_features=512, bias=True)
     )
-    (linear_out): Linear(in_features=512, out_features=2038, bias=True)
   )
 )
 ``` 
@@ -110,19 +121,20 @@ ListenAttendSpell(
   
 저희는 [Wiki page](https://github.com/sooftware/End-to-end-Speech-Recognition/wiki)에 프로젝트 진행 상황을 끊임없이 업데이트하고 있습니다.   
   
-## 설치
+## Installation
 이 프로젝트는 Python 3.7 이상의 버전을 필요로 합니다. 또한 본 프로젝트를 위한 새로운 가상환경을 만드시길 권장하는 바 입니다.  
 
-### 필수조건
+### Prerequisite
+ 
   
 * Numpy: `pip install numpy` (Numpy 설치 문제 시 [이곳](https://github.com/numpy/numpy) 참조).
 * Pandas: `pip install pandas` (Pandas 설치 문제 시 [이곳](https://github.com/pandas-dev/pandas) 참조)  
 * librosa: `pip install librosa` (librosa 설치 문제 시 [이곳](https://github.com/librosa/librosa) 참조)
 * torchaudio: `pip install torchaudio` (torchaudio 설치 문제 시 [이곳](https://github.com/pytorch/pytorch) 참조)
 * tqdm: `pip install tqdm` (tqdm 설치 문제 시 [이곳](https://github.com/tqdm/tqdm) 참조)
-* Pytorch: [PyTorch website](http://pytorch.org/) 을 참조하여 본인의 환경에 맞는 설치 진행.   
+* Pytorch: [PyTorch website](http://pytorch.org/) 을 참조하여 본인의 환경에 맞는 설치 진행   
   
-### 소스 파일로부터 설치
+### Install from source
 현재 저희는 setuptools 를 이용한 소스 코드로부터의 설치를 지원하고 있습니다. 소스 코드를 확인하고 아래 명령어를 실행하여 설치를 진행해주시기 바랍니다.  
 ```
 pip install -r requirements.txt
@@ -132,18 +144,18 @@ python setup.py build
 python setup.py install
 ```
   
-## 시작하기
-### 1단계: 데이터셋 준비
+## Get Started
+### Step 1: Preparation dataset
 
 학습 전 [이곳](https://github.com/sooftware/End-to-end-Speech-Recognition/wiki/Preparation-before-Training) 을 확인해 주시기 바랍니다. 해당 문서는 `KsponSpeech` 에 대한 전처리 내용을 설명하고 있습니다.
 위 문서는 한국어로 기술되어 있으며, 빠른 시일 내에 영어 설명을 첨부할 예정입니다.  
 
-### 2단계: `main.py` 실행하기
-* 기본 설정  
+### Step 2: Run `main.py`
+* Default setting  
 ```
 $ ./main.sh
 ```
-* 사용자 설정
+* Custom setting
 ```
 python ./main.py -dataset_path dataset_path -data_list_path data_list_path \
                  -use_multi_gpu -init_uniform -mode train -batch_size 32 -num_workers 4 \
@@ -162,12 +174,12 @@ python ./main.py -dataset_path dataset_path -data_list_path data_list_path \
  또는 `Custom setting` 명령어를 통해 하이퍼 파라미터를 설정하실 수 있습니다.
 
 
-### 3단계: `infer.py` 실행하기
-* 기본 설정
+### Step 3: Run `infer.py`
+* Default setting
 ```
 $ ./infer.sh
 ```
-* 사용자 설정
+* Custom setting
 ```
 python ./infer.py -dataset_path dataset_path -data_list_path data_list_path \
                   -mode infer -use_multi_gpu -use_cuda -batch_size 32 -num_workers 4 \
@@ -178,7 +190,7 @@ python ./infer.py -dataset_path dataset_path -data_list_path data_list_path \
 학습이 끝났다면 해당 모델을 통해 새로운 데이터에 대한 추론을 진행할 수 있습니다. 저희는 추론 과정에서 탐욕 알고리즘과 빔탐색 알고리즘 모두를 지원하고 있습니다.  
 학습과 마찬가지로 `Default setting` 과 `Custom setting` 중 하나를 선택하실 수 있습니다.
 
-### **체크포인트**
+### Checkpoints
 
 체크포인트는 아래와 같은 구조로 저장됩니다.  
 ```
@@ -190,20 +202,20 @@ save_dir
 ```
 체크포인트로부터 학습을 재개하거나 해당 포인트 모델로 추론을 진행할 수 있습니다.
   
-### **외부 언어모델과 결합된 모델에서의 성능 평가**
+### Incorporating External Language Model in Performance Test
 외부 언어모델과 병합된 모델의 성능 평가에 관심 있으시다면 [이곳](https://github.com/sooftware/char-rnnlm)을 확인해주시기 바랍니다.
   
-## 트러블 슈팅과 기여
+## Troubleshoots and Contributing
 
 어떠한 질문이나 버그 리포트, 피쳐 요청이 있으시면 깃허브의 [open an issue](https://github.com/sooftware/End-to-end-Speech-Recognition/issues) 로 등록해주시면 감사하겠습니다.   
 또한 즉각적인 피드백이나 대화를 원하시는 분들은 저희 [지터](https://gitter.im/Korean-Speech-Recognition/community) 또는 sh951011@gmail.com 로 연락주시면 감사하겠습니다.
   
 저희는 모델에 대한 여러분의 기여나 피드백을 기대하고 있습니다. 부담스럽게 생각하지 마시고 개선사항이라고 생각되는 부분을 말씀해주시면 감사하겠습니다. 부디 여러분들께서 보내주신 주요 컨트리뷰트나 여러 피쳐 이슈들에 관해 저희와 많은 대화 나눌 수 있으면 좋겠습니다.  
 
-### 코드 스타일
+### Code Style
 저희는 [PEP-8](https://www.python.org/dev/peps/pep-0008/) 파이썬 코딩 표준을 따랐습니다.  
     
-### 참조   
+### Reference   
 [[1] 「Listen, Attend and Spell」  Paper](https://arxiv.org/abs/1508.01211)   
 [[2] 「State-of-the-art Speech Recognition with Sequence-to-Sequence Models」   Paper](https://arxiv.org/abs/1712.01769)  
 [[3] 「A Simple Data Augmentation Method for Automatic Speech Recognition」  Paper](https://arxiv.org/abs/1904.08779)  
@@ -216,7 +228,7 @@ save_dir
 [[10] 「KsponSpeech」](http://www.aihub.or.kr/aidata/105)    
 [[11] 「Documentation」](https://sooftware.github.io/End-to-End-Korean-Speech-Recognition/)  
    
-### 인용
+### Citing
 ```
 @github{
   title = {End-to-end Speech Recognition},
