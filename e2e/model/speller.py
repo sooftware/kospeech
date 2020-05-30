@@ -7,7 +7,7 @@ from e2e.model.attention import LocationAwareAttention, MultiHeadAttention
 
 
 class Speller(BaseRNN):
-    r"""
+    """
     Converts higher level features (from listener) into output utterances
     by specifying a probability distribution over sequences of characters.
 

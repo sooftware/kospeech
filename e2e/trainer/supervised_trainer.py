@@ -2,11 +2,11 @@ import time
 import torch
 import queue
 import pandas as pd
-from e2e.data_loader.data_loader import MultiDataLoader, AudioDataLoader
 from e2e.modules.checkpoint import Checkpoint
-from e2e.modules.error_rate import CharacterErrorRate
-from e2e.modules.global_ import EOS_token, logger, id2char
 from e2e.optim.lr_scheduler import ExponentialDecayLR
+from e2e.modules.metric import CharacterErrorRate
+from e2e.modules.global_ import EOS_token, logger, id2char
+from e2e.data_loader.data_loader import MultiDataLoader, AudioDataLoader
 
 
 class SupervisedTrainer(object):
@@ -101,8 +101,7 @@ class SupervisedTrainer(object):
                         self.optimizer.get_lr(),
                         self.low_plateau_lr,
                         self.exp_decay_period
-                    ),
-                    self.exp_decay_period
+                    ), self.exp_decay_period
                 )
 
             prev_train_cer = train_cer
@@ -140,7 +139,7 @@ class SupervisedTrainer(object):
             - **loss** (float): loss of current epoch
             - **cer** (float): character error rate of current epoch
         """
-        rater = CharacterErrorRate(id2char, EOS_token)
+        metric = CharacterErrorRate(id2char, EOS_token)
         cer = 1.0
         epoch_loss_total = 0.
         total_num = 0
@@ -175,7 +174,7 @@ class SupervisedTrainer(object):
             loss = self.criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
             epoch_loss_total += loss.item()
 
-            cer = rater(targets, hypothesis)
+            cer = metric(targets, hypothesis)
             total_num += int(input_lengths.sum())
 
             self.optimizer.zero_grad()
@@ -226,7 +225,7 @@ class SupervisedTrainer(object):
         total_loss = 0.
         total_num = 0
         cer = 1.0
-        rater = CharacterErrorRate(id2char, EOS_token)
+        metric = CharacterErrorRate(id2char, EOS_token)
 
         model.eval()
         logger.info('validate() start')
@@ -251,7 +250,7 @@ class SupervisedTrainer(object):
                 loss = self.criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
                 total_loss += loss.item()
                 total_num += sum(input_lengths)
-                cer = rater(targets, hypothesis)
+                cer = metric(targets, hypothesis)
 
         logger.info('validate() completed')
         return total_loss / total_num, cer

@@ -3,7 +3,7 @@ import torch.nn as nn
 
 
 class BaseRNN(nn.Module):
-    r"""
+    """
     Applies a multi-layer RNN to an input sequence.
 
     Note:

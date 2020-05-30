@@ -2,7 +2,7 @@ import torch.nn as nn
 
 
 class ListenAttendSpell(nn.Module):
-    r"""
+    """
     Listen, Attend and Spell (LAS) Model
 
     Args:
@@ -35,10 +35,9 @@ class ListenAttendSpell(nn.Module):
         self.listener = listener
         self.speller = speller
 
-    def forward(self, inputs, input_lengths, targets=None, teacher_forcing_ratio=0.90):
+    def forward(self, inputs, input_lengths, targets=None, teacher_forcing_ratio=0.99):
         listener_outputs, hidden = self.listener(inputs, input_lengths)
         output = self.speller(targets, listener_outputs, teacher_forcing_ratio)
-
         return output
 
     def flatten_parameters(self):

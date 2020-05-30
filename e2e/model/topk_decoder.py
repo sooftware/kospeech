@@ -18,7 +18,7 @@ def _inflate(tensor, n_repeat, dim):
 
 
 class TopKDecoder(nn.Module):
-    r"""
+    """
     Top-K decoding with beam search.
 
     Args:

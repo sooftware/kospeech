@@ -136,16 +136,18 @@ class NoiseInjector(object):
         try:
             signal = np.memmap(audio_path, dtype='h', mode='r').astype('float32')
             non_silence_indices = split(signal, top_db=30)
-            # print(non_silence_indices)
+
             for (start, end) in non_silence_indices:
                 signal[start:end] = 0
 
             noise = signal[signal != 0]
             noise /= 32767
             return noise
+
         except RuntimeError:
             logger.info("RuntimeError in {0}".format(audio_path))
             return None
+
         except ValueError:
             logger.info("RuntimeError in {0}".format(audio_path))
             return None

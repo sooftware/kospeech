@@ -5,7 +5,7 @@ import torch.nn.functional as F
 
 
 class LocationAwareAttention(nn.Module):
-    r"""
+    """
     Applies a multi-headed location-aware attention mechanism on the output features from the decoder.
     Location-aware attention proposed in "Attention-Based Models for Speech Recognition" paper.
     The location-aware attention mechanism is performing well in speech recognition tasks.
@@ -55,13 +55,13 @@ class LocationAwareAttention(nn.Module):
         loc_energy = torch.tanh(self.loc_projection(self.loc_conv(prev_attn).transpose(1, 2)))  # BxNxT => BxTxD
         loc_energy = loc_energy.unsqueeze(1).repeat(1, self.num_heads, 1, 1).view(-1, seq_len, self.dim)  # BxTxD => BxNxTxD
 
-        # Shape matching
+        # Projection & Shape matching
         query = self.query_projection(query).view(batch_size, -1, self.num_heads, self.dim).permute(0, 2, 1, 3)  # Bx1xNxD
         value = self.value_projection(value).view(batch_size, -1, self.num_heads, self.dim).permute(0, 2, 1, 3)  # BxTxNxD
         query = query.contiguous().view(-1, 1, self.dim)        # BNx1xD
         value = value.contiguous().view(-1, seq_len, self.dim)  # BNxTxD
 
-        # Get attention score, attn
+        # Get attention score, attn (align)
         score = self.score_projection(torch.tanh(value + query + loc_energy + self.bias)).squeeze(2)  # BNxT
         attn = F.softmax(score, dim=1)  # BNxT
 

@@ -149,8 +149,6 @@ class AudioDataLoader(threading.Thread):
                 self.queue.put(batch)
                 break
 
-            random.shuffle(items)
-
             batch = self.collate_fn(items)
             self.queue.put(batch)
 

@@ -42,9 +42,11 @@ class AudioParser(object):
 
             signal /= 32767  # normalize audio
             return signal
+
         except ValueError:
             logger.debug('ValueError in {0}'.format(audio_path))
             return None
+
         except RuntimeError:
             logger.debug('RuntimeError in {0}'.format(audio_path))
             return None

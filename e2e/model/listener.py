@@ -4,7 +4,7 @@ from e2e.model.sub_layers import BaseRNN, VGGExtractor
 
 
 class Listener(BaseRNN):
-    r"""Converts low level speech signals into higher level features
+    """Converts low level speech signals into higher level features
 
     Args:
         input_size (int): size of input
