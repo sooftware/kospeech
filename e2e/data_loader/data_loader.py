@@ -47,8 +47,8 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
 
         if spectrogram is None:
             return None, None
-
-        return spectrogram, script
+        else:
+            return spectrogram, script
 
     def parse_script(self, script_path):
         """ Parses scripts @Override """

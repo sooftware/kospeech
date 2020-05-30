@@ -11,6 +11,30 @@ if platform.system() == 'Linux':
     import torchaudio
 
 
+def load_audio(audio_path, del_silence):
+    """
+    Load audio file (PCM) to sound. if del_silence is True, Eliminate all sounds below 30dB.
+    If exception occurs in numpy.memmap(), return None.
+    """
+    try:
+        sound = np.memmap(audio_path, dtype='h', mode='r').astype('float32')
+
+        if del_silence:
+            non_silence_indices = split(sound, top_db=30)
+            sound = np.concatenate([sound[start:end] for start, end in non_silence_indices])
+
+        sound /= 32767  # normalize audio
+        return sound
+
+    except ValueError:
+        logger.debug('ValueError in {0}'.format(audio_path))
+        return None
+
+    except RuntimeError:
+        logger.debug('RuntimeError in {0}'.format(audio_path))
+        return None
+
+
 class AudioParser(object):
     """
     Provides inteface of audio parser.
@@ -21,35 +45,10 @@ class AudioParser(object):
     Method:
         - **parse_audio()**: abstract method. you have to override this method.
         - **parse_script()**: abstract method. you have to override this method.
-        - **load_audio()**: load audio file to signal. (PCM)
     """
     def __init__(self, dataset_path, noiseset_size, sample_rate=16000, noise_level=0.7, noise_augment=False):
         if noise_augment:
             self.noise_injector = NoiseInjector(dataset_path, noiseset_size, sample_rate, noise_level)
-
-    @staticmethod
-    def load_audio(audio_path, del_silence):
-        """
-        Load audio file to signal. (PCM)
-        if del_silence is True, Eliminate all signals below 30dB
-        """
-        try:
-            signal = np.memmap(audio_path, dtype='h', mode='r').astype('float32')
-
-            if del_silence:
-                non_silence_indices = split(signal, top_db=30)
-                signal = np.concatenate([signal[start:end] for start, end in non_silence_indices])
-
-            signal /= 32767  # normalize audio
-            return signal
-
-        except ValueError:
-            logger.debug('ValueError in {0}'.format(audio_path))
-            return None
-
-        except RuntimeError:
-            logger.debug('RuntimeError in {0}'.format(audio_path))
-            return None
 
     @abstractmethod
     def parse_audio(self, audio_path, augment_method):
@@ -122,22 +121,22 @@ class SpectrogramParser(AudioParser):
         Returns: spectrogram
             - **spectrogram** (torch.FloatTensor): Mel-Spectrogram feature from audio file.
         """
-        signal = self.load_audio(audio_path, self.del_silence)
+        sound = load_audio(audio_path, self.del_silence)
 
-        if signal is None:  # Exception handling
+        if sound is None:  # Exception handling
             return None
         elif augment_method == self.NOISE_INJECTION:  # Noise injection
-            signal = self.noise_injector(signal)
-            if signal is None:
+            sound = self.noise_injector(sound)
+            if sound is None:
                 return None
 
         if self.feature_extract_by == 'torchaudio':
-            spectrogram = self.transforms(torch.FloatTensor(signal))
+            spectrogram = self.transforms(torch.FloatTensor(sound))
             spectrogram = self.amplitude_to_db(spectrogram)
             spectrogram = spectrogram.numpy()
 
         else:
-            spectrogram = librosa.feature.melspectrogram(signal, self.sample_rate, n_mels=self.n_mels,
+            spectrogram = librosa.feature.melspectrogram(sound, self.sample_rate, n_mels=self.n_mels,
                                                          n_fft=self.n_fft, hop_length=self.hop_length)
             spectrogram = librosa.amplitude_to_db(spectrogram, ref=np.max)
 
