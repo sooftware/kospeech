@@ -1,6 +1,5 @@
 experiment/
 experiment/*
-data/
 data/sample
 data/sample/*
 data/data_list/debug_list.csv
