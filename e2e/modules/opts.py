@@ -52,9 +52,6 @@ def train_opts(parser):
     group.add_argument('--label_path', '-label_path',
                        type=str, default='./data/label/aihub_labels.csv',
                        help='path of character labels')
-    group.add_argument('--use_multi_gpu', '-use_multi_gpu',
-                       action='store_true', default=False,
-                       help='flag indication whether to use multi-gpu in training')
     group.add_argument('--init_uniform', '-init_uniform',
                        action='store_true', default=False,
                        help='flag indication whether to initiate model`s parameters as uniformly')
@@ -185,9 +182,6 @@ def inference_opts(parser):
     group.add_argument('--label_path', '-label_path',
                        type=str, default='./data/label/aihub_labels.csv',
                        help='path of character labels')
-    group.add_argument('--use_multi_gpu', '-use_multi_gpu',
-                       action='store_true', default=False,
-                       help='flag indication whether to use multi-gpu in training')
     group.add_argument('--num_workers', '-num_workers',
                        type=int, default=4,
                        help='number of workers in dataset loader (default: 4)')
@@ -247,7 +241,6 @@ def print_train_opts(opt):
     logger.info('--dataset_path: %s' % str(opt.dataset_path))
     logger.info('--data_list_path: %s' % str(opt.data_list_path))
     logger.info('--label_path: %s' % str(opt.label_path))
-    logger.info('--use_multi_gpu: %s' % str(opt.use_multi_gpu))
     logger.info('--init_uniform: %s' % str(opt.init_uniform))
     logger.info('--spec_augment: %s' % str(opt.spec_augment))
     logger.info('--noise_augment: %s' % str(opt.noise_augment))
@@ -280,7 +273,6 @@ def print_inference_opts(opt):
     logger.info('--dataset_path: %s' % str(opt.dataset_path))
     logger.info('--data_list_path: %s' % str(opt.data_list_path))
     logger.info('--label_path: %s' % str(opt.label_path))
-    logger.info('--use_multi_gpu: %s' % str(opt.use_multi_gpu))
     logger.info('--num_workers: %s' % str(opt.num_workers))
     logger.info('--use_cuda: %s' % str(opt.use_cuda))
     logger.info('--model_path: %s' % str(opt.model_path))

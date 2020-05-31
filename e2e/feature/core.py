@@ -238,4 +238,3 @@ def split(y, top_db=60, ref=np.max, frame_length=2048, hop_length=512):
 
     # Stack the results back as an ndarray
     return edges.reshape((-1, 2))
-F

@@ -33,10 +33,10 @@ def build_model(opt, device):
         device=device
     )
 
-    return build_las(listener, speller, device, opt.use_multi_gpu, opt.init_uniform)
+    return build_las(listener, speller, device, opt.init_uniform)
 
 
-def build_las(listener, speller, device, use_multi_gpu=True, init_uniform=True):
+def build_las(listener, speller, device, init_uniform=True):
     """ build las model & validate parameters """
     assert listener is not None, "listener is None"
     assert speller is not None, "speller is None"
@@ -44,8 +44,7 @@ def build_las(listener, speller, device, use_multi_gpu=True, init_uniform=True):
     model = ListenAttendSpell(listener, speller)
     model.flatten_parameters()
 
-    if use_multi_gpu:
-        model = nn.DataParallel(model).to(device)
+    model = nn.DataParallel(model).to(device)
 
     if init_uniform:
         for param in model.parameters():

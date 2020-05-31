@@ -172,7 +172,7 @@ python ./main.py --batch_size 32 --num_workers 4 --num_epochs 20  --use_bidirect
                  --sample_rate 16000 --window_size 20 --stride 10 --n_mels 80 --normalize --del_silence \
                  --feature_extract_by torchaudio --time_mask_para 70 --freq_mask_para 12 \
                  --time_mask_num 2 --freq_mask_num 2 --save_result_every 1000 \
-                 --checkpoint_every 5000 --print_every 10 --init_lr 1e-15  --use_multi_gpu --init_uniform  \
+                 --checkpoint_every 5000 --print_every 10 --init_lr 1e-15  --init_uniform  \
                  --mode train --dataset_path /data3/ --data_list_path ./data/data_list/xxx.csv \
                  --max_grad_norm 400 --rampup_period 1000 --max_len 80 --decay_threshold 0.02 \
                  --exp_decay_period  160000 --low_plateau_lr 1e-05 --noiseset_size 1000 \
@@ -193,7 +193,7 @@ $ ./infer.sh
 * Custom setting
 ```
 python ./infer.py -dataset_path dataset_path -data_list_path data_list_path \
-                  -mode infer -use_multi_gpu -use_cuda -batch_size 32 -num_workers 4 \
+                  -mode infer -use_cuda -batch_size 32 -num_workers 4 \
                   -use_beam_search -k 5 -print_every 100 \
                   -sample_rate 16000 --window_size 20 --stride 10 --n_mels 80 -feature_extract_by librosa \
                   -normalize -del_silence -input_reverse 

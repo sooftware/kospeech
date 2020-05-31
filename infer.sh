@@ -22,5 +22,5 @@ MODE='infer'
 
 python ./infer.py --sample_rate $SAMPLE_RATE --window_size $WINDOW_SIZE --stride $STRIDE --n_mels $N_MELS \
 --normalize --del_silence --input_reverse --feature_extract_by $FEATURE_EXTRACT_BY  \
---use_multi_gpu --num_workers $NUM_WORKERS --use_cuda --batch_size $BATCH_SIZE --k $K \
---use_beam_search --print_every $PRINT_EVERY --mode $MODE --dataset_path $DATASET_PATH --data_list_path $DATA_LIST_PATH
+--num_workers $NUM_WORKERS --use_cuda --batch_size $BATCH_SIZE --k $K --use_beam_search \
+--print_every $PRINT_EVERY --mode $MODE --dataset_path $DATASET_PATH --data_list_path $DATA_LIST_PATH
