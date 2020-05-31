@@ -13,7 +13,7 @@ class Model(nn.Module):
         self.projection = nn.Linear(10, 10)
 
     def forward(self):
-        return 0
+        pass
 
 
 INIT_LR = 1e-15
