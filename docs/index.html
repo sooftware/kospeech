@@ -85,7 +85,7 @@
               <p class="caption"><span class="caption-text">NOTES</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Intro</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">Preparation before Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/preparation.html">Preparation before Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/opts.html">Options</a></li>
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
@@ -94,13 +94,10 @@
 </ul>
 <p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Data_loader.html">Data_loader</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Feature.html">Feature</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Modules.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Model.html">Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Optim.html">Optim</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Solver.html">Solver</a></li>
 </ul>
 
             
@@ -171,26 +168,62 @@
 <p class="caption"><span class="caption-text">NOTES</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Intro</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">Preparation before Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/preparation.html">Preparation before Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/opts.html">Options</a></li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Model.html">Model</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Model.html#module-e2e.model.sub_layers.baseRNN">BaseRNN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Model.html#module-e2e.model.sub_layers.extractor">Extractor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Model.html#module-e2e.model.sub_layers.maskCNN">MaskCNN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Model.html#module-e2e.model.las">ListenAttendSpell</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Model.html#module-e2e.model.listener">Listener</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Model.html#module-e2e.model.speller">Speller</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Model.html#module-e2e.model.beam_search">BeamSearch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Model.html#module-e2e.model.attention">Attention</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Data_loader.html">Data_loader</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Feature.html">Feature</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Modules.html">Modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Optim.html">Optim</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Data.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Data.html#module-e2e.data.data_loader">DataLoader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Data.html#module-e2e.data.label_loader">LabelLoader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Data.html#module-e2e.data.augment.noise_augment">NoiseAugment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Data.html#module-e2e.data.augment.spec_augment">SpecAugment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Data.html#module-e2e.data.augment">Preprocess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Data.html#module-e2e.data.preprocess.parser">Parser</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Model.html">Model</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Model.html#module-e2e.model.sub_layers.baseRNN">BaseRNN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Model.html#module-e2e.model.sub_layers.extractor">Extractor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Model.html#module-e2e.model.sub_layers.maskCNN">MaskCNN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Model.html#module-e2e.model.las">ListenAttendSpell</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Model.html#module-e2e.model.listener">Listener</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Model.html#module-e2e.model.speller">Speller</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Model.html#module-e2e.model.beam_search">BeamSearch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Model.html#module-e2e.model.attention">Attention</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Optim.html">Optim</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Optim.html#module-e2e.optim.loss">Loss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Optim.html#module-e2e.optim.lr_scheduler">LrScheduler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Optim.html#id1">Optim</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Solver.html">Solver</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Solver.html#module-e2e.solver.checkpoint">Checkpoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Solver.html#module-e2e.solver.evaluator">Evaluator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Solver.html#module-e2e.solver.metric">Metric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Solver.html#module-e2e.solver.supervised_trainer">SupervisedTrainer</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>

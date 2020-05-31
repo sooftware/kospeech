@@ -2,6 +2,24 @@
 Model
 =====================================================
 
+BaseRNN
+--------------------------------------------
+
+.. automodule:: e2e.model.sub_layers.baseRNN
+    :members:
+
+Extractor
+--------------------------------------------
+
+.. automodule:: e2e.model.sub_layers.extractor
+    :members:
+
+MaskCNN
+--------------------------------------------
+
+.. automodule:: e2e.model.sub_layers.maskCNN
+    :members:
+
 ListenAttendSpell
 --------------------------------------------
 
@@ -20,20 +38,14 @@ Speller
 .. automodule:: e2e.model.speller
     :members:
 
-TopKDecoder
+BeamSearch
 --------------------------------------------
 
-.. automodule:: e2e.model.topk_decoder
+.. automodule:: e2e.model.beam_search
     :members:
 
 Attention
 --------------------------------------------
 
 .. automodule:: e2e.model.attention
-    :members:
-
-Sub_layers
---------------------------------------------
-
-.. automodule:: e2e.model.sub_layers
     :members:

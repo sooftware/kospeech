@@ -87,7 +87,7 @@
               <p class="caption"><span class="caption-text">NOTES</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Intro</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">Preparation before Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/preparation.html">Preparation before Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/opts.html">Options</a></li>
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
@@ -96,13 +96,10 @@
 </ul>
 <p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Data_loader.html">Data_loader</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Feature.html">Feature</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Loss.html">Loss</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Modules.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Model.html">Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Optim.html">Optim</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Solver.html">Solver</a></li>
 </ul>
 
             
@@ -183,42 +180,42 @@
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="Data_loader.html#module-e2e.data_loader.data_loader"><code class="xref">e2e.data_loader.data_loader</code></a></td><td>
+       <a href="Data.html#module-e2e.data.augment"><code class="xref">e2e.data.augment</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="Data_loader.html#module-e2e.data_loader.label_loader"><code class="xref">e2e.data_loader.label_loader</code></a></td><td>
+       <a href="Data.html#module-e2e.data.augment.noise_augment"><code class="xref">e2e.data.augment.noise_augment</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="Evaluator.html#module-e2e.evaluator.evaluator"><code class="xref">e2e.evaluator.evaluator</code></a></td><td>
+       <a href="Data.html#module-e2e.data.augment.spec_augment"><code class="xref">e2e.data.augment.spec_augment</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="Feature.html#module-e2e.feature.augment"><code class="xref">e2e.feature.augment</code></a></td><td>
+       <a href="Data.html#module-e2e.data.data_loader"><code class="xref">e2e.data.data_loader</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="Feature.html#module-e2e.feature.core"><code class="xref">e2e.feature.core</code></a></td><td>
+       <a href="Data.html#module-e2e.data.label_loader"><code class="xref">e2e.data.label_loader</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="Feature.html#module-e2e.feature.parser"><code class="xref">e2e.feature.parser</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-1">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="Loss.html#module-e2e.loss.loss"><code class="xref">e2e.loss.loss</code></a></td><td>
+       <a href="Data.html#module-e2e.data.preprocess.parser"><code class="xref">e2e.data.preprocess.parser</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
        <a href="Model.html#module-e2e.model.attention"><code class="xref">e2e.model.attention</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="Model.html#module-e2e.model.beam_search"><code class="xref">e2e.model.beam_search</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
@@ -238,42 +235,22 @@
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="Model.html#module-e2e.model.sub_layers"><code class="xref">e2e.model.sub_layers</code></a></td><td>
+       <a href="Model.html#module-e2e.model.sub_layers.baseRNN"><code class="xref">e2e.model.sub_layers.baseRNN</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="Model.html#module-e2e.model.topk_decoder"><code class="xref">e2e.model.topk_decoder</code></a></td><td>
+       <a href="Model.html#module-e2e.model.sub_layers.extractor"><code class="xref">e2e.model.sub_layers.extractor</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="Modules.html#module-e2e.modules.checkpoint"><code class="xref">e2e.modules.checkpoint</code></a></td><td>
+       <a href="Model.html#module-e2e.model.sub_layers.maskCNN"><code class="xref">e2e.model.sub_layers.maskCNN</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="Modules.html#module-e2e.modules.error_rate"><code class="xref">e2e.modules.error_rate</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-1">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="Modules.html#module-e2e.modules.global_"><code class="xref">e2e.modules.global_</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-1">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="Modules.html#module-e2e.modules.logger"><code class="xref">e2e.modules.logger</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-1">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="Modules.html#module-e2e.modules.model_builder"><code class="xref">e2e.modules.model_builder</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="cg-1">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="Modules.html#module-e2e.modules.opts"><code class="xref">e2e.modules.opts</code></a></td><td>
+       <a href="Optim.html#module-e2e.optim.loss"><code class="xref">e2e.optim.loss</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
@@ -288,7 +265,22 @@
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="Trainer.html#module-e2e.trainer.supervised_trainer"><code class="xref">e2e.trainer.supervised_trainer</code></a></td><td>
+       <a href="Solver.html#module-e2e.solver.checkpoint"><code class="xref">e2e.solver.checkpoint</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="Solver.html#module-e2e.solver.evaluator"><code class="xref">e2e.solver.evaluator</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="Solver.html#module-e2e.solver.metric"><code class="xref">e2e.solver.metric</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="Solver.html#module-e2e.solver.supervised_trainer"><code class="xref">e2e.solver.supervised_trainer</code></a></td><td>
        <em></em></td></tr>
    </table>
 

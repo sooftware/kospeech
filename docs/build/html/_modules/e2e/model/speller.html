@@ -84,7 +84,7 @@
               <p class="caption"><span class="caption-text">NOTES</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/intro.html">Intro</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notes/Preparation.html">Preparation before Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/preparation.html">Preparation before Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/opts.html">Options</a></li>
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
@@ -93,13 +93,10 @@
 </ul>
 <p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../Data_loader.html">Data_loader</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../Evaluator.html">Evaluator</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../Feature.html">Feature</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../Loss.html">Loss</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../Modules.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Model.html">Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Optim.html">Optim</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Solver.html">Solver</a></li>
 </ul>
 
             
@@ -167,12 +164,12 @@
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
 <span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
-<span class="kn">from</span> <span class="nn">e2e.model.sub_layers</span> <span class="k">import</span> <span class="n">BaseRNN</span>
+<span class="kn">from</span> <span class="nn">e2e.model.sub_layers.baseRNN</span> <span class="k">import</span> <span class="n">BaseRNN</span>
 <span class="kn">from</span> <span class="nn">e2e.model.attention</span> <span class="k">import</span> <span class="n">LocationAwareAttention</span><span class="p">,</span> <span class="n">MultiHeadAttention</span>
 
 
 <div class="viewcode-block" id="Speller"><a class="viewcode-back" href="../../../Model.html#e2e.model.speller.Speller">[docs]</a><span class="k">class</span> <span class="nc">Speller</span><span class="p">(</span><span class="n">BaseRNN</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts higher level features (from listener) into output utterances</span>
 <span class="sd">    by specifying a probability distribution over sequences of characters.</span>
 
@@ -267,7 +264,7 @@
         <span class="n">batch_size</span> <span class="o">=</span> <span class="n">listener_outputs</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">inputs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># inference</span>
-            <span class="n">inputs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">IntTensor</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">sos_id</span><span class="p">]</span> <span class="o">*</span> <span class="n">batch_size</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">inputs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">sos_id</span><span class="p">]</span> <span class="o">*</span> <span class="n">batch_size</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
             <span class="n">max_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_length</span>
 
             <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>

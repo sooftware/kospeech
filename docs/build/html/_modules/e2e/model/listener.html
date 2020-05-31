@@ -84,7 +84,7 @@
               <p class="caption"><span class="caption-text">NOTES</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/intro.html">Intro</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notes/Preparation.html">Preparation before Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/preparation.html">Preparation before Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/opts.html">Options</a></li>
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
@@ -93,13 +93,10 @@
 </ul>
 <p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../Data_loader.html">Data_loader</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../Evaluator.html">Evaluator</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../Feature.html">Feature</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../Loss.html">Loss</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../Modules.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Model.html">Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Optim.html">Optim</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Solver.html">Solver</a></li>
 </ul>
 
             
@@ -165,11 +162,12 @@
   <h1>Source code for e2e.model.listener</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
-<span class="kn">from</span> <span class="nn">e2e.model.sub_layers</span> <span class="k">import</span> <span class="n">BaseRNN</span><span class="p">,</span> <span class="n">VGGExtractor</span>
+<span class="kn">from</span> <span class="nn">e2e.model.sub_layers.baseRNN</span> <span class="k">import</span> <span class="n">BaseRNN</span>
+<span class="kn">from</span> <span class="nn">e2e.model.sub_layers.extractor</span> <span class="k">import</span> <span class="n">VGGExtractor</span><span class="p">,</span> <span class="n">DeepSpeech2Extractor</span>
 
 
 <div class="viewcode-block" id="Listener"><a class="viewcode-back" href="../../../Model.html#e2e.model.listener.Listener">[docs]</a><span class="k">class</span> <span class="nc">Listener</span><span class="p">(</span><span class="n">BaseRNN</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Converts low level speech signals into higher level features</span>
+    <span class="sd">&quot;&quot;&quot;Converts low level speech signals into higher level features</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        input_size (int): size of input</span>
@@ -187,10 +185,18 @@
 <span class="sd">    Returns: output</span>
 <span class="sd">        - **output**: tensor containing the encoded features of the input sequence</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_size</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">dropout_p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rnn_type</span><span class="o">=</span><span class="s1">&#39;gru&#39;</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_size</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">dropout_p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                 <span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rnn_type</span><span class="o">=</span><span class="s1">&#39;gru&#39;</span><span class="p">,</span> <span class="n">extractor</span><span class="o">=</span><span class="s1">&#39;vgg&#39;</span><span class="p">):</span>
         <span class="n">input_size</span> <span class="o">=</span> <span class="p">(</span><span class="n">input_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">5</span> <span class="k">if</span> <span class="n">input_size</span> <span class="o">%</span> <span class="mi">2</span> <span class="k">else</span> <span class="n">input_size</span> <span class="o">&lt;&lt;</span> <span class="mi">5</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Listener</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">input_size</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">num_layers</span><span class="p">,</span> <span class="n">rnn_type</span><span class="p">,</span> <span class="n">dropout_p</span><span class="p">,</span> <span class="n">bidirectional</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">extractor</span> <span class="o">=</span> <span class="n">VGGExtractor</span><span class="p">(</span><span class="n">in_channel</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">extractor</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;vgg&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">extractor</span> <span class="o">=</span> <span class="n">VGGExtractor</span><span class="p">(</span><span class="n">in_channels</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">extractor</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;ds2&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">extractor</span> <span class="o">=</span> <span class="n">DeepSpeech2Extractor</span><span class="p">(</span><span class="n">in_channels</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unsupported Extractor : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">extractor</span><span class="p">))</span>
 
 <div class="viewcode-block" id="Listener.forward"><a class="viewcode-back" href="../../../Model.html#e2e.model.listener.Listener.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">permute</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>

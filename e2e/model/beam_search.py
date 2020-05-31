@@ -1,9 +1,3 @@
-"""
-Copied from https://github.com/IBM/pytorch-seq2seq/blob/master/seq2seq/models/TopKDecoder.py
-Copyright (c) 2017 IBM
-Apache 2.0 License
-"""
-
 import torch
 import torch.nn as nn
 from torch.autograd import Variable

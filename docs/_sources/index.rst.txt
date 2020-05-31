@@ -11,23 +11,20 @@ Welcome to End-to-end Speech Recognition's documentation!
    :caption: NOTES
 
    notes/intro
-   notes/Preparation
+   notes/preparation
    notes/opts
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: ARCHITECTURE
 
    Model
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: PACKAGE REFERENCE
 
-   Data_loader
-   Evaluator
-   Feature
-   Loss
-   Modules
+   Data
+   Model
    Optim
-   Trainer
+   Solver

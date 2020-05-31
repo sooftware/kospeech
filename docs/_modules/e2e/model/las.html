@@ -84,7 +84,7 @@
               <p class="caption"><span class="caption-text">NOTES</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/intro.html">Intro</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notes/Preparation.html">Preparation before Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/preparation.html">Preparation before Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/opts.html">Options</a></li>
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
@@ -93,13 +93,10 @@
 </ul>
 <p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../Data_loader.html">Data_loader</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../Evaluator.html">Evaluator</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../Feature.html">Feature</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../Loss.html">Loss</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../Modules.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Model.html">Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Optim.html">Optim</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Solver.html">Solver</a></li>
 </ul>
 
             
@@ -167,7 +164,7 @@
 
 
 <div class="viewcode-block" id="ListenAttendSpell"><a class="viewcode-back" href="../../../Model.html#e2e.model.las.ListenAttendSpell">[docs]</a><span class="k">class</span> <span class="nc">ListenAttendSpell</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Listen, Attend and Spell (LAS) Model</span>
 
 <span class="sd">    Args:</span>
@@ -200,10 +197,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">listener</span> <span class="o">=</span> <span class="n">listener</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">speller</span> <span class="o">=</span> <span class="n">speller</span>
 
-<div class="viewcode-block" id="ListenAttendSpell.forward"><a class="viewcode-back" href="../../../Model.html#e2e.model.las.ListenAttendSpell.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">,</span> <span class="n">targets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="mf">0.90</span><span class="p">):</span>
+<div class="viewcode-block" id="ListenAttendSpell.forward"><a class="viewcode-back" href="../../../Model.html#e2e.model.las.ListenAttendSpell.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">,</span> <span class="n">targets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="mf">0.99</span><span class="p">):</span>
         <span class="n">listener_outputs</span><span class="p">,</span> <span class="n">hidden</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">listener</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">)</span>
         <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">speller</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">listener_outputs</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="p">)</span>
-
         <span class="k">return</span> <span class="n">output</span></div>
 
     <span class="k">def</span> <span class="nf">flatten_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
