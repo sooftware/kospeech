@@ -1,8 +1,8 @@
 import queue
 import torch
-from e2e.data_loader.data_loader import AudioDataLoader
-from e2e.modules.metric import CharacterErrorRate
-from e2e.modules.global_ import id2char, EOS_token, logger
+from e2e.data.data_loader import AudioDataLoader
+from e2e.solver.metric import CharacterErrorRate
+from e2e.utils import id2char, EOS_token, logger
 
 
 class Evaluator(object):

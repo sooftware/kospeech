@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
-from e2e.model.sub_layers import BaseRNN, VGGExtractor
+from e2e.model.sub_layers.baseRNN import BaseRNN
+from e2e.model.sub_layers.extractor import VGGExtractor, DeepSpeech2Extractor
 
 
 class Listener(BaseRNN):
@@ -22,10 +23,18 @@ class Listener(BaseRNN):
     Returns: output
         - **output**: tensor containing the encoded features of the input sequence
     """
-    def __init__(self, input_size, hidden_dim, device, dropout_p=0.5, num_layers=1, bidirectional=True, rnn_type='gru'):
+
+    def __init__(self, input_size, hidden_dim, device, dropout_p=0.5, num_layers=1,
+                 bidirectional=True, rnn_type='gru', extractor='vgg'):
         input_size = (input_size - 1) << 5 if input_size % 2 else input_size << 5
         super(Listener, self).__init__(input_size, hidden_dim, num_layers, rnn_type, dropout_p, bidirectional, device)
-        self.extractor = VGGExtractor(in_channel=1)
+
+        if extractor.lower() == 'vgg':
+            self.extractor = VGGExtractor(in_channels=1)
+        elif extractor.lower() == 'ds2':
+            self.extractor = DeepSpeech2Extractor(in_channels=1)
+        else:
+            raise ValueError("Unsupported Extractor : {0}".format(extractor))
 
     def forward(self, inputs, input_lengths):
         inputs = inputs.unsqueeze(1).permute(0, 1, 3, 2)

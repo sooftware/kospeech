@@ -10,12 +10,12 @@
 """
 import argparse
 import warnings
-from e2e.data_loader.data_loader import load_data_list, SpectrogramDataset
-from e2e.data_loader.label_loader import load_targets
-from e2e.evaluator.evaluator import Evaluator
-from e2e.modules.global_ import check_envirionment, EOS_token, SOS_token
-from e2e.modules.model_builder import load_test_model
-from e2e.modules.opts import inference_opts, preprocess_opts, print_opts
+from e2e.data.data_loader import load_data_list, SpectrogramDataset
+from e2e.data.label_loader import load_targets
+from e2e.solver.evaluator import Evaluator
+from e2e.utils import check_envirionment, EOS_token, SOS_token
+from e2e.model_builder import load_test_model
+from e2e.opts import build_eval_opts, build_preprocess_opts, print_opts
 
 
 def inference(opt):
@@ -43,10 +43,10 @@ def inference(opt):
 def _get_parser():
     """ Get arguments parser """
     parser = argparse.ArgumentParser(description='End-to-end Speech Recognition')
-    parser.add_argument('--mode', type=str, default='infer')
+    parser.add_argument('--mode', type=str, default='eval')
 
-    preprocess_opts(parser)
-    inference_opts(parser)
+    build_preprocess_opts(parser)
+    build_eval_opts(parser)
 
     return parser
 

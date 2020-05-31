@@ -1,11 +1,11 @@
 import torch
 import torch.nn as nn
-from e2e.model.sub_layers import BaseRNN
+from e2e.model.sub_layers.baseRNN import BaseRNN
 from e2e.model.las import ListenAttendSpell
 from e2e.model.listener import Listener
 from e2e.model.speller import Speller
-from e2e.model.topk_decoder import TopKDecoder
-from e2e.modules.global_ import char2id, EOS_token, SOS_token
+from e2e.model.beam_search import BeamSearch
+from e2e.utils import char2id, EOS_token, SOS_token
 
 
 def build_model(opt, device):
@@ -53,7 +53,7 @@ def build_las(listener, speller, device, init_uniform=True):
     return model
 
 
-def build_listener(input_size, hidden_dim, dropout_p, num_layers, bidirectional, rnn_type, device):
+def build_listener(input_size, hidden_dim, dropout_p, num_layers, bidirectional, rnn_type, extractor, device):
     """ build listener & validate parameters """
     assert isinstance(input_size, int), "input_size should be inteager type"
     assert isinstance(hidden_dim, int), "hidden_dim should be inteager type"
@@ -62,11 +62,13 @@ def build_listener(input_size, hidden_dim, dropout_p, num_layers, bidirectional,
     assert input_size > 0, "input_size should be greater than 0"
     assert hidden_dim > 0, "hidden_dim should be greater than 0"
     assert num_layers > 0, "num_layers should be greater than 0"
+    assert extractor in {'vgg', 'ds2'}, "Unsupported extractor"
     assert rnn_type.lower() in BaseRNN.supported_rnns.keys(), "Unsupported RNN Cell: {0}".format(rnn_type)
 
     return Listener(input_size=input_size, hidden_dim=hidden_dim,
                     dropout_p=dropout_p, num_layers=num_layers,
-                    bidirectional=bidirectional, rnn_type=rnn_type, device=device)
+                    bidirectional=bidirectional, rnn_type=rnn_type,
+                    extractor=extractor, device=device)
 
 
 def build_speller(num_classes, max_len, hidden_dim, sos_id, eos_id, attn_mechanism,
@@ -106,15 +108,15 @@ def load_test_model(opt, device, use_beamsearch=True):
         model.module.listener.device = device
 
         if use_beamsearch:
-            topk_decoder = TopKDecoder(model.module.speller, opt.k)
-            model.module.set_speller(topk_decoder)
+            beam_search = BeamSearch(model.module.speller, opt.k)
+            model.module.set_speller(beam_search)
 
     else:
         model.speller.device = device
         model.listener.device = device
 
         if use_beamsearch:
-            topk_decoder = TopKDecoder(model.speller, opt.k)
-            model.set_speller(topk_decoder)
+            beam_search = BeamSearch(model.speller, opt.k)
+            model.set_speller(beam_search)
 
     return model

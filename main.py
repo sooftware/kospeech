@@ -13,15 +13,15 @@ import random
 import torch
 import warnings
 from torch import optim, nn
-from e2e.data_loader.data_loader import split_dataset, load_data_list
-from e2e.loss.loss import LabelSmoothingLoss
-from e2e.modules.checkpoint import Checkpoint
+from e2e.data.data_loader import split_dataset, load_data_list
+from e2e.optim.loss import LabelSmoothingLoss
+from e2e.solver.checkpoint import Checkpoint
 from e2e.optim.lr_scheduler import RampUpLR
 from e2e.optim.optim import Optimizer
-from e2e.trainer.supervised_trainer import SupervisedTrainer
-from e2e.modules.model_builder import build_model
-from e2e.modules.opts import print_opts, train_opts, model_opts, preprocess_opts
-from e2e.modules.global_ import PAD_token, char2id, check_envirionment
+from e2e.solver.supervised_trainer import SupervisedTrainer
+from e2e.model_builder import build_model
+from e2e.opts import print_opts, build_train_opts, build_model_opts, build_preprocess_opts
+from e2e.utils import PAD_token, char2id, check_envirionment
 
 
 def train(opt):
@@ -82,9 +82,9 @@ def _get_parser():
     parser = argparse.ArgumentParser(description='End-to-end Speech Recognition')
     parser.add_argument('--mode', type=str, default='train')
 
-    preprocess_opts(parser)
-    model_opts(parser)
-    train_opts(parser)
+    build_preprocess_opts(parser)
+    build_model_opts(parser)
+    build_train_opts(parser)
 
     return parser
 

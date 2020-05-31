@@ -2,11 +2,11 @@ import time
 import torch
 import queue
 import pandas as pd
-from e2e.modules.checkpoint import Checkpoint
+from e2e.solver.checkpoint import Checkpoint
 from e2e.optim.lr_scheduler import ExponentialDecayLR
-from e2e.modules.metric import CharacterErrorRate
-from e2e.modules.global_ import EOS_token, logger, id2char
-from e2e.data_loader.data_loader import MultiDataLoader, AudioDataLoader
+from e2e.solver.metric import CharacterErrorRate
+from e2e.utils import EOS_token, logger, id2char
+from e2e.data.data_loader import MultiDataLoader, AudioDataLoader
 
 
 class SupervisedTrainer(object):

@@ -1,5 +1,5 @@
 import Levenshtein as Lev
-from e2e.modules.global_ import label_to_string
+from e2e.utils import label_to_string
 
 
 class CharacterErrorRate(object):

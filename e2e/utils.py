@@ -1,8 +1,29 @@
-""" globally used collections of variables and functions. """
+import sys
+import logging
 import torch
 import platform
-from e2e.modules.logger import Logger
-from e2e.data_loader.label_loader import load_label
+from e2e.data.label_loader import load_label
+
+
+class Logger(object):
+    """
+    Print log message in format.
+    FORMAT: [%(asctime)s %(filename)s:%(lineno)s - %(funcName)s()] %(message)s
+    """
+    def __init__(self):
+        self.logger = logging.getLogger('root')
+        FORMAT = "[%(asctime)s %(filename)s:%(lineno)s - %(funcName)s()] %(message)s"
+        logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format=FORMAT)
+        self.logger.setLevel(logging.INFO)
+
+    def info(self, message=''):
+        """ Print log message for information """
+        self.logger.info(message)
+
+    def debug(self, message=''):
+        """ Print log message for debugging """
+        self.logger.debug(message)
+
 
 logger = Logger()
 char2id, id2char = load_label('./data/label/aihub_labels.csv', encoding='utf-8')  # char labels

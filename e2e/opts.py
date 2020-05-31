@@ -1,8 +1,7 @@
-""" Implementation of all available options """
-from e2e.modules.global_ import logger
+from e2e.utils import logger
 
 
-def model_opts(parser):
+def build_model_opts(parser):
     """
     These options are passed to the construction of the model.
     Be careful with these as they will be used during inference.
@@ -32,6 +31,9 @@ def model_opts(parser):
     group.add_argument('--rnn_type', '-rnn_type',
                        type=str, default='gru',
                        help='type of rnn cell: [gru, lstm, rnn] (default: gru)')
+    group.add_argument('--extractor', '-extractor',
+                       type=str, default='vgg',
+                       help='extractor in listener: [vgg, ds2] (default: vgg)')
     group.add_argument('--attn_mechanism', '-attn_mechanism',
                        type=str, default='loc',
                        help='option to specify the attention mechanism method')
@@ -40,7 +42,7 @@ def model_opts(parser):
                        help='teacher forcing ratio in decoding (default: 0.99)')
 
 
-def train_opts(parser):
+def build_train_opts(parser):
     """ Training and saving options """
     group = parser.add_argument_group('General')
     group.add_argument('--dataset_path', '-dataset_path',
@@ -129,7 +131,7 @@ def train_opts(parser):
                        help='Indicates if training has to be resumed from the latest checkpoint')
 
 
-def preprocess_opts(parser):
+def build_preprocess_opts(parser):
     """ Pre-processing options """
     group = parser.add_argument_group('Input')
     group.add_argument('--sample_rate', '-sample_rate',
@@ -170,9 +172,9 @@ def preprocess_opts(parser):
                        help='how many freq-masked area to make (default: 2)')
 
 
-def inference_opts(parser):
+def build_eval_opts(parser):
     """ inference options """
-    group = parser.add_argument_group('Infer')
+    group = parser.add_argument_group('Eval')
     group.add_argument('--dataset_path', '-dataset_path',
                        type=str, default='/data1/',
                        help='path of dataset')
@@ -232,6 +234,7 @@ def print_model_opts(opt):
     logger.info('--label_smoothing: %s' % str(opt.label_smoothing))
     logger.info('--listener_layer_size: %s' % str(opt.listener_layer_size))
     logger.info('--speller_layer_size: %s' % str(opt.speller_layer_size))
+    logger.info('--extractor: %s' % str(opt.extractor))
     logger.info('--rnn_type: %s' % str(opt.rnn_type))
     logger.info('--teacher_forcing_ratio: %s' % str(opt.teacher_forcing_ratio))
 
@@ -268,8 +271,8 @@ def print_train_opts(opt):
     logger.info('--resume: %s' % str(opt.resume))
 
 
-def print_inference_opts(opt):
-    """ Print inference options """
+def print_eval_opts(opt):
+    """ Print evaltation options """
     logger.info('--dataset_path: %s' % str(opt.dataset_path))
     logger.info('--data_list_path: %s' % str(opt.data_list_path))
     logger.info('--label_path: %s' % str(opt.label_path))
@@ -289,9 +292,9 @@ def print_opts(opt, mode='train'):
         print_model_opts(opt)
         print_train_opts(opt)
 
-    elif mode == 'infer':
+    elif mode == 'eval':
         print_preprocess_opts(opt)
-        print_inference_opts(opt)
+        print_eval_opts(opt)
 
     else:
         raise ValueError("Unsupported mode: {0}".format(mode))

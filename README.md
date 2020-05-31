@@ -11,7 +11,7 @@
 ## Intro
 
 `End-to-end Speech Recognition` is project for E2E automatic speech recognition implemented in [PyTorch](http://pytorch.org).   
-`e2e` has modularized and extensible components for las models, training and inference, checkpoints, parsing etc.   
+`e2e` has modularized and extensible components for las models, training and evalutaion, checkpoints, parsing etc.   
 We appreciate any kind of [feedback or contribution](https://github.com/sooftware/End-to-end-Speech-Recognition/issues).
   
 We used `KsponSpeech` corpus which containing **1000h** of Korean speech data.   
@@ -79,9 +79,9 @@ Our model architeuture is as follows.
 ```python
 ListenAttendSpell(
   (listener): Listener(
-    (rnn): GRU(2560, 256, num_layers=5, batch_first=True, dropout=0.3, bidirectional=True)
+    (rnn): LSTM(2560, 256, num_layers=3, batch_first=True, dropout=0.3, bidirectional=True)
     (extractor): VGGExtractor(
-      (extractor): MaskCNN(
+      (cnn): MaskCNN(
         (sequential): Sequential(
           (0): Conv2d(1, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
           (1): Hardtanh(min_val=0, max_val=20, inplace=True)
@@ -101,7 +101,7 @@ ListenAttendSpell(
     )
   )
   (speller): Speller(
-    (rnn): GRU(512, 512, num_layers=3, batch_first=True, dropout=0.3)
+    (rnn): LSTM(512, 512, num_layers=2, batch_first=True, dropout=0.3)
     (embedding): Embedding(2038, 512)
     (input_dropout): Dropout(p=0.3, inplace=False)
     (out_projection): Linear(in_features=512, out_features=2038, bias=True)
@@ -119,7 +119,7 @@ ListenAttendSpell(
   
 ### e2e module
 
-<img src="https://user-images.githubusercontent.com/42150335/83259833-b68c6300-a1f3-11ea-8524-50d618129da0.png" width=800>   
+<img src="https://user-images.githubusercontent.com/42150335/83361143-6d8a0980-a3c1-11ea-8bb6-8d5eefdb48fb.png" width=800>   
   
 `e2e` (End-to-end) module's structure is implement as above.   
 `e2e` module has modularized and extensible components for las models, trainer, evaluator, checkpoints, data_loader etc...  
@@ -185,18 +185,18 @@ You can train the model by above command.
  Or if you want to train by custom setting, you can designate hyperparameters by `Custom setting` command.
 
 
-### Step 3: Run `infer.py`
+### Step 3: Run `eval.py`
 * Default setting
 ```
-$ ./infer.sh
+$ ./eval.sh
 ```
 * Custom setting
 ```
-python ./infer.py -dataset_path dataset_path -data_list_path data_list_path \
-                  -mode infer -use_cuda -batch_size 32 -num_workers 4 \
-                  -use_beam_search -k 5 -print_every 100 \
-                  -sample_rate 16000 --window_size 20 --stride 10 --n_mels 80 -feature_extract_by librosa \
-                  -normalize -del_silence -input_reverse 
+python ./eval.py -dataset_path dataset_path -data_list_path data_list_path \
+                 -mode eval -use_cuda -batch_size 32 -num_workers 4 \
+                 -use_beam_search -k 5 -print_every 100 \
+                 -sample_rate 16000 --window_size 20 --stride 10 --n_mels 80 -feature_extract_by librosa \
+                 -normalize -del_silence -input_reverse 
 ```
 Now you have a model which you can use to predict on new data. We do this by running `beam search` (or `greedy search`).  
 Like training, you can choose between `Default setting` or `Custom setting`.  

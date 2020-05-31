@@ -2,7 +2,7 @@ import random
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from e2e.model.sub_layers import BaseRNN
+from e2e.model.sub_layers.baseRNN import BaseRNN
 from e2e.model.attention import LocationAwareAttention, MultiHeadAttention
 
 
