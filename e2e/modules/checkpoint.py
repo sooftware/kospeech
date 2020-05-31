@@ -32,7 +32,7 @@ class Checkpoint(object):
     SAVE_PATH = './data'
     MODEL_NAME = 'model.pt'
 
-    def __init__(self, model, optimizer, criterion, trainset_list, validset, epoch):
+    def __init__(self, model=None, optimizer=None, criterion=None, trainset_list=None, validset=None, epoch=None):
         self.model = model
         self.optimizer = optimizer
         self.criterion = criterion

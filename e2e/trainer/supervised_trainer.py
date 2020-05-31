@@ -67,8 +67,9 @@ class SupervisedTrainer(object):
         prev_train_cer = 1.
 
         if resume:
-            latest_checkpoint_path = Checkpoint.get_latest_checkpoint()
-            resume_checkpoint = Checkpoint.load(latest_checkpoint_path)
+            checkpoint = Checkpoint()
+            latest_checkpoint_path = checkpoint.get_latest_checkpoint()
+            resume_checkpoint = checkpoint.load(latest_checkpoint_path)
             model = resume_checkpoint.model
             self.optimizer = resume_checkpoint.optimizer
             self.criterion = resume_checkpoint.criterion
