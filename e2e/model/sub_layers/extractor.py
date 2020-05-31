@@ -5,11 +5,11 @@ from e2e.model.sub_layers.maskCNN import MaskCNN
 class VGGExtractor(nn.Module):
     """
     VGG extractor for automatic speech recognition described in
-    "Advances in Joint CTC-Attention based End-to-End Speech Recognition with "a Deep CNN Encoder and RNN-LM" paper
+    "Advances in Joint CTC-Attention based End-to-End Speech Recognition with a Deep CNN Encoder and RNN-LM" paper
     - https://arxiv.org/pdf/1706.02737.pdf
     """
     def __init__(self, in_channels=1):
-        super(VGGExtractor, self).__init__()
+        super(VGGExtractor, self).__init__(nn.Hardtanh(0, 20, inplace=True))
         self.cnn = MaskCNN(
             nn.Sequential(
                 nn.Conv2d(in_channels, 64, kernel_size=3, stride=1, padding=1, bias=False),
@@ -35,9 +35,9 @@ class VGGExtractor(nn.Module):
 
 class DeepSpeech2Extractor(nn.Module):
     """
-    VGG extractor for automatic speech recognition described in
-    "Advances in Joint CTC-Attention based End-to-End Speech Recognition with "a Deep CNN Encoder and RNN-LM" paper
-    - https://arxiv.org/pdf/1706.02737.pdf
+    DeepSpeech2 extractor for automatic speech recognition described in
+    "Deep Speech 2: End-to-End Speech Recognition in English and Mandarin" paper
+    - https://arxiv.org/abs/1512.02595
     """
 
     def __init__(self, in_channels=1):
