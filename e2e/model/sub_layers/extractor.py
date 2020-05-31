@@ -35,10 +35,10 @@ class VGGExtractor(nn.Module):
 
 class DeepSpeech2Extractor(nn.Module):
     """
-        VGG extractor for automatic speech recognition described in
-        "Advances in Joint CTC-Attention based End-to-End Speech Recognition with "a Deep CNN Encoder and RNN-LM" paper
-        - https://arxiv.org/pdf/1706.02737.pdf
-        """
+    VGG extractor for automatic speech recognition described in
+    "Advances in Joint CTC-Attention based End-to-End Speech Recognition with "a Deep CNN Encoder and RNN-LM" paper
+    - https://arxiv.org/pdf/1706.02737.pdf
+    """
 
     def __init__(self, in_channels=1):
         super(DeepSpeech2Extractor, self).__init__()
