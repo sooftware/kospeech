@@ -25,14 +25,14 @@ class Listener(BaseRNN):
     """
 
     def __init__(self, input_size, hidden_dim, device, dropout_p=0.5, num_layers=1,
-                 bidirectional=True, rnn_type='gru', extractor='vgg'):
+                 bidirectional=True, rnn_type='gru', extractor='vgg', activation='hardtanh'):
         input_size = (input_size - 1) << 5 if input_size % 2 else input_size << 5
         super(Listener, self).__init__(input_size, hidden_dim, num_layers, rnn_type, dropout_p, bidirectional, device)
 
         if extractor.lower() == 'vgg':
-            self.extractor = VGGExtractor(in_channels=1)
+            self.extractor = VGGExtractor(in_channels=1, activation=activation)
         elif extractor.lower() == 'ds2':
-            self.extractor = DeepSpeech2Extractor(in_channels=1)
+            self.extractor = DeepSpeech2Extractor(in_channels=1, activation=activation)
         else:
             raise ValueError("Unsupported Extractor : {0}".format(extractor))
 

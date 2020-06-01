@@ -2,57 +2,74 @@ import torch.nn as nn
 from e2e.model.sub_layers.maskCNN import MaskCNN
 
 
-class VGGExtractor(nn.Module):
+class Extractor(nn.Module):
     """
-    VGG extractor for automatic speech recognition described in
-    "Advances in Joint CTC-Attention based End-to-End Speech Recognition with a Deep CNN Encoder and RNN-LM" paper
-    - https://arxiv.org/pdf/1706.02737.pdf
+    Provides inteface of extractor.
+
+    Note:
+        Do not use this class directly, use one of the sub classes.
+        You have to set `self.cnn`.
     """
-    def __init__(self, in_channels=1):
-        super(VGGExtractor, self).__init__(nn.Hardtanh(0, 20, inplace=True))
-        self.cnn = MaskCNN(
-            nn.Sequential(
-                nn.Conv2d(in_channels, 64, kernel_size=3, stride=1, padding=1, bias=False),
-                nn.Hardtanh(0, 20, inplace=True),
-                nn.BatchNorm2d(num_features=64),
-                nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
-                nn.Hardtanh(0, 20, inplace=True),
-                nn.MaxPool2d(2, stride=2),
-                nn.BatchNorm2d(num_features=64),
-                nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1, bias=False),
-                nn.Hardtanh(0, 20, inplace=True),
-                nn.BatchNorm2d(num_features=128),
-                nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1, bias=False),
-                nn.Hardtanh(0, 20, inplace=True),
-                nn.MaxPool2d(2, stride=2)
-            )
-        )
+    def __init__(self, activation='hardtanh'):
+        super(Extractor, self).__init__()
+        self.cnn = None  # set convolution neural network
+        if activation.lower() == 'hardtanh':
+            self.activation = nn.Hardtanh(0, 20, inplace=True)
+        elif activation.lower() == 'relu':
+            self.activation = nn.ReLU(inplace=True)
+        elif activation.lower() == 'elu':
+            self.activation = nn.ELU(inplace=True)
+        else:
+            raise ValueError("Unsupported activation function : {0}".format(activation))
 
     def forward(self, inputs, input_lengths):
         conv_feat, seq_lengths = self.cnn(inputs, input_lengths)
         return conv_feat, seq_lengths
 
 
-class DeepSpeech2Extractor(nn.Module):
+class VGGExtractor(Extractor):
+    """
+    VGG extractor for automatic speech recognition described in
+    "Advances in Joint CTC-Attention based End-to-End Speech Recognition with a Deep CNN Encoder and RNN-LM" paper
+    - https://arxiv.org/pdf/1706.02737.pdf
+    """
+    def __init__(self, in_channels=1, activation='hardtanh'):
+        super(VGGExtractor, self).__init__(activation)
+        self.cnn = MaskCNN(
+            nn.Sequential(
+                nn.Conv2d(in_channels, 64, kernel_size=3, stride=1, padding=1, bias=False),
+                self.activation,
+                nn.BatchNorm2d(num_features=64),
+                nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
+                self.activation,
+                nn.MaxPool2d(2, stride=2),
+                nn.BatchNorm2d(num_features=64),
+                nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1, bias=False),
+                self.activation,
+                nn.BatchNorm2d(num_features=128),
+                nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1, bias=False),
+                self.activation,
+                nn.MaxPool2d(2, stride=2)
+            )
+        )
+
+
+class DeepSpeech2Extractor(Extractor):
     """
     DeepSpeech2 extractor for automatic speech recognition described in
     "Deep Speech 2: End-to-End Speech Recognition in English and Mandarin" paper
     - https://arxiv.org/abs/1512.02595
     """
 
-    def __init__(self, in_channels=1):
-        super(DeepSpeech2Extractor, self).__init__()
+    def __init__(self, in_channels=1, activation='hardtanh'):
+        super(DeepSpeech2Extractor, self).__init__(activation)
         self.cnn = MaskCNN(
             nn.Sequential(
                 nn.Conv2d(in_channels, 32, kernel_size=(41, 11), stride=(2, 2), padding=(20, 5)),
                 nn.BatchNorm2d(32),
-                nn.Hardtanh(0, 20, inplace=True),
+                self.activation,
                 nn.Conv2d(32, 32, kernel_size=(21, 11), stride=(2, 1), padding=(10, 5)),
                 nn.BatchNorm2d(32),
-                nn.Hardtanh(0, 20, inplace=True)
+                self.activation
             )
         )
-
-    def forward(self, inputs, input_lengths):
-        conv_feat, seq_lengths = self.cnn(inputs, input_lengths)
-        return conv_feat, seq_lengths

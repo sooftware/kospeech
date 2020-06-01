@@ -16,6 +16,8 @@ def build_model(opt, device):
         dropout_p=opt.dropout,
         num_layers=opt.listener_layer_size,
         bidirectional=opt.use_bidirectional,
+        extractor=opt.extractor,
+        activation=opt.activation,
         rnn_type=opt.rnn_type,
         device=device,
     )
@@ -53,7 +55,7 @@ def build_las(listener, speller, device, init_uniform=True):
     return model
 
 
-def build_listener(input_size, hidden_dim, dropout_p, num_layers, bidirectional, rnn_type, extractor, device):
+def build_listener(input_size, hidden_dim, dropout_p, num_layers, bidirectional, rnn_type, extractor, activation, device):
     """ build listener & validate parameters """
     assert isinstance(input_size, int), "input_size should be inteager type"
     assert isinstance(hidden_dim, int), "hidden_dim should be inteager type"
@@ -68,7 +70,7 @@ def build_listener(input_size, hidden_dim, dropout_p, num_layers, bidirectional,
     return Listener(input_size=input_size, hidden_dim=hidden_dim,
                     dropout_p=dropout_p, num_layers=num_layers,
                     bidirectional=bidirectional, rnn_type=rnn_type,
-                    extractor=extractor, device=device)
+                    extractor=extractor, device=device, activation=activation)
 
 
 def build_speller(num_classes, max_len, hidden_dim, sos_id, eos_id, attn_mechanism,

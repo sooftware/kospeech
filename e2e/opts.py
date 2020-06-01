@@ -34,6 +34,9 @@ def build_model_opts(parser):
     group.add_argument('--extractor', '-extractor',
                        type=str, default='vgg',
                        help='extractor in listener: [vgg, ds2] (default: vgg)')
+    group.add_argument('--activation', '-activation',
+                       type=str, default='hardtanh',
+                       help='activation function in listener`s cnn: [hardtanh, relu, elu] (default: hardtanh)')
     group.add_argument('--attn_mechanism', '-attn_mechanism',
                        type=str, default='loc',
                        help='option to specify the attention mechanism method')
@@ -235,6 +238,7 @@ def print_model_opts(opt):
     logger.info('--listener_layer_size: %s' % str(opt.listener_layer_size))
     logger.info('--speller_layer_size: %s' % str(opt.speller_layer_size))
     logger.info('--extractor: %s' % str(opt.extractor))
+    logger.info('--activation: %s' % str(opt.activation))
     logger.info('--rnn_type: %s' % str(opt.rnn_type))
     logger.info('--teacher_forcing_ratio: %s' % str(opt.teacher_forcing_ratio))
 
