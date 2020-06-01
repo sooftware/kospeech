@@ -1,10 +1,10 @@
 import torch
 import torch.nn as nn
+from e2e.decode.ensemble import BasicEnsemble, WeightedEnsemble
 from e2e.model.sub_layers.baseRNN import BaseRNN
 from e2e.model.las import ListenAttendSpell
 from e2e.model.listener import Listener
 from e2e.model.speller import Speller
-from e2e.model.topk_decoder import TopKDecoder
 from e2e.utils import char2id, EOS_token, SOS_token
 
 
@@ -114,3 +114,20 @@ def load_test_model(opt, device):
         model.listener.device = device
 
     return model
+
+
+def build_ensemble(model_paths, method, device):
+    ensemble = None
+    models = list()
+
+    for idx in range(len(model_paths)):
+        models.append(torch.load(model_paths[idx], map_location=lambda storage, loc: storage))
+
+    if method == 'basic':
+        ensemble = BasicEnsemble(models).to(device)
+    elif method == 'weight':
+        ensemble = WeightedEnsemble(models).to(device)
+    else:
+        raise ValueError("Unsupported ensemble method : {0}".format(method))
+
+    return ensemble
