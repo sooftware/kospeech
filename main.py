@@ -37,8 +37,11 @@ def train(opt):
 
     optimizer = optim.Adam(model.module.parameters(), lr=opt.init_lr)
 
-    scheduler = RampUpLR(optimizer, opt.init_lr, opt.high_plateau_lr, opt.rampup_period)
-    optimizer = Optimizer(optimizer, scheduler, opt.rampup_period, opt.max_grad_norm)
+    if opt.rampup:
+        scheduler = RampUpLR(optimizer, opt.init_lr, opt.high_plateau_lr, opt.rampup_period)
+        optimizer = Optimizer(optimizer, scheduler, opt.rampup_period, opt.max_grad_norm)
+    else:
+        optimizer = Optimizer(optimizer, None, 0, opt.max_grad_norm)
 
     if opt.label_smoothing == 0.0:
         criterion = nn.NLLLoss(reduction='sum', ignore_index=PAD_token).to(device)

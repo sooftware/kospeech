@@ -102,6 +102,9 @@ def build_train_opts(parser):
     group.add_argument('--max_grad_norm', '-max_grad_norm',
                        type=int, default=400,
                        help='value used for gradient norm clipping (default: 400)')
+    group.add_argument('--rampup', '-rampup',
+                       action='store_true', default=False,
+                       help='flag indication whether to use rampup lr scheduling')
     group.add_argument('--rampup_period', '-rampup_period',
                        type=int, default=1000,
                        help='timestep of learning rate rampup (default: 1000)')
@@ -261,6 +264,7 @@ def print_train_opts(opt):
     logger.info('--high_plateau_lr: %s' % str(opt.high_plateau_lr))
     logger.info('--low_plateau_lr: %s' % str(opt.low_plateau_lr))
     logger.info('--decay_threshold: %s' % str(opt.decay_threshold))
+    logger.info('--rampup: %s' % str(opt.rampup))
     logger.info('--rampup_period: %s' % str(opt.rampup_period))
     logger.info('--exp_decay_period: %s' % str(opt.exp_decay_period))
     logger.info('--valid_ratio: %s' % str(opt.valid_ratio))
