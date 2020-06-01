@@ -11,7 +11,7 @@ def _inflate(tensor, n_repeat, dim):
     return tensor.repeat(*repeat_dims)
 
 
-class BeamSearch(nn.Module):
+class TopKDecoder(nn.Module):
     """
     Top-K decoding with beam search.
 
@@ -28,7 +28,7 @@ class BeamSearch(nn.Module):
     """
 
     def __init__(self, decoder, k):
-        super(BeamSearch, self).__init__()
+        super(TopKDecoder, self).__init__()
         self.num_classes = decoder.num_classes
         self.max_length = decoder.max_length
         self.hidden_dim = decoder.hidden_dim

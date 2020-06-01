@@ -35,11 +35,7 @@ def train(opt):
     epoch_time_step, trainset_list, validset = split_dataset(opt, audio_paths, script_paths)
     model = build_model(opt, device)
 
-    if opt.use_multi_gpu:
-        optimizer = optim.Adam(model.module.parameters(), lr=opt.init_lr)
-
-    else:
-        optimizer = optim.Adam(model.parameters(), lr=opt.high_plateau_lr)
+    optimizer = optim.Adam(model.module.parameters(), lr=opt.init_lr)
 
     scheduler = RampUpLR(optimizer, opt.init_lr, opt.high_plateau_lr, opt.rampup_period)
     optimizer = Optimizer(optimizer, scheduler, opt.rampup_period, opt.max_grad_norm)

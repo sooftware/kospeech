@@ -17,11 +17,12 @@ class CharacterErrorRate(object):
     Returns: cer
         - **cer**: character error rate
     """
-    def __init__(self, id2char, eos_id):
+    def __init__(self, id2char, eos_id, ignore_id):
         self.total_dist = 0.0
         self.total_length = 0.0
         self.id2char = id2char
         self.eos_id = eos_id
+        self.ignore_id = ignore_id
 
     def __call__(self, targets, hypothesis):
         """ Calculating character error rate """
@@ -30,8 +31,7 @@ class CharacterErrorRate(object):
         self.total_length += length
         return self.total_dist / self.total_length
 
-    @staticmethod
-    def _char_distance(target, y_hat):
+    def _char_distance(self, target, y_hat):
         """
         Calculating charater distance between target & y_hat
 
@@ -43,11 +43,11 @@ class CharacterErrorRate(object):
             - **dist**: distance between target & y_hat
             - **length**: length of target sequence
         """
-        target = target.replace(' ', '')
-        y_hat = y_hat.replace(' ', '')
+        target = target.replace(self.ignore_id, '')
+        y_hat = y_hat.replace(self.ignore_id, '')
 
         dist = Lev.distance(y_hat, target)
-        length = len(target.replace(' ', ''))
+        length = len(target.replace(self.ignore_id, ''))
 
         return dist, length
 

@@ -5,7 +5,7 @@ import pandas as pd
 from e2e.solver.checkpoint import Checkpoint
 from e2e.optim.lr_scheduler import ExponentialDecayLR
 from e2e.solver.metric import CharacterErrorRate
-from e2e.utils import EOS_token, logger, id2char
+from e2e.utils import EOS_token, logger, id2char, char2id
 from e2e.data.data_loader import MultiDataLoader, AudioDataLoader
 
 
@@ -140,7 +140,7 @@ class SupervisedTrainer(object):
             - **loss** (float): loss of current epoch
             - **cer** (float): character error rate of current epoch
         """
-        metric = CharacterErrorRate(id2char, EOS_token)
+        metric = CharacterErrorRate(id2char, EOS_token, ignore_id=char2id(' '))
         cer = 1.0
         epoch_loss_total = 0.
         total_num = 0
@@ -226,7 +226,7 @@ class SupervisedTrainer(object):
         total_loss = 0.
         total_num = 0
         cer = 1.0
-        metric = CharacterErrorRate(id2char, EOS_token)
+        metric = CharacterErrorRate(id2char, EOS_token, ignore_id=char2id(' '))
 
         model.eval()
         logger.info('validate() start')

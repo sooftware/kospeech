@@ -202,9 +202,9 @@ def build_eval_opts(parser):
     group.add_argument('--k', '-k',
                        type=int, default=5,
                        help='size of beam (default: 5)')
-    group.add_argument('--use_beam_search', '-use_beam_search',
-                       action='store_true', default=True,
-                       help='flag indication whether to use beam search decoding or not')
+    group.add_argument('--decode', '-decode',
+                       type=str, default='greedy',
+                       help='to determine whethre to search using [greedy, beam] (default: greedy)')
     group.add_argument('--print_every', '-print_every',
                        type=int, default=10,
                        help='to determine whether to store inference progress every N timesteps (default: 10')
@@ -284,7 +284,7 @@ def print_eval_opts(opt):
     logger.info('--use_cuda: %s' % str(opt.use_cuda))
     logger.info('--model_path: %s' % str(opt.model_path))
     logger.info('--batch_size: %s' % str(opt.batch_size))
-    logger.info('--use_beam_search: %s' % str(opt.use_beam_search))
+    logger.info('--decode: %s' % str(opt.decode))
     logger.info('--k: %s' % str(opt.k))
     logger.info('--print_every: %s' % str(opt.print_every))
 

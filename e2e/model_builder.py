@@ -4,7 +4,7 @@ from e2e.model.sub_layers.baseRNN import BaseRNN
 from e2e.model.las import ListenAttendSpell
 from e2e.model.listener import Listener
 from e2e.model.speller import Speller
-from e2e.model.beam_search import BeamSearch
+from e2e.model.topk_decoder import TopKDecoder
 from e2e.utils import char2id, EOS_token, SOS_token
 
 
@@ -101,7 +101,7 @@ def build_speller(num_classes, max_len, hidden_dim, sos_id, eos_id, attn_mechani
                    dropout_p=dropout_p, device=device)
 
 
-def load_test_model(opt, device, use_beamsearch=True):
+def load_test_model(opt, device):
     """ load model for performance test """
     model = torch.load(opt.model_path, map_location=lambda storage, loc: storage)
 
@@ -109,16 +109,8 @@ def load_test_model(opt, device, use_beamsearch=True):
         model.module.speller.device = device
         model.module.listener.device = device
 
-        if use_beamsearch:
-            beam_search = BeamSearch(model.module.speller, opt.k)
-            model.module.set_speller(beam_search)
-
     else:
         model.speller.device = device
         model.listener.device = device
-
-        if use_beamsearch:
-            beam_search = BeamSearch(model.speller, opt.k)
-            model.set_speller(beam_search)
 
     return model

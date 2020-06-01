@@ -20,7 +20,7 @@ from e2e.opts import build_eval_opts, build_preprocess_opts, print_opts
 
 def inference(opt):
     device = check_envirionment(opt.use_cuda)
-    model = load_test_model(opt, device, use_beamsearch=opt.use_beam_search)
+    model = load_test_model(opt, device)
 
     audio_paths, script_paths = load_data_list(opt.data_list_path, opt.dataset_path)
     target_dict = load_targets(script_paths)
@@ -36,7 +36,7 @@ def inference(opt):
         noise_augment=False
     )
 
-    evaluator = Evaluator(testset, opt.batch_size, device, opt.num_workers, opt.print_every)
+    evaluator = Evaluator(testset, opt.batch_size, device, opt.num_workers, opt.print_every, opt.decode, opt.k)
     evaluator.evaluate(model)
 
 

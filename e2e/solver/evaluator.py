@@ -1,8 +1,8 @@
 import queue
 import torch
 from e2e.data.data_loader import AudioDataLoader
-from e2e.solver.metric import CharacterErrorRate
-from e2e.utils import id2char, EOS_token, logger
+from e2e.decode.search import GreedySearch, BeamSearch
+from e2e.utils import logger
 
 
 class Evaluator(object):
@@ -17,55 +17,29 @@ class Evaluator(object):
         print_every (int): to determine whether to store training progress every N timesteps (default: 10)
     """
 
-    def __init__(self, dataset, batch_size=1, device=None, num_workers=1, print_every=100):
+    def __init__(self, dataset, batch_size=1, device=None, num_workers=1, print_every=100, decode='greedy', k=None):
         self.dataset = dataset
         self.batch_size = batch_size
         self.device = device
         self.num_workers = num_workers
         self.print_every = print_every
 
+        if decode == 'greedy':
+            self.decoder = GreedySearch()
+        elif decode == 'beam':
+            self.decoder = BeamSearch(k)
+        else:
+            raise ValueError("Unsupported decode : {0}".format(decode))
+
     def evaluate(self, model):
         """ Evaluate a model on given dataset and return performance. """
+        logger.info('evaluate() start')
         eval_queue = queue.Queue(self.num_workers << 1)
         eval_loader = AudioDataLoader(self.dataset, eval_queue, self.batch_size, 0)
         eval_loader.start()
 
-        cer = self.predict(model, eval_queue)
-        logger.info('Evaluate CER: %s' % cer)
+        cer = self.decoder.search(model, eval_queue, self.device, self.print_every)
+        self.decoder.save_result()
         eval_loader.join()
-
-    def predict(self, model, queue):
-        """ Make prediction given testset as input. """
-        metric = CharacterErrorRate(id2char, EOS_token)
-        cer = 0
-        logger.info('evaluate() start')
-        total_sent_num = 0
-        timestep = 0
-
-        model.eval()
-
-        with torch.no_grad():
-            while True:
-                inputs, targets, input_lengths, target_lengths = queue.get()
-                if inputs.shape[0] == 0:
-                    break
-
-                inputs = inputs.to(self.device)
-                targets = targets.to(self.device)
-                scripts = targets[:, 1:]
-
-                output = model(inputs, input_lengths, teacher_forcing_ratio=0.0)
-
-                logit = torch.stack(output, dim=1).to(self.device)
-                hypothesis = logit.max(-1)[1]
-
-                cer = metric(targets, hypothesis)
-                total_sent_num += scripts.size(0)
-
-                if timestep % self.print_every == 0:
-                    logger.info('cer: {:.2f}'.format(cer))
-
-                timestep += 1
-
+        logger.info('Evaluate CER: %s' % cer)
         logger.info('evaluate() completed')
-        return cer
