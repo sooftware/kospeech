@@ -153,7 +153,9 @@ python setup.py install
 ### Step 1: Run `preprocess.py`
   
 you can preprocess `KsponSpeech corpus` using [preprocess.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/preprocess/preprocess.py).   
-Or refer [this documentation](https://github.com/sooftware/End-to-end-Speech-Recognition/wiki/Preparation-before-Training). This documentation contains information regarding the preprocessing of `KsponSpeech` The above documentation is written in Korean. We will also write a documentation in English as soon as possible, so please wait a little bit.  
+Or refer [this documentation](https://github.com/sooftware/End-to-end-Speech-Recognition/wiki/Preparation-before-Training). This documentation contains information regarding the preprocessing of `KsponSpeech`.   
+The above documentation is written in Korean.   
+We will also write a documentation in English as soon as possible, so please wait a little bit.  
 
 ### Step 2: Run `main.py`
 * Default setting  
