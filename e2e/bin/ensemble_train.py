@@ -24,9 +24,7 @@ def train(opt):
     model = build_ensemble(['model_path1', 'model_path2', 'model_path3'], opt.ensemble_method, device)
 
     optimizer = optim.Adam(model.module.parameters(), lr=opt.init_lr)
-
     optimizer = Optimizer(optimizer, None, 0, opt.max_grad_norm)
-
     criterion = nn.NLLLoss(reduction='sum', ignore_index=PAD_token).to(device)
 
     trainer = SupervisedTrainer(

@@ -26,20 +26,23 @@ class Evaluator(object):
 
         if decode == 'greedy':
             self.decoder = GreedySearch()
+            self.save_result_path = './data/train_result/greedy_search.csv'
         elif decode == 'beam':
             self.decoder = BeamSearch(k)
+            self.save_result_path = './data/train_result/beam_search.csv'
         else:
             raise ValueError("Unsupported decode : {0}".format(decode))
 
     def evaluate(self, model):
         """ Evaluate a model on given dataset and return performance. """
         logger.info('evaluate() start')
+
         eval_queue = queue.Queue(self.num_workers << 1)
         eval_loader = AudioDataLoader(self.dataset, eval_queue, self.batch_size, 0)
         eval_loader.start()
 
         cer = self.decoder.search(model, eval_queue, self.device, self.print_every)
-        self.decoder.save_result()
-        eval_loader.join()
+        self.decoder.save_result(self.save_result_path)
         logger.info('Evaluate CER: %s' % cer)
         logger.info('evaluate() completed')
+        eval_loader.join()

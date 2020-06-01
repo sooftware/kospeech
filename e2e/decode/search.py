@@ -25,8 +25,13 @@ class Search(object):
     def search(self, model, queue, device, print_every):
         raise NotImplementedError
 
-    def save_result(self):
-        raise NotImplementedError
+    def save_result(self, save_path):
+        results = {
+            'original': self.target_list,
+            'hypothesis': self.hypothesis_list
+        }
+        results = pd.DataFrame(results)
+        results.to_csv(save_path, index=False, encoding='utf-8')
 
 
 class GreedySearch(Search):
@@ -67,15 +72,8 @@ class GreedySearch(Search):
                     logger.info('cer: {:.2f}'.format(cer))
 
                 timestep += 1
-        return cer
 
-    def save_result(self):
-        results = {
-            'original': self.target_list,
-            'hypothesis': self.hypothesis_list
-        }
-        results = pd.DataFrame(results)
-        results.to_csv('./data/train_result/greedy_search.csv', index=False, encoding='utf-8')
+        return cer
 
 
 class BeamSearch(Search):
@@ -123,15 +121,8 @@ class BeamSearch(Search):
                     logger.info('cer: {:.2f}'.format(cer))
 
                 timestep += 1
-        return cer
 
-    def save_result(self):
-        results = {
-            'original': self.target_list,
-            'hypothesis': self.hypothesis_list
-        }
-        results = pd.DataFrame(results)
-        results.to_csv('./data/train_result/beam_search.csv', index=False, encoding='utf-8')
+        return cer
 
 
 class EnsembleSearch(Search):
@@ -171,7 +162,5 @@ class EnsembleSearch(Search):
                     logger.info('cer: {:.2f}'.format(cer))
 
                 timestep += 1
-        return cer
 
-    def save_result(self):
-        pass
+        return cer
