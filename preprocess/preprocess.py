@@ -50,13 +50,13 @@ def create_char_labels():
 
     # sort together Using zip
     label_freq, label_list = zip(*sorted(zip(label_freq, label_list), reverse=True))
-    label = {'id': [], 'char': [], 'freq': []}
+    label = {'id': [0, 1, 2], 'char': ['<pad>', '<sos>', '<eos>'], 'freq': [0, 0, 0]}
     for idx, (ch, freq) in enumerate(zip(label_list, label_freq)):
-        label['id'].append(idx)
+        label['id'].append(idx + 3)
         label['char'].append(ch)
         label['freq'].append(freq)
 
-    """ dictionary to csv """
+    # save to csv
     label_df = pd.DataFrame(label)
     label_df.to_csv("aihub_labels.csv", encoding="utf-8", index=False)
 
