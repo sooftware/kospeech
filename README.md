@@ -149,12 +149,10 @@ python setup.py install
 ```
   
 ## Get Started
-### Step 1: Run `preprocess.py`
-  
-you can preprocess `KsponSpeech corpus` using [preprocess.py](https://github.com/sooftware/End-to-end-Speech-Recognition/blob/master/preprocess/preprocess.py).   
+### Step 1: Data Preprocessing  
+    
+you can preprocess `KsponSpeech corpus` refer [here](https://github.com/sooftware/KsponSpeech.preprocess).     
 Or refer [this documentation](https://github.com/sooftware/End-to-end-Speech-Recognition/wiki/Preparation-before-Training). This documentation contains information regarding the preprocessing of `KsponSpeech`.   
-The above documentation is written in Korean.   
-We will also write a documentation in English as soon as possible, so please wait a little bit.  
 
 ### Step 2: Run `main.py`
 * Default setting  
@@ -235,7 +233,8 @@ We follow [PEP-8](https://www.python.org/dev/peps/pep-0008/) for code style. Esp
 [[8] Alexander-H-Liu/End-to-end-ASR-Pytorch @github](https://github.com/Alexander-H-Liu/End-to-end-ASR-Pytorch)   
 [[9] clovaai/ClovaCall @github](https://github.com/clovaai/ClovaCall)  
 [[10] KsponSpeech @AIHub](http://www.aihub.or.kr/aidata/105)    
-[[11] Documentation](https://sooftware.github.io/End-to-End-Korean-Speech-Recognition/)  
+[[11] KsponSpeech.preprocess @github](https://github.com/sooftware/KsponSpeech.preprocess)    
+[[12] Documentation](https://sooftware.github.io/End-to-End-Korean-Speech-Recognition/)  
    
 ### Citing
 ```
