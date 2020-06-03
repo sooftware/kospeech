@@ -2,7 +2,7 @@ import torch
 import pandas as pd
 import torch.nn as nn
 from e2e.model.topk_decoder import TopKDecoder
-from e2e.solver.metric import CharacterErrorRate
+from e2e.metric import CharacterErrorRate
 from e2e.utils import id2char, EOS_token, logger, label_to_string, char2id
 
 
@@ -56,7 +56,7 @@ class GreedySearch(Search):
                 scripts = scripts.to(device)
                 targets = scripts[:, 1:]
 
-                output = model(inputs, input_lengths, teacher_forcing_ratio=0.0)
+                output, _ = model(inputs, input_lengths, teacher_forcing_ratio=0.0)
 
                 logit = torch.stack(output, dim=1).to(device)
                 hypothesis = logit.max(-1)[1]
@@ -82,11 +82,10 @@ class BeamSearch(Search):
         self.k = k
 
     def search(self, model, queue, device, print_every):
-        if isinstance(model, nn.DataParallel):
-            topk_decoder = TopKDecoder(model.module.speller, self.k)
+        topk_decoder = TopKDecoder(model.module.speller, self.k)
+        try:
             model.module.set_speller(topk_decoder)
-        else:
-            topk_decoder = TopKDecoder(model.speller, self.k)
+        except AttributeError:
             model.set_speller(topk_decoder)
 
         cer = 0
@@ -105,7 +104,7 @@ class BeamSearch(Search):
                 scripts = scripts.to(device)
                 targets = scripts[:, 1:]
 
-                output = model(inputs, input_lengths, teacher_forcing_ratio=0.0)
+                output, _ = model(inputs, input_lengths, teacher_forcing_ratio=0.0)
 
                 logit = torch.stack(output, dim=1).to(device)
                 hypothesis = logit.max(-1)[1]

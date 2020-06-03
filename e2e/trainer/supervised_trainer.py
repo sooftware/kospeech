@@ -2,9 +2,9 @@ import time
 import torch
 import queue
 import pandas as pd
-from e2e.solver.checkpoint import Checkpoint
+from e2e.checkpoint.checkpoint import Checkpoint
 from e2e.optim.lr_scheduler import ExponentialDecayLR
-from e2e.solver.metric import CharacterErrorRate
+from e2e.metric import CharacterErrorRate
 from e2e.utils import EOS_token, logger, id2char, char2id
 from e2e.data.data_loader import MultiDataLoader, AudioDataLoader
 
@@ -167,7 +167,7 @@ class SupervisedTrainer(object):
             targets = scripts[:, 1:]
 
             model.module.flatten_parameters()
-            output = model(inputs, input_lengths, scripts, teacher_forcing_ratio=teacher_forcing_ratio)
+            output, _ = model(inputs, input_lengths, scripts, teacher_forcing_ratio=teacher_forcing_ratio)
 
             logit = torch.stack(output, dim=1).to(self.device)
             hypothesis = logit.max(-1)[1]
@@ -243,7 +243,7 @@ class SupervisedTrainer(object):
                 target_lengths = targets.size(1)
 
                 model.module.flatten_parameters()
-                output = model(inputs, input_lengths, teacher_forcing_ratio=0.0)
+                output, _ = model(inputs, input_lengths, teacher_forcing_ratio=0.0)
 
                 logit = torch.stack(output, dim=1).to(self.device)
                 hypothesis = logit.max(-1)[1]

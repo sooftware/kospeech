@@ -12,7 +12,7 @@ import argparse
 import warnings
 from e2e.data.data_loader import load_data_list, SpectrogramDataset
 from e2e.data.label_loader import load_targets
-from e2e.solver.evaluator import Evaluator
+from e2e.evaluator.evaluator import Evaluator
 from e2e.utils import check_envirionment, EOS_token, SOS_token
 from e2e.model_builder import load_test_model
 from e2e.opts import build_eval_opts, build_preprocess_opts, print_opts

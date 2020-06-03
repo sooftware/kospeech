@@ -34,6 +34,7 @@ class Speller(BaseRNN):
     Returns: decoder_outputs
         - **decoder_outputs**: list of tensors containing the outputs of the decoding function.
     """
+
     def __init__(self, num_classes, max_length, hidden_dim, sos_id, eos_id, attn_mechanism='loc',
                  num_heads=8, num_layers=1, rnn_type='gru', dropout_p=0.5, device=None):
         super(Speller, self).__init__(hidden_dim, hidden_dim, num_layers, rnn_type, dropout_p, False, device)
@@ -74,6 +75,7 @@ class Speller(BaseRNN):
     def forward(self, inputs, listener_outputs, teacher_forcing_ratio=0.90):
         hidden, attn = None, None
         decoder_outputs = list()
+        alignment = list()
 
         inputs, batch_size, max_length = self.validate_args(inputs, listener_outputs, teacher_forcing_ratio)
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
@@ -85,7 +87,8 @@ class Speller(BaseRNN):
             for di in range(inputs.size(1)):
                 input_var = inputs[:, di].unsqueeze(1)
                 step_output, hidden, attn = self.forward_step(input_var, hidden, listener_outputs, attn)
-                decoder_outputs.append(step_output)
+                alignment.append(attn)
+                decoder_outputs.append(step_output.numpy())
 
         else:
             input_var = inputs[:, 0].unsqueeze(1)
@@ -93,9 +96,10 @@ class Speller(BaseRNN):
             for di in range(max_length):
                 step_output, hidden, attn = self.forward_step(input_var, hidden, listener_outputs, attn)
                 decoder_outputs.append(step_output)
+                alignment.append(attn.numpy())
                 input_var = decoder_outputs[-1].topk(1)[1]
 
-        return decoder_outputs
+        return decoder_outputs, alignment
 
     def validate_args(self, inputs, listener_outputs, teacher_forcing_ratio):
         """ Validate arguments """

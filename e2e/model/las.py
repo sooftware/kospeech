@@ -37,8 +37,8 @@ class ListenAttendSpell(nn.Module):
 
     def forward(self, inputs, input_lengths, targets=None, teacher_forcing_ratio=0.99):
         listener_outputs, hidden = self.listener(inputs, input_lengths)
-        output = self.speller(targets, listener_outputs, teacher_forcing_ratio)
-        return output
+        output, alignment = self.speller(targets, listener_outputs, teacher_forcing_ratio)
+        return output, alignment
 
     def flatten_parameters(self):
         self.listener.rnn.flatten_parameters()

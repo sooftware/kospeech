@@ -4,9 +4,9 @@ import torch
 import warnings
 from torch import optim, nn
 from e2e.data.data_loader import split_dataset, load_data_list
-from e2e.solver.checkpoint import Checkpoint
+from e2e.checkpoint.checkpoint import Checkpoint
 from e2e.optim.optim import Optimizer
-from e2e.solver.supervised_trainer import SupervisedTrainer
+from e2e.trainer.supervised_trainer import SupervisedTrainer
 from e2e.model_builder import build_ensemble
 from e2e.opts import print_opts, build_train_opts, build_model_opts, build_preprocess_opts
 from e2e.utils import PAD_token, check_envirionment

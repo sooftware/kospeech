@@ -1,3 +1,4 @@
+seaborn
 matplotlib
 astropy
 torch

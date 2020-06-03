@@ -15,10 +15,10 @@ import warnings
 from torch import optim, nn
 from e2e.data.data_loader import split_dataset, load_data_list
 from e2e.optim.loss import LabelSmoothingLoss
-from e2e.solver.checkpoint import Checkpoint
+from e2e.checkpoint.checkpoint import Checkpoint
 from e2e.optim.lr_scheduler import RampUpLR
 from e2e.optim.optim import Optimizer
-from e2e.solver.supervised_trainer import SupervisedTrainer
+from e2e.trainer.supervised_trainer import SupervisedTrainer
 from e2e.model_builder import build_model
 from e2e.opts import print_opts, build_train_opts, build_model_opts, build_preprocess_opts
 from e2e.utils import PAD_token, char2id, check_envirionment
