@@ -10,7 +10,6 @@ MODEL_PATH = '../data/checkpoints/model.pt'
 AUDIO_PATH = '../data/sample/KaiSpeech_000002.pcm'
 DEL_SILENCE = True
 NORMALIZE = True
-FEATURE_EXTRACT_BY = 'librosa'
 SAMPLE_RATE = 16000
 N_MELS = 80
 N_FFT = 320
@@ -51,16 +50,16 @@ spectrogram = parse_audio(AUDIO_PATH)
 model = torch.load(MODEL_PATH)
 
 _, alignments = model(spectrogram.unsqueeze(0), torch.IntTensor([len(spectrogram)]), teacher_forcing_ratio=0.0)  # D(NxT)
-attention_map = None
+attention_maps = None
 
 for decode_timestep in alignments:
-    if attention_map is None:
-        attention_map = decode_timestep
+    if attention_maps is None:
+        attention_maps = decode_timestep
     else:
-        attention_map = torch.cat([attention_map, decode_timestep], dim=1)  # NxDxT
+        attention_maps = torch.cat([attention_maps, decode_timestep], dim=1)  # NxDxT
 
-attention_map = torch.flip(attention_map, dims=[0, 1])
-num_heads = attention_map.size(0)
+attention_maps = torch.flip(attention_maps, dims=[0, 1])
+num_heads = attention_maps.size(0)
 
 f = plt.figure(figsize=(16, 6))
 plt.imshow(spectrogram.transpose(0, 1), aspect='auto', origin='lower')
@@ -68,8 +67,8 @@ plt.savefig("./image/spectrogram.png")
 
 for n in range(num_heads):
     g = plt.figure(figsize=(10, 8))
-    map = pd.DataFrame(attention_map[n].cpu().detach().numpy().transpose(0, 1))
-    map = sns.heatmap(map, fmt="f", cmap='viridis')
-    map.invert_yaxis()
-    fig = map.get_figure()
+    attention_map = pd.DataFrame(attention_maps[n].cpu().detach().numpy().transpose(0, 1))
+    attention_map = sns.heatmap(attention_map, fmt="f", cmap='viridis')
+    attention_map.invert_yaxis()
+    fig = attention_map.get_figure()
     fig.savefig("./image/head%s.png" % str(n))

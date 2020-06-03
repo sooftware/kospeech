@@ -75,7 +75,7 @@ class Speller(BaseRNN):
     def forward(self, inputs, listener_outputs, teacher_forcing_ratio=0.90):
         hidden, attn = None, None
         decoder_outputs = list()
-        alignment = list()
+        alignments = list()
 
         inputs, batch_size, max_length = self.validate_args(inputs, listener_outputs, teacher_forcing_ratio)
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
@@ -87,7 +87,7 @@ class Speller(BaseRNN):
             for di in range(inputs.size(1)):
                 input_var = inputs[:, di].unsqueeze(1)
                 step_output, hidden, attn = self.forward_step(input_var, hidden, listener_outputs, attn)
-                alignment.append(attn)
+                alignments.append(attn)
                 decoder_outputs.append(step_output.numpy())
 
         else:
@@ -96,10 +96,10 @@ class Speller(BaseRNN):
             for di in range(max_length):
                 step_output, hidden, attn = self.forward_step(input_var, hidden, listener_outputs, attn)
                 decoder_outputs.append(step_output)
-                alignment.append(attn)
+                alignments.append(attn)
                 input_var = decoder_outputs[-1].topk(1)[1]
 
-        return decoder_outputs, alignment
+        return decoder_outputs, alignments
 
     def validate_args(self, inputs, listener_outputs, teacher_forcing_ratio):
         """ Validate arguments """
