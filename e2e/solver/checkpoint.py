@@ -87,7 +87,10 @@ class Checkpoint(object):
             resume_checkpoint = torch.load(os.path.join(path, self.TRAINER_STATE_NAME), map_location=lambda storage, loc: storage)
             model = torch.load(os.path.join(path, self.MODEL_NAME), map_location=lambda storage, loc: storage)
 
-        model.flatten_parameters()  # make RNN parameters contiguous
+        try:
+            model.module.flatten_parameters()  # make RNN parameters contiguous
+        except AttributeError:
+            model.flatten_parameters()
 
         return Checkpoint(model=model, optimizer=resume_checkpoint['optimizer'], epoch=resume_checkpoint['epoch'],
                           criterion=resume_checkpoint['criterion'], trainset_list=resume_checkpoint['trainset_list'],

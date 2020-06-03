@@ -50,6 +50,7 @@ class SupervisedTrainer(object):
         self.device = device
         self.teacher_forcing_step = teacher_forcing_step
         self.min_teacher_forcing_ratio = min_teacher_forcing_ratio
+        self.metric = CharacterErrorRate(id2char, EOS_token, ignore_id=char2id(' '))
 
     def train(self, model, batch_size, epoch_time_step, num_epochs, teacher_forcing_ratio=0.99, resume=False):
         """
@@ -140,7 +141,6 @@ class SupervisedTrainer(object):
             - **loss** (float): loss of current epoch
             - **cer** (float): character error rate of current epoch
         """
-        metric = CharacterErrorRate(id2char, EOS_token, ignore_id=char2id(' '))
         cer = 1.0
         epoch_loss_total = 0.
         total_num = 0
@@ -175,7 +175,7 @@ class SupervisedTrainer(object):
             loss = self.criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
             epoch_loss_total += loss.item()
 
-            cer = metric(targets, hypothesis)
+            cer = self.metric(targets, hypothesis)
             total_num += int(input_lengths.sum())
 
             self.optimizer.zero_grad()
@@ -226,7 +226,6 @@ class SupervisedTrainer(object):
         total_loss = 0.
         total_num = 0
         cer = 1.0
-        metric = CharacterErrorRate(id2char, EOS_token, ignore_id=char2id(' '))
 
         model.eval()
         logger.info('validate() start')
@@ -241,6 +240,7 @@ class SupervisedTrainer(object):
                 inputs = inputs.to(self.device)
                 scripts = scripts.to(self.device)
                 targets = scripts[:, 1:]
+                target_lengths = targets.size(1)
 
                 model.module.flatten_parameters()
                 output = model(inputs, input_lengths, teacher_forcing_ratio=0.0)
@@ -248,10 +248,12 @@ class SupervisedTrainer(object):
                 logit = torch.stack(output, dim=1).to(self.device)
                 hypothesis = logit.max(-1)[1]
 
+                logit = logit[:, :target_lengths]
                 loss = self.criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
+
                 total_loss += loss.item()
                 total_num += sum(input_lengths)
-                cer = metric(targets, hypothesis)
+                cer = self.metric(targets, hypothesis)
 
         logger.info('validate() completed')
         return total_loss / total_num, cer
