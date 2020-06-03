@@ -96,7 +96,7 @@ class Speller(BaseRNN):
             for di in range(max_length):
                 step_output, hidden, attn = self.forward_step(input_var, hidden, listener_outputs, attn)
                 decoder_outputs.append(step_output)
-                alignment.append(attn.numpy())
+                alignment.append(attn)
                 input_var = decoder_outputs[-1].topk(1)[1]
 
         return decoder_outputs, alignment

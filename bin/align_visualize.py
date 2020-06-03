@@ -4,10 +4,10 @@ import librosa
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-from e2e.data.preprocess.core import split
+from e2e.feature.core import split
 
-MODEL_PATH = ''
-AUDIO_PATH = ''
+MODEL_PATH = '../data/checkpoints/model.pt'
+AUDIO_PATH = '../data/sample/KaiSpeech_000002.pcm'
 DEL_SILENCE = True
 NORMALIZE = True
 FEATURE_EXTRACT_BY = 'librosa'
@@ -31,7 +31,7 @@ def load_audio(audio_path, del_silence):
 def parse_audio(audio_path):
     sound = load_audio(audio_path, DEL_SILENCE)
 
-    spectrogram = librosa.feature.melspectrogram(sound, 16000, n_mels=80, n_fft=320, hop_length=160)
+    spectrogram = librosa.feature.melspectrogram(sound, SAMPLE_RATE, n_mels=N_MELS, n_fft=N_FFT, hop_length=HOP_LENGTH)
     spectrogram = librosa.amplitude_to_db(spectrogram, ref=np.max)
 
     if NORMALIZE:
@@ -48,18 +48,29 @@ def parse_audio(audio_path):
 
 
 spectrogram = parse_audio(AUDIO_PATH)
-model = torch.load(MODEL_PATH, map_location=lambda storage, loc: storage)
+model = torch.load(MODEL_PATH)
 
-_, alignment = model(spectrogram.unsqueeze(0), torch.IntTensor([len(spectrogram)]))
-alignment = alignment.squeeze(0)
+_, alignments = model(spectrogram.unsqueeze(0), torch.IntTensor([len(spectrogram)]), teacher_forcing_ratio=0.0)  # D(NxT)
+attention_map = None
 
-alignment = pd.DataFrame(alignment)
+for decode_timestep in alignments:
+    if attention_map is None:
+        attention_map = decode_timestep
+    else:
+        attention_map = torch.cat([attention_map, decode_timestep], dim=1)  # NxDxT
+
+attention_map = torch.flip(attention_map, dims=[0, 1])
+num_heads = attention_map.size(0)
 
 f = plt.figure(figsize=(16, 6))
 plt.imshow(spectrogram.transpose(0, 1), aspect='auto', origin='lower')
+plt.savefig("./image/spectrogram.png")
 
-g = plt.figure(figsize=(10, 8))
-sns.heatmap(alignment, fmt="f", cmap='viridis')
+for n in range(num_heads):
+    g = plt.figure(figsize=(10, 8))
+    map = pd.DataFrame(attention_map[n].cpu().detach().numpy().transpose(0, 1))
+    map = sns.heatmap(map, fmt="f", cmap='viridis')
+    map.invert_yaxis()
+    fig = map.get_figure()
+    fig.savefig("./image/head%s.png" % str(n))
 
-f.show()
-g.show()
