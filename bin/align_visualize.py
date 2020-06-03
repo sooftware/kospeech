@@ -55,6 +55,11 @@ alignment = alignment.squeeze(0)
 
 alignment = pd.DataFrame(alignment)
 
-plt.figure(figsize=(10, 8))
+f = plt.figure(figsize=(16, 6))
+plt.imshow(spectrogram.transpose(0, 1), aspect='auto', origin='lower')
+
+g = plt.figure(figsize=(10, 8))
 sns.heatmap(alignment, fmt="f", cmap='viridis')
-plt.show()
+
+f.show()
+g.show()
