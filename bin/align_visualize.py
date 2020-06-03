@@ -4,7 +4,7 @@ import librosa
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-from e2e.feature.core import split
+from e2e.data.preprocess.core import split
 
 MODEL_PATH = '../data/checkpoints/model.pt'
 AUDIO_PATH = '../data/sample/KaiSpeech_000002.pcm'
@@ -73,4 +73,3 @@ for n in range(num_heads):
     map.invert_yaxis()
     fig = map.get_figure()
     fig.savefig("./image/head%s.png" % str(n))
-
