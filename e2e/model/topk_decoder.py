@@ -33,6 +33,7 @@ class TopKDecoder(nn.Module):
         self.max_length = decoder.max_length
         self.hidden_dim = decoder.hidden_dim
         self.forward_step = decoder.forward_step
+        self.validate_args = decoder.validate_args
         self.pos_index = None
         self.k = k
         self.sos_id = decoder.sos_id
@@ -44,7 +45,7 @@ class TopKDecoder(nn.Module):
         inputs, batch_size, max_length = self.validate_args(input_var, encoder_outputs, 0.0)
         self.pos_index = Variable(torch.LongTensor(range(batch_size)) * self.k).view(-1, 1).to(self.device)
 
-        hidden, align = None, None
+        hidden, attn = None, None
         inflated_encoder_outputs = _inflate(encoder_outputs, self.k, 0)
 
         # Initialize the scores; for the first step,
@@ -69,7 +70,7 @@ class TopKDecoder(nn.Module):
 
         for _ in range(max_length):
             # Run the RNN one step forward
-            step_output, hidden, align = self.forward_step(input_var, hidden, inflated_encoder_outputs, align)
+            step_output, hidden, attn = self.forward_step(input_var, hidden, inflated_encoder_outputs, attn)
             stored_outputs.append(step_output.unsqueeze(1))
 
             sequence_scores = _inflate(sequence_scores, self.num_classes, 1)
@@ -107,7 +108,7 @@ class TopKDecoder(nn.Module):
 
         decoder_outputs = [step[:, 0, :] for step in output]
 
-        return decoder_outputs
+        return decoder_outputs, None
 
     def _backtrack(self, nw_output, nw_hidden, predecessors, symbols, scores, batch_size):
         """Backtracks over batch to generate optimal k-sequences.

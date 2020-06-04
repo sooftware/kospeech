@@ -7,8 +7,7 @@ class Extractor(nn.Module):
     Provides inteface of extractor.
 
     Note:
-        Do not use this class directly, use one of the sub classes.
-        You have to set `self.cnn`.
+        Do not use this class directly, use one of the sub classes. You have to set `self.cnn`.
     """
     def __init__(self, activation='hardtanh'):
         super(Extractor, self).__init__()

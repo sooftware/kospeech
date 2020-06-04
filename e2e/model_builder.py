@@ -103,7 +103,7 @@ def build_speller(num_classes, max_len, hidden_dim, sos_id, eos_id, attn_mechani
 
 def load_test_model(opt, device):
     """ load model for performance test """
-    model = torch.load(opt.model_path, map_location=lambda storage, loc: storage)
+    model = torch.load(opt.model_path, map_location=lambda storage, loc: storage).to(device)
 
     if isinstance(model, nn.DataParallel):
         model.module.speller.device = device
