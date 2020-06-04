@@ -1,6 +1,6 @@
 import torch
 import pandas as pd
-from e2e.model.topk_decoder import TopKDecoder
+from e2e.model.beam_search import BeamSearchDecoder
 from e2e.metric import CharacterErrorRate
 from e2e.utils import id2char, EOS_token, logger, label_to_string, char2id
 
@@ -81,7 +81,7 @@ class BeamSearch(Search):
         self.k = k
 
     def search(self, model, queue, device, print_every):
-        topk_decoder = TopKDecoder(model.module.speller, self.k)
+        topk_decoder = BeamSearchDecoder(model.module.speller, self.k)
         try:
             model.module.set_speller(topk_decoder)
         except AttributeError:

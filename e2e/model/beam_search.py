@@ -11,7 +11,7 @@ def _inflate(tensor, n_repeat, dim):
     return tensor.repeat(*repeat_dims)
 
 
-class TopKDecoder(nn.Module):
+class BeamSearchDecoder(nn.Module):
     """
     Top-K decoding with beam search.
 
@@ -28,7 +28,7 @@ class TopKDecoder(nn.Module):
     """
 
     def __init__(self, decoder, k):
-        super(TopKDecoder, self).__init__()
+        super(BeamSearchDecoder, self).__init__()
         self.num_classes = decoder.num_classes
         self.max_length = decoder.max_length
         self.hidden_dim = decoder.hidden_dim
@@ -39,6 +39,7 @@ class TopKDecoder(nn.Module):
         self.sos_id = decoder.sos_id
         self.eos_id = decoder.eos_id
         self.num_heads = decoder.num_heads
+        self.min_length = 5
         self.device = decoder.device
 
     def forward(self, input_var, encoder_outputs, teacher_forcing_ratio=0.0):
@@ -68,10 +69,13 @@ class TopKDecoder(nn.Module):
         stored_emitted_symbols = list()
         stored_hidden = list()
 
-        for _ in range(max_length):
+        for di in range(max_length):
             # Run the RNN one step forward
             step_output, hidden, attn = self.forward_step(input_var, hidden, inflated_encoder_outputs, attn)
             stored_outputs.append(step_output.unsqueeze(1))
+
+            if di < self.min_length:  # force the output to be longer than self.min_length
+                step_output[:, self.eos_id] = -1e20
 
             sequence_scores = _inflate(sequence_scores, self.num_classes, 1)
             sequence_scores += step_output
