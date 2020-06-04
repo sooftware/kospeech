@@ -50,7 +50,7 @@ class SupervisedTrainer(object):
         self.device = device
         self.teacher_forcing_step = teacher_forcing_step
         self.min_teacher_forcing_ratio = min_teacher_forcing_ratio
-        self.metric = CharacterErrorRate(id2char, EOS_token, ignore_id=char2id(' '))
+        self.metric = CharacterErrorRate(id2char, EOS_token, ignore_id=char2id[' '])
 
     def train(self, model, batch_size, epoch_time_step, num_epochs, teacher_forcing_ratio=0.99, resume=False):
         """

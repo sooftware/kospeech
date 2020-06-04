@@ -19,7 +19,7 @@ class Search(object):
     def __init__(self):
         self.target_list = list()
         self.hypothesis_list = list()
-        self.metric = CharacterErrorRate(id2char, EOS_token, ignore_id=char2id(' '))
+        self.metric = CharacterErrorRate(id2char, EOS_token, ignore_id=char2id[' '])
 
     def search(self, model, queue, device, print_every):
         raise NotImplementedError

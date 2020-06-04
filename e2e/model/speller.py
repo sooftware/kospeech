@@ -88,7 +88,7 @@ class Speller(BaseRNN):
                 input_var = inputs[:, di].unsqueeze(1)
                 step_output, hidden, attn = self.forward_step(input_var, hidden, listener_outputs, attn)
                 alignments.append(attn)
-                decoder_outputs.append(step_output.numpy())
+                decoder_outputs.append(step_output)
 
         else:
             input_var = inputs[:, 0].unsqueeze(1)
