@@ -7,6 +7,7 @@
 #  }
 
 DATASET_PATH='/data1/'
+MODEL_PATH=''
 DATA_LIST_PATH='./data/data_list/filter_test_list.csv'
 BATCH_SIZE=32
 NUM_WORKERS=4
@@ -24,4 +25,5 @@ MODE='eval'
 python ./infer.py --sample_rate $SAMPLE_RATE --window_size $WINDOW_SIZE --stride $STRIDE --n_mels $N_MELS \
 --normalize --del_silence --input_reverse --feature_extract_by $FEATURE_EXTRACT_BY  \
 --num_workers $NUM_WORKERS --use_cuda --batch_size $BATCH_SIZE --k $K  --decode $DECODE \
---print_every $PRINT_EVERY --mode $MODE --dataset_path $DATASET_PATH --data_list_path $DATA_LIST_PATH
+--print_every $PRINT_EVERY --mode $MODE --dataset_path $DATASET_PATH --data_list_path $DATA_LIST_PATH \
+--model_path $MODEL_PATH

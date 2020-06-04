@@ -7,7 +7,7 @@ import seaborn as sns
 from e2e.data.preprocess.core import split
 
 MODEL_PATH = '../data/checkpoints/model.pt'
-AUDIO_PATH = '../data/sample/KaiSpeech_000002.pcm'
+AUDIO_PATH = '../data/sample/KaiSpeech_000098.pcm'
 DEL_SILENCE = True
 NORMALIZE = True
 SAMPLE_RATE = 16000

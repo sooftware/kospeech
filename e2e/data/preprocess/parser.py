@@ -24,8 +24,7 @@ def load_audio(audio_path, del_silence):
             non_silence_indices = split(sound, top_db=30)
             sound = np.concatenate([sound[start:end] for start, end in non_silence_indices])
 
-        sound /= 32767  # normalize audio
-        return sound
+        return sound / 32767  # normalize audio
 
     except ValueError:
         logger.debug('ValueError in {0}'.format(audio_path))

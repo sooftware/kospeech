@@ -1,6 +1,5 @@
 import torch
 import pandas as pd
-import torch.nn as nn
 from e2e.model.topk_decoder import TopKDecoder
 from e2e.metric import CharacterErrorRate
 from e2e.utils import id2char, EOS_token, logger, label_to_string, char2id

@@ -28,6 +28,7 @@ class Evaluator(object):
             self.decoder = GreedySearch()
             self.save_result_path = './data/train_result/greedy_search.csv'
         elif decode == 'beam':
+            assert k is not None, "In beam search mode, k should has value."
             self.decoder = BeamSearch(k)
             self.save_result_path = './data/train_result/beam_search.csv'
         else:
