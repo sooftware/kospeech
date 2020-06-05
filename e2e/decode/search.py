@@ -46,7 +46,7 @@ class Search(object):
 
                 for idx in range(targets.size(0)):
                     self.target_list.append(label_to_string(scripts[idx], id2char, EOS_token))
-                    self.hypothesis_list.append(label_to_string(hypothesis[idx], id2char, EOS_token))
+                    self.hypothesis_list.append(label_to_string(hypothesis[idx].cpu().detach().numpy(), id2char, EOS_token))
 
                 cer = self.metric(targets, hypothesis)
                 total_sent_num += scripts.size(0)

@@ -70,9 +70,6 @@ def label_to_string(labels, id2char, eos_id):
     Returns: sentence
         - **sentence** (str or list): symbol of labels
     """
-    if isinstance(labels, torch.Tensor):
-        labels = labels.cpu().detach().numpy()
-
     if len(labels.shape) == 1:
         sentence = str()
         for label in labels:
