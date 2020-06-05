@@ -180,7 +180,32 @@ python ./main.py --batch_size 32 --num_workers 4 --num_epochs 20  --use_bidirect
 You can train the model by above command.  
  If you want to train by default setting, you can train by `Defaulting setting` command.   
  Or if you want to train by custom setting, you can designate hyperparameters by `Custom setting` command.
-
+  
+* Options
+```
+usage: main.py [-h] [--mode] [--sample_rate]
+               [--window_size] [--stride] [--n_mels]
+               [--normalize] [--del_silence] [--input_reverse]
+               [--feature_extract_by] [--time_mask_para] [--freq_mask_para]
+               [--time_mask_num] [--freq_mask_num]
+               [--use_bidirectional] [--hidden_dim]
+               [--dropout] [--num_heads] [--label_smoothing]
+               [--listener_layer_size] [--speller_layer_size] [--rnn_type]
+               [--extractor] [--activation]
+               [--attn_mechanism] [--teacher_forcing_ratio]
+               [--dataset_path] [--data_list_path]
+               [--label_path] [--init_uniform] [--spec_augment]
+               [--noise_augment] [--noiseset_size]
+               [--noise_level] [--use_cuda]
+               [--batch_size] [--num_workers]
+               [--num_epochs] [--init_lr]
+               [--high_plateau_lr] [--low_plateau_lr] [--valid_ratio]
+               [--max_len] [--max_grad_norm]
+               [--rampup_period] [--decay_threshold] [--exp_decay_period]
+               [--teacher_forcing_step] [--min_teacher_forcing_ratio]
+               [--seed] [--save_result_every]
+               [--checkpoint_every] [--print_every] [--resume]
+```
 
 ### Step 3: Run `eval.py`
 * Default setting
