@@ -22,7 +22,41 @@ class Search(object):
         self.metric = CharacterErrorRate(id2char, EOS_token, ignore_id=char2id[' '])
 
     def search(self, model, queue, device, print_every):
-        raise NotImplementedError
+        cer = 0
+        total_sent_num = 0
+        timestep = 0
+
+        model.eval()
+
+        with torch.no_grad():
+            while True:
+                inputs, targets, input_lengths, target_lengths = queue.get()
+                if inputs.shape[0] == 0:
+                    break
+
+                inputs = inputs.to(device)
+                scripts = targets.to(device)
+                targets = scripts[:, 1:]
+
+                output, _ = model(inputs, input_lengths, teacher_forcing_ratio=0.0)
+
+                logit = torch.stack(output, dim=1).to(device)
+                hypothesis = logit.max(-1)[1]
+
+                for idx in range(targets.size(0)):
+                    self.target_list.append(label_to_string(scripts[idx], id2char, EOS_token))
+                    self.hypothesis_list.append(
+                        label_to_string(hypothesis[idx].cpu().detach().numpy, id2char, EOS_token))
+
+                cer = self.metric(targets, hypothesis)
+                total_sent_num += scripts.size(0)
+
+                if timestep % print_every == 0:
+                    logger.info('cer: {:.2f}'.format(cer))
+
+                timestep += 1
+
+        return cer
 
     def save_result(self, save_path):
         results = {
@@ -39,40 +73,7 @@ class GreedySearch(Search):
         super(GreedySearch, self).__init__()
 
     def search(self, model, queue, device, print_every):
-        cer = 0
-        total_sent_num = 0
-        timestep = 0
-
-        model.eval()
-
-        with torch.no_grad():
-            while True:
-                inputs, targets, input_lengths, target_lengths = queue.get()
-                if inputs.shape[0] == 0:
-                    break
-
-                inputs = inputs.to(device)
-                scripts = targets.to(device)
-                targets = scripts[:, 1:]
-
-                output, _ = model(inputs, input_lengths, teacher_forcing_ratio=0.0)
-
-                logit = torch.stack(output, dim=1).to(device)
-                hypothesis = logit.max(-1)[1]
-
-                for idx in range(targets.size(0)):
-                    self.target_list.append(label_to_string(scripts[idx], id2char, EOS_token))
-                    self.hypothesis_list.append(label_to_string(hypothesis[idx].cpu().detach().numpy, id2char, EOS_token))
-
-                cer = self.metric(targets, hypothesis)
-                total_sent_num += scripts.size(0)
-
-                if timestep % print_every == 0:
-                    logger.info('cer: {:.2f}'.format(cer))
-
-                timestep += 1
-
-        return cer
+        super(GreedySearch, self).search(model, queue, device, print_every)
 
 
 class BeamSearch(Search):
@@ -86,41 +87,7 @@ class BeamSearch(Search):
             model.module.set_speller(topk_decoder)
         except AttributeError:
             model.set_speller(topk_decoder)
-
-        cer = 0
-        total_sent_num = 0
-        timestep = 0
-
-        model.eval()
-
-        with torch.no_grad():
-            while True:
-                inputs, targets, input_lengths, target_lengths = queue.get()
-                if inputs.shape[0] == 0:
-                    break
-
-                inputs = inputs.to(device)
-                scripts = targets.to(device)
-                targets = scripts[:, 1:]
-
-                output, _ = model(inputs, input_lengths, teacher_forcing_ratio=0.0)
-
-                logit = torch.stack(output, dim=1).to(device)
-                hypothesis = logit.max(-1)[1]
-
-                for idx in range(targets.size(0)):
-                    self.target_list.append(label_to_string(scripts[idx], id2char, EOS_token))
-                    self.hypothesis_list.append(label_to_string(hypothesis[idx].cpu().detach().numpy, id2char, EOS_token))
-
-                cer = self.metric(targets, hypothesis)
-                total_sent_num += scripts.size(0)
-
-                if timestep % print_every == 0:
-                    logger.info('cer: {:.2f}'.format(cer))
-
-                timestep += 1
-
-        return cer
+        super(BeamSearch, self).search(model, queue, device, print_every)
 
 
 class EnsembleSearch(Search):
@@ -130,35 +97,4 @@ class EnsembleSearch(Search):
         self.method = method
 
     def search(self, ensemble, queue, device, print_every):
-        cer = 0
-        total_sent_num = 0
-        timestep = 0
-
-        with torch.no_grad():
-            while True:
-                inputs, targets, input_lengths, target_lengths = queue.get()
-                if inputs.shape[0] == 0:
-                    break
-
-                inputs = inputs.to(device)
-                scripts = targets.to(device)
-                targets = scripts[:, 1:]
-
-                output = ensemble(inputs, input_lengths)
-
-                logit = torch.stack(output, dim=1).to(device)
-                hypothesis = logit.max(-1)[1]
-
-                for idx in range(targets.size(0)):
-                    self.target_list.append(label_to_string(scripts[idx], id2char, EOS_token))
-                    self.hypothesis_list.append(label_to_string(hypothesis[idx].cpu().detach().numpy, id2char, EOS_token))
-
-                cer = self.metric(targets, hypothesis)
-                total_sent_num += scripts.size(0)
-
-                if timestep % print_every == 0:
-                    logger.info('cer: {:.2f}'.format(cer))
-
-                timestep += 1
-
-        return cer
+        super(EnsembleSearch, self).search(ensemble, queue, device, print_every)
