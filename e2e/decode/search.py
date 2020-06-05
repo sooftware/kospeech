@@ -1,4 +1,5 @@
 import torch
+import torch.nn as nn
 import pandas as pd
 from e2e.model.beam_search import BeamSearchDecoder
 from e2e.metric import CharacterErrorRate
@@ -83,9 +84,9 @@ class BeamSearch(Search):
 
     def search(self, model, queue, device, print_every):
         topk_decoder = BeamSearchDecoder(model.module.speller, self.k)
-        try:
+        if isinstance(model, nn.DataParallel):
             model.module.set_speller(topk_decoder)
-        except AttributeError:
+        else:
             model.set_speller(topk_decoder)
         super(BeamSearch, self).search(model, queue, device, print_every)
 
