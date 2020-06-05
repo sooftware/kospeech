@@ -2,6 +2,7 @@ import os
 import time
 import shutil
 import torch
+import torch.nn as nn
 from e2e.utils import logger
 
 
@@ -87,9 +88,9 @@ class Checkpoint(object):
             resume_checkpoint = torch.load(os.path.join(path, self.TRAINER_STATE_NAME), map_location=lambda storage, loc: storage)
             model = torch.load(os.path.join(path, self.MODEL_NAME), map_location=lambda storage, loc: storage)
 
-        try:
+        if isinstance(model, nn.DataParallel):
             model.module.flatten_parameters()  # make RNN parameters contiguous
-        except AttributeError:
+        else:
             model.flatten_parameters()
 
         return Checkpoint(model=model, optimizer=resume_checkpoint['optimizer'], epoch=resume_checkpoint['epoch'],

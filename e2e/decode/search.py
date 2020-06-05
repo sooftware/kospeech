@@ -64,7 +64,7 @@ class Search(object):
             'hypothesis': self.hypothesis_list
         }
         results = pd.DataFrame(results)
-        results.to_csv(save_path, index=False, encoding='utf-8')
+        results.to_csv(save_path, index=False, encoding='cp949')
 
 
 class GreedySearch(Search):
