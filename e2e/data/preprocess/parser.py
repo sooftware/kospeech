@@ -2,7 +2,6 @@ import librosa
 import torch
 import platform
 import numpy as np
-from abc import abstractmethod
 from e2e.utils import logger
 from e2e.data.preprocess.core import split
 from e2e.data.augment.spec_augment import SpecAugment
@@ -50,11 +49,9 @@ class AudioParser(object):
         if noise_augment:
             self.noise_injector = NoiseInjector(dataset_path, noiseset_size, sample_rate, noise_level)
 
-    @abstractmethod
     def parse_audio(self, audio_path, augment_method):
         raise NotImplementedError
 
-    @abstractmethod
     def parse_script(self, script_path):
         raise NotImplementedError
 
@@ -108,7 +105,7 @@ class SpectrogramParser(AudioParser):
             self.transforms = torchaudio.transforms.MelSpectrogram(sample_rate=sample_rate,  win_length=window_size,
                                                                    hop_length=self.hop_length,  n_fft=self.n_fft,
                                                                    n_mels=n_mels)
-            self.amplitude_to_db = torchaudio.transforms.AmplitudeToDB(top_db=80)
+            self.amplitude_to_db = torchaudio.transforms.AmplitudeToDB()
 
     def parse_audio(self, audio_path, augment_method):
         """
@@ -140,8 +137,11 @@ class SpectrogramParser(AudioParser):
                                                          n_fft=self.n_fft, hop_length=self.hop_length)
             spectrogram = librosa.amplitude_to_db(spectrogram, ref=np.max)
 
-        if self.normalize:
-            spectrogram = self.instancewise_standardization(spectrogram)
+        if self.normalize:  # instancewise standardization
+            mean = np.mean(spectrogram)
+            std = np.std(spectrogram)
+            spectrogram -= mean
+            spectrogram /= std
 
         if self.input_reverse:   # Refer to "Sequence to Sequence Learning with Neural Network" paper
             spectrogram = spectrogram[:, ::-1]
@@ -153,13 +153,5 @@ class SpectrogramParser(AudioParser):
 
         return spectrogram
 
-    @abstractmethod
     def parse_script(self, script_path):
         raise NotImplementedError
-
-    def instancewise_standardization(self, spectrogram):
-        mean = np.mean(spectrogram)
-        std = np.std(spectrogram)
-        spectrogram -= mean
-        spectrogram /= std
-        return spectrogram

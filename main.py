@@ -37,7 +37,7 @@ def train(opt):
 
     optimizer = optim.Adam(model.module.parameters(), lr=opt.init_lr, weight_decay=1e-05)
 
-    if opt.rampup:
+    if opt.rampup_period > 0:
         scheduler = RampUpLR(optimizer, opt.init_lr, opt.high_plateau_lr, opt.rampup_period)
         optimizer = Optimizer(optimizer, scheduler, opt.rampup_period, opt.max_grad_norm)
     else:

@@ -52,6 +52,9 @@ class VGGExtractor(Extractor):
             )
         )
 
+    def forward(self, inputs, input_lengths):
+        super(VGGExtractor, self).forward()
+
 
 class DeepSpeech2Extractor(Extractor):
     """
@@ -72,3 +75,6 @@ class DeepSpeech2Extractor(Extractor):
                 self.activation
             )
         )
+
+    def forward(self, inputs, input_lengths):
+        super(DeepSpeech2Extractor, self).forward()

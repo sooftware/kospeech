@@ -95,8 +95,7 @@ class NoiseInjector(object):
                 signal[start:end] = 0
 
             noise = signal[signal != 0]
-            noise /= 32767
-            return noise
+            return noise / 32767
 
         except RuntimeError:
             logger.info("RuntimeError in {0}".format(audio_path))

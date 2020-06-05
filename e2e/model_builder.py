@@ -10,30 +10,13 @@ from e2e.utils import char2id, EOS_token, SOS_token
 
 def build_model(opt, device):
     """ build LAS model """
-    listener = build_listener(
-        input_size=opt.n_mels,
-        hidden_dim=opt.hidden_dim,
-        dropout_p=opt.dropout,
-        num_layers=opt.listener_layer_size,
-        bidirectional=opt.use_bidirectional,
-        extractor=opt.extractor,
-        activation=opt.activation,
-        rnn_type=opt.rnn_type,
-        device=device,
-    )
-    speller = build_speller(
-        num_classes=len(char2id),
-        max_len=opt.max_len,
-        hidden_dim=opt.hidden_dim << (1 if opt.use_bidirectional else 0),
-        sos_id=SOS_token,
-        eos_id=EOS_token,
-        num_layers=opt.speller_layer_size,
-        rnn_type=opt.rnn_type,
-        dropout_p=opt.dropout,
-        num_heads=opt.num_heads,
-        attn_mechanism=opt.attn_mechanism,
-        device=device
-    )
+    listener = build_listener(input_size=opt.n_mels, hidden_dim=opt.hidden_dim, dropout_p=opt.dropout,
+                              num_layers=opt.listener_layer_size, bidirectional=opt.use_bidirectional,
+                              extractor=opt.extractor, activation=opt.activation, rnn_type=opt.rnn_type, device=device)
+    speller = build_speller(num_classes=len(char2id), max_len=opt.max_len, sos_id=SOS_token, eos_id=EOS_token,
+                            hidden_dim=opt.hidden_dim << (1 if opt.use_bidirectional else 0),
+                            num_layers=opt.speller_layer_size, rnn_type=opt.rnn_type, dropout_p=opt.dropout,
+                            num_heads=opt.num_heads, attn_mechanism=opt.attn_mechanism, device=device)
 
     return build_las(listener, speller, device, opt.init_uniform)
 

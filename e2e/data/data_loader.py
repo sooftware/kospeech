@@ -166,8 +166,9 @@ def _collate_fn(batch):
     def target_length_(p):
         return len(p[1])
 
-    batch = sorted(batch, key=lambda sample: sample[0].size(0), reverse=True)  # sort by sequence length for
-                                                                               # rnn.pack_padded_sequence()
+    # sort by sequence length for rnn.pack_padded_sequence()
+    batch = sorted(batch, key=lambda sample: sample[0].size(0), reverse=True)
+
     seq_lengths = [len(s[0]) for s in batch]
     target_lengths = [len(s[1]) for s in batch]
 
