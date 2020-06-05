@@ -17,8 +17,8 @@ class Speller(BaseRNN):
         hidden_dim (int): the number of features in the hidden state `h`
         sos_id (int): index of the start of sentence symbol
         eos_id (int): index of the end of sentence symbol
-        num_layers (int, optional): number of recurrent layers (default: 2)
-        rnn_type (str, optional): type of RNN cell (default: lstm)
+        num_layers (int, optional): number of recurrent layers (default: 1)
+        rnn_type (str, optional): type of RNN cell (default: gru)
         dropout_p (float, optional): dropout probability (default: 0)
         device (torch.device): device - 'cuda' or 'cpu'
 
@@ -35,8 +35,8 @@ class Speller(BaseRNN):
         - **decoder_outputs**: list of tensors containing the outputs of the decoding function.
     """
 
-    def __init__(self, num_classes, max_length, hidden_dim, sos_id, eos_id, attn_mechanism='dot',
-                 num_heads=4, num_layers=2, rnn_type='lstm', dropout_p=0.3, device=None):
+    def __init__(self, num_classes, max_length, hidden_dim, sos_id, eos_id, attn_mechanism='loc',
+                 num_heads=8, num_layers=1, rnn_type='gru', dropout_p=0.5, device=None):
         super(Speller, self).__init__(hidden_dim, hidden_dim, num_layers, rnn_type, dropout_p, False, device)
         self.num_classes = num_classes
         self.num_heads = num_heads
@@ -73,8 +73,8 @@ class Speller(BaseRNN):
         return step_output, hidden, attn
 
     def forward(self, inputs, listener_outputs, teacher_forcing_ratio=0.90):
-        hidden, step_attn = None, None
-        decoder_outputs, attns = list(), list()
+        hidden, attn = None, None
+        decoder_outputs = list()
 
         inputs, batch_size, max_length = self.validate_args(inputs, listener_outputs, teacher_forcing_ratio)
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
@@ -85,20 +85,18 @@ class Speller(BaseRNN):
             # Call forward_step() at every timestep because Location-aware attention requires previous attention.
             for di in range(inputs.size(1)):
                 input_var = inputs[:, di].unsqueeze(1)
-                step_output, hidden, step_attn = self.forward_step(input_var, hidden, listener_outputs, step_attn)
-                attns.append(step_attn)
+                step_output, hidden, attn = self.forward_step(input_var, hidden, listener_outputs, attn)
                 decoder_outputs.append(step_output)
 
         else:
             input_var = inputs[:, 0].unsqueeze(1)
 
             for di in range(max_length):
-                step_output, hidden, step_attn = self.forward_step(input_var, hidden, listener_outputs, step_attn)
+                step_output, hidden, attn = self.forward_step(input_var, hidden, listener_outputs, attn)
                 decoder_outputs.append(step_output)
-                attns.append(step_attn)
                 input_var = decoder_outputs[-1].topk(1)[1]
 
-        return decoder_outputs, attns
+        return decoder_outputs
 
     def validate_args(self, inputs, listener_outputs, teacher_forcing_ratio):
         """ Validate arguments """

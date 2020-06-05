@@ -7,23 +7,23 @@ class Extractor(nn.Module):
     Provides inteface of extractor.
 
     Note:
-        Do not use this class directly, use one of the sub classes. You have to set `self.cnn`.
+        Do not use this class directly, use one of the sub classes.
     """
-    def __init__(self, activation='hardtanh'):
+    def __init__(self, activation='elu'):
         super(Extractor, self).__init__()
-        self.cnn = None  # set convolution neural network
         if activation.lower() == 'hardtanh':
             self.activation = nn.Hardtanh(0, 20, inplace=True)
         elif activation.lower() == 'relu':
             self.activation = nn.ReLU(inplace=True)
         elif activation.lower() == 'elu':
             self.activation = nn.ELU(inplace=True)
+        elif activation.lower() == 'leacky_relu':
+            self.activation = nn.LeakyReLU(inplace=True)
         else:
             raise ValueError("Unsupported activation function : {0}".format(activation))
 
-    def forward(self, inputs, input_lengths):
-        conv_feat, seq_lengths = self.cnn(inputs, input_lengths)
-        return conv_feat, seq_lengths
+    def forward(self, *args, **kwargs):
+        raise NotImplementedError
 
 
 class VGGExtractor(Extractor):
@@ -32,7 +32,7 @@ class VGGExtractor(Extractor):
     "Advances in Joint CTC-Attention based End-to-End Speech Recognition with a Deep CNN Encoder and RNN-LM" paper
     - https://arxiv.org/pdf/1706.02737.pdf
     """
-    def __init__(self, in_channels=1, activation='hardtanh'):
+    def __init__(self, in_channels=1, activation='elu'):
         super(VGGExtractor, self).__init__(activation)
         self.cnn = MaskCNN(
             nn.Sequential(
@@ -53,7 +53,8 @@ class VGGExtractor(Extractor):
         )
 
     def forward(self, inputs, input_lengths):
-        super(VGGExtractor, self).forward()
+        conv_feat, seq_lengths = self.cnn(inputs, input_lengths)
+        return conv_feat, seq_lengths
 
 
 class DeepSpeech2Extractor(Extractor):
@@ -77,4 +78,5 @@ class DeepSpeech2Extractor(Extractor):
         )
 
     def forward(self, inputs, input_lengths):
-        super(DeepSpeech2Extractor, self).forward()
+        conv_feat, seq_lengths = self.cnn(inputs, input_lengths)
+        return conv_feat, seq_lengths

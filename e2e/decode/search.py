@@ -39,7 +39,7 @@ class Search(object):
                 scripts = scripts.to(device)
                 targets = scripts[:, 1:]
 
-                output, _ = model(inputs, input_lengths, teacher_forcing_ratio=0.0)
+                output = model(inputs, input_lengths, teacher_forcing_ratio=0.0)
 
                 logit = torch.stack(output, dim=1).to(device)
                 hypothesis = logit.max(-1)[1]

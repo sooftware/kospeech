@@ -15,7 +15,7 @@ class Ensemble(nn.Module):
         self.models = models
         self.num_models = len(models)
 
-    def forward(self, inputs, input_length):
+    def forward(self, *args, **kwargs):
         raise NotImplementedError
 
 

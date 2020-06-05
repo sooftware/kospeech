@@ -42,15 +42,15 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
 
     def get_item(self, idx):
         """ get spectrogram & label """
-        script = self.parse_script(self.script_paths[idx])
+        transcript = self.parse_transcript(self.script_paths[idx])
         spectrogram = self.parse_audio(self.audio_paths[idx], self.augment_methods[idx])
 
         if spectrogram is None:
             return None, None
         else:
-            return spectrogram, script
+            return spectrogram, transcript
 
-    def parse_script(self, script_path):
+    def parse_transcript(self, script_path):
         """ Parses scripts @Override """
         scripts = list()
 

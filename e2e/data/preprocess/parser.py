@@ -52,7 +52,7 @@ class AudioParser(object):
     def parse_audio(self, audio_path, augment_method):
         raise NotImplementedError
 
-    def parse_script(self, script_path):
+    def parse_transcript(self, script_path):
         raise NotImplementedError
 
 
@@ -153,5 +153,5 @@ class SpectrogramParser(AudioParser):
 
         return spectrogram
 
-    def parse_script(self, script_path):
+    def parse_transcript(self, script_path):
         raise NotImplementedError
