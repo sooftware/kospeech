@@ -74,8 +74,7 @@ class Speller(BaseRNN):
 
     def forward(self, inputs, listener_outputs, teacher_forcing_ratio=0.90):
         hidden, attn = None, None
-        decoder_outputs = list()
-        alignments = list()
+        decoder_outputs, alignments = list(), list()
 
         inputs, batch_size, max_length = self.validate_args(inputs, listener_outputs, teacher_forcing_ratio)
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False

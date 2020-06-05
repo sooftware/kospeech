@@ -110,7 +110,6 @@ class BeamSearchDecoder(nn.Module):
                                  stored_scores, batch_size)
 
         decoder_outputs = [step[:, 0, :] for step in output]
-
         return decoder_outputs, None
 
     def _backtrack(self, nw_output, nw_hidden, predecessors, symbols, scores, batch_size):

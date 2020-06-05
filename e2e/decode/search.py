@@ -52,7 +52,7 @@ class GreedySearch(Search):
                     break
 
                 inputs = inputs.to(device)
-                scripts = scripts.to(device)
+                scripts = targets.to(device)
                 targets = scripts[:, 1:]
 
                 output, _ = model(inputs, input_lengths, teacher_forcing_ratio=0.0)
@@ -61,8 +61,8 @@ class GreedySearch(Search):
                 hypothesis = logit.max(-1)[1]
 
                 for idx in range(targets.size(0)):
-                    self.target_list.append(label_to_string(scripts[idx]))
-                    self.hypothesis_list.append(label_to_string(hypothesis[idx]))
+                    self.target_list.append(label_to_string(scripts[idx], id2char, EOS_token))
+                    self.hypothesis_list.append(label_to_string(hypothesis[idx].cpu().detach().numpy, id2char, EOS_token))
 
                 cer = self.metric(targets, hypothesis)
                 total_sent_num += scripts.size(0)
@@ -100,7 +100,7 @@ class BeamSearch(Search):
                     break
 
                 inputs = inputs.to(device)
-                scripts = scripts.to(device)
+                scripts = targets.to(device)
                 targets = scripts[:, 1:]
 
                 output, _ = model(inputs, input_lengths, teacher_forcing_ratio=0.0)
@@ -109,8 +109,8 @@ class BeamSearch(Search):
                 hypothesis = logit.max(-1)[1]
 
                 for idx in range(targets.size(0)):
-                    self.target_list.append(label_to_string(scripts[idx]))
-                    self.hypothesis_list.append(label_to_string(hypothesis[idx]))
+                    self.target_list.append(label_to_string(scripts[idx], id2char, EOS_token))
+                    self.hypothesis_list.append(label_to_string(hypothesis[idx].cpu().detach().numpy, id2char, EOS_token))
 
                 cer = self.metric(targets, hypothesis)
                 total_sent_num += scripts.size(0)
@@ -141,7 +141,7 @@ class EnsembleSearch(Search):
                     break
 
                 inputs = inputs.to(device)
-                scripts = scripts.to(device)
+                scripts = targets.to(device)
                 targets = scripts[:, 1:]
 
                 output = ensemble(inputs, input_lengths)
@@ -150,8 +150,8 @@ class EnsembleSearch(Search):
                 hypothesis = logit.max(-1)[1]
 
                 for idx in range(targets.size(0)):
-                    self.target_list.append(label_to_string(scripts[idx]))
-                    self.hypothesis_list.append(label_to_string(hypothesis[idx]))
+                    self.target_list.append(label_to_string(scripts[idx], id2char, EOS_token))
+                    self.hypothesis_list.append(label_to_string(hypothesis[idx].cpu().detach().numpy, id2char, EOS_token))
 
                 cer = self.metric(targets, hypothesis)
                 total_sent_num += scripts.size(0)
