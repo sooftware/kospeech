@@ -1,27 +1,15 @@
-"""
--*- coding: utf-8 -*-
-
-@github{
-  title = {End-to-end Speech Recognition},
-  author = {Soohwan Kim, Seyoung Bae, Cheolhwang Won},
-  link = {https://github.com/sooftware/End-to-end-Speech-Recognition},
-  year = {2020}
-}
-"""
 import argparse
 import random
 import torch
 import warnings
 from torch import optim, nn
 from kospeech.data.data_loader import split_dataset, load_data_list
-from kospeech.optim.loss import LabelSmoothingLoss
 from kospeech.checkpoint.checkpoint import Checkpoint
-from kospeech.optim.lr_scheduler import RampUpLR
 from kospeech.optim.optimizer import Optimizer
 from kospeech.trainer.supervised_trainer import SupervisedTrainer
-from kospeech.model_builder import build_model
+from kospeech.model_builder import build_ensemble
 from kospeech.opts import print_opts, build_train_opts, build_model_opts, build_preprocess_opts
-from kospeech.utils import PAD_token, char2id, check_envirionment
+from kospeech.utils import PAD_token, check_envirionment
 
 
 def train(opt):
@@ -33,20 +21,11 @@ def train(opt):
     audio_paths, script_paths = load_data_list(opt.data_list_path, opt.dataset_path)
 
     epoch_time_step, trainset_list, validset = split_dataset(opt, audio_paths, script_paths)
-    model = build_model(opt, device)
+    model = build_ensemble(['model_path1', 'model_path2', 'model_path3'], opt.ensemble_method, device)
 
-    optimizer = optim.Adam(model.module.parameters(), lr=opt.init_lr, weight_decay=1e-05)
-
-    if opt.rampup_period > 0:
-        scheduler = RampUpLR(optimizer, opt.init_lr, opt.high_plateau_lr, opt.rampup_period)
-        optimizer = Optimizer(optimizer, scheduler, opt.rampup_period, opt.max_grad_norm)
-    else:
-        optimizer = Optimizer(optimizer, None, 0, opt.max_grad_norm)
-
-    if opt.label_smoothing == 0.0:
-        criterion = nn.NLLLoss(reduction='sum', ignore_index=PAD_token).to(device)
-    else:
-        criterion = LabelSmoothingLoss(len(char2id), PAD_token, opt.label_smoothing, dim=-1).to(device)
+    optimizer = optim.Adam(model.module.parameters(), lr=opt.init_lr)
+    optimizer = Optimizer(optimizer, None, 0, opt.max_grad_norm)
+    criterion = nn.NLLLoss(reduction='sum', ignore_index=PAD_token).to(device)
 
     trainer = SupervisedTrainer(
         optimizer=optimizer,
@@ -93,6 +72,7 @@ def main():
     parser = _get_parser()
     opt = parser.parse_args()
     print_opts(opt, opt.mode)
+
     train(opt)
 
 

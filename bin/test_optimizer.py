@@ -3,8 +3,8 @@
 import torch.nn as nn
 import matplotlib.pyplot as plt
 from torch import optim
-from e2e.optim.optim import Optimizer
-from e2e.optim.lr_scheduler import RampUpLR, ExponentialDecayLR
+from kospeech.optim.optim import Optimizer
+from kospeech.optim.lr_scheduler import RampUpLR, ExponentialDecayLR
 
 
 class Model(nn.Module):
