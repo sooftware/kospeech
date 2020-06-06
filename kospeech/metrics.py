@@ -2,7 +2,32 @@ import Levenshtein as Lev
 from kospeech.utils import label_to_string
 
 
-class CharacterErrorRate(object):
+class ErrorRate(object):
+    """
+    Provides inteface of error rate calcuation.
+
+    Note:
+        Do not use this class directly, use one of the sub classes.
+
+    Method:
+        - **__call__()**: abstract method. you have to override this method.
+        - **_get_distance()**: abstract method. you have to override this method.
+    """
+
+    def __init__(self, id2char, eos_id):
+        self.total_dist = 0.0
+        self.total_length = 0.0
+        self.id2char = id2char
+        self.eos_id = eos_id
+
+    def __call__(self, *args, **kwargs):
+        raise NotImplementedError
+
+    def _get_distance(self, *args, **kwargs):
+        raise NotImplementedError
+
+
+class CharacterErrorRate(ErrorRate):
     """
     Provides a character error rate calculation to evaluate performance of sppech recognizer.
 
@@ -18,10 +43,7 @@ class CharacterErrorRate(object):
         - **cer**: character error rate
     """
     def __init__(self, id2char, eos_id):
-        self.total_dist = 0.0
-        self.total_length = 0.0
-        self.id2char = id2char
-        self.eos_id = eos_id
+        super(CharacterErrorRate, self).__init__(id2char, eos_id)
 
     def __call__(self, targets, hypothesis):
         """ Calculating character error rate """
@@ -74,7 +96,7 @@ class CharacterErrorRate(object):
         return dist, length
 
 
-class WordErrorRate(object):
+class WordErrorRate(ErrorRate):
     """
     Computes the Word Error Rate, defined as the edit distance between the
     two provided sentences after tokenizing to words.
@@ -91,10 +113,14 @@ class WordErrorRate(object):
         - **wer**: word error rate
     """
     def __init__(self, id2char, eos_id):
-        self.total_dist = 0.0
-        self.total_length = 0.0
-        self.id2char = id2char
-        self.eos_id = eos_id
+        super(WordErrorRate, self).__init__(id2char, eos_id)
+
+    def __call__(self, targets, hypothesis):
+        """ Calculating character error rate """
+        dist, length = self._get_distance(targets, hypothesis)
+        self.total_dist += dist
+        self.total_length += length
+        return self.total_dist / self.total_length
 
     def _get_distance(self, targets, y_hats):
         """

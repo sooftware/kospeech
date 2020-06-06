@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Data &mdash; End-to-end Speech Recognition 2.0 documentation</title>
+  <title>Data &mdash; KoSpeech 0.0 documentation</title>
   
 
   
@@ -34,8 +34,8 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Optim" href="Optim.html" />
-    <link rel="prev" title="Model" href="Model.html" /> 
+    <link rel="next" title="Decode" href="Decode.html" />
+    <link rel="prev" title="Checkpoint" href="Checkpoint.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -49,7 +49,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> End-to-end Speech Recognition
+            <a href="index.html" class="icon icon-home"> KoSpeech
           
 
           
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                2.0
+                0.0
               </div>
             
           
@@ -95,18 +95,20 @@
 </ul>
 <p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Checkpoint.html">Checkpoint</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Data</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-e2e.data.data_loader">DataLoader</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-e2e.data.label_loader">LabelLoader</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-e2e.data.augment.noise_augment">NoiseAugment</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-e2e.data.augment.spec_augment">SpecAugment</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-e2e.data.augment">Preprocess</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-e2e.data.preprocess.parser">Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.data.preprocess.audio">Audio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.data.preprocess.augment">Augment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.data.preprocess.parser">Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.data.data_loader">DataLoader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.data.label_loader">LabelLoader</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="Model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Decode.html">Decode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Optim.html">Optim</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Solver.html">Solver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Etc.html">Etc</a></li>
 </ul>
 
             
@@ -121,7 +123,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">End-to-end Speech Recognition</a>
+          <a href="index.html">KoSpeech</a>
         
       </nav>
 
@@ -173,224 +175,29 @@
             
   <div class="section" id="data">
 <h1>Data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-e2e.data.data_loader">
-<span id="dataloader"></span><h2>DataLoader<a class="headerlink" href="#module-e2e.data.data_loader" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="e2e.data.data_loader.AudioDataLoader">
-<em class="property">class </em><code class="descclassname">e2e.data.data_loader.</code><code class="descname">AudioDataLoader</code><span class="sig-paren">(</span><em>dataset</em>, <em>queue</em>, <em>batch_size</em>, <em>thread_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/data/data_loader.html#AudioDataLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.data.data_loader.AudioDataLoader" title="Permalink to this definition">¶</a></dt>
-<dd><p>Audio Data Loader</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dataset</strong> (<em>e2e.data_loader.SpectrogramDataset</em>) – dataset for spectrogram &amp; script matching</li>
-<li><strong>queue</strong> (<em>Queue.queue</em>) – queue for threading</li>
-<li><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – size of batch</li>
-<li><strong>thread_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of thread</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="e2e.data.data_loader.AudioDataLoader.run">
-<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/data/data_loader.html#AudioDataLoader.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.data.data_loader.AudioDataLoader.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load data from SpectrogramDataset</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="e2e.data.data_loader.MultiDataLoader">
-<em class="property">class </em><code class="descclassname">e2e.data.data_loader.</code><code class="descname">MultiDataLoader</code><span class="sig-paren">(</span><em>dataset_list</em>, <em>queue</em>, <em>batch_size</em>, <em>num_workers</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/data/data_loader.html#MultiDataLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.data.data_loader.MultiDataLoader" title="Permalink to this definition">¶</a></dt>
-<dd><p>Multi Data Loader using Threads.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dataset_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – list of SpectrogramDataset</li>
-<li><strong>queue</strong> (<em>Queue.queue</em>) – queue for threading</li>
-<li><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – size of batch</li>
-<li><strong>num_workers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – the number of cpu cores used</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="e2e.data.data_loader.MultiDataLoader.join">
-<code class="descname">join</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/data/data_loader.html#MultiDataLoader.join"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.data.data_loader.MultiDataLoader.join" title="Permalink to this definition">¶</a></dt>
-<dd><p>Wait for the other threads</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="e2e.data.data_loader.MultiDataLoader.start">
-<code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/data/data_loader.html#MultiDataLoader.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.data.data_loader.MultiDataLoader.start" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run threads</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="e2e.data.data_loader.SpectrogramDataset">
-<em class="property">class </em><code class="descclassname">e2e.data.data_loader.</code><code class="descname">SpectrogramDataset</code><span class="sig-paren">(</span><em>audio_paths</em>, <em>script_paths</em>, <em>sos_id</em>, <em>eos_id</em>, <em>target_dict</em>, <em>opt</em>, <em>spec_augment=False</em>, <em>noise_augment=False</em>, <em>dataset_path=None</em>, <em>noiseset_size=0</em>, <em>noise_level=0.7</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/data/data_loader.html#SpectrogramDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.data.data_loader.SpectrogramDataset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Dataset for spectrogram &amp; script matching</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>audio_paths</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – set of audio path</li>
-<li><strong>script_paths</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – set of script paths</li>
-<li><strong>sos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of &lt;start of sequence&gt;</li>
-<li><strong>eos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of &lt;end of sequence&gt;</li>
-<li><strong>target_dict</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – dictionary of filename and labels</li>
-<li><strong>spec_augment</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – flag indication whether to use spec-augmentation or not (default: True)</li>
-<li><strong>noise_augment</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – flag indication whether to use noise-augmentation or not (default: True)</li>
-<li><strong>opt</strong> (<em>ArgumentParser</em>) – set of arguments</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="e2e.data.data_loader.SpectrogramDataset.augmentation">
-<code class="descname">augmentation</code><span class="sig-paren">(</span><em>spec_augment</em>, <em>noise_augment</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/data/data_loader.html#SpectrogramDataset.augmentation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.data.data_loader.SpectrogramDataset.augmentation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Spec &amp; Noise Augmentation</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="e2e.data.data_loader.SpectrogramDataset.get_item">
-<code class="descname">get_item</code><span class="sig-paren">(</span><em>idx</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/data/data_loader.html#SpectrogramDataset.get_item"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.data.data_loader.SpectrogramDataset.get_item" title="Permalink to this definition">¶</a></dt>
-<dd><p>get spectrogram &amp; label</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="e2e.data.data_loader.SpectrogramDataset.parse_script">
-<code class="descname">parse_script</code><span class="sig-paren">(</span><em>script_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/data/data_loader.html#SpectrogramDataset.parse_script"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.data.data_loader.SpectrogramDataset.parse_script" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parses scripts &#64;Override</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="e2e.data.data_loader.SpectrogramDataset.shuffle">
-<code class="descname">shuffle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/data/data_loader.html#SpectrogramDataset.shuffle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.data.data_loader.SpectrogramDataset.shuffle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Shuffle dataset</p>
-</dd></dl>
-
+<div class="section" id="module-kospeech.data.preprocess.audio">
+<span id="audio"></span><h2>Audio<a class="headerlink" href="#module-kospeech.data.preprocess.audio" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="kospeech.data.preprocess.audio.load_audio">
+<code class="descclassname">kospeech.data.preprocess.audio.</code><code class="descname">load_audio</code><span class="sig-paren">(</span><em>audio_path</em>, <em>del_silence</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/preprocess/audio.html#load_audio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.preprocess.audio.load_audio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load audio file (PCM) to sound. if del_silence is True, Eliminate all sounds below 30dB.
+If exception occurs in numpy.memmap(), return None.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="e2e.data.data_loader.load_data_list">
-<code class="descclassname">e2e.data.data_loader.</code><code class="descname">load_data_list</code><span class="sig-paren">(</span><em>data_list_path</em>, <em>dataset_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/data/data_loader.html#load_data_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.data.data_loader.load_data_list" title="Permalink to this definition">¶</a></dt>
-<dd><p>Provides set of audio path &amp; label path</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>data_list_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – csv file with training or test data list path.</li>
-<li><strong>dataset_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – dataset path.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Returns: audio_paths, script_paths</dt>
-<dd><ul class="first last simple">
-<li><strong>audio_paths</strong> (list): set of audio path</li>
-<li><strong>script_paths</strong> (list): set of label path</li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="e2e.data.data_loader.split_dataset">
-<code class="descclassname">e2e.data.data_loader.</code><code class="descname">split_dataset</code><span class="sig-paren">(</span><em>opt</em>, <em>audio_paths</em>, <em>script_paths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/data/data_loader.html#split_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.data.data_loader.split_dataset" title="Permalink to this definition">¶</a></dt>
-<dd><p>split into training set and validation set.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>opt</strong> (<em>ArgumentParser</em>) – set of options</li>
-<li><strong>audio_paths</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – set of audio path</li>
-<li><strong>script_paths</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – set of script path</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Returns: train_batch_num, train_dataset_list, valid_dataset</dt>
-<dd><ul class="first last simple">
-<li><strong>train_time_step</strong> (int): number of time step for training</li>
-<li><strong>trainset_list</strong> (list): list of training dataset</li>
-<li><strong>validset</strong> (data_loader.SpectrogramDataset): validation dataset</li>
-</ul>
-</dd>
-</dl>
+<dt id="kospeech.data.preprocess.audio.split">
+<code class="descclassname">kospeech.data.preprocess.audio.</code><code class="descname">split</code><span class="sig-paren">(</span><em>y</em>, <em>top_db=60</em>, <em>ref=&lt;function amax&gt;</em>, <em>frame_length=2048</em>, <em>hop_length=512</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/preprocess/audio.html#split"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.preprocess.audio.split" title="Permalink to this definition">¶</a></dt>
+<dd><p>codes from <a class="reference external" href="https://github.com/librosa/librosa">https://github.com/librosa/librosa</a>
+use this code fragments instead of importing librosa package,
+because of our server has a problem with importing librosa.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-e2e.data.label_loader">
-<span id="labelloader"></span><h2>LabelLoader<a class="headerlink" href="#module-e2e.data.label_loader" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="e2e.data.label_loader.load_label">
-<code class="descclassname">e2e.data.label_loader.</code><code class="descname">load_label</code><span class="sig-paren">(</span><em>label_path</em>, <em>encoding='utf-8'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/data/label_loader.html#load_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.data.label_loader.load_label" title="Permalink to this definition">¶</a></dt>
-<dd><p>Provides char2id, id2char</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>label_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – csv file with character labels</li>
-<li><strong>encoding</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – encoding method</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Returns: char2id, id2char</dt>
-<dd><ul class="first last simple">
-<li><strong>char2id</strong> (dict): char2id[ch] = id</li>
-<li><strong>id2char</strong> (dict): id2char[id] = ch</li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="e2e.data.label_loader.load_targets">
-<code class="descclassname">e2e.data.label_loader.</code><code class="descname">load_targets</code><span class="sig-paren">(</span><em>label_paths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/data/label_loader.html#load_targets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.data.label_loader.load_targets" title="Permalink to this definition">¶</a></dt>
-<dd><p>Provides dictionary of filename and labels</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>label_paths</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – set of label paths</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Returns: target_dict</dt>
-<dd><ul class="first last simple">
-<li><strong>target_dict</strong> (dict): dictionary of filename and labels</li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-</div>
-<div class="section" id="module-e2e.data.augment.noise_augment">
-<span id="noiseaugment"></span><h2>NoiseAugment<a class="headerlink" href="#module-e2e.data.augment.noise_augment" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-kospeech.data.preprocess.augment">
+<span id="augment"></span><h2>Augment<a class="headerlink" href="#module-kospeech.data.preprocess.augment" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="e2e.data.augment.noise_augment.NoiseInjector">
-<em class="property">class </em><code class="descclassname">e2e.data.augment.noise_augment.</code><code class="descname">NoiseInjector</code><span class="sig-paren">(</span><em>dataset_path</em>, <em>noiseset_size</em>, <em>sample_rate=16000</em>, <em>noise_level=0.7</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/data/augment/noise_augment.html#NoiseInjector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.data.augment.noise_augment.NoiseInjector" title="Permalink to this definition">¶</a></dt>
+<dt id="kospeech.data.preprocess.augment.NoiseInjector">
+<em class="property">class </em><code class="descclassname">kospeech.data.preprocess.augment.</code><code class="descname">NoiseInjector</code><span class="sig-paren">(</span><em>dataset_path</em>, <em>noiseset_size</em>, <em>sample_rate=16000</em>, <em>noise_level=0.7</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/preprocess/augment.html#NoiseInjector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.preprocess.augment.NoiseInjector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provides noise injection for noise augmentation.
 The noise augmentation process is as follows:</p>
 <p>Step 1: Randomly sample audios by <cite>noise_size</cite> from dataset
@@ -424,12 +231,9 @@ Step 3: Add noise to sound</p>
 </dl>
 </dd></dl>
 
-</div>
-<div class="section" id="module-e2e.data.augment.spec_augment">
-<span id="specaugment"></span><h2>SpecAugment<a class="headerlink" href="#module-e2e.data.augment.spec_augment" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="e2e.data.augment.spec_augment.SpecAugment">
-<em class="property">class </em><code class="descclassname">e2e.data.augment.spec_augment.</code><code class="descname">SpecAugment</code><span class="sig-paren">(</span><em>time_mask_para</em>, <em>freq_mask_para</em>, <em>time_mask_num</em>, <em>freq_mask_num</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/data/augment/spec_augment.html#SpecAugment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.data.augment.spec_augment.SpecAugment" title="Permalink to this definition">¶</a></dt>
+<dt id="kospeech.data.preprocess.augment.SpecAugment">
+<em class="property">class </em><code class="descclassname">kospeech.data.preprocess.augment.</code><code class="descname">SpecAugment</code><span class="sig-paren">(</span><em>time_mask_para</em>, <em>freq_mask_para</em>, <em>time_mask_num</em>, <em>freq_mask_num</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/preprocess/augment.html#SpecAugment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.preprocess.augment.SpecAugment" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provides Spec Augment. A simple data augmentation method for speech recognition.
 This concept proposed in <a class="reference external" href="https://arxiv.org/abs/1904.08779">https://arxiv.org/abs/1904.08779</a></p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -461,14 +265,11 @@ This concept proposed in <a class="reference external" href="https://arxiv.org/a
 </dd></dl>
 
 </div>
-<div class="section" id="module-e2e.data.augment">
-<span id="preprocess"></span><h2>Preprocess<a class="headerlink" href="#module-e2e.data.augment" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-e2e.data.preprocess.parser">
-<span id="parser"></span><h2>Parser<a class="headerlink" href="#module-e2e.data.preprocess.parser" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-kospeech.data.preprocess.parser">
+<span id="parser"></span><h2>Parser<a class="headerlink" href="#module-kospeech.data.preprocess.parser" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="e2e.data.preprocess.parser.AudioParser">
-<em class="property">class </em><code class="descclassname">e2e.data.preprocess.parser.</code><code class="descname">AudioParser</code><span class="sig-paren">(</span><em>dataset_path</em>, <em>noiseset_size</em>, <em>sample_rate=16000</em>, <em>noise_level=0.7</em>, <em>noise_augment=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/data/preprocess/parser.html#AudioParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.data.preprocess.parser.AudioParser" title="Permalink to this definition">¶</a></dt>
+<dt id="kospeech.data.preprocess.parser.AudioParser">
+<em class="property">class </em><code class="descclassname">kospeech.data.preprocess.parser.</code><code class="descname">AudioParser</code><span class="sig-paren">(</span><em>dataset_path</em>, <em>noiseset_size</em>, <em>sample_rate=16000</em>, <em>noise_level=0.7</em>, <em>noise_augment=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/preprocess/parser.html#AudioParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.preprocess.parser.AudioParser" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provides inteface of audio parser.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -478,16 +279,16 @@ This concept proposed in <a class="reference external" href="https://arxiv.org/a
 <dt>Method:</dt>
 <dd><ul class="first last simple">
 <li><strong>parse_audio()</strong>: abstract method. you have to override this method.</li>
-<li><strong>parse_script()</strong>: abstract method. you have to override this method.</li>
+<li><strong>parse_transcript()</strong>: abstract method. you have to override this method.</li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="class">
-<dt id="e2e.data.preprocess.parser.SpectrogramParser">
-<em class="property">class </em><code class="descclassname">e2e.data.preprocess.parser.</code><code class="descname">SpectrogramParser</code><span class="sig-paren">(</span><em>feature_extract_by='librosa'</em>, <em>sample_rate=16000</em>, <em>n_mels=80</em>, <em>window_size=20</em>, <em>stride=10</em>, <em>del_silence=False</em>, <em>input_reverse=True</em>, <em>normalize=False</em>, <em>time_mask_para=70</em>, <em>freq_mask_para=12</em>, <em>time_mask_num=2</em>, <em>freq_mask_num=2</em>, <em>sos_id=1</em>, <em>eos_id=2</em>, <em>target_dict=None</em>, <em>noise_augment=False</em>, <em>dataset_path=None</em>, <em>noiseset_size=0</em>, <em>noise_level=0.7</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/data/preprocess/parser.html#SpectrogramParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.data.preprocess.parser.SpectrogramParser" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parses audio file into spectrogram with various options.</p>
+<dt id="kospeech.data.preprocess.parser.MelSpectrogramParser">
+<em class="property">class </em><code class="descclassname">kospeech.data.preprocess.parser.</code><code class="descname">MelSpectrogramParser</code><span class="sig-paren">(</span><em>feature_extract_by='librosa'</em>, <em>sample_rate=16000</em>, <em>n_mels=80</em>, <em>window_size=20</em>, <em>stride=10</em>, <em>del_silence=False</em>, <em>input_reverse=True</em>, <em>normalize=False</em>, <em>time_mask_para=70</em>, <em>freq_mask_para=12</em>, <em>time_mask_num=2</em>, <em>freq_mask_num=2</em>, <em>sos_id=1</em>, <em>eos_id=2</em>, <em>target_dict=None</em>, <em>noise_augment=False</em>, <em>dataset_path=None</em>, <em>noiseset_size=0</em>, <em>noise_level=0.7</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/preprocess/parser.html#MelSpectrogramParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.preprocess.parser.MelSpectrogramParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses audio file into mel spectrogram with various options.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -514,8 +315,8 @@ This concept proposed in <a class="reference external" href="https://arxiv.org/a
 </tbody>
 </table>
 <dl class="method">
-<dt id="e2e.data.preprocess.parser.SpectrogramParser.parse_audio">
-<code class="descname">parse_audio</code><span class="sig-paren">(</span><em>audio_path</em>, <em>augment_method</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/data/preprocess/parser.html#SpectrogramParser.parse_audio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.data.preprocess.parser.SpectrogramParser.parse_audio" title="Permalink to this definition">¶</a></dt>
+<dt id="kospeech.data.preprocess.parser.MelSpectrogramParser.parse_audio">
+<code class="descname">parse_audio</code><span class="sig-paren">(</span><em>audio_path</em>, <em>augment_method</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/preprocess/parser.html#MelSpectrogramParser.parse_audio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.preprocess.parser.MelSpectrogramParser.parse_audio" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parses audio (Get Mel-Spectrogram features). &#64;Override</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -540,11 +341,217 @@ This concept proposed in <a class="reference external" href="https://arxiv.org/a
 
 </dd></dl>
 
+</div>
+<div class="section" id="module-kospeech.data.data_loader">
+<span id="dataloader"></span><h2>DataLoader<a class="headerlink" href="#module-kospeech.data.data_loader" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kospeech.data.data_loader.AudioDataLoader">
+<em class="property">class </em><code class="descclassname">kospeech.data.data_loader.</code><code class="descname">AudioDataLoader</code><span class="sig-paren">(</span><em>dataset</em>, <em>queue</em>, <em>batch_size</em>, <em>thread_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/data_loader.html#AudioDataLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.data_loader.AudioDataLoader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Audio Data Loader</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dataset</strong> (<em>e2e.data_loader.MelSpectrogramDataset</em>) – dataset for spectrogram &amp; script matching</li>
+<li><strong>queue</strong> (<em>Queue.queue</em>) – queue for threading</li>
+<li><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – size of batch</li>
+<li><strong>thread_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of thread</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="kospeech.data.data_loader.AudioDataLoader.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/data_loader.html#AudioDataLoader.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.data_loader.AudioDataLoader.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load data from MelSpectrogramDataset</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="kospeech.data.data_loader.MelSpectrogramDataset">
+<em class="property">class </em><code class="descclassname">kospeech.data.data_loader.</code><code class="descname">MelSpectrogramDataset</code><span class="sig-paren">(</span><em>audio_paths</em>, <em>script_paths</em>, <em>sos_id</em>, <em>eos_id</em>, <em>target_dict</em>, <em>opt</em>, <em>spec_augment=False</em>, <em>noise_augment=False</em>, <em>dataset_path=None</em>, <em>noiseset_size=0</em>, <em>noise_level=0.7</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/data_loader.html#MelSpectrogramDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.data_loader.MelSpectrogramDataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dataset for spectrogram &amp; script matching</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>audio_paths</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – set of audio path</li>
+<li><strong>script_paths</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – set of script paths</li>
+<li><strong>sos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of &lt;start of sequence&gt;</li>
+<li><strong>eos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of &lt;end of sequence&gt;</li>
+<li><strong>target_dict</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – dictionary of filename and labels</li>
+<li><strong>spec_augment</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – flag indication whether to use spec-augmentation or not (default: True)</li>
+<li><strong>noise_augment</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – flag indication whether to use noise-augmentation or not (default: True)</li>
+<li><strong>opt</strong> (<em>ArgumentParser</em>) – set of arguments</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="kospeech.data.data_loader.MelSpectrogramDataset.augmentation">
+<code class="descname">augmentation</code><span class="sig-paren">(</span><em>spec_augment</em>, <em>noise_augment</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/data_loader.html#MelSpectrogramDataset.augmentation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.data_loader.MelSpectrogramDataset.augmentation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Spec &amp; Noise Augmentation</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kospeech.data.data_loader.MelSpectrogramDataset.get_item">
+<code class="descname">get_item</code><span class="sig-paren">(</span><em>idx</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/data_loader.html#MelSpectrogramDataset.get_item"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.data_loader.MelSpectrogramDataset.get_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>get spectrogram &amp; label</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kospeech.data.data_loader.MelSpectrogramDataset.parse_transcript">
+<code class="descname">parse_transcript</code><span class="sig-paren">(</span><em>script_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/data_loader.html#MelSpectrogramDataset.parse_transcript"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.data_loader.MelSpectrogramDataset.parse_transcript" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses scripts &#64;Override</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kospeech.data.data_loader.MelSpectrogramDataset.shuffle">
+<code class="descname">shuffle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/data_loader.html#MelSpectrogramDataset.shuffle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.data_loader.MelSpectrogramDataset.shuffle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shuffle dataset</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="kospeech.data.data_loader.MultiDataLoader">
+<em class="property">class </em><code class="descclassname">kospeech.data.data_loader.</code><code class="descname">MultiDataLoader</code><span class="sig-paren">(</span><em>dataset_list</em>, <em>queue</em>, <em>batch_size</em>, <em>num_workers</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/data_loader.html#MultiDataLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.data_loader.MultiDataLoader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Multi Data Loader using Threads.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dataset_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – list of MelSpectrogramDataset</li>
+<li><strong>queue</strong> (<em>Queue.queue</em>) – queue for threading</li>
+<li><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – size of batch</li>
+<li><strong>num_workers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – the number of cpu cores used</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="kospeech.data.data_loader.MultiDataLoader.join">
+<code class="descname">join</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/data_loader.html#MultiDataLoader.join"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.data_loader.MultiDataLoader.join" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait for the other threads</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kospeech.data.data_loader.MultiDataLoader.start">
+<code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/data_loader.html#MultiDataLoader.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.data_loader.MultiDataLoader.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run threads</p>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="function">
-<dt id="e2e.data.preprocess.parser.load_audio">
-<code class="descclassname">e2e.data.preprocess.parser.</code><code class="descname">load_audio</code><span class="sig-paren">(</span><em>audio_path</em>, <em>del_silence</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/data/preprocess/parser.html#load_audio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.data.preprocess.parser.load_audio" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load audio file (PCM) to sound. if del_silence is True, Eliminate all sounds below 30dB.
-If exception occurs in numpy.memmap(), return None.</p>
+<dt id="kospeech.data.data_loader.load_data_list">
+<code class="descclassname">kospeech.data.data_loader.</code><code class="descname">load_data_list</code><span class="sig-paren">(</span><em>data_list_path</em>, <em>dataset_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/data_loader.html#load_data_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.data_loader.load_data_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides set of audio path &amp; label path</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data_list_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – csv file with training or test data list path.</li>
+<li><strong>dataset_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – dataset path.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Returns: audio_paths, script_paths</dt>
+<dd><ul class="first last simple">
+<li><strong>audio_paths</strong> (list): set of audio path</li>
+<li><strong>script_paths</strong> (list): set of label path</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="kospeech.data.data_loader.split_dataset">
+<code class="descclassname">kospeech.data.data_loader.</code><code class="descname">split_dataset</code><span class="sig-paren">(</span><em>opt</em>, <em>audio_paths</em>, <em>script_paths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/data_loader.html#split_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.data_loader.split_dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>split into training set and validation set.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>opt</strong> (<em>ArgumentParser</em>) – set of options</li>
+<li><strong>audio_paths</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – set of audio path</li>
+<li><strong>script_paths</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – set of script path</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Returns: train_batch_num, train_dataset_list, valid_dataset</dt>
+<dd><ul class="first last simple">
+<li><strong>train_time_step</strong> (int): number of time step for training</li>
+<li><strong>trainset_list</strong> (list): list of training dataset</li>
+<li><strong>validset</strong> (data_loader.MelSpectrogramDataset): validation dataset</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-kospeech.data.label_loader">
+<span id="labelloader"></span><h2>LabelLoader<a class="headerlink" href="#module-kospeech.data.label_loader" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="kospeech.data.label_loader.load_label">
+<code class="descclassname">kospeech.data.label_loader.</code><code class="descname">load_label</code><span class="sig-paren">(</span><em>label_path</em>, <em>encoding='utf-8'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/label_loader.html#load_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.label_loader.load_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides char2id, id2char</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>label_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – csv file with character labels</li>
+<li><strong>encoding</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – encoding method</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Returns: char2id, id2char</dt>
+<dd><ul class="first last simple">
+<li><strong>char2id</strong> (dict): char2id[ch] = id</li>
+<li><strong>id2char</strong> (dict): id2char[id] = ch</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="kospeech.data.label_loader.load_targets">
+<code class="descclassname">kospeech.data.label_loader.</code><code class="descname">load_targets</code><span class="sig-paren">(</span><em>label_paths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/label_loader.html#load_targets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.label_loader.load_targets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides dictionary of filename and labels</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>label_paths</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – set of label paths</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Returns: target_dict</dt>
+<dd><ul class="first last simple">
+<li><strong>target_dict</strong> (dict): dictionary of filename and labels</li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -558,10 +565,10 @@ If exception occurs in numpy.memmap(), return None.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="Optim.html" class="btn btn-neutral float-right" title="Optim" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="Decode.html" class="btn btn-neutral float-right" title="Decode" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="Model.html" class="btn btn-neutral float-left" title="Model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="Checkpoint.html" class="btn btn-neutral float-left" title="Checkpoint" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

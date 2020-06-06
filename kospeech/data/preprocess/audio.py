@@ -2,7 +2,6 @@ import warnings
 import numpy as np
 from astropy.modeling import ParameterError
 from numpy.lib.stride_tricks import as_strided
-
 from kospeech.utils import logger
 
 

@@ -1,6 +1,4 @@
-# **End-to-end Speech Recognition**  
-  
-### Character unit based end2end automatic speech recognition in Korean  
+# **KoSpeech: Open-Source Automatic Speech Recognition in Korean**   
    
 [<img src="https://github.com/gentaiscool/end2end-asr-pytorch/raw/master/img/pytorch-logo-dark.png" height=18>](https://pytorch.org/) <img src="https://img.shields.io/badge/License-Apache--2.0-yellow" height=20> [<img src="https://img.shields.io/badge/chat-on%20gitter-4fb99a" height=20>](https://gitter.im/Korean-Speech-Recognition/community)   
   
@@ -10,8 +8,8 @@
 
 ## Intro
 
-`End-to-end Speech Recognition` is project for E2E automatic speech recognition implemented in [PyTorch](http://pytorch.org).   
-`e2e` has modularized and extensible components for las models, training and evalutaion, checkpoints, parsing etc.   
+`KoSpeech` is project for E2E automatic speech recognition implemented in [PyTorch](http://pytorch.org).   
+`kospeech` has modularized and extensible components for las models, training and evalutaion, checkpoints, parsing etc.   
 We appreciate any kind of [feedback or contribution](https://github.com/sooftware/End-to-end-Speech-Recognition/issues).
   
 We used `KsponSpeech` corpus which containing **1000h** of Korean speech data.   
@@ -22,10 +20,10 @@ Also our model has recorded **91.0% CRR** in `Kaldi-zeroth corpus`
   
 ## Features  
   
-* [End-to-end (E2E) automatic speech recognition](https://sooftware.github.io/End-to-end-Speech-Recognition/)
-* [Various Options](https://sooftware.github.io/End-to-end-Speech-Recognition/notes/opts.html)
-* [(VGG / DeepSpeech2) Extractor](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.sub_layers.extractor)
-* [MaskConv & pack_padded_sequence](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.sub_layers.maskCNN)
+* [End-to-end (E2E) automatic speech recognition](https://sooftware.github.io/KoSpeech/)
+* [Various Options](https://sooftware.github.io/KoSpeech/notes/opts.html)
+* [(VGG / DeepSpeech2) Extractor](https://sooftware.github.io/KoSpeech/Model.html#module-e2e.model.sub_layers.extractor)
+* [MaskCNN & pack_padded_sequence](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.sub_layers.maskCNN)
 * [Multi-headed (location-aware / scaled dot-product) Attention](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.attention)
 * [Top K Decoding (Beam Search)](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.beam_search)
 * [Spectrogram Parser](https://sooftware.github.io/End-to-end-Speech-Recognition/Data.html#module-e2e.data.preprocess.parser)
@@ -45,7 +43,7 @@ We have referred to many papers to develop the best model possible. And tried to
 
 ## Roadmap
   
-<img src="https://user-images.githubusercontent.com/42150335/83332296-5110a300-a2d5-11ea-8841-e80624e89c2b.png" width=450> 
+<img src="https://user-images.githubusercontent.com/42150335/83943593-5a02f680-a838-11ea-9075-53a76d1aa9c1.png" width=350> 
   
 End-to-end (E2E) automatic speech recognition (ASR) is an emerging paradigm in the field of neural network-based speech recognition that offers multiple benefits. Traditional “hybrid” ASR systems, which are comprised of an acoustic model, language model, and pronunciation model, require separate training of these components, each of which can be complex.   
   
@@ -77,51 +75,76 @@ Our model architeuture is as follows.
 ```python
 ListenAttendSpell(
   (listener): Listener(
-    (rnn): LSTM(2560, 256, num_layers=3, batch_first=True, dropout=0.3, bidirectional=True)
     (extractor): VGGExtractor(
+      (activation): ELU(alpha=1.0, inplace=True)
       (cnn): MaskCNN(
         (sequential): Sequential(
           (0): Conv2d(1, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-          (1): Hardtanh(min_val=0, max_val=20, inplace=True)
+          (1): ELU(alpha=1.0, inplace=True)
           (2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
           (3): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-          (4): Hardtanh(min_val=0, max_val=20, inplace=True)
+          (4): ELU(alpha=1.0, inplace=True)
           (5): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
           (6): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
           (7): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-          (8): Hardtanh(min_val=0, max_val=20, inplace=True)
+          (8): ELU(alpha=1.0, inplace=True)
           (9): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
           (10): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-          (11): Hardtanh(min_val=0, max_val=20, inplace=True)
+          (11): ELU(alpha=1.0, inplace=True)
           (12): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
         )
       )
     )
+    (rnn): LSTM(2560, 256, num_layers=3, batch_first=True, dropout=0.3, bidirectional=True)
   )
   (speller): Speller(
     (rnn): LSTM(512, 512, num_layers=2, batch_first=True, dropout=0.3)
     (embedding): Embedding(2038, 512)
     (input_dropout): Dropout(p=0.3, inplace=False)
     (out_projection): Linear(in_features=512, out_features=2038, bias=True)
-    (attention): LocationAwareAttention(
-      (loc_projection): Linear(in_features=10, out_features=64, bias=False)
-      (loc_conv): Conv1d(8, 10, kernel_size=(3,), stride=(1,), padding=(1,))
-      (query_projection): Linear(in_features=512, out_features=512, bias=False)
-      (value_projection): Linear(in_features=512, out_features=512, bias=False)
-      (score_projection): Linear(in_features=64, out_features=1, bias=True)
+    (attention): MultiHeadAttention(
+      (scaled_dot): ScaledDotProductAttention()
+      (query_projection): Linear(in_features=512, out_features=512, bias=True)
+      (value_projection): Linear(in_features=512, out_features=512, bias=True)
       (out_projection): Linear(in_features=1024, out_features=512, bias=True)
     )
   )
 )
 ``` 
   
-### e2e module
+### `kospeech`
 
-<img src="https://user-images.githubusercontent.com/42150335/83361143-6d8a0980-a3c1-11ea-8bb6-8d5eefdb48fb.png" width=800>   
+<img src="https://user-images.githubusercontent.com/42150335/83944090-d8ad6300-a83b-11ea-8a2c-2f0d9ba0e54d.png" width=700>   
   
-`e2e` (End-to-end) module's structure is implement as above.   
-`e2e` module has modularized and extensible components for las models, trainer, evaluator, checkpoints, data_loader etc...  
+`kospeech` module has modularized and extensible components for las models, trainer, evaluator, checkpoints etc...   
+In addition, `kospeech` enables learning in a variety of environments with a simple option setting.  
   
+* Options
+```
+usage: main.py [-h] [--mode] [--sample_rate]
+               [--window_size] [--stride] [--n_mels]
+               [--normalize] [--del_silence] [--input_reverse]
+               [--feature_extract_by] [--time_mask_para] [--freq_mask_para]
+               [--time_mask_num] [--freq_mask_num]
+               [--use_bidirectional] [--hidden_dim]
+               [--dropout] [--num_heads] [--label_smoothing]
+               [--listener_layer_size] [--speller_layer_size] [--rnn_type]
+               [--extractor] [--activation]
+               [--attn_mechanism] [--teacher_forcing_ratio]
+               [--dataset_path] [--data_list_path]
+               [--label_path] [--init_uniform] [--spec_augment]
+               [--noise_augment] [--noiseset_size]
+               [--noise_level] [--use_cuda]
+               [--batch_size] [--num_workers]
+               [--num_epochs] [--init_lr]
+               [--high_plateau_lr] [--low_plateau_lr] [--valid_ratio]
+               [--max_len] [--max_grad_norm]
+               [--rampup_period] [--decay_threshold] [--exp_decay_period]
+               [--teacher_forcing_step] [--min_teacher_forcing_ratio]
+               [--seed] [--save_result_every]
+               [--checkpoint_every] [--print_every] [--resume]
+```
+
 We are constantly updating the progress of the project on the [Wiki page](https://github.com/sooftware/End-to-end-Speech-Recognition/wiki).  Please check this page.  
   
 ## Installation
@@ -133,6 +156,7 @@ We recommend creating a new virtual environment for this project (using virtual 
 * Numpy: `pip install numpy` (Refer [here](https://github.com/numpy/numpy) for problem installing Numpy).
 * Pytorch: Refer to [PyTorch website](http://pytorch.org/) to install the version w.r.t. your environment.   
 * Pandas: `pip install pandas` (Refer [here](https://github.com/pandas-dev/pandas) for problem installing Pandas)  
+* Matplotlib: `pip install matplotlib` (Refer [here](https://github.com/matplotlib/matplotlib) for problem installing Matplotlib)
 * librosa: `pip install librosa` (Refer [here](https://github.com/librosa/librosa) for problem installing librosa)
 * torchaudio: `pip install torchaudio` (Refer [here](https://github.com/pytorch/pytorch) for problem installing torchaudio)
 * tqdm: `pip install tqdm` (Refer [here](https://github.com/tqdm/tqdm) for problem installing tqdm)
@@ -180,32 +204,6 @@ python ./main.py --batch_size 32 --num_workers 4 --num_epochs 20  --use_bidirect
 You can train the model by above command.  
  If you want to train by default setting, you can train by `Defaulting setting` command.   
  Or if you want to train by custom setting, you can designate hyperparameters by `Custom setting` command.
-  
-* Options
-```
-usage: main.py [-h] [--mode] [--sample_rate]
-               [--window_size] [--stride] [--n_mels]
-               [--normalize] [--del_silence] [--input_reverse]
-               [--feature_extract_by] [--time_mask_para] [--freq_mask_para]
-               [--time_mask_num] [--freq_mask_num]
-               [--use_bidirectional] [--hidden_dim]
-               [--dropout] [--num_heads] [--label_smoothing]
-               [--listener_layer_size] [--speller_layer_size] [--rnn_type]
-               [--extractor] [--activation]
-               [--attn_mechanism] [--teacher_forcing_ratio]
-               [--dataset_path] [--data_list_path]
-               [--label_path] [--init_uniform] [--spec_augment]
-               [--noise_augment] [--noiseset_size]
-               [--noise_level] [--use_cuda]
-               [--batch_size] [--num_workers]
-               [--num_epochs] [--init_lr]
-               [--high_plateau_lr] [--low_plateau_lr] [--valid_ratio]
-               [--max_len] [--max_grad_norm]
-               [--rampup_period] [--decay_threshold] [--exp_decay_period]
-               [--teacher_forcing_step] [--min_teacher_forcing_ratio]
-               [--seed] [--save_result_every]
-               [--checkpoint_every] [--print_every] [--resume]
-```
 
 ### Step 3: Run `eval.py`
 * Default setting
@@ -264,11 +262,11 @@ We follow [PEP-8](https://www.python.org/dev/peps/pep-0008/) for code style. Esp
 ### Citing
 ```
 @github{
-  title = {End-to-end Speech Recognition},
+  title = {KoSpeech},
   author = {Soohwan Kim, Seyoung Bae, Cheolhwang Won},
   publisher = {GitHub},
-  docs = {https://sooftware.github.io/End-to-end-Speech-Recognition/},
-  url = {https://github.com/sooftware/End-to-end-Speech-Recognition},
+  docs = {https://sooftware.github.io/KoSpeech/},
+  url = {https://github.com/sooftware/KoSpeech},
   year = {2020}
 }
 ```

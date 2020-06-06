@@ -5,11 +5,11 @@ import torch
 import random
 from torch.utils.data import Dataset
 from kospeech.data.label_loader import load_targets
-from kospeech.data.preprocess.parser import SpectrogramParser
+from kospeech.data.preprocess.parser import MelSpectrogramParser
 from kospeech.utils import logger, PAD_token, SOS_token, EOS_token
 
 
-class SpectrogramDataset(Dataset, SpectrogramParser):
+class MelSpectrogramDataset(Dataset, MelSpectrogramParser):
     """
     Dataset for spectrogram & script matching
 
@@ -25,7 +25,7 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
     """
     def __init__(self, audio_paths, script_paths, sos_id, eos_id, target_dict, opt, spec_augment=False,
                  noise_augment=False, dataset_path=None, noiseset_size=0, noise_level=0.7):
-        super(SpectrogramDataset, self).__init__(feature_extract_by=opt.feature_extract_by, sample_rate=opt.sample_rate,
+        super(MelSpectrogramDataset, self).__init__(feature_extract_by=opt.feature_extract_by, sample_rate=opt.sample_rate,
                                                  n_mels=opt.n_mels, window_size=opt.window_size, stride=opt.stride,
                                                  del_silence=opt.del_silence, input_reverse=opt.input_reverse,
                                                  normalize=opt.normalize, target_dict=target_dict,
@@ -102,7 +102,7 @@ class AudioDataLoader(threading.Thread):
     Audio Data Loader
 
     Args:
-        dataset (e2e.data_loader.SpectrogramDataset): dataset for spectrogram & script matching
+        dataset (e2e.data_loader.MelSpectrogramDataset): dataset for spectrogram & script matching
         queue (Queue.queue): queue for threading
         batch_size (int): size of batch
         thread_id (int): identification of thread
@@ -127,7 +127,7 @@ class AudioDataLoader(threading.Thread):
         return seqs, targets, seq_lengths, target_lengths
 
     def run(self):
-        """ Load data from SpectrogramDataset """
+        """ Load data from MelSpectrogramDataset """
         logger.debug('loader %d start' % self.thread_id)
 
         while True:
@@ -204,7 +204,7 @@ class MultiDataLoader(object):
     Multi Data Loader using Threads.
 
     Args:
-        dataset_list (list): list of SpectrogramDataset
+        dataset_list (list): list of MelSpectrogramDataset
         queue (Queue.queue): queue for threading
         batch_size (int): size of batch
         num_workers (int): the number of cpu cores used
@@ -242,7 +242,7 @@ def split_dataset(opt, audio_paths, script_paths):
     Returns: train_batch_num, train_dataset_list, valid_dataset
         - **train_time_step** (int): number of time step for training
         - **trainset_list** (list): list of training dataset
-        - **validset** (data_loader.SpectrogramDataset): validation dataset
+        - **validset** (data_loader.MelSpectrogramDataset): validation dataset
     """
     target_dict = load_targets(script_paths)
 
@@ -274,7 +274,7 @@ def split_dataset(opt, audio_paths, script_paths):
         train_end_idx = min(train_num_per_worker * (idx + 1), train_num)
 
         trainset_list.append(
-            SpectrogramDataset(
+            MelSpectrogramDataset(
                 audio_paths[train_begin_idx:train_end_idx],
                 script_paths[train_begin_idx:train_end_idx],
                 SOS_token, EOS_token,
@@ -288,7 +288,7 @@ def split_dataset(opt, audio_paths, script_paths):
             )
         )
 
-    validset = SpectrogramDataset(
+    validset = MelSpectrogramDataset(
         audio_paths=audio_paths[train_num:],
         script_paths=script_paths[train_num:],
         sos_id=SOS_token, eos_id=EOS_token,

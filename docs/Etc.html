@@ -1,0 +1,449 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Etc &mdash; KoSpeech 0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Trainer" href="Trainer.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> KoSpeech
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">NOTES</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Intro</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/preparation.html">Preparation before Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/opts.html">Options</a></li>
+</ul>
+<p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Model.html">Model</a></li>
+</ul>
+<p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Checkpoint.html">Checkpoint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Decode.html">Decode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Optim.html">Optim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Etc</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.metrics">Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.model_builder">ModelBuilder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.opts">Opts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.utils">Utils</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">KoSpeech</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Etc</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Etc.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="etc">
+<h1>Etc<a class="headerlink" href="#etc" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-kospeech.metrics">
+<span id="metrics"></span><h2>Metrics<a class="headerlink" href="#module-kospeech.metrics" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kospeech.metrics.CharacterErrorRate">
+<em class="property">class </em><code class="descclassname">kospeech.metrics.</code><code class="descname">CharacterErrorRate</code><span class="sig-paren">(</span><em>id2char</em>, <em>eos_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/metrics.html#CharacterErrorRate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.metrics.CharacterErrorRate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides a character error rate calculation to evaluate performance of sppech recognizer.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>id2char</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – id2char[id] = char</li>
+<li><strong>eos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – end of sentence identification</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Inputs: target, y_hat</dt>
+<dd><ul class="first last simple">
+<li><strong>target</strong>: ground truth</li>
+<li><strong>y_hat</strong>: prediction of recognizer</li>
+</ul>
+</dd>
+<dt>Returns: cer</dt>
+<dd><ul class="first last simple">
+<li><strong>cer</strong>: character error rate</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="kospeech.metrics.ErrorRate">
+<em class="property">class </em><code class="descclassname">kospeech.metrics.</code><code class="descname">ErrorRate</code><span class="sig-paren">(</span><em>id2char</em>, <em>eos_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/metrics.html#ErrorRate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.metrics.ErrorRate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides inteface of error rate calcuation.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Do not use this class directly, use one of the sub classes.</p>
+</div>
+<dl class="docutils">
+<dt>Method:</dt>
+<dd><ul class="first last simple">
+<li><strong>__call__()</strong>: abstract method. you have to override this method.</li>
+<li><strong>_get_distance()</strong>: abstract method. you have to override this method.</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="kospeech.metrics.WordErrorRate">
+<em class="property">class </em><code class="descclassname">kospeech.metrics.</code><code class="descname">WordErrorRate</code><span class="sig-paren">(</span><em>id2char</em>, <em>eos_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/metrics.html#WordErrorRate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.metrics.WordErrorRate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the Word Error Rate, defined as the edit distance between the
+two provided sentences after tokenizing to words.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>id2char</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – id2char[id] = char</li>
+<li><strong>eos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – end of sentence identification</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Inputs: target, y_hat</dt>
+<dd><ul class="first last simple">
+<li><strong>target</strong>: ground truth</li>
+<li><strong>y_hat</strong>: prediction of recognizer</li>
+</ul>
+</dd>
+<dt>Returns: wer</dt>
+<dd><ul class="first last simple">
+<li><strong>wer</strong>: word error rate</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-kospeech.model_builder">
+<span id="modelbuilder"></span><h2>ModelBuilder<a class="headerlink" href="#module-kospeech.model_builder" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="kospeech.model_builder.build_las">
+<code class="descclassname">kospeech.model_builder.</code><code class="descname">build_las</code><span class="sig-paren">(</span><em>listener</em>, <em>speller</em>, <em>device</em>, <em>init_uniform=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model_builder.html#build_las"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model_builder.build_las" title="Permalink to this definition">¶</a></dt>
+<dd><p>Various Listen, Attend and Spell dispatcher function.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kospeech.model_builder.build_listener">
+<code class="descclassname">kospeech.model_builder.</code><code class="descname">build_listener</code><span class="sig-paren">(</span><em>input_size</em>, <em>hidden_dim</em>, <em>dropout_p</em>, <em>num_layers</em>, <em>bidirectional</em>, <em>rnn_type</em>, <em>extractor</em>, <em>activation</em>, <em>device</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model_builder.html#build_listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model_builder.build_listener" title="Permalink to this definition">¶</a></dt>
+<dd><p>Various encoder dispatcher function.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kospeech.model_builder.build_model">
+<code class="descclassname">kospeech.model_builder.</code><code class="descname">build_model</code><span class="sig-paren">(</span><em>opt</em>, <em>device</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model_builder.html#build_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model_builder.build_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Various model dispatcher function.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kospeech.model_builder.build_speller">
+<code class="descclassname">kospeech.model_builder.</code><code class="descname">build_speller</code><span class="sig-paren">(</span><em>num_classes</em>, <em>max_len</em>, <em>hidden_dim</em>, <em>sos_id</em>, <em>eos_id</em>, <em>attn_mechanism</em>, <em>num_layers</em>, <em>rnn_type</em>, <em>dropout_p</em>, <em>num_heads</em>, <em>device</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model_builder.html#build_speller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model_builder.build_speller" title="Permalink to this definition">¶</a></dt>
+<dd><p>Various decoder dispatcher function.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-kospeech.opts">
+<span id="opts"></span><h2>Opts<a class="headerlink" href="#module-kospeech.opts" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="kospeech.opts.build_eval_opts">
+<code class="descclassname">kospeech.opts.</code><code class="descname">build_eval_opts</code><span class="sig-paren">(</span><em>parser</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/opts.html#build_eval_opts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.opts.build_eval_opts" title="Permalink to this definition">¶</a></dt>
+<dd><p>inference options</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kospeech.opts.build_model_opts">
+<code class="descclassname">kospeech.opts.</code><code class="descname">build_model_opts</code><span class="sig-paren">(</span><em>parser</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/opts.html#build_model_opts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.opts.build_model_opts" title="Permalink to this definition">¶</a></dt>
+<dd><p>These options are passed to the construction of the model.
+Be careful with these as they will be used during inference.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kospeech.opts.build_preprocess_opts">
+<code class="descclassname">kospeech.opts.</code><code class="descname">build_preprocess_opts</code><span class="sig-paren">(</span><em>parser</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/opts.html#build_preprocess_opts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.opts.build_preprocess_opts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pre-processing options</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kospeech.opts.build_train_opts">
+<code class="descclassname">kospeech.opts.</code><code class="descname">build_train_opts</code><span class="sig-paren">(</span><em>parser</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/opts.html#build_train_opts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.opts.build_train_opts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Training and saving options</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kospeech.opts.print_eval_opts">
+<code class="descclassname">kospeech.opts.</code><code class="descname">print_eval_opts</code><span class="sig-paren">(</span><em>opt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/opts.html#print_eval_opts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.opts.print_eval_opts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print evaltation options</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kospeech.opts.print_model_opts">
+<code class="descclassname">kospeech.opts.</code><code class="descname">print_model_opts</code><span class="sig-paren">(</span><em>opt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/opts.html#print_model_opts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.opts.print_model_opts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print model options</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kospeech.opts.print_opts">
+<code class="descclassname">kospeech.opts.</code><code class="descname">print_opts</code><span class="sig-paren">(</span><em>opt</em>, <em>mode='train'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/opts.html#print_opts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.opts.print_opts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print options</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kospeech.opts.print_preprocess_opts">
+<code class="descclassname">kospeech.opts.</code><code class="descname">print_preprocess_opts</code><span class="sig-paren">(</span><em>opt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/opts.html#print_preprocess_opts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.opts.print_preprocess_opts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print preprocess options</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kospeech.opts.print_train_opts">
+<code class="descclassname">kospeech.opts.</code><code class="descname">print_train_opts</code><span class="sig-paren">(</span><em>opt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/opts.html#print_train_opts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.opts.print_train_opts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print train options</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-kospeech.utils">
+<span id="utils"></span><h2>Utils<a class="headerlink" href="#module-kospeech.utils" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kospeech.utils.Logger">
+<em class="property">class </em><code class="descclassname">kospeech.utils.</code><code class="descname">Logger</code><a class="reference internal" href="_modules/kospeech/utils.html#Logger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.utils.Logger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print log message in format.
+FORMAT: [%(asctime)s %(filename)s:%(lineno)s - %(funcName)s()] %(message)s</p>
+<dl class="method">
+<dt id="kospeech.utils.Logger.debug">
+<code class="descname">debug</code><span class="sig-paren">(</span><em>message=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/utils.html#Logger.debug"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.utils.Logger.debug" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print log message for debugging</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kospeech.utils.Logger.info">
+<code class="descname">info</code><span class="sig-paren">(</span><em>message=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/utils.html#Logger.info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.utils.Logger.info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print log message for information</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="kospeech.utils.check_envirionment">
+<code class="descclassname">kospeech.utils.</code><code class="descname">check_envirionment</code><span class="sig-paren">(</span><em>use_cuda</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/utils.html#check_envirionment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.utils.check_envirionment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check execution envirionment.
+OS, Processor, CUDA version, Pytorch version, … etc.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kospeech.utils.label_to_string">
+<code class="descclassname">kospeech.utils.</code><code class="descname">label_to_string</code><span class="sig-paren">(</span><em>labels</em>, <em>id2char</em>, <em>eos_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/utils.html#label_to_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.utils.label_to_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts label to string (number =&gt; Hangeul)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>labels</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><em>numpy.ndarray</em></a>) – number label</li>
+<li><strong>id2char</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – id2char[id] = ch</li>
+<li><strong>eos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of &lt;end of sequence&gt;</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Returns: sentence</dt>
+<dd><ul class="first last simple">
+<li><strong>sentence</strong> (str or list): symbol of labels</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="Trainer.html" class="btn btn-neutral float-left" title="Trainer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Soohwan Kim
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

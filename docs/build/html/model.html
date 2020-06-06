@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Model &mdash; End-to-end Speech Recognition 2.0 documentation</title>
+  <title>Model &mdash; KoSpeech 0.0 documentation</title>
   
 
   
@@ -34,7 +34,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Data" href="Data.html" />
+    <link rel="next" title="Checkpoint" href="Checkpoint.html" />
     <link rel="prev" title="Options" href="notes/opts.html" /> 
 </head>
 
@@ -49,7 +49,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> End-to-end Speech Recognition
+            <a href="index.html" class="icon icon-home"> KoSpeech
           
 
           
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                2.0
+                0.0
               </div>
             
           
@@ -92,33 +92,24 @@
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Model</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-e2e.model.sub_layers.baseRNN">BaseRNN</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-e2e.model.sub_layers.extractor">Extractor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-e2e.model.sub_layers.maskCNN">MaskCNN</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-e2e.model.las">ListenAttendSpell</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-e2e.model.listener">Listener</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-e2e.model.speller">Speller</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-e2e.model.beam_search">BeamSearch</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-e2e.model.attention">Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.model.encoder">Listener</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.model.decoder">Speller</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.model.seq2seq">ListenAttendSpell</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.model.attention">Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.model.beam_search">BeamSearch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.model.convolutional">Convolutional</a></li>
 </ul>
 </li>
 </ul>
 <p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
-<ul class="current">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Checkpoint.html">Checkpoint</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Data.html">Data</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Model</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-e2e.model.sub_layers.baseRNN">BaseRNN</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-e2e.model.sub_layers.extractor">Extractor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-e2e.model.sub_layers.maskCNN">MaskCNN</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-e2e.model.las">ListenAttendSpell</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-e2e.model.listener">Listener</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-e2e.model.speller">Speller</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-e2e.model.beam_search">BeamSearch</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-e2e.model.attention">Attention</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="Decode.html">Decode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Optim.html">Optim</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Solver.html">Solver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Etc.html">Etc</a></li>
 </ul>
 
             
@@ -133,7 +124,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">End-to-end Speech Recognition</a>
+          <a href="index.html">KoSpeech</a>
         
       </nav>
 
@@ -185,11 +176,11 @@
             
   <div class="section" id="model">
 <h1>Model<a class="headerlink" href="#model" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-e2e.model.sub_layers.baseRNN">
-<span id="basernn"></span><h2>BaseRNN<a class="headerlink" href="#module-e2e.model.sub_layers.baseRNN" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-kospeech.model.encoder">
+<span id="listener"></span><h2>Listener<a class="headerlink" href="#module-kospeech.model.encoder" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="e2e.model.sub_layers.baseRNN.BaseRNN">
-<em class="property">class </em><code class="descclassname">e2e.model.sub_layers.baseRNN.</code><code class="descname">BaseRNN</code><span class="sig-paren">(</span><em>input_size</em>, <em>hidden_dim</em>, <em>num_layers</em>, <em>rnn_type</em>, <em>dropout_p</em>, <em>bidirectional</em>, <em>device</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/model/sub_layers/baseRNN.html#BaseRNN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.model.sub_layers.baseRNN.BaseRNN" title="Permalink to this definition">¶</a></dt>
+<dt id="kospeech.model.encoder.BaseRNN">
+<em class="property">class </em><code class="descclassname">kospeech.model.encoder.</code><code class="descname">BaseRNN</code><span class="sig-paren">(</span><em>input_size</em>, <em>hidden_dim</em>, <em>num_layers</em>, <em>rnn_type</em>, <em>dropout_p</em>, <em>bidirectional</em>, <em>device</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model/encoder.html#BaseRNN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model.encoder.BaseRNN" title="Permalink to this definition">¶</a></dt>
 <dd><p>Applies a multi-layer RNN to an input sequence.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -216,33 +207,8 @@
 </tbody>
 </table>
 <dl class="method">
-<dt id="e2e.model.sub_layers.baseRNN.BaseRNN.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/model/sub_layers/baseRNN.html#BaseRNN.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.model.sub_layers.baseRNN.BaseRNN.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Although the recipe for forward pass needs to be defined within
-this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
-instead of this since the former takes care of running the
-registered hooks while the latter silently ignores them.</p>
-</div>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-e2e.model.sub_layers.extractor">
-<span id="extractor"></span><h2>Extractor<a class="headerlink" href="#module-e2e.model.sub_layers.extractor" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="e2e.model.sub_layers.extractor.DeepSpeech2Extractor">
-<em class="property">class </em><code class="descclassname">e2e.model.sub_layers.extractor.</code><code class="descname">DeepSpeech2Extractor</code><span class="sig-paren">(</span><em>in_channels=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/model/sub_layers/extractor.html#DeepSpeech2Extractor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.model.sub_layers.extractor.DeepSpeech2Extractor" title="Permalink to this definition">¶</a></dt>
-<dd><p>VGG extractor for automatic speech recognition described in
-“Advances in Joint CTC-Attention based End-to-End Speech Recognition with “a Deep CNN Encoder and RNN-LM” paper
-- <a class="reference external" href="https://arxiv.org/pdf/1706.02737.pdf">https://arxiv.org/pdf/1706.02737.pdf</a></p>
-<dl class="method">
-<dt id="e2e.model.sub_layers.extractor.DeepSpeech2Extractor.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs</em>, <em>input_lengths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/model/sub_layers/extractor.html#DeepSpeech2Extractor.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.model.sub_layers.extractor.DeepSpeech2Extractor.forward" title="Permalink to this definition">¶</a></dt>
+<dt id="kospeech.model.encoder.BaseRNN.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model/encoder.html#BaseRNN.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model.encoder.BaseRNN.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -257,171 +223,8 @@ registered hooks while the latter silently ignores them.</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="e2e.model.sub_layers.extractor.VGGExtractor">
-<em class="property">class </em><code class="descclassname">e2e.model.sub_layers.extractor.</code><code class="descname">VGGExtractor</code><span class="sig-paren">(</span><em>in_channels=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/model/sub_layers/extractor.html#VGGExtractor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.model.sub_layers.extractor.VGGExtractor" title="Permalink to this definition">¶</a></dt>
-<dd><p>VGG extractor for automatic speech recognition described in
-“Advances in Joint CTC-Attention based End-to-End Speech Recognition with “a Deep CNN Encoder and RNN-LM” paper
-- <a class="reference external" href="https://arxiv.org/pdf/1706.02737.pdf">https://arxiv.org/pdf/1706.02737.pdf</a></p>
-<dl class="method">
-<dt id="e2e.model.sub_layers.extractor.VGGExtractor.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs</em>, <em>input_lengths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/model/sub_layers/extractor.html#VGGExtractor.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.model.sub_layers.extractor.VGGExtractor.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Although the recipe for forward pass needs to be defined within
-this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
-instead of this since the former takes care of running the
-registered hooks while the latter silently ignores them.</p>
-</div>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-e2e.model.sub_layers.maskCNN">
-<span id="maskcnn"></span><h2>MaskCNN<a class="headerlink" href="#module-e2e.model.sub_layers.maskCNN" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="e2e.model.sub_layers.maskCNN.MaskCNN">
-<em class="property">class </em><code class="descclassname">e2e.model.sub_layers.maskCNN.</code><code class="descname">MaskCNN</code><span class="sig-paren">(</span><em>sequential</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/model/sub_layers/maskCNN.html#MaskCNN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.model.sub_layers.maskCNN.MaskCNN" title="Permalink to this definition">¶</a></dt>
-<dd><p>Masking Convolutional Neural Network</p>
-<p>Adds padding to the output of the module based on the given lengths.
-This is to ensure that the results of the model do not change when batch sizes change during inference.
-Input needs to be in the shape of (batch_size, channel, hidden_dim, seq_len)</p>
-<p>Refer to <a class="reference external" href="https://github.com/SeanNaren/deepspeech.pytorch/blob/master/model.py">https://github.com/SeanNaren/deepspeech.pytorch/blob/master/model.py</a>
-Copyright (c) 2017 Sean Naren
-MIT License</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sequential</strong> (<em>torch.nn</em>) – sequential list of convolution layer</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Inputs: inputs, seq_lengths</dt>
-<dd><ul class="first last simple">
-<li><strong>inputs</strong> (torch.FloatTensor): The input of size BxCxHxS</li>
-<li><strong>seq_lengths</strong> (torch.IntTensor): The actual length of each sequence in the batch</li>
-</ul>
-</dd>
-<dt>Returns: output, seq_lengths</dt>
-<dd><ul class="first last simple">
-<li><strong>output</strong>: Masked output from the sequential</li>
-<li><strong>seq_lengths</strong>: Sequence length of output from the sequential</li>
-</ul>
-</dd>
-</dl>
-<dl class="method">
-<dt id="e2e.model.sub_layers.maskCNN.MaskCNN.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs</em>, <em>seq_lengths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/model/sub_layers/maskCNN.html#MaskCNN.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.model.sub_layers.maskCNN.MaskCNN.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Although the recipe for forward pass needs to be defined within
-this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
-instead of this since the former takes care of running the
-registered hooks while the latter silently ignores them.</p>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="e2e.model.sub_layers.maskCNN.MaskCNN.get_seq_lengths">
-<code class="descname">get_seq_lengths</code><span class="sig-paren">(</span><em>module</em>, <em>seq_lengths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/model/sub_layers/maskCNN.html#MaskCNN.get_seq_lengths"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.model.sub_layers.maskCNN.MaskCNN.get_seq_lengths" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate convolutional neural network receptive formula</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>module</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.6.0a0+8556664 ))"><em>torch.nn.Module</em></a>) – module of CNN</li>
-<li><strong>seq_lengths</strong> (<em>torch.IntTensor</em>) – The actual length of each sequence in the batch</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Returns: seq_lengths</dt>
-<dd><ul class="first last simple">
-<li><strong>seq_lengths</strong>: Sequence length of output from the module</li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-e2e.model.las">
-<span id="listenattendspell"></span><h2>ListenAttendSpell<a class="headerlink" href="#module-e2e.model.las" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="e2e.model.las.ListenAttendSpell">
-<em class="property">class </em><code class="descclassname">e2e.model.las.</code><code class="descname">ListenAttendSpell</code><span class="sig-paren">(</span><em>listener</em>, <em>speller</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/model/las.html#ListenAttendSpell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.model.las.ListenAttendSpell" title="Permalink to this definition">¶</a></dt>
-<dd><p>Listen, Attend and Spell (LAS) Model</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>listener</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.6.0a0+8556664 ))"><em>torch.nn.Module</em></a>) – encoder of seq2seq</li>
-<li><strong>speller</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.6.0a0+8556664 ))"><em>torch.nn.Module</em></a>) – decoder of seq2seq</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Inputs: inputs, input_lengths, targets, teacher_forcing_ratio</dt>
-<dd><ul class="first last simple">
-<li><strong>inputs</strong> (torch.Tensor): tensor of sequences, whose length is the batch size and within which
-each sequence is a list of token IDs. This information is forwarded to the encoder.</li>
-<li><strong>input_lengths</strong> (torch.Tensor): tensor of sequences, whose contains length of inputs.</li>
-<li><strong>targets</strong> (torch.Tensor): tensor of sequences, whose length is the batch size and within which
-each sequence is a list of token IDs. This information is forwarded to the decoder.</li>
-<li><strong>teacher_forcing_ratio</strong> (float): The probability that teacher forcing will be used. A random number
-is drawn uniformly from 0-1 for every decoding token, and if the sample is smaller than the given value,
-teacher forcing would be used (default is 0.90)</li>
-</ul>
-</dd>
-<dt>Returns: output</dt>
-<dd><ul class="first last simple">
-<li><strong>output</strong> (seq_len, batch_size, num_classes): list of tensors containing
-the outputs of the decoding function.</li>
-</ul>
-</dd>
-</dl>
-<p>Examples:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">listener</span> <span class="o">=</span> <span class="n">Listener</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">speller</span> <span class="o">=</span> <span class="n">Speller</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">ListenAttendSpell</span><span class="p">(</span><span class="n">listener</span><span class="p">,</span> <span class="n">speller</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">logit</span> <span class="o">=</span> <span class="n">model</span><span class="p">()</span>
-</pre></div>
-</div>
-<dl class="method">
-<dt id="e2e.model.las.ListenAttendSpell.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs</em>, <em>input_lengths</em>, <em>targets=None</em>, <em>teacher_forcing_ratio=0.99</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/model/las.html#ListenAttendSpell.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.model.las.ListenAttendSpell.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Although the recipe for forward pass needs to be defined within
-this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
-instead of this since the former takes care of running the
-registered hooks while the latter silently ignores them.</p>
-</div>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-e2e.model.listener">
-<span id="listener"></span><h2>Listener<a class="headerlink" href="#module-e2e.model.listener" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="e2e.model.listener.Listener">
-<em class="property">class </em><code class="descclassname">e2e.model.listener.</code><code class="descname">Listener</code><span class="sig-paren">(</span><em>input_size</em>, <em>hidden_dim</em>, <em>device</em>, <em>dropout_p=0.5</em>, <em>num_layers=1</em>, <em>bidirectional=True</em>, <em>rnn_type='gru'</em>, <em>extractor='vgg'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/model/listener.html#Listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.model.listener.Listener" title="Permalink to this definition">¶</a></dt>
+<dt id="kospeech.model.encoder.Listener">
+<em class="property">class </em><code class="descclassname">kospeech.model.encoder.</code><code class="descname">Listener</code><span class="sig-paren">(</span><em>input_size</em>, <em>hidden_dim</em>, <em>device</em>, <em>dropout_p=0.3</em>, <em>num_layers=3</em>, <em>bidirectional=True</em>, <em>rnn_type='lstm'</em>, <em>extractor='vgg'</em>, <em>activation='elu'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model/encoder.html#Listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model.encoder.Listener" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts low level speech signals into higher level features</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -454,8 +257,8 @@ registered hooks while the latter silently ignores them.</p>
 </dd>
 </dl>
 <dl class="method">
-<dt id="e2e.model.listener.Listener.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs</em>, <em>input_lengths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/model/listener.html#Listener.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.model.listener.Listener.forward" title="Permalink to this definition">¶</a></dt>
+<dt id="kospeech.model.encoder.Listener.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs</em>, <em>input_lengths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model/encoder.html#Listener.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model.encoder.Listener.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -470,11 +273,11 @@ registered hooks while the latter silently ignores them.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-e2e.model.speller">
-<span id="speller"></span><h2>Speller<a class="headerlink" href="#module-e2e.model.speller" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-kospeech.model.decoder">
+<span id="speller"></span><h2>Speller<a class="headerlink" href="#module-kospeech.model.decoder" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="e2e.model.speller.Speller">
-<em class="property">class </em><code class="descclassname">e2e.model.speller.</code><code class="descname">Speller</code><span class="sig-paren">(</span><em>num_classes</em>, <em>max_length</em>, <em>hidden_dim</em>, <em>sos_id</em>, <em>eos_id</em>, <em>attn_mechanism='loc'</em>, <em>num_heads=8</em>, <em>num_layers=1</em>, <em>rnn_type='gru'</em>, <em>dropout_p=0.5</em>, <em>device=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/model/speller.html#Speller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.model.speller.Speller" title="Permalink to this definition">¶</a></dt>
+<dt id="kospeech.model.decoder.Speller">
+<em class="property">class </em><code class="descclassname">kospeech.model.decoder.</code><code class="descname">Speller</code><span class="sig-paren">(</span><em>num_classes</em>, <em>max_length</em>, <em>hidden_dim</em>, <em>sos_id</em>, <em>eos_id</em>, <em>attn_mechanism='dot'</em>, <em>num_heads=4</em>, <em>num_layers=2</em>, <em>rnn_type='lstm'</em>, <em>dropout_p=0.3</em>, <em>device=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model/decoder.html#Speller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model.decoder.Speller" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts higher level features (from listener) into output utterances
 by specifying a probability distribution over sequences of characters.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -515,8 +318,8 @@ teacher forcing would be used (default is 0).</li>
 </dd>
 </dl>
 <dl class="method">
-<dt id="e2e.model.speller.Speller.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs</em>, <em>listener_outputs</em>, <em>teacher_forcing_ratio=0.9</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/model/speller.html#Speller.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.model.speller.Speller.forward" title="Permalink to this definition">¶</a></dt>
+<dt id="kospeech.model.decoder.Speller.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs</em>, <em>listener_outputs</em>, <em>teacher_forcing_ratio=0.9</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model/decoder.html#Speller.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model.decoder.Speller.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -529,48 +332,62 @@ registered hooks while the latter silently ignores them.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="e2e.model.speller.Speller.validate_args">
-<code class="descname">validate_args</code><span class="sig-paren">(</span><em>inputs</em>, <em>listener_outputs</em>, <em>teacher_forcing_ratio</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/model/speller.html#Speller.validate_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.model.speller.Speller.validate_args" title="Permalink to this definition">¶</a></dt>
+<dt id="kospeech.model.decoder.Speller.validate_args">
+<code class="descname">validate_args</code><span class="sig-paren">(</span><em>inputs</em>, <em>listener_outputs</em>, <em>teacher_forcing_ratio</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model/decoder.html#Speller.validate_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model.decoder.Speller.validate_args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate arguments</p>
 </dd></dl>
 
 </dd></dl>
 
 </div>
-<div class="section" id="module-e2e.model.beam_search">
-<span id="beamsearch"></span><h2>BeamSearch<a class="headerlink" href="#module-e2e.model.beam_search" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-kospeech.model.seq2seq">
+<span id="listenattendspell"></span><h2>ListenAttendSpell<a class="headerlink" href="#module-kospeech.model.seq2seq" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="e2e.model.beam_search.BeamSearch">
-<em class="property">class </em><code class="descclassname">e2e.model.beam_search.</code><code class="descname">BeamSearch</code><span class="sig-paren">(</span><em>decoder</em>, <em>k</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/model/beam_search.html#BeamSearch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.model.beam_search.BeamSearch" title="Permalink to this definition">¶</a></dt>
-<dd><p>Top-K decoding with beam search.</p>
+<dt id="kospeech.model.seq2seq.ListenAttendSpell">
+<em class="property">class </em><code class="descclassname">kospeech.model.seq2seq.</code><code class="descname">ListenAttendSpell</code><span class="sig-paren">(</span><em>listener</em>, <em>speller</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model/seq2seq.html#ListenAttendSpell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model.seq2seq.ListenAttendSpell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Listen, Attend and Spell (LAS) Model</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>decoder</strong> (<em>nn.Module</em>) – decoder to which beam search will be applied</li>
-<li><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – size of beam</li>
+<li><strong>listener</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.6.0a0+53c1942 ))"><em>torch.nn.Module</em></a>) – encoder of seq2seq</li>
+<li><strong>speller</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.6.0a0+53c1942 ))"><em>torch.nn.Module</em></a>) – decoder of seq2seq</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
 <dl class="docutils">
-<dt>Inputs: input_var, encoder_outputs</dt>
+<dt>Inputs: inputs, input_lengths, targets, teacher_forcing_ratio</dt>
 <dd><ul class="first last simple">
-<li><strong>input_var</strong> : sequence of sos_id</li>
-<li><strong>encoder_outputs</strong> : tensor containing the encoded features of the input sequence</li>
+<li><strong>inputs</strong> (torch.Tensor): tensor of sequences, whose length is the batch size and within which
+each sequence is a list of token IDs. This information is forwarded to the encoder.</li>
+<li><strong>input_lengths</strong> (torch.Tensor): tensor of sequences, whose contains length of inputs.</li>
+<li><strong>targets</strong> (torch.Tensor): tensor of sequences, whose length is the batch size and within which
+each sequence is a list of token IDs. This information is forwarded to the decoder.</li>
+<li><strong>teacher_forcing_ratio</strong> (float): The probability that teacher forcing will be used. A random number
+is drawn uniformly from 0-1 for every decoding token, and if the sample is smaller than the given value,
+teacher forcing would be used (default is 0.90)</li>
 </ul>
 </dd>
-<dt>Returns: decoder_outputs</dt>
+<dt>Returns: output</dt>
 <dd><ul class="first last simple">
-<li><strong>decoder_outputs</strong> :  list of tensors containing the outputs of the decoding function.</li>
+<li><strong>output</strong> (seq_len, batch_size, num_classes): list of tensors containing
+the outputs of the decoding function.</li>
 </ul>
 </dd>
 </dl>
+<p>Examples:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">listener</span> <span class="o">=</span> <span class="n">Listener</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">speller</span> <span class="o">=</span> <span class="n">Speller</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">ListenAttendSpell</span><span class="p">(</span><span class="n">listener</span><span class="p">,</span> <span class="n">speller</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">logit</span> <span class="o">=</span> <span class="n">model</span><span class="p">()</span>
+</pre></div>
+</div>
 <dl class="method">
-<dt id="e2e.model.beam_search.BeamSearch.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>input_var</em>, <em>encoder_outputs</em>, <em>teacher_forcing_ratio=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/model/beam_search.html#BeamSearch.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.model.beam_search.BeamSearch.forward" title="Permalink to this definition">¶</a></dt>
+<dt id="kospeech.model.seq2seq.ListenAttendSpell.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs</em>, <em>input_lengths</em>, <em>targets=None</em>, <em>teacher_forcing_ratio=0.99</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model/seq2seq.html#ListenAttendSpell.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model.seq2seq.ListenAttendSpell.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -585,11 +402,11 @@ registered hooks while the latter silently ignores them.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-e2e.model.attention">
-<span id="attention"></span><h2>Attention<a class="headerlink" href="#module-e2e.model.attention" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-kospeech.model.attention">
+<span id="attention"></span><h2>Attention<a class="headerlink" href="#module-kospeech.model.attention" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="e2e.model.attention.LocationAwareAttention">
-<em class="property">class </em><code class="descclassname">e2e.model.attention.</code><code class="descname">LocationAwareAttention</code><span class="sig-paren">(</span><em>hidden_dim</em>, <em>num_heads=8</em>, <em>conv_out_channel=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/model/attention.html#LocationAwareAttention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.model.attention.LocationAwareAttention" title="Permalink to this definition">¶</a></dt>
+<dt id="kospeech.model.attention.LocationAwareAttention">
+<em class="property">class </em><code class="descclassname">kospeech.model.attention.</code><code class="descname">LocationAwareAttention</code><span class="sig-paren">(</span><em>hidden_dim</em>, <em>num_heads=8</em>, <em>conv_out_channel=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model/attention.html#LocationAwareAttention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model.attention.LocationAwareAttention" title="Permalink to this definition">¶</a></dt>
 <dd><p>Applies a multi-headed location-aware attention mechanism on the output features from the decoder.
 Location-aware attention proposed in “Attention-Based Models for Speech Recognition” paper.
 The location-aware attention mechanism is performing well in speech recognition tasks.
@@ -630,8 +447,8 @@ In the above paper applied a signle head, but we applied multi head concept.</p>
 </dd>
 </dl>
 <dl class="method">
-<dt id="e2e.model.attention.LocationAwareAttention.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>query</em>, <em>value</em>, <em>prev_attn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/model/attention.html#LocationAwareAttention.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.model.attention.LocationAwareAttention.forward" title="Permalink to this definition">¶</a></dt>
+<dt id="kospeech.model.attention.LocationAwareAttention.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>query</em>, <em>value</em>, <em>prev_attn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model/attention.html#LocationAwareAttention.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model.attention.LocationAwareAttention.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -646,8 +463,8 @@ registered hooks while the latter silently ignores them.</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="e2e.model.attention.MultiHeadAttention">
-<em class="property">class </em><code class="descclassname">e2e.model.attention.</code><code class="descname">MultiHeadAttention</code><span class="sig-paren">(</span><em>hidden_dim</em>, <em>num_heads=8</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/model/attention.html#MultiHeadAttention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.model.attention.MultiHeadAttention" title="Permalink to this definition">¶</a></dt>
+<dt id="kospeech.model.attention.MultiHeadAttention">
+<em class="property">class </em><code class="descclassname">kospeech.model.attention.</code><code class="descname">MultiHeadAttention</code><span class="sig-paren">(</span><em>hidden_dim</em>, <em>num_heads=8</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model/attention.html#MultiHeadAttention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model.attention.MultiHeadAttention" title="Permalink to this definition">¶</a></dt>
 <dd><p>Applies a multi-headed scaled dot mechanism on the output features from the decoder.
 Multi-head attention proposed in “Attention Is All You Need” paper.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -683,8 +500,8 @@ Multi-head attention proposed in “Attention Is All You Need” paper.</p>
 </dd>
 </dl>
 <dl class="method">
-<dt id="e2e.model.attention.MultiHeadAttention.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>query</em>, <em>value</em>, <em>prev_attn=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/model/attention.html#MultiHeadAttention.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.model.attention.MultiHeadAttention.forward" title="Permalink to this definition">¶</a></dt>
+<dt id="kospeech.model.attention.MultiHeadAttention.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>query</em>, <em>value</em>, <em>prev_attn=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model/attention.html#MultiHeadAttention.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model.attention.MultiHeadAttention.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -699,8 +516,8 @@ registered hooks while the latter silently ignores them.</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="e2e.model.attention.ScaledDotProductAttention">
-<em class="property">class </em><code class="descclassname">e2e.model.attention.</code><code class="descname">ScaledDotProductAttention</code><span class="sig-paren">(</span><em>dim</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/model/attention.html#ScaledDotProductAttention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.model.attention.ScaledDotProductAttention" title="Permalink to this definition">¶</a></dt>
+<dt id="kospeech.model.attention.ScaledDotProductAttention">
+<em class="property">class </em><code class="descclassname">kospeech.model.attention.</code><code class="descname">ScaledDotProductAttention</code><span class="sig-paren">(</span><em>dim</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model/attention.html#ScaledDotProductAttention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model.attention.ScaledDotProductAttention" title="Permalink to this definition">¶</a></dt>
 <dd><p>Scaled Dot-product Attention</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -725,8 +542,200 @@ registered hooks while the latter silently ignores them.</p>
 </dd>
 </dl>
 <dl class="method">
-<dt id="e2e.model.attention.ScaledDotProductAttention.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>query</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/model/attention.html#ScaledDotProductAttention.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.model.attention.ScaledDotProductAttention.forward" title="Permalink to this definition">¶</a></dt>
+<dt id="kospeech.model.attention.ScaledDotProductAttention.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>query</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model/attention.html#ScaledDotProductAttention.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model.attention.ScaledDotProductAttention.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kospeech.model.beam_search">
+<span id="beamsearch"></span><h2>BeamSearch<a class="headerlink" href="#module-kospeech.model.beam_search" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kospeech.model.beam_search.BeamSearchDecoder">
+<em class="property">class </em><code class="descclassname">kospeech.model.beam_search.</code><code class="descname">BeamSearchDecoder</code><span class="sig-paren">(</span><em>decoder</em>, <em>beam_size</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model/beam_search.html#BeamSearchDecoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model.beam_search.BeamSearchDecoder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Top-K decoding with beam search.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>decoder</strong> (<em>e2e.model.speller.Speller</em>) – decoder to which beam search will be applied</li>
+<li><strong>beam_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – size of beam</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Inputs: input_var, encoder_outputs</dt>
+<dd><ul class="first last simple">
+<li><strong>input_var</strong> : sequence of sos_id</li>
+<li><strong>encoder_outputs</strong> : tensor containing the encoded features of the input sequence</li>
+</ul>
+</dd>
+<dt>Returns: decoder_outputs</dt>
+<dd><ul class="first last simple">
+<li><strong>decoder_outputs</strong> :  list of tensors containing the outputs of the decoding function.</li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="kospeech.model.beam_search.BeamSearchDecoder.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>input_var</em>, <em>encoder_outputs</em>, <em>teacher_forcing_ratio=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model/beam_search.html#BeamSearchDecoder.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model.beam_search.BeamSearchDecoder.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kospeech.model.convolutional">
+<span id="convolutional"></span><h2>Convolutional<a class="headerlink" href="#module-kospeech.model.convolutional" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kospeech.model.convolutional.ConvolutionalExtractor">
+<em class="property">class </em><code class="descclassname">kospeech.model.convolutional.</code><code class="descname">ConvolutionalExtractor</code><span class="sig-paren">(</span><em>activation='elu'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model/convolutional.html#ConvolutionalExtractor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model.convolutional.ConvolutionalExtractor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides inteface of extractor.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Do not use this class directly, use one of the sub classes.</p>
+</div>
+<dl class="method">
+<dt id="kospeech.model.convolutional.ConvolutionalExtractor.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model/convolutional.html#ConvolutionalExtractor.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model.convolutional.ConvolutionalExtractor.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="kospeech.model.convolutional.DeepSpeech2Extractor">
+<em class="property">class </em><code class="descclassname">kospeech.model.convolutional.</code><code class="descname">DeepSpeech2Extractor</code><span class="sig-paren">(</span><em>in_channels=1</em>, <em>activation='hardtanh'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model/convolutional.html#DeepSpeech2Extractor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model.convolutional.DeepSpeech2Extractor" title="Permalink to this definition">¶</a></dt>
+<dd><p>DeepSpeech2 extractor for automatic speech recognition described in
+“Deep Speech 2: End-to-End Speech Recognition in English and Mandarin” paper
+- <a class="reference external" href="https://arxiv.org/abs/1512.02595">https://arxiv.org/abs/1512.02595</a></p>
+<dl class="method">
+<dt id="kospeech.model.convolutional.DeepSpeech2Extractor.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs</em>, <em>input_lengths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model/convolutional.html#DeepSpeech2Extractor.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model.convolutional.DeepSpeech2Extractor.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="kospeech.model.convolutional.MaskCNN">
+<em class="property">class </em><code class="descclassname">kospeech.model.convolutional.</code><code class="descname">MaskCNN</code><span class="sig-paren">(</span><em>sequential</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model/convolutional.html#MaskCNN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model.convolutional.MaskCNN" title="Permalink to this definition">¶</a></dt>
+<dd><p>Masking Convolutional Neural Network</p>
+<p>Adds padding to the output of the module based on the given lengths.
+This is to ensure that the results of the model do not change when batch sizes change during inference.
+Input needs to be in the shape of (batch_size, channel, hidden_dim, seq_len)</p>
+<p>Refer to <a class="reference external" href="https://github.com/SeanNaren/deepspeech.pytorch/blob/master/model.py">https://github.com/SeanNaren/deepspeech.pytorch/blob/master/model.py</a>
+Copyright (c) 2017 Sean Naren
+MIT License</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sequential</strong> (<em>torch.nn</em>) – sequential list of convolution layer</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Inputs: inputs, seq_lengths</dt>
+<dd><ul class="first last simple">
+<li><strong>inputs</strong> (torch.FloatTensor): The input of size BxCxHxS</li>
+<li><strong>seq_lengths</strong> (torch.IntTensor): The actual length of each sequence in the batch</li>
+</ul>
+</dd>
+<dt>Returns: output, seq_lengths</dt>
+<dd><ul class="first last simple">
+<li><strong>output</strong>: Masked output from the sequential</li>
+<li><strong>seq_lengths</strong>: Sequence length of output from the sequential</li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="kospeech.model.convolutional.MaskCNN.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs</em>, <em>seq_lengths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model/convolutional.html#MaskCNN.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model.convolutional.MaskCNN.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="kospeech.model.convolutional.MaskCNN.get_seq_lengths">
+<code class="descname">get_seq_lengths</code><span class="sig-paren">(</span><em>module</em>, <em>seq_lengths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model/convolutional.html#MaskCNN.get_seq_lengths"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model.convolutional.MaskCNN.get_seq_lengths" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate convolutional neural network receptive formula</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>module</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.6.0a0+53c1942 ))"><em>torch.nn.Module</em></a>) – module of CNN</li>
+<li><strong>seq_lengths</strong> (<em>torch.IntTensor</em>) – The actual length of each sequence in the batch</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Returns: seq_lengths</dt>
+<dd><ul class="first last simple">
+<li><strong>seq_lengths</strong>: Sequence length of output from the module</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="kospeech.model.convolutional.VGGExtractor">
+<em class="property">class </em><code class="descclassname">kospeech.model.convolutional.</code><code class="descname">VGGExtractor</code><span class="sig-paren">(</span><em>in_channels=1</em>, <em>activation='elu'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model/convolutional.html#VGGExtractor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model.convolutional.VGGExtractor" title="Permalink to this definition">¶</a></dt>
+<dd><p>VGG extractor for automatic speech recognition described in
+“Advances in Joint CTC-Attention based End-to-End Speech Recognition with a Deep CNN Encoder and RNN-LM” paper
+- <a class="reference external" href="https://arxiv.org/pdf/1706.02737.pdf">https://arxiv.org/pdf/1706.02737.pdf</a></p>
+<dl class="method">
+<dt id="kospeech.model.convolutional.VGGExtractor.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs</em>, <em>input_lengths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model/convolutional.html#VGGExtractor.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model.convolutional.VGGExtractor.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -751,7 +760,7 @@ registered hooks while the latter silently ignores them.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="Data.html" class="btn btn-neutral float-right" title="Data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="Checkpoint.html" class="btn btn-neutral float-right" title="Checkpoint" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="notes/opts.html" class="btn btn-neutral float-left" title="Options" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

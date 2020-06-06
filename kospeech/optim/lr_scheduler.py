@@ -2,12 +2,17 @@
 
 
 class LearningRateScheduler(object):
-    """ Super class of lr scheduler """
+    """
+    Provides inteface of learning rate scheduler.
+
+    Note:
+        Do not use this class directly, use one of the sub classes.
+    """
     def __init__(self, optimizer, init_lr):
         self.optimizer = optimizer
         self.init_lr = init_lr
 
-    def step(self):
+    def step(self, *args, **kwargs):
         raise NotImplementedError
 
     @staticmethod

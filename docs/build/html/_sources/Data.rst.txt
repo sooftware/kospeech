@@ -2,32 +2,27 @@
 Data
 =====================================================
 
-DataLoader
+Audio
 --------------------------------------------
-.. automodule:: e2e.data.data_loader
+.. automodule:: kospeech.data.preprocess.audio
     :members:
 
-LabelLoader
+Augment
 --------------------------------------------
-.. automodule:: e2e.data.label_loader
-    :members:
-
-NoiseAugment
--------------------------------------------
-.. automodule:: e2e.data.augment.noise_augment
-    :members:
-
-SpecAugment
--------------------------------------------
-.. automodule:: e2e.data.augment.spec_augment
-    :members:
-
-Preprocess
--------------------------------------------
-.. automodule:: e2e.data.augment
+.. automodule:: kospeech.data.preprocess.augment
     :members:
 
 Parser
 -------------------------------------------
-.. automodule:: e2e.data.preprocess.parser
+.. automodule:: kospeech.data.preprocess.parser
+    :members:
+
+DataLoader
+-------------------------------------------
+.. automodule:: kospeech.data.data_loader
+    :members:
+
+LabelLoader
+-------------------------------------------
+.. automodule:: kospeech.data.label_loader
     :members:

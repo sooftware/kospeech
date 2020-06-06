@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Options &mdash; End-to-end Speech Recognition 2.0 documentation</title>
+  <title>Options &mdash; KoSpeech 0.0 documentation</title>
   
 
   
@@ -49,7 +49,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home"> End-to-end Speech Recognition
+            <a href="../index.html" class="icon icon-home"> KoSpeech
           
 
           
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                2.0
+                0.0
               </div>
             
           
@@ -101,10 +101,13 @@
 </ul>
 <p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Checkpoint.html">Checkpoint</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Data.html">Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../Model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Decode.html">Decode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Optim.html">Optim</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../Solver.html">Solver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Etc.html">Etc</a></li>
 </ul>
 
             
@@ -119,7 +122,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">End-to-end Speech Recognition</a>
+          <a href="../index.html">KoSpeech</a>
         
       </nav>
 
@@ -172,31 +175,28 @@
   <div class="section" id="options">
 <h1>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h1>
 <p>main.py</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">dataset_path</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">data_list_path</span><span class="p">]</span> 
-               <span class="p">[</span><span class="o">--</span><span class="n">label_path</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">noiseset_size</span><span class="p">]</span>
-               <span class="p">[</span><span class="o">--</span><span class="n">use_cuda</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">use_multi_gpu</span><span class="p">]</span>
-               <span class="p">[</span><span class="o">--</span><span class="n">spec_augment</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">noise_augment</span><span class="p">]</span> 
-               <span class="p">[</span><span class="o">--</span><span class="n">noise_level</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">dropout</span><span class="p">]</span>
-               <span class="p">[</span><span class="o">--</span><span class="n">use_bidirectional</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">init_uniform</span><span class="p">]</span> 
-               <span class="p">[</span><span class="o">--</span><span class="n">batch_size</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">num_epochs</span><span class="p">]</span> 
-               <span class="p">[</span><span class="o">--</span><span class="n">num_workers</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">valid_ratio</span><span class="p">]</span>
-               <span class="p">[</span><span class="o">--</span><span class="n">init_lr</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">rampup_period</span><span class="p">]</span>
-               <span class="p">[</span><span class="o">--</span><span class="n">high_plateau_lr</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">low_plateau_lr</span><span class="p">]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">mode</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">sample_rate</span><span class="p">]</span>
+               <span class="p">[</span><span class="o">--</span><span class="n">window_size</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">stride</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">n_mels</span><span class="p">]</span>
+               <span class="p">[</span><span class="o">--</span><span class="n">normalize</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">del_silence</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">input_reverse</span><span class="p">]</span>
+               <span class="p">[</span><span class="o">--</span><span class="n">feature_extract_by</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">time_mask_para</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">freq_mask_para</span><span class="p">]</span>
+               <span class="p">[</span><span class="o">--</span><span class="n">time_mask_num</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">freq_mask_num</span><span class="p">]</span>
+               <span class="p">[</span><span class="o">--</span><span class="n">use_bidirectional</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">hidden_dim</span><span class="p">]</span>
+               <span class="p">[</span><span class="o">--</span><span class="n">dropout</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">num_heads</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">label_smoothing</span><span class="p">]</span>
+               <span class="p">[</span><span class="o">--</span><span class="n">listener_layer_size</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">speller_layer_size</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">rnn_type</span><span class="p">]</span>
+               <span class="p">[</span><span class="o">--</span><span class="n">extractor</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">activation</span><span class="p">]</span>
+               <span class="p">[</span><span class="o">--</span><span class="n">attn_mechanism</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">teacher_forcing_ratio</span><span class="p">]</span>
+               <span class="p">[</span><span class="o">--</span><span class="n">dataset_path</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">data_list_path</span><span class="p">]</span>
+               <span class="p">[</span><span class="o">--</span><span class="n">label_path</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">init_uniform</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">spec_augment</span><span class="p">]</span>
+               <span class="p">[</span><span class="o">--</span><span class="n">noise_augment</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">noiseset_size</span><span class="p">]</span>
+               <span class="p">[</span><span class="o">--</span><span class="n">noise_level</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">use_cuda</span><span class="p">]</span>
+               <span class="p">[</span><span class="o">--</span><span class="n">batch_size</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">num_workers</span><span class="p">]</span>
+               <span class="p">[</span><span class="o">--</span><span class="n">num_epochs</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">init_lr</span><span class="p">]</span>
+               <span class="p">[</span><span class="o">--</span><span class="n">high_plateau_lr</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">low_plateau_lr</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">valid_ratio</span><span class="p">]</span>
                <span class="p">[</span><span class="o">--</span><span class="n">max_len</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">max_grad_norm</span><span class="p">]</span>
-               <span class="p">[</span><span class="o">--</span><span class="n">decay_threshold</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">exp_decay_period</span><span class="p">]</span>
-               <span class="p">[</span><span class="o">--</span><span class="n">num_heads</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">attn_mechanism</span><span class="p">]</span> 
-               <span class="p">[</span><span class="o">--</span><span class="n">rnn_type</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">label_smoothing</span><span class="p">]</span>
-               <span class="p">[</span><span class="o">--</span><span class="n">listener_layer_size</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">speller_layer_size</span><span class="p">]</span> 
-               <span class="p">[</span><span class="o">--</span><span class="n">seed</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">teacher_forcing_ratio</span><span class="p">]</span> 
-               <span class="p">[</span><span class="o">--</span><span class="n">teacher_forcing_step</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">min_teacher_forcing_ratio</span><span class="p">]</span> 
-               <span class="p">[</span><span class="o">--</span><span class="n">save_result_every</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">checkpoint_every</span><span class="p">]</span>
-               <span class="p">[</span><span class="o">--</span><span class="n">print_every</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">sample_rate</span><span class="p">]</span>
-               <span class="p">[</span><span class="o">--</span><span class="n">window_size</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">stride</span><span class="p">]</span> 
-               <span class="p">[</span><span class="o">--</span><span class="n">feature_extract_by</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">n_mels</span><span class="p">]</span>
-               <span class="p">[</span><span class="o">--</span><span class="n">del_silence</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">input_reverse</span><span class="p">]</span>
-               <span class="p">[</span><span class="o">--</span><span class="n">time_mask_para</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">freq_mask_para</span><span class="p">]</span>
-               <span class="p">[</span><span class="o">--</span><span class="n">time_mask_num</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">freq_mask_num</span><span class="p">]</span> 
-               <span class="p">[</span><span class="o">--</span><span class="n">normalize</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">resume</span><span class="p">]</span>
+               <span class="p">[</span><span class="o">--</span><span class="n">rampup_period</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">decay_threshold</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">exp_decay_period</span><span class="p">]</span>
+               <span class="p">[</span><span class="o">--</span><span class="n">teacher_forcing_step</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">min_teacher_forcing_ratio</span><span class="p">]</span>
+               <span class="p">[</span><span class="o">--</span><span class="n">seed</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">save_result_every</span><span class="p">]</span>
+               <span class="p">[</span><span class="o">--</span><span class="n">checkpoint_every</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">print_every</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">resume</span><span class="p">]</span>
 </pre></div>
 </div>
 <div class="section" id="model-options">

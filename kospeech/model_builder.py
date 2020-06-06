@@ -9,7 +9,7 @@ from kospeech.utils import char2id, EOS_token, SOS_token
 
 
 def build_model(opt, device):
-    """ build LAS model """
+    """ Various model dispatcher function. """
     listener = build_listener(input_size=opt.n_mels, hidden_dim=opt.hidden_dim, dropout_p=opt.dropout,
                               num_layers=opt.listener_layer_size, bidirectional=opt.use_bidirectional,
                               extractor=opt.extractor, activation=opt.activation, rnn_type=opt.rnn_type, device=device)
@@ -22,7 +22,7 @@ def build_model(opt, device):
 
 
 def build_las(listener, speller, device, init_uniform=True):
-    """ build las model & validate parameters """
+    """ Various Listen, Attend and Spell dispatcher function. """
     assert listener is not None, "listener is None"
     assert speller is not None, "speller is None"
 
@@ -38,7 +38,7 @@ def build_las(listener, speller, device, init_uniform=True):
 
 
 def build_listener(input_size, hidden_dim, dropout_p, num_layers, bidirectional, rnn_type, extractor, activation, device):
-    """ build listener & validate parameters """
+    """ Various encoder dispatcher function. """
     assert isinstance(input_size, int), "input_size should be inteager type"
     assert isinstance(hidden_dim, int), "hidden_dim should be inteager type"
     assert isinstance(num_layers, int), "num_layers should be inteager type"
@@ -57,7 +57,7 @@ def build_listener(input_size, hidden_dim, dropout_p, num_layers, bidirectional,
 
 def build_speller(num_classes, max_len, hidden_dim, sos_id, eos_id, attn_mechanism,
                   num_layers, rnn_type, dropout_p, num_heads, device):
-    """ build speller & validate parameters """
+    """ Various decoder dispatcher function. """
     assert isinstance(num_classes, int), "num_classes should be inteager type"
     assert isinstance(num_layers, int), "num_layers should be inteager type"
     assert isinstance(hidden_dim, int), "hidden_dim should be inteager type"
@@ -84,7 +84,6 @@ def build_speller(num_classes, max_len, hidden_dim, sos_id, eos_id, attn_mechani
 
 
 def load_test_model(opt, device):
-    """ load model for performance test """
     model = torch.load(opt.model_path, map_location=lambda storage, loc: storage).to(device)
 
     if isinstance(model, nn.DataParallel):

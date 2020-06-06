@@ -3,19 +3,15 @@ import torch.nn as nn
 import pandas as pd
 from kospeech.model.beam_search import BeamSearchDecoder
 from kospeech.metrics import CharacterErrorRate
-from kospeech.utils import id2char, EOS_token, logger, label_to_string, char2id
+from kospeech.utils import id2char, EOS_token, logger, label_to_string
 
 
 class Search(object):
     """
-    Provides inteface of search algorithm.
+    Provides some functions : search, save result to csv format.
 
     Note:
-        Do not use this class directly, use one of the sub classes.
-
-    Method:
-        - **search()**: abstract method. you have to override this method.
-        - **save_result()**: abstract method. you have to override this method.
+        You can use this class directly and you can use one of the sub classes.
     """
     def __init__(self):
         self.target_list = list()
@@ -68,7 +64,7 @@ class Search(object):
 
 
 class GreedySearch(Search):
-
+    """ Provides greedy search decoding. """
     def __init__(self):
         super(GreedySearch, self).__init__()
 
@@ -77,6 +73,7 @@ class GreedySearch(Search):
 
 
 class BeamSearch(Search):
+    """ Provides beam search decoding. """
     def __init__(self, k):
         super(BeamSearch, self).__init__()
         self.k = k
@@ -91,7 +88,7 @@ class BeamSearch(Search):
 
 
 class EnsembleSearch(Search):
-
+    """ Provides ensemble search decoding. """
     def __init__(self, method='basic'):
         super(EnsembleSearch, self).__init__()
         self.method = method

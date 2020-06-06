@@ -1,16 +1,16 @@
 """
 -*- coding: utf-8 -*-
 
-@source_code{
-  title={End-to-end Speech Recognition},
-  author={Soohwan Kim, Seyoung Bae, Cheolhwang Won},
-  link={https://github.com/sooftware/End-to-end-Speech-Recognition},
-  year={2020}
+@github{
+  title = {KoSpeech},
+  author = {Soohwan Kim, Seyoung Bae, Cheolhwang Won},
+  link = {https://github.com/sooftware/KoSpeech},
+  year = {2020}
 }
 """
 import argparse
 import warnings
-from kospeech.data.data_loader import load_data_list, SpectrogramDataset
+from kospeech.data.data_loader import load_data_list, MelSpectrogramDataset
 from kospeech.data.label_loader import load_targets
 from kospeech.evaluator.evaluator import Evaluator
 from kospeech.utils import check_envirionment, EOS_token, SOS_token
@@ -25,7 +25,7 @@ def inference(opt):
     audio_paths, script_paths = load_data_list(opt.data_list_path, opt.dataset_path)
     target_dict = load_targets(script_paths)
 
-    testset = SpectrogramDataset(
+    testset = MelSpectrogramDataset(
         audio_paths=audio_paths,
         script_paths=script_paths,
         sos_id=SOS_token,

@@ -2,9 +2,9 @@
 -*- coding: utf-8 -*-
 
 @github{
-  title = {End-to-end Speech Recognition},
+  title = {KoSpeech},
   author = {Soohwan Kim, Seyoung Bae, Cheolhwang Won},
-  link = {https://github.com/sooftware/End-to-end-Speech-Recognition},
+  link = {https://github.com/sooftware/KoSpeech},
   year = {2020}
 }
 """

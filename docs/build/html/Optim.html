@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Optim &mdash; End-to-end Speech Recognition 2.0 documentation</title>
+  <title>Optim &mdash; KoSpeech 0.0 documentation</title>
   
 
   
@@ -34,8 +34,8 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Solver" href="Solver.html" />
-    <link rel="prev" title="Data" href="Data.html" /> 
+    <link rel="next" title="Trainer" href="Trainer.html" />
+    <link rel="prev" title="Evaluator" href="Evaluator.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -49,7 +49,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> End-to-end Speech Recognition
+            <a href="index.html" class="icon icon-home"> KoSpeech
           
 
           
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                2.0
+                0.0
               </div>
             
           
@@ -95,15 +95,18 @@
 </ul>
 <p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Checkpoint.html">Checkpoint</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Data.html">Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Decode.html">Decode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Optim</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-e2e.optim.loss">Loss</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-e2e.optim.lr_scheduler">LrScheduler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.optim.loss">Loss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.optim.lr_scheduler">LrScheduler</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id1">Optim</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="Solver.html">Solver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Etc.html">Etc</a></li>
 </ul>
 
             
@@ -118,7 +121,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">End-to-end Speech Recognition</a>
+          <a href="index.html">KoSpeech</a>
         
       </nav>
 
@@ -170,13 +173,13 @@
             
   <div class="section" id="optim">
 <h1>Optim<a class="headerlink" href="#optim" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-e2e.optim.loss">
-<span id="loss"></span><h2>Loss<a class="headerlink" href="#module-e2e.optim.loss" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-kospeech.optim.loss">
+<span id="loss"></span><h2>Loss<a class="headerlink" href="#module-kospeech.optim.loss" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="e2e.optim.loss.LabelSmoothingLoss">
-<em class="property">class </em><code class="descclassname">e2e.optim.loss.</code><code class="descname">LabelSmoothingLoss</code><span class="sig-paren">(</span><em>num_classes</em>, <em>ignore_index</em>, <em>smoothing=0.1</em>, <em>dim=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/optim/loss.html#LabelSmoothingLoss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.optim.loss.LabelSmoothingLoss" title="Permalink to this definition">¶</a></dt>
-<dd><p>Copied from <a class="reference external" href="https://github.com/pytorch/pytorch/issues/7455">https://github.com/pytorch/pytorch/issues/7455</a></p>
-<p>Provides Label-Smoothing loss.</p>
+<dt id="kospeech.optim.loss.LabelSmoothingLoss">
+<em class="property">class </em><code class="descclassname">kospeech.optim.loss.</code><code class="descname">LabelSmoothingLoss</code><span class="sig-paren">(</span><em>num_classes</em>, <em>ignore_index</em>, <em>smoothing=0.1</em>, <em>dim=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/loss.html#LabelSmoothingLoss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.loss.LabelSmoothingLoss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides Label-Smoothing loss.
+Copied from <a class="reference external" href="https://github.com/pytorch/pytorch/issues/7455">https://github.com/pytorch/pytorch/issues/7455</a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -202,8 +205,8 @@ target (torch.Tensor): ground-thruth encoded to integers which directly point a 
 </dd>
 </dl>
 <dl class="method">
-<dt id="e2e.optim.loss.LabelSmoothingLoss.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>logit</em>, <em>target</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/optim/loss.html#LabelSmoothingLoss.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.optim.loss.LabelSmoothingLoss.forward" title="Permalink to this definition">¶</a></dt>
+<dt id="kospeech.optim.loss.LabelSmoothingLoss.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>logit</em>, <em>target</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/loss.html#LabelSmoothingLoss.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.loss.LabelSmoothingLoss.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -218,19 +221,18 @@ registered hooks while the latter silently ignores them.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-e2e.optim.lr_scheduler">
-<span id="lrscheduler"></span><h2>LrScheduler<a class="headerlink" href="#module-e2e.optim.lr_scheduler" title="Permalink to this headline">¶</a></h2>
-<p>e2e.optim.lr_scheduler provides RampUp &amp; ExponentialDecay method to adjust learning rate.</p>
+<div class="section" id="module-kospeech.optim.lr_scheduler">
+<span id="lrscheduler"></span><h2>LrScheduler<a class="headerlink" href="#module-kospeech.optim.lr_scheduler" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="e2e.optim.lr_scheduler.ExponentialDecayLR">
-<em class="property">class </em><code class="descclassname">e2e.optim.lr_scheduler.</code><code class="descname">ExponentialDecayLR</code><span class="sig-paren">(</span><em>optimizer</em>, <em>init_lr</em>, <em>low_plateau_lr</em>, <em>period</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/optim/lr_scheduler.html#ExponentialDecayLR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.optim.lr_scheduler.ExponentialDecayLR" title="Permalink to this definition">¶</a></dt>
+<dt id="kospeech.optim.lr_scheduler.ExponentialDecayLR">
+<em class="property">class </em><code class="descclassname">kospeech.optim.lr_scheduler.</code><code class="descname">ExponentialDecayLR</code><span class="sig-paren">(</span><em>optimizer</em>, <em>init_lr</em>, <em>low_plateau_lr</em>, <em>period</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/lr_scheduler.html#ExponentialDecayLR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.lr_scheduler.ExponentialDecayLR" title="Permalink to this definition">¶</a></dt>
 <dd><p>Exponential decay learning rate for the <cite>period</cite> from <cite>init_lr</cite> to <cite>low_plateau_lr</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>optimizer</strong> (<a class="reference external" href="https://pytorch.org/docs/master/optim.html#torch.optim.Optimizer" title="(in PyTorch vmaster (1.6.0a0+8556664 ))"><em>torch.optim.Optimizer</em></a>) – optimizer object, the parameters to be optimized
+<li><strong>optimizer</strong> (<a class="reference external" href="https://pytorch.org/docs/master/optim.html#torch.optim.Optimizer" title="(in PyTorch vmaster (1.6.0a0+53c1942 ))"><em>torch.optim.Optimizer</em></a>) – optimizer object, the parameters to be optimized
 should be given when instantiating the object, e.g. torch.optim.Adam, torch.optim</li>
 <li><strong>init_lr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – initial learning rate</li>
 <li><strong>low_plateau_lr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – target learning rate</li>
@@ -243,21 +245,25 @@ should be given when instantiating the object, e.g. torch.optim.Adam, torch.opti
 </dd></dl>
 
 <dl class="class">
-<dt id="e2e.optim.lr_scheduler.LearningRateScheduler">
-<em class="property">class </em><code class="descclassname">e2e.optim.lr_scheduler.</code><code class="descname">LearningRateScheduler</code><span class="sig-paren">(</span><em>optimizer</em>, <em>init_lr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/optim/lr_scheduler.html#LearningRateScheduler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.optim.lr_scheduler.LearningRateScheduler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Super class of lr scheduler</p>
+<dt id="kospeech.optim.lr_scheduler.LearningRateScheduler">
+<em class="property">class </em><code class="descclassname">kospeech.optim.lr_scheduler.</code><code class="descname">LearningRateScheduler</code><span class="sig-paren">(</span><em>optimizer</em>, <em>init_lr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/lr_scheduler.html#LearningRateScheduler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.lr_scheduler.LearningRateScheduler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides inteface of learning rate scheduler.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Do not use this class directly, use one of the sub classes.</p>
+</div>
 </dd></dl>
 
 <dl class="class">
-<dt id="e2e.optim.lr_scheduler.RampUpLR">
-<em class="property">class </em><code class="descclassname">e2e.optim.lr_scheduler.</code><code class="descname">RampUpLR</code><span class="sig-paren">(</span><em>optimizer</em>, <em>init_lr</em>, <em>high_plateau_lr</em>, <em>period</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/optim/lr_scheduler.html#RampUpLR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.optim.lr_scheduler.RampUpLR" title="Permalink to this definition">¶</a></dt>
+<dt id="kospeech.optim.lr_scheduler.RampUpLR">
+<em class="property">class </em><code class="descclassname">kospeech.optim.lr_scheduler.</code><code class="descname">RampUpLR</code><span class="sig-paren">(</span><em>optimizer</em>, <em>init_lr</em>, <em>high_plateau_lr</em>, <em>period</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/lr_scheduler.html#RampUpLR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.lr_scheduler.RampUpLR" title="Permalink to this definition">¶</a></dt>
 <dd><p>Ramp up learning rate for the <cite>period</cite> from <cite>init_lr</cite> to <cite>high_plateau_lr</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>optimizer</strong> (<a class="reference external" href="https://pytorch.org/docs/master/optim.html#torch.optim.Optimizer" title="(in PyTorch vmaster (1.6.0a0+8556664 ))"><em>torch.optim.Optimizer</em></a>) – optimizer object, the parameters to be optimized
+<li><strong>optimizer</strong> (<a class="reference external" href="https://pytorch.org/docs/master/optim.html#torch.optim.Optimizer" title="(in PyTorch vmaster (1.6.0a0+53c1942 ))"><em>torch.optim.Optimizer</em></a>) – optimizer object, the parameters to be optimized
 should be given when instantiating the object, e.g. torch.optim.Adam, torch.optim</li>
 <li><strong>init_lr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – initial learning rate</li>
 <li><strong>high_plateau_lr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – target learning rate</li>
@@ -275,9 +281,9 @@ should be given when instantiating the object, e.g. torch.optim.Adam, torch.opti
 </div>
 <div class="section" id="id1">
 <h2>Optim<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
-<span class="target" id="module-e2e.optim.optim"></span><dl class="class">
-<dt id="e2e.optim.optim.Optimizer">
-<em class="property">class </em><code class="descclassname">e2e.optim.optim.</code><code class="descname">Optimizer</code><span class="sig-paren">(</span><em>optim</em>, <em>scheduler=None</em>, <em>scheduler_period=None</em>, <em>max_grad_norm=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/e2e/optim/optim.html#Optimizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#e2e.optim.optim.Optimizer" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="module-kospeech.optim.optimizer"></span><dl class="class">
+<dt id="kospeech.optim.optimizer.Optimizer">
+<em class="property">class </em><code class="descclassname">kospeech.optim.optimizer.</code><code class="descname">Optimizer</code><span class="sig-paren">(</span><em>optim</em>, <em>scheduler=None</em>, <em>scheduler_period=None</em>, <em>max_grad_norm=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/optimizer.html#Optimizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.optimizer.Optimizer" title="Permalink to this definition">¶</a></dt>
 <dd><p>This is wrapper classs of torch.optim.Optimizer.
 This class provides functionalities for learning rate scheduling and gradient norm clipping.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -285,7 +291,7 @@ This class provides functionalities for learning rate scheduling and gradient no
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>optim</strong> (<a class="reference external" href="https://pytorch.org/docs/master/optim.html#torch.optim.Optimizer" title="(in PyTorch vmaster (1.6.0a0+8556664 ))"><em>torch.optim.Optimizer</em></a>) – optimizer object, the parameters to be optimized
+<li><strong>optim</strong> (<a class="reference external" href="https://pytorch.org/docs/master/optim.html#torch.optim.Optimizer" title="(in PyTorch vmaster (1.6.0a0+53c1942 ))"><em>torch.optim.Optimizer</em></a>) – optimizer object, the parameters to be optimized
 should be given when instantiating the object, e.g. torch.optim.Adam, torch.optim.SGD</li>
 <li><strong>scheduler</strong> (<em>e2e.optim.lr_scheduler</em><em>, </em><em>optional</em>) – learning rate scheduler</li>
 <li><strong>scheduler_period</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – timestep with learning rate scheduler</li>
@@ -308,10 +314,10 @@ should be given when instantiating the object, e.g. torch.optim.Adam, torch.opti
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="Solver.html" class="btn btn-neutral float-right" title="Solver" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="Trainer.html" class="btn btn-neutral float-right" title="Trainer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="Data.html" class="btn btn-neutral float-left" title="Data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="Evaluator.html" class="btn btn-neutral float-left" title="Evaluator" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

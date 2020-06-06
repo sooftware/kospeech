@@ -1,5 +1,7 @@
 # Preparation before Training
     
+[Preprocess GitHub Repository](https://github.com/sooftware/KsponSpeech.preprocess)  
+    
 본 글은 **AI Hub**에서 제공하는 '**한국어 음성데이터**'에 대해 학습 진행을 위한 과정을 기록한 글입니다.   
 AI Hub 음성 데이터는 다음 링크에서 신청 후 다운로드 하실 수 있습니다.  
   

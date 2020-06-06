@@ -2,50 +2,38 @@
 Model
 =====================================================
 
-BaseRNN
---------------------------------------------
-
-.. automodule:: e2e.model.sub_layers.baseRNN
-    :members:
-
-Extractor
---------------------------------------------
-
-.. automodule:: e2e.model.sub_layers.extractor
-    :members:
-
-MaskCNN
---------------------------------------------
-
-.. automodule:: e2e.model.sub_layers.maskCNN
-    :members:
-
-ListenAttendSpell
---------------------------------------------
-
-.. automodule:: e2e.model.las
-    :members:
-
 Listener
 --------------------------------------------
 
-.. automodule:: e2e.model.listener
+.. automodule:: kospeech.model.encoder
     :members:
 
 Speller
 --------------------------------------------
 
-.. automodule:: e2e.model.speller
+.. automodule:: kospeech.model.decoder
     :members:
 
-BeamSearch
+ListenAttendSpell
 --------------------------------------------
 
-.. automodule:: e2e.model.beam_search
+.. automodule:: kospeech.model.seq2seq
     :members:
 
 Attention
 --------------------------------------------
 
-.. automodule:: e2e.model.attention
+.. automodule:: kospeech.model.attention
+    :members:
+
+BeamSearch
+--------------------------------------------
+
+.. automodule:: kospeech.model.beam_search
+    :members:
+
+Convolutional
+--------------------------------------------
+
+.. automodule:: kospeech.model.convolutional
     :members:

@@ -1,0 +1,331 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Decode &mdash; KoSpeech 0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Evaluator" href="Evaluator.html" />
+    <link rel="prev" title="Data" href="Data.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> KoSpeech
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">NOTES</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Intro</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/preparation.html">Preparation before Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/opts.html">Options</a></li>
+</ul>
+<p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Model.html">Model</a></li>
+</ul>
+<p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Checkpoint.html">Checkpoint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Data.html">Data</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Decode</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.decode.ensemble">Ensemble</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.decode.search">Search</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Optim.html">Optim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Etc.html">Etc</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">KoSpeech</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Decode</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Decode.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="decode">
+<h1>Decode<a class="headerlink" href="#decode" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-kospeech.decode.ensemble">
+<span id="ensemble"></span><h2>Ensemble<a class="headerlink" href="#module-kospeech.decode.ensemble" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kospeech.decode.ensemble.BasicEnsemble">
+<em class="property">class </em><code class="descclassname">kospeech.decode.ensemble.</code><code class="descname">BasicEnsemble</code><span class="sig-paren">(</span><em>models</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/decode/ensemble.html#BasicEnsemble"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.decode.ensemble.BasicEnsemble" title="Permalink to this definition">¶</a></dt>
+<dd><p>Basic ensemble decoding.</p>
+<p>Decodes using multiple models simultaneously,
+combining their prediction distributions by adding.
+All models in the ensemble must share a target characters.</p>
+<dl class="method">
+<dt id="kospeech.decode.ensemble.BasicEnsemble.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs</em>, <em>input_lengths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/decode/ensemble.html#BasicEnsemble.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.decode.ensemble.BasicEnsemble.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="kospeech.decode.ensemble.Ensemble">
+<em class="property">class </em><code class="descclassname">kospeech.decode.ensemble.</code><code class="descname">Ensemble</code><span class="sig-paren">(</span><em>models</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/decode/ensemble.html#Ensemble"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.decode.ensemble.Ensemble" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ensemble decoding.
+Decodes using multiple models simultaneously,</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Do not use this class directly, use one of the sub classes.</p>
+</div>
+<dl class="method">
+<dt id="kospeech.decode.ensemble.Ensemble.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/decode/ensemble.html#Ensemble.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.decode.ensemble.Ensemble.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="kospeech.decode.ensemble.WeightedEnsemble">
+<em class="property">class </em><code class="descclassname">kospeech.decode.ensemble.</code><code class="descname">WeightedEnsemble</code><span class="sig-paren">(</span><em>models</em>, <em>dim=128</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/decode/ensemble.html#WeightedEnsemble"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.decode.ensemble.WeightedEnsemble" title="Permalink to this definition">¶</a></dt>
+<dd><p>Weighted ensemble decoding.</p>
+<p>Decodes using multiple models simultaneously,
+combining their prediction distributions by weighted sum.
+All models in the ensemble must share a target characters.</p>
+<dl class="method">
+<dt id="kospeech.decode.ensemble.WeightedEnsemble.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs</em>, <em>input_lengths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/decode/ensemble.html#WeightedEnsemble.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.decode.ensemble.WeightedEnsemble.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kospeech.decode.search">
+<span id="search"></span><h2>Search<a class="headerlink" href="#module-kospeech.decode.search" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kospeech.decode.search.BeamSearch">
+<em class="property">class </em><code class="descclassname">kospeech.decode.search.</code><code class="descname">BeamSearch</code><span class="sig-paren">(</span><em>k</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/decode/search.html#BeamSearch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.decode.search.BeamSearch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides beam search decoding.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="kospeech.decode.search.EnsembleSearch">
+<em class="property">class </em><code class="descclassname">kospeech.decode.search.</code><code class="descname">EnsembleSearch</code><span class="sig-paren">(</span><em>method='basic'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/decode/search.html#EnsembleSearch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.decode.search.EnsembleSearch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides ensemble search decoding.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="kospeech.decode.search.GreedySearch">
+<em class="property">class </em><code class="descclassname">kospeech.decode.search.</code><code class="descname">GreedySearch</code><a class="reference internal" href="_modules/kospeech/decode/search.html#GreedySearch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.decode.search.GreedySearch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides greedy search decoding.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="kospeech.decode.search.Search">
+<em class="property">class </em><code class="descclassname">kospeech.decode.search.</code><code class="descname">Search</code><a class="reference internal" href="_modules/kospeech/decode/search.html#Search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.decode.search.Search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides some functions : search, save result to csv format.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You can use this class directly and you can use one of the sub classes.</p>
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Evaluator.html" class="btn btn-neutral float-right" title="Evaluator" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Data.html" class="btn btn-neutral float-left" title="Data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Soohwan Kim
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

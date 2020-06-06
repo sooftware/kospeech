@@ -4,15 +4,15 @@ Optim
 
 Loss
 --------------------------------------------
-.. automodule:: e2e.optim.loss
+.. automodule:: kospeech.optim.loss
     :members:
 
 LrScheduler
 --------------------------------------------
-.. automodule:: e2e.optim.lr_scheduler
+.. automodule:: kospeech.optim.lr_scheduler
     :members:
 
 Optim
 --------------------------------------------
-.. automodule:: e2e.optim.optim
+.. automodule:: kospeech.optim.optimizer
     :members:

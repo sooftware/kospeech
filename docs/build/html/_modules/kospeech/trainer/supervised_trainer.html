@@ -1,0 +1,491 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>kospeech.trainer.supervised_trainer &mdash; KoSpeech 0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> KoSpeech
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">NOTES</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/intro.html">Intro</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/preparation.html">Preparation before Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/opts.html">Options</a></li>
+</ul>
+<p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../Model.html">Model</a></li>
+</ul>
+<p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../Checkpoint.html">Checkpoint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Decode.html">Decode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Evaluator.html">Evaluator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Optim.html">Optim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Etc.html">Etc</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">KoSpeech</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>kospeech.trainer.supervised_trainer</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for kospeech.trainer.supervised_trainer</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">queue</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">kospeech.checkpoint.checkpoint</span> <span class="k">import</span> <span class="n">Checkpoint</span>
+<span class="kn">from</span> <span class="nn">kospeech.optim.lr_scheduler</span> <span class="k">import</span> <span class="n">ExponentialDecayLR</span>
+<span class="kn">from</span> <span class="nn">kospeech.metrics</span> <span class="k">import</span> <span class="n">CharacterErrorRate</span>
+<span class="kn">from</span> <span class="nn">kospeech.utils</span> <span class="k">import</span> <span class="n">EOS_token</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">id2char</span>
+<span class="kn">from</span> <span class="nn">kospeech.data.data_loader</span> <span class="k">import</span> <span class="n">MultiDataLoader</span><span class="p">,</span> <span class="n">AudioDataLoader</span>
+
+
+<div class="viewcode-block" id="SupervisedTrainer"><a class="viewcode-back" href="../../../Trainer.html#kospeech.trainer.supervised_trainer.SupervisedTrainer">[docs]</a><span class="k">class</span> <span class="nc">SupervisedTrainer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The SupervisedTrainer class helps in setting up training framework in a supervised setting.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        optimizer (e2e.optim.optim.Optimizer): optimizer for training</span>
+<span class="sd">        criterion (torch.nn.Module): loss function</span>
+<span class="sd">        trainset_list (list): list of training datset</span>
+<span class="sd">        validset (e2e.dataset.data_loader.SpectrogramDataset): validation dataset</span>
+<span class="sd">        num_workers (int): number of using cpu cores</span>
+<span class="sd">        device (torch.device): device - &#39;cuda&#39; or &#39;cpu&#39;</span>
+<span class="sd">        print_every (int): number of timesteps to print result after</span>
+<span class="sd">        save_result_every (int): number of timesteps to save result after</span>
+<span class="sd">        checkpoint_every (int): number of timesteps to checkpoint after</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">train_step_result</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;loss&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;cer&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+    <span class="n">train_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;loss&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;cer&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+    <span class="n">valid_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;loss&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;cer&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+    <span class="n">TRAIN_RESULT_PATH</span> <span class="o">=</span> <span class="s2">&quot;./data/train_result/train_result.csv&quot;</span>
+    <span class="n">VALID_RESULT_PATH</span> <span class="o">=</span> <span class="s2">&quot;./data/train_result/eval_result.csv&quot;</span>
+    <span class="n">TRAIN_STEP_RESULT_PATH</span> <span class="o">=</span> <span class="s2">&quot;./data/train_result/train_step_result.csv&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">trainset_list</span><span class="p">,</span> <span class="n">validset</span><span class="p">,</span> <span class="n">high_plateau_lr</span><span class="p">,</span> <span class="n">low_plateau_lr</span><span class="p">,</span>
+                 <span class="n">exp_decay_period</span><span class="p">,</span> <span class="n">num_workers</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">decay_threshold</span><span class="p">,</span>
+                 <span class="n">print_every</span><span class="p">,</span> <span class="n">save_result_every</span><span class="p">,</span> <span class="n">checkpoint_every</span><span class="p">,</span>
+                 <span class="n">teacher_forcing_step</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">min_teacher_forcing_ratio</span><span class="o">=</span><span class="mf">0.7</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span> <span class="o">=</span> <span class="n">num_workers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">optimizer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span> <span class="o">=</span> <span class="n">criterion</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trainset_list</span> <span class="o">=</span> <span class="n">trainset_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validset</span> <span class="o">=</span> <span class="n">validset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">high_plateau_lr</span> <span class="o">=</span> <span class="n">high_plateau_lr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">low_plateau_lr</span> <span class="o">=</span> <span class="n">low_plateau_lr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exp_decay_period</span> <span class="o">=</span> <span class="n">exp_decay_period</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">print_every</span> <span class="o">=</span> <span class="n">print_every</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_result_every</span> <span class="o">=</span> <span class="n">save_result_every</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">checkpoint_every</span> <span class="o">=</span> <span class="n">checkpoint_every</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decay_threshold</span> <span class="o">=</span> <span class="n">decay_threshold</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">teacher_forcing_step</span> <span class="o">=</span> <span class="n">teacher_forcing_step</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_teacher_forcing_ratio</span> <span class="o">=</span> <span class="n">min_teacher_forcing_ratio</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metric</span> <span class="o">=</span> <span class="n">CharacterErrorRate</span><span class="p">(</span><span class="n">id2char</span><span class="p">,</span> <span class="n">EOS_token</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SupervisedTrainer.train"><a class="viewcode-back" href="../../../Trainer.html#kospeech.trainer.supervised_trainer.SupervisedTrainer.train">[docs]</a>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">epoch_time_step</span><span class="p">,</span> <span class="n">num_epochs</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span> <span class="n">resume</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run training for a given model.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            model (torch.nn.Module): model to train</span>
+<span class="sd">            batch_size (int): batch size for experiment</span>
+<span class="sd">            epoch_time_step (int): number of time step for training</span>
+<span class="sd">            num_epochs (int): number of epochs for training</span>
+<span class="sd">            teacher_forcing_ratio (float): teaching forcing ratio (default 0.99)</span>
+<span class="sd">            resume(bool, optional): resume training with the latest checkpoint, (default False)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">start_epoch</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">prev_train_cer</span> <span class="o">=</span> <span class="mf">1.</span>
+
+        <span class="k">if</span> <span class="n">resume</span><span class="p">:</span>
+            <span class="n">checkpoint</span> <span class="o">=</span> <span class="n">Checkpoint</span><span class="p">()</span>
+            <span class="n">latest_checkpoint_path</span> <span class="o">=</span> <span class="n">checkpoint</span><span class="o">.</span><span class="n">get_latest_checkpoint</span><span class="p">()</span>
+            <span class="n">resume_checkpoint</span> <span class="o">=</span> <span class="n">checkpoint</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">latest_checkpoint_path</span><span class="p">)</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">resume_checkpoint</span><span class="o">.</span><span class="n">model</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">resume_checkpoint</span><span class="o">.</span><span class="n">optimizer</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span> <span class="o">=</span> <span class="n">resume_checkpoint</span><span class="o">.</span><span class="n">criterion</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trainset_list</span> <span class="o">=</span> <span class="n">resume_checkpoint</span><span class="o">.</span><span class="n">trainset_list</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">validset</span> <span class="o">=</span> <span class="n">resume_checkpoint</span><span class="o">.</span><span class="n">validset</span>
+            <span class="n">start_epoch</span> <span class="o">=</span> <span class="n">resume_checkpoint</span><span class="o">.</span><span class="n">epoch</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;start&#39;</span><span class="p">)</span>
+        <span class="n">train_begin_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start_epoch</span><span class="p">,</span> <span class="n">num_epochs</span><span class="p">):</span>
+            <span class="n">train_queue</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">trainset</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainset_list</span><span class="p">:</span>
+                <span class="n">trainset</span><span class="o">.</span><span class="n">shuffle</span><span class="p">()</span>
+
+            <span class="c1"># Training</span>
+            <span class="n">train_loader</span> <span class="o">=</span> <span class="n">MultiDataLoader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trainset_list</span><span class="p">,</span> <span class="n">train_queue</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">)</span>
+            <span class="n">train_loader</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+            <span class="n">train_loss</span><span class="p">,</span> <span class="n">train_cer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_epoches</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">epoch_time_step</span><span class="p">,</span> <span class="n">train_begin_time</span><span class="p">,</span>
+                                                       <span class="n">train_queue</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="p">)</span>
+            <span class="n">train_loader</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+            <span class="n">Checkpoint</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainset_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">validset</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Epoch </span><span class="si">%d</span><span class="s1"> (Training) Loss </span><span class="si">%0.4f</span><span class="s1"> CER </span><span class="si">%0.4f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">train_loss</span><span class="p">,</span> <span class="n">train_cer</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">prev_train_cer</span> <span class="o">-</span> <span class="n">train_cer</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">decay_threshold</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">set_scheduler</span><span class="p">(</span>
+                    <span class="n">ExponentialDecayLR</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">get_lr</span><span class="p">(),</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">low_plateau_lr</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">exp_decay_period</span>
+                    <span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">exp_decay_period</span>
+                <span class="p">)</span>
+
+            <span class="n">prev_train_cer</span> <span class="o">=</span> <span class="n">train_cer</span>
+            <span class="n">teacher_forcing_ratio</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">teacher_forcing_step</span>
+            <span class="n">teacher_forcing_ratio</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">min_teacher_forcing_ratio</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="p">)</span>
+
+            <span class="c1"># Validation</span>
+            <span class="n">valid_queue</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">valid_loader</span> <span class="o">=</span> <span class="n">AudioDataLoader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">validset</span><span class="p">,</span> <span class="n">valid_queue</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">valid_loader</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+            <span class="n">valid_loss</span><span class="p">,</span> <span class="n">valid_cer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">valid_queue</span><span class="p">)</span>
+            <span class="n">valid_loader</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Epoch </span><span class="si">%d</span><span class="s1"> (Validate) Loss </span><span class="si">%0.4f</span><span class="s1"> CER </span><span class="si">%0.4f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">valid_loss</span><span class="p">,</span> <span class="n">valid_cer</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_save_epoch_result</span><span class="p">(</span><span class="n">train_result</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">train_dict</span><span class="p">,</span> <span class="n">train_loss</span><span class="p">,</span> <span class="n">train_cer</span><span class="p">],</span>
+                                    <span class="n">valid_result</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">valid_dict</span><span class="p">,</span> <span class="n">valid_loss</span><span class="p">,</span> <span class="n">valid_cer</span><span class="p">])</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Epoch </span><span class="si">%d</span><span class="s1"> Training result saved as a csv file complete !!&#39;</span> <span class="o">%</span> <span class="n">epoch</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">model</span></div>
+
+<div class="viewcode-block" id="SupervisedTrainer.train_epoches"><a class="viewcode-back" href="../../../Trainer.html#kospeech.trainer.supervised_trainer.SupervisedTrainer.train_epoches">[docs]</a>    <span class="k">def</span> <span class="nf">train_epoches</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">epoch_time_step</span><span class="p">,</span> <span class="n">train_begin_time</span><span class="p">,</span> <span class="n">queue</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run training one epoch</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            model (torch.nn.Module): model to train</span>
+<span class="sd">            epoch (int): number of current epoch</span>
+<span class="sd">            epoch_time_step (int): total time step in one epoch</span>
+<span class="sd">            train_begin_time (int): time of train begin</span>
+<span class="sd">            queue (queue.Queue): training queue, containing input, targets, input_lengths, target_lengths</span>
+<span class="sd">            teacher_forcing_ratio (float): teaching forcing ratio (default 0.99)</span>
+
+<span class="sd">        Returns: loss, cer</span>
+<span class="sd">            - **loss** (float): loss of current epoch</span>
+<span class="sd">            - **cer** (float): character error rate of current epoch</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cer</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="n">epoch_loss_total</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="n">total_num</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">timestep</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+        <span class="n">begin_time</span> <span class="o">=</span> <span class="n">epoch_begin_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">inputs</span><span class="p">,</span> <span class="n">scripts</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">,</span> <span class="n">target_lengths</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># Empty feats means closing one loader</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;left train_loader: </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+            <span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">scripts</span> <span class="o">=</span> <span class="n">scripts</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">targets</span> <span class="o">=</span> <span class="n">scripts</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:]</span>
+
+            <span class="n">model</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">flatten_parameters</span><span class="p">()</span>
+            <span class="n">output</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">,</span> <span class="n">scripts</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="n">teacher_forcing_ratio</span><span class="p">)</span>
+
+            <span class="n">logit</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">hypothesis</span> <span class="o">=</span> <span class="n">logit</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">(</span><span class="n">logit</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">logit</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)),</span> <span class="n">targets</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+            <span class="n">epoch_loss_total</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+
+            <span class="n">cer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">hypothesis</span><span class="p">)</span>
+            <span class="n">total_num</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">input_lengths</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+            <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+
+            <span class="n">timestep</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">empty_cache</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">timestep</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_every</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">current_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+                <span class="n">elapsed</span> <span class="o">=</span> <span class="n">current_time</span> <span class="o">-</span> <span class="n">begin_time</span>
+                <span class="n">epoch_elapsed</span> <span class="o">=</span> <span class="p">(</span><span class="n">current_time</span> <span class="o">-</span> <span class="n">epoch_begin_time</span><span class="p">)</span> <span class="o">/</span> <span class="mf">60.0</span>
+                <span class="n">train_elapsed</span> <span class="o">=</span> <span class="p">(</span><span class="n">current_time</span> <span class="o">-</span> <span class="n">train_begin_time</span><span class="p">)</span> <span class="o">/</span> <span class="mf">3600.0</span>
+
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;timestep: </span><span class="si">{:4d}</span><span class="s1">/</span><span class="si">{:4d}</span><span class="s1">, loss: </span><span class="si">{:.4f}</span><span class="s1">, cer: </span><span class="si">{:.2f}</span><span class="s1">, elapsed: </span><span class="si">{:.2f}</span><span class="s1">s </span><span class="si">{:.2f}</span><span class="s1">m </span><span class="si">{:.2f}</span><span class="s1">h&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">timestep</span><span class="p">,</span>
+                    <span class="n">epoch_time_step</span><span class="p">,</span>
+                    <span class="n">epoch_loss_total</span> <span class="o">/</span> <span class="n">total_num</span><span class="p">,</span>
+                    <span class="n">cer</span><span class="p">,</span>
+                    <span class="n">elapsed</span><span class="p">,</span> <span class="n">epoch_elapsed</span><span class="p">,</span> <span class="n">train_elapsed</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">begin_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">timestep</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_result_every</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_save_step_result</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_step_result</span><span class="p">,</span> <span class="n">epoch_loss_total</span> <span class="o">/</span> <span class="n">total_num</span><span class="p">,</span> <span class="n">cer</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">timestep</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkpoint_every</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">Checkpoint</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span>  <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainset_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">validset</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+        <span class="n">Checkpoint</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainset_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">validset</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;train() completed&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">epoch_loss_total</span> <span class="o">/</span> <span class="n">total_num</span><span class="p">,</span> <span class="n">cer</span></div>
+
+<div class="viewcode-block" id="SupervisedTrainer.validate"><a class="viewcode-back" href="../../../Trainer.html#kospeech.trainer.supervised_trainer.SupervisedTrainer.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">queue</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run training one epoch</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            model (torch.nn.Module): model to train</span>
+<span class="sd">            queue (queue.Queue): validation queue, containing input, targets, input_lengths, target_lengths</span>
+
+<span class="sd">        Returns: loss, cer</span>
+<span class="sd">            - **loss** (float): loss of validation</span>
+<span class="sd">            - **cer** (float): character error rate of validation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">total_loss</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="n">total_num</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">cer</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+        <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;validate() start&#39;</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">inputs</span><span class="p">,</span> <span class="n">scripts</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">,</span> <span class="n">script_lengths</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+                <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">break</span>
+
+                <span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+                <span class="n">scripts</span> <span class="o">=</span> <span class="n">scripts</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+                <span class="n">targets</span> <span class="o">=</span> <span class="n">scripts</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:]</span>
+                <span class="n">target_lengths</span> <span class="o">=</span> <span class="n">targets</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+                <span class="n">model</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">flatten_parameters</span><span class="p">()</span>
+                <span class="n">output</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+
+                <span class="n">logit</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+                <span class="n">hypothesis</span> <span class="o">=</span> <span class="n">logit</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+
+                <span class="n">logit</span> <span class="o">=</span> <span class="n">logit</span><span class="p">[:,</span> <span class="p">:</span><span class="n">target_lengths</span><span class="p">]</span>
+                <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">(</span><span class="n">logit</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">logit</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)),</span> <span class="n">targets</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+
+                <span class="n">total_loss</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+                <span class="n">total_num</span> <span class="o">+=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">input_lengths</span><span class="p">)</span>
+                <span class="n">cer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">hypothesis</span><span class="p">)</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;validate() completed&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">total_loss</span> <span class="o">/</span> <span class="n">total_num</span><span class="p">,</span> <span class="n">cer</span></div>
+
+    <span class="k">def</span> <span class="nf">_save_epoch_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train_result</span><span class="p">,</span> <span class="n">valid_result</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Save result of epoch &quot;&quot;&quot;</span>
+        <span class="n">train_dict</span><span class="p">,</span> <span class="n">train_loss</span><span class="p">,</span> <span class="n">train_cer</span> <span class="o">=</span> <span class="n">train_result</span>
+        <span class="n">valid_dict</span><span class="p">,</span> <span class="n">valid_loss</span><span class="p">,</span> <span class="n">valid_cer</span> <span class="o">=</span> <span class="n">valid_result</span>
+
+        <span class="n">train_dict</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">train_loss</span><span class="p">)</span>
+        <span class="n">valid_dict</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">valid_loss</span><span class="p">)</span>
+
+        <span class="n">train_dict</span><span class="p">[</span><span class="s2">&quot;cer&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">train_cer</span><span class="p">)</span>
+        <span class="n">valid_dict</span><span class="p">[</span><span class="s2">&quot;cer&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">valid_cer</span><span class="p">)</span>
+
+        <span class="n">train_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">train_dict</span><span class="p">)</span>
+        <span class="n">valid_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">valid_dict</span><span class="p">)</span>
+
+        <span class="n">train_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">TRAIN_RESULT_PATH</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;cp949&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">valid_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">VALID_RESULT_PATH</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;cp949&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_save_step_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train_step_result</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">cer</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Save result of --save_result_every step &quot;&quot;&quot;</span>
+        <span class="n">train_step_result</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
+        <span class="n">train_step_result</span><span class="p">[</span><span class="s2">&quot;cer&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cer</span><span class="p">)</span>
+
+        <span class="n">train_step_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">train_step_result</span><span class="p">)</span>
+        <span class="n">train_step_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">TRAIN_STEP_RESULT_PATH</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;cp949&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Soohwan Kim
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

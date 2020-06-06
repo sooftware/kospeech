@@ -21,20 +21,19 @@ sys.path.append(os.path.abspath('../..'))
 cwd = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.abspath(os.path.join(cwd, '../../')))
 sys.path.append(os.path.abspath(os.path.join(cwd, '../../../')))
-sys.path.append("C:/SooHwanKim/Desktop/SooHwan/Workspace/python_workspace/End-to-end-Speech-Recognition/")
 import sphinx_rtd_theme
 
 
 # -- Project information -----------------------------------------------------
 
-project = 'End-to-end Speech Recognition'
+project = 'KoSpeech'
 copyright = '2020, Soohwan Kim'
 author = 'Soohwan Kim'
 
 # The short X.Y version
-version = '2.0'
+version = '0.0'
 # The full version, including alpha/beta/rc tags
-release = '2.0'
+release = '0.0'
 
 
 # -- General configuration ---------------------------------------------------
@@ -137,7 +136,7 @@ html_static_path = ['_static']
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'End-to-end.Speech.Recognition.doc'
+htmlhelp_basename = 'KoSpeech.doc'
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -164,7 +163,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'KoreanSpeechRecognition.tex', 'Korean Speech Recognition Documentation',
+    (master_doc, 'KoSpeech.tex', 'Korean Speech Recognition Documentation',
      'SooHwan Kim', 'manual'),
 ]
 
@@ -174,7 +173,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'koreanspeechrecognition', 'Korean Speech Recognition Documentation',
+    (master_doc, 'kospeech', 'Korean Speech Recognition Documentation',
      [author], 1)
 ]
 
@@ -185,8 +184,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'KoreanSpeechRecognition', 'Korean Speech Recognition Documentation',
-     author, 'KoreanSpeechRecognition', 'One line description of project.',
+    (master_doc, 'KoSpeech', 'Korean Speech Recognition Documentation',
+     author, 'Soohwan Kim', 'One line description of project.',
      'Miscellaneous'),
 ]
 

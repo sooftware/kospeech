@@ -1,6 +1,6 @@
-### e2e module
+### `kospeech`
 
-<img src="https://user-images.githubusercontent.com/42150335/83361143-6d8a0980-a3c1-11ea-8bb6-8d5eefdb48fb.png" width=800>   
+<img src="https://user-images.githubusercontent.com/42150335/83944090-d8ad6300-a83b-11ea-8a2c-2f0d9ba0e54d.png" width=700>   
   
-Our e2e (End-to-end) module's structure is implement as above.   
-e2e module has modularized and extensible components for las models, trainer, evaluator, checkpoints, data_loader etc...  
+`kospeech` module has modularized and extensible components for las models, trainer, evaluator, checkpoints etc...   
+In addition, `kospeech` enables learning in a variety of environments with a simple option setting.  

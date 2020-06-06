@@ -4,9 +4,8 @@ import torch.nn as nn
 
 class LabelSmoothingLoss(nn.Module):
     """
-    Copied from https://github.com/pytorch/pytorch/issues/7455
-
     Provides Label-Smoothing loss.
+    Copied from https://github.com/pytorch/pytorch/issues/7455
 
     Args:
         num_classes (int): the number of classfication

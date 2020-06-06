@@ -1,10 +1,9 @@
-#  End-to-end Speech Recognition
-#  @source_code{
-#      title={End-to-end Speech Recognition},
-#      author={Soohwan Kim, Seyoung Bae, Cheolhwang Won},
-#      link={https://github.com/sooftware/End-to-End-Korean-Speech-Recognition},
-#      year={2020}
-#  }
+# @github{
+#   title = {KoSpeech},
+#   author = {Soohwan Kim, Seyoung Bae, Cheolhwang Won},
+#   link = {https://github.com/sooftware/KoSpeech},
+#   year = {2020}
+# }
 
 DATASET_PATH='/data1/'
 MODEL_PATH=''

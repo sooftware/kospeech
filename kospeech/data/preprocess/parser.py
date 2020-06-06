@@ -21,22 +21,22 @@ class AudioParser(object):
 
     Method:
         - **parse_audio()**: abstract method. you have to override this method.
-        - **parse_script()**: abstract method. you have to override this method.
+        - **parse_transcript()**: abstract method. you have to override this method.
     """
     def __init__(self, dataset_path, noiseset_size, sample_rate=16000, noise_level=0.7, noise_augment=False):
         if noise_augment:
             self.noise_injector = NoiseInjector(dataset_path, noiseset_size, sample_rate, noise_level)
 
-    def parse_audio(self, audio_path, augment_method):
+    def parse_audio(self, *args, **kwargs):
         raise NotImplementedError
 
-    def parse_transcript(self, script_path):
+    def parse_transcript(self, *args, **kwargs):
         raise NotImplementedError
 
 
-class SpectrogramParser(AudioParser):
+class MelSpectrogramParser(AudioParser):
     """
-    Parses audio file into spectrogram with various options.
+    Parses audio file into mel spectrogram with various options.
 
     Args:
         feature_extract_by (str): which library to use for feature extraction: [librosa, torchaudio] (default: librosa)
@@ -64,7 +64,7 @@ class SpectrogramParser(AudioParser):
                  time_mask_para=70, freq_mask_para=12, time_mask_num=2, freq_mask_num=2,
                  sos_id=1, eos_id=2, target_dict=None,
                  noise_augment=False, dataset_path=None, noiseset_size=0, noise_level=0.7):
-        super(SpectrogramParser, self).__init__(dataset_path, noiseset_size, sample_rate, noise_level, noise_augment)
+        super(MelSpectrogramParser, self).__init__(dataset_path, noiseset_size, sample_rate, noise_level, noise_augment)
         self.sample_rate = sample_rate
         self.n_mels = n_mels
         self.window_size = window_size

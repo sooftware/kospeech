@@ -58,8 +58,8 @@ class Listener(BaseRNN):
         - **output**: tensor containing the encoded features of the input sequence
     """
 
-    def __init__(self, input_size, hidden_dim, device, dropout_p=0.5, num_layers=1,
-                 bidirectional=True, rnn_type='gru', extractor='vgg', activation='hardtanh'):
+    def __init__(self, input_size, hidden_dim, device, dropout_p=0.3, num_layers=3,
+                 bidirectional=True, rnn_type='lstm', extractor='vgg', activation='elu'):
         input_size = (input_size - 1) << 5 if input_size % 2 else input_size << 5
         super(Listener, self).__init__(input_size, hidden_dim, num_layers, rnn_type, dropout_p, bidirectional, device)
 

@@ -1,10 +1,9 @@
-#  End-to-end Speech Recognition
-#  @source_code{
-#      title={End-to-end Speech Recognition},
-#      author={Soohwan Kim, Seyoung Bae, Cheolhwang Won},
-#      link={https://github.com/sooftware/End-to-End-Korean-Speech-Recognition},
-#      year={2020}
-#  }
+# @github{
+#   title = {KoSpeech},
+#   author = {Soohwan Kim, Seyoung Bae, Cheolhwang Won},
+#   link = {https://github.com/sooftware/KoSpeech},
+#   year = {2020}
+# }
 
 DATASET_PATH='/data3/'
 DATA_LIST_PATH='./data/data_list/filter_train_list.csv'
@@ -23,7 +22,7 @@ TEACHER_FORCING_RATIO=1.0
 TEACHER_FORCING_STEP=0.05
 MIN_TEACHER_FORCING_RATIO=0.7
 VALID_RATIO=0.003
-MAX_LEN=71
+MAX_LEN=151
 MAX_GRAD_NORM=400
 INIT_LR=3e-04
 HIGH_PLATEAU_LR=3e-04
