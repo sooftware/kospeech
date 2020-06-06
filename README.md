@@ -176,7 +176,7 @@ python setup.py install
 ### Step 1: Data Preprocessing  
     
 you can preprocess `KsponSpeech corpus` refer [here](https://github.com/sooftware/KsponSpeech.preprocess).     
-Or refer [this documentation](https://sooftware.github.io/KoSpeech/notes/preparation.html). This documentation contains information regarding the preprocessing of `KsponSpeech`.   
+Or refer [this page](https://github.com/sooftware/KoSpeech/wiki/Preparation-before-Training). This documentation contains information regarding the preprocessing of `KsponSpeech`.   
 
 ### Step 2: Run `main.py`
 * Default setting  
