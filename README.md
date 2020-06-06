@@ -78,7 +78,6 @@ Our model architeuture is as follows.
 ListenAttendSpell(
   (listener): Listener(
     (extractor): VGGExtractor(
-      (activation): ELU(alpha=1.0, inplace=True)
       (cnn): MaskCNN(
         (sequential): Sequential(
           (0): Conv2d(1, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
@@ -114,7 +113,7 @@ ListenAttendSpell(
 )
 ``` 
   
-### `kospeech`
+### KoSpeech
 
 <img src="https://user-images.githubusercontent.com/42150335/83944090-d8ad6300-a83b-11ea-8a2c-2f0d9ba0e54d.png" width=700>   
   
