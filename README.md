@@ -43,7 +43,7 @@ We have referred to many papers to develop the best model possible. And tried to
 
 ## Roadmap
   
-<img src="https://user-images.githubusercontent.com/42150335/83943593-5a02f680-a838-11ea-9075-53a76d1aa9c1.png" width=350> 
+<img src="https://user-images.githubusercontent.com/42150335/83952233-5ee49c00-a872-11ea-8c98-5b98236125e1.png" width=450> 
   
 End-to-end (E2E) automatic speech recognition (ASR) is an emerging paradigm in the field of neural network-based speech recognition that offers multiple benefits. Traditional “hybrid” ASR systems, which are comprised of an acoustic model, language model, and pronunciation model, require separate training of these components, each of which can be complex.   
   
