@@ -1,16 +1,16 @@
 
-# **End-to-end Speech Recognition**  
+# **KoSpeech: Open-Source Speech Recognition in Korean**  
   
 ### Character unit based end2end automatic speech recognition in Korean  
    
 [<img src="https://github.com/gentaiscool/end2end-asr-pytorch/raw/master/img/pytorch-logo-dark.png" height=18>](https://pytorch.org/) <img src="https://img.shields.io/badge/License-Apache--2.0-yellow" height=20> [<img src="https://img.shields.io/badge/chat-on%20gitter-4fb99a" height=20>](https://gitter.im/Korean-Speech-Recognition/community)   
   
-### [**Documentation**](https://sooftware.github.io/End-to-end-Speech-Recognition/)   
+### [**Documentation**](https://sooftware.github.io/KoSpeech/)   
   
 ## Intro
 
-`End-to-end Speech Recognition` 은 [PyTorch](http://pytorch.org)를 이용하여 구현한 E2E 방식의 `한국어 음성인식` 프로젝트입니다.  
-`e2e` 모듈은 LAS 모델, 학습 및 추론, 체크포인트 기능 등 여러 확장 가능한 요소로 모듈화 되어있습니다.    
+`KoSpeech` 은 [PyTorch](http://pytorch.org)를 이용하여 구현한 E2E 방식의 `한국어 음성인식` 프로젝트입니다.  
+`kospeech` 모듈은 LAS 모델, 학습 및 추론, 체크포인트 기능 등 여러 확장 가능한 요소로 모듈화 되어있습니다.    
 저희는 다양한 [피드백 및 컨트리뷰션](https://github.com/sooftware/End-to-end-Speech-Recognition/issues)을 기대하고 있습니다.
   
 저희는 AI Hub에서 제공하는 **1000시간**의 한국어 음성 데이터인 `KsponSpeech` 코퍼스를 사용했습니다. 현재 저희 모델은 해당 데이터셋에서 **86.98% CRR**을 기록했으며 더욱 높은 인식률을 위해 지속적으로 연구중에 있습니다. 또한 `Kaldi-zeroth corpus` 테스트 결과 **91.0% CRR**을 기록했습니다.    
@@ -19,24 +19,22 @@
   
 ## Features  
   
-* [End-to-end (E2E) automatic speech recognition](https://sooftware.github.io/End-to-end-Speech-Recognition/)
-* [Various Options](https://sooftware.github.io/End-to-end-Speech-Recognition/notes/opts.html)
-* [VGG Extractor](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.sub_layers)
-* [MaskConv & pack_padded_sequence](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.sub_layers)
-* [Multi-headed (location-aware / scaled dot-product) Attention](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.attention)
-* [Top K Decoding (Beam Search)](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.topk_decoder)
-* [Spectrogram Parser](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.parser)
-* [Delete silence](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.parser)
-* [SpecAugment](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.augment)
-* [NoiseAugment](https://sooftware.github.io/End-to-end-Speech-Recognition/Feature.html#module-e2e.feature.augment)
-* [Label Smoothing](https://sooftware.github.io/End-to-end-Speech-Recognition/Loss.html)
+* [End-to-end (E2E) automatic speech recognition](https://sooftware.github.io/KoSpeech/)
+* [Various Options](https://sooftware.github.io/KoSpeech/notes/opts.html)
+* [(VGG / DeepSpeech2) Extractor](https://sooftware.github.io/KoSpeech/Model.html#module-e2e.model.sub_layers.extractor)
+* [MaskCNN & pack_padded_sequence](https://sooftware.github.io/KoSpeech/Model.html#module-kospeech.model.convolutional)
+* [Multi-headed (location-aware / scaled dot-product) Attention](https://sooftware.github.io/KoSpeech/Model.html#module-kospeech.model.attention)
+* [Top K Decoding (Beam Search)](https://sooftware.github.io/KoSpeech/Model.html#module-kospeech.model.beam_search)
+* [MelSpectrogram Parser](https://sooftware.github.io/KoSpeech/Data.html#module-kospeech.data.preprocess.parser)
+* [Delete silence](https://sooftware.github.io/KoSpeech/Data.html#module-kospeech.data.preprocess.audio)
+* [SpecAugment](https://sooftware.github.io/KoSpeech/Data.html#module-kospeech.data.preprocess.augment)
+* [NoiseAugment](https://sooftware.github.io/KoSpeech/Data.html#module-kospeech.data.preprocess.augment)
+* [Label Smoothing](https://sooftware.github.io/KoSpeech/Optim.html#module-kospeech.optim.loss)
 
-* [Save & load Checkpoint](https://sooftware.github.io/End-to-end-Speech-Recognition/Modules.html#module-e2e.modules.checkpoint)
-* [Various options can be set using parser](https://sooftware.github.io/End-to-end-Speech-Recognition/Modules.html#module-e2e.modules.opts)
-* [Implement data loader as multi-thread for speed](https://sooftware.github.io/End-to-end-Speech-Recognition/Data_loader.html#id1)
-* [Learning Rate Scheduling](https://sooftware.github.io/End-to-end-Speech-Recognition/Optim.html#module-e2e.optim.lr_scheduler)  
-* [Show training states as log](https://sooftware.github.io/End-to-end-Speech-Recognition/Modules.html#module-e2e.modules.logger)
-* Teacher forcing scheduling
+* [Save & load Checkpoint](https://sooftware.github.io/KoSpeech/Checkpoint.html#id1)
+* [Learning Rate Scheduling](https://sooftware.github.io/KoSpeech/Optim.html#module-kospeech.optim.lr_scheduler)
+* [Implement data loader as multi-thread for speed](https://sooftware.github.io/KoSpeech/Data.html#module-kospeech.data.data_loader)
+* Scheduled Sampling (Teacher forcing scheduling)
 * Inference with batching
 * Multi-GPU training
   
