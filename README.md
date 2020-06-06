@@ -24,7 +24,7 @@ Also our model has recorded **91.0% CRR** in `Kaldi-zeroth corpus`
   
 * [End-to-end (E2E) automatic speech recognition](https://sooftware.github.io/KoSpeech/)
 * [Various Options](https://sooftware.github.io/KoSpeech/notes/opts.html)
-* [(VGG / DeepSpeech2) Extractor](https://sooftware.github.io/KoSpeech/Model.html#module-e2e.model.sub_layers.extractor)
+* [(VGG / DeepSpeech2) Extractor](https://sooftware.github.io/KoSpeech/Model.html#module-kospeech.model.convolutional)
 * [MaskCNN & pack_padded_sequence](https://sooftware.github.io/KoSpeech/Model.html#module-kospeech.model.convolutional)
 * [Multi-headed (location-aware / scaled dot-product) Attention](https://sooftware.github.io/KoSpeech/Model.html#module-kospeech.model.attention)
 * [Top K Decoding (Beam Search)](https://sooftware.github.io/KoSpeech/Model.html#module-kospeech.model.beam_search)
