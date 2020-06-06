@@ -1,7 +1,7 @@
 from distutils.core import setup
 
 setup(
-    name='End-to-end-Speech-Recognition',
+    name='KoSpeech',
     version='1.0',
     install_requires=[
         'torch>=1.4.0',
@@ -9,6 +9,7 @@ setup(
         'librosa >= 0.7.0',
         'numpy',
         'pandas',
-        'tqdm'
+        'tqdm',
+        'matplotlib'
     ]
 )

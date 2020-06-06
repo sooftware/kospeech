@@ -29,7 +29,7 @@ class ListenAttendSpell(nn.Module):
         >>> listener = Listener(...)
         >>> speller = Speller(...)
         >>> model = ListenAttendSpell(listener, speller)
-        >>> logit = model()
+        >>> logit = model(...)
     """
     def __init__(self, listener, speller):
         super(ListenAttendSpell, self).__init__()

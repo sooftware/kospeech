@@ -24,9 +24,9 @@ class SupervisedTrainer(object):
         save_result_every (int): number of timesteps to save result after
         checkpoint_every (int): number of timesteps to checkpoint after
     """
-    train_step_result = {'loss': [], 'cer': []}
     train_dict = {'loss': [], 'cer': []}
     valid_dict = {'loss': [], 'cer': []}
+    train_step_result = {'loss': [], 'cer': []}
     TRAIN_RESULT_PATH = "./data/train_result/train_result.csv"
     VALID_RESULT_PATH = "./data/train_result/eval_result.csv"
     TRAIN_STEP_RESULT_PATH = "./data/train_result/train_step_result.csv"

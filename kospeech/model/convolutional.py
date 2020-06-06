@@ -90,6 +90,8 @@ class ConvolutionalExtractor(nn.Module):
             self.activation = nn.ELU(inplace=True)
         elif activation.lower() == 'leacky_relu':
             self.activation = nn.LeakyReLU(inplace=True)
+        elif activation.lower() == 'gelu':
+            self.activation = nn.GELU(inplace=True)
         else:
             raise ValueError("Unsupported activation function : {0}".format(activation))
 

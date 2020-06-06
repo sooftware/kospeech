@@ -131,5 +131,5 @@ class MelSpectrogramParser(AudioParser):
 
         return spectrogram
 
-    def parse_transcript(self, script_path):
+    def parse_transcript(self, *args, **kwargs):
         raise NotImplementedError
