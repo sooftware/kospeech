@@ -1,4 +1,4 @@
-# **KoSpeech: Open-Source Automatic Speech Recognition in Korean**   
+# **KoSpeech: Open-Source Speech Recognition in Korean**   
    
 [<img src="https://github.com/gentaiscool/end2end-asr-pytorch/raw/master/img/pytorch-logo-dark.png" height=18>](https://pytorch.org/) <img src="https://img.shields.io/badge/License-Apache--2.0-yellow" height=20> [<img src="https://img.shields.io/badge/chat-on%20gitter-4fb99a" height=20>](https://gitter.im/Korean-Speech-Recognition/community)   
   
@@ -23,18 +23,18 @@ Also our model has recorded **91.0% CRR** in `Kaldi-zeroth corpus`
 * [End-to-end (E2E) automatic speech recognition](https://sooftware.github.io/KoSpeech/)
 * [Various Options](https://sooftware.github.io/KoSpeech/notes/opts.html)
 * [(VGG / DeepSpeech2) Extractor](https://sooftware.github.io/KoSpeech/Model.html#module-e2e.model.sub_layers.extractor)
-* [MaskCNN & pack_padded_sequence](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.sub_layers.maskCNN)
-* [Multi-headed (location-aware / scaled dot-product) Attention](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.attention)
-* [Top K Decoding (Beam Search)](https://sooftware.github.io/End-to-end-Speech-Recognition/Model.html#module-e2e.model.beam_search)
-* [Spectrogram Parser](https://sooftware.github.io/End-to-end-Speech-Recognition/Data.html#module-e2e.data.preprocess.parser)
-* [Delete silence](https://sooftware.github.io/End-to-end-Speech-Recognition/Data.html#module-e2e.data.preprocess.parser)
-* [SpecAugment](https://sooftware.github.io/End-to-end-Speech-Recognition/Data.html#module-e2e.data.augment.spec_augment)
-* [NoiseAugment](https://sooftware.github.io/End-to-end-Speech-Recognition/Data.html#module-e2e.data.augment.noise_augment)
-* [Label Smoothing](https://sooftware.github.io/End-to-end-Speech-Recognition/Optim.html#module-e2e.optim.loss)
+* [MaskCNN & pack_padded_sequence](https://sooftware.github.io/KoSpeech/Model.html#module-kospeech.model.convolutional)
+* [Multi-headed (location-aware / scaled dot-product) Attention](https://sooftware.github.io/KoSpeech/Model.html#module-kospeech.model.attention)
+* [Top K Decoding (Beam Search)](https://sooftware.github.io/KoSpeech/Model.html#module-kospeech.model.beam_search)
+* [MelSpectrogram Parser](https://sooftware.github.io/KoSpeech/Data.html#module-kospeech.data.preprocess.parser)
+* [Delete silence](https://sooftware.github.io/KoSpeech/Data.html#module-kospeech.data.preprocess.audio)
+* [SpecAugment](https://sooftware.github.io/KoSpeech/Data.html#module-kospeech.data.preprocess.augment)
+* [NoiseAugment](https://sooftware.github.io/KoSpeech/Data.html#module-kospeech.data.preprocess.augment)
+* [Label Smoothing](https://sooftware.github.io/KoSpeech/Optim.html#module-kospeech.optim.loss)
 
-* [Save & load Checkpoint](https://sooftware.github.io/End-to-end-Speech-Recognition/Solver.html#module-e2e.solver.checkpoint)
-* [Learning Rate Scheduling](https://sooftware.github.io/End-to-end-Speech-Recognition/Optim.html#module-e2e.optim.lr_scheduler)
-* [Implement data loader as multi-thread for speed](https://sooftware.github.io/End-to-end-Speech-Recognition/Data.html#module-e2e.data.data_loader)
+* [Save & load Checkpoint](https://sooftware.github.io/KoSpeech/Checkpoint.html#id1)
+* [Learning Rate Scheduling](https://sooftware.github.io/KoSpeech/Optim.html#module-kospeech.optim.lr_scheduler)
+* [Implement data loader as multi-thread for speed](https://sooftware.github.io/KoSpeech/Data.html#module-kospeech.data.data_loader)
 * Scheduled Sampling (Teacher forcing scheduling)
 * Inference with batching
 * Multi-GPU training
@@ -176,7 +176,7 @@ python setup.py install
 ### Step 1: Data Preprocessing  
     
 you can preprocess `KsponSpeech corpus` refer [here](https://github.com/sooftware/KsponSpeech.preprocess).     
-Or refer [this documentation](https://github.com/sooftware/End-to-end-Speech-Recognition/wiki/Preparation-before-Training). This documentation contains information regarding the preprocessing of `KsponSpeech`.   
+Or refer [this documentation](https://sooftware.github.io/KoSpeech/notes/preparation.html). This documentation contains information regarding the preprocessing of `KsponSpeech`.   
 
 ### Step 2: Run `main.py`
 * Default setting  
