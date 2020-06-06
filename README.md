@@ -101,13 +101,13 @@ ListenAttendSpell(
     (rnn): LSTM(512, 512, num_layers=2, batch_first=True, dropout=0.3)
     (embedding): Embedding(2038, 512)
     (input_dropout): Dropout(p=0.3, inplace=False)
-    (out_projection): Linear(in_features=512, out_features=2038, bias=True)
     (attention): MultiHeadAttention(
       (scaled_dot): ScaledDotProductAttention()
       (query_projection): Linear(in_features=512, out_features=512, bias=True)
       (value_projection): Linear(in_features=512, out_features=512, bias=True)
       (out_projection): Linear(in_features=1024, out_features=512, bias=True)
     )
+    (out_projection): Linear(in_features=512, out_features=2038, bias=True)
   )
 )
 ``` 
