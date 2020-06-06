@@ -68,7 +68,7 @@ Our project based on Seq2seq with Attention Architecture.
 ![image](https://user-images.githubusercontent.com/42150335/83260135-36b2c880-a1f4-11ea-8b38-ef88dca214bf.png)
   
 `Attention mechanism` helps finding speech alignment. We apply multi-headed (`location-aware` / `scaled dot-product`) attention which you can choose. Location-aware attention proposed in `Attention Based Models for Speech Recognition` paper and we expanded this attention to multi-head. Multi-headed scaled dot attention proposed in `Attention Is All You Need` paper.  
- You can choose between these two options as `attn_mechanism` option. Please [check](https://sooftware.github.io/End-to-end-Speech-Recognition/notes/opts.html) this page.    
+ You can choose between these two options as `attn_mechanism` option. Please [check](https://sooftware.github.io/KoSpeech/notes/opts.html) this page.    
   
 Our model architeuture is as follows.
   
