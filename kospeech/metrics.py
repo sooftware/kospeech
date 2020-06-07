@@ -42,14 +42,14 @@ class ErrorRate(object):
             s1 = label_to_string(target, self.id2char, self.eos_id)
             s2 = label_to_string(y_hat, self.id2char, self.eos_id)
 
-            dist, length = self.metric(s1, s2)
+            dist, length = self.calc_error_rate(s1, s2)
 
             total_dist += dist
             total_length += length
 
         return total_dist, total_length
 
-    def metric(self, *args, **kwargs):
+    def calc_error_rate(self, *args, **kwargs):
         raise NotImplementedError
 
 
@@ -61,7 +61,7 @@ class CharacterErrorRate(ErrorRate):
     def __init__(self, id2char, eos_id):
         super(CharacterErrorRate, self).__init__(id2char, eos_id)
 
-    def metric(self, s1, s2):
+    def calc_error_rate(self, s1, s2):
         """
         Computes the Character Error Rate, defined as the edit distance between the
         two provided sentences after tokenizing to characters.
@@ -87,7 +87,7 @@ class WordErrorRate(ErrorRate):
     def __init__(self, id2char, eos_id):
         super(WordErrorRate, self).__init__(id2char, eos_id)
 
-    def metric(self, s1, s2):
+    def calc_error_rate(self, s1, s2):
         """
         Computes the Word Error Rate, defined as the edit distance between the
         two provided sentences after tokenizing to words.

@@ -1,6 +1,5 @@
 import torch
 import torch.nn as nn
-from torch.autograd import Variable
 
 
 def _inflate(tensor, n_repeat, dim):
@@ -39,6 +38,7 @@ class BeamSearchDecoder(nn.Module):
         self.sos_id = decoder.sos_id
         self.eos_id = decoder.eos_id
         self.min_length = 5
+        self.alpha = 1.2
         self.device = decoder.device
 
     def forward(self, input_var, encoder_outputs, teacher_forcing_ratio=0.0):
@@ -68,15 +68,15 @@ class BeamSearchDecoder(nn.Module):
         stored_scores = list()
         stored_predecessors = list()
         stored_emitted_symbols = list()
-        stored_hidden = list()
 
         for di in range(max_length):
             # Run the RNN one step forward
             step_output, hidden, attn = self.forward_step(input_var, hidden, inflated_encoder_outputs, attn)
             stored_outputs.append(step_output.unsqueeze(1))
 
-            # if di < self.min_length:  # force the output to be longer than self.min_length
-            #     step_output[:, self.eos_id] = -1e20
+            # force the output to be longer than self.min_length
+            if di < self.min_length:
+                step_output[:, self.eos_id] = -float('Inf')
 
             sequence_scores = _inflate(sequence_scores, self.decoder.num_classes, dim=1)  # BKx1 => BKxC
             sequence_scores += step_output  # step_output: BKxC, Cumulative Score
@@ -88,14 +88,6 @@ class BeamSearchDecoder(nn.Module):
 
             # Update fields for next timestep
             # self.pos_index.expand_as(candidates)
-            # tensor([[0, 0, 0],
-            #         [3, 3, 3],
-            #         [6, 6, 6],
-            #         [9, 9, 9],
-            #         [12, 12, 12],
-            #         [15, 15, 15],
-            #         [18, 18, 18],
-            #         [21, 21, 21]])
             predecessors = (candidates / self.decoder.num_classes + self.pos_index.expand_as(candidates))
             predecessors = predecessors.view(batch_size * self.beam_size, 1)  # BKx1
 
@@ -106,30 +98,26 @@ class BeamSearchDecoder(nn.Module):
                                                                          # predecessors: BK
 
             # Update sequence scores and erase scores for end-of-sentence symbol so that they aren't expanded
-            stored_scores.append(sequence_scores.clone())
+            stored_scores.append(sequence_scores.clone() / self.get_length_penalty(di + 1))
             eos_indices = input_var.data.eq(self.eos_id)
             if eos_indices.nonzero().dim() > 0:
-                sequence_scores.data.masked_fill_(eos_indices, -float('inf'))
+                sequence_scores.data.masked_fill_(eos_indices, -float('Inf'))
 
             # Cache results for backtracking
             stored_predecessors.append(predecessors)
             stored_emitted_symbols.append(input_var)
-            stored_hidden.append(hidden)
 
         # Do backtracking to return the optimal values
-        output = self._backtrack(stored_outputs, stored_hidden,
-                                 stored_predecessors, stored_emitted_symbols,
-                                 stored_scores, batch_size)
+        output = self._backtrack(stored_outputs, stored_predecessors, stored_emitted_symbols, stored_scores, batch_size)
 
         decoder_outputs = [step[:, 0, :] for step in output]
         return decoder_outputs
 
-    def _backtrack(self, stored_outputs, stored_hidden, stored_predecessors, stored_emitted_symbols, stored_scores, batch_size):
+    def _backtrack(self, stored_outputs, stored_predecessors, stored_emitted_symbols, stored_scores, batch_size):
         """Backtracks over batch to generate optimal k-sequences.
 
         Args:
             stored_outputs [(batch*k, vocab_size)] * sequence_length: A Tensor of outputs from network
-            stored_hidden [(num_layers, batch*k, hidden_dim)] * sequence_length: A Tensor of hidden states from network
             stored_predecessors [(batch*k)] * sequence_length: A Tensor of predecessors
             stored_emitted_symbols [(batch*k)] * sequence_length: A Tensor of predicted tokens
             scores [(batch*k)] * sequence_length: A Tensor containing sequence scores for every token t = [0, ... , seq_len - 1]
@@ -216,3 +204,11 @@ class BeamSearchDecoder(nn.Module):
         # It is reversed because the backtracking happens in reverse time order
         output = [step.index_select(0, re_sorted_idx).view(batch_size, self.beam_size, -1) for step in reversed(output)]
         return output
+
+    def get_length_penalty(self, length):
+        """
+        Calculate length-penalty.
+        because shorter sentence usually have bigger probability.
+        using alpha = 1.2, min_length = 5 usually.
+        """
+        return ((self.min_length + length) / (self.min_length + 1)) ** self.alpha
