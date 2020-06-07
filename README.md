@@ -1,5 +1,4 @@
 <p align=center><i> <img src="https://user-images.githubusercontent.com/42150335/83980047-7a70a500-a94d-11ea-8210-2da2a2146864.png" width=500> </i></p>  
-  
 ### [**Documentation**](https://sooftware.github.io/KoSpeech/)   
   
 [Korean.ver](https://github.com/sooftware/KoSpeech/blob/master/README_ko.md)  
