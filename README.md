@@ -1,8 +1,6 @@
-<p align=center><i> <img src="https://user-images.githubusercontent.com/42150335/83952582-b8e66100-a874-11ea-8901-a11155833045.png" width=500> </i></p>  
+<p align=center><i> <img src="https://user-images.githubusercontent.com/42150335/83975206-99f7d580-a92d-11ea-80b9-f02f561596e6.png" width=500> </i></p>  
     
 <p align=center><i> <img src="https://github.com/gentaiscool/end2end-asr-pytorch/raw/master/img/pytorch-logo-dark.png" height=20> <img src="https://img.shields.io/badge/License-Apache--2.0-lightgrey" height=20> </i></p> 
-  
-<p align=center> KoSpeech: Open-Source Korean Automatic Speech Recognition in PyTorch </p>
   
 ### [**Documentation**](https://sooftware.github.io/KoSpeech/)   
   
