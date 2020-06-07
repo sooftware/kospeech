@@ -39,9 +39,10 @@ class MultiHeadAttention(nn.Module):
         hidden_dim (int): The number of expected features in the output
         num_heads (int): The number of heads. (default: )
 
-    Inputs: query, value, prev_align
+    Inputs: query, value, prev_attn
         - **query** (batch, q_len, hidden_dim): tensor containing the output features from the decoder.
         - **value** (batch, v_len, hidden_dim): tensor containing features of the encoded input sequence.
+        - **prev_attn** (batch_size * num_heads, v_len): tensor containing previous timestep`s attention (alignment)
 
     Returns: output, attn
         - **output** (batch, output_len, dimensions): tensor containing the attended output features from the decoder.
@@ -140,6 +141,6 @@ class LocationAwareAttention(nn.Module):
         context = torch.bmm(attn.unsqueeze(dim=1), value).squeeze(dim=1)  # Bx1xT X BxTxD => Bx1xD => BxD
 
         # Get output
-        combined = torch.cat([context, query], dim=-1)  # BxD => Bx2D
+        combined = torch.cat([context, query.squeeze(1)], dim=-1)  # BxD => Bx2D
         output = torch.tanh(self.out_projection(combined.view(-1, self.hidden_dim << 1)).view(batch_size, -1, self.hidden_dim))
         return output, attn
