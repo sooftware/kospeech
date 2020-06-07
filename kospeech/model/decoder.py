@@ -53,8 +53,6 @@ class Speller(BaseRNN):
             self.attention = LocationAwareAttention(hidden_dim, num_heads, conv_out_channel=10)
         elif attn_mechanism == 'dot':
             self.attention = MultiHeadAttention(hidden_dim, num_heads)
-        elif attn_mechanism == 'custom':
-            self.attention = CustomizingAttention(hidden_dim, num_heads, conv_out_channel=10)
         else:
             raise ValueError("Unsupported attention: %s".format(attn_mechanism))
 
