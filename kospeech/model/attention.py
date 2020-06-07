@@ -188,7 +188,7 @@ class CustomizingAttention(nn.Module):
         self.scaled_dot = ScaledDotProductAttention(self.dim)
         self.query_projection = nn.Linear(hidden_dim, self.dim * num_heads, bias=True)
         self.value_projection = nn.Linear(hidden_dim, self.dim * num_heads, bias=False)
-        self.loc_conv = nn.Conv1d(in_channels=1, out_channels=conv_out_channel, kernel_size=3, padding=1)
+        self.loc_conv = nn.Conv1d(num_heads, conv_out_channel, kernel_size=3, padding=1)
         self.loc_projection = nn.Linear(conv_out_channel, self.dim, bias=False)
         self.bias = nn.Parameter(torch.rand(self.dim * num_heads).uniform_(-0.1, 0.1))
         self.out_projection = nn.Linear(hidden_dim << 1, hidden_dim, bias=True)
@@ -201,7 +201,9 @@ class CustomizingAttention(nn.Module):
         if prev_attn is None:
             prev_attn = value.new_zeros(batch_size, self.num_heads, v_len)
 
-        loc_energy = self.get_loc_energy(prev_attn, batch_size, v_len)  # get location energy
+        loc_energy = torch.tanh(self.loc_projection(self.loc_conv(prev_attn).transpose(1, 2)))  # BxNxT => BxTxD
+        loc_energy = loc_energy.unsqueeze(1).repeat(1, self.num_heads, 1, 1).view(-1, v_len, self.dim)  # BxTxD => BxNxTxD
+        loc_energy = loc_energy.permute(0, 2, 1, 3).contiguous().view(batch_size, v_len, self.num_heads * self.dim)
 
         query = self.query_projection(query).view(batch_size, q_len, self.num_heads * self.dim)
         value = self.value_projection(value).view(batch_size, v_len, self.num_heads * self.dim) + loc_energy + self.bias
@@ -221,12 +223,3 @@ class CustomizingAttention(nn.Module):
         output = torch.tanh(self.out_projection(combined.view(-1, self.hidden_dim << 1))).view(batch_size, -1, self.hidden_dim)
 
         return output, attn.squeeze()
-
-    def get_loc_energy(self, prev_attn, batch_size, v_len):
-        conv_feat = self.loc_conv(prev_attn.unsqueeze(1))
-        conv_feat = conv_feat.view(batch_size, self.num_heads, -1, v_len).permute(0, 1, 3, 2)
-
-        loc_energy = self.loc_projection(conv_feat).view(batch_size, self.num_heads, v_len, self.dim)
-        loc_energy = loc_energy.permute(0, 2, 1, 3).reshape(batch_size, v_len, self.num_heads * self.dim)
-
-        return loc_energy
