@@ -1,9 +1,9 @@
-import random
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from kospeech.model.attention import LocationAwareAttention, MultiHeadAttention
+import random
 from kospeech.model.encoder import BaseRNN
+from kospeech.model.attention import LocationAwareAttention, MultiHeadAttention
 
 
 class Speller(BaseRNN):

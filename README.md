@@ -182,7 +182,7 @@ Or refer [this page](https://github.com/sooftware/KoSpeech/wiki/Preparation-befo
 ### Step 2: Run `main.py`
 * Default setting  
 ```
-$ ./main.sh
+$ ./run.sh
 ```
 * Custom setting
 ```shell

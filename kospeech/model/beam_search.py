@@ -43,22 +43,24 @@ class BeamSearchDecoder(nn.Module):
 
     def forward(self, input_var, encoder_outputs, teacher_forcing_ratio=0.0):
         inputs, batch_size, max_length = self.validate_args(input_var, encoder_outputs, 0.0)
-        self.pos_index = Variable(torch.LongTensor(range(batch_size)) * self.beam_size).view(-1, 1).to(self.device)
+        self.pos_index = (torch.LongTensor(range(batch_size)) * self.beam_size).view(-1, 1).to(self.device)
 
         hidden, attn = None, None
         inflated_encoder_outputs = _inflate(encoder_outputs, self.beam_size, 0)
 
         # Initialize the scores; for the first step,
         # ignore the inflated copies to avoid duplicate entries in the top k
+        # sequence_scores: tensor([[-inf], [-inf], [-inf], [-inf], [-inf], [-inf], [-inf], [-inf]])
         sequence_scores = encoder_outputs.new_zeros(batch_size * self.beam_size, 1)
         sequence_scores.fill_(-float('Inf'))
 
-        fill_index = torch.LongTensor([i * self.beam_size for i in range(0, batch_size)]).to(self.device)
+        # If beam_size is three, tensor([ 0,  3,  6,  9, 12, 15, 18, 21])
+        # sequence_scores: tensor([[0.], [-inf], [-inf], [0.], [-inf], [-inf], [0.], [-inf] ..])  BKx1
+        fill_index = torch.LongTensor([i * self.beam_size for i in range(batch_size)]).to(self.device)
         sequence_scores.index_fill_(0, fill_index, 0.0)
-        sequence_scores = Variable(sequence_scores)
 
         # Initialize the input vector
-        input_var = Variable(torch.transpose(torch.LongTensor([[self.sos_id] * batch_size * self.beam_size]), 0, 1))
+        input_var = torch.transpose(torch.LongTensor([[self.sos_id] * batch_size * self.beam_size]), 0, 1)  # 1xBK => BKx1
         input_var = input_var.to(self.device)
 
         # Store decisions for backtracking
@@ -73,25 +75,35 @@ class BeamSearchDecoder(nn.Module):
             step_output, hidden, attn = self.forward_step(input_var, hidden, inflated_encoder_outputs, attn)
             stored_outputs.append(step_output.unsqueeze(1))
 
-            if di < self.min_length:  # force the output to be longer than self.min_length
-                step_output[:, self.eos_id] = -1e20
+            # if di < self.min_length:  # force the output to be longer than self.min_length
+            #     step_output[:, self.eos_id] = -1e20
 
-            sequence_scores = _inflate(sequence_scores, self.decoder.num_classes, 1)
-            sequence_scores += step_output
-            scores, candidates = sequence_scores.view(batch_size, -1).topk(self.beam_size, dim=1)
+            sequence_scores = _inflate(sequence_scores, self.decoder.num_classes, dim=1)  # BKx1 => BKxC
+            sequence_scores += step_output  # step_output: BKxC, Cumulative Score
+            scores, candidates = sequence_scores.view(batch_size, -1).topk(self.beam_size, dim=1)  # BKxC => BxKC => BxK
 
             # Reshape input = (bk, 1) and sequence_scores = (bk, 1)
-            input_var = (candidates % self.decoder.num_classes).view(batch_size * self.beam_size, 1)
-            sequence_scores = scores.view(batch_size * self.beam_size, 1)
+            input_var = (candidates % self.decoder.num_classes).view(batch_size * self.beam_size, 1)  # BxK => BKx1
+            sequence_scores = scores.view(batch_size * self.beam_size, 1)  # BKx1
 
             # Update fields for next timestep
+            # self.pos_index.expand_as(candidates)
+            # tensor([[0, 0, 0],
+            #         [3, 3, 3],
+            #         [6, 6, 6],
+            #         [9, 9, 9],
+            #         [12, 12, 12],
+            #         [15, 15, 15],
+            #         [18, 18, 18],
+            #         [21, 21, 21]])
             predecessors = (candidates / self.decoder.num_classes + self.pos_index.expand_as(candidates))
-            predecessors = predecessors.view(batch_size * self.beam_size, 1)
+            predecessors = predecessors.view(batch_size * self.beam_size, 1)  # BKx1
 
             if isinstance(hidden, tuple):
                 hidden = tuple([h.index_select(1, predecessors.squeeze()) for h in hidden])
             else:
-                hidden = hidden.index_select(1, predecessors.squeeze())
+                hidden = hidden.index_select(1, predecessors.squeeze())  # hidden: LxBKxD
+                                                                         # predecessors: BK
 
             # Update sequence scores and erase scores for end-of-sentence symbol so that they aren't expanded
             stored_scores.append(sequence_scores.clone())
@@ -112,14 +124,14 @@ class BeamSearchDecoder(nn.Module):
         decoder_outputs = [step[:, 0, :] for step in output]
         return decoder_outputs
 
-    def _backtrack(self, nw_output, nw_hidden, predecessors, symbols, scores, batch_size):
+    def _backtrack(self, stored_outputs, stored_hidden, stored_predecessors, stored_emitted_symbols, stored_scores, batch_size):
         """Backtracks over batch to generate optimal k-sequences.
 
         Args:
-            nw_output [(batch*k, vocab_size)] * sequence_length: A Tensor of outputs from network
-            nw_hidden [(num_layers, batch*k, hidden_dim)] * sequence_length: A Tensor of hidden states from network
-            predecessors [(batch*k)] * sequence_length: A Tensor of predecessors
-            symbols [(batch*k)] * sequence_length: A Tensor of predicted tokens
+            stored_outputs [(batch*k, vocab_size)] * sequence_length: A Tensor of outputs from network
+            stored_hidden [(num_layers, batch*k, hidden_dim)] * sequence_length: A Tensor of hidden states from network
+            stored_predecessors [(batch*k)] * sequence_length: A Tensor of predecessors
+            stored_emitted_symbols [(batch*k)] * sequence_length: A Tensor of predicted tokens
             scores [(batch*k)] * sequence_length: A Tensor containing sequence scores for every token t = [0, ... , seq_len - 1]
             batch_size: Size of the batch
 
@@ -128,28 +140,12 @@ class BeamSearchDecoder(nn.Module):
             from the last layer of the RNN, for every n = [0, ... , seq_len - 1]
         """
 
-        islstm = isinstance(nw_hidden[0], tuple)
-
         # initialize return variables given different types
         output = list()
-        # Placeholder for last hidden state of top-k sequences.
-        # If a (top-k) sequence ends early in decoding, `h_n` contains
-        # its hidden state when it sees EOS.  Otherwise, `h_n` contains
-        # the last hidden state of decoding.
-
-        if islstm:
-            state_size = nw_hidden[0][0].size()
-            h_n = tuple([torch.zeros(state_size), torch.zeros(state_size)])
-        else:
-            h_n = torch.zeros(nw_hidden[0].size())
-
-        # Placeholder for lengths of top-k sequences
-        # Similar to `h_n`
-        lengths = [[self.max_length] * self.beam_size for _ in range(batch_size)]
 
         # the last step output of the beams are not sorted
         # thus they are sorted here
-        sorted_score, sorted_idx = scores[-1].view(batch_size, self.beam_size).topk(self.beam_size)
+        sorted_score, sorted_idx = stored_scores[-1].view(batch_size, self.beam_size).topk(self.beam_size)  # BxK
         # initialize the sequence scores with the sorted last step beam scores
         s = sorted_score.clone()
 
@@ -160,19 +156,15 @@ class BeamSearchDecoder(nn.Module):
         t = self.max_length - 1
         # initialize the back pointer with the sorted order of the last step beams.
         # add self.pos_index for indexing variable with b*k as the first dimension.
-        t_predecessors = (sorted_idx + self.pos_index.expand_as(sorted_idx)).view(batch_size * self.beam_size)
+        t_predecessors = (sorted_idx + self.pos_index.expand_as(sorted_idx)).view(batch_size * self.beam_size)  # BxK => BK
 
         while t >= 0:
             # Re-order the variables with the back pointer
-            current_output = nw_output[t].index_select(0, t_predecessors)
-            if islstm:
-                current_hidden = tuple([h.index_select(1, t_predecessors) for h in nw_hidden[t]])
-            else:
-                current_hidden = nw_hidden[t].index_select(1, t_predecessors)
-            current_symbol = symbols[t].index_select(0, t_predecessors)
+            current_output = stored_outputs[t].index_select(0, t_predecessors)
+
             # Re-order the back pointer of the previous step with the back pointer of
             # the current step
-            t_predecessors = predecessors[t].index_select(0, t_predecessors).squeeze()
+            t_predecessors = stored_predecessors[t].index_select(0, t_predecessors).squeeze()
 
             # This tricky block handles dropped sequences that see EOS earlier.
             # The basic idea is summarized below:
@@ -191,7 +183,7 @@ class BeamSearchDecoder(nn.Module):
             #       2. Otherwise, replace the ended sequence with the lowest sequence
             #       score with the new ended sequence
             #
-            eos_indices = symbols[t].data.squeeze(1).eq(self.eos_id).nonzero()
+            eos_indices = stored_emitted_symbols[t].data.squeeze(1).eq(self.eos_id).nonzero()
             if eos_indices.dim() > 0:
                 for i in range(eos_indices.size(0) - 1, -1, -1):
                     # Indices of the EOS symbol for both variables
@@ -207,19 +199,8 @@ class BeamSearchDecoder(nn.Module):
 
                     # Replace the old information in return variables
                     # with the new ended sequence information
-                    t_predecessors[res_idx] = predecessors[t][idx[0]]
-                    current_output[res_idx, :] = nw_output[t][idx[0], :]
-                    if islstm:
-                        current_hidden[0][:, res_idx, :] = nw_hidden[t][0][:, idx[0], :]
-                        current_hidden[1][:, res_idx, :] = nw_hidden[t][1][:, idx[0], :]
-                        h_n[0][:, res_idx, :] = nw_hidden[t][0][:, idx[0], :].data
-                        h_n[1][:, res_idx, :] = nw_hidden[t][1][:, idx[0], :].data
-                    else:
-                        current_hidden[:, res_idx, :] = nw_hidden[t][:, idx[0], :]
-                        h_n[:, res_idx, :] = nw_hidden[t][:, idx[0], :].data
-                    current_symbol[res_idx, :] = symbols[t][idx[0]]
-                    s[b_idx, res_k_idx] = scores[t][idx[0]].data[0]
-                    lengths[b_idx][res_k_idx] = t + 1
+                    t_predecessors[res_idx] = stored_predecessors[t][idx[0]]
+                    current_output[res_idx, :] = stored_outputs[t][idx[0], :]
 
             # record the back tracked results
             output.append(current_output)
@@ -229,9 +210,6 @@ class BeamSearchDecoder(nn.Module):
         # Sort and re-order again as the added ended sequences may change
         # the order (very unlikely)
         s, re_sorted_idx = s.topk(self.beam_size)
-        for b_idx in range(batch_size):
-            lengths[b_idx] = [lengths[b_idx][k_idx.item()] for k_idx in re_sorted_idx[b_idx, :]]
-
         re_sorted_idx = (re_sorted_idx + self.pos_index.expand_as(re_sorted_idx)).view(batch_size * self.beam_size)
 
         # Reverse the sequences and re-order at the same time
