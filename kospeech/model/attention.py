@@ -197,6 +197,10 @@ class CustomizingAttention(nn.Module):
         batch_size, q_len, v_len = value.size(0), query.size(1), value.size(1)
         residual = query
 
+        # Initialize previous attn (alignment) to zeros
+        if prev_attn is None:
+            prev_attn = value.new_zeros(batch_size, self.num_heads, v_len)
+
         loc_energy = self.get_loc_energy(prev_attn, batch_size, v_len)  # get location energy
 
         query = self.query_projection(query).view(batch_size, q_len, self.num_heads * self.dim)
@@ -217,8 +221,8 @@ class CustomizingAttention(nn.Module):
 
         return output, attn.squeeze()
 
-    def get_loc_energy(self, prev_align, batch_size, v_len):
-        conv_feat = self.loc_conv(prev_align.unsqueeze(1))
+    def get_loc_energy(self, prev_attn, batch_size, v_len):
+        conv_feat = self.loc_conv(prev_attn.unsqueeze(1))
         conv_feat = conv_feat.view(batch_size, self.num_heads, -1, v_len).permute(0, 1, 3, 2)
 
         loc_energy = self.loc_projection(conv_feat).view(batch_size, self.num_heads, v_len, self.dim)
