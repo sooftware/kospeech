@@ -84,8 +84,8 @@ def build_speller(num_classes, max_len, hidden_dim, sos_id, eos_id, attn_mechani
         raise ParameterError("num_heads should be inteager type")
     if not isinstance(max_len, int):
         raise ParameterError("max_len should be inteager type")
-    if not isinstance(dropout_p, int):
-        raise ParameterError("dropout_p should be inteager type")
+    if not isinstance(dropout_p, float):
+        raise ParameterError("dropout_p should be float type")
     if hidden_dim % num_heads != 0:
         raise ParameterError("{0} % {1} should be zero".format(hidden_dim, num_heads))
     if dropout_p < 0.0:
