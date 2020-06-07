@@ -123,11 +123,11 @@ class LocationAwareAttention(nn.Module):
         if prev_attn is None:
             prev_attn = value.new_zeros(batch_size, seq_len)
 
-        conv_feat = torch.transpose(self.conv1d(prev_attn.unsqueeze(1)), 1, 2)
+        conv_attn = torch.transpose(self.conv1d(prev_attn.unsqueeze(1)), 1, 2)
         score = self.score_projection(torch.tanh(
                 self.query_projection(query.reshape(-1, hidden_dim)).view(batch_size, -1, hidden_dim)
                 + self.value_projection(value.reshape(-1, hidden_dim)).view(batch_size, -1, hidden_dim)
-                + self.loc_projection(conv_feat)
+                + conv_attn
                 + self.bias
         )).squeeze(dim=-1)
 
