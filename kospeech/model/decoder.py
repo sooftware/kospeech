@@ -50,7 +50,7 @@ class Speller(BaseRNN):
         self.out_projection = nn.Linear(self.hidden_dim, num_classes, bias=True)
 
         if attn_mechanism == 'loc':
-            self.attention = LocationAwareAttention(hidden_dim, num_heads, conv_out_channel=10)
+            self.attention = LocationAwareAttention(hidden_dim, smoothing=True)
         elif attn_mechanism == 'dot':
             self.attention = MultiHeadAttention(hidden_dim, num_heads)
         else:

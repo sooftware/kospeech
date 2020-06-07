@@ -83,17 +83,16 @@ class MultiHeadAttention(nn.Module):
 
 class LocationAwareAttention(nn.Module):
     """
-    Applies a multi-headed location-aware attention mechanism on the output features from the decoder.
+    Applies a location-aware attention mechanism on the output features from the decoder.
     Location-aware attention proposed in "Attention-Based Models for Speech Recognition" paper.
     The location-aware attention mechanism is performing well in speech recognition tasks.
-    In the above paper applied a signle head, but we applied multi head concept.
+    We refer to implementation of ClovaCall Attention style.
 
     Args:
         hidden_dim (int): The number of expected features in the output
-        num_heads (int): The number of heads. (default: )
-        conv_out_channel (int): The number of out channel in convolution
+        smoothing (bool): flag indication whether to use smoothing or not.
 
-    Inputs: query, value, prev_attn
+    Inputs: query, value, prev_attn, smoothing
         - **query** (batch, q_len, hidden_dim): tensor containing the output features from the decoder.
         - **value** (batch, v_len, hidden_dim): tensor containing features of the encoded input sequence.
         - **prev_attn** (batch_size * num_heads, v_len): tensor containing previous timestep`s attention (alignment)
@@ -103,54 +102,44 @@ class LocationAwareAttention(nn.Module):
         - **attn** (batch * num_heads, v_len): tensor containing the attention (alignment) from the encoder outputs.
 
     Reference:
-        - **Attention Is All You Need**: https://arxiv.org/abs/1706.03762
         - **Attention-Based Models for Speech Recognition**: https://arxiv.org/abs/1506.07503
-        - **State-Of-The-Art Speech Recognition with Sequence-to-Sequence Models**: https://arxiv.org/abs/1712.01769
+        - **ClovaCall**: https://github.com/clovaai/ClovaCall/blob/master/las.pytorch/models/attention.py
     """
-    def __init__(self, hidden_dim, num_heads=8, conv_out_channel=10):
+    def __init__(self, hidden_dim, smoothing=True):
         super(LocationAwareAttention, self).__init__()
         self.hidden_dim = hidden_dim
-        self.num_heads = num_heads
-        self.dim = int(hidden_dim / num_heads)
-        self.loc_projection = nn.Linear(conv_out_channel, self.dim, bias=False)
-        self.loc_conv = nn.Conv1d(num_heads, conv_out_channel, kernel_size=3, padding=1)
-        self.query_projection = nn.Linear(hidden_dim, self.dim * num_heads, bias=False)
-        self.value_projection = nn.Linear(hidden_dim, self.dim * num_heads, bias=False)
-        self.score_projection = nn.Linear(self.dim, 1, bias=True)
+        self.conv1d = nn.Conv1d(in_channels=1, out_channels=hidden_dim, kernel_size=3, padding=1)
+        self.query_projection = nn.Linear(hidden_dim, hidden_dim, bias=False)
+        self.value_projection = nn.Linear(hidden_dim, hidden_dim, bias=False)
+        self.bias = nn.Parameter(torch.rand(hidden_dim).uniform_(-0.1, 0.1))
+        self.score_projection = nn.Linear(hidden_dim, 1, bias=True)
+        self.smoothing = smoothing
         self.out_projection = nn.Linear(hidden_dim << 1, hidden_dim, bias=True)
-        self.bias = nn.Parameter(torch.rand(self.dim).uniform_(-0.1, 0.1))
 
     def forward(self, query, value, prev_attn):
-        batch_size, seq_len = value.size(0), value.size(1)
-        residual = query
+        batch_size, hidden_dim, seq_len = query.size(0), query.size(2), value.size(1)
 
-        # Initialize previous attn (alignment) to zeros
+        # Initialize previous attention (alignment) to zeros
         if prev_attn is None:
-            prev_attn = value.new_zeros(batch_size, self.num_heads, seq_len)
+            prev_attn = value.new_zeros(batch_size, seq_len)
 
-        # Calculate location energy
-        loc_energy = torch.tanh(self.loc_projection(self.loc_conv(prev_attn).transpose(1, 2)))  # BxNxT => BxTxD
-        loc_energy = loc_energy.unsqueeze(1).repeat(1, self.num_heads, 1, 1).view(-1, seq_len, self.dim)  # BxTxD => BxNxTxD
+        conv_feat = torch.transpose(self.conv1d(prev_attn.unsqueeze(1)), 1, 2)
+        score = self.score_projection(torch.tanh(
+                self.query_projection(query.reshape(-1, hidden_dim)).view(batch_size, -1, hidden_dim)
+                + self.value_projection(value.reshape(-1, hidden_dim)).view(batch_size, -1, hidden_dim)
+                + self.loc_projection(conv_feat)
+                + self.bias
+        )).squeeze(dim=-1)
 
-        # Projection & Shape matching
-        query = self.query_projection(query).view(batch_size, -1, self.num_heads, self.dim).permute(0, 2, 1, 3)  # Bx1xNxD
-        value = self.value_projection(value).view(batch_size, -1, self.num_heads, self.dim).permute(0, 2, 1, 3)  # BxTxNxD
-        query = query.contiguous().view(-1, 1, self.dim)        # BNx1xD
-        value = value.contiguous().view(-1, seq_len, self.dim)  # BNxTxD
+        if self.smoothing:
+            score = torch.sigmoid(score)
+            attn = torch.div(score, score.sum(dim=-1).unsqueeze(dim=-1))
+        else:
+            attn = F.softmax(score, dim=-1)
 
-        # Get attention score, attn (align)
-        score = self.score_projection(torch.tanh(value + query + loc_energy + self.bias)).squeeze(2)  # BNxT
-        attn = F.softmax(score, dim=1)  # BNxT
-
-        value = value.view(batch_size, seq_len, self.num_heads, self.dim).permute(0, 2, 1, 3)  # BxTxNxD => BxNxTxD
-        value = value.contiguous().view(-1, seq_len, self.dim)  # BxNxTxD => BNxTxD
-
-        # Get context vector
-        context = torch.bmm(attn.unsqueeze(1), value).view(batch_size, -1, self.num_heads * self.dim)  # BNx1xT x BNxTxD => BxND
-        attn = attn.view(batch_size, self.num_heads, -1)  # BNxT => BxNxT
+        context = torch.bmm(attn.unsqueeze(dim=1), value).squeeze(dim=1)  # Bx1xT X BxTxD => Bx1xD => BxD
 
         # Get output
-        combined = torch.cat([context, residual], dim=2)
-        output = self.out_projection(combined.view(-1, self.hidden_dim << 1)).view(batch_size, -1, self.hidden_dim)
-
+        combined = torch.cat([context, query], dim=-1)  # BxD => Bx2D
+        output = torch.tanh(self.out_projection(combined.view(-1, self.hidden_dim << 1)).view(batch_size, -1, self.hidden_dim))
         return output, attn
