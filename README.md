@@ -1,4 +1,4 @@
-<p align=center><i> <img src="https://user-images.githubusercontent.com/42150335/83979973-0a621f00-a94d-11ea-8779-e7c608016fc6.png" width=500> </i></p>  
+<p align=center><i> <img src="https://user-images.githubusercontent.com/42150335/83980047-7a70a500-a94d-11ea-8210-2da2a2146864.png" width=500> </i></p>  
   
 ### [**Documentation**](https://sooftware.github.io/KoSpeech/)   
   
