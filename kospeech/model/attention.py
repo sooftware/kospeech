@@ -212,6 +212,7 @@ class CustomizingAttention(nn.Module):
         value = value.contiguous().view(-1, v_len, self.dim)
 
         context, attn = self.scaled_dot(query, value)
+        attn = attn.view(batch_size, self.num_heads, -1)
 
         context = context.view(self.num_heads, batch_size, q_len, self.dim).permute(1, 2, 0, 3)
         context = context.contiguous().view(batch_size, q_len, -1)
