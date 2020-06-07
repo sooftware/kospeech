@@ -10,8 +10,8 @@
 
 ## Intro
 
-`KoSpeech` is project for E2E automatic speech recognition implemented in [PyTorch](http://pytorch.org).   
-`kospeech` has modularized and extensible components for las models, training and evalutaion, checkpoints, parsing etc.   
+`KoSpeech` is project for End-to-end (E2E) automatic speech recognition implemented in [PyTorch](http://pytorch.org).   
+`KoSpeech` has modularized and extensible components for las models, training and evalutaion, checkpoints, parsing etc.   
 We appreciate any kind of [feedback or contribution](https://github.com/sooftware/End-to-end-Speech-Recognition/issues).
   
 We used `KsponSpeech` corpus which containing **1000h** of Korean speech data.   
