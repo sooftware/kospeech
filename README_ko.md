@@ -20,7 +20,7 @@
   
 * [End-to-end (E2E) automatic speech recognition](https://sooftware.github.io/KoSpeech/)
 * [Various Options](https://sooftware.github.io/KoSpeech/notes/opts.html)
-* [(VGG / DeepSpeech2) Extractor](https://sooftware.github.io/KoSpeech/Model.html#module-e2e.model.sub_layers.extractor)
+* [(VGG / DeepSpeech2) Extractor](https://sooftware.github.io/KoSpeech/Model.html#module-kospeech.model.convolutional)
 * [MaskCNN & pack_padded_sequence](https://sooftware.github.io/KoSpeech/Model.html#module-kospeech.model.convolutional)
 * [Multi-headed (location-aware / scaled dot-product) Attention](https://sooftware.github.io/KoSpeech/Model.html#module-kospeech.model.attention)
 * [Top K Decoding (Beam Search)](https://sooftware.github.io/KoSpeech/Model.html#module-kospeech.model.beam_search)
@@ -39,7 +39,7 @@
   
 ## Roadmap
   
-<img src="https://user-images.githubusercontent.com/42150335/80630547-5dfc6580-8a8f-11ea-91e8-73fe5e8b9e4b.png" width=450> 
+<img src="https://user-images.githubusercontent.com/42150335/83952233-5ee49c00-a872-11ea-8c98-5b98236125e1.png" width=450> 
   
 E2E 방식의 음성 인식은 신경망 기반 음성인식 분야에서 새롭게 부상하는 패러다임으로 여러 장점을 제공합니다. 음향모델, 언어모델, 발음 전사 모델로 구성된 전통적인 하이브리드 음성인식 모델은 각 모델들에 맞는 복잡한 학습을 필요로 했습니다.   
   
@@ -70,52 +70,76 @@ E2E 방식의 음성 인식은 신경망 기반 음성인식 분야에서 새롭
 ```python
 ListenAttendSpell(
   (listener): Listener(
-    (rnn): GRU(2560, 256, num_layers=5, batch_first=True, dropout=0.3, bidirectional=True)
     (extractor): VGGExtractor(
-      (extractor): MaskCNN(
+      (cnn): MaskCNN(
         (sequential): Sequential(
           (0): Conv2d(1, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-          (1): Hardtanh(min_val=0, max_val=20, inplace=True)
+          (1): ELU(alpha=1.0, inplace=True)
           (2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
           (3): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-          (4): Hardtanh(min_val=0, max_val=20, inplace=True)
+          (4): ELU(alpha=1.0, inplace=True)
           (5): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
           (6): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
           (7): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-          (8): Hardtanh(min_val=0, max_val=20, inplace=True)
+          (8): ELU(alpha=1.0, inplace=True)
           (9): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
           (10): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-          (11): Hardtanh(min_val=0, max_val=20, inplace=True)
+          (11): ELU(alpha=1.0, inplace=True)
           (12): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
         )
       )
     )
+    (rnn): LSTM(2560, 256, num_layers=3, batch_first=True, dropout=0.3, bidirectional=True)
   )
   (speller): Speller(
-    (rnn): GRU(512, 512, num_layers=3, batch_first=True, dropout=0.3)
+    (rnn): LSTM(512, 512, num_layers=2, batch_first=True, dropout=0.3)
     (embedding): Embedding(2038, 512)
     (input_dropout): Dropout(p=0.3, inplace=False)
-    (out_projection): Linear(in_features=512, out_features=2038, bias=True)
-    (attention): LocationAwareAttention(
-      (loc_projection): Linear(in_features=10, out_features=64, bias=False)
-      (loc_conv): Conv1d(8, 10, kernel_size=(3,), stride=(1,), padding=(1,))
-      (query_projection): Linear(in_features=512, out_features=512, bias=False)
-      (value_projection): Linear(in_features=512, out_features=512, bias=False)
-      (score_projection): Linear(in_features=64, out_features=1, bias=True)
+    (attention): MultiHeadAttention(
+      (scaled_dot): ScaledDotProductAttention()
+      (query_projection): Linear(in_features=512, out_features=512, bias=True)
+      (value_projection): Linear(in_features=512, out_features=512, bias=True)
       (out_projection): Linear(in_features=1024, out_features=512, bias=True)
     )
+    (out_projection): Linear(in_features=512, out_features=2038, bias=True)
   )
 )
 ``` 
   
-### e2e module
+### KoSpeech
 
-<img src="https://user-images.githubusercontent.com/42150335/82842192-93239880-9f13-11ea-80d6-ed1358218d5e.png" width=800>   
+<img src="https://user-images.githubusercontent.com/42150335/83944090-d8ad6300-a83b-11ea-8a2c-2f0d9ba0e54d.png" width=700>   
   
-`e2e` 모듈 구조는 위와 같이 구성되어 있습니다.   
-`e2e` 는 확장성 있는 LAS 모델, 학습기, 평가기, 체크포인트, 데이터 로더 등을 제공합니다.  
+`KoSpeech` 는 확장성 있는 LAS 모델, 학습기, 평가기, 체크포인트, 데이터 로더 등을 제공합니다.  
+또한 `KoSpeech`는 간단한 옵션 설정을 통한 다양한 환경에서의 학습이 가능합니다.
+
+* Options
+```
+usage: main.py [-h] [--mode] [--sample_rate]
+               [--window_size] [--stride] [--n_mels]
+               [--normalize] [--del_silence] [--input_reverse]
+               [--feature_extract_by] [--time_mask_para] [--freq_mask_para]
+               [--time_mask_num] [--freq_mask_num]
+               [--use_bidirectional] [--hidden_dim]
+               [--dropout] [--num_heads] [--label_smoothing]
+               [--listener_layer_size] [--speller_layer_size] [--rnn_type]
+               [--extractor] [--activation]
+               [--attn_mechanism] [--teacher_forcing_ratio]
+               [--dataset_path] [--data_list_path]
+               [--label_path] [--init_uniform] [--spec_augment]
+               [--noise_augment] [--noiseset_size]
+               [--noise_level] [--use_cuda]
+               [--batch_size] [--num_workers]
+               [--num_epochs] [--init_lr]
+               [--high_plateau_lr] [--low_plateau_lr] [--valid_ratio]
+               [--max_len] [--max_grad_norm]
+               [--rampup_period] [--decay_threshold] [--exp_decay_period]
+               [--teacher_forcing_step] [--min_teacher_forcing_ratio]
+               [--seed] [--save_result_every]
+               [--checkpoint_every] [--print_every] [--resume]
+```
   
-저희는 [Wiki page](https://github.com/sooftware/End-to-end-Speech-Recognition/wiki)에 프로젝트 진행 상황을 지속적으로 업데이트하고 있습니다.   
+저희는 [Wiki page](https://github.com/sooftware/KoSpeech/wiki)에 프로젝트 진행 상황을 지속적으로 업데이트하고 있습니다.   
   
 ## Installation
 이 프로젝트는 Python 3.7 이상의 버전을 필요로 합니다. 또한 본 프로젝트를 위한 새로운 가상환경을 만드시길 권장합니다.  
@@ -143,7 +167,7 @@ python setup.py install
 ## Get Started
 ### Step 1: Preparation dataset
 
-학습 전 [이곳](https://github.com/sooftware/End-to-end-Speech-Recognition/wiki/Preparation-before-Training) 을 확인해 주시기 바랍니다. 해당 문서에서는 `KsponSpeech` 에 대한 전처리 내용을 담고 있습니다. 
+학습 전 [이곳](https://github.com/sooftware/KsponSpeech.preprocess) 을 확인해 주시기 바랍니다. 해당 레포에서는 `KsponSpeech` 에 대한 전처리 내용을 담고 있습니다. 
 
 ### Step 2: Run `main.py`
 * Default setting  
@@ -225,11 +249,11 @@ save_dir
 ### Citing
 ```
 @github{
-  title = {End-to-end Speech Recognition},
+  title = {KoSpeech},
   author = {Soohwan Kim, Seyoung Bae, Cheolhwang Won},
   publisher = {GitHub},
-  docs = {https://sooftware.github.io/End-to-end-Speech-Recognition/},
-  url = {https://github.com/sooftware/End-to-end-Speech-Recognition},
+  docs = {https://sooftware.github.io/KoSpeech/},
+  url = {https://github.com/sooftware/KoSpeech},
   year = {2020}
 }
 ```
