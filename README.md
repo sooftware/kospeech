@@ -2,7 +2,7 @@
     
 <p align=center><i> <img src="https://github.com/gentaiscool/end2end-asr-pytorch/raw/master/img/pytorch-logo-dark.png" height=20> <img src="https://img.shields.io/badge/License-Apache--2.0-lightgrey" height=20> </i></p> 
   
-<p align=center> KoSpeech: Open-Source Speech Recognition in Korean </p>
+<p align=center> KoSpeech: Open-Source Korean Automatic Speech Recognition in PyTorch </p>
   
 ### [**Documentation**](https://sooftware.github.io/KoSpeech/)   
   
