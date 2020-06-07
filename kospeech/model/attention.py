@@ -180,46 +180,54 @@ class CustomizingAttention(nn.Module):
         - **State-Of-The-Art Speech Recognition with Sequence-to-Sequence Models**: https://arxiv.org/abs/1712.01769
     """
 
-    def __init__(self, hidden_dim, num_heads=4, conv_out_channel=10):
+    def __init__(self, hidden_dim, num_heads=8, conv_out_channel=10):
         super(CustomizingAttention, self).__init__()
         self.hidden_dim = hidden_dim
         self.num_heads = num_heads
         self.dim = int(hidden_dim / num_heads)
-        self.scaled_dot = ScaledDotProductAttention(self.dim)
+        self.conv1d = nn.Conv1d(in_channels=1, out_channels=conv_out_channel, kernel_size=3, padding=1)
         self.query_projection = nn.Linear(hidden_dim, self.dim * num_heads, bias=True)
-        self.value_projection = nn.Linear(hidden_dim, self.dim * num_heads, bias=False)
-        self.loc_conv = nn.Conv1d(num_heads, conv_out_channel, kernel_size=3, padding=1)
-        self.loc_projection = nn.Linear(conv_out_channel, self.dim, bias=False)
-        self.bias = nn.Parameter(torch.rand(self.dim * num_heads).uniform_(-0.1, 0.1))
+        self.value_projection = nn.Linear(hidden_dim, self.dim * num_heads, bias=True)
+        self.loc_projection = nn.Linear(conv_out_channel, self.dim, bias=True)
+        self.scaled_dot = ScaledDotProductAttention(self.dim)
         self.out_projection = nn.Linear(hidden_dim << 1, hidden_dim, bias=True)
 
-    def forward(self, query, value, prev_attn):
+    def forward(self, query, value, prev_attn):  # (batch_size * num_heads, v_len)
         batch_size, q_len, v_len = value.size(0), query.size(1), value.size(1)
+
         residual = query
 
         # Initialize previous attn (alignment) to zeros
         if prev_attn is None:
             prev_attn = value.new_zeros(batch_size, self.num_heads, v_len)
 
-        loc_energy = torch.tanh(self.loc_projection(self.loc_conv(prev_attn).transpose(1, 2)))  # BxNxT => BxTxD
-        loc_energy = loc_energy.unsqueeze(1).repeat(1, self.num_heads, 1, 1).view(-1, v_len, self.dim)  # BxTxD => BxNxTxD
-        loc_energy = loc_energy.permute(0, 2, 1, 3).contiguous().view(batch_size, v_len, self.num_heads * self.dim)
+        loc_energy = self.get_loc_energy(prev_attn, batch_size, v_len)
 
         query = self.query_projection(query).view(batch_size, q_len, self.num_heads * self.dim)
-        value = self.value_projection(value).view(batch_size, v_len, self.num_heads * self.dim) + loc_energy + self.bias
+        value = self.value_projection(value).view(batch_size, v_len, self.num_heads * self.dim) + loc_energy
 
         query = query.view(batch_size, q_len, self.num_heads, self.dim).permute(2, 0, 1, 3)
         value = value.view(batch_size, v_len, self.num_heads, self.dim).permute(2, 0, 1, 3)
-        query = query.contiguous().view(-1, q_len, self.dim)
-        value = value.contiguous().view(-1, v_len, self.dim)
+
+        query = query.contiguous().view(-1, q_len, self.dim)  # (batch_size * num_heads, q_len, dim)
+        value = value.contiguous().view(-1, v_len, self.dim)  # (batch_size * num_heads, v_len, dim)
 
         context, attn = self.scaled_dot(query, value)
-        attn = attn.view(batch_size, self.num_heads, -1)
+        context = context.view(self.num_heads, batch_size, q_len, self.dim)
 
-        context = context.view(self.num_heads, batch_size, q_len, self.dim).permute(1, 2, 0, 3)
-        context = context.contiguous().view(batch_size, q_len, -1)
+        context = context.permute(1, 2, 0, 3).contiguous().view(batch_size, q_len, -1)
+        attn = attn.squeeze()
 
         combined = torch.cat([context, residual], dim=2)
         output = torch.tanh(self.out_projection(combined.view(-1, self.hidden_dim << 1))).view(batch_size, -1, self.hidden_dim)
 
-        return output, attn.squeeze()
+        return output, attn
+
+    def get_loc_energy(self, prev_attn, batch_size, v_len):
+        conv_feat = self.conv1d(prev_attn.unsqueeze(1))
+        conv_feat = conv_feat.view(batch_size, self.num_heads, -1, v_len).permute(0, 1, 3, 2)
+
+        loc_energy = self.loc_projection(conv_feat).view(batch_size, self.num_heads, v_len, self.dim)
+        loc_energy = loc_energy.permute(0, 2, 1, 3).reshape(batch_size, v_len, self.num_heads * self.dim)
+
+        return loc_energy
