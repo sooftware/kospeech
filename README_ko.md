@@ -1,8 +1,6 @@
-<p align=center><i> <img src="https://user-images.githubusercontent.com/42150335/83952582-b8e66100-a874-11ea-8901-a11155833045.png" width=500> </i></p>  
-    
-<p align=center><i> <img src="https://github.com/gentaiscool/end2end-asr-pytorch/raw/master/img/pytorch-logo-dark.png" height=18> <img src="https://img.shields.io/badge/License-Apache--2.0-lightgrey" height=20> </i></p> 
+<p align=center><i> <img src="https://user-images.githubusercontent.com/42150335/84026285-032c2700-a9c8-11ea-89eb-bb88fe0d3553.png" width=500> </i></p>   
   
-<p align=center> KoSpeech: Open-Source Speech Recognition in Korean </p>  
+<p align=center> <img src="https://img.shields.io/badge/build-passing-success?logo=PyTorch&logoColor=white"> <img src="https://img.shields.io/badge/License-Apache--2.0-informational?logo=PyTorch&logoColor=white"> <img src="https://img.shields.io/badge/Windows-succeeded-success?logo=PyTorch&logoColor=white"> <img src="https://img.shields.io/badge/MacOS-failed-red?logo=PyTorch&logoColor=white"> <img src="https://img.shields.io/badge/Linux-succeeded-success?logo=PyTorch&logoColor=white"> </p> 
   
 ### [**Documentation**](https://sooftware.github.io/KoSpeech/)   
   
