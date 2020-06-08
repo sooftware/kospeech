@@ -78,7 +78,7 @@ def train(opt):
 
 def _get_parser():
     """ Get arguments parser """
-    parser = argparse.ArgumentParser(description='End-to-end Speech Recognition')
+    parser = argparse.ArgumentParser(description='KoSpeech')
     parser.add_argument('--mode', type=str, default='train')
 
     build_preprocess_opts(parser)
