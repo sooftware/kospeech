@@ -125,12 +125,14 @@ class LocationAwareAttention(nn.Module):
             prev_attn = value.new_zeros(batch_size, seq_len)
 
         conv_attn = torch.transpose(self.conv1d(prev_attn.unsqueeze(1)), 1, 2)
-        score = self.score_projection(torch.tanh(
+        score = self.score_projection(
+            torch.tanh(
                 self.query_projection(query.reshape(-1, hidden_dim)).view(batch_size, -1, hidden_dim)
                 + self.value_projection(value.reshape(-1, hidden_dim)).view(batch_size, -1, hidden_dim)
                 + conv_attn
                 + self.bias
-        )).squeeze(dim=-1)
+            )
+        ).squeeze(dim=-1)
 
         if self.smoothing:
             score = torch.sigmoid(score)
