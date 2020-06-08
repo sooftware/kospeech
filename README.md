@@ -1,5 +1,7 @@
 <p align=center><i> <img src="https://user-images.githubusercontent.com/42150335/84023193-9d896c00-a9c2-11ea-990e-b24efe63ddfd.png" width=500> </i></p>   
   
+<p align=center> <img src="https://img.shields.io/badge/build-passing-success?logo=PyTorch&logoColor=white"> <img src="https://img.shields.io/badge/License-Apache--2.0-informational?logo=PyTorch&logoColor=white"> <img src="https://img.shields.io/badge/Windows-succeeded-success?logo=PyTorch&logoColor=white"> <img src="https://img.shields.io/badge/MacOS-failed-red?logo=PyTorch&logoColor=white"> <img src="https://img.shields.io/badge/Linux-succeeded-success?logo=PyTorch&logoColor=white"> </p> 
+  
 ### [**Documentation**](https://sooftware.github.io/KoSpeech/)   
   
 [Korean.ver](https://github.com/sooftware/KoSpeech/blob/master/README_ko.md)  
