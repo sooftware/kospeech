@@ -1,4 +1,4 @@
-<p align=center><i> <img src="https://user-images.githubusercontent.com/42150335/83975206-99f7d580-a92d-11ea-80b9-f02f561596e6.png" width=500> </i></p>  
+<p align=center><i> <img src="https://user-images.githubusercontent.com/42150335/83980047-7a70a500-a94d-11ea-8210-2da2a2146864.png" width=500> </i></p>   
   
 ### [**Documentation**](https://sooftware.github.io/KoSpeech/)   
   
@@ -65,8 +65,7 @@ Our project based on Seq2seq with Attention Architecture.
   
 ![image](https://user-images.githubusercontent.com/42150335/83260135-36b2c880-a1f4-11ea-8b38-ef88dca214bf.png)
   
-`Attention mechanism` helps finding speech alignment. We apply multi-headed (`location-aware` / `scaled dot-product`) attention which you can choose. Location-aware attention proposed in `Attention Based Models for Speech Recognition` paper and we expanded this attention to multi-head. Multi-headed scaled dot attention proposed in `Attention Is All You Need` paper.  
- You can choose between these two options as `attn_mechanism` option. Please [check](https://sooftware.github.io/KoSpeech/notes/opts.html) this page.    
+`Attention mechanism` helps finding speech alignment. We apply multi-headed (`location-aware` / `scaled dot-product`) attention which you can choose. Location-aware attention proposed in `Attention Based Models for Speech Recognition` paper and Multi-headed attention proposed in `Attention Is All You Need` paper. You can choose between these two options as `attn_mechanism` option. Please [check](https://sooftware.github.io/KoSpeech/notes/opts.html) this page.    
   
 Our model architeuture is as follows.
   
