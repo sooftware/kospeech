@@ -1,5 +1,4 @@
 <p align=center><i> <img src="https://user-images.githubusercontent.com/42150335/84112511-ddecf680-aa63-11ea-973e-2075f2be5a0d.png" width=500> </i></p>   
-  
 <p align=center> <img src="https://img.shields.io/badge/build-passing-success?logo=Python&logoColor=white"> <img src="https://img.shields.io/badge/License-Apache--2.0-informational?logo=Apache&logoColor=white"> <img src="https://img.shields.io/badge/Windows-succeeded-success?logo=Windows&logoColor=white"> <img src="https://img.shields.io/badge/MacOS-failed-red?logo=Apple&logoColor=white"> <img src="https://img.shields.io/badge/Linux-succeeded-success?logo=Linux&logoColor=white"> </p> 
   
 ### [**Documentation**](https://sooftware.github.io/KoSpeech/)   
