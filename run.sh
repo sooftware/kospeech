@@ -6,7 +6,7 @@
 # }
 
 DATASET_PATH='/data3/'
-DATA_LIST_PATH='./data/data_list/filter_train_list.csv'
+DATA_LIST_PATH='../data/data_list/filter_train_list.csv'
 BATCH_SIZE=32
 NUM_WORKERS=4
 NUM_EPOCHS=20
@@ -48,6 +48,8 @@ NOISE_LEVEL=0.7
 NOISESET_SIZE=1000
 MODE='train'
 
+# shellcheck disable=SC2164
+cd bin
 
 python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epochs $NUM_EPOCHS --use_bidirectional \
 --input_reverse --spec_augment --noise_augment --use_cuda --hidden_dim $HIDDEN_DIM \

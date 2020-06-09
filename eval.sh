@@ -7,7 +7,7 @@
 
 DATASET_PATH='/data1/'
 MODEL_PATH=''
-DATA_LIST_PATH='./data/data_list/filter_test_list.csv'
+DATA_LIST_PATH='../data/data_list/filter_test_list.csv'
 BATCH_SIZE=32
 NUM_WORKERS=4
 SAMPLE_RATE=16000
@@ -20,6 +20,8 @@ PRINT_EVERY=10
 K=5
 MODE='eval'
 
+# shellcheck disable=SC2164
+cd bin
 
 python ./eval.py --sample_rate $SAMPLE_RATE --window_size $WINDOW_SIZE --stride $STRIDE --n_mels $N_MELS \
 --normalize --del_silence --input_reverse --feature_extract_by $FEATURE_EXTRACT_BY  \

@@ -8,10 +8,12 @@
   year = {2020}
 }
 """
+import sys
+sys.path.append('..')
 import argparse
 import random
-import torch
 import warnings
+import torch
 from torch import optim, nn
 from kospeech.data.data_loader import split_dataset, load_data_list
 from kospeech.optim.loss import LabelSmoothingLoss

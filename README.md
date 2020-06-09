@@ -1,5 +1,5 @@
 <p align=center><i> <img src="https://user-images.githubusercontent.com/42150335/84139694-4e5b3e00-aa8b-11ea-9371-f6268dbab1f7.png" width=500> </i></p>   
-<p align=center> <img src="https://img.shields.io/badge/build-succeeded-success?logo=Python&logoColor=white"> <img src="https://img.shields.io/badge/license-Apache--2.0-informational?logo=Apache&logoColor=white"> <img src="https://img.shields.io/badge/Windows-succeeded-success?logo=Windows&logoColor=white"> <img src="https://img.shields.io/badge/MacOS-not tested-informational?logo=Apple&logoColor=white"> <img src="https://img.shields.io/badge/Linux-succeeded-success?logo=Linux&logoColor=white"> </p> 
+<p align=center> <img src="https://img.shields.io/badge/build-passing-success?logo=Python&logoColor=white"> <img src="https://img.shields.io/badge/license-Apache--2.0-informational?logo=Apache&logoColor=white"> <img src="https://img.shields.io/badge/Windows-succeeded-success?logo=Windows&logoColor=white"> <img src="https://img.shields.io/badge/MacOS-not tested-informational?logo=Apple&logoColor=white"> <img src="https://img.shields.io/badge/Linux-succeeded-success?logo=Linux&logoColor=white"> </p> 
   
 ### [**Documentation**](https://sooftware.github.io/KoSpeech/)   
   
@@ -182,20 +182,20 @@ $ ./run.sh
 ```
 * Custom setting
 ```shell
-python ./main.py --batch_size 32 --num_workers 4 --num_epochs 20  --use_bidirectional \
-                 --input_reverse --spec_augment --noise_augment --use_cuda --hidden_dim 256 \
-                 --dropout 0.3 --num_heads 8 --label_smoothing 0.1 \
-                 --listener_layer_size 5 --speller_layer_size 3 --rnn_type gru \
-                 --high_plateau_lr $HIGH_PLATEAU_LR --teacher_forcing_ratio 1.0 --valid_ratio 0.01 \
-                 --sample_rate 16000 --window_size 20 --stride 10 --n_mels 80 --normalize --del_silence \
-                 --feature_extract_by torchaudio --time_mask_para 70 --freq_mask_para 12 \
-                 --time_mask_num 2 --freq_mask_num 2 --save_result_every 1000 \
-                 --checkpoint_every 5000 --print_every 10 --init_lr 1e-15  --init_uniform  \
-                 --mode train --dataset_path /data3/ --data_list_path ./data/data_list/xxx.csv \
-                 --max_grad_norm 400 --rampup_period 1000 --max_len 80 --decay_threshold 0.02 \
-                 --exp_decay_period  160000 --low_plateau_lr 1e-05 --noiseset_size 1000 \
-                 --noise_level 0.7 --attn_mechanism loc --teacher_forcing_step 0.05 \
-                 --min_teacher_forcing_ratio 0.7
+python ./bin/main.py --batch_size 32 --num_workers 4 --num_epochs 20  --use_bidirectional \
+                     --input_reverse --spec_augment --noise_augment --use_cuda --hidden_dim 256 \
+                     --dropout 0.3 --num_heads 8 --label_smoothing 0.1 \
+                     --listener_layer_size 5 --speller_layer_size 3 --rnn_type gru \
+                     --high_plateau_lr $HIGH_PLATEAU_LR --teacher_forcing_ratio 1.0 --valid_ratio 0.01 \
+                     --sample_rate 16000 --window_size 20 --stride 10 --n_mels 80 --normalize --del_silence \
+                     --feature_extract_by torchaudio --time_mask_para 70 --freq_mask_para 12 \
+                     --time_mask_num 2 --freq_mask_num 2 --save_result_every 1000 \
+                     --checkpoint_every 5000 --print_every 10 --init_lr 1e-15  --init_uniform  \
+                     --mode train --dataset_path /data3/ --data_list_path ./data/data_list/xxx.csv \
+                     --max_grad_norm 400 --rampup_period 1000 --max_len 80 --decay_threshold 0.02 \
+                     --exp_decay_period  160000 --low_plateau_lr 1e-05 --noiseset_size 1000 \
+                     --noise_level 0.7 --attn_mechanism loc --teacher_forcing_step 0.05 \
+                     --min_teacher_forcing_ratio 0.7
 ```
   
 You can train the model by above command.  
@@ -209,11 +209,11 @@ $ ./eval.sh
 ```
 * Custom setting
 ```
-python ./eval.py -dataset_path dataset_path -data_list_path data_list_path \
-                 -mode eval -use_cuda -batch_size 32 -num_workers 4 \
-                 -use_beam_search -k 5 -print_every 100 \
-                 -sample_rate 16000 --window_size 20 --stride 10 --n_mels 80 -feature_extract_by librosa \
-                 -normalize -del_silence -input_reverse 
+python ./bin/eval.py -dataset_path dataset_path -data_list_path data_list_path \
+                     -mode eval -use_cuda -batch_size 32 -num_workers 4 \
+                     -use_beam_search -k 5 -print_every 100 \
+                     -sample_rate 16000 --window_size 20 --stride 10 --n_mels 80 -feature_extract_by librosa \
+                     -normalize -del_silence -input_reverse 
 ```
 Now you have a model which you can use to predict on new data. We do this by running `beam search` (or `greedy search`).  
 Like training, you can choose between `Default setting` or `Custom setting`.  
