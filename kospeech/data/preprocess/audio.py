@@ -26,7 +26,7 @@ def load_audio(audio_path, del_silence):
         logger.debug('RuntimeError in {0}'.format(audio_path))
         return None
     except IOError:
-        logger.debuf('IOError in {0}'.format(audio_path))
+        logger.debug('IOError in {0}'.format(audio_path))
         return None
 
 
