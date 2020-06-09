@@ -8,8 +8,10 @@
   year = {2020}
 }
 """
+import sys
 import argparse
 import warnings
+sys.path.append('..')
 from kospeech.data.data_loader import load_data_list, MelSpectrogramDataset
 from kospeech.data.label_loader import load_targets
 from kospeech.evaluator.evaluator import Evaluator

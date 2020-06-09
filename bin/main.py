@@ -9,12 +9,12 @@
 }
 """
 import sys
-sys.path.append('..')
 import argparse
 import random
 import warnings
 import torch
 from torch import optim, nn
+sys.path.append('..')
 from kospeech.data.data_loader import split_dataset, load_data_list
 from kospeech.optim.loss import LabelSmoothingLoss
 from kospeech.checkpoint.checkpoint import Checkpoint
