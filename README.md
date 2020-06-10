@@ -1,4 +1,4 @@
-<p align=center><i> <img src="https://user-images.githubusercontent.com/42150335/84139694-4e5b3e00-aa8b-11ea-9371-f6268dbab1f7.png" width=500> </i></p>   
+<p align=center><i> <img src="https://user-images.githubusercontent.com/42150335/84234109-95e6d600-ab2e-11ea-9112-7becc7e15a66.png" width=500> </i></p>   
 <p align=center> <img src="https://img.shields.io/badge/build-passing-success?logo=Python&logoColor=white"> <img src="https://img.shields.io/badge/license-Apache--2.0-informational?logo=Apache&logoColor=white"> <img src="https://img.shields.io/badge/Windows-succeeded-success?logo=Windows&logoColor=white"> <img src="https://img.shields.io/badge/MacOS-not tested-informational?logo=Apple&logoColor=white"> <img src="https://img.shields.io/badge/Linux-succeeded-success?logo=Linux&logoColor=white"> </p> 
   
 ### [**Documentation**](https://sooftware.github.io/KoSpeech/)   
@@ -73,7 +73,6 @@ Our model architeuture is as follows.
 ```python
 ListenAttendSpell(
   (listener): Listener(
-    (rnn): LSTM(2560, 256, num_layers=3, batch_first=True, dropout=0.3, bidirectional=True)
     (extractor): VGGExtractor(
       (cnn): MaskCNN(
         (sequential): Sequential(
@@ -93,6 +92,7 @@ ListenAttendSpell(
         )
       )
     )
+    (rnn): LSTM(2560, 256, num_layers=3, batch_first=True, dropout=0.3, bidirectional=True)
   )
   (speller): Speller(
     (embedding): Embedding(2038, 512)
@@ -102,9 +102,8 @@ ListenAttendSpell(
       (scaled_dot): ScaledDotProductAttention()
       (query_projection): Linear(in_features=512, out_features=512, bias=True)
       (value_projection): Linear(in_features=512, out_features=512, bias=True)
-      (out_projection): Linear(in_features=1024, out_features=512, bias=True)
     )
-    (out_projection): Linear(in_features=512, out_features=2038, bias=True)
+    (out_projection): Linear(in_features=1024, out_features=2038, bias=True)
   )
 )
 ``` 
