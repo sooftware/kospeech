@@ -88,5 +88,4 @@ class Listener(BaseRNN):
         output, _ = nn.utils.rnn.pad_packed_sequence(output)
         output = output.transpose(0, 1)   # (batch_size, seq_len, hidden_dim)
 
-        del inputs, input_lengths, hidden, _, batch_size, channel, hidden_dim, seq_length, seq_lengths, conv_feat
         return output

@@ -69,22 +69,14 @@ class Speller(BaseRNN):
             self.rnn.flatten_parameters()
 
         output, hidden = self.rnn(embedded, hidden)
+        context, attn = self.attention(output, listener_outputs, attn)
 
-        if self.attn_mechanism == 'loc':
-            context, attn = self.attention(output, listener_outputs, attn)
-            combined = torch.cat([context, output.squeeze(1)], dim=1)
-        elif self.attn_mechanism == 'dot':
-            context = self.attention(output, listener_outputs)
-            combined = torch.cat([context, output], dim=2)
-
-        output = self.fc1(combined.view(-1, self.hidden_dim << 1)).view(batch_size, -1, self.hidden_dim)
-        output = torch.tanh(output)
-        output = self.fc2(output.contiguous().view(-1, self.hidden_dim))
+        output = self.fc1(context.view(-1, self.hidden_dim << 1)).view(batch_size, -1, self.hidden_dim)
+        output = self.fc2(torch.tanh(output).contiguous().view(-1, self.hidden_dim))
 
         predicted_softmax = F.log_softmax(output, dim=1)
         step_output = predicted_softmax.view(batch_size, output_lengths, -1).squeeze(1)
 
-        del input_var, embedded, context, combined, output, predicted_softmax
         return step_output, hidden, attn
 
     def forward(self, inputs, listener_outputs, teacher_forcing_ratio=0.90):
@@ -102,8 +94,8 @@ class Speller(BaseRNN):
         if use_teacher_forcing:
             inputs = inputs[inputs != self.eos_id].view(batch_size, -1)
 
+            # Call forward_step() at every timestep because Location-aware attention requires previous attention.
             if self.attn_mechanism == 'loc':
-                # Call forward_step() at every timestep because Location-aware attention requires previous attention.
                 for di in range(inputs.size(1)):
                     input_var = inputs[:, di].unsqueeze(1)
                     step_output, hidden, attn = self.forward_step(input_var, hidden, listener_outputs, attn)
@@ -128,7 +120,6 @@ class Speller(BaseRNN):
                     metadata[Speller.KEY_ATTN_SCORE].append(attn)
                     metadata[Speller.KEY_SEQUENCE_SYMBOL].append(input_var)
 
-        del inputs, hidden
         return decoder_outputs, metadata
 
     def validate_args(self, inputs, listener_outputs, teacher_forcing_ratio):

@@ -8,7 +8,6 @@
   year = {2020}
 }
 """
-import math
 import sys
 import argparse
 import random
