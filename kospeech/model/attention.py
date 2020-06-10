@@ -64,16 +64,16 @@ class MultiHeadAttention(nn.Module):
     def forward(self, query, value):
         batch_size = value.size(0)
 
-        query = self.query_projection(query).view(batch_size, -1, self.num_heads, self.dim)
-        value = self.value_projection(value).view(batch_size, -1, self.num_heads, self.dim)
+        query = self.query_projection(query).view(batch_size, -1, self.num_heads, self.dim)  # BxTxNxD
+        value = self.value_projection(value).view(batch_size, -1, self.num_heads, self.dim)  # BxTxNxD
 
-        query = query.permute(2, 0, 1, 3).contiguous().view(batch_size * self.num_heads, -1, self.dim)
-        value = value.permute(2, 0, 1, 3).contiguous().view(batch_size * self.num_heads, -1, self.dim)
+        query = query.permute(2, 0, 1, 3).contiguous().view(batch_size * self.num_heads, -1, self.dim)  # BNxTxD
+        value = value.permute(2, 0, 1, 3).contiguous().view(batch_size * self.num_heads, -1, self.dim)  # BNxTxD
 
         context, attn = self.scaled_dot(query, value)
         context = context.view(self.num_heads, batch_size, -1, self.dim)
 
-        context = context.permute(1, 2, 0, 3).contiguous().view(batch_size, -1, self.num_heads * self.dim)
+        context = context.permute(1, 2, 0, 3).contiguous().view(batch_size, -1, self.num_heads * self.dim)  # BxTxND
 
         del query, value, attn
         return context
@@ -138,5 +138,5 @@ class LocationAwareAttention(nn.Module):
 
         context = torch.bmm(attn.unsqueeze(dim=1), value).squeeze(dim=1)  # Bx1xT X BxTxD => Bx1xD => BxD
 
-        del batch_size, hidden_dim, seq_len, prev_attn, conv_attn, score
+        del conv_attn, score, query, value, prev_attn
         return context, attn

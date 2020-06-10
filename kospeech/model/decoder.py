@@ -71,12 +71,12 @@ class Speller(BaseRNN):
 
         if self.attn_mechanism == 'loc':
             context, attn = self.attention(output, listener_outputs, attn)
+            combined = torch.cat([context, output.squeeze(1)], dim=1)
         elif self.attn_mechanism == 'dot':
             context = self.attention(output, listener_outputs)
+            combined = torch.cat([context, output], dim=2)
 
-        combined = torch.cat([context, output], dim=-1)
-        output = torch.tanh(self.out_projection(combined.view(-1, self.hidden_dim << 1)))
-
+        output = self.out_projection(torch.tanh(combined.view(-1, self.hidden_dim << 1)))
         predicted_softmax = F.log_softmax(output, dim=1)
         step_output = predicted_softmax.view(batch_size, output_lengths, -1).squeeze(1)
 
