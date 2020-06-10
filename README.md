@@ -164,8 +164,8 @@ following commands:
 pip install -r requirements.txt
 ```
 ```
-python setup.py build
-python setup.py install
+python bin/setup.py build
+python bin/setup.py install
 ```
   
 ## Get Started

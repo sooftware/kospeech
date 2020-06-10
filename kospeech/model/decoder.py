@@ -45,11 +45,11 @@ class Speller(BaseRNN):
         self.max_length = max_length
         self.eos_id = eos_id
         self.sos_id = sos_id
+        self.attn_mechanism = attn_mechanism
         self.embedding = nn.Embedding(num_classes, hidden_dim)
         self.input_dropout = nn.Dropout(dropout_p)
         self.fc1 = nn.Linear(hidden_dim << 1, hidden_dim, bias=True)
         self.fc2 = nn.Linear(hidden_dim, num_classes, bias=True)
-        self.attn_mechanism = attn_mechanism
 
         if attn_mechanism == 'loc':
             self.attention = LocationAwareAttention(hidden_dim, smoothing=True)
