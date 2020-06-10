@@ -23,7 +23,7 @@ billiard==3.6.1.0
 bitarray==0.8.3
 bkcharts==0.2
 blaze==0.11.3
-bleach==3.0.2
+bleach==3.1.4
 bokeh==1.0.2
 boto==2.49.0
 boto3==1.12.2
