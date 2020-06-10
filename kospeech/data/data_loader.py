@@ -5,13 +5,13 @@ import torch
 import random
 from torch.utils.data import Dataset
 from kospeech.data.label_loader import load_targets
-from kospeech.data.preprocess.parser import MelSpectrogramParser
+from kospeech.data.preprocess.parser import SpeechParser
 from kospeech.utils import logger, PAD_token, SOS_token, EOS_token
 
 
-class MelSpectrogramDataset(Dataset, MelSpectrogramParser):
+class SpeechDataset(Dataset, SpeechParser):
     """
-    Dataset for spectrogram & script matching
+    Dataset for mel-spectrogram & transcript matching
 
     Args:
         audio_paths (list): set of audio path
@@ -25,14 +25,14 @@ class MelSpectrogramDataset(Dataset, MelSpectrogramParser):
     """
     def __init__(self, audio_paths, script_paths, sos_id, eos_id, target_dict, opt, spec_augment=False,
                  noise_augment=False, dataset_path=None, noiseset_size=0, noise_level=0.7):
-        super(MelSpectrogramDataset, self).__init__(feature_extract_by=opt.feature_extract_by, sample_rate=opt.sample_rate,
-                                                 n_mels=opt.n_mels, window_size=opt.window_size, stride=opt.stride,
-                                                 del_silence=opt.del_silence, input_reverse=opt.input_reverse,
-                                                 normalize=opt.normalize, target_dict=target_dict,
-                                                 time_mask_para=opt.time_mask_para, freq_mask_para=opt.freq_mask_para,
-                                                 time_mask_num=opt.time_mask_num, freq_mask_num=opt.freq_mask_num,
-                                                 sos_id=sos_id, eos_id=eos_id, dataset_path=dataset_path,
-                                                 noiseset_size=noiseset_size, noise_level=noise_level, noise_augment=noise_augment)
+        super(SpeechDataset, self).__init__(feature_extract_by=opt.feature_extract_by, sample_rate=opt.sample_rate,
+                                            n_mels=opt.n_mels, window_size=opt.window_size, stride=opt.stride,
+                                            del_silence=opt.del_silence, input_reverse=opt.input_reverse,
+                                            normalize=opt.normalize, target_dict=target_dict,
+                                            time_mask_para=opt.time_mask_para, freq_mask_para=opt.freq_mask_para,
+                                            time_mask_num=opt.time_mask_num, freq_mask_num=opt.freq_mask_num,
+                                            sos_id=sos_id, eos_id=eos_id, dataset_path=dataset_path,
+                                            noiseset_size=noiseset_size, noise_level=noise_level, noise_augment=noise_augment)
         self.audio_paths = list(audio_paths)
         self.script_paths = list(script_paths)
         self.augment_methods = [self.VANILLA] * len(self.audio_paths)
@@ -52,19 +52,19 @@ class MelSpectrogramDataset(Dataset, MelSpectrogramParser):
 
     def parse_transcript(self, script_path):
         """ Parses scripts @Override """
-        scripts = list()
+        transcripts = list()
 
         key = script_path.split('/')[-1].split('.')[0]
-        script = self.target_dict[key]
+        transcript = self.target_dict[key]
 
-        tokens = script.split(' ')
+        tokens = transcript.split(' ')
 
-        scripts.append(int(self.sos_id))
+        transcripts.append(int(self.sos_id))
         for token in tokens:
-            scripts.append(int(token))
-        scripts.append(int(self.eos_id))
+            transcripts.append(int(token))
+        transcripts.append(int(self.eos_id))
 
-        return scripts
+        return transcripts
 
     def augmentation(self, spec_augment, noise_augment):
         """ Spec & Noise Augmentation """
@@ -97,7 +97,7 @@ class MelSpectrogramDataset(Dataset, MelSpectrogramParser):
         return len(self.audio_paths)
 
 
-class AudioDataLoader(threading.Thread):
+class AudioLoader(threading.Thread):
     """
     Audio Data Loader
 
@@ -137,10 +137,10 @@ class AudioDataLoader(threading.Thread):
                 if self.index >= self.dataset_count:
                     break
 
-                spectrogram, script = self.dataset.get_item(self.index)
+                spectrogram, transcript = self.dataset.get_item(self.index)
 
                 if spectrogram is not None:
-                    items.append((spectrogram, script))
+                    items.append((spectrogram, transcript))
 
                 self.index += 1
 
@@ -199,7 +199,7 @@ def _collate_fn(batch):
     return seqs, targets, seq_lengths, target_lengths
 
 
-class MultiDataLoader(object):
+class MultiAudioLoader(object):
     """
     Multi Data Loader using Threads.
 
@@ -217,7 +217,7 @@ class MultiDataLoader(object):
         self.loader = list()
 
         for idx in range(self.num_workers):
-            self.loader.append(AudioDataLoader(self.dataset_list[idx], self.queue, self.batch_size, idx))
+            self.loader.append(AudioLoader(self.dataset_list[idx], self.queue, self.batch_size, idx))
 
     def start(self):
         """ Run threads """
@@ -274,7 +274,7 @@ def split_dataset(opt, audio_paths, script_paths):
         train_end_idx = min(train_num_per_worker * (idx + 1), train_num)
 
         trainset_list.append(
-            MelSpectrogramDataset(
+            SpeechDataset(
                 audio_paths[train_begin_idx:train_end_idx],
                 script_paths[train_begin_idx:train_end_idx],
                 SOS_token, EOS_token,
@@ -288,7 +288,7 @@ def split_dataset(opt, audio_paths, script_paths):
             )
         )
 
-    validset = MelSpectrogramDataset(
+    validset = SpeechDataset(
         audio_paths=audio_paths[train_num:],
         script_paths=script_paths[train_num:],
         sos_id=SOS_token, eos_id=EOS_token,
