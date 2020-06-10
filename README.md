@@ -73,7 +73,6 @@ Our model architeuture is as follows.
 ```python
 ListenAttendSpell(
   (listener): Listener(
-    (rnn): LSTM(2560, 256, num_layers=3, batch_first=True, dropout=0.3, bidirectional=True)
     (extractor): VGGExtractor(
       (cnn): MaskCNN(
         (sequential): Sequential(
@@ -93,6 +92,7 @@ ListenAttendSpell(
         )
       )
     )
+    (rnn): LSTM(2560, 256, num_layers=3, batch_first=True, dropout=0.3, bidirectional=True)
   )
   (speller): Speller(
     (embedding): Embedding(2038, 512)
