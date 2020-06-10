@@ -47,7 +47,8 @@ class Speller(BaseRNN):
         self.sos_id = sos_id
         self.embedding = nn.Embedding(num_classes, hidden_dim)
         self.input_dropout = nn.Dropout(dropout_p)
-        self.out_projection = nn.Linear(hidden_dim << 1, num_classes, bias=True)
+        self.fc1 = nn.Linear(hidden_dim << 1, hidden_dim, bias=True)
+        self.fc2 = nn.Linear(hidden_dim, num_classes, bias=True)
         self.attn_mechanism = attn_mechanism
 
         if attn_mechanism == 'loc':
@@ -76,7 +77,9 @@ class Speller(BaseRNN):
             context = self.attention(output, listener_outputs)
             combined = torch.cat([context, output], dim=2)
 
-        output = self.out_projection(torch.tanh(combined.view(-1, self.hidden_dim << 1)))
+        output = self.fc1(combined.view(-1, self.hidden_dim << 1)).view(batch_size, -1, self.hidden_dim)
+        output = torch.tanh(output)
+        output = self.fc2(output.contiguous().view(-1, self.hidden_dim))
 
         predicted_softmax = F.log_softmax(output, dim=1)
         step_output = predicted_softmax.view(batch_size, output_lengths, -1).squeeze(1)
