@@ -77,6 +77,7 @@ class Speller(BaseRNN):
             combined = torch.cat([context, output], dim=2)
 
         output = self.out_projection(torch.tanh(combined.view(-1, self.hidden_dim << 1)))
+
         predicted_softmax = F.log_softmax(output, dim=1)
         step_output = predicted_softmax.view(batch_size, output_lengths, -1).squeeze(1)
 

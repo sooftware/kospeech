@@ -27,9 +27,9 @@ class SupervisedTrainer(object):
     train_dict = {'loss': [], 'cer': []}
     valid_dict = {'loss': [], 'cer': []}
     train_step_result = {'loss': [], 'cer': []}
-    TRAIN_RESULT_PATH = "./data/train_result/train_result.csv"
-    VALID_RESULT_PATH = "./data/train_result/eval_result.csv"
-    TRAIN_STEP_RESULT_PATH = "./data/train_result/train_step_result.csv"
+    TRAIN_RESULT_PATH = "../data/train_result/train_result.csv"
+    VALID_RESULT_PATH = "../data/train_result/eval_result.csv"
+    TRAIN_STEP_RESULT_PATH = "../data/train_result/train_step_result.csv"
 
     def __init__(self, optimizer, criterion, trainset_list, validset, high_plateau_lr, low_plateau_lr,
                  exp_decay_period, num_workers, device, decay_threshold,
