@@ -99,7 +99,6 @@ ListenAttendSpell(
     (input_dropout): Dropout(p=0.3, inplace=False)
     (rnn): LSTM(512, 512, num_layers=2, batch_first=True, dropout=0.3)
     (attention): MultiHeadAttention(
-      (scaled_dot): ScaledDotProductAttention()
       (query_projection): Linear(in_features=512, out_features=512, bias=True)
       (value_projection): Linear(in_features=512, out_features=512, bias=True)
     )
