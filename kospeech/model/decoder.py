@@ -98,11 +98,19 @@ class Speller(BaseRNN):
         if use_teacher_forcing:
             inputs = inputs[inputs != self.eos_id].view(batch_size, -1)
 
-            # Call forward_step() at every timestep because Location-aware attention requires previous attention.
-            for di in range(inputs.size(1)):
-                input_var = inputs[:, di].unsqueeze(1)
-                step_output, hidden, attn = self.forward_step(input_var, hidden, listener_outputs, attn)
-                decoder_outputs.append(step_output)
+            if self.attn_mechanism == 'loc':
+                # Call forward_step() at every timestep because Location-aware attention requires previous attention.
+                for di in range(inputs.size(1)):
+                    input_var = inputs[:, di].unsqueeze(1)
+                    step_output, hidden, attn = self.forward_step(input_var, hidden, listener_outputs, attn)
+                    decoder_outputs.append(step_output)
+
+            else:
+                step_outputs, hidden, attn = self.forward_step(inputs, hidden, listener_outputs, attn)
+
+                for di in range(step_outputs.size(1)):
+                    step_output = step_outputs[:, di, :]
+                    decoder_outputs.append(step_output)
 
         else:
             input_var = inputs[:, 0].unsqueeze(1)
