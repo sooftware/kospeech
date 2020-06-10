@@ -9,7 +9,7 @@ if platform.system() == 'Linux':  # torchaudio is only supported on Linux
     try:
         import torchaudio
     except ImportError:
-        raise ImportError("SpectrogramParser requires torchaudio package.")
+        raise ImportError("SpeechParser requires torchaudio package.")
 
 
 class AudioParser(object):
@@ -34,7 +34,7 @@ class AudioParser(object):
         raise NotImplementedError
 
 
-class SpeechParser(AudioParser):
+class SpectrogramParser(AudioParser):
     """
     Parses audio file into mel spectrogram with various options.
 
@@ -64,7 +64,7 @@ class SpeechParser(AudioParser):
                  time_mask_para=70, freq_mask_para=12, time_mask_num=2, freq_mask_num=2,
                  sos_id=1, eos_id=2, target_dict=None,
                  noise_augment=False, dataset_path=None, noiseset_size=0, noise_level=0.7):
-        super(SpeechParser, self).__init__(dataset_path, noiseset_size, sample_rate, noise_level, noise_augment)
+        super(SpectrogramParser, self).__init__(dataset_path, noiseset_size, sample_rate, noise_level, noise_augment)
         self.sample_rate = sample_rate
         self.n_mels = n_mels
         self.window_size = window_size

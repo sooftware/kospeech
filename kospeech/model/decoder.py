@@ -59,8 +59,7 @@ class Speller(BaseRNN):
             raise ValueError("Unsupported attention: %s".format(attn_mechanism))
 
     def forward_step(self, input_var, hidden, listener_outputs, attn):
-        batch_size = input_var.size(0)
-        output_lengths = input_var.size(1)
+        batch_size, output_lengths = input_var.size(0), input_var.size(1)
 
         embedded = self.embedding(input_var).to(self.device)
         embedded = self.input_dropout(embedded)
@@ -81,8 +80,7 @@ class Speller(BaseRNN):
 
     def forward(self, inputs, listener_outputs, teacher_forcing_ratio=0.90):
         hidden, attn = None, None
-        decoder_outputs = list()
-        metadata = dict()
+        decoder_outputs, metadata = list(), dict()
 
         if not self.training:
             metadata[Speller.KEY_ATTN_SCORE] = list()

@@ -6,7 +6,7 @@ from kospeech.metrics import CharacterErrorRate
 from kospeech.utils import id2char, EOS_token, logger, label_to_string
 
 
-class Search(object):
+class GreedySearch(object):
     """
     Provides some functions : search, save result to csv format.
 
@@ -63,16 +63,7 @@ class Search(object):
         results.to_csv(save_path, index=False, encoding='cp949')
 
 
-class GreedySearch(Search):
-    """ Provides greedy search decoding. """
-    def __init__(self):
-        super(GreedySearch, self).__init__()
-
-    def search(self, model, queue, device, print_every):
-        super(GreedySearch, self).search(model, queue, device, print_every)
-
-
-class BeamSearch(Search):
+class BeamSearch(GreedySearch):
     """ Provides beam search decoding. """
     def __init__(self, k):
         super(BeamSearch, self).__init__()
@@ -87,7 +78,7 @@ class BeamSearch(Search):
         super(BeamSearch, self).search(model, queue, device, print_every)
 
 
-class EnsembleSearch(Search):
+class EnsembleSearch(GreedySearch):
     """ Provides ensemble search decoding. """
     def __init__(self, method='basic'):
         super(EnsembleSearch, self).__init__()

@@ -73,7 +73,7 @@ class MaskCNN(nn.Module):
         return seq_lengths.int()
 
 
-class ConvolutionalExtractor(nn.Module):
+class CNNExtractor(nn.Module):
     """
     Provides inteface of extractor.
 
@@ -81,7 +81,7 @@ class ConvolutionalExtractor(nn.Module):
         Do not use this class directly, use one of the sub classes.
     """
     def __init__(self, activation='hardtanh'):
-        super(ConvolutionalExtractor, self).__init__()
+        super(CNNExtractor, self).__init__()
         if activation.lower() == 'hardtanh':
             self.activation = nn.Hardtanh(0, 20, inplace=True)
         elif activation.lower() == 'relu':
@@ -99,7 +99,7 @@ class ConvolutionalExtractor(nn.Module):
         raise NotImplementedError
 
 
-class VGGExtractor(ConvolutionalExtractor):
+class VGGExtractor(CNNExtractor):
     """
     VGG extractor for automatic speech recognition described in
     "Advances in Joint CTC-Attention based End-to-End Speech Recognition with a Deep CNN Encoder and RNN-LM" paper
@@ -130,7 +130,7 @@ class VGGExtractor(ConvolutionalExtractor):
         return conv_feat, seq_lengths
 
 
-class DeepSpeech2Extractor(ConvolutionalExtractor):
+class DeepSpeech2Extractor(CNNExtractor):
     """
     DeepSpeech2 extractor for automatic speech recognition described in
     "Deep Speech 2: End-to-End Speech Recognition in English and Mandarin" paper

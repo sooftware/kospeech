@@ -12,7 +12,7 @@ import sys
 import argparse
 import warnings
 sys.path.append('..')
-from kospeech.data.data_loader import load_data_list, SpeechDataset
+from kospeech.data.data_loader import load_data_list, SpectrogramDataset
 from kospeech.data.label_loader import load_targets
 from kospeech.evaluator.evaluator import Evaluator
 from kospeech.utils import check_envirionment, EOS_token, SOS_token
@@ -27,7 +27,7 @@ def inference(opt):
     audio_paths, script_paths = load_data_list(opt.data_list_path, opt.dataset_path)
     target_dict = load_targets(script_paths)
 
-    testset = SpeechDataset(
+    testset = SpectrogramDataset(
         audio_paths=audio_paths,
         script_paths=script_paths,
         sos_id=SOS_token,
