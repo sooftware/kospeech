@@ -8,6 +8,7 @@
   year = {2020}
 }
 """
+import math
 import sys
 import argparse
 import random
@@ -32,23 +33,32 @@ def train(opt):
     torch.cuda.manual_seed_all(opt.seed)
     device = check_envirionment(opt.use_cuda)
 
-    audio_paths, script_paths = load_data_list(opt.data_list_path, opt.dataset_path)
+    if not opt.resume:
+        audio_paths, script_paths = load_data_list(opt.data_list_path, opt.dataset_path)
 
-    epoch_time_step, trainset_list, validset = split_dataset(opt, audio_paths, script_paths)
-    model = build_model(opt, device)
+        epoch_time_step, trainset_list, validset = split_dataset(opt, audio_paths, script_paths)
+        model = build_model(opt, device)
 
-    optimizer = optim.Adam(model.module.parameters(), lr=opt.init_lr, weight_decay=1e-05)
+        optimizer = optim.Adam(model.module.parameters(), lr=opt.init_lr, weight_decay=1e-05)
 
-    if opt.rampup_period > 0:
-        scheduler = RampUpLR(optimizer, opt.init_lr, opt.high_plateau_lr, opt.rampup_period)
-        optimizer = Optimizer(optimizer, scheduler, opt.rampup_period, opt.max_grad_norm)
+        if opt.rampup_period > 0:
+            scheduler = RampUpLR(optimizer, opt.init_lr, opt.high_plateau_lr, opt.rampup_period)
+            optimizer = Optimizer(optimizer, scheduler, opt.rampup_period, opt.max_grad_norm)
+        else:
+            optimizer = Optimizer(optimizer, None, 0, opt.max_grad_norm)
+
+        if opt.label_smoothing == 0.0:
+            criterion = nn.NLLLoss(reduction='sum', ignore_index=PAD_token).to(device)
+        else:
+            criterion = LabelSmoothingLoss(len(char2id), PAD_token, opt.label_smoothing, dim=-1).to(device)
+
     else:
-        optimizer = Optimizer(optimizer, None, 0, opt.max_grad_norm)
-
-    if opt.label_smoothing == 0.0:
-        criterion = nn.NLLLoss(reduction='sum', ignore_index=PAD_token).to(device)
-    else:
-        criterion = LabelSmoothingLoss(len(char2id), PAD_token, opt.label_smoothing, dim=-1).to(device)
+        trainset_list = None
+        validset = None
+        model = None
+        optimizer = None
+        criterion = None
+        epoch_time_step = None
 
     trainer = SupervisedTrainer(
         optimizer=optimizer,

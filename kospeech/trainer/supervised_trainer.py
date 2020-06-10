@@ -1,3 +1,4 @@
+import math
 import time
 import torch
 import queue
@@ -77,6 +78,10 @@ class SupervisedTrainer(object):
             self.trainset_list = resume_checkpoint.trainset_list
             self.validset = resume_checkpoint.validset
             start_epoch = resume_checkpoint.epoch
+            epoch_time_step = 0
+            for trainset in self.trainset_list:
+                epoch_time_step += len(trainset)
+            epoch_time_step = math.ceil(epoch_time_step / batch_size)
 
         logger.info('start')
         train_begin_time = time.time()
