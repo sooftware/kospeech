@@ -102,9 +102,8 @@ ListenAttendSpell(
       (scaled_dot): ScaledDotProductAttention()
       (query_projection): Linear(in_features=512, out_features=512, bias=True)
       (value_projection): Linear(in_features=512, out_features=512, bias=True)
-      (out_projection): Linear(in_features=1024, out_features=512, bias=True)
     )
-    (out_projection): Linear(in_features=512, out_features=2038, bias=True)
+    (out_projection): Linear(in_features=1024, out_features=2038, bias=True)
   )
 )
 ``` 
