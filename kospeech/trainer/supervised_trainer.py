@@ -167,7 +167,7 @@ class SupervisedTrainer(object):
             targets = scripts[:, 1:]
 
             model.module.flatten_parameters()
-            output, _ = model(inputs, input_lengths, scripts, teacher_forcing_ratio=teacher_forcing_ratio)
+            output = model(inputs, input_lengths, scripts, teacher_forcing_ratio=teacher_forcing_ratio)[0]
 
             logit = torch.stack(output, dim=1).to(self.device)
             hypothesis = logit.max(-1)[1]
@@ -206,7 +206,7 @@ class SupervisedTrainer(object):
             if timestep % self.checkpoint_every == 0:
                 Checkpoint(model, self.optimizer,  self.criterion, self.trainset_list, self.validset, epoch).save()
 
-            del inputs, input_lengths, scripts, targets, output, logit, loss
+            del inputs, input_lengths, scripts, targets, output, logit, loss, hypothesis
 
         Checkpoint(model, self.optimizer, self.criterion, self.trainset_list, self.validset, epoch).save()
 
@@ -245,7 +245,7 @@ class SupervisedTrainer(object):
                 target_lengths = targets.size(1)
 
                 model.module.flatten_parameters()
-                output, _ = model(inputs, input_lengths, teacher_forcing_ratio=0.0)
+                output = model(inputs, input_lengths, teacher_forcing_ratio=0.0)[0]
 
                 logit = torch.stack(output, dim=1).to(self.device)
                 hypothesis = logit.max(-1)[1]
@@ -256,6 +256,8 @@ class SupervisedTrainer(object):
                 total_loss += loss.item()
                 total_num += sum(input_lengths)
                 cer = self.metric(targets, hypothesis)
+
+                del inputs, input_lengths, scripts, targets, output, logit, loss, hypothesis
 
         logger.info('validate() completed')
         return total_loss / total_num, cer

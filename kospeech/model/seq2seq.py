@@ -36,8 +36,8 @@ class ListenAttendSpell(nn.Module):
         self.listener = listener
         self.speller = speller
 
-    def forward(self, inputs, input_lengths, targets=None, teacher_forcing_ratio=0.99):
-        listener_outputs, hidden = self.listener(inputs, input_lengths)
+    def forward(self, inputs, input_lengths, targets=None, teacher_forcing_ratio=1.0):
+        listener_outputs = self.listener(inputs, input_lengths)
         result = self.speller(targets, listener_outputs, teacher_forcing_ratio)
         return result
 

@@ -127,6 +127,7 @@ class VGGExtractor(ConvolutionalExtractor):
 
     def forward(self, inputs, input_lengths):
         conv_feat, seq_lengths = self.cnn(inputs, input_lengths)
+        del inputs, input_lengths
         return conv_feat, seq_lengths
 
 
@@ -152,4 +153,5 @@ class DeepSpeech2Extractor(ConvolutionalExtractor):
 
     def forward(self, inputs, input_lengths):
         conv_feat, seq_lengths = self.cnn(inputs, input_lengths)
+        del inputs, input_lengths
         return conv_feat, seq_lengths

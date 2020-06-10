@@ -47,7 +47,8 @@ class Speller(BaseRNN):
         self.sos_id = sos_id
         self.embedding = nn.Embedding(num_classes, hidden_dim)
         self.input_dropout = nn.Dropout(dropout_p)
-        self.out_projection = nn.Linear(self.hidden_dim, num_classes, bias=True)
+        self.out_projection = nn.Linear(hidden_dim << 1, num_classes, bias=True)
+        self.attn_mechanism = attn_mechanism
 
         if attn_mechanism == 'loc':
             self.attention = LocationAwareAttention(hidden_dim, smoothing=True)
@@ -67,11 +68,19 @@ class Speller(BaseRNN):
             self.rnn.flatten_parameters()
 
         output, hidden = self.rnn(embedded, hidden)
-        output, attn = self.attention(output, listener_outputs, attn)
 
-        step_output = F.log_softmax(self.out_projection(output.contiguous().view(-1, self.hidden_dim)), dim=1)
-        step_output = step_output.view(batch_size, output_lengths, -1).squeeze(1)
+        if self.attn_mechanism == 'loc':
+            context, attn = self.attention(output, listener_outputs, attn)
+        elif self.attn_mechanism == 'dot':
+            context = self.attention(output, listener_outputs)
 
+        combined = torch.cat([context, output], dim=-1)
+        output = torch.tanh(self.out_projection(combined.view(-1, self.hidden_dim << 1)))
+
+        predicted_softmax = F.log_softmax(output, dim=1)
+        step_output = predicted_softmax.view(batch_size, output_lengths, -1).squeeze(1)
+
+        del input_var, embedded, context, combined, output, predicted_softmax
         return step_output, hidden, attn
 
     def forward(self, inputs, listener_outputs, teacher_forcing_ratio=0.90):
@@ -107,6 +116,7 @@ class Speller(BaseRNN):
                     metadata[Speller.KEY_ATTN_SCORE].append(attn)
                     metadata[Speller.KEY_SEQUENCE_SYMBOL].append(input_var)
 
+        del inputs, hidden
         return decoder_outputs, metadata
 
     def validate_args(self, inputs, listener_outputs, teacher_forcing_ratio):
