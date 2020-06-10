@@ -206,6 +206,8 @@ class SupervisedTrainer(object):
             if timestep % self.checkpoint_every == 0:
                 Checkpoint(model, self.optimizer,  self.criterion, self.trainset_list, self.validset, epoch).save()
 
+            del inputs, input_lengths, scripts, targets, output, logit, loss
+
         Checkpoint(model, self.optimizer, self.criterion, self.trainset_list, self.validset, epoch).save()
 
         logger.info('train() completed')

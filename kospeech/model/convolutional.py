@@ -80,7 +80,7 @@ class ConvolutionalExtractor(nn.Module):
     Note:
         Do not use this class directly, use one of the sub classes.
     """
-    def __init__(self, activation='elu'):
+    def __init__(self, activation='hardtanh'):
         super(ConvolutionalExtractor, self).__init__()
         if activation.lower() == 'hardtanh':
             self.activation = nn.Hardtanh(0, 20, inplace=True)
@@ -105,7 +105,7 @@ class VGGExtractor(ConvolutionalExtractor):
     "Advances in Joint CTC-Attention based End-to-End Speech Recognition with a Deep CNN Encoder and RNN-LM" paper
     - https://arxiv.org/pdf/1706.02737.pdf
     """
-    def __init__(self, in_channels=1, activation='elu'):
+    def __init__(self, in_channels=1, activation='hardtanh'):
         super(VGGExtractor, self).__init__(activation)
         self.cnn = MaskCNN(
             nn.Sequential(
