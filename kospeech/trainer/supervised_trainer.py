@@ -120,12 +120,12 @@ class SupervisedTrainer(object):
             valid_loader = AudioLoader(self.validset, valid_queue, batch_size, 0)
             valid_loader.start()
 
-            valid_loss, valid_cer = self.validate(model, valid_queue)
+            valid_cer = self.validate(model, valid_queue)
             valid_loader.join()
 
-            logger.info('Epoch %d (Validate) Loss %0.4f CER %0.4f' % (epoch, valid_loss, valid_cer))
+            logger.info('Epoch %d (Validate) Loss %0.4f CER %0.4f' % (epoch, 1.0, valid_cer))
             self._save_epoch_result(train_result=[self.train_dict, train_loss, train_cer],
-                                    valid_result=[self.valid_dict, valid_loss, valid_cer])
+                                    valid_result=[self.valid_dict, 1.0, valid_cer])
             logger.info('Epoch %d Training result saved as a csv file complete !!' % epoch)
 
         return model
@@ -230,8 +230,6 @@ class SupervisedTrainer(object):
             - **loss** (float): loss of validation
             - **cer** (float): character error rate of validation
         """
-        total_loss = 0.
-        total_num = 0
         cer = 1.0
 
         model.eval()
@@ -247,7 +245,6 @@ class SupervisedTrainer(object):
                 inputs = inputs.to(self.device)
                 scripts = scripts.to(self.device)
                 targets = scripts[:, 1:]
-                target_lengths = targets.size(1)
 
                 model.module.flatten_parameters()
                 output = model(inputs, input_lengths, teacher_forcing_ratio=0.0)[0]
@@ -255,17 +252,10 @@ class SupervisedTrainer(object):
                 logit = torch.stack(output, dim=1).to(self.device)
                 hypothesis = logit.max(-1)[1]
 
-                logit = logit[:, :target_lengths]
-                loss = self.criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
-
-                total_loss += loss.item()
-                total_num += sum(input_lengths)
                 cer = self.metric(targets, hypothesis)
 
-                del inputs, input_lengths, scripts, targets, output, logit, loss, hypothesis
-
         logger.info('validate() completed')
-        return total_loss / total_num, cer
+        return cer
 
     def _save_epoch_result(self, train_result, valid_result):
         """ Save result of epoch """
