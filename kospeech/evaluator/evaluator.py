@@ -27,7 +27,7 @@ class Evaluator(object):
         if decode == 'greedy':
             self.decoder = GreedySearch()
         elif decode == 'beam':
-            assert beam_size > 1, "beam_size should be greater than 1."
+            assert beam_size > 1, "beam_size should be greater than 1. You can choose `greedy` search"
             self.decoder = BeamSearch(beam_size)
         else:
             raise ValueError("Unsupported decode : {0}".format(decode))
@@ -41,7 +41,7 @@ class Evaluator(object):
         eval_loader.start()
 
         cer = self.decoder.search(model, eval_queue, self.device, self.print_every)
-        self.decoder.save_result('./data/train_result/%s.csv' % type(self.decoder).__name__)
+        self.decoder.save_result('../data/train_result/%s.csv' % type(self.decoder).__name__)
 
         logger.info('Evaluate CER: %s' % cer)
         logger.info('evaluate() completed')

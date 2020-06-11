@@ -7,3 +7,9 @@ speller = Speller(2038, 151, 512, 1, 2)
 model = ListenAttendSpell(listener, speller)
 
 print(model)
+
+listener = Listener(80, 256, 'cpu', extractor='ds2')
+speller = Speller(2038, 151, 512, 1, 2, attn_mechanism='loc')
+model = ListenAttendSpell(listener, speller)
+
+print(model)
