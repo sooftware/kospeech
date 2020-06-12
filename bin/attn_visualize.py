@@ -4,8 +4,8 @@ import librosa
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-from kospeech.data.preprocess.core import split
-from kospeech.model.speller import Speller
+from kospeech.data.preprocess.audio import split
+from kospeech.model.decoder import Speller
 
 MODEL_PATH = '../data/checkpoints/model.pt'
 AUDIO_PATH = '../data/sample/KaiSpeech_000098.pcm'
