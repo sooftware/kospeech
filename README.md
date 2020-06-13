@@ -251,7 +251,7 @@ Chung-Cheng Chiu et al. [State-of-the-art Speech Recognition with Sequence-to-Se
   
 Daniel S. Park et al. [SpecAugment: A Simple Data Augmentation Method for ASR](https://arxiv.org/abs/1904.08779) arXiv: 1904.08779     
     
-Takaaki Hori et al. [Advances in Joint CTC-Attention based End-to-End Speech Recognition with a Deep CNN Encoder and RNN-LM](https://arxiv.org/abs/1706.02737) arXiv: 1706.02737   
+Takaaki Hori et al. [Advances in Joint CTC-Attention based E2E Speech Recognition with a Deep CNN Encoder and RNN-LM](https://arxiv.org/abs/1706.02737) arXiv: 1706.02737   
     
 Dario Amodei et al. [Deep Speech2: End-to-End Speech Recognition in English and Mandarin](https://arxiv.org/abs/1512.02595) arXiv: 1512.02595   
    
