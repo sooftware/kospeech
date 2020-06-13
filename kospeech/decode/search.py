@@ -75,7 +75,7 @@ class BeamSearch(GreedySearch):
             model.module.set_speller(topk_decoder)
         else:
             model.set_speller(topk_decoder)
-        super(BeamSearch, self).search(model, queue, device, print_every)
+        return super(BeamSearch, self).search(model, queue, device, print_every)
 
 
 class EnsembleSearch(GreedySearch):
@@ -86,4 +86,4 @@ class EnsembleSearch(GreedySearch):
 
     def search(self, models, queue, device, print_every):
         # TODO : IMPLEMENTS ENSEMBLE SEARCH
-        super(EnsembleSearch, self).search(models, queue, device, print_every)
+        return super(EnsembleSearch, self).search(models, queue, device, print_every)
