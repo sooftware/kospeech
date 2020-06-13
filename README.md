@@ -259,7 +259,7 @@ Jung-Woo Ha et al. [ClovaCall: Korean Goal-Oriented Dialog Speech Corpus for ASR
      
 Rafael Muller et al. [When Does Label Smoothing Help?](https://arxiv.org/abs/1906.02629) arXiv: 1906.02629  
       
-Anjuli Kannan et al. [An Analysis of Incorporating AN External LM into A Seq2seq Model](https://arxiv.org/abs/1712.01996) arXiv: 1712.01996  
+Anjuli Kannan et al. [AN ANALYSIS OF INCORPORATING AN EXTERNAL LM INTO A SEQ2SEQ MODEL](https://arxiv.org/abs/1712.01996) arXiv: 1712.01996  
   
 Dzmitry Bahdanau et al. [Neural Machine Translation by Jointly Learning to Align and Translate](https://arxiv.org/abs/1409.0473) arXiv: 1409.0473   
    
