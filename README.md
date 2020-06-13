@@ -241,20 +241,30 @@ We appreciate any kind of feedback or contribution.  Feel free to proceed with s
 ### Code Style
 We follow [PEP-8](https://www.python.org/dev/peps/pep-0008/) for code style. Especially the style of docstrings is important to generate documentation.  
     
-### Reference   
-[[1] 「Listen, Attend and Spell」  @Paper](https://arxiv.org/abs/1508.01211)   
-[[2] 「Attention Based Models for Speech Recognition」  @Paper](https://arxiv.org/abs/1506.07503)  
-[[3] 「State-of-the-art Speech Recognition with Sequence-to-Sequence Models」   @Paper](https://arxiv.org/abs/1712.01769)  
-[[4] 「A Simple Data Augmentation Method for Automatic Speech Recognition」  @Paper](https://arxiv.org/abs/1904.08779)  
-[[5] 「Voice Recognition Using MFCC Algorithm」  @Paper](https://ijirae.com/volumes/vol1/issue10/27.NVEC10086.pdf)        
-[[6] IBM/pytorch-seq2seq @gitHub](https://github.com/IBM/pytorch-seq2seq)   
-[[7] SeanNaren/deepspeech.pytorch @github](https://github.com/SeanNaren/deepspeech.pytorch)   
-[[8] Alexander-H-Liu/End-to-end-ASR-Pytorch @github](https://github.com/Alexander-H-Liu/End-to-end-ASR-Pytorch)   
-[[9] clovaai/ClovaCall @github](https://github.com/clovaai/ClovaCall)  
-[[10] KsponSpeech @AIHub](http://www.aihub.or.kr/aidata/105)    
-[[11] KsponSpeech.preprocess @github](https://github.com/sooftware/KsponSpeech.preprocess)    
-[[12] Documentation](https://sooftware.github.io/End-to-End-Korean-Speech-Recognition/)  
+### References
+  
+Wiliam Chan et al. 2015 [Listen, Attend and Spell](https://arxiv.org/abs/1508.01211) arXiv: 1508.01211   
+  
+Jan Chorowski et al. 2015 [Attention Based Models for Speech Recognition](https://arxiv.org/abs/1506.07503) arXiv: 1506.07503  
    
+Chung-Cheng Chiu et al. 2017 [State-of-the-art Speech Recognition with Sequence-to-Sequence Models](https://arxiv.org/abs/1712.01769) arXiv: 1712.01769
+   .
+Daniel S. Park et al. 2019 [SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition](https://arxiv.org/abs/1904.08779) arXiv: 1904.08779  
+  
+Takaaki Hori et al. 2017 [Advances in Joint CTC-Attention based End-to-End Speech Recognition with a Deep CNN Encoder and RNN-LM](https://arxiv.org/abs/1706.02737) arXiv: 1706.02737  
+  
+Dario Amodei et al. 2015 [Deep Speech2: End-to-End Speech Recognition in English and Mandarin](https://arxiv.org/abs/1512.02595) arXiv: 1512.02595
+  
+Jung-Woo Ha et al. 2020 [ClovaCall: Korean Goal-Oriented Dialog Speech Corpus for Automatic Speech Recognition of Contact Centers](https://arxiv.org/abs/2004.09367) arXiv: 2004.09367
+   
+Rafael Muller et al. 2019 [When Does Label Smoothing Help?](https://arxiv.org/abs/1906.02629) arXiv: 1906.02629  
+  
+IBM 2017 [pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)  
+  
+Sean Naren [deepspeech.pytorch](https://github.com/SeanNaren/deepspeech.pytorch)
+  
+Alexander H Liu [End-to-end ASR Pytorch](https://github.com/Alexander-H-Liu/End-to-end-ASR-Pytorch)
+    
 ### Citing
 ```
 @github{
