@@ -1,8 +1,9 @@
 import torch
 import torch.nn as nn
 import pandas as pd
-from kospeech.model.beam_search import BeamSearchDecoder
 from kospeech.metrics import CharacterErrorRate
+from kospeech.model.beam_search import BeamSearchDecoder
+from kospeech.model_builder import load_language_model
 from kospeech.utils import id2char, EOS_token, logger, label_to_string
 
 
@@ -17,6 +18,7 @@ class GreedySearch(object):
         self.target_list = list()
         self.hypothesis_list = list()
         self.metric = CharacterErrorRate(id2char, EOS_token)
+        self.language_model = load_language_model('path')
 
     def search(self, model, queue, device, print_every):
         cer = 0
@@ -35,7 +37,7 @@ class GreedySearch(object):
                 scripts = scripts.to(device)
                 targets = scripts[:, 1:]
 
-                output, _ = model(inputs, input_lengths, teacher_forcing_ratio=0.0)
+                output, _ = model(inputs, input_lengths, teacher_forcing_ratio=0.0, language_model=self.language_model)
 
                 logit = torch.stack(output, dim=1).to(device)
                 hypothesis = logit.max(-1)[1]
