@@ -110,7 +110,7 @@ class Speller(BaseRNN):
 
         else:
             input_var = inputs[:, 0].unsqueeze(1)  # Bx1
-            prev_tokens = input_var
+            prev_tokens = input_var.clone()
 
             for di in range(max_length):
                 step_output, hidden, attn = self.forward_step(input_var, hidden, encoder_outputs, attn)
