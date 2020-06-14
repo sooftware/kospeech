@@ -128,6 +128,10 @@ def load_test_model(opt, device):
 
 def load_language_model(path, device):
     model = torch.load(path, map_location=lambda storage, loc: storage).to(device)
+
+    if isinstance(model, nn.DataParallel):
+        model = model.module
+
     model.device = device
 
     return model

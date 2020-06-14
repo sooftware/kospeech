@@ -45,8 +45,8 @@ class Speller(BaseRNN):
         self.max_length = max_length
         self.eos_id = eos_id
         self.sos_id = sos_id
-        self.acoustic_weight = 0.7
-        self.lm_weight = 0.3
+        self.acoustic_weight = 0.75
+        self.lm_weight = 0.25
         self.attn_mechanism = attn_mechanism
         self.embedding = nn.Embedding(num_classes, hidden_dim)
         self.input_dropout = nn.Dropout(dropout_p)
@@ -82,7 +82,7 @@ class Speller(BaseRNN):
 
     def forward(self, inputs, encoder_outputs, teacher_forcing_ratio=0.90, language_model=None):
         hidden, attn = None, None
-        decoder_outputs, prev_tokens, metadata = list(), list(), dict()
+        decoder_outputs, metadata = list(), dict()
 
         if not self.training:
             metadata[Speller.KEY_ATTN_SCORE] = list()
@@ -90,9 +90,10 @@ class Speller(BaseRNN):
 
         inputs, batch_size, max_length = self.validate_args(inputs, encoder_outputs, teacher_forcing_ratio, language_model)
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
+        use_external_lm = True if language_model is not None else False
 
         if use_teacher_forcing:
-            inputs = inputs[inputs != self.eos_id].view(batch_size, -1)  # BxT
+            inputs = inputs[inputs != self.eos_id].view(batch_size, -1)
 
             # Call forward_step() at every timestep because Location-aware attention requires previous attention.
             if self.attn_mechanism == 'loc':
@@ -109,8 +110,8 @@ class Speller(BaseRNN):
                     decoder_outputs.append(step_output)
 
         else:
-            input_var = inputs[:, 0].unsqueeze(1)  # Bx1
-            prev_tokens = input_var.clone()
+            input_var = inputs[:, 0].unsqueeze(1)
+            prev_tokens = input_var.clone() if use_external_lm else None
 
             for di in range(max_length):
                 step_output, hidden, attn = self.forward_step(input_var, hidden, encoder_outputs, attn)
@@ -119,13 +120,13 @@ class Speller(BaseRNN):
                     metadata[Speller.KEY_ATTN_SCORE].append(attn)
                     metadata[Speller.KEY_SEQUENCE_SYMBOL].append(input_var)
 
-                if language_model is not None:
+                if use_external_lm:
                     lm_step_output = language_model.forward_step(prev_tokens, None)[0].squeeze(1)
-                    step_output = step_output * self.acoustic_weight + lm_step_output * self.lm_weight
+                    step_output = step_output * self.acoustic_weight + lm_step_output[:, -1, :].squeeze(1) * self.lm_weight
+                    prev_tokens = torch.cat([prev_tokens, step_output.topk(1)[1]], dim=1)
 
                 decoder_outputs.append(step_output)
                 input_var = decoder_outputs[-1].topk(1)[1]
-                prev_tokens = torch.cat([prev_tokens, input_var])
 
         return decoder_outputs, metadata
 

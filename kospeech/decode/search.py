@@ -18,7 +18,7 @@ class GreedySearch(object):
         self.target_list = list()
         self.hypothesis_list = list()
         self.metric = CharacterErrorRate(id2char, EOS_token)
-        self.language_model = load_language_model('path')
+        self.language_model = load_language_model('lm_path', 'cuda')
 
     def search(self, model, queue, device, print_every):
         cer = 0

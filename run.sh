@@ -10,7 +10,7 @@ DATA_LIST_PATH='../data/data_list/filter_train_list.csv'
 BATCH_SIZE=32
 NUM_WORKERS=4
 NUM_EPOCHS=20
-HSTATE_SIZE=256
+HIDDEN_DIM=256
 DROPOUT=0.3
 NUM_HEADS=4
 ATTN_MECHANISM='dot'
@@ -52,7 +52,7 @@ MODE='train'
 cd bin
 
 python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epochs $NUM_EPOCHS --use_bidirectional \
---input_reverse --spec_augment --noise_augment --use_cuda --hstate_size $HSTATE_SIZE \
+--input_reverse --spec_augment --noise_augment --use_cuda --hidden_dim $HIDDEN_DIM \
 --dropout $DROPOUT --num_heads $NUM_HEADS --label_smoothing $LABEL_SMOOTHING \
 --listener_layer_size $LISTENER_LAYER_SIZE --speller_layer_size $SPELLER_LAYER_SIZE --rnn_type $RNN_TYPE \
 --high_plateau_lr $HIGH_PLATEAU_LR --teacher_forcing_ratio $TEACHER_FORCING_RATIO --valid_ratio $VALID_RATIO \
