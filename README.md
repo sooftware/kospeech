@@ -258,13 +258,13 @@ Dario Amodei et al. [Deep Speech2: End-to-End Speech Recognition in English and 
 Jung-Woo Ha et al. [ClovaCall: Korean Goal-Oriented Dialog Speech Corpus for ASR of Contact Centers](https://arxiv.org/abs/2004.09367) arXiv: 2004.09367
      
 Rafael Muller et al. [When Does Label Smoothing Help?](https://arxiv.org/abs/1906.02629) arXiv: 1906.02629  
-    
-IBM. [pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)  
+      
+Anjuli Kannan et al. [AN ANALYSIS OF INCORPORATING AN EXTERNAL LM INTO A SEQ2SEQ MODEL](https://arxiv.org/abs/1712.01996) arXiv: 1712.01996  
   
-Sean Naren. [deepspeech.pytorch](https://github.com/SeanNaren/deepspeech.pytorch)
-  
-Alexander H Liu. [End-to-end ASR Pytorch](https://github.com/Alexander-H-Liu/End-to-end-ASR-Pytorch)
-    
+Dzmitry Bahdanau et al. [Neural Machine Translation by Jointly Learning to Align and Translate](https://arxiv.org/abs/1409.0473) arXiv: 1409.0473   
+   
+Ashish Vaswani et al. [Attention Is All You Need](https://arxiv.org/abs/1706.03762) arXiv: 1706.03762
+   
 ### Citing
 ```
 @github{
