@@ -5,11 +5,12 @@ import numpy as np
 from kospeech.data.preprocess.audio import load_audio
 from kospeech.data.preprocess.augment import NoiseInjector, SpecAugment
 
-if platform.system() == 'Linux':  # torchaudio is only supported on Linux
+# torchaudio is only supported on Linux
+if platform.system() == 'Linux':
     try:
         import torchaudio
     except ImportError:
-        raise ImportError("SpeechParser requires torchaudio package.")
+        raise ImportError("SpectrogramPaser requires torchaudio package.")
 
 
 class AudioParser(object):
@@ -100,7 +101,7 @@ class SpectrogramParser(AudioParser):
 
         if sound is None:  # Exception handling
             return None
-        elif augment_method == self.NOISE_INJECTION:  # Noise injection
+        elif augment_method == SpectrogramParser.NOISE_INJECTION:  # Noise injection
             sound = self.noise_injector(sound)
             if sound is None:
                 return None
@@ -121,12 +122,13 @@ class SpectrogramParser(AudioParser):
             spectrogram -= mean
             spectrogram /= std
 
-        if self.input_reverse:   # Refer to "Sequence to Sequence Learning with Neural Network" paper
+        # Refer to "Sequence to Sequence Learning with Neural Network" paper
+        if self.input_reverse:
             spectrogram = spectrogram[:, ::-1]
 
         spectrogram = torch.FloatTensor(np.ascontiguousarray(np.swapaxes(spectrogram, 0, 1)))
 
-        if augment_method == self.SPEC_AUGMENT:
+        if augment_method == SpectrogramParser.SPEC_AUGMENT:
             spectrogram = self.spec_augment(spectrogram)
 
         return spectrogram
