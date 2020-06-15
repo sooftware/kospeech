@@ -33,6 +33,7 @@ class BeamSearchDecoder(nn.Module):
         self.hidden_dim = decoder.hidden_dim
         self.forward_step = decoder.forward_step
         self.validate_args = decoder.validate_args
+        self.decoder = decoder
         self.pos_index = None
         self.beam_size = beam_size
         self.sos_id = decoder.sos_id
