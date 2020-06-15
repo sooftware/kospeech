@@ -41,11 +41,11 @@ class MaskCNN(nn.Module):
 
             seq_lengths = self.get_seq_lengths(module, seq_lengths)
 
-            for i, length in enumerate(seq_lengths):
+            for idx, length in enumerate(seq_lengths):
                 length = length.item()
 
-                if (mask[i].size(2) - length) > 0:
-                    mask[i].narrow(dim=2, start=length, length=mask[i].size(2) - length).fill_(1)
+                if (mask[idx].size(2) - length) > 0:
+                    mask[idx].narrow(dim=2, start=length, length=mask[idx].size(2) - length).fill_(1)
 
             output = output.masked_fill(mask, 0)
             inputs = output

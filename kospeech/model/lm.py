@@ -4,10 +4,10 @@ import torch.nn.functional as F
 from kospeech.model.encoder import BaseRNN
 
 
-class RNNLM(BaseRNN):
+class Rnnlm(BaseRNN):
     def __init__(self, num_classes, num_layers, rnn_type, hidden_dim,
                  dropout_p, max_length, sos_id, eos_id, device):
-        super(RNNLM, self).__init__(hidden_dim, hidden_dim, num_layers, rnn_type, dropout_p, False, device)
+        super(Rnnlm, self).__init__(hidden_dim, hidden_dim, num_layers, rnn_type, dropout_p, False, device)
         self.rnn_cell = self.supported_rnns[rnn_type]
         self.max_length = max_length
         self.eos_id = eos_id
