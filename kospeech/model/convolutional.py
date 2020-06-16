@@ -1,4 +1,3 @@
-import math
 import torch
 import torch.nn as nn
 
@@ -69,7 +68,7 @@ class MaskCNN(nn.Module):
             seq_lengths = numerator / module.stride[1] + 1
 
         elif isinstance(module, nn.MaxPool2d):
-            seq_lengths = math.ceil(seq_lengths / 2)
+            seq_lengths <<= 1
 
         return seq_lengths.int()
 
