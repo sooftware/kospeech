@@ -91,7 +91,7 @@ class Listener(BaseRNN):
             output = output.transpose(0, 1)
 
         else:
-            conv_feat = self.conv(inputs.unsqueeze(1)).to(self.device)
+            conv_feat = self.conv(inputs.unsqueeze(1), input_lengths).to(self.device)
             conv_feat = conv_feat.transpose(1, 2)
 
             sizes = conv_feat.size()
