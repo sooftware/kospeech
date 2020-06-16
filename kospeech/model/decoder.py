@@ -34,7 +34,7 @@ class Speller(BaseRNN):
     Returns: decoder_outputs
         - **decoder_outputs**: list of tensors containing the outputs of the decoding function.
     """
-    KEY_ATTN_SCORE = 'attention_score'
+    KEY_ATTENTION_SCORE = 'attention_score'
     KEY_SEQUENCE_SYMBOL = 'sequence_symbol'
 
     def __init__(self, num_classes, max_length, hidden_dim, sos_id, eos_id, attn_mechanism='dot',
@@ -45,8 +45,8 @@ class Speller(BaseRNN):
         self.max_length = max_length
         self.eos_id = eos_id
         self.sos_id = sos_id
-        self.acoustic_weight = 0.75
-        self.lm_weight = 0.25
+        self.acoutsic_weight = 0.90  # acoustic model weight
+        self.language_weight = 0.10  # language model weight
         self.attn_mechanism = attn_mechanism
         self.embedding = nn.Embedding(num_classes, hidden_dim)
         self.input_dropout = nn.Dropout(dropout_p)
@@ -85,7 +85,7 @@ class Speller(BaseRNN):
         decoder_outputs, metadata = list(), dict()
 
         if not self.training:
-            metadata[Speller.KEY_ATTN_SCORE] = list()
+            metadata[Speller.KEY_ATTENTION_SCORE] = list()
             metadata[Speller.KEY_SEQUENCE_SYMBOL] = list()
 
         inputs, batch_size, max_length = self.validate_args(inputs, encoder_outputs, teacher_forcing_ratio, language_model)
@@ -117,12 +117,12 @@ class Speller(BaseRNN):
                 step_output, hidden, attn = self.forward_step(input_var, hidden, encoder_outputs, attn)
 
                 if not self.training:
-                    metadata[Speller.KEY_ATTN_SCORE].append(attn)
+                    metadata[Speller.KEY_ATTENTION_SCORE].append(attn)
                     metadata[Speller.KEY_SEQUENCE_SYMBOL].append(input_var)
 
                 if use_language_model:
-                    lm_step_output = language_model.forward_step(prev_tokens, None)[0].squeeze(1)
-                    step_output = step_output * self.acoustic_weight + lm_step_output[:, -1, :].squeeze(1) * self.lm_weight
+                    lm_step_output = language_model.forward_step(prev_tokens, None)[0][:, -1, :].squeeze(1)
+                    step_output = step_output * self.acoustic_weight + lm_step_output * self.language_weight
                     prev_tokens = torch.cat([prev_tokens, step_output.topk(1)[1]], dim=1)
 
                 decoder_outputs.append(step_output)

@@ -4,10 +4,10 @@ import torch.nn.functional as F
 from kospeech.model.encoder import BaseRNN
 
 
-class Rnnlm(BaseRNN):
+class LanguageModel(BaseRNN):
     def __init__(self, num_classes, num_layers, rnn_type, hidden_dim,
                  dropout_p, max_length, sos_id, eos_id, device):
-        super(Rnnlm, self).__init__(hidden_dim, hidden_dim, num_layers, rnn_type, dropout_p, False, device)
+        super(LanguageModel, self).__init__(hidden_dim, hidden_dim, num_layers, rnn_type, dropout_p, False, device)
         self.rnn_cell = self.supported_rnns[rnn_type]
         self.max_length = max_length
         self.eos_id = eos_id
@@ -37,9 +37,10 @@ class Rnnlm(BaseRNN):
     def forward(self, inputs, teacher_forcing_ratio=1.0):
         batch_size = inputs.size(0)
         max_length = inputs.size(1) - 1  # minus the start of sequence symbol
-        hidden = None
 
-        decode_outputs = list()
+        hidden = None
+        outputs = list()
+
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
 
         if use_teacher_forcing:
@@ -48,19 +49,19 @@ class Rnnlm(BaseRNN):
 
             for di in range(predicted_softmax.size(1)):
                 step_output = predicted_softmax[:, di, :]
-                decode_outputs.append(step_output)
+                outputs.append(step_output)
 
         else:
             input_var = inputs[:, 0].unsqueeze(1)
 
             for di in range(max_length):
                 predicted_softmax, hidden = self.forward_step(input_var, hidden)
-
                 step_output = predicted_softmax.squeeze(1)
-                decode_outputs.append(step_output)
-                input_var = decode_outputs[-1].topk(1)[1]
 
-        return decode_outputs
+                outputs.append(step_output)
+                input_var = outputs[-1].topk(1)[1]
+
+        return outputs
 
     def flatten_parameters(self):
         self.rnn.flatten_parameters()
