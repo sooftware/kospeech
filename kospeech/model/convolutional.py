@@ -105,29 +105,36 @@ class VGGExtractor(ConvExtractor):
     "Advances in Joint CTC-Attention based End-to-End Speech Recognition with a Deep CNN Encoder and RNN-LM" paper
     - https://arxiv.org/pdf/1706.02737.pdf
     """
-    def __init__(self, in_channels=1, activation='hardtanh'):
+    def __init__(self, in_channels=1, activation='hardtanh', mask=True):
         super(VGGExtractor, self).__init__(activation)
-        self.cnn = MaskCNN(
-            nn.Sequential(
-                nn.Conv2d(in_channels, 64, kernel_size=3, stride=1, padding=1, bias=False),
-                self.activation,
-                nn.BatchNorm2d(num_features=64),
-                nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
-                self.activation,
-                nn.MaxPool2d(2, stride=2),
-                nn.BatchNorm2d(num_features=64),
-                nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1, bias=False),
-                self.activation,
-                nn.BatchNorm2d(num_features=128),
-                nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1, bias=False),
-                self.activation,
-                nn.MaxPool2d(2, stride=2)
-            )
+        self.mask = mask
+        self.cnn = nn.Sequential(
+            nn.Conv2d(in_channels, 64, kernel_size=3, stride=1, padding=1, bias=False),
+            self.activation,
+            nn.BatchNorm2d(num_features=64),
+            nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
+            self.activation,
+            nn.MaxPool2d(2, stride=2),
+            nn.BatchNorm2d(num_features=64),
+            nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1, bias=False),
+            self.activation,
+            nn.BatchNorm2d(num_features=128),
+            nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1, bias=False),
+            self.activation,
+            nn.MaxPool2d(2, stride=2)
         )
 
+        if mask:
+            self.cnn = MaskCNN(self.cnn)
+
     def forward(self, inputs, input_lengths):
-        conv_feat, seq_lengths = self.cnn(inputs, input_lengths)
-        return conv_feat, seq_lengths
+        if self.mask:
+            conv_feat, seq_lengths = self.cnn(inputs, input_lengths)
+            return conv_feat, seq_lengths
+
+        else:
+            conv_feat = self.cnn(inputs)
+            return conv_feat
 
 
 class DeepSpeech2Extractor(ConvExtractor):
@@ -137,19 +144,27 @@ class DeepSpeech2Extractor(ConvExtractor):
     - https://arxiv.org/abs/1512.02595
     """
 
-    def __init__(self, in_channels=1, activation='hardtanh'):
+    def __init__(self, in_channels=1, activation='hardtanh', mask=True):
         super(DeepSpeech2Extractor, self).__init__(activation)
-        self.cnn = MaskCNN(
-            nn.Sequential(
-                nn.Conv2d(in_channels, 32, kernel_size=(41, 11), stride=(2, 2), padding=(20, 5)),
-                nn.BatchNorm2d(32),
-                self.activation,
-                nn.Conv2d(32, 32, kernel_size=(21, 11), stride=(2, 1), padding=(10, 5)),
-                nn.BatchNorm2d(32),
-                self.activation
-            )
+        self.mask = mask
+        self.cnn = nn.Sequential(
+            nn.Conv2d(in_channels, 32, kernel_size=(41, 11), stride=(2, 2), padding=(20, 5)),
+            nn.BatchNorm2d(32),
+            self.activation,
+            nn.Conv2d(32, 32, kernel_size=(21, 11), stride=(2, 1), padding=(10, 5)),
+            nn.BatchNorm2d(32),
+            self.activation
         )
 
+        if mask:
+            self.cnn = MaskCNN(self.cnn)
+
     def forward(self, inputs, input_lengths):
-        conv_feat, seq_lengths = self.cnn(inputs, input_lengths)
-        return conv_feat, seq_lengths
+        if self.mask:
+            conv_feat, seq_lengths = self.cnn(inputs, input_lengths)
+            return conv_feat, seq_lengths
+
+        else:
+            conv_feat = self.cnn(inputs)
+            return conv_feat
+

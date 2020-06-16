@@ -59,33 +59,47 @@ class Listener(BaseRNN):
         - **output**: tensor containing the encoded features of the input sequence
     """
 
-    def __init__(self, input_size, hidden_dim, device, dropout_p=0.3, num_layers=3,
-                 bidirectional=True, rnn_type='lstm', extractor='vgg', activation='hardtanh'):
+    def __init__(self, input_size, hidden_dim, device, dropout_p=0.3, num_layers=3, bidirectional=True,
+                 rnn_type='lstm', extractor='vgg', activation='hardtanh', mask=True):
+        self.mask = mask
         if extractor.lower() == 'vgg':
             input_size = (input_size - 1) << 5 if input_size % 2 else input_size << 5
             super(Listener, self).__init__(input_size, hidden_dim, num_layers, rnn_type, dropout_p, bidirectional, device)
-            self.extractor = VGGExtractor(in_channels=1, activation=activation)
+            self.extractor = VGGExtractor(in_channels=1, activation=activation, mask=mask)
 
         elif extractor.lower() == 'ds2':
             input_size = int(math.floor(input_size + 2 * 20 - 41) / 2 + 1)
             input_size = int(math.floor(input_size + 2 * 10 - 21) / 2 + 1)
             input_size <<= 5
             super(Listener, self).__init__(input_size, hidden_dim, num_layers, rnn_type, dropout_p, bidirectional, device)
-            self.extractor = DeepSpeech2Extractor(in_channels=1, activation=activation)
+            self.extractor = DeepSpeech2Extractor(in_channels=1, activation=activation, mask=mask)
 
         else:
             raise ValueError("Unsupported Extractor : {0}".format(extractor))
 
     def forward(self, inputs, input_lengths):
-        inputs = inputs.unsqueeze(1).permute(0, 1, 3, 2)
-        conv_feat, seq_lengths = self.extractor(inputs, input_lengths)
+        if self.mask:
+            inputs = inputs.unsqueeze(1).permute(0, 1, 3, 2)
+            conv_feat, seq_lengths = self.extractor(inputs, input_lengths)
 
-        batch_size, channel, hidden_dim, seq_length = conv_feat.size()
-        conv_feat = conv_feat.view(batch_size, channel * hidden_dim, seq_length).permute(2, 0, 1).contiguous()
+            batch_size, channel, hidden_dim, seq_length = conv_feat.size()
+            conv_feat = conv_feat.view(batch_size, channel * hidden_dim, seq_length).permute(2, 0, 1).contiguous()
 
-        inputs = nn.utils.rnn.pack_padded_sequence(conv_feat, seq_lengths)
-        output, hidden = self.rnn(inputs)
-        output, _ = nn.utils.rnn.pad_packed_sequence(output)
-        output = output.transpose(0, 1)   # (batch_size, seq_len, hidden_dim)
+            inputs = nn.utils.rnn.pack_padded_sequence(conv_feat, seq_lengths)
+            output, hidden = self.rnn(inputs)
+            output, _ = nn.utils.rnn.pad_packed_sequence(output)
+            output = output.transpose(0, 1)
+
+        else:
+            conv_feat = self.conv(inputs.unsqueeze(1)).to(self.device)
+            conv_feat = conv_feat.transpose(1, 2)
+
+            sizes = conv_feat.size()
+            conv_feat = conv_feat.contiguous().view(sizes[0], sizes[1], sizes[2] * sizes[3])
+
+            if self.training:
+                self.rnn.flatten_parameters()
+
+            output, hidden = self.rnn(conv_feat)
 
         return output

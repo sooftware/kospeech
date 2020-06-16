@@ -13,7 +13,8 @@ def build_model(opt, device):
     """ Various model dispatcher function. """
     listener = build_listener(input_size=opt.n_mels, hidden_dim=opt.hidden_dim, dropout_p=opt.dropout,
                               num_layers=opt.listener_layer_size, bidirectional=opt.use_bidirectional,
-                              extractor=opt.extractor, activation=opt.activation, rnn_type=opt.rnn_type, device=device)
+                              mask=opt.mask_cnn, extractor=opt.extractor, activation=opt.activation,
+                              rnn_type=opt.rnn_type, device=device)
     speller = build_speller(num_classes=len(char2id), max_len=opt.max_len, sos_id=SOS_token, eos_id=EOS_token,
                             hidden_dim=opt.hidden_dim << (1 if opt.use_bidirectional else 0),
                             num_layers=opt.speller_layer_size, rnn_type=opt.rnn_type, dropout_p=opt.dropout,
@@ -40,7 +41,8 @@ def build_las(listener, speller, device, init_uniform=True):
     return model
 
 
-def build_listener(input_size, hidden_dim, dropout_p, num_layers, bidirectional, rnn_type, extractor, activation, device):
+def build_listener(input_size, hidden_dim, dropout_p, num_layers, bidirectional,
+                   rnn_type, extractor, activation, device, mask):
     """ Various encoder dispatcher function. """
     if not isinstance(input_size, int):
         raise ParameterError("input_size should be inteager type")
@@ -64,7 +66,7 @@ def build_listener(input_size, hidden_dim, dropout_p, num_layers, bidirectional,
     return Listener(input_size=input_size, hidden_dim=hidden_dim,
                     dropout_p=dropout_p, num_layers=num_layers,
                     bidirectional=bidirectional, rnn_type=rnn_type,
-                    extractor=extractor, device=device, activation=activation)
+                    extractor=extractor, device=device, activation=activation, mask=mask)
 
 
 def build_speller(num_classes, max_len, hidden_dim, sos_id, eos_id, attn_mechanism,
