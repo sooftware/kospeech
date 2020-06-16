@@ -241,7 +241,7 @@ def print_model_opts(opt):
     logger.info('--listener_layer_size: %s' % str(opt.listener_layer_size))
     logger.info('--speller_layer_size: %s' % str(opt.speller_layer_size))
     logger.info('--extractor: %s' % str(opt.extractor))
-    logger.info('--encoder_mask: %s' % str(opt.encoder_mask))
+    logger.info('--mask_cnn: %s' % str(opt.mask_cnn))
     logger.info('--activation: %s' % str(opt.activation))
     logger.info('--rnn_type: %s' % str(opt.rnn_type))
     logger.info('--teacher_forcing_ratio: %s' % str(opt.teacher_forcing_ratio))

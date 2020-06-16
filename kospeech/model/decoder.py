@@ -90,7 +90,7 @@ class Speller(BaseRNN):
 
         inputs, batch_size, max_length = self.validate_args(inputs, encoder_outputs, teacher_forcing_ratio, language_model)
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
-        use_external_lm = True if language_model is not None else False
+        use_language_model = True if language_model is not None else False
 
         if use_teacher_forcing:
             inputs = inputs[inputs != self.eos_id].view(batch_size, -1)
@@ -111,7 +111,7 @@ class Speller(BaseRNN):
 
         else:
             input_var = inputs[:, 0].unsqueeze(1)
-            prev_tokens = input_var.clone() if use_external_lm else None
+            prev_tokens = input_var.clone() if use_language_model else None
 
             for di in range(max_length):
                 step_output, hidden, attn = self.forward_step(input_var, hidden, encoder_outputs, attn)
@@ -120,7 +120,7 @@ class Speller(BaseRNN):
                     metadata[Speller.KEY_ATTN_SCORE].append(attn)
                     metadata[Speller.KEY_SEQUENCE_SYMBOL].append(input_var)
 
-                if use_external_lm:
+                if use_language_model:
                     lm_step_output = language_model.forward_step(prev_tokens, None)[0].squeeze(1)
                     step_output = step_output * self.acoustic_weight + lm_step_output[:, -1, :].squeeze(1) * self.lm_weight
                     prev_tokens = torch.cat([prev_tokens, step_output.topk(1)[1]], dim=1)

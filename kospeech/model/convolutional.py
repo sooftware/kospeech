@@ -108,24 +108,42 @@ class VGGExtractor(ConvExtractor):
     def __init__(self, in_channels=1, activation='hardtanh', mask=True):
         super(VGGExtractor, self).__init__(activation)
         self.mask = mask
-        self.cnn = nn.Sequential(
-            nn.Conv2d(in_channels, 64, kernel_size=3, stride=1, padding=1, bias=False),
-            self.activation,
-            nn.BatchNorm2d(num_features=64),
-            nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
-            self.activation,
-            nn.MaxPool2d(2, stride=2),
-            nn.BatchNorm2d(num_features=64),
-            nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1, bias=False),
-            self.activation,
-            nn.BatchNorm2d(num_features=128),
-            nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1, bias=False),
-            self.activation,
-            nn.MaxPool2d(2, stride=2)
-        )
 
         if mask:
-            self.cnn = MaskCNN(self.cnn)
+            self.cnn = MaskCNN(
+                nn.Sequential(
+                    nn.Conv2d(in_channels, 64, kernel_size=3, stride=1, padding=1),
+                    self.activation,
+                    nn.BatchNorm2d(num_features=64),
+                    nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
+                    self.activation,
+                    nn.MaxPool2d(2, stride=2),
+                    nn.BatchNorm2d(num_features=64),
+                    nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1),
+                    self.activation,
+                    nn.BatchNorm2d(num_features=128),
+                    nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1),
+                    self.activation,
+                    nn.MaxPool2d(2, stride=2)
+                )
+            )
+
+        else:
+            self.cnn = nn.Sequential(
+                nn.Conv2d(in_channels, 64, kernel_size=3, stride=1, padding=1),
+                self.activation,
+                nn.BatchNorm2d(num_features=64),
+                nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
+                self.activation,
+                nn.MaxPool2d(2, stride=2),
+                nn.BatchNorm2d(num_features=64),
+                nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1),
+                self.activation,
+                nn.BatchNorm2d(num_features=128),
+                nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1),
+                self.activation,
+                nn.MaxPool2d(2, stride=2)
+            )
 
     def forward(self, inputs, input_lengths):
         if self.mask:
@@ -147,17 +165,28 @@ class DeepSpeech2Extractor(ConvExtractor):
     def __init__(self, in_channels=1, activation='hardtanh', mask=True):
         super(DeepSpeech2Extractor, self).__init__(activation)
         self.mask = mask
-        self.cnn = nn.Sequential(
-            nn.Conv2d(in_channels, 32, kernel_size=(41, 11), stride=(2, 2), padding=(20, 5)),
-            nn.BatchNorm2d(32),
-            self.activation,
-            nn.Conv2d(32, 32, kernel_size=(21, 11), stride=(2, 1), padding=(10, 5)),
-            nn.BatchNorm2d(32),
-            self.activation
-        )
 
         if mask:
-            self.cnn = MaskCNN(self.cnn)
+            self.cnn = MaskCNN(
+                nn.Sequential(
+                    nn.Conv2d(in_channels, 32, kernel_size=(41, 11), stride=(2, 2), padding=(20, 5)),
+                    nn.BatchNorm2d(32),
+                    self.activation,
+                    nn.Conv2d(32, 32, kernel_size=(21, 11), stride=(2, 1), padding=(10, 5)),
+                    nn.BatchNorm2d(32),
+                    self.activation
+                )
+            )
+
+        else:
+            self.cnn = nn.Sequential(
+                nn.Conv2d(in_channels, 32, kernel_size=(41, 11), stride=(2, 2), padding=(20, 5)),
+                nn.BatchNorm2d(32),
+                self.activation,
+                nn.Conv2d(32, 32, kernel_size=(21, 11), stride=(2, 1), padding=(10, 5)),
+                nn.BatchNorm2d(32),
+                self.activation
+            )
 
     def forward(self, inputs, input_lengths):
         if self.mask:
