@@ -4,7 +4,7 @@
 
 [Soohwan Kim](https://github.com/sooftware)<sup>1,2</sup>, [Seyoung Bae](https://github.com/triplet02)<sup>1</sup>, [Cheolhwang Won](https://github.com/wch18735)<sup>1</sup>, [Suwon Park](https://ei.kw.ac.kr/introduction/professor_view.php?idx=72)<sup>*</sup>      
   
-<sup>1</sup>Electronic and Communication Engineering (of Kwangwoon Univ.) <sup>2</sup>Spoken Language Lab (of Sogang Univ.)  
+<sup>1</sup>elcomm, Kwangwoon Univ. <sup>2</sup>Spoken Language Lab (of Sogang Univ.)  
   
 \* author is advisor to this work.  
   
