@@ -98,7 +98,7 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
         return len(self.audio_paths)
 
 
-class AudioLoader(threading.Thread):
+class AudioDataLoader(threading.Thread):
     """
     Audio Data Loader
 
@@ -200,7 +200,7 @@ def _collate_fn(batch):
     return seqs, targets, seq_lengths, target_lengths
 
 
-class MultiAudioLoader(object):
+class MultiDataLoader(object):
     """
     Multi Data Loader using Threads.
 
@@ -218,7 +218,7 @@ class MultiAudioLoader(object):
         self.loader = list()
 
         for idx in range(self.num_workers):
-            self.loader.append(AudioLoader(self.dataset_list[idx], self.queue, self.batch_size, idx))
+            self.loader.append(AudioDataLoader(self.dataset_list[idx], self.queue, self.batch_size, idx))
 
     def start(self):
         """ Run threads """

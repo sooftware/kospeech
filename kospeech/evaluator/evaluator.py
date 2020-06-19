@@ -1,7 +1,7 @@
 import queue
 import torch
 from kospeech.utils import logger
-from kospeech.data.data_loader import AudioLoader
+from kospeech.data.data_loader import AudioDataLoader
 from kospeech.decode.search import GreedySearch, BeamSearch
 
 
@@ -37,7 +37,7 @@ class Evaluator(object):
         logger.info('evaluate() start')
 
         eval_queue = queue.Queue(self.num_workers << 1)
-        eval_loader = AudioLoader(self.dataset, eval_queue, self.batch_size, 0)
+        eval_loader = AudioDataLoader(self.dataset, eval_queue, self.batch_size, 0)
         eval_loader.start()
 
         cer = self.decoder.search(model, eval_queue, self.device, self.print_every)

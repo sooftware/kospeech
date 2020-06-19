@@ -11,7 +11,12 @@ from kospeech.utils import char2id, EOS_token, SOS_token
 
 def build_model(opt, device):
     """ Various model dispatcher function. """
-    listener = build_listener(input_size=opt.n_mels, hidden_dim=opt.hidden_dim, dropout_p=opt.dropout,
+    if opt.feature == 'mel':
+        input_size = opt.n_mels
+    else:
+        input_size = 161  # spectrogram size
+
+    listener = build_listener(input_size=input_size, hidden_dim=opt.hidden_dim, dropout_p=opt.dropout,
                               num_layers=opt.listener_layer_size, bidirectional=opt.use_bidirectional,
                               mask=opt.mask_cnn, extractor=opt.extractor, activation=opt.activation,
                               rnn_type=opt.rnn_type, device=device)

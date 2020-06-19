@@ -90,7 +90,7 @@ class SpectrogramParser(AudioParser):
 
     def parse_audio(self, audio_path, augment_method):
         """
-        Parses audio (Get Mel-Spectrogram features). @Override
+        Parses audio.
 
         Args:
              audio_path (str): path of audio file
@@ -99,16 +99,6 @@ class SpectrogramParser(AudioParser):
         Returns: spectrogram
             - **spectrogram** (torch.FloatTensor): Mel-Spectrogram feature from audio file.
         """
-        if self.feature == 'mel':
-            return self.get_melspectrogram_feature(audio_path, augment_method)
-
-        elif self.feature == 'spect':
-            return self.get_spectrogram_feature(audio_path, augment_method)
-
-        else:
-            raise ValueError("Unsupported feature: {0}".format(self.feature))
-
-    def get_melspectrogram_feature(self, audio_path, augment_method):
         sound = load_audio(audio_path, self.del_silence)
 
         if sound is None:  # Exception handling
@@ -118,6 +108,16 @@ class SpectrogramParser(AudioParser):
             if sound is None:
                 return None
 
+        if self.feature == 'mel':
+            return self.get_melspectrogram_feature(sound, augment_method)
+
+        elif self.feature == 'spect':
+            return self.get_spectrogram_feature(sound, augment_method)
+
+        else:
+            raise ValueError("Unsupported feature: {0}".format(self.feature))
+
+    def get_melspectrogram_feature(self, sound, augment_method):
         if self.feature_extract_by == 'torchaudio':
             spectrogram = self.transforms(torch.FloatTensor(sound))
             spectrogram = self.amplitude_to_db(spectrogram)
@@ -144,16 +144,7 @@ class SpectrogramParser(AudioParser):
 
         return spectrogram
 
-    def get_spectrogram_feature(self, audio_path, augment_method):
-        sound = load_audio(audio_path, self.del_silence)
-
-        if sound is None:  # Exception handling
-            return None
-        elif augment_method == SpectrogramParser.NOISE_INJECTION:  # Noise injection
-            sound = self.noise_injector(sound)
-            if sound is None:
-                return None
-
+    def get_spectrogram_feature(self, sound, augment_method):
         spectrogram = torch.stft(
             torch.FloatTensor(sound),
             self.n_fft,
@@ -171,10 +162,12 @@ class SpectrogramParser(AudioParser):
         if self.input_reverse:
             spectrogram = spectrogram[:, ::-1]
             spectrogram = torch.FloatTensor(np.ascontiguousarray(np.swapaxes(spectrogram, 0, 1)))
+
         else:
             spectrogram = torch.FloatTensor(spectrogram).transpose(0, 1)
 
-        spectrogram -= spectrogram.mean()
+        if self.normalize:
+            spectrogram -= spectrogram.mean()
 
         if augment_method == SpectrogramParser.SPEC_AUGMENT:
             spectrogram = self.spec_augment(spectrogram)

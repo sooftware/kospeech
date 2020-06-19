@@ -7,7 +7,7 @@ from kospeech.checkpoint.checkpoint import Checkpoint
 from kospeech.optim.lr_scheduler import ExponentialDecayLR
 from kospeech.metrics import CharacterErrorRate
 from kospeech.utils import EOS_token, logger, id2char
-from kospeech.data.data_loader import MultiAudioLoader, AudioLoader
+from kospeech.data.data_loader import MultiDataLoader, AudioDataLoader
 
 
 class SupervisedTrainer(object):
@@ -92,7 +92,7 @@ class SupervisedTrainer(object):
                 trainset.shuffle()
 
             # Training
-            train_loader = MultiAudioLoader(self.trainset_list, train_queue, batch_size, self.num_workers)
+            train_loader = MultiDataLoader(self.trainset_list, train_queue, batch_size, self.num_workers)
             train_loader.start()
             train_loss, train_cer = self.train_epoches(model, epoch, epoch_time_step, train_begin_time,
                                                        train_queue, teacher_forcing_ratio)
@@ -117,7 +117,7 @@ class SupervisedTrainer(object):
 
             # Validation
             valid_queue = queue.Queue(self.num_workers << 1)
-            valid_loader = AudioLoader(self.validset, valid_queue, batch_size, 0)
+            valid_loader = AudioDataLoader(self.validset, valid_queue, batch_size, 0)
             valid_loader.start()
 
             valid_cer = self.validate(model, valid_queue)
