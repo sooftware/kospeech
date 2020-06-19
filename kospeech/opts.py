@@ -164,6 +164,9 @@ def build_preprocess_opts(parser):
     group.add_argument('--feature_extract_by', '-feature_extract_by',
                        type=str, default='librosa',
                        help='which library to use for feature extraction: [librosa, torchaudio] (default: librosa)')
+    group.add_argument('--feature', '-feature',
+                       type=str, default='mel',
+                       help='which feature to use: [mel, spect] (default: mel)')
     group.add_argument('--time_mask_para', '-time_mask_para',
                        type=int, default=50,
                        help='Hyper Parameter for Time Masking to limit time masking length (default: 50)')
@@ -216,6 +219,7 @@ def build_eval_opts(parser):
 def print_preprocess_opts(opt):
     """ Print preprocess options """
     logger.info('--mode: %s' % str(opt.mode))
+    logger.info('--feature: %s' % str(opt.feature))
     logger.info('--sample_rate: %s' % str(opt.sample_rate))
     logger.info('--window_size: %s' % str(opt.window_size))
     logger.info('--stride: %s' % str(opt.stride))

@@ -6,7 +6,7 @@
 # }
 
 DATASET_PATH='/data3/'
-DATA_LIST_PATH='../data/data_list/filter_train_list.csv'
+DATA_LIST_PATH='../data/data_list/train_list.csv'
 BATCH_SIZE=32
 NUM_WORKERS=4
 NUM_EPOCHS=20
@@ -35,6 +35,7 @@ SAMPLE_RATE=16000
 STRIDE=10
 N_MELS=80
 FEATURE_EXTRACT_BY='librosa'  # You can set 'torchaudio'
+FEATURE='mel'          # Support feature : mel, spect
 EXTRACTOR='vgg'        # Support extractor : vgg, ds2 (DeepSpeech2)
 ACTIVATION='hardtanh'  # Support activation : ReLU, ELU, Hardtanh, GELU, LeakyReLU
 TIME_MASK_PARA=50
@@ -53,7 +54,7 @@ cd bin
 
 python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epochs $NUM_EPOCHS --use_bidirectional \
 --input_reverse --spec_augment --noise_augment --use_cuda --hidden_dim $HIDDEN_DIM \
---dropout $DROPOUT --num_heads $NUM_HEADS --label_smoothing $LABEL_SMOOTHING \
+--dropout $DROPOUT --num_heads $NUM_HEADS --label_smoothing $LABEL_SMOOTHING --feature $FEATURE \
 --listener_layer_size $LISTENER_LAYER_SIZE --speller_layer_size $SPELLER_LAYER_SIZE --rnn_type $RNN_TYPE \
 --high_plateau_lr $HIGH_PLATEAU_LR --teacher_forcing_ratio $TEACHER_FORCING_RATIO --valid_ratio $VALID_RATIO \
 --sample_rate $SAMPLE_RATE --window_size $WINDOW_SIZE --stride $STRIDE --n_mels $N_MELS --normalize --del_silence \
