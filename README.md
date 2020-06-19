@@ -1,5 +1,5 @@
 <p align=center><i> <img src="https://user-images.githubusercontent.com/42150335/84280802-bb95ce80-ab72-11ea-9eec-10de72ca71cb.png" width=500> </i></p>   
-<p align=center> <img src="https://img.shields.io/badge/build-passing-5d87bd?logo=Python&logoColor=white"> <img src="https://img.shields.io/badge/license-Apache--2.0-c22d40?logo=Apache&logoColor=white"> <img src="https://img.shields.io/badge/Windows-succeeded-5d87bd?logo=Windows&logoColor=white"> <img src="https://img.shields.io/badge/MacOS-not tested-c22d40?logo=Apple&logoColor=white"> <img src="https://img.shields.io/badge/Linux-succeeded-5d87bd?logo=Linux&logoColor=white"> </p> 
+<p align=center> <img src="https://img.shields.io/badge/build-passing-success?logo=Python&logoColor=white"> <img src="https://img.shields.io/badge/license-Apache--2.0-informational?logo=Apache&logoColor=white"> <img src="https://img.shields.io/badge/Windows-succeeded-success?logo=Windows&logoColor=white"> <img src="https://img.shields.io/badge/MacOS-not tested-informational?logo=Apple&logoColor=white"> <img src="https://img.shields.io/badge/Linux-succeeded-success?logo=Linux&logoColor=white"> </p> 
   
 ### [**Documentation**](https://sooftware.github.io/KoSpeech/)   
   
