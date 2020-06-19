@@ -277,7 +277,7 @@ Jung-Woo Ha et al. [ClovaCall: Korean Goal-Oriented Dialog Speech Corpus for ASR
 ```
 @github{
   title = {KoSpeech},
-  author = {Soohwan Kim, Seyoung Bae, Cheolhwang Won},
+  author = {Soohwan Kim, Seyoung Bae, Cheolhwang Won, Suwon Park},
   publisher = {GitHub},
   docs = {https://sooftware.github.io/KoSpeech/},
   url = {https://github.com/sooftware/KoSpeech},
