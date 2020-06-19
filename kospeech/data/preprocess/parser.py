@@ -149,7 +149,7 @@ class SpectrogramParser(AudioParser):
             torch.FloatTensor(sound),
             self.n_fft,
             hop_length=self.hop_length,
-            win_length=self.window_size,
+            win_length=self.n_fft,
             window=torch.hamming_window(self.n_fft),
             center=False,
             normalized=False,

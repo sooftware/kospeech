@@ -1,6 +1,13 @@
-<p align=center><i> <img src="https://user-images.githubusercontent.com/42150335/84280802-bb95ce80-ab72-11ea-9eec-10de72ca71cb.png" width=500> </i></p>   
-<p align=center> <img src="https://img.shields.io/badge/build-passing-success?logo=Python&logoColor=white"> <img src="https://img.shields.io/badge/license-Apache--2.0-informational?logo=Apache&logoColor=white"> <img src="https://img.shields.io/badge/Windows-succeeded-success?logo=Windows&logoColor=white"> <img src="https://img.shields.io/badge/MacOS-not tested-informational?logo=Apple&logoColor=white"> <img src="https://img.shields.io/badge/Linux-succeeded-success?logo=Linux&logoColor=white"> </p> 
+# KoSpeech: Open Source Korean End-to-End Automatic Speech Recognition in PyTorch
   
+[KoSpeech: Open Source Korean End-to-End Automatic Speech Recognition in PyTorch](https://github.com/sooftware/KoSpeech)
+
+[Soohwan Kim](https://github.com/sooftware)<sup>1</sup>, [Seyoung Bae](https://github.com/triplet02)<sup>1</sup>, [Cheolhwang Won](https://github.com/wch18735)<sup>1</sup>  
+  
+End-to-end (E2E) automatic speech recognition (ASR) is an emerging paradigm in the field of neural network-based speech recognition that offers multiple benefits. Traditional “hybrid” ASR systems, which are comprised of an acoustic model, language model, and pronunciation model, require separate training of these components, each of which can be complex.   
+  
+For example, training of an acoustic model is a multi-stage process of model training and time alignment between the speech acoustic feature sequence and output label sequence. In contrast, E2E ASR is a single integrated approach with a much simpler training pipeline with models that operate at low audio frame rates. This reduces the training time, decoding time, and allows joint optimization with downstream processing such as natural language understanding.  
+
 ### [**Documentation**](https://sooftware.github.io/KoSpeech/)   
   
 [Korean.ver](https://github.com/sooftware/KoSpeech/blob/master/README_ko.md)  
@@ -12,8 +19,8 @@
 We appreciate any kind of [feedback or contribution](https://github.com/sooftware/End-to-end-Speech-Recognition/issues).
   
 We used `KsponSpeech` corpus which containing **1000h** of Korean speech data.   
-At present our model has recorded an **86.98% CRR**, and we are working for a higher recognition rate.  
-Also our model has recorded **91.0% CRR** in `Kaldi-zeroth corpus`    
+At present our model has recorded an **87.99% CRR**, and we are working for a higher recognition rate.  
+Also our model has recorded **92.0% CRR** in `Kaldi-zeroth corpus`    
   
 ###### ( **CRR** : Character Recognition Rate ) 
   
@@ -42,12 +49,12 @@ We have referred to many papers to develop the best model possible. And tried to
 
 ## Roadmap
   
-<img src="https://user-images.githubusercontent.com/42150335/83952233-5ee49c00-a872-11ea-8c98-5b98236125e1.png" width=450> 
+<img src="https://user-images.githubusercontent.com/42150335/85176859-c4467d00-b2b5-11ea-9fe1-4981cfa4bc0e.png"> 
   
-End-to-end (E2E) automatic speech recognition (ASR) is an emerging paradigm in the field of neural network-based speech recognition that offers multiple benefits. Traditional “hybrid” ASR systems, which are comprised of an acoustic model, language model, and pronunciation model, require separate training of these components, each of which can be complex.   
+Our architecture based on Seq2seq with Attention.  
   
-For example, training of an acoustic model is a multi-stage process of model training and time alignment between the speech acoustic feature sequence and output label sequence. In contrast, E2E ASR is a single integrated approach with a much simpler training pipeline with models that operate at low audio frame rates. This reduces the training time, decoding time, and allows joint optimization with downstream processing such as natural language understanding.  
-  
+`Attention mechanism` helps finding speech alignment. We apply (`location-aware` / `multi-head`) attention which you can choose. Location-aware attention proposed in `Attention Based Models for Speech Recognition` paper and Multi-headed attention proposed in `Attention Is All You Need` paper. You can choose between these two options as `attn_mechanism` option. Please [check](https://sooftware.github.io/KoSpeech/notes/opts.html) this page.    
+
 We mainly referred to following papers.  
   
  [「Listen, Attend and Spell」](https://arxiv.org/abs/1508.01211)  
@@ -61,12 +68,6 @@ We mainly referred to following papers.
 If you want to study the feature of audio, we recommend this papers.  
   
 [「Voice Recognition Using MFCC Algirithm」](https://ijirae.com/volumes/vol1/issue10/27.NVEC10086.pdf).  
-  
-Our project based on Seq2seq with Attention Architecture.  
-  
-![image](https://user-images.githubusercontent.com/42150335/83260135-36b2c880-a1f4-11ea-8b38-ef88dca214bf.png)
-  
-`Attention mechanism` helps finding speech alignment. We apply multi-headed (`location-aware` / `scaled dot-product`) attention which you can choose. Location-aware attention proposed in `Attention Based Models for Speech Recognition` paper and Multi-headed attention proposed in `Attention Is All You Need` paper. You can choose between these two options as `attn_mechanism` option. Please [check](https://sooftware.github.io/KoSpeech/notes/opts.html) this page.    
   
 Our model architeuture is as follows.
   
