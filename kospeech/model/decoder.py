@@ -45,8 +45,8 @@ class Speller(BaseRNN):
         self.max_length = max_length
         self.eos_id = eos_id
         self.sos_id = sos_id
-        self.acoutsic_weight = 0.90  # acoustic model weight
-        self.language_weight = 0.10  # language model weight
+        self.acoutsic_weight = 0.9  # acoustic model weight
+        self.language_weight = 0.1  # language model weight
         self.attn_mechanism = attn_mechanism
         self.embedding = nn.Embedding(num_classes, hidden_dim)
         self.input_dropout = nn.Dropout(dropout_p)
@@ -95,7 +95,8 @@ class Speller(BaseRNN):
         if use_teacher_forcing:
             inputs = inputs[inputs != self.eos_id].view(batch_size, -1)
 
-            # Call forward_step() at every timestep because Location-aware attention requires previous attention.
+            # Call forward_step() at every timestep when attention mechanism is location-aware
+            # Because location-aware attention requires previous attention (alignment).
             if self.attn_mechanism == 'loc':
                 for di in range(inputs.size(1)):
                     input_var = inputs[:, di].unsqueeze(1)
@@ -120,10 +121,10 @@ class Speller(BaseRNN):
                     metadata[Speller.KEY_ATTENTION_SCORE].append(attn)
                     metadata[Speller.KEY_SEQUENCE_SYMBOL].append(input_var)
 
-                if use_language_model:
-                    lm_step_output = language_model.forward_step(prev_tokens, None)[0][:, -1, :].squeeze(1)
-                    step_output = step_output * self.acoustic_weight + lm_step_output * self.language_weight
-                    prev_tokens = torch.cat([prev_tokens, step_output.topk(1)[1]], dim=1)
+                    if use_language_model:
+                        lm_step_output = language_model.forward_step(prev_tokens, None)[0][:, -1, :].squeeze(1)
+                        step_output = step_output * self.acoustic_weight + lm_step_output * self.language_weight
+                        prev_tokens = torch.cat([prev_tokens, step_output.topk(1)[1]], dim=1)
 
                 decoder_outputs.append(step_output)
                 input_var = decoder_outputs[-1].topk(1)[1]

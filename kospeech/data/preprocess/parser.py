@@ -67,7 +67,7 @@ class SpectrogramParser(AudioParser):
                  sos_id=1, eos_id=2, target_dict=None,
                  noise_augment=False, dataset_path=None, noiseset_size=0, noise_level=0.7):
         super(SpectrogramParser, self).__init__(dataset_path, noiseset_size, sample_rate, noise_level, noise_augment)
-        self.feature = feature
+        self.feature = feature.lower()
         self.sample_rate = sample_rate
         self.n_mels = n_mels
         self.window_size = window_size
@@ -76,13 +76,13 @@ class SpectrogramParser(AudioParser):
         self.normalize = normalize
         self.n_fft = int(sample_rate * 0.001 * window_size)
         self.hop_length = int(sample_rate * 0.001 * stride)
-        self.feature_extract_by = feature_extract_by
+        self.feature_extract_by = feature_extract_by.lower()
         self.sos_id = sos_id
         self.eos_id = eos_id
         self.target_dict = target_dict
         self.spec_augment = SpecAugment(time_mask_para, freq_mask_para, time_mask_num, freq_mask_num)
 
-        if feature_extract_by == 'torchaudio':
+        if self.feature_extract_by == 'torchaudio':
             self.transforms = torchaudio.transforms.MelSpectrogram(sample_rate=sample_rate,  win_length=window_size,
                                                                    hop_length=self.hop_length,  n_fft=self.n_fft,
                                                                    n_mels=n_mels)

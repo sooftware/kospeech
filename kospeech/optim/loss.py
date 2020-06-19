@@ -40,6 +40,8 @@ class LabelSmoothingLoss(nn.Module):
         return torch.sum(-label_smoothed * logit)
 
 
+# Loss for Language Model ===
+
 class Loss(object):
     """
     Base class for encapsulation of the loss functions.
@@ -99,6 +101,7 @@ class Loss(object):
         the target (expected) results.  The loss and normalization term are
         accumulated in this method.  Override it to define your own accumulation
         method.
+
         Args:
             outputs (torch.Tensor): outputs of a batch.
             target (torch.Tensor): expected output of a batch.
@@ -116,6 +119,7 @@ class Loss(object):
 
 class NLLLoss(Loss):
     """ Batch averaged negative log-likelihood loss.
+
     Args:
         weight (torch.Tensor, optional): refer to http://pytorch.org/docs/master/nn.html#nllloss
         mask (int, optional): index of masked token, i.e. weight[mask] = 0.
