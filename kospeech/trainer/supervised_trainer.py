@@ -271,8 +271,8 @@ class SupervisedTrainer(object):
         train_df = pd.DataFrame(train_dict)
         valid_df = pd.DataFrame(valid_dict)
 
-        train_df.to_csv(self.TRAIN_RESULT_PATH, encoding="cp949", index=False)
-        valid_df.to_csv(self.VALID_RESULT_PATH, encoding="cp949", index=False)
+        train_df.to_csv(SupervisedTrainer.TRAIN_RESULT_PATH, encoding="cp949", index=False)
+        valid_df.to_csv(SupervisedTrainer.VALID_RESULT_PATH, encoding="cp949", index=False)
 
     def _save_step_result(self, train_step_result, loss, cer):
         """ Save result of --save_result_every step """
