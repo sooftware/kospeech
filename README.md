@@ -1,5 +1,5 @@
-[<img src="http://img.shields.io/badge/Documentation-Built with Sphinx provided by Read the Docs-21a5a7?logo=Read%20the%20Docs&logoColor=white">](https://sooftware.github.io/KoSpeech/) [<img src="http://img.shields.io/badge/chat%20on-gitter-21a5a7?logo=Gitter&logoColor=white">](https://gitter.im/Korean-Speech-Recognition/community)  
-[<img src="http://img.shields.io/badge/Demo%20web%20application-Built with Flask-21a5a7?logo=Flask&logoColor=white">](http://www.kospeech.com/) [<img src="http://img.shields.io/badge/issue-welcome-21a5a7?logo=Github&logoColor=white">](https://github.com/sooftware/KoSpeech/issues)   
+[<img src="http://img.shields.io/badge/documentation-Built with Sphinx provided by Read the Docs-21a5a7?logo=Read%20the%20Docs&logoColor=white">](https://sooftware.github.io/KoSpeech/) [<img src="http://img.shields.io/badge/chat%20on-gitter-21a5a7?logo=Gitter&logoColor=white">](https://gitter.im/Korean-Speech-Recognition/community)  
+[<img src="http://img.shields.io/badge/demo%20web%20application-Built with Flask-21a5a7?logo=Flask&logoColor=white">](http://www.kospeech.com/) [<img src="http://img.shields.io/badge/issue-welcome-21a5a7?logo=Github&logoColor=white">](https://github.com/sooftware/KoSpeech/issues)   
   
 # KoSpeech: Open Source Korean End-to-End Automatic Speech Recognition in PyTorch
   
@@ -13,9 +13,7 @@
   
 End-to-end (E2E) automatic speech recognition (ASR) is an emerging paradigm in the field of neural network-based speech recognition that offers multiple benefits. Traditional “hybrid” ASR systems, which are comprised of an acoustic model, language model, and pronunciation model, require separate training of these components, each of which can be complex.   
   
-For example, training of an acoustic model is a multi-stage process of model training and time alignment between the speech acoustic feature sequence and output label sequence. In contrast, E2E ASR is a single integrated approach with a much simpler training pipeline with models that operate at low audio frame rates. This reduces the training time, decoding time, and allows joint optimization with downstream processing such as natural language understanding.  
-
-### [**Documentation**](https://sooftware.github.io/KoSpeech/)   
+For example, training of an acoustic model is a multi-stage process of model training and time alignment between the speech acoustic feature sequence and output label sequence. In contrast, E2E ASR is a single integrated approach with a much simpler training pipeline with models that operate at low audio frame rates. This reduces the training time, decoding time, and allows joint optimization with downstream processing such as natural language understanding.   
   
 [Korean.ver](https://github.com/sooftware/KoSpeech/blob/master/README_ko.md)  
 
