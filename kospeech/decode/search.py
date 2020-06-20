@@ -18,7 +18,7 @@ class GreedySearch(object):
         self.target_list = list()
         self.hypothesis_list = list()
         self.metric = CharacterErrorRate(id2char, EOS_token)
-        # self.language_model = load_language_model('lm_path', 'cuda')
+        self.language_model = None  # load_language_model('lm_path', 'cuda')
 
     def search(self, model, queue, device, print_every):
         cer = 0
@@ -37,7 +37,8 @@ class GreedySearch(object):
                 scripts = scripts.to(device)
                 targets = scripts[:, 1:]
 
-                output, _ = model(inputs, input_lengths, teacher_forcing_ratio=0.0)  # language_model=self.language_model
+                output, _ = model(inputs=inputs, input_lengths=input_lengths,
+                                  teacher_forcing_ratio=0.0, language_model=self.language_model)
 
                 logit = torch.stack(output, dim=1).to(device)
                 hypothesis = logit.max(-1)[1]

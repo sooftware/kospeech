@@ -172,7 +172,8 @@ class SupervisedTrainer(object):
             targets = scripts[:, 1:]
 
             model.module.flatten_parameters()
-            output = model(inputs, input_lengths, scripts, teacher_forcing_ratio=teacher_forcing_ratio)[0]
+            output = model(inputs=inputs, input_lengths=input_lengths,
+                           targets=scripts, teacher_forcing_ratio=teacher_forcing_ratio)[0]
 
             logit = torch.stack(output, dim=1).to(self.device)
             hypothesis = logit.max(-1)[1]
@@ -247,7 +248,7 @@ class SupervisedTrainer(object):
                 targets = scripts[:, 1:]
 
                 model.module.flatten_parameters()
-                output = model(inputs, input_lengths, teacher_forcing_ratio=0.0)[0]
+                output = model(inputs=inputs, input_lengths=input_lengths, teacher_forcing_ratio=0.0)[0]
 
                 logit = torch.stack(output, dim=1).to(self.device)
                 hypothesis = logit.max(-1)[1]
