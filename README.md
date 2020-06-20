@@ -1,4 +1,4 @@
-[<img src="http://img.shields.io/badge/Demo%20web%20application-click-21a5a7?logo=Flask&logoColor=white">](http://www.kospeech.com/) [<img src="http://img.shields.io/badge/Documentation-click-21a5a7?logo=Read%20the%20Docs&logoColor=white">](https://sooftware.github.io/KoSpeech/) [<img src="http://img.shields.io/badge/chat%20on-gitter-21a5a7?logo=Gitter&logoColor=white">](https://gitter.im/Korean-Speech-Recognition/community)
+[<img src="http://img.shields.io/badge/Demo%20web%20application-Built with Flask-21a5a7?logo=Flask&logoColor=white">](http://www.kospeech.com/) [<img src="http://img.shields.io/badge/Documentation-Built with Sphinx provided by Read the Docs-21a5a7?logo=Read%20the%20Docs&logoColor=white">](https://sooftware.github.io/KoSpeech/) [<img src="http://img.shields.io/badge/chat%20on-gitter-21a5a7?logo=Gitter&logoColor=white">](https://gitter.im/Korean-Speech-Recognition/community)
   
 # KoSpeech: Open Source Korean End-to-End Automatic Speech Recognition in PyTorch
   
