@@ -10,6 +10,9 @@ def build_model_opts(parser):
     group.add_argument('--use_bidirectional', '-use_bidirectional',
                        action='store_true', default=False,
                        help='if True, becomes a bidirectional encoder (defulat: False)')
+    group.add_argument('--mask_conv', '-mask_conv',
+                       action='store_true', default=False,
+                       help='if True, masking <pad> token in convolution (defulat: False)')
     group.add_argument('--hidden_dim', '-hidden_dim',
                        type=int, default=256,
                        help='hidden state dimension of model (default: 256)')
@@ -234,6 +237,7 @@ def print_preprocess_opts(opt):
 def print_model_opts(opt):
     """ Print model options """
     logger.info('--use_bidirectional: %s' % str(opt.use_bidirectional))
+    logger.info('--mask_conv: %s' % str(opt.mask_conv))
     logger.info('--hidden_dim: %s' % str(opt.hidden_dim))
     logger.info('--dropout: %s' % str(opt.dropout))
     logger.info('--attn_mechanism: %s' % str(opt.attn_mechanism))

@@ -19,7 +19,7 @@ def build_model(opt, device):
     listener = build_listener(input_size=input_size, hidden_dim=opt.hidden_dim, dropout_p=opt.dropout,
                               num_layers=opt.listener_layer_size, bidirectional=opt.use_bidirectional,
                               extractor=opt.extractor, activation=opt.activation,
-                              rnn_type=opt.rnn_type, device=device)
+                              rnn_type=opt.rnn_type, device=device, mask_conv=opt.mask_conv)
     speller = build_speller(num_classes=len(char2id), max_len=opt.max_len, sos_id=SOS_token, eos_id=EOS_token,
                             hidden_dim=opt.hidden_dim << (1 if opt.use_bidirectional else 0),
                             num_layers=opt.speller_layer_size, rnn_type=opt.rnn_type, dropout_p=opt.dropout,
@@ -47,7 +47,7 @@ def build_las(listener, speller, device, init_uniform=True):
 
 
 def build_listener(input_size, hidden_dim, dropout_p, num_layers, bidirectional,
-                   rnn_type, extractor, activation, device):
+                   rnn_type, extractor, activation, device, mask_conv):
     """ Various encoder dispatcher function. """
     if not isinstance(input_size, int):
         raise ParameterError("input_size should be inteager type")
@@ -69,7 +69,7 @@ def build_listener(input_size, hidden_dim, dropout_p, num_layers, bidirectional,
         raise ParameterError("Unsupported RNN Cell: {0}".format(rnn_type))
 
     return Listener(input_size=input_size, hidden_dim=hidden_dim,
-                    dropout_p=dropout_p, num_layers=num_layers,
+                    dropout_p=dropout_p, num_layers=num_layers, mask_conv=mask_conv,
                     bidirectional=bidirectional, rnn_type=rnn_type,
                     extractor=extractor, device=device, activation=activation)
 
