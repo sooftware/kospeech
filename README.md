@@ -16,7 +16,7 @@ End-to-end (E2E) automatic speech recognition (ASR) is an emerging paradigm in t
   
 For example, training of an acoustic model is a multi-stage process of model training and time alignment between the speech acoustic feature sequence and output label sequence. In contrast, E2E ASR is a single integrated approach with a much simpler training pipeline with models that operate at low audio frame rates. This reduces the training time, decoding time, and allows joint optimization with downstream processing such as natural language understanding.   
   
-[Korean.ver](https://github.com/sooftware/KoSpeech/blob/master/README_ko.md)  
+[Korean.ver](https://github.com/sooftware/KoSpeech/blob/master/docs/README_ko.md)  
 
 ## Intro
 
