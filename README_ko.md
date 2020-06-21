@@ -1,7 +1,14 @@
-<p align=center><i> <img src="https://user-images.githubusercontent.com/42150335/84139694-4e5b3e00-aa8b-11ea-9371-f6268dbab1f7.png" width=500> </i></p>   
-<p align=center> <img src="https://img.shields.io/badge/build-passing-success?logo=Python&logoColor=white"> <img src="https://img.shields.io/badge/license-Apache--2.0-informational?logo=Apache&logoColor=white"> <img src="https://img.shields.io/badge/Windows-succeeded-success?logo=Windows&logoColor=white"> <img src="https://img.shields.io/badge/MacOS-not tested-informational?logo=Apple&logoColor=white"> <img src="https://img.shields.io/badge/Linux-succeeded-success?logo=Linux&logoColor=white"> </p> 
+[<img src="http://img.shields.io/badge/documentation-Built with Sphinx provided by Read the Docs-21a5a7?logo=Read%20the%20Docs&logoColor=white">](https://sooftware.github.io/KoSpeech/) [<img src="http://img.shields.io/badge/chat%20on-gitter-21a5a7?logo=Gitter&logoColor=white">](https://gitter.im/Korean-Speech-Recognition/community)  
+[<img src="http://img.shields.io/badge/demo%20web%20application-Built with Flask-21a5a7?logo=Flask&logoColor=white">](http://www.kospeech.com/) [<img src="http://img.shields.io/badge/issue-welcome-21a5a7?logo=Github&logoColor=white">](https://github.com/sooftware/KoSpeech/issues)   
+[<img src="http://img.shields.io/badge/PyTorch-1.3.0%20or%20above%20Recommended-21a5a7?logo=Pytorch&logoColor=white">](https://pytorch.org/)  [<img src="http://img.shields.io/badge/NVIDIA%20CUDA-9.2%20or%20above%20Recommended-21a5a7?logo=Nvidia&logoColor=white">](https://developer.nvidia.com/cuda-downloads)   
   
-### [**Documentation**](https://sooftware.github.io/KoSpeech/)   
+# KoSpeech: Open Source Project for Korean End-to-End Automatic Speech Recognition in PyTorch
+  
+[KoSpeech: Open Source Project for Korean End-to-End Automatic Speech Recognition in PyTorch](https://github.com/sooftware/KoSpeech)
+
+[Soohwan Kim](https://github.com/sooftware)<sup>1,2</sup>, [Seyoung Bae](https://github.com/triplet02)<sup>1</sup>, [Cheolhwang Won](https://github.com/wch18735)<sup>1</sup>, [Suwon Park](https://ei.kw.ac.kr/introduction/professor_view.php?idx=72)<sup>1*</sup>      
+  
+<sup>1</sup>Elcomm, Kwangwoon Univ. <sup>2</sup>Spoken Language Lab (of Sogang Univ.)  
   
 ## Intro
 
