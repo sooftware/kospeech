@@ -42,14 +42,14 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
         self.shuffle()
 
     def get_item(self, idx):
-        """ get spectrogram & label """
+        """ get feature & transcript """
         transcript = self.parse_transcript(self.script_paths[idx])
-        spectrogram = self.parse_audio(self.audio_paths[idx], self.augment_methods[idx])
+        feature = self.parse_audio(self.audio_paths[idx], self.augment_methods[idx])
 
-        if spectrogram is None:
+        if feature is None:
             return None, None
         else:
-            return spectrogram, transcript
+            return feature, transcript
 
     def parse_transcript(self, script_path):
         """ Parses scripts @Override """

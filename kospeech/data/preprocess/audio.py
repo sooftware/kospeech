@@ -11,13 +11,13 @@ def load_audio(audio_path, del_silence):
     If exception occurs in numpy.memmap(), return None.
     """
     try:
-        sound = np.memmap(audio_path, dtype='h', mode='r').astype('float32')
+        signal = np.memmap(audio_path, dtype='h', mode='r').astype('float32')
 
         if del_silence:
-            non_silence_indices = split(sound, top_db=30)
-            sound = np.concatenate([sound[start:end] for start, end in non_silence_indices])
+            non_silence_indices = split(signal, top_db=30)
+            signal = np.concatenate([signal[start:end] for start, end in non_silence_indices])
 
-        return sound / 32767  # normalize audio
+        return signal / 32767  # normalize audio
 
     except ValueError:
         logger.debug('ValueError in {0}'.format(audio_path))
