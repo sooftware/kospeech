@@ -2,9 +2,9 @@
 [<img src="http://img.shields.io/badge/demo%20web%20application-Built with Flask-21a5a7?logo=Flask&logoColor=white">](http://www.kospeech.com/) [<img src="http://img.shields.io/badge/issue-welcome-21a5a7?logo=Github&logoColor=white">](https://github.com/sooftware/KoSpeech/issues)   
 [<img src="http://img.shields.io/badge/PyTorch-1.3.0%20or%20above%20Recommended-21a5a7?logo=Pytorch&logoColor=white">](https://pytorch.org/)  [<img src="http://img.shields.io/badge/NVIDIA%20CUDA-9.2%20or%20above%20Recommended-21a5a7?logo=Nvidia&logoColor=white">](https://developer.nvidia.com/cuda-downloads)   
   
-# KoSpeech: Open Source Korean End-to-End Automatic Speech Recognition in PyTorch
+# KoSpeech: Open Source Project for Korean End-to-End Automatic Speech Recognition in PyTorch
   
-[KoSpeech: Open Source Korean End-to-End Automatic Speech Recognition in PyTorch](https://github.com/sooftware/KoSpeech)
+[KoSpeech: Open Source Project for Korean End-to-End Automatic Speech Recognition in PyTorch](https://github.com/sooftware/KoSpeech)
 
 [Soohwan Kim](https://github.com/sooftware)<sup>1,2</sup>, [Seyoung Bae](https://github.com/triplet02)<sup>1</sup>, [Cheolhwang Won](https://github.com/wch18735)<sup>1</sup>, [Suwon Park](https://ei.kw.ac.kr/introduction/professor_view.php?idx=72)<sup>1*</sup>      
   
