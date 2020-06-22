@@ -1,16 +1,8 @@
 import torch
-import librosa
-import platform
 import numpy as np
 from kospeech.data.preprocess.audio import load_audio
 from kospeech.data.preprocess.augment import NoiseInjector, SpecAugment
-
-# torchaudio is only supported on Linux
-if platform.system() == 'Linux':
-    try:
-        import torchaudio
-    except ImportError:
-        raise ImportError("SpectrogramPaser requires torchaudio package.")
+from kospeech.data.preprocess.feature import MelSpectrogram, MFCC, Spectrogram
 
 
 class AudioParser(object):
@@ -67,49 +59,22 @@ class SpectrogramParser(AudioParser):
                  sos_id=1, eos_id=2, target_dict=None,
                  noise_augment=False, dataset_path=None, noiseset_size=0, noise_level=0.7):
         super(SpectrogramParser, self).__init__(dataset_path, noiseset_size, sample_rate, noise_level, noise_augment)
-        self.feature = feature.lower()
-        self.sample_rate = sample_rate
-        self.n_mels = n_mels
-        self.window_size = window_size
         self.del_silence = del_silence
         self.input_reverse = input_reverse
         self.normalize = normalize
-        self.n_fft = int(sample_rate * 0.001 * window_size)
-        self.hop_length = int(sample_rate * 0.001 * stride)
-        self.feature_extract_by = feature_extract_by.lower()
         self.sos_id = sos_id
         self.eos_id = eos_id
         self.target_dict = target_dict
         self.spec_augment = SpecAugment(time_mask_para, freq_mask_para, time_mask_num, freq_mask_num)
 
-        if self.feature == 'mel':
-            self.get_feature = self.melspectrogram
-        elif self.feature == 'mfcc':
-            self.get_feature = self.mfcc
-        elif self.feature == 'spect':
-            self.get_feature = self.spectrogram
+        if feature.lower() == 'mel':
+            self.transforms = MelSpectrogram(sample_rate, n_mels, window_size, stride, feature_extract_by)
+        elif feature.lower() == 'mfcc':
+            self.transforms = MFCC(sample_rate, n_mels, window_size, stride, feature_extract_by)
+        elif feature.lower() == 'spect':
+            self.transforms = Spectrogram(sample_rate, window_size, stride, feature_extract_by)
         else:
-            raise ValueError("Unsupported feature: {0}".format(self.feature))
-
-        if self.feature_extract_by == 'torchaudio':
-            if self.feature == 'mel':
-                self.transforms = torchaudio.transforms.MelSpectrogram(
-                    sample_rate=sample_rate,
-                    win_length=window_size,
-                    hop_length=self.hop_length,
-                    n_fft=self.n_fft,
-                    n_mels=n_mels
-                )
-                self.amplitude_to_db = torchaudio.transforms.AmplitudeToDB()
-            elif self.feature == 'mfcc':
-                self.transforms = torchaudio.transforms.MFCC(
-                    sample_rate=sample_rate,
-                    n_mfcc=n_mels,
-                    log_mels=True,
-                    win_length=window_size,
-                    hop_length=self.hop_length,
-                    n_fft=self.n_fft
-                )
+            raise ValueError("Unsupported feature : {0}".format(feature))
 
     def parse_audio(self, audio_path, augment_method):
         """
@@ -127,7 +92,7 @@ class SpectrogramParser(AudioParser):
         if augment_method == SpectrogramParser.NOISE_INJECTION:
             signal = self.noise_injector(signal)
 
-        feature = self.get_feature(signal)
+        feature = self.transforms(signal)
 
         if self.normalize:
             feature -= feature.mean()
@@ -140,59 +105,6 @@ class SpectrogramParser(AudioParser):
             feature = self.spec_augment(feature)
 
         return feature
-
-    def melspectrogram(self, signal):
-        """ Compute a mel-scaled spectrogram. """
-        if self.feature_extract_by == 'torchaudio':
-            melspectrogram = self.transforms(torch.FloatTensor(signal))
-            melspectrogram = self.amplitude_to_db(melspectrogram)
-            melspectrogram = melspectrogram.numpy()
-
-        else:
-            melspectrogram = librosa.feature.melspectrogram(
-                y=signal,
-                sr=self.sample_rate,
-                n_mels=self.n_mels,
-                n_fft=self.n_fft,
-                hop_length=self.hop_length
-            )
-            melspectrogram = librosa.amplitude_to_db(melspectrogram, ref=np.max)
-
-        return melspectrogram
-
-    def spectrogram(self, signal):
-        """ Compute a spectrogram. """
-        spectrogram = torch.stft(
-            torch.FloatTensor(signal),
-            self.n_fft,
-            hop_length=self.hop_length,
-            win_length=self.n_fft,
-            window=torch.hamming_window(self.n_fft),
-            center=False,
-            normalized=False,
-            onesided=True
-        )
-        spectrogram = (spectrogram[:, :, 0].pow(2) + spectrogram[:, :, 1].pow(2)).pow(0.5)
-        spectrogram = np.log1p(spectrogram.numpy())
-
-        return spectrogram
-
-    def mfcc(self, signal):
-        """ Mel-frequency cepstral coefficients (MFCCs) """
-        if self.feature_extract_by == 'torchaudio':
-            mfcc = self.transforms(torch.FloatTensor(signal))
-            mfcc = mfcc.numpy()
-
-        else:
-            mfcc = librosa.feature.mfcc(
-                y=signal,
-                sr=self.sample_rate,
-                n_mfcc=self.n_mels,
-                n_fft=self.n_fft,
-                hop_length=self.hop_length
-            )
-
-        return mfcc
 
     def parse_transcript(self, *args, **kwargs):
         raise NotImplementedError
