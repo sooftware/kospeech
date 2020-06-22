@@ -96,7 +96,7 @@ class MelSpectrogram(object):
 
 class MFCC(object):
     """
-    Create the Mel-frequency cepstrum coefficients from an audio signal.
+    Create the Mel-frequency cepstrum coefficients (MFCCs) from an audio signal.
 
     Args: sample_rate, n_mels, window_size, stride, feature_extract_by
         sample_rate (int): sample rate
@@ -123,7 +123,6 @@ class MFCC(object):
             )
 
     def __call__(self, signal):
-        """ Mel-frequency cepstral coefficients (MFCCs) """
         if self.feature_extract_by == 'torchaudio':
             mfcc = self.transforms(torch.FloatTensor(signal))
             mfcc = mfcc.numpy()

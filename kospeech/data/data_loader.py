@@ -5,7 +5,7 @@ import torch
 import random
 from torch.utils.data import Dataset
 from kospeech.data.label_loader import load_targets
-from kospeech.data.preprocess.parser import SpectrogramParser
+from kospeech.data.audio.parser import SpectrogramParser
 from kospeech.utils import logger, PAD_token, SOS_token, EOS_token
 
 

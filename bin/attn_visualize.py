@@ -4,7 +4,7 @@ import librosa
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-from kospeech.data.preprocess.audio import split
+from kospeech.data.audio.audio import split
 from kospeech.model.decoder import Speller
 
 MODEL_PATH = '../data/checkpoints/model.pt'

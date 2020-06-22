@@ -2,7 +2,7 @@ import os
 import random
 import numpy as np
 from kospeech.utils import logger
-from kospeech.data.preprocess.audio import split
+from kospeech.data.audio.core import split
 
 
 class SpecAugment(object):

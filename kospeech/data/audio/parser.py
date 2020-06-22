@@ -1,8 +1,8 @@
 import torch
 import numpy as np
-from kospeech.data.preprocess.audio import load_audio
-from kospeech.data.preprocess.augment import NoiseInjector, SpecAugment
-from kospeech.data.preprocess.feature import MelSpectrogram, MFCC, Spectrogram
+from kospeech.data.audio.core import load_audio
+from kospeech.data.audio.augment import NoiseInjector, SpecAugment
+from kospeech.data.audio.feature import MelSpectrogram, MFCC, Spectrogram
 
 
 class AudioParser(object):
