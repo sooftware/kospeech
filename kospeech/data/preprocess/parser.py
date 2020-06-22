@@ -82,16 +82,34 @@ class SpectrogramParser(AudioParser):
         self.target_dict = target_dict
         self.spec_augment = SpecAugment(time_mask_para, freq_mask_para, time_mask_num, freq_mask_num)
 
+        if self.feature == 'mel':
+            self.get_feature = self.melspectrogram
+        elif self.feature == 'mfcc':
+            self.get_feature = self.mfcc
+        elif self.feature == 'spect':
+            self.get_feature = self.spectrogram
+        else:
+            raise ValueError("Unsupported feature: {0}".format(self.feature))
+
         if self.feature_extract_by == 'torchaudio':
             if self.feature == 'mel':
-                self.transforms = torchaudio.transforms.MelSpectrogram(sample_rate=sample_rate,  win_length=window_size,
-                                                                       hop_length=self.hop_length,  n_fft=self.n_fft,
-                                                                       n_mels=n_mels)
+                self.transforms = torchaudio.transforms.MelSpectrogram(
+                    sample_rate=sample_rate,
+                    win_length=window_size,
+                    hop_length=self.hop_length,
+                    n_fft=self.n_fft,
+                    n_mels=n_mels
+                )
                 self.amplitude_to_db = torchaudio.transforms.AmplitudeToDB()
             elif self.feature == 'mfcc':
-                self.transforms = torchaudio.transforms.MFCC(sample_rate=sample_rate, n_mfcc=n_mels, log_mels=True,
-                                                             win_length=window_size, hop_length=self.hop_length,
-                                                             n_fft=self.n_fft)
+                self.transforms = torchaudio.transforms.MFCC(
+                    sample_rate=sample_rate,
+                    n_mfcc=n_mels,
+                    log_mels=True,
+                    win_length=window_size,
+                    hop_length=self.hop_length,
+                    n_fft=self.n_fft
+                )
 
     def parse_audio(self, audio_path, augment_method):
         """
@@ -101,57 +119,49 @@ class SpectrogramParser(AudioParser):
              audio_path (str): path of audio file
              augment_method (int): flag indication which augmentation method to use.
 
-        Returns: spectrogram
-            - **spectrogram** (torch.FloatTensor): Mel-Spectrogram feature from audio file.
+        Returns: feature
+            - **feature** (torch.FloatTensor): feature from audio file.
         """
         signal = load_audio(audio_path, self.del_silence)
 
-        if signal is None:  # Exception handling
-            return None
-        elif augment_method == SpectrogramParser.NOISE_INJECTION:  # Noise injection
+        if augment_method == SpectrogramParser.NOISE_INJECTION:
             signal = self.noise_injector(signal)
-            if signal is None:
-                return None
 
-        if self.feature == 'mel':
-            feature = self.get_melspectrogram_feature(signal)
+        feature = self.get_feature(signal)
 
-        elif self.feature == 'spect':
-            feature = self.get_spectrogram_feature(signal)
+        if self.normalize:
+            feature -= feature.mean()
 
-        elif self.feature == 'mfcc':
-            feature = self.get_mfcc_feature(signal)
-
-        else:
-            raise ValueError("Unsupported feature: {0}".format(self.feature))
+        if self.input_reverse:  # Refer to "Sequence to Sequence Learning with Neural Network" paper
+            feature = feature[:, ::-1]
+            feature = torch.FloatTensor(np.ascontiguousarray(np.swapaxes(feature, 0, 1)))
 
         if augment_method == SpectrogramParser.SPEC_AUGMENT:
             feature = self.spec_augment(feature)
 
         return feature
 
-    def get_melspectrogram_feature(self, signal):
+    def melspectrogram(self, signal):
+        """ Compute a mel-scaled spectrogram. """
         if self.feature_extract_by == 'torchaudio':
             melspectrogram = self.transforms(torch.FloatTensor(signal))
             melspectrogram = self.amplitude_to_db(melspectrogram)
             melspectrogram = melspectrogram.numpy()
 
         else:
-            melspectrogram = librosa.feature.melspectrogram(signal, self.sample_rate, n_mels=self.n_mels,
-                                                            n_fft=self.n_fft, hop_length=self.hop_length)
+            melspectrogram = librosa.feature.melspectrogram(
+                y=signal,
+                sr=self.sample_rate,
+                n_mels=self.n_mels,
+                n_fft=self.n_fft,
+                hop_length=self.hop_length
+            )
             melspectrogram = librosa.amplitude_to_db(melspectrogram, ref=np.max)
-
-        if self.normalize:
-            melspectrogram -= melspectrogram.mean()
-
-        # Refer to "Sequence to Sequence Learning with Neural Network" paper
-        if self.input_reverse:
-            melspectrogram = melspectrogram[:, ::-1]
-            melspectrogram = torch.FloatTensor(np.ascontiguousarray(np.swapaxes(melspectrogram, 0, 1)))
 
         return melspectrogram
 
-    def get_spectrogram_feature(self, signal):
+    def spectrogram(self, signal):
+        """ Compute a spectrogram. """
         spectrogram = torch.stft(
             torch.FloatTensor(signal),
             self.n_fft,
@@ -165,35 +175,22 @@ class SpectrogramParser(AudioParser):
         spectrogram = (spectrogram[:, :, 0].pow(2) + spectrogram[:, :, 1].pow(2)).pow(0.5)
         spectrogram = np.log1p(spectrogram.numpy())
 
-        # Refer to "Sequence to Sequence Learning with Neural Network" paper
-        if self.input_reverse:
-            spectrogram = spectrogram[:, ::-1]
-            spectrogram = torch.FloatTensor(np.ascontiguousarray(np.swapaxes(spectrogram, 0, 1)))
-
-        else:
-            spectrogram = torch.FloatTensor(spectrogram).transpose(0, 1)
-
-        if self.normalize:
-            spectrogram -= spectrogram.mean()
-
         return spectrogram
 
-    def get_mfcc_feature(self, signal):
+    def mfcc(self, signal):
+        """ Mel-frequency cepstral coefficients (MFCCs) """
         if self.feature_extract_by == 'torchaudio':
             mfcc = self.transforms(torch.FloatTensor(signal))
             mfcc = mfcc.numpy()
 
         else:
-            mfcc = librosa.feature.mfcc(signal, sr=self.sample_rate, n_mfcc=self.n_mels,
-                                        n_fft=self.n_fft, hop_length=self.hop_length)
-
-        if self.normalize:
-            mfcc -= mfcc.mean()
-
-        # Refer to "Sequence to Sequence Learning with Neural Network" paper
-        if self.input_reverse:
-            mfcc = mfcc[:, ::-1]
-            mfcc = torch.FloatTensor(np.ascontiguousarray(np.swapaxes(mfcc, 0, 1)))
+            mfcc = librosa.feature.mfcc(
+                y=signal,
+                sr=self.sample_rate,
+                n_mfcc=self.n_mels,
+                n_fft=self.n_fft,
+                hop_length=self.hop_length
+            )
 
         return mfcc
 
