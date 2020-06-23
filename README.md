@@ -278,7 +278,7 @@ Jung-Woo Ha et al. [ClovaCall: Korean Goal-Oriented Dialog Speech Corpus for ASR
 ### Citing
 ```
 @github{
-  title = {KoSpeech},
+  title = {KoSpeech: Open Source Project for Korean End-to-End Automatic Speech Recognition in PyTorch},
   author = {Soohwan Kim, Seyoung Bae, Cheolhwang Won, Suwon Park},
   publisher = {GitHub},
   docs = {https://sooftware.github.io/KoSpeech/},
