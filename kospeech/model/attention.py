@@ -25,6 +25,9 @@ class MultiHeadAttention(nn.Module):
     Reference:
         - **Attention Is All You Need**: https://arxiv.org/abs/1706.03762
         - **State-Of-The-Art Speech Recognition with Sequence-to-Sequence Models**: https://arxiv.org/abs/1712.01769
+
+    Contributor:
+        - Deokjin Seo (qute012) : 20.03.21
     """
     def __init__(self, hidden_dim, num_heads=4):
         super(MultiHeadAttention, self).__init__()
