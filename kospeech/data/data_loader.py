@@ -103,7 +103,7 @@ class AudioDataLoader(threading.Thread):
     Audio Data Loader
 
     Args:
-        dataset (e2e.data_loader.MelSpectrogramDataset): dataset for spectrogram & script matching
+        dataset (kodpeech.data.data_loader.SpectrogramDataset): dataset for feature & transcript matching
         queue (Queue.queue): queue for threading
         batch_size (int): size of batch
         thread_id (int): identification of thread

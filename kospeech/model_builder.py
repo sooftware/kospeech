@@ -11,7 +11,7 @@ from kospeech.utils import char2id, EOS_token, SOS_token
 
 def build_model(opt, device):
     """ Various model dispatcher function. """
-    if opt.feature == 'mel':
+    if opt.feature.lower() == 'mel' or opt.feature.lower() == 'mfcc':
         input_size = opt.n_mels
     else:
         input_size = 161  # spectrogram size

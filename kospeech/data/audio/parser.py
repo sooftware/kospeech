@@ -33,11 +33,11 @@ class SpectrogramParser(AudioParser):
 
     Args:
         feature (str): which feature to use (default: mel)
+        sample_rate (int): Sample rate of audio signal. (Default: 16000)
+        n_mels (int):  Number of mfc coefficients to retain. (Default: 40)
+        window_size (int): window size (ms) (Default : 20)
+        stride (int): Length of hop between STFT windows. (ms) (Default: 10)
         feature_extract_by (str): which library to use for feature extraction(default: librosa)
-        sample_rate (int): sample rate
-        n_mels (int): number of mel filter
-        window_size (int): window size (ms)
-        stride (int): forwarding size (ms)
         del_silence (bool): flag indication whether to delete silence or not (default: True)
         input_reverse (bool): flag indication whether to reverse input or not (default: True)
         normalize (bool): flag indication whether to normalize spectrum or not (default:True)
@@ -72,7 +72,7 @@ class SpectrogramParser(AudioParser):
         elif feature.lower() == 'mfcc':
             self.transforms = MFCC(sample_rate, n_mels, window_size, stride, feature_extract_by)
         elif feature.lower() == 'spect':
-            self.transforms = Spectrogram(sample_rate, window_size, stride, feature_extract_by)
+            self.transforms = Spectrogram(sample_rate, window_size, stride)
         else:
             raise ValueError("Unsupported feature : {0}".format(feature))
 

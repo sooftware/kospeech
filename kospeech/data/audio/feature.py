@@ -16,16 +16,14 @@ class Spectrogram(object):
     Create a spectrogram from a audio signal.
 
     Args: sample_rate, window_size, stride, feature_extract_by
-        sample_rate (int): sample rate
-        window_size (int): window size (ms)
-        stride (int): forwarding size (ms)
-        feature_extract_by (str): which library to use for feature extraction(default: librosa)
+        sample_rate (int): Sample rate of audio signal. (Default: 16000)
+        window_size (int): window size (ms) (Default : 20)
+        stride (int): Length of hop between STFT windows. (ms) (Default: 10)
     """
-    def __init__(self, sample_rate=16000, window_size=20, stride=10, feature_extract_by='librosa'):
+    def __init__(self, sample_rate=16000, window_size=20, stride=10):
         self.sample_rate = sample_rate
         self.n_fft = int(sample_rate * 0.001 * window_size)
         self.hop_length = int(sample_rate * 0.001 * stride)
-        self.feature_extract_by = feature_extract_by.lower()
 
     def __call__(self, signal):
         spectrogram = torch.stft(
@@ -49,13 +47,13 @@ class MelSpectrogram(object):
     Create MelSpectrogram for a raw audio signal. This is a composition of Spectrogram and MelScale.
 
     Args: sample_rate, n_mels, window_size, stride, feature_extract_by
-        sample_rate (int): sample rate
-        n_mels (int): number of mel filter
-        window_size (int): window size (ms)
-        stride (int): forwarding size (ms)
+        sample_rate (int): Sample rate of audio signal. (Default: 16000)
+        n_mels (int):  Number of mfc coefficients to retain. (Default: 80)
+        window_size (int): window size (ms) (Default : 20)
+        stride (int): Length of hop between STFT windows. (ms) (Default: 10)
         feature_extract_by (str): which library to use for feature extraction(default: librosa)
     """
-    def __init__(self, sample_rate=16000, n_mels=40, window_size=20, stride=10, feature_extract_by='librosa'):
+    def __init__(self, sample_rate=16000, n_mels=80, window_size=20, stride=10, feature_extract_by='librosa'):
         self.sample_rate = sample_rate
         self.n_mels = n_mels
         self.n_fft = int(sample_rate * 0.001 * window_size)
@@ -98,11 +96,11 @@ class MFCC(object):
     """
     Create the Mel-frequency cepstrum coefficients (MFCCs) from an audio signal.
 
-    Args: sample_rate, n_mels, window_size, stride, feature_extract_by
-        sample_rate (int): sample rate
-        n_mfcc (int): number of mel filter
-        window_size (int): window size (ms)
-        stride (int): forwarding size (ms)
+    Args: sample_rate, n_mfcc, window_size, stride, feature_extract_by
+        sample_rate (int): Sample rate of audio signal. (Default: 16000)
+        n_mfcc (int):  Number of mfc coefficients to retain. (Default: 40)
+        window_size (int): window size (ms) (Default : 20)
+        stride (int): Length of hop between STFT windows. (ms) (Default: 10)
         feature_extract_by (str): which library to use for feature extraction(default: librosa)
     """
     def __init__(self, sample_rate=16000, n_mfcc=40, window_size=20, stride=10, feature_extract_by='librosa'):
