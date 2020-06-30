@@ -66,11 +66,11 @@ class NoiseInjector(object):
         sample_rate (int): sampling rate
         noise_level (float): level of noise
 
-    Inputs: sound
-        - **sound**: sound from pcm file
+    Inputs: signal
+        - **signal**: signal from pcm file
 
-    Returns: sound
-        - **sound**: noise added sound
+    Returns: signal
+        - **signal**: noise added signal
     """
     def __init__(self, dataset_path, noiseset_size, sample_rate=16000, noise_level=0.7):
         if not os.path.exists(dataset_path):
@@ -87,22 +87,22 @@ class NoiseInjector(object):
 
         logger.info("Create Noise injector complete !!")
 
-    def __call__(self, sound):
+    def __call__(self, signal):
         noise = np.random.choice(self.dataset)
         noise_level = np.random.uniform(0, self.noise_level)
 
-        sound_length = len(sound)
+        signal_length = len(signal)
         noise_length = len(noise)
 
-        if sound_length >= noise_length:
-            noise_start = int(np.random.rand() * (sound_length - noise_length))
+        if signal_length >= noise_length:
+            noise_start = int(np.random.rand() * (signal_length - noise_length))
             noise_end = int(noise_start + noise_length)
-            sound[noise_start: noise_end] += noise * noise_level
+            signal[noise_start: noise_end] += noise * noise_level
 
         else:
-            sound += noise[:sound_length] * noise_level
+            signal += noise[:signal_length] * noise_level
 
-        return sound
+        return signal
 
     def create_audio_paths(self, dataset_path):
         audio_paths = list()

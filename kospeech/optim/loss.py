@@ -118,7 +118,8 @@ class Loss(object):
 
 
 class NLLLoss(Loss):
-    """ Batch averaged negative log-likelihood loss.
+    """
+    Batch averaged negative log-likelihood loss.
 
     Args:
         weight (torch.Tensor, optional): refer to http://pytorch.org/docs/master/nn.html#nllloss
@@ -156,9 +157,11 @@ class NLLLoss(Loss):
 
 
 class Perplexity(NLLLoss):
-    """ Language model perplexity loss.
+    """
+    Language model perplexity loss.
     Perplexity is the token averaged likelihood.  When the averaging options are the
     same, it is the exponential of negative log-likelihood.
+
     Args:
         weight (torch.Tensor, optional): refer to http://pytorch.org/docs/master/nn.html#nllloss
         mask (int, optional): index of masked token, i.e. weight[mask] = 0.
