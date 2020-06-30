@@ -1,5 +1,5 @@
 [<img src="http://img.shields.io/badge/documentation-Built with Sphinx provided by Read the Docs-21a5a7?logo=Read%20the%20Docs&logoColor=white">](https://sooftware.github.io/KoSpeech/) [<img src="http://img.shields.io/badge/chat%20on-gitter-21a5a7?logo=Gitter&logoColor=white">](https://gitter.im/Korean-Speech-Recognition/community)  
-[<img src="http://img.shields.io/badge/demo%20web%20application-Built with Flask-21a5a7?logo=Flask&logoColor=white">](http://www.kospeech.com/) [<img src="http://img.shields.io/badge/issue-welcome-21a5a7?logo=Github&logoColor=white">](https://github.com/sooftware/KoSpeech/issues)   
+[<img src="http://img.shields.io/badge/demo%20web%20application-Built%20with%20Flask-21a5a7?logo=Google%20Chrome&logoColor=white">](http://www.kospeech.com/) [<img src="http://img.shields.io/badge/issue-welcome-21a5a7?logo=Github&logoColor=white">](https://github.com/sooftware/KoSpeech/issues)   
 [<img src="http://img.shields.io/badge/PyTorch-1.3.0%20or%20above%20Recommended-21a5a7?logo=Pytorch&logoColor=white">](https://pytorch.org/)  [<img src="http://img.shields.io/badge/NVIDIA%20CUDA-9.2%20or%20above%20Recommended-21a5a7?logo=Nvidia&logoColor=white">](https://developer.nvidia.com/cuda-downloads)   
   
 # KoSpeech: Open Source Project for Korean End-to-End Automatic Speech Recognition in PyTorch
@@ -188,20 +188,7 @@ $ ./run.sh
 ```
 * Custom setting
 ```shell
-python ./bin/main.py --batch_size 32 --num_workers 4 --num_epochs 20  --use_bidirectional \
-                     --input_reverse --spec_augment --noise_augment --use_cuda --hidden_dim 256 \
-                     --dropout 0.3 --num_heads 8 --label_smoothing 0.1 \
-                     --listener_layer_size 5 --speller_layer_size 3 --rnn_type gru \
-                     --high_plateau_lr $HIGH_PLATEAU_LR --teacher_forcing_ratio 1.0 --valid_ratio 0.01 \
-                     --sample_rate 16000 --window_size 20 --stride 10 --n_mels 80 --normalize --del_silence \
-                     --feature_extract_by torchaudio --time_mask_para 70 --freq_mask_para 12 \
-                     --time_mask_num 2 --freq_mask_num 2 --save_result_every 1000 \
-                     --checkpoint_every 5000 --print_every 10 --init_lr 1e-15  --init_uniform  \
-                     --mode train --dataset_path /data3/ --data_list_path ./data/data_list/xxx.csv \
-                     --max_grad_norm 400 --rampup_period 1000 --max_len 80 --decay_threshold 0.02 \
-                     --exp_decay_period  160000 --low_plateau_lr 1e-05 --noiseset_size 1000 \
-                     --noise_level 0.7 --attn_mechanism loc --teacher_forcing_step 0.05 \
-                     --min_teacher_forcing_ratio 0.7
+python ./bin/main.py -batch_size 32 -num_workers 4 -num_epochs 20  -spec_augment
 ```
   
 You can train the model by above command.  
@@ -215,11 +202,7 @@ $ ./eval.sh
 ```
 * Custom setting
 ```
-python ./bin/eval.py -dataset_path dataset_path -data_list_path data_list_path \
-                     -mode eval -use_cuda -batch_size 32 -num_workers 4 \
-                     -use_beam_search -k 5 -print_every 100 \
-                     -sample_rate 16000 --window_size 20 --stride 10 --n_mels 80 -feature_extract_by librosa \
-                     -normalize -del_silence -input_reverse 
+python ./bin/eval.py -dataset_path dataset_path -data_list_path data_list_path -mode eval
 ```
 Now you have a model which you can use to predict on new data. We do this by running `beam search` (or `greedy search`).  
 Like training, you can choose between `Default setting` or `Custom setting`.  
