@@ -85,7 +85,7 @@
               <p class="caption"><span class="caption-text">NOTES</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Intro</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notes/preparation.html">Preparation before Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">Preparation before Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/opts.html">Options</a></li>
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
@@ -196,9 +196,9 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Data.html#kospeech.data.preprocess.parser.AudioParser">AudioParser (class in kospeech.data.preprocess.parser)</a>
+      <li><a href="Data.html#kospeech.data.audio.parser.AudioParser">AudioParser (class in kospeech.data.audio.parser)</a>
 </li>
-      <li><a href="Data.html#kospeech.data.data_loader.MelSpectrogramDataset.augmentation">augmentation() (kospeech.data.data_loader.MelSpectrogramDataset method)</a>
+      <li><a href="Data.html#kospeech.data.data_loader.SpectrogramDataset.augmentation">augmentation() (kospeech.data.data_loader.SpectrogramDataset method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -206,7 +206,7 @@
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Model.html#kospeech.model.encoder.BaseRNN">BaseRNN (class in kospeech.model.encoder)</a>
+      <li><a href="Model.html#kospeech.model.base.BaseRNN">BaseRNN (class in kospeech.model.base)</a>
 </li>
       <li><a href="Decode.html#kospeech.decode.ensemble.BasicEnsemble">BasicEnsemble (class in kospeech.decode.ensemble)</a>
 </li>
@@ -246,7 +246,7 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="Checkpoint.html#kospeech.checkpoint.checkpoint.Checkpoint">Checkpoint (class in kospeech.checkpoint.checkpoint)</a>
 </li>
-      <li><a href="Model.html#kospeech.model.convolutional.ConvolutionalExtractor">ConvolutionalExtractor (class in kospeech.model.convolutional)</a>
+      <li><a href="Model.html#kospeech.model.conv.CNNExtractor">CNNExtractor (class in kospeech.model.conv)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -258,7 +258,7 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Model.html#kospeech.model.convolutional.DeepSpeech2Extractor">DeepSpeech2Extractor (class in kospeech.model.convolutional)</a>
+      <li><a href="Model.html#kospeech.model.conv.DeepSpeech2Extractor">DeepSpeech2Extractor (class in kospeech.model.conv)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -272,6 +272,14 @@
 </li>
       <li><a href="Etc.html#kospeech.metrics.ErrorRate">ErrorRate (class in kospeech.metrics)</a>
 </li>
+      <li><a href="Optim.html#kospeech.optim.loss.Loss.eval_batch">eval_batch() (kospeech.optim.loss.Loss method)</a>
+
+      <ul>
+        <li><a href="Optim.html#kospeech.optim.loss.NLLLoss.eval_batch">(kospeech.optim.loss.NLLLoss method)</a>
+</li>
+        <li><a href="Optim.html#kospeech.optim.loss.Perplexity.eval_batch">(kospeech.optim.loss.Perplexity method)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="Evaluator.html#kospeech.evaluator.evaluator.Evaluator.evaluate">evaluate() (kospeech.evaluator.evaluator.Evaluator method)</a>
@@ -297,42 +305,56 @@
 </li>
         <li><a href="Model.html#kospeech.model.attention.MultiHeadAttention.forward">(kospeech.model.attention.MultiHeadAttention method)</a>
 </li>
-        <li><a href="Model.html#kospeech.model.attention.ScaledDotProductAttention.forward">(kospeech.model.attention.ScaledDotProductAttention method)</a>
+        <li><a href="Model.html#kospeech.model.base.BaseRNN.forward">(kospeech.model.base.BaseRNN method)</a>
 </li>
         <li><a href="Model.html#kospeech.model.beam_search.BeamSearchDecoder.forward">(kospeech.model.beam_search.BeamSearchDecoder method)</a>
 </li>
-        <li><a href="Model.html#kospeech.model.convolutional.ConvolutionalExtractor.forward">(kospeech.model.convolutional.ConvolutionalExtractor method)</a>
+        <li><a href="Model.html#kospeech.model.conv.CNNExtractor.forward">(kospeech.model.conv.CNNExtractor method)</a>
 </li>
-        <li><a href="Model.html#kospeech.model.convolutional.DeepSpeech2Extractor.forward">(kospeech.model.convolutional.DeepSpeech2Extractor method)</a>
+        <li><a href="Model.html#kospeech.model.conv.DeepSpeech2Extractor.forward">(kospeech.model.conv.DeepSpeech2Extractor method)</a>
 </li>
-        <li><a href="Model.html#kospeech.model.convolutional.MaskCNN.forward">(kospeech.model.convolutional.MaskCNN method)</a>
+        <li><a href="Model.html#kospeech.model.conv.MaskConv.forward">(kospeech.model.conv.MaskConv method)</a>
 </li>
-        <li><a href="Model.html#kospeech.model.convolutional.VGGExtractor.forward">(kospeech.model.convolutional.VGGExtractor method)</a>
+        <li><a href="Model.html#kospeech.model.conv.VGGExtractor.forward">(kospeech.model.conv.VGGExtractor method)</a>
 </li>
         <li><a href="Model.html#kospeech.model.decoder.Speller.forward">(kospeech.model.decoder.Speller method)</a>
 </li>
-        <li><a href="Model.html#kospeech.model.encoder.BaseRNN.forward">(kospeech.model.encoder.BaseRNN method)</a>
-</li>
         <li><a href="Model.html#kospeech.model.encoder.Listener.forward">(kospeech.model.encoder.Listener method)</a>
 </li>
-        <li><a href="Model.html#kospeech.model.seq2seq.ListenAttendSpell.forward">(kospeech.model.seq2seq.ListenAttendSpell method)</a>
+        <li><a href="Model.html#kospeech.model.las.ListenAttendSpell.forward">(kospeech.model.las.ListenAttendSpell method)</a>
+</li>
+        <li><a href="Model.html#kospeech.model.lm.RNNLanguageModel.forward">(kospeech.model.lm.RNNLanguageModel method)</a>
 </li>
         <li><a href="Optim.html#kospeech.optim.loss.LabelSmoothingLoss.forward">(kospeech.optim.loss.LabelSmoothingLoss method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Model.html#kospeech.model.lm.RNNLanguageModel.forward_step">forward_step() (kospeech.model.lm.RNNLanguageModel method)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Data.html#kospeech.data.data_loader.MelSpectrogramDataset.get_item">get_item() (kospeech.data.data_loader.MelSpectrogramDataset method)</a>
+      <li><a href="Data.html#kospeech.data.data_loader.SpectrogramDataset.get_item">get_item() (kospeech.data.data_loader.SpectrogramDataset method)</a>
 </li>
       <li><a href="Checkpoint.html#kospeech.checkpoint.checkpoint.Checkpoint.get_latest_checkpoint">get_latest_checkpoint() (kospeech.checkpoint.checkpoint.Checkpoint method)</a>
 </li>
+      <li><a href="Model.html#kospeech.model.beam_search.BeamSearchDecoder.get_length_penalty">get_length_penalty() (kospeech.model.beam_search.BeamSearchDecoder method)</a>
+</li>
+      <li><a href="Optim.html#kospeech.optim.loss.Loss.get_loss">get_loss() (kospeech.optim.loss.Loss method)</a>
+
+      <ul>
+        <li><a href="Optim.html#kospeech.optim.loss.NLLLoss.get_loss">(kospeech.optim.loss.NLLLoss method)</a>
+</li>
+        <li><a href="Optim.html#kospeech.optim.loss.Perplexity.get_loss">(kospeech.optim.loss.Perplexity method)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Model.html#kospeech.model.convolutional.MaskCNN.get_seq_lengths">get_seq_lengths() (kospeech.model.convolutional.MaskCNN method)</a>
+      <li><a href="Model.html#kospeech.model.conv.MaskConv.get_seq_lengths">get_seq_lengths() (kospeech.model.conv.MaskConv method)</a>
 </li>
       <li><a href="Decode.html#kospeech.decode.search.GreedySearch">GreedySearch (class in kospeech.decode.search)</a>
 </li>
@@ -360,15 +382,17 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="Checkpoint.html#module-kospeech.checkpoint.checkpoint">kospeech.checkpoint.checkpoint (module)</a>
 </li>
+      <li><a href="Data.html#module-kospeech.data.audio.augment">kospeech.data.audio.augment (module)</a>
+</li>
+      <li><a href="Data.html#module-kospeech.data.audio.core">kospeech.data.audio.core (module)</a>
+</li>
+      <li><a href="Data.html#module-kospeech.data.audio.feature">kospeech.data.audio.feature (module)</a>
+</li>
+      <li><a href="Data.html#module-kospeech.data.audio.parser">kospeech.data.audio.parser (module)</a>
+</li>
       <li><a href="Data.html#module-kospeech.data.data_loader">kospeech.data.data_loader (module)</a>
 </li>
       <li><a href="Data.html#module-kospeech.data.label_loader">kospeech.data.label_loader (module)</a>
-</li>
-      <li><a href="Data.html#module-kospeech.data.preprocess.audio">kospeech.data.preprocess.audio (module)</a>
-</li>
-      <li><a href="Data.html#module-kospeech.data.preprocess.augment">kospeech.data.preprocess.augment (module)</a>
-</li>
-      <li><a href="Data.html#module-kospeech.data.preprocess.parser">kospeech.data.preprocess.parser (module)</a>
 </li>
       <li><a href="Decode.html#module-kospeech.decode.ensemble">kospeech.decode.ensemble (module)</a>
 </li>
@@ -380,17 +404,21 @@
 </li>
       <li><a href="Model.html#module-kospeech.model.attention">kospeech.model.attention (module)</a>
 </li>
+      <li><a href="Model.html#module-kospeech.model.base">kospeech.model.base (module)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="Model.html#module-kospeech.model.beam_search">kospeech.model.beam_search (module)</a>
 </li>
-      <li><a href="Model.html#module-kospeech.model.convolutional">kospeech.model.convolutional (module)</a>
+      <li><a href="Model.html#module-kospeech.model.conv">kospeech.model.conv (module)</a>
 </li>
       <li><a href="Model.html#module-kospeech.model.decoder">kospeech.model.decoder (module)</a>
 </li>
       <li><a href="Model.html#module-kospeech.model.encoder">kospeech.model.encoder (module)</a>
 </li>
-      <li><a href="Model.html#module-kospeech.model.seq2seq">kospeech.model.seq2seq (module)</a>
+      <li><a href="Model.html#module-kospeech.model.las">kospeech.model.las (module)</a>
+</li>
+      <li><a href="Model.html#module-kospeech.model.lm">kospeech.model.lm (module)</a>
 </li>
       <li><a href="Etc.html#module-kospeech.model_builder">kospeech.model_builder (module)</a>
 </li>
@@ -418,7 +446,7 @@
 </li>
       <li><a href="Optim.html#kospeech.optim.lr_scheduler.LearningRateScheduler">LearningRateScheduler (class in kospeech.optim.lr_scheduler)</a>
 </li>
-      <li><a href="Model.html#kospeech.model.seq2seq.ListenAttendSpell">ListenAttendSpell (class in kospeech.model.seq2seq)</a>
+      <li><a href="Model.html#kospeech.model.las.ListenAttendSpell">ListenAttendSpell (class in kospeech.model.las)</a>
 </li>
       <li><a href="Model.html#kospeech.model.encoder.Listener">Listener (class in kospeech.model.encoder)</a>
 </li>
@@ -426,7 +454,7 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Data.html#kospeech.data.preprocess.audio.load_audio">load_audio() (in module kospeech.data.preprocess.audio)</a>
+      <li><a href="Data.html#kospeech.data.audio.core.load_audio">load_audio() (in module kospeech.data.audio.core)</a>
 </li>
       <li><a href="Data.html#kospeech.data.data_loader.load_data_list">load_data_list() (in module kospeech.data.data_loader)</a>
 </li>
@@ -438,19 +466,27 @@
 </li>
       <li><a href="Etc.html#kospeech.utils.Logger">Logger (class in kospeech.utils)</a>
 </li>
+      <li><a href="Optim.html#kospeech.optim.loss.Loss">Loss (class in kospeech.optim.loss)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Model.html#kospeech.model.convolutional.MaskCNN">MaskCNN (class in kospeech.model.convolutional)</a>
+      <li><a href="Model.html#kospeech.model.conv.MaskConv">MaskConv (class in kospeech.model.conv)</a>
 </li>
-      <li><a href="Data.html#kospeech.data.data_loader.MelSpectrogramDataset">MelSpectrogramDataset (class in kospeech.data.data_loader)</a>
+      <li><a href="Data.html#kospeech.data.audio.feature.MelSpectrogram">MelSpectrogram (class in kospeech.data.audio.feature)</a>
 </li>
+      <li><a href="Etc.html#kospeech.metrics.CharacterErrorRate.metric">metric() (kospeech.metrics.CharacterErrorRate method)</a>
+
+      <ul>
+        <li><a href="Etc.html#kospeech.metrics.WordErrorRate.metric">(kospeech.metrics.WordErrorRate method)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Data.html#kospeech.data.preprocess.parser.MelSpectrogramParser">MelSpectrogramParser (class in kospeech.data.preprocess.parser)</a>
+      <li><a href="Data.html#kospeech.data.audio.feature.MFCC">MFCC (class in kospeech.data.audio.feature)</a>
 </li>
       <li><a href="Data.html#kospeech.data.data_loader.MultiDataLoader">MultiDataLoader (class in kospeech.data.data_loader)</a>
 </li>
@@ -462,7 +498,11 @@
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Data.html#kospeech.data.preprocess.augment.NoiseInjector">NoiseInjector (class in kospeech.data.preprocess.augment)</a>
+      <li><a href="Optim.html#kospeech.optim.loss.NLLLoss">NLLLoss (class in kospeech.optim.loss)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Data.html#kospeech.data.audio.augment.NoiseInjector">NoiseInjector (class in kospeech.data.audio.augment)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -478,9 +518,11 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Data.html#kospeech.data.preprocess.parser.MelSpectrogramParser.parse_audio">parse_audio() (kospeech.data.preprocess.parser.MelSpectrogramParser method)</a>
+      <li><a href="Data.html#kospeech.data.audio.parser.SpectrogramParser.parse_audio">parse_audio() (kospeech.data.audio.parser.SpectrogramParser method)</a>
 </li>
-      <li><a href="Data.html#kospeech.data.data_loader.MelSpectrogramDataset.parse_transcript">parse_transcript() (kospeech.data.data_loader.MelSpectrogramDataset method)</a>
+      <li><a href="Data.html#kospeech.data.data_loader.SpectrogramDataset.parse_transcript">parse_transcript() (kospeech.data.data_loader.SpectrogramDataset method)</a>
+</li>
+      <li><a href="Optim.html#kospeech.optim.loss.Perplexity">Perplexity (class in kospeech.optim.loss)</a>
 </li>
       <li><a href="Etc.html#kospeech.opts.print_eval_opts">print_eval_opts() (in module kospeech.opts)</a>
 </li>
@@ -502,8 +544,12 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="Optim.html#kospeech.optim.lr_scheduler.RampUpLR">RampUpLR (class in kospeech.optim.lr_scheduler)</a>
 </li>
+      <li><a href="Optim.html#kospeech.optim.loss.Loss.reset">reset() (kospeech.optim.loss.Loss method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Model.html#kospeech.model.lm.RNNLanguageModel">RNNLanguageModel (class in kospeech.model.lm)</a>
+</li>
       <li><a href="Data.html#kospeech.data.data_loader.AudioDataLoader.run">run() (kospeech.data.data_loader.AudioDataLoader method)</a>
 </li>
   </ul></td>
@@ -514,19 +560,21 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="Checkpoint.html#kospeech.checkpoint.checkpoint.Checkpoint.save">save() (kospeech.checkpoint.checkpoint.Checkpoint method)</a>
 </li>
-      <li><a href="Model.html#kospeech.model.attention.ScaledDotProductAttention">ScaledDotProductAttention (class in kospeech.model.attention)</a>
+      <li><a href="Data.html#kospeech.data.data_loader.SpectrogramDataset.shuffle">shuffle() (kospeech.data.data_loader.SpectrogramDataset method)</a>
 </li>
-      <li><a href="Decode.html#kospeech.decode.search.Search">Search (class in kospeech.decode.search)</a>
+      <li><a href="Data.html#kospeech.data.audio.augment.SpecAugment">SpecAugment (class in kospeech.data.audio.augment)</a>
 </li>
-      <li><a href="Data.html#kospeech.data.data_loader.MelSpectrogramDataset.shuffle">shuffle() (kospeech.data.data_loader.MelSpectrogramDataset method)</a>
+      <li><a href="Data.html#kospeech.data.audio.feature.Spectrogram">Spectrogram (class in kospeech.data.audio.feature)</a>
 </li>
-      <li><a href="Data.html#kospeech.data.preprocess.augment.SpecAugment">SpecAugment (class in kospeech.data.preprocess.augment)</a>
+      <li><a href="Data.html#kospeech.data.data_loader.SpectrogramDataset">SpectrogramDataset (class in kospeech.data.data_loader)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Data.html#kospeech.data.audio.parser.SpectrogramParser">SpectrogramParser (class in kospeech.data.audio.parser)</a>
+</li>
       <li><a href="Model.html#kospeech.model.decoder.Speller">Speller (class in kospeech.model.decoder)</a>
 </li>
-      <li><a href="Data.html#kospeech.data.preprocess.audio.split">split() (in module kospeech.data.preprocess.audio)</a>
+      <li><a href="Data.html#kospeech.data.audio.core.split">split() (in module kospeech.data.audio.core)</a>
 </li>
       <li><a href="Data.html#kospeech.data.data_loader.split_dataset">split_dataset() (in module kospeech.data.data_loader)</a>
 </li>
@@ -558,7 +606,7 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="Model.html#kospeech.model.decoder.Speller.validate_args">validate_args() (kospeech.model.decoder.Speller method)</a>
 </li>
-      <li><a href="Model.html#kospeech.model.convolutional.VGGExtractor">VGGExtractor (class in kospeech.model.convolutional)</a>
+      <li><a href="Model.html#kospeech.model.conv.VGGExtractor">VGGExtractor (class in kospeech.model.conv)</a>
 </li>
   </ul></td>
 </tr></table>

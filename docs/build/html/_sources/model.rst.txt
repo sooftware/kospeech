@@ -2,6 +2,12 @@
 Model
 =====================================================
 
+Base
+--------------------------------------------
+
+.. automodule:: kospeech.model.base
+    :members:
+
 Listener
 --------------------------------------------
 
@@ -17,7 +23,7 @@ Speller
 ListenAttendSpell
 --------------------------------------------
 
-.. automodule:: kospeech.model.seq2seq
+.. automodule:: kospeech.model.las
     :members:
 
 Attention
@@ -32,8 +38,14 @@ BeamSearch
 .. automodule:: kospeech.model.beam_search
     :members:
 
-Convolutional
+Conv
 --------------------------------------------
 
-.. automodule:: kospeech.model.convolutional
+.. automodule:: kospeech.model.conv
+    :members:
+
+Language Model
+--------------------------------------------
+
+.. automodule:: kospeech.model.lm
     :members:

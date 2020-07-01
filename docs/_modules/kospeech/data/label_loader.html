@@ -84,7 +84,7 @@
               <p class="caption"><span class="caption-text">NOTES</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/intro.html">Intro</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notes/preparation.html">Preparation before Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/Preparation.html">Preparation before Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/opts.html">Options</a></li>
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
@@ -182,15 +182,18 @@
     <span class="n">char2id</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
     <span class="n">id2char</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">label_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-        <span class="n">labels</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
-        <span class="nb">next</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">label_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">labels</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+            <span class="nb">next</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">:</span>
-            <span class="n">char2id</span><span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">id2char</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">:</span>
+                <span class="n">char2id</span><span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">id2char</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
-    <span class="k">return</span> <span class="n">char2id</span><span class="p">,</span> <span class="n">id2char</span></div>
+        <span class="k">return</span> <span class="n">char2id</span><span class="p">,</span> <span class="n">id2char</span>
+    <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Character label file (csv format) doesn`t exist : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label_path</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="load_targets"><a class="viewcode-back" href="../../../Data.html#kospeech.data.label_loader.load_targets">[docs]</a><span class="k">def</span> <span class="nf">load_targets</span><span class="p">(</span><span class="n">label_paths</span><span class="p">):</span>
@@ -208,10 +211,13 @@
     <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">trange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">label_paths</span><span class="p">)):</span>
         <span class="n">label_txt</span> <span class="o">=</span> <span class="n">label_paths</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
 
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">label_txt</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">label</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-            <span class="n">file_num</span> <span class="o">=</span> <span class="n">label_txt</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">target_dict</span><span class="p">[</span><span class="s1">&#39;KsponScript_</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">file_num</span><span class="p">]</span> <span class="o">=</span> <span class="n">label</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">label_txt</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">label</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+                <span class="n">file_num</span> <span class="o">=</span> <span class="n">label_txt</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">target_dict</span><span class="p">[</span><span class="s1">&#39;KsponScript_</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">file_num</span><span class="p">]</span> <span class="o">=</span> <span class="n">label</span>
+        <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;label paths file (csv format) doesn`t exist : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label_paths</span><span class="p">))</span>
 
     <span class="k">return</span> <span class="n">target_dict</span></div>
 </pre></div>

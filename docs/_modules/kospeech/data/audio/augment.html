@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>kospeech.data.preprocess.augment &mdash; KoSpeech 0.0 documentation</title>
+  <title>kospeech.data.audio.augment &mdash; KoSpeech 0.0 documentation</title>
   
 
   
@@ -84,7 +84,7 @@
               <p class="caption"><span class="caption-text">NOTES</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../notes/intro.html">Intro</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../notes/preparation.html">Preparation before Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notes/Preparation.html">Preparation before Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../notes/opts.html">Options</a></li>
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
@@ -147,7 +147,7 @@
         
           <li><a href="../../../index.html">Module code</a> &raquo;</li>
         
-      <li>kospeech.data.preprocess.augment</li>
+      <li>kospeech.data.audio.augment</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -162,15 +162,15 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for kospeech.data.preprocess.augment</h1><div class="highlight"><pre>
+  <h1>Source code for kospeech.data.audio.augment</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">kospeech.utils</span> <span class="k">import</span> <span class="n">logger</span>
-<span class="kn">from</span> <span class="nn">kospeech.data.preprocess.audio</span> <span class="k">import</span> <span class="n">split</span>
+<span class="kn">from</span> <span class="nn">kospeech.data.audio.core</span> <span class="k">import</span> <span class="n">split</span>
 
 
-<div class="viewcode-block" id="SpecAugment"><a class="viewcode-back" href="../../../../Data.html#kospeech.data.preprocess.augment.SpecAugment">[docs]</a><span class="k">class</span> <span class="nc">SpecAugment</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="SpecAugment"><a class="viewcode-back" href="../../../../Data.html#kospeech.data.audio.augment.SpecAugment">[docs]</a><span class="k">class</span> <span class="nc">SpecAugment</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Provides Spec Augment. A simple data augmentation method for speech recognition.</span>
 <span class="sd">    This concept proposed in https://arxiv.org/abs/1904.08779</span>
@@ -216,7 +216,7 @@
         <span class="k">return</span> <span class="n">spectrogram</span></div>
 
 
-<div class="viewcode-block" id="NoiseInjector"><a class="viewcode-back" href="../../../../Data.html#kospeech.data.preprocess.augment.NoiseInjector">[docs]</a><span class="k">class</span> <span class="nc">NoiseInjector</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="NoiseInjector"><a class="viewcode-back" href="../../../../Data.html#kospeech.data.audio.augment.NoiseInjector">[docs]</a><span class="k">class</span> <span class="nc">NoiseInjector</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Provides noise injection for noise augmentation.</span>
 <span class="sd">    The noise augmentation process is as follows:</span>
@@ -231,11 +231,11 @@
 <span class="sd">        sample_rate (int): sampling rate</span>
 <span class="sd">        noise_level (float): level of noise</span>
 
-<span class="sd">    Inputs: sound</span>
-<span class="sd">        - **sound**: sound from pcm file</span>
+<span class="sd">    Inputs: signal</span>
+<span class="sd">        - **signal**: signal from pcm file</span>
 
-<span class="sd">    Returns: sound</span>
-<span class="sd">        - **sound**: noise added sound</span>
+<span class="sd">    Returns: signal</span>
+<span class="sd">        - **signal**: noise added signal</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_path</span><span class="p">,</span> <span class="n">noiseset_size</span><span class="p">,</span> <span class="n">sample_rate</span><span class="o">=</span><span class="mi">16000</span><span class="p">,</span> <span class="n">noise_level</span><span class="o">=</span><span class="mf">0.7</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dataset_path</span><span class="p">):</span>
@@ -252,22 +252,22 @@
 
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Create Noise injector complete !!&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sound</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">):</span>
         <span class="n">noise</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span>
         <span class="n">noise_level</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">noise_level</span><span class="p">)</span>
 
-        <span class="n">sound_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sound</span><span class="p">)</span>
+        <span class="n">signal_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
         <span class="n">noise_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">noise</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">sound_length</span> <span class="o">&gt;=</span> <span class="n">noise_length</span><span class="p">:</span>
-            <span class="n">noise_start</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">()</span> <span class="o">*</span> <span class="p">(</span><span class="n">sound_length</span> <span class="o">-</span> <span class="n">noise_length</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">signal_length</span> <span class="o">&gt;=</span> <span class="n">noise_length</span><span class="p">:</span>
+            <span class="n">noise_start</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">()</span> <span class="o">*</span> <span class="p">(</span><span class="n">signal_length</span> <span class="o">-</span> <span class="n">noise_length</span><span class="p">))</span>
             <span class="n">noise_end</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">noise_start</span> <span class="o">+</span> <span class="n">noise_length</span><span class="p">)</span>
-            <span class="n">sound</span><span class="p">[</span><span class="n">noise_start</span><span class="p">:</span> <span class="n">noise_end</span><span class="p">]</span> <span class="o">+=</span> <span class="n">noise</span> <span class="o">*</span> <span class="n">noise_level</span>
+            <span class="n">signal</span><span class="p">[</span><span class="n">noise_start</span><span class="p">:</span> <span class="n">noise_end</span><span class="p">]</span> <span class="o">+=</span> <span class="n">noise</span> <span class="o">*</span> <span class="n">noise_level</span>
 
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">sound</span> <span class="o">+=</span> <span class="n">noise</span><span class="p">[:</span><span class="n">sound_length</span><span class="p">]</span> <span class="o">*</span> <span class="n">noise_level</span>
+            <span class="n">signal</span> <span class="o">+=</span> <span class="n">noise</span><span class="p">[:</span><span class="n">signal_length</span><span class="p">]</span> <span class="o">*</span> <span class="n">noise_level</span>
 
-        <span class="k">return</span> <span class="n">sound</span>
+        <span class="k">return</span> <span class="n">signal</span>
 
     <span class="k">def</span> <span class="nf">create_audio_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_path</span><span class="p">):</span>
         <span class="n">audio_paths</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>

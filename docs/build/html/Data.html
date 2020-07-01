@@ -86,7 +86,7 @@
               <p class="caption"><span class="caption-text">NOTES</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Intro</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notes/preparation.html">Preparation before Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">Preparation before Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/opts.html">Options</a></li>
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
@@ -97,9 +97,10 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Checkpoint.html">Checkpoint</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Data</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.data.preprocess.audio">Audio</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.data.preprocess.augment">Augment</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.data.preprocess.parser">Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.data.audio.augment">Augment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.data.audio.core">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.data.audio.feature">Feature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.data.audio.parser">Parser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-kospeech.data.data_loader">DataLoader</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-kospeech.data.label_loader">LabelLoader</a></li>
 </ul>
@@ -175,29 +176,11 @@
             
   <div class="section" id="data">
 <h1>Data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-kospeech.data.preprocess.audio">
-<span id="audio"></span><h2>Audio<a class="headerlink" href="#module-kospeech.data.preprocess.audio" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="kospeech.data.preprocess.audio.load_audio">
-<code class="descclassname">kospeech.data.preprocess.audio.</code><code class="descname">load_audio</code><span class="sig-paren">(</span><em>audio_path</em>, <em>del_silence</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/preprocess/audio.html#load_audio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.preprocess.audio.load_audio" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load audio file (PCM) to sound. if del_silence is True, Eliminate all sounds below 30dB.
-If exception occurs in numpy.memmap(), return None.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="kospeech.data.preprocess.audio.split">
-<code class="descclassname">kospeech.data.preprocess.audio.</code><code class="descname">split</code><span class="sig-paren">(</span><em>y</em>, <em>top_db=60</em>, <em>ref=&lt;function amax&gt;</em>, <em>frame_length=2048</em>, <em>hop_length=512</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/preprocess/audio.html#split"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.preprocess.audio.split" title="Permalink to this definition">¶</a></dt>
-<dd><p>codes from <a class="reference external" href="https://github.com/librosa/librosa">https://github.com/librosa/librosa</a>
-use this code fragments instead of importing librosa package,
-because of our server has a problem with importing librosa.</p>
-</dd></dl>
-
-</div>
-<div class="section" id="module-kospeech.data.preprocess.augment">
-<span id="augment"></span><h2>Augment<a class="headerlink" href="#module-kospeech.data.preprocess.augment" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-kospeech.data.audio.augment">
+<span id="augment"></span><h2>Augment<a class="headerlink" href="#module-kospeech.data.audio.augment" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="kospeech.data.preprocess.augment.NoiseInjector">
-<em class="property">class </em><code class="descclassname">kospeech.data.preprocess.augment.</code><code class="descname">NoiseInjector</code><span class="sig-paren">(</span><em>dataset_path</em>, <em>noiseset_size</em>, <em>sample_rate=16000</em>, <em>noise_level=0.7</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/preprocess/augment.html#NoiseInjector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.preprocess.augment.NoiseInjector" title="Permalink to this definition">¶</a></dt>
+<dt id="kospeech.data.audio.augment.NoiseInjector">
+<em class="property">class </em><code class="descclassname">kospeech.data.audio.augment.</code><code class="descname">NoiseInjector</code><span class="sig-paren">(</span><em>dataset_path</em>, <em>noiseset_size</em>, <em>sample_rate=16000</em>, <em>noise_level=0.7</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/audio/augment.html#NoiseInjector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.audio.augment.NoiseInjector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provides noise injection for noise augmentation.
 The noise augmentation process is as follows:</p>
 <p>Step 1: Randomly sample audios by <cite>noise_size</cite> from dataset
@@ -218,22 +201,22 @@ Step 3: Add noise to sound</p>
 </tbody>
 </table>
 <dl class="docutils">
-<dt>Inputs: sound</dt>
+<dt>Inputs: signal</dt>
 <dd><ul class="first last simple">
-<li><strong>sound</strong>: sound from pcm file</li>
+<li><strong>signal</strong>: signal from pcm file</li>
 </ul>
 </dd>
-<dt>Returns: sound</dt>
+<dt>Returns: signal</dt>
 <dd><ul class="first last simple">
-<li><strong>sound</strong>: noise added sound</li>
+<li><strong>signal</strong>: noise added signal</li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="class">
-<dt id="kospeech.data.preprocess.augment.SpecAugment">
-<em class="property">class </em><code class="descclassname">kospeech.data.preprocess.augment.</code><code class="descname">SpecAugment</code><span class="sig-paren">(</span><em>time_mask_para</em>, <em>freq_mask_para</em>, <em>time_mask_num</em>, <em>freq_mask_num</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/preprocess/augment.html#SpecAugment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.preprocess.augment.SpecAugment" title="Permalink to this definition">¶</a></dt>
+<dt id="kospeech.data.audio.augment.SpecAugment">
+<em class="property">class </em><code class="descclassname">kospeech.data.audio.augment.</code><code class="descname">SpecAugment</code><span class="sig-paren">(</span><em>time_mask_para</em>, <em>freq_mask_para</em>, <em>time_mask_num</em>, <em>freq_mask_num</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/audio/augment.html#SpecAugment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.audio.augment.SpecAugment" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provides Spec Augment. A simple data augmentation method for speech recognition.
 This concept proposed in <a class="reference external" href="https://arxiv.org/abs/1904.08779">https://arxiv.org/abs/1904.08779</a></p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -265,11 +248,72 @@ This concept proposed in <a class="reference external" href="https://arxiv.org/a
 </dd></dl>
 
 </div>
-<div class="section" id="module-kospeech.data.preprocess.parser">
-<span id="parser"></span><h2>Parser<a class="headerlink" href="#module-kospeech.data.preprocess.parser" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-kospeech.data.audio.core">
+<span id="core"></span><h2>Core<a class="headerlink" href="#module-kospeech.data.audio.core" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="kospeech.data.audio.core.load_audio">
+<code class="descclassname">kospeech.data.audio.core.</code><code class="descname">load_audio</code><span class="sig-paren">(</span><em>audio_path</em>, <em>del_silence</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/audio/core.html#load_audio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.audio.core.load_audio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load audio file (PCM) to sound. if del_silence is True, Eliminate all sounds below 30dB.
+If exception occurs in numpy.memmap(), return None.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kospeech.data.audio.core.split">
+<code class="descclassname">kospeech.data.audio.core.</code><code class="descname">split</code><span class="sig-paren">(</span><em>y</em>, <em>top_db=60</em>, <em>ref=&lt;function amax&gt;</em>, <em>frame_length=2048</em>, <em>hop_length=512</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/audio/core.html#split"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.audio.core.split" title="Permalink to this definition">¶</a></dt>
+<dd><p>codes from <a class="reference external" href="https://github.com/librosa/librosa">https://github.com/librosa/librosa</a>
+use this code fragments instead of importing librosa package,
+because of our server has a problem with importing librosa.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-kospeech.data.audio.feature">
+<span id="feature"></span><h2>Feature<a class="headerlink" href="#module-kospeech.data.audio.feature" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="kospeech.data.preprocess.parser.AudioParser">
-<em class="property">class </em><code class="descclassname">kospeech.data.preprocess.parser.</code><code class="descname">AudioParser</code><span class="sig-paren">(</span><em>dataset_path</em>, <em>noiseset_size</em>, <em>sample_rate=16000</em>, <em>noise_level=0.7</em>, <em>noise_augment=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/preprocess/parser.html#AudioParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.preprocess.parser.AudioParser" title="Permalink to this definition">¶</a></dt>
+<dt id="kospeech.data.audio.feature.MFCC">
+<em class="property">class </em><code class="descclassname">kospeech.data.audio.feature.</code><code class="descname">MFCC</code><span class="sig-paren">(</span><em>sample_rate=16000</em>, <em>n_mfcc=40</em>, <em>window_size=20</em>, <em>stride=10</em>, <em>feature_extract_by='librosa'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/audio/feature.html#MFCC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.audio.feature.MFCC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the Mel-frequency cepstrum coefficients (MFCCs) from an audio signal.</p>
+<dl class="docutils">
+<dt>Args: sample_rate, n_mfcc, window_size, stride, feature_extract_by</dt>
+<dd>sample_rate (int): Sample rate of audio signal. (Default: 16000)
+n_mfcc (int):  Number of mfc coefficients to retain. (Default: 40)
+window_size (int): window size (ms) (Default : 20)
+stride (int): Length of hop between STFT windows. (ms) (Default: 10)
+feature_extract_by (str): which library to use for feature extraction(default: librosa)</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="kospeech.data.audio.feature.MelSpectrogram">
+<em class="property">class </em><code class="descclassname">kospeech.data.audio.feature.</code><code class="descname">MelSpectrogram</code><span class="sig-paren">(</span><em>sample_rate=16000</em>, <em>n_mels=80</em>, <em>window_size=20</em>, <em>stride=10</em>, <em>feature_extract_by='librosa'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/audio/feature.html#MelSpectrogram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.audio.feature.MelSpectrogram" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create MelSpectrogram for a raw audio signal. This is a composition of Spectrogram and MelScale.</p>
+<dl class="docutils">
+<dt>Args: sample_rate, n_mels, window_size, stride, feature_extract_by</dt>
+<dd>sample_rate (int): Sample rate of audio signal. (Default: 16000)
+n_mels (int):  Number of mfc coefficients to retain. (Default: 80)
+window_size (int): window size (ms) (Default : 20)
+stride (int): Length of hop between STFT windows. (ms) (Default: 10)
+feature_extract_by (str): which library to use for feature extraction(default: librosa)</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="kospeech.data.audio.feature.Spectrogram">
+<em class="property">class </em><code class="descclassname">kospeech.data.audio.feature.</code><code class="descname">Spectrogram</code><span class="sig-paren">(</span><em>sample_rate=16000</em>, <em>window_size=20</em>, <em>stride=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/audio/feature.html#Spectrogram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.audio.feature.Spectrogram" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a spectrogram from a audio signal.</p>
+<dl class="docutils">
+<dt>Args: sample_rate, window_size, stride, feature_extract_by</dt>
+<dd>sample_rate (int): Sample rate of audio signal. (Default: 16000)
+window_size (int): window size (ms) (Default : 20)
+stride (int): Length of hop between STFT windows. (ms) (Default: 10)</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-kospeech.data.audio.parser">
+<span id="parser"></span><h2>Parser<a class="headerlink" href="#module-kospeech.data.audio.parser" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kospeech.data.audio.parser.AudioParser">
+<em class="property">class </em><code class="descclassname">kospeech.data.audio.parser.</code><code class="descname">AudioParser</code><span class="sig-paren">(</span><em>dataset_path</em>, <em>noiseset_size</em>, <em>sample_rate=16000</em>, <em>noise_level=0.7</em>, <em>noise_augment=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/audio/parser.html#AudioParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.audio.parser.AudioParser" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provides inteface of audio parser.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -286,19 +330,20 @@ This concept proposed in <a class="reference external" href="https://arxiv.org/a
 </dd></dl>
 
 <dl class="class">
-<dt id="kospeech.data.preprocess.parser.MelSpectrogramParser">
-<em class="property">class </em><code class="descclassname">kospeech.data.preprocess.parser.</code><code class="descname">MelSpectrogramParser</code><span class="sig-paren">(</span><em>feature_extract_by='librosa'</em>, <em>sample_rate=16000</em>, <em>n_mels=80</em>, <em>window_size=20</em>, <em>stride=10</em>, <em>del_silence=False</em>, <em>input_reverse=True</em>, <em>normalize=False</em>, <em>time_mask_para=70</em>, <em>freq_mask_para=12</em>, <em>time_mask_num=2</em>, <em>freq_mask_num=2</em>, <em>sos_id=1</em>, <em>eos_id=2</em>, <em>target_dict=None</em>, <em>noise_augment=False</em>, <em>dataset_path=None</em>, <em>noiseset_size=0</em>, <em>noise_level=0.7</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/preprocess/parser.html#MelSpectrogramParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.preprocess.parser.MelSpectrogramParser" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parses audio file into mel spectrogram with various options.</p>
+<dt id="kospeech.data.audio.parser.SpectrogramParser">
+<em class="property">class </em><code class="descclassname">kospeech.data.audio.parser.</code><code class="descname">SpectrogramParser</code><span class="sig-paren">(</span><em>feature_extract_by='librosa'</em>, <em>sample_rate=16000</em>, <em>n_mels=80</em>, <em>window_size=20</em>, <em>stride=10</em>, <em>del_silence=False</em>, <em>input_reverse=True</em>, <em>normalize=False</em>, <em>feature='mel'</em>, <em>time_mask_para=70</em>, <em>freq_mask_para=12</em>, <em>time_mask_num=2</em>, <em>freq_mask_num=2</em>, <em>sos_id=1</em>, <em>eos_id=2</em>, <em>target_dict=None</em>, <em>noise_augment=False</em>, <em>dataset_path=None</em>, <em>noiseset_size=0</em>, <em>noise_level=0.7</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/audio/parser.html#SpectrogramParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.audio.parser.SpectrogramParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses audio file into (spectrogram / mel spectrogram / mfcc) with various options.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>feature_extract_by</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – which library to use for feature extraction: [librosa, torchaudio] (default: librosa)</li>
-<li><strong>sample_rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – sample rate</li>
-<li><strong>n_mels</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of mel filter</li>
-<li><strong>window_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – window size (ms)</li>
-<li><strong>stride</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – forwarding size (ms)</li>
+<li><strong>feature</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – which feature to use (default: mel)</li>
+<li><strong>sample_rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Sample rate of audio signal. (Default: 16000)</li>
+<li><strong>n_mels</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Number of mfc coefficients to retain. (Default: 40)</li>
+<li><strong>window_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – window size (ms) (Default : 20)</li>
+<li><strong>stride</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Length of hop between STFT windows. (ms) (Default: 10)</li>
+<li><strong>feature_extract_by</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – which library to use for feature extraction(default: librosa)</li>
 <li><strong>del_silence</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – flag indication whether to delete silence or not (default: True)</li>
 <li><strong>input_reverse</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – flag indication whether to reverse input or not (default: True)</li>
 <li><strong>normalize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – flag indication whether to normalize spectrum or not (default:True)</li>
@@ -315,9 +360,9 @@ This concept proposed in <a class="reference external" href="https://arxiv.org/a
 </tbody>
 </table>
 <dl class="method">
-<dt id="kospeech.data.preprocess.parser.MelSpectrogramParser.parse_audio">
-<code class="descname">parse_audio</code><span class="sig-paren">(</span><em>audio_path</em>, <em>augment_method</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/preprocess/parser.html#MelSpectrogramParser.parse_audio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.preprocess.parser.MelSpectrogramParser.parse_audio" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parses audio (Get Mel-Spectrogram features). &#64;Override</p>
+<dt id="kospeech.data.audio.parser.SpectrogramParser.parse_audio">
+<code class="descname">parse_audio</code><span class="sig-paren">(</span><em>audio_path</em>, <em>augment_method</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/audio/parser.html#SpectrogramParser.parse_audio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.audio.parser.SpectrogramParser.parse_audio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses audio.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -331,9 +376,9 @@ This concept proposed in <a class="reference external" href="https://arxiv.org/a
 </tbody>
 </table>
 <dl class="docutils">
-<dt>Returns: spectrogram</dt>
+<dt>Returns: feature</dt>
 <dd><ul class="first last simple">
-<li><strong>spectrogram</strong> (torch.FloatTensor): Mel-Spectrogram feature from audio file.</li>
+<li><strong>feature</strong> (torch.FloatTensor): feature from audio file.</li>
 </ul>
 </dd>
 </dl>
@@ -353,7 +398,7 @@ This concept proposed in <a class="reference external" href="https://arxiv.org/a
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dataset</strong> (<em>e2e.data_loader.MelSpectrogramDataset</em>) – dataset for spectrogram &amp; script matching</li>
+<li><strong>dataset</strong> (<em>kodpeech.data.data_loader.SpectrogramDataset</em>) – dataset for feature &amp; transcript matching</li>
 <li><strong>queue</strong> (<em>Queue.queue</em>) – queue for threading</li>
 <li><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – size of batch</li>
 <li><strong>thread_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of thread</li>
@@ -366,54 +411,6 @@ This concept proposed in <a class="reference external" href="https://arxiv.org/a
 <dt id="kospeech.data.data_loader.AudioDataLoader.run">
 <code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/data_loader.html#AudioDataLoader.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.data_loader.AudioDataLoader.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load data from MelSpectrogramDataset</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="kospeech.data.data_loader.MelSpectrogramDataset">
-<em class="property">class </em><code class="descclassname">kospeech.data.data_loader.</code><code class="descname">MelSpectrogramDataset</code><span class="sig-paren">(</span><em>audio_paths</em>, <em>script_paths</em>, <em>sos_id</em>, <em>eos_id</em>, <em>target_dict</em>, <em>opt</em>, <em>spec_augment=False</em>, <em>noise_augment=False</em>, <em>dataset_path=None</em>, <em>noiseset_size=0</em>, <em>noise_level=0.7</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/data_loader.html#MelSpectrogramDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.data_loader.MelSpectrogramDataset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Dataset for spectrogram &amp; script matching</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>audio_paths</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – set of audio path</li>
-<li><strong>script_paths</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – set of script paths</li>
-<li><strong>sos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of &lt;start of sequence&gt;</li>
-<li><strong>eos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of &lt;end of sequence&gt;</li>
-<li><strong>target_dict</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – dictionary of filename and labels</li>
-<li><strong>spec_augment</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – flag indication whether to use spec-augmentation or not (default: True)</li>
-<li><strong>noise_augment</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – flag indication whether to use noise-augmentation or not (default: True)</li>
-<li><strong>opt</strong> (<em>ArgumentParser</em>) – set of arguments</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="kospeech.data.data_loader.MelSpectrogramDataset.augmentation">
-<code class="descname">augmentation</code><span class="sig-paren">(</span><em>spec_augment</em>, <em>noise_augment</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/data_loader.html#MelSpectrogramDataset.augmentation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.data_loader.MelSpectrogramDataset.augmentation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Spec &amp; Noise Augmentation</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="kospeech.data.data_loader.MelSpectrogramDataset.get_item">
-<code class="descname">get_item</code><span class="sig-paren">(</span><em>idx</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/data_loader.html#MelSpectrogramDataset.get_item"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.data_loader.MelSpectrogramDataset.get_item" title="Permalink to this definition">¶</a></dt>
-<dd><p>get spectrogram &amp; label</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="kospeech.data.data_loader.MelSpectrogramDataset.parse_transcript">
-<code class="descname">parse_transcript</code><span class="sig-paren">(</span><em>script_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/data_loader.html#MelSpectrogramDataset.parse_transcript"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.data_loader.MelSpectrogramDataset.parse_transcript" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parses scripts &#64;Override</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="kospeech.data.data_loader.MelSpectrogramDataset.shuffle">
-<code class="descname">shuffle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/data_loader.html#MelSpectrogramDataset.shuffle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.data_loader.MelSpectrogramDataset.shuffle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Shuffle dataset</p>
 </dd></dl>
 
 </dd></dl>
@@ -446,6 +443,54 @@ This concept proposed in <a class="reference external" href="https://arxiv.org/a
 <dt id="kospeech.data.data_loader.MultiDataLoader.start">
 <code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/data_loader.html#MultiDataLoader.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.data_loader.MultiDataLoader.start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run threads</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="kospeech.data.data_loader.SpectrogramDataset">
+<em class="property">class </em><code class="descclassname">kospeech.data.data_loader.</code><code class="descname">SpectrogramDataset</code><span class="sig-paren">(</span><em>audio_paths</em>, <em>script_paths</em>, <em>sos_id</em>, <em>eos_id</em>, <em>target_dict</em>, <em>opt</em>, <em>spec_augment=False</em>, <em>noise_augment=False</em>, <em>dataset_path=None</em>, <em>noiseset_size=0</em>, <em>noise_level=0.7</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/data_loader.html#SpectrogramDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.data_loader.SpectrogramDataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dataset for mel-spectrogram &amp; transcript matching</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>audio_paths</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – set of audio path</li>
+<li><strong>script_paths</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – set of script paths</li>
+<li><strong>sos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of &lt;start of sequence&gt;</li>
+<li><strong>eos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of &lt;end of sequence&gt;</li>
+<li><strong>target_dict</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – dictionary of filename and labels</li>
+<li><strong>spec_augment</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – flag indication whether to use spec-augmentation or not (default: True)</li>
+<li><strong>noise_augment</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – flag indication whether to use noise-augmentation or not (default: True)</li>
+<li><strong>opt</strong> (<em>ArgumentParser</em>) – set of arguments</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="kospeech.data.data_loader.SpectrogramDataset.augmentation">
+<code class="descname">augmentation</code><span class="sig-paren">(</span><em>spec_augment</em>, <em>noise_augment</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/data_loader.html#SpectrogramDataset.augmentation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.data_loader.SpectrogramDataset.augmentation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Spec &amp; Noise Augmentation</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kospeech.data.data_loader.SpectrogramDataset.get_item">
+<code class="descname">get_item</code><span class="sig-paren">(</span><em>idx</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/data_loader.html#SpectrogramDataset.get_item"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.data_loader.SpectrogramDataset.get_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>get feature &amp; transcript</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kospeech.data.data_loader.SpectrogramDataset.parse_transcript">
+<code class="descname">parse_transcript</code><span class="sig-paren">(</span><em>script_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/data_loader.html#SpectrogramDataset.parse_transcript"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.data_loader.SpectrogramDataset.parse_transcript" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses scripts &#64;Override</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kospeech.data.data_loader.SpectrogramDataset.shuffle">
+<code class="descname">shuffle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/data_loader.html#SpectrogramDataset.shuffle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.data_loader.SpectrogramDataset.shuffle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shuffle dataset</p>
 </dd></dl>
 
 </dd></dl>

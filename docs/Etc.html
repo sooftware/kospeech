@@ -85,7 +85,7 @@
               <p class="caption"><span class="caption-text">NOTES</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Intro</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notes/preparation.html">Preparation before Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">Preparation before Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/opts.html">Options</a></li>
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
@@ -178,32 +178,27 @@
 <dl class="class">
 <dt id="kospeech.metrics.CharacterErrorRate">
 <em class="property">class </em><code class="descclassname">kospeech.metrics.</code><code class="descname">CharacterErrorRate</code><span class="sig-paren">(</span><em>id2char</em>, <em>eos_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/metrics.html#CharacterErrorRate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.metrics.CharacterErrorRate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Provides a character error rate calculation to evaluate performance of sppech recognizer.</p>
+<dd><p>Computes the Character Error Rate, defined as the edit distance between the
+two provided sentences after tokenizing to characters.</p>
+<dl class="method">
+<dt id="kospeech.metrics.CharacterErrorRate.metric">
+<code class="descname">metric</code><span class="sig-paren">(</span><em>s1</em>, <em>s2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/metrics.html#CharacterErrorRate.metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.metrics.CharacterErrorRate.metric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the Character Error Rate, defined as the edit distance between the
+two provided sentences after tokenizing to characters.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>id2char</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – id2char[id] = char</li>
-<li><strong>eos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – end of sentence identification</li>
+<li><strong>s1</strong> (<em>string</em>) – space-separated sentence</li>
+<li><strong>s2</strong> (<em>string</em>) – space-separated sentence</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
-<dl class="docutils">
-<dt>Inputs: target, y_hat</dt>
-<dd><ul class="first last simple">
-<li><strong>target</strong>: ground truth</li>
-<li><strong>y_hat</strong>: prediction of recognizer</li>
-</ul>
-</dd>
-<dt>Returns: cer</dt>
-<dd><ul class="first last simple">
-<li><strong>cer</strong>: character error rate</li>
-</ul>
-</dd>
-</dl>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -214,14 +209,6 @@
 <p class="first admonition-title">Note</p>
 <p class="last">Do not use this class directly, use one of the sub classes.</p>
 </div>
-<dl class="docutils">
-<dt>Method:</dt>
-<dd><ul class="first last simple">
-<li><strong>__call__()</strong>: abstract method. you have to override this method.</li>
-<li><strong>_get_distance()</strong>: abstract method. you have to override this method.</li>
-</ul>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="class">
@@ -229,31 +216,25 @@
 <em class="property">class </em><code class="descclassname">kospeech.metrics.</code><code class="descname">WordErrorRate</code><span class="sig-paren">(</span><em>id2char</em>, <em>eos_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/metrics.html#WordErrorRate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.metrics.WordErrorRate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the Word Error Rate, defined as the edit distance between the
 two provided sentences after tokenizing to words.</p>
+<dl class="method">
+<dt id="kospeech.metrics.WordErrorRate.metric">
+<code class="descname">metric</code><span class="sig-paren">(</span><em>s1</em>, <em>s2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/metrics.html#WordErrorRate.metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.metrics.WordErrorRate.metric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the Word Error Rate, defined as the edit distance between the
+two provided sentences after tokenizing to words.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>id2char</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – id2char[id] = char</li>
-<li><strong>eos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – end of sentence identification</li>
+<li><strong>s1</strong> (<em>string</em>) – space-separated sentence</li>
+<li><strong>s2</strong> (<em>string</em>) – space-separated sentence</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
-<dl class="docutils">
-<dt>Inputs: target, y_hat</dt>
-<dd><ul class="first last simple">
-<li><strong>target</strong>: ground truth</li>
-<li><strong>y_hat</strong>: prediction of recognizer</li>
-</ul>
-</dd>
-<dt>Returns: wer</dt>
-<dd><ul class="first last simple">
-<li><strong>wer</strong>: word error rate</li>
-</ul>
-</dd>
-</dl>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -267,7 +248,7 @@ two provided sentences after tokenizing to words.</p>
 
 <dl class="function">
 <dt id="kospeech.model_builder.build_listener">
-<code class="descclassname">kospeech.model_builder.</code><code class="descname">build_listener</code><span class="sig-paren">(</span><em>input_size</em>, <em>hidden_dim</em>, <em>dropout_p</em>, <em>num_layers</em>, <em>bidirectional</em>, <em>rnn_type</em>, <em>extractor</em>, <em>activation</em>, <em>device</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model_builder.html#build_listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model_builder.build_listener" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">kospeech.model_builder.</code><code class="descname">build_listener</code><span class="sig-paren">(</span><em>input_size</em>, <em>hidden_dim</em>, <em>dropout_p</em>, <em>num_layers</em>, <em>bidirectional</em>, <em>rnn_type</em>, <em>extractor</em>, <em>activation</em>, <em>device</em>, <em>mask_conv</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model_builder.html#build_listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model_builder.build_listener" title="Permalink to this definition">¶</a></dt>
 <dd><p>Various encoder dispatcher function.</p>
 </dd></dl>
 
@@ -379,7 +360,7 @@ OS, Processor, CUDA version, Pytorch version, … etc.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>labels</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><em>numpy.ndarray</em></a>) – number label</li>
+<li><strong>labels</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – number label</li>
 <li><strong>id2char</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – id2char[id] = ch</li>
 <li><strong>eos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of &lt;end of sequence&gt;</li>
 </ul>

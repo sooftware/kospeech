@@ -11,7 +11,7 @@ Welcome to KoSpeech's documentation!
    :caption: NOTES
 
    notes/intro
-   notes/preparation
+   notes/Preparation
    notes/opts
 
 .. toctree::

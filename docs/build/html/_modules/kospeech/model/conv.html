@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>kospeech.model.convolutional &mdash; KoSpeech 0.0 documentation</title>
+  <title>kospeech.model.conv &mdash; KoSpeech 0.0 documentation</title>
   
 
   
@@ -84,7 +84,7 @@
               <p class="caption"><span class="caption-text">NOTES</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/intro.html">Intro</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notes/preparation.html">Preparation before Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/Preparation.html">Preparation before Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/opts.html">Options</a></li>
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
@@ -147,7 +147,7 @@
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
-      <li>kospeech.model.convolutional</li>
+      <li>kospeech.model.conv</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -162,12 +162,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for kospeech.model.convolutional</h1><div class="highlight"><pre>
+  <h1>Source code for kospeech.model.conv</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
 
 
-<div class="viewcode-block" id="MaskCNN"><a class="viewcode-back" href="../../../Model.html#kospeech.model.convolutional.MaskCNN">[docs]</a><span class="k">class</span> <span class="nc">MaskCNN</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<div class="viewcode-block" id="MaskConv"><a class="viewcode-back" href="../../../Model.html#kospeech.model.conv.MaskConv">[docs]</a><span class="k">class</span> <span class="nc">MaskConv</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Masking Convolutional Neural Network</span>
 
@@ -191,10 +191,10 @@
 <span class="sd">        - **seq_lengths**: Sequence length of output from the sequential</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sequential</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">MaskCNN</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MaskConv</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sequential</span> <span class="o">=</span> <span class="n">sequential</span>
 
-<div class="viewcode-block" id="MaskCNN.forward"><a class="viewcode-back" href="../../../Model.html#kospeech.model.convolutional.MaskCNN.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">seq_lengths</span><span class="p">):</span>
+<div class="viewcode-block" id="MaskConv.forward"><a class="viewcode-back" href="../../../Model.html#kospeech.model.conv.MaskConv.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">seq_lengths</span><span class="p">):</span>
         <span class="n">output</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sequential</span><span class="p">:</span>
@@ -206,18 +206,18 @@
 
             <span class="n">seq_lengths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_seq_lengths</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">seq_lengths</span><span class="p">)</span>
 
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">length</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">seq_lengths</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">length</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">seq_lengths</span><span class="p">):</span>
                 <span class="n">length</span> <span class="o">=</span> <span class="n">length</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
 
-                <span class="k">if</span> <span class="p">(</span><span class="n">mask</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="n">length</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">mask</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">narrow</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">length</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="n">mask</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="n">length</span><span class="p">)</span><span class="o">.</span><span class="n">fill_</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">mask</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="n">length</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">mask</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">narrow</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">length</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="n">mask</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="n">length</span><span class="p">)</span><span class="o">.</span><span class="n">fill_</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
             <span class="n">output</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">masked_fill</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
             <span class="n">inputs</span> <span class="o">=</span> <span class="n">output</span>
 
         <span class="k">return</span> <span class="n">output</span><span class="p">,</span> <span class="n">seq_lengths</span></div>
 
-<div class="viewcode-block" id="MaskCNN.get_seq_lengths"><a class="viewcode-back" href="../../../Model.html#kospeech.model.convolutional.MaskCNN.get_seq_lengths">[docs]</a>    <span class="k">def</span> <span class="nf">get_seq_lengths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module</span><span class="p">,</span> <span class="n">seq_lengths</span><span class="p">):</span>
+<div class="viewcode-block" id="MaskConv.get_seq_lengths"><a class="viewcode-back" href="../../../Model.html#kospeech.model.conv.MaskConv.get_seq_lengths">[docs]</a>    <span class="k">def</span> <span class="nf">get_seq_lengths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module</span><span class="p">,</span> <span class="n">seq_lengths</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate convolutional neural network receptive formula</span>
 
@@ -238,15 +238,15 @@
         <span class="k">return</span> <span class="n">seq_lengths</span><span class="o">.</span><span class="n">int</span><span class="p">()</span></div></div>
 
 
-<div class="viewcode-block" id="ConvolutionalExtractor"><a class="viewcode-back" href="../../../Model.html#kospeech.model.convolutional.ConvolutionalExtractor">[docs]</a><span class="k">class</span> <span class="nc">ConvolutionalExtractor</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<div class="viewcode-block" id="CNNExtractor"><a class="viewcode-back" href="../../../Model.html#kospeech.model.conv.CNNExtractor">[docs]</a><span class="k">class</span> <span class="nc">CNNExtractor</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Provides inteface of extractor.</span>
+<span class="sd">    Provides inteface of convolutional extractor.</span>
 
 <span class="sd">    Note:</span>
 <span class="sd">        Do not use this class directly, use one of the sub classes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;elu&#39;</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">ConvolutionalExtractor</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;hardtanh&#39;</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">CNNExtractor</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">activation</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;hardtanh&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">activation</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Hardtanh</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">activation</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;relu&#39;</span><span class="p">:</span>
@@ -255,55 +255,95 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">activation</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ELU</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">activation</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;leacky_relu&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">activation</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LeakyReLU</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">activation</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;gelu&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">activation</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">GELU</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unsupported activation function : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">activation</span><span class="p">))</span>
 
-<div class="viewcode-block" id="ConvolutionalExtractor.forward"><a class="viewcode-back" href="../../../Model.html#kospeech.model.convolutional.ConvolutionalExtractor.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
+<div class="viewcode-block" id="CNNExtractor.forward"><a class="viewcode-back" href="../../../Model.html#kospeech.model.conv.CNNExtractor.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_conv</span><span class="p">:</span>
+            <span class="n">conv_feat</span><span class="p">,</span> <span class="n">seq_lengths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">conv_feat</span><span class="p">,</span> <span class="n">seq_lengths</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">conv_feat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">conv_feat</span></div></div>
 
 
-<div class="viewcode-block" id="VGGExtractor"><a class="viewcode-back" href="../../../Model.html#kospeech.model.convolutional.VGGExtractor">[docs]</a><span class="k">class</span> <span class="nc">VGGExtractor</span><span class="p">(</span><span class="n">ConvolutionalExtractor</span><span class="p">):</span>
+<div class="viewcode-block" id="VGGExtractor"><a class="viewcode-back" href="../../../Model.html#kospeech.model.conv.VGGExtractor">[docs]</a><span class="k">class</span> <span class="nc">VGGExtractor</span><span class="p">(</span><span class="n">CNNExtractor</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    VGG extractor for automatic speech recognition described in</span>
 <span class="sd">    &quot;Advances in Joint CTC-Attention based End-to-End Speech Recognition with a Deep CNN Encoder and RNN-LM&quot; paper</span>
 <span class="sd">    - https://arxiv.org/pdf/1706.02737.pdf</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;elu&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;hardtanh&#39;</span><span class="p">,</span> <span class="n">mask_conv</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">VGGExtractor</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">activation</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cnn</span> <span class="o">=</span> <span class="n">MaskCNN</span><span class="p">(</span>
-            <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
-                <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mask_conv</span> <span class="o">=</span> <span class="n">mask_conv</span>
+
+        <span class="k">if</span> <span class="n">mask_conv</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conv</span> <span class="o">=</span> <span class="n">MaskConv</span><span class="p">(</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+                    <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">activation</span><span class="p">,</span>
+                    <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm2d</span><span class="p">(</span><span class="n">num_features</span><span class="o">=</span><span class="mi">64</span><span class="p">),</span>
+                    <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">activation</span><span class="p">,</span>
+                    <span class="n">nn</span><span class="o">.</span><span class="n">MaxPool2d</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+                    <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm2d</span><span class="p">(</span><span class="n">num_features</span><span class="o">=</span><span class="mi">64</span><span class="p">),</span>
+                    <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">activation</span><span class="p">,</span>
+                    <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm2d</span><span class="p">(</span><span class="n">num_features</span><span class="o">=</span><span class="mi">128</span><span class="p">),</span>
+                    <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">activation</span><span class="p">,</span>
+                    <span class="n">nn</span><span class="o">.</span><span class="n">MaxPool2d</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conv</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">activation</span><span class="p">,</span>
                 <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm2d</span><span class="p">(</span><span class="n">num_features</span><span class="o">=</span><span class="mi">64</span><span class="p">),</span>
-                <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">activation</span><span class="p">,</span>
                 <span class="n">nn</span><span class="o">.</span><span class="n">MaxPool2d</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
                 <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm2d</span><span class="p">(</span><span class="n">num_features</span><span class="o">=</span><span class="mi">64</span><span class="p">),</span>
-                <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">activation</span><span class="p">,</span>
                 <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm2d</span><span class="p">(</span><span class="n">num_features</span><span class="o">=</span><span class="mi">128</span><span class="p">),</span>
-                <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">activation</span><span class="p">,</span>
                 <span class="n">nn</span><span class="o">.</span><span class="n">MaxPool2d</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
             <span class="p">)</span>
-        <span class="p">)</span>
 
-<div class="viewcode-block" id="VGGExtractor.forward"><a class="viewcode-back" href="../../../Model.html#kospeech.model.convolutional.VGGExtractor.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">):</span>
-        <span class="n">conv_feat</span><span class="p">,</span> <span class="n">seq_lengths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cnn</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">conv_feat</span><span class="p">,</span> <span class="n">seq_lengths</span></div></div>
+<div class="viewcode-block" id="VGGExtractor.forward"><a class="viewcode-back" href="../../../Model.html#kospeech.model.conv.VGGExtractor.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="DeepSpeech2Extractor"><a class="viewcode-back" href="../../../Model.html#kospeech.model.convolutional.DeepSpeech2Extractor">[docs]</a><span class="k">class</span> <span class="nc">DeepSpeech2Extractor</span><span class="p">(</span><span class="n">ConvolutionalExtractor</span><span class="p">):</span>
+<div class="viewcode-block" id="DeepSpeech2Extractor"><a class="viewcode-back" href="../../../Model.html#kospeech.model.conv.DeepSpeech2Extractor">[docs]</a><span class="k">class</span> <span class="nc">DeepSpeech2Extractor</span><span class="p">(</span><span class="n">CNNExtractor</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    DeepSpeech2 extractor for automatic speech recognition described in</span>
 <span class="sd">    &quot;Deep Speech 2: End-to-End Speech Recognition in English and Mandarin&quot; paper</span>
 <span class="sd">    - https://arxiv.org/abs/1512.02595</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;hardtanh&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;hardtanh&#39;</span><span class="p">,</span> <span class="n">mask_conv</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">DeepSpeech2Extractor</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">activation</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cnn</span> <span class="o">=</span> <span class="n">MaskCNN</span><span class="p">(</span>
-            <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mask_conv</span> <span class="o">=</span> <span class="n">mask_conv</span>
+
+        <span class="k">if</span> <span class="n">mask_conv</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conv</span> <span class="o">=</span> <span class="n">MaskConv</span><span class="p">(</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+                    <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">41</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span> <span class="n">stride</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">padding</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">5</span><span class="p">)),</span>
+                    <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm2d</span><span class="p">(</span><span class="mi">32</span><span class="p">),</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">activation</span><span class="p">,</span>
+                    <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">21</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span> <span class="n">stride</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">padding</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">)),</span>
+                    <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm2d</span><span class="p">(</span><span class="mi">32</span><span class="p">),</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">activation</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conv</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
                 <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">41</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span> <span class="n">stride</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">padding</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">5</span><span class="p">)),</span>
                 <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm2d</span><span class="p">(</span><span class="mi">32</span><span class="p">),</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">activation</span><span class="p">,</span>
@@ -311,11 +351,9 @@
                 <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm2d</span><span class="p">(</span><span class="mi">32</span><span class="p">),</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">activation</span>
             <span class="p">)</span>
-        <span class="p">)</span>
 
-<div class="viewcode-block" id="DeepSpeech2Extractor.forward"><a class="viewcode-back" href="../../../Model.html#kospeech.model.convolutional.DeepSpeech2Extractor.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">):</span>
-        <span class="n">conv_feat</span><span class="p">,</span> <span class="n">seq_lengths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cnn</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">conv_feat</span><span class="p">,</span> <span class="n">seq_lengths</span></div></div>
+<div class="viewcode-block" id="DeepSpeech2Extractor.forward"><a class="viewcode-back" href="../../../Model.html#kospeech.model.conv.DeepSpeech2Extractor.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

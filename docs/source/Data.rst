@@ -2,19 +2,24 @@
 Data
 =====================================================
 
-Audio
---------------------------------------------
-.. automodule:: kospeech.data.preprocess.audio
-    :members:
-
 Augment
 --------------------------------------------
-.. automodule:: kospeech.data.preprocess.augment
+.. automodule:: kospeech.data.audio.augment
+    :members:
+
+Core
+--------------------------------------------
+.. automodule:: kospeech.data.audio.core
+    :members:
+
+Feature
+--------------------------------------------
+.. automodule:: kospeech.data.audio.feature
     :members:
 
 Parser
 -------------------------------------------
-.. automodule:: kospeech.data.preprocess.parser
+.. automodule:: kospeech.data.audio.parser
     :members:
 
 DataLoader

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>kospeech.data.preprocess.audio &mdash; KoSpeech 0.0 documentation</title>
+  <title>kospeech.data.audio.core &mdash; KoSpeech 0.0 documentation</title>
   
 
   
@@ -84,7 +84,7 @@
               <p class="caption"><span class="caption-text">NOTES</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../notes/intro.html">Intro</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../notes/preparation.html">Preparation before Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notes/Preparation.html">Preparation before Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../notes/opts.html">Options</a></li>
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
@@ -147,7 +147,7 @@
         
           <li><a href="../../../index.html">Module code</a> &raquo;</li>
         
-      <li>kospeech.data.preprocess.audio</li>
+      <li>kospeech.data.audio.core</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -162,7 +162,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for kospeech.data.preprocess.audio</h1><div class="highlight"><pre>
+  <h1>Source code for kospeech.data.audio.core</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">astropy.modeling</span> <span class="k">import</span> <span class="n">ParameterError</span>
@@ -170,26 +170,28 @@
 <span class="kn">from</span> <span class="nn">kospeech.utils</span> <span class="k">import</span> <span class="n">logger</span>
 
 
-<div class="viewcode-block" id="load_audio"><a class="viewcode-back" href="../../../../Data.html#kospeech.data.preprocess.audio.load_audio">[docs]</a><span class="k">def</span> <span class="nf">load_audio</span><span class="p">(</span><span class="n">audio_path</span><span class="p">,</span> <span class="n">del_silence</span><span class="p">):</span>
+<div class="viewcode-block" id="load_audio"><a class="viewcode-back" href="../../../../Data.html#kospeech.data.audio.core.load_audio">[docs]</a><span class="k">def</span> <span class="nf">load_audio</span><span class="p">(</span><span class="n">audio_path</span><span class="p">,</span> <span class="n">del_silence</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Load audio file (PCM) to sound. if del_silence is True, Eliminate all sounds below 30dB.</span>
 <span class="sd">    If exception occurs in numpy.memmap(), return None.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">sound</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">memmap</span><span class="p">(</span><span class="n">audio_path</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+        <span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">memmap</span><span class="p">(</span><span class="n">audio_path</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">del_silence</span><span class="p">:</span>
-            <span class="n">non_silence_indices</span> <span class="o">=</span> <span class="n">split</span><span class="p">(</span><span class="n">sound</span><span class="p">,</span> <span class="n">top_db</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
-            <span class="n">sound</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">sound</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span> <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="ow">in</span> <span class="n">non_silence_indices</span><span class="p">])</span>
+            <span class="n">non_silence_indices</span> <span class="o">=</span> <span class="n">split</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">top_db</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+            <span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">signal</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span> <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="ow">in</span> <span class="n">non_silence_indices</span><span class="p">])</span>
 
-        <span class="k">return</span> <span class="n">sound</span> <span class="o">/</span> <span class="mi">32767</span>  <span class="c1"># normalize audio</span>
+        <span class="k">return</span> <span class="n">signal</span> <span class="o">/</span> <span class="mi">32767</span>  <span class="c1"># normalize audio</span>
 
     <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;ValueError in </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">audio_path</span><span class="p">))</span>
         <span class="k">return</span> <span class="kc">None</span>
-
     <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;RuntimeError in </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">audio_path</span><span class="p">))</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;IOError in </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">audio_path</span><span class="p">))</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
@@ -390,7 +392,7 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span> <span class="o">*</span> <span class="n">hop_length</span> <span class="o">+</span> <span class="n">offset</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="split"><a class="viewcode-back" href="../../../../Data.html#kospeech.data.preprocess.audio.split">[docs]</a><span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">top_db</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">,</span> <span class="n">frame_length</span><span class="o">=</span><span class="mi">2048</span><span class="p">,</span> <span class="n">hop_length</span><span class="o">=</span><span class="mi">512</span><span class="p">):</span>
+<div class="viewcode-block" id="split"><a class="viewcode-back" href="../../../../Data.html#kospeech.data.audio.core.split">[docs]</a><span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">top_db</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">,</span> <span class="n">frame_length</span><span class="o">=</span><span class="mi">2048</span><span class="p">,</span> <span class="n">hop_length</span><span class="o">=</span><span class="mi">512</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    codes from https://github.com/librosa/librosa</span>
 <span class="sd">    use this code fragments instead of importing librosa package,</span>
