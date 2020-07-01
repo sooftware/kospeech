@@ -73,15 +73,15 @@ class MaskConv(nn.Module):
         return seq_lengths.int()
 
 
-class ConvExtractor(nn.Module):
+class CNNExtractor(nn.Module):
     """
-    Provides inteface of extractor.
+    Provides inteface of convolutional extractor.
 
     Note:
         Do not use this class directly, use one of the sub classes.
     """
     def __init__(self, activation='hardtanh'):
-        super(ConvExtractor, self).__init__()
+        super(CNNExtractor, self).__init__()
         if activation.lower() == 'hardtanh':
             self.activation = nn.Hardtanh(0, 20, inplace=True)
         elif activation.lower() == 'relu':
@@ -104,7 +104,7 @@ class ConvExtractor(nn.Module):
             return conv_feat
 
 
-class VGGExtractor(ConvExtractor):
+class VGGExtractor(CNNExtractor):
     """
     VGG extractor for automatic speech recognition described in
     "Advances in Joint CTC-Attention based End-to-End Speech Recognition with a Deep CNN Encoder and RNN-LM" paper
@@ -154,7 +154,7 @@ class VGGExtractor(ConvExtractor):
         return super().forward(inputs, input_lengths)
 
 
-class DeepSpeech2Extractor(ConvExtractor):
+class DeepSpeech2Extractor(CNNExtractor):
     """
     DeepSpeech2 extractor for automatic speech recognition described in
     "Deep Speech 2: End-to-End Speech Recognition in English and Mandarin" paper

@@ -21,7 +21,7 @@ For example, training of an acoustic model is a multi-stage process of model tra
 ## Intro
 
 `KoSpeech` is project for End-to-end (E2E) automatic speech recognition implemented in [PyTorch](http://pytorch.org).   
-`KoSpeech` has modularized and extensible components for las models, training and evalutaion, checkpoints, parsing etc.   
+`KoSpeech` has modularized and extensible components for las models, training and evalutaion, checkpoints, etc.   
 We appreciate any kind of [feedback or contribution](https://github.com/sooftware/End-to-end-Speech-Recognition/issues).
   
 We used `KsponSpeech` corpus which containing **1000h** of Korean speech data.   
@@ -57,10 +57,10 @@ We have referred to many papers to develop the best model possible. And tried to
   
 <img src="https://user-images.githubusercontent.com/42150335/85176859-c4467d00-b2b5-11ea-9fe1-4981cfa4bc0e.png"> 
   
-Our architecture based on Seq2seq with Attention.  
+Our architecture based on Listen Attend and Spell.  
   
-`Attention mechanism` helps finding speech alignment. We apply (`location-aware` / `multi-head`) attention which you can choose. Location-aware attention proposed in `Attention Based Models for Speech Recognition` paper and Multi-headed attention proposed in `Attention Is All You Need` paper. You can choose between these two options as `attn_mechanism` option. Please [check](https://sooftware.github.io/KoSpeech/notes/opts.html) this page.    
-
+Our project can be trained with serveral options. You can choose the CNN extractor from (`ds2` /`vgg`), You can choose attention mechanism from (`location-aware`, `multi-head`) attention. Also, You can choose feature extraction method from (`spectrogram`, `mel-spectrogram`, `mfcc`). In addition to this, You can see a varietu of options [here](https://sooftware.github.io/KoSpeech/notes/opts.html).  
+  
 We mainly referred to following papers.  
   
  [「Listen, Attend and Spell」](https://arxiv.org/abs/1508.01211)  
@@ -71,7 +71,7 @@ We mainly referred to following papers.
    
 [「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」](https://arxiv.org/abs/1904.08779).   
   
-If you want to study the feature of audio, we recommend this papers.  
+If you want to study the feature of audio, We recommend this papers.  
   
 [「Voice Recognition Using MFCC Algirithm」](https://ijirae.com/volumes/vol1/issue10/27.NVEC10086.pdf).  
   
@@ -80,37 +80,36 @@ Our model architeuture is as follows.
 ```python
 ListenAttendSpell(
   (listener): Listener(
-    (extractor): VGGExtractor(
-      (cnn): MaskCNN(
-        (sequential): Sequential(
-          (0): Conv2d(1, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-          (1): Hardtanh(min_val=0, max_val=20, inplace=True)
-          (2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-          (3): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-          (4): Hardtanh(min_val=0, max_val=20, inplace=True)
-          (5): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
-          (6): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-          (7): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-          (8): Hardtanh(min_val=0, max_val=20, inplace=True)
-          (9): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-          (10): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-          (11): Hardtanh(min_val=0, max_val=20, inplace=True)
-          (12): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
-        )
+    (conv_extractor): VGGExtractor(
+      (activation): Hardtanh(min_val=0, max_val=20, inplace=True)
+      (conv): Sequential(
+        (0): Conv2d(1, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (1): Hardtanh(min_val=0, max_val=20, inplace=True)
+        (2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (3): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (4): Hardtanh(min_val=0, max_val=20, inplace=True)
+        (5): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+        (6): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (7): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (8): Hardtanh(min_val=0, max_val=20, inplace=True)
+        (9): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (10): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (11): Hardtanh(min_val=0, max_val=20, inplace=True)
+        (12): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
       )
     )
-    (rnn): LSTM(2560, 256, num_layers=3, batch_first=True, dropout=0.3, bidirectional=True)
+    (rnn): LSTM(5120, 512, num_layers=3, batch_first=True, dropout=0.3, bidirectional=True)
   )
   (speller): Speller(
-    (embedding): Embedding(2038, 512)
+    (rnn): LSTM(1024, 1024, num_layers=2, batch_first=True, dropout=0.3)
+    (embedding): Embedding(2038, 1024)
     (input_dropout): Dropout(p=0.3, inplace=False)
-    (rnn): LSTM(512, 512, num_layers=2, batch_first=True, dropout=0.3)
     (attention): MultiHeadAttention(
-      (query_proj): Linear(in_features=512, out_features=512, bias=True)
-      (value_proj): Linear(in_features=512, out_features=512, bias=True)
+      (linear_q): Linear(in_features=1024, out_features=1024, bias=True)
+      (linear_v): Linear(in_features=1024, out_features=1024, bias=True)
     )
-    (fc1): Linear(in_features=1024, out_features=512, bias=True)
-    (fc2): Linear(in_features=512, out_features=2038, bias=True)
+    (fc1): Linear(in_features=2048, out_features=1024, bias=True)
+    (fc2): Linear(in_features=1024, out_features=2038, bias=True)
   )
 )
 ``` 
@@ -124,7 +123,7 @@ In addition, `kospeech` enables learning in a variety of environments with a sim
   
 * Options
 ```
-usage: main.py [-h] [--mode] [--sample_rate]
+usage: main.py [-h] [--mode] [--sample_rate] [--feature]
                [--window_size] [--stride] [--n_mels]
                [--normalize] [--del_silence] [--input_reverse]
                [--feature_extract_by] [--time_mask_para] [--freq_mask_para]
@@ -144,7 +143,7 @@ usage: main.py [-h] [--mode] [--sample_rate]
                [--max_len] [--max_grad_norm]
                [--rampup_period] [--decay_threshold] [--exp_decay_period]
                [--teacher_forcing_step] [--min_teacher_forcing_ratio]
-               [--seed] [--save_result_every]
+               [--seed] [--save_result_every] [--mask_conv]
                [--checkpoint_every] [--print_every] [--resume]
 ```
 
@@ -178,8 +177,8 @@ python bin/setup.py install
 ## Get Started
 ### Step 1: Data Preprocessing  
     
-you can preprocess `KsponSpeech corpus` refer [here](https://github.com/sooftware/KsponSpeech.preprocess).     
-Or refer [this page](https://github.com/sooftware/KoSpeech/wiki/Preparation-before-Training). This documentation contains information regarding the preprocessing of `KsponSpeech`.   
+you can preprocess `KsponSpeech corpus` refer [wiki](https://github.com/sooftware/KoSpeech/wiki/Preparation-before-Training) or [this repo](https://github.com/sooftware/KsponSpeech-preprocess).       
+This documentation contains information regarding the preprocessing of `KsponSpeech`.   
 
 ### Step 2: Run `main.py`
 * Default setting  

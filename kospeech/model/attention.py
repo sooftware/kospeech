@@ -13,20 +13,18 @@ class MultiHeadAttention(nn.Module):
         hidden_dim (int): The number of expected features in the output
         num_heads (int): The number of heads. (default: )
 
-    Inputs: query, value, prev_attn
+    Inputs: query, value
         - **query** (batch, q_len, hidden_dim): tensor containing the output features from the decoder.
         - **value** (batch, v_len, hidden_dim): tensor containing features of the encoded input sequence.
-        - **prev_attn** (batch_size * num_heads, v_len): tensor containing previous timestep`s attention (alignment)
 
-    Returns: context, attn
+    Returns: context
         - **context** (batch, output_len, dimensions): tensor containing the attended output features from the decoder.
-        - **attn**: tensor containing the attention (alignment) from the encoder outputs.
 
     Reference:
         - **Attention Is All You Need**: https://arxiv.org/abs/1706.03762
         - **State-Of-The-Art Speech Recognition with Sequence-to-Sequence Models**: https://arxiv.org/abs/1712.01769
 
-    Author:
+    Contributor:
         - Soohwan Kim (sooftware)
         - Deokjin Seo (qute012)
     """
@@ -35,15 +33,15 @@ class MultiHeadAttention(nn.Module):
         self.hidden_dim = hidden_dim
         self.num_heads = num_heads
         self.dim = int(hidden_dim / num_heads)
-        self.query_proj = nn.Linear(hidden_dim, self.dim * num_heads)
-        self.value_proj = nn.Linear(hidden_dim, self.dim * num_heads)
+        self.linear_q = nn.Linear(hidden_dim, self.dim * num_heads)
+        self.linear_v = nn.Linear(hidden_dim, self.dim * num_heads)
 
-    def forward(self, query, value, unuse=None):
+    def forward(self, query, value):
         batch_size = value.size(0)
         residual = query
 
-        query = self.query_proj(query).view(batch_size, -1, self.num_heads, self.dim)  # BxTxNxD
-        value = self.value_proj(value).view(batch_size, -1, self.num_heads, self.dim)  # BxTxNxD
+        query = self.linear_q(query).view(batch_size, -1, self.num_heads, self.dim)  # BxTxNxD
+        value = self.linear_v(value).view(batch_size, -1, self.num_heads, self.dim)  # BxTxNxD
 
         query = query.permute(2, 0, 1, 3).contiguous().view(batch_size * self.num_heads, -1, self.dim)  # BNxTxD
         value = value.permute(2, 0, 1, 3).contiguous().view(batch_size * self.num_heads, -1, self.dim)  # BNxTxD
@@ -55,9 +53,9 @@ class MultiHeadAttention(nn.Module):
         context = context.view(self.num_heads, batch_size, -1, self.dim)
 
         context = context.permute(1, 2, 0, 3).contiguous().view(batch_size, -1, self.num_heads * self.dim)  # BxTxND
-        context = torch.cat([context, residual], dim=2)
+        context = torch.cat((context, residual), dim=2)
 
-        return context, unuse
+        return context
 
 
 class LocationAwareAttention(nn.Module):
@@ -88,10 +86,10 @@ class LocationAwareAttention(nn.Module):
         super(LocationAwareAttention, self).__init__()
         self.hidden_dim = hidden_dim
         self.conv1d = nn.Conv1d(in_channels=1, out_channels=hidden_dim, kernel_size=3, padding=1)
-        self.query_proj = nn.Linear(hidden_dim, hidden_dim, bias=False)
-        self.value_proj = nn.Linear(hidden_dim, hidden_dim, bias=False)
-        self.score_proj = nn.Linear(hidden_dim, 1, bias=True)
+        self.linear_q = nn.Linear(hidden_dim, hidden_dim, bias=False)
+        self.linear_v = nn.Linear(hidden_dim, hidden_dim, bias=False)
         self.bias = nn.Parameter(torch.rand(hidden_dim).uniform_(-0.1, 0.1))
+        self.fc = nn.Linear(hidden_dim, 1, bias=True)
         self.smoothing = smoothing
 
     def forward(self, query, value, last_attn):
@@ -102,14 +100,12 @@ class LocationAwareAttention(nn.Module):
             last_attn = value.new_zeros(batch_size, seq_len)
 
         conv_attn = torch.transpose(self.conv1d(last_attn.unsqueeze(1)), 1, 2)
-        score = self.score_proj(
-            torch.tanh(
-                self.query_proj(query.reshape(-1, hidden_dim)).view(batch_size, -1, hidden_dim)
-                + self.value_proj(value.reshape(-1, hidden_dim)).view(batch_size, -1, hidden_dim)
+        score = self.fc(torch.tanh(
+                self.linear_q(query.reshape(-1, hidden_dim)).view(batch_size, -1, hidden_dim)
+                + self.linear_v(value.reshape(-1, hidden_dim)).view(batch_size, -1, hidden_dim)
                 + conv_attn
                 + self.bias
-            )
-        ).squeeze(dim=-1)
+        )).squeeze(dim=-1)
 
         if self.smoothing:
             score = torch.sigmoid(score)

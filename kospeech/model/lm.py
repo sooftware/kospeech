@@ -1,7 +1,7 @@
 import random
 import torch.nn as nn
 import torch.nn.functional as F
-from kospeech.model.encoder import BaseRNN
+from kospeech.model.base import BaseRNN
 
 
 class RNNLanguageModel(BaseRNN):

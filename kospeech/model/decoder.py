@@ -2,7 +2,7 @@ import random
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from kospeech.model.encoder import BaseRNN
+from kospeech.model.base import BaseRNN
 from kospeech.model.attention import LocationAwareAttention, MultiHeadAttention
 
 
@@ -31,8 +31,12 @@ class Speller(BaseRNN):
           drawn uniformly from 0-1 for every decoding token, and if the sample is smaller than the given value,
           teacher forcing would be used (default is 0).
 
-    Returns: decoder_outputs
-        - **decoder_outputs**: list of tensors containing the outputs of the decoding function.
+    Returns: decoder_outputs, ret_dict
+        - **decoder_outputs** (seq_len, batch, num_classes): list of tensors containing
+          the outputs of the decoding function.
+        - **ret_dict**: dictionary containing additional information as follows {*KEY_ATTENTION_SCORE* : list of scores
+          representing encoder outputs, *KEY_SEQUENCE_SYMBOL* : list of sequences, where each sequence is a list of
+          predicted token IDs }.
     """
     KEY_ATTENTION_SCORE = 'attention_score'
     KEY_SEQUENCE_SYMBOL = 'sequence_symbol'
@@ -70,7 +74,11 @@ class Speller(BaseRNN):
             self.rnn.flatten_parameters()
 
         output, hidden = self.rnn(embedded, hidden)
-        context, attn = self.attention(output, encoder_outputs, attn)
+
+        if self.attn_mechanism == 'dot':
+            context = self.attention(output, encoder_outputs)
+        else:
+            context, attn = self.attention(output, encoder_outputs, attn)
 
         output = self.fc1(context.view(-1, self.hidden_dim << 1)).view(batch_size, -1, self.hidden_dim)
         output = self.fc2(torch.tanh(output).contiguous().view(-1, self.hidden_dim))
@@ -82,11 +90,11 @@ class Speller(BaseRNN):
 
     def forward(self, inputs, encoder_outputs, teacher_forcing_ratio=0.90, language_model=None):
         hidden, attn = None, None
-        decoder_outputs, metadata = list(), dict()
+        decoder_outputs, ret_dict = list(), dict()
 
         if not self.training:
-            metadata[Speller.KEY_ATTENTION_SCORE] = list()
-            metadata[Speller.KEY_SEQUENCE_SYMBOL] = list()
+            ret_dict[Speller.KEY_ATTENTION_SCORE] = list()
+            ret_dict[Speller.KEY_SEQUENCE_SYMBOL] = list()
 
         inputs, batch_size, max_length = self.validate_args(inputs, encoder_outputs, teacher_forcing_ratio, language_model)
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
@@ -118,8 +126,8 @@ class Speller(BaseRNN):
                 step_output, hidden, attn = self.forward_step(input_var, hidden, encoder_outputs, attn)
 
                 if not self.training:
-                    metadata[Speller.KEY_ATTENTION_SCORE].append(attn)
-                    metadata[Speller.KEY_SEQUENCE_SYMBOL].append(input_var)
+                    ret_dict[Speller.KEY_ATTENTION_SCORE].append(attn)
+                    ret_dict[Speller.KEY_SEQUENCE_SYMBOL].append(input_var)
 
                     if use_language_model:
                         lm_step_output = language_model.forward_step(prev_tokens, None)[0][:, -1, :].squeeze(1)
@@ -129,7 +137,7 @@ class Speller(BaseRNN):
                 decoder_outputs.append(step_output)
                 input_var = decoder_outputs[-1].topk(1)[1]
 
-        return decoder_outputs, metadata
+        return decoder_outputs, ret_dict
 
     def validate_args(self, inputs, encoder_outputs, teacher_forcing_ratio, language_model):
         """ Validate arguments """

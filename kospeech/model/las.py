@@ -21,15 +21,11 @@ class ListenAttendSpell(nn.Module):
           teacher forcing would be used (default is 0.90)
 
     Returns: output
-            - **output** (seq_len, batch_size, num_classes): list of tensors containing
-              the outputs of the decoding function.
+        - **output** (seq_len, batch_size, num_classes): list of tensors containing
+          the outputs of the decoding function.
 
-    Examples::
-
-        >>> listener = Listener(...)
-        >>> speller = Speller(...)
-        >>> model = ListenAttendSpell(listener, speller)
-        >>> logit = model(...)
+    Reference:
+        - **Listen Attend and Spell**: https://arxiv.org/abs/1508.01211
     """
     def __init__(self, listener, speller):
         super(ListenAttendSpell, self).__init__()

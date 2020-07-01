@@ -3,7 +3,7 @@
 import torch.nn as nn
 import matplotlib.pyplot as plt
 from torch import optim
-from kospeech.optim.optim import Optimizer
+from kospeech.optim.optimizer import Optimizer
 from kospeech.optim.lr_scheduler import RampUpLR, ExponentialDecayLR
 
 
