@@ -57,10 +57,9 @@ We have referred to many papers to develop the best model possible. And tried to
   
 <img src="https://user-images.githubusercontent.com/42150335/85176859-c4467d00-b2b5-11ea-9fe1-4981cfa4bc0e.png"> 
   
-Our architecture based on Listen Attend and Spell.  
+Our project can be trained with serveral options. You can choose the CNN extractor from (`ds2` /`vgg`), You can choose attention mechanism from (`location-aware`, `multi-head`) attention. Also, You can choose feature extraction method from (`spectrogram`, `mel-spectrogram`, `mfcc`). In addition to this, You can see a variety of options [here](https://sooftware.github.io/KoSpeech/notes/opts.html).  
   
-Our project can be trained with serveral options. You can choose the CNN extractor from (`ds2` /`vgg`), You can choose attention mechanism from (`location-aware`, `multi-head`) attention. Also, You can choose feature extraction method from (`spectrogram`, `mel-spectrogram`, `mfcc`). In addition to this, You can see a varietu of options [here](https://sooftware.github.io/KoSpeech/notes/opts.html).  
-  
+Our architecture based on Listen Attend and Spell.   
 We mainly referred to following papers.  
   
  [「Listen, Attend and Spell」](https://arxiv.org/abs/1508.01211)  
@@ -81,7 +80,6 @@ Our model architeuture is as follows.
 ListenAttendSpell(
   (listener): Listener(
     (conv_extractor): VGGExtractor(
-      (activation): Hardtanh(min_val=0, max_val=20, inplace=True)
       (conv): Sequential(
         (0): Conv2d(1, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
         (1): Hardtanh(min_val=0, max_val=20, inplace=True)
@@ -116,7 +114,7 @@ ListenAttendSpell(
   
 ### KoSpeech
 
-<img src="https://user-images.githubusercontent.com/42150335/83944090-d8ad6300-a83b-11ea-8a2c-2f0d9ba0e54d.png" width=700>   
+<img src="https://user-images.githubusercontent.com/42150335/86276048-2e90e300-bc0f-11ea-8675-476cb27eadb2.png" width=700>   
   
 `kospeech` module has modularized and extensible components for las models, trainer, evaluator, checkpoints etc...   
 In addition, `kospeech` enables learning in a variety of environments with a simple option setting.  
