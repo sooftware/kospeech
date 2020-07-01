@@ -57,7 +57,7 @@ We have referred to many papers to develop the best model possible. And tried to
   
 <img src="https://user-images.githubusercontent.com/42150335/85176859-c4467d00-b2b5-11ea-9fe1-4981cfa4bc0e.png"> 
   
-Our project can be trained with serveral options. You can choose the CNN extractor from (`ds2` /`vgg`), You can choose attention mechanism from (`location-aware`, `multi-head`) attention. Also, You can choose feature extraction method from (`spectrogram`, `mel-spectrogram`, `mfcc`). In addition to this, You can see a varietu of options [here](https://sooftware.github.io/KoSpeech/notes/opts.html).  
+Our project can be trained with serveral options. You can choose the CNN extractor from (`ds2` /`vgg`), You can choose attention mechanism from (`location-aware`, `multi-head`) attention. Also, You can choose feature extraction method from (`spectrogram`, `mel-spectrogram`, `mfcc`). In addition to this, You can see a variety of options [here](https://sooftware.github.io/KoSpeech/notes/opts.html).  
   
 Our architecture based on Listen Attend and Spell.   
 We mainly referred to following papers.  
