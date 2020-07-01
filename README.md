@@ -80,7 +80,6 @@ Our model architeuture is as follows.
 ListenAttendSpell(
   (listener): Listener(
     (conv_extractor): VGGExtractor(
-      (activation): Hardtanh(min_val=0, max_val=20, inplace=True)
       (conv): Sequential(
         (0): Conv2d(1, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
         (1): Hardtanh(min_val=0, max_val=20, inplace=True)
