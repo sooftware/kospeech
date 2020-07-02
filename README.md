@@ -25,7 +25,7 @@ For example, training of an acoustic model is a multi-stage process of model tra
 We appreciate any kind of [feedback or contribution](https://github.com/sooftware/End-to-end-Speech-Recognition/issues).
   
 We used `KsponSpeech` corpus which containing **1000h** of Korean speech data.   
-At present our model has recorded an **87.99% CRR**, and we are working for a higher recognition rate.  
+At present our model has recorded an **89.14% CRR**, and we are working for a higher recognition rate.  
 Also our model has recorded **92.0% CRR** in `Kaldi-zeroth corpus`    
   
 ###### ( **CRR** : Character Recognition Rate ) 
