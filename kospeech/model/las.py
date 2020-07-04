@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+from typing import Optional
 
 
 class ListenAttendSpell(nn.Module):
@@ -27,12 +28,13 @@ class ListenAttendSpell(nn.Module):
     Reference:
         - **Listen Attend and Spell**: https://arxiv.org/abs/1508.01211
     """
-    def __init__(self, listener, speller):
+    def __init__(self, listener: nn.Module, speller: nn.Module):
         super(ListenAttendSpell, self).__init__()
         self.listener = listener
         self.speller = speller
 
-    def forward(self, inputs, input_lengths, targets=None, teacher_forcing_ratio=1.0, language_model=None):
+    def forward(self, inputs: torch.Tensor, input_lengths: torch.Tensor, targets: Optional[torch.Tensor] = None,
+                teacher_forcing_ratio: float = 1.0, language_model: Optional[nn.Module] = None):
         encoder_outputs = self.listener(inputs, input_lengths)
         result = self.speller(targets, encoder_outputs, teacher_forcing_ratio, language_model)
         return result

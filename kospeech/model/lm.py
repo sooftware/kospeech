@@ -1,12 +1,15 @@
 import random
+import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from typing import Optional, Any
 from kospeech.model.base import BaseRNN
 
 
 class RNNLanguageModel(BaseRNN):
-    def __init__(self, num_classes, num_layers, rnn_type, hidden_dim,
-                 dropout_p, max_length, sos_id, eos_id, device):
+    def __init__(self, num_classes: int, num_layers: int = 3, rnn_type: str = 'lstm', hidden_dim: int = 512,
+                 dropout_p: float = 0.3, max_length: int = 120, sos_id: int = 1, eos_id: int = 2,
+                 device: Optional[Any] = torch.Tensor('cuda')):
         super(RNNLanguageModel, self).__init__(hidden_dim, hidden_dim, num_layers, rnn_type, dropout_p, False, device)
         self.rnn_cell = self.supported_rnns[rnn_type]
         self.max_length = max_length

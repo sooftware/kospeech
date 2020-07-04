@@ -25,12 +25,12 @@ def build_model_opts(parser):
     group.add_argument('--label_smoothing', '-label_smoothing',
                        type=float, default=0.1,
                        help='ratio of label smoothing (default: 0.1)')
-    group.add_argument('--listener_layer_size', '-listener_layer_size',
-                       type=int, default=5,
-                       help='layer size of encoder (default: 5)')
-    group.add_argument('--speller_layer_size', '-speller_layer_size',
+    group.add_argument('--num_encoder_layers', '-num_encoder_layers',
                        type=int, default=3,
-                       help='layer size of decoder (default: 3)')
+                       help='layer size of encoder (default: 3)')
+    group.add_argument('--num_decoder_layers', '-num_decoder_layers',
+                       type=int, default=2,
+                       help='layer size of decoder (default: 2)')
     group.add_argument('--rnn_type', '-rnn_type',
                        type=str, default='gru',
                        help='type of rnn cell: [gru, lstm, rnn] (default: gru)')
@@ -243,8 +243,8 @@ def print_model_opts(opt):
     logger.info('--attn_mechanism: %s' % str(opt.attn_mechanism))
     logger.info('--num_heads: %s' % str(opt.num_heads))
     logger.info('--label_smoothing: %s' % str(opt.label_smoothing))
-    logger.info('--listener_layer_size: %s' % str(opt.listener_layer_size))
-    logger.info('--speller_layer_size: %s' % str(opt.speller_layer_size))
+    logger.info('--num_encoder_layers: %s' % str(opt.num_encoder_layers))
+    logger.info('--num_decoder_layers: %s' % str(opt.num_decoder_layers))
     logger.info('--extractor: %s' % str(opt.extractor))
     logger.info('--activation: %s' % str(opt.activation))
     logger.info('--rnn_type: %s' % str(opt.rnn_type))

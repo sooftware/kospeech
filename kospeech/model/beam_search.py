@@ -26,7 +26,7 @@ class BeamSearchDecoder(nn.Module):
         - **decoder_outputs** :  list of tensors containing the outputs of the decoding function.
     """
 
-    def __init__(self, decoder, beam_size):
+    def __init__(self, decoder: nn.Module, beam_size: int = 3):
         super(BeamSearchDecoder, self).__init__()
         self.num_classes = decoder.num_classes
         self.max_length = decoder.max_length
@@ -42,7 +42,7 @@ class BeamSearchDecoder(nn.Module):
         self.alpha = 1.2
         self.device = decoder.device
 
-    def forward(self, input_var, encoder_outputs, teacher_forcing_ratio=0.0):
+    def forward(self, input_var: torch.Tensor, encoder_outputs: torch.Tensor, teacher_forcing_ratio: float = 0.0):
         inputs, batch_size, max_length = self.validate_args(input_var, encoder_outputs, 0.0)
         self.pos_index = (torch.LongTensor(range(batch_size)) * self.beam_size).view(-1, 1).to(self.device)
 

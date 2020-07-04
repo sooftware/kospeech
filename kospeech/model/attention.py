@@ -28,7 +28,7 @@ class MultiHeadAttention(nn.Module):
         - Soohwan Kim (sooftware)
         - Deokjin Seo (qute012)
     """
-    def __init__(self, hidden_dim, num_heads=4):
+    def __init__(self, hidden_dim: int = 1024, num_heads: int = 4):
         super(MultiHeadAttention, self).__init__()
         self.hidden_dim = hidden_dim
         self.num_heads = num_heads
@@ -36,7 +36,7 @@ class MultiHeadAttention(nn.Module):
         self.linear_q = nn.Linear(hidden_dim, self.dim * num_heads)
         self.linear_v = nn.Linear(hidden_dim, self.dim * num_heads)
 
-    def forward(self, query, value):
+    def forward(self, query: torch.Tensor, value: torch.Tensor):
         batch_size = value.size(0)
         residual = query
 
@@ -82,7 +82,7 @@ class LocationAwareAttention(nn.Module):
         - **Attention-Based Models for Speech Recognition**: https://arxiv.org/abs/1506.07503
         - **ClovaCall**: https://github.com/clovaai/ClovaCall/blob/master/las.pytorch/models/attention.py
     """
-    def __init__(self, hidden_dim, smoothing=True):
+    def __init__(self, hidden_dim: int = 1024, smoothing: bool = True):
         super(LocationAwareAttention, self).__init__()
         self.hidden_dim = hidden_dim
         self.conv1d = nn.Conv1d(in_channels=1, out_channels=hidden_dim, kernel_size=3, padding=1)
@@ -92,7 +92,7 @@ class LocationAwareAttention(nn.Module):
         self.fc = nn.Linear(hidden_dim, 1, bias=True)
         self.smoothing = smoothing
 
-    def forward(self, query, value, last_attn):
+    def forward(self, query: torch.Tensor, value: torch.Tensor, last_attn: torch.Tensor):
         batch_size, hidden_dim, seq_len = query.size(0), query.size(2), value.size(1)
 
         # Initialize previous attention (alignment) to zeros

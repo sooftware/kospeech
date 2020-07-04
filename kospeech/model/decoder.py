@@ -2,7 +2,9 @@ import random
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from typing import Optional
 from kospeech.model.base import BaseRNN
+from typing import Optional, Any
 from kospeech.model.attention import LocationAwareAttention, MultiHeadAttention
 
 
@@ -41,8 +43,10 @@ class Speller(BaseRNN):
     KEY_ATTENTION_SCORE = 'attention_score'
     KEY_SEQUENCE_SYMBOL = 'sequence_symbol'
 
-    def __init__(self, num_classes, max_length, hidden_dim, sos_id, eos_id, attn_mechanism='dot',
-                 num_heads=4, num_layers=2, rnn_type='lstm', dropout_p=0.3, device=None):
+    def __init__(self, num_classes: int, max_length: int = 120, hidden_dim: int = 1024,
+                 sos_id: int = 1, eos_id: int = 2, attn_mechanism: str = 'dot',
+                 num_heads: int = 4, num_layers: int = 2, rnn_type: str = 'lstm',
+                 dropout_p: float = 0.3, device: Optional[Any] = torch.Tensor('cuda')):
         super(Speller, self).__init__(hidden_dim, hidden_dim, num_layers, rnn_type, dropout_p, False, device)
         self.num_classes = num_classes
         self.num_heads = num_heads
@@ -88,7 +92,8 @@ class Speller(BaseRNN):
 
         return step_output, hidden, attn
 
-    def forward(self, inputs, encoder_outputs, teacher_forcing_ratio=0.90, language_model=None):
+    def forward(self, inputs: torch.Tensor, encoder_outputs: torch.Tensor,
+                teacher_forcing_ratio: float = 1.0, language_model: Optional[nn.Module] = None):
         hidden, attn = None, None
         decoder_outputs, ret_dict = list(), dict()
 

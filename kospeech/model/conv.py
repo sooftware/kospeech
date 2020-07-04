@@ -95,7 +95,7 @@ class CNNExtractor(nn.Module):
         else:
             raise ValueError("Unsupported activation function : {0}".format(activation))
 
-    def forward(self, inputs, input_lengths):
+    def forward(self, inputs: torch.Tensor, input_lengths: torch.Tensor):
         if self.mask_conv:
             conv_feat, seq_lengths = self.conv(inputs, input_lengths)
             return conv_feat, seq_lengths
@@ -110,7 +110,7 @@ class VGGExtractor(CNNExtractor):
     "Advances in Joint CTC-Attention based End-to-End Speech Recognition with a Deep CNN Encoder and RNN-LM" paper
     - https://arxiv.org/pdf/1706.02737.pdf
     """
-    def __init__(self, in_channels=1, activation='hardtanh', mask_conv=False):
+    def __init__(self, in_channels: int = 1, activation: str = 'hardtanh', mask_conv: bool = False):
         super(VGGExtractor, self).__init__(activation)
         self.mask_conv = mask_conv
 
@@ -150,7 +150,7 @@ class VGGExtractor(CNNExtractor):
                 nn.MaxPool2d(2, stride=2)
             )
 
-    def forward(self, inputs, input_lengths):
+    def forward(self, inputs: torch.Tensor, input_lengths: torch.Tensor):
         return super().forward(inputs, input_lengths)
 
 
@@ -161,7 +161,7 @@ class DeepSpeech2Extractor(CNNExtractor):
     - https://arxiv.org/abs/1512.02595
     """
 
-    def __init__(self, in_channels=1, activation='hardtanh', mask_conv=False):
+    def __init__(self, in_channels: int = 1, activation: str = 'hardtanh', mask_conv: bool = False):
         super(DeepSpeech2Extractor, self).__init__(activation)
         self.mask_conv = mask_conv
 
@@ -187,5 +187,5 @@ class DeepSpeech2Extractor(CNNExtractor):
                 self.activation
             )
 
-    def forward(self, inputs, input_lengths):
+    def forward(self, inputs: torch.Tensor, input_lengths: torch.Tensor):
         return super().forward(inputs, input_lengths)

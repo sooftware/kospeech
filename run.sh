@@ -15,8 +15,8 @@ DROPOUT=0.3
 NUM_HEADS=4
 ATTN_MECHANISM='dot'
 LABEL_SMOOTHING=0.1
-LISTENER_LAYER_SIZE=3
-SPELLER_LAYER_SIZE=2
+NUM_ENCODER_LAYERS=3
+NUM_DECODER_LAYERS=2
 RNN_TYPE='lstm'
 TEACHER_FORCING_RATIO=0.99
 TEACHER_FORCING_STEP=0.05
@@ -55,7 +55,7 @@ cd bin
 python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epochs $NUM_EPOCHS --use_bidirectional \
 --input_reverse --spec_augment --noise_augment --use_cuda --hidden_dim $HIDDEN_DIM \
 --dropout $DROPOUT --num_heads $NUM_HEADS --label_smoothing $LABEL_SMOOTHING --feature $FEATURE \
---listener_layer_size $LISTENER_LAYER_SIZE --speller_layer_size $SPELLER_LAYER_SIZE --rnn_type $RNN_TYPE \
+--num_encoder_layers $NUM_ENCODER_LAYERS --num_decoder_layers $NUM_DECODER_LAYERS --rnn_type $RNN_TYPE \
 --high_plateau_lr $HIGH_PLATEAU_LR --teacher_forcing_ratio $TEACHER_FORCING_RATIO --valid_ratio $VALID_RATIO \
 --sample_rate $SAMPLE_RATE --window_size $WINDOW_SIZE --stride $STRIDE --n_mels $N_MELS --normalize --del_silence \
 --feature_extract_by $FEATURE_EXTRACT_BY --time_mask_para $TIME_MASK_PARA --freq_mask_para $FREQ_MASK_PARA \
