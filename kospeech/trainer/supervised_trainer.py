@@ -87,6 +87,7 @@ class SupervisedTrainer(object):
         train_begin_time = time.time()
 
         for epoch in range(start_epoch, num_epochs):
+            logger.info('Epoch %d start' % epoch)
             train_queue = queue.Queue(self.num_workers << 1)
             for trainset in self.trainset_list:
                 trainset.shuffle()

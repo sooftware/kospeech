@@ -2,8 +2,8 @@
 -*- coding: utf-8 -*-
 
 @github{
-  title = {KoSpeech},
-  author = {Soohwan Kim, Seyoung Bae, Cheolhwang Won},
+  title = {KoSpeech: Open Source Project for Korean End-to-End Automatic Speech Recognition in PyTorch},
+  author = {Soohwan Kim, Seyoung Bae, Cheolhwang Won, Suwon Park},
   link = {https://github.com/sooftware/KoSpeech},
   year = {2020}
 }
