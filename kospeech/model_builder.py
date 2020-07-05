@@ -41,7 +41,7 @@ def build_las(listener, speller, device, init_uniform=True):
 
     if init_uniform:
         for param in model.parameters():
-            param.data.uniform_(-0.08, 0.08)
+            nn.init.xavier_uniform_(param.data)
 
     return model
 
