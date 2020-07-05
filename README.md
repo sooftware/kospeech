@@ -224,7 +224,13 @@ If you have any questions, bug reports, and feature requests, please [open an is
 For live discussions, please go to our [gitter](https://gitter.im/Korean-Speech-Recognition/community) or Contacts sh951011@gmail.com please.
   
 We appreciate any kind of feedback or contribution.  Feel free to proceed with small issues like bug fixes, documentation improvement.  For major contributions and new features, please discuss with the collaborators in corresponding issues.  
-
+  
+## TODO
+  
+* Add Transformer model  
+  
+* Add CTC (Connectionist Temporal Classification)
+  
 ### Code Style
 We follow [PEP-8](https://www.python.org/dev/peps/pep-0008/) for code style. Especially the style of docstrings is important to generate documentation.  
     
