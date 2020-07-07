@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 from astropy.modeling import ParameterError
 from kospeech.decode.ensemble import BasicEnsemble, WeightedEnsemble
-from kospeech.model.base import BaseRNN
+from kospeech.model.base_rnn import BaseRNN
 from kospeech.model.las import ListenAttendSpell
 from kospeech.model.encoder import Listener
 from kospeech.model.decoder import Speller

@@ -113,42 +113,23 @@ class VGGExtractor(CNNExtractor):
     def __init__(self, in_channels: int = 1, activation: str = 'hardtanh', mask_conv: bool = False):
         super(VGGExtractor, self).__init__(activation)
         self.mask_conv = mask_conv
-
+        self.conv = nn.Sequential(
+            nn.Conv2d(in_channels, 64, kernel_size=3, stride=1, padding=1),
+            self.activation,
+            nn.BatchNorm2d(num_features=64),
+            nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
+            self.activation,
+            nn.MaxPool2d(2, stride=2),
+            nn.BatchNorm2d(num_features=64),
+            nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1),
+            self.activation,
+            nn.BatchNorm2d(num_features=128),
+            nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1),
+            self.activation,
+            nn.MaxPool2d(2, stride=2)
+        )
         if mask_conv:
-            self.conv = MaskConv(
-                nn.Sequential(
-                    nn.Conv2d(in_channels, 64, kernel_size=3, stride=1, padding=1),
-                    self.activation,
-                    nn.BatchNorm2d(num_features=64),
-                    nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
-                    self.activation,
-                    nn.MaxPool2d(2, stride=2),
-                    nn.BatchNorm2d(num_features=64),
-                    nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1),
-                    self.activation,
-                    nn.BatchNorm2d(num_features=128),
-                    nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1),
-                    self.activation,
-                    nn.MaxPool2d(2, stride=2)
-                )
-            )
-
-        else:
-            self.conv = nn.Sequential(
-                nn.Conv2d(in_channels, 64, kernel_size=3, stride=1, padding=1),
-                self.activation,
-                nn.BatchNorm2d(num_features=64),
-                nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
-                self.activation,
-                nn.MaxPool2d(2, stride=2),
-                nn.BatchNorm2d(num_features=64),
-                nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1),
-                self.activation,
-                nn.BatchNorm2d(num_features=128),
-                nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1),
-                self.activation,
-                nn.MaxPool2d(2, stride=2)
-            )
+            self.conv = MaskConv(self.conv)
 
     def forward(self, inputs: torch.Tensor, input_lengths: torch.Tensor):
         return super().forward(inputs, input_lengths)
@@ -164,28 +145,16 @@ class DeepSpeech2Extractor(CNNExtractor):
     def __init__(self, in_channels: int = 1, activation: str = 'hardtanh', mask_conv: bool = False):
         super(DeepSpeech2Extractor, self).__init__(activation)
         self.mask_conv = mask_conv
-
+        self.conv = nn.Sequential(
+            nn.Conv2d(in_channels, 32, kernel_size=(41, 11), stride=(2, 2), padding=(20, 5)),
+            nn.BatchNorm2d(32),
+            self.activation,
+            nn.Conv2d(32, 32, kernel_size=(21, 11), stride=(2, 1), padding=(10, 5)),
+            nn.BatchNorm2d(32),
+            self.activation
+        )
         if mask_conv:
-            self.conv = MaskConv(
-                nn.Sequential(
-                    nn.Conv2d(in_channels, 32, kernel_size=(41, 11), stride=(2, 2), padding=(20, 5)),
-                    nn.BatchNorm2d(32),
-                    self.activation,
-                    nn.Conv2d(32, 32, kernel_size=(21, 11), stride=(2, 1), padding=(10, 5)),
-                    nn.BatchNorm2d(32),
-                    self.activation
-                )
-            )
-
-        else:
-            self.conv = nn.Sequential(
-                nn.Conv2d(in_channels, 32, kernel_size=(41, 11), stride=(2, 2), padding=(20, 5)),
-                nn.BatchNorm2d(32),
-                self.activation,
-                nn.Conv2d(32, 32, kernel_size=(21, 11), stride=(2, 1), padding=(10, 5)),
-                nn.BatchNorm2d(32),
-                self.activation
-            )
+            self.conv = MaskConv(self.conv)
 
     def forward(self, inputs: torch.Tensor, input_lengths: torch.Tensor):
         return super().forward(inputs, input_lengths)

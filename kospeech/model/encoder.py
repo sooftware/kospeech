@@ -1,7 +1,7 @@
 import math
 import torch
 import torch.nn as nn
-from kospeech.model.base import BaseRNN
+from kospeech.model.base_rnn import BaseRNN
 from kospeech.model.conv import VGGExtractor, DeepSpeech2Extractor
 
 

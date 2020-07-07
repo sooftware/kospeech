@@ -5,7 +5,7 @@ import torch.nn.functional as F
 
 
 class MultiHeadAttention(nn.Module):
-    r"""
+    """
     Applies a multi-headed scaled dot mechanism on the output features from the decoder.
     Multi-head attention proposed in "Attention Is All You Need" paper.
 

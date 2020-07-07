@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from typing import Optional, Any
-from kospeech.model.base import BaseRNN
+from kospeech.model.base_rnn import BaseRNN
 
 
 class RNNLanguageModel(BaseRNN):
@@ -37,7 +37,7 @@ class RNNLanguageModel(BaseRNN):
 
         return predicted_softmax, hidden
 
-    def forward(self, inputs, teacher_forcing_ratio=1.0):
+    def forward(self, inputs: torch.Tensor, teacher_forcing_ratio: float = 1.0):
         batch_size = inputs.size(0)
         max_length = inputs.size(1) - 1  # minus the start of sequence symbol
 

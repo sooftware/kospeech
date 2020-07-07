@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from typing import Optional
-from kospeech.model.base import BaseRNN
+from kospeech.model.base_rnn import BaseRNN
 from typing import Optional, Any
 from kospeech.model.attention import LocationAwareAttention, MultiHeadAttention
 
