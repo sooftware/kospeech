@@ -155,15 +155,16 @@ class SupervisedTrainer(object):
         model.train()
         begin_time = epoch_begin_time = time.time()
 
+        num_workers = self.num_workers
         while True:
             inputs, scripts, input_lengths, target_lengths = queue.get()
 
             if inputs.shape[0] == 0:
                 # Empty feats means closing one loader
-                self.num_workers -= 1
-                logger.debug('left train_loader: %d' % self.num_workers)
+                num_workers -= 1
+                logger.debug('left train_loader: %d' % num_workers)
 
-                if self.num_workers == 0:
+                if num_workers == 0:
                     break
                 else:
                     continue

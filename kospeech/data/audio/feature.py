@@ -23,7 +23,7 @@ class Spectrogram(object):
     def __init__(self, sample_rate=16000, window_size=20, stride=10):
         self.sample_rate = sample_rate
         self.n_fft = int(sample_rate * 0.001 * window_size)
-        self.hop_length = int(sample_rate * 0.001 * stride)
+        self.hop_length = int(sample_rate * 0.001 * (window_size - stride))
 
     def __call__(self, signal):
         spectrogram = torch.stft(
