@@ -92,19 +92,21 @@ class SpectrogramParser(AudioParser):
         if augment_method == SpectrogramParser.NOISE_INJECTION:
             signal = self.noise_injector(signal)
 
-        feature = self.transforms(signal)
+        feature_vector = self.transforms(signal)
 
         if self.normalize:
-            feature -= feature.mean()
+            feature_vector -= feature_vector.mean()
 
         if self.input_reverse:  # Refer to "Sequence to Sequence Learning with Neural Network" paper
-            feature = feature[:, ::-1]
-            feature = torch.FloatTensor(np.ascontiguousarray(np.swapaxes(feature, 0, 1)))
+            feature_vector = feature_vector[:, ::-1]
+            feature_vector = torch.FloatTensor(np.ascontiguousarray(np.swapaxes(feature_vector, 0, 1)))
+        else:
+            feature_vector = torch.FloatTensor(feature_vector).transpose(0, 1)
 
         if augment_method == SpectrogramParser.SPEC_AUGMENT:
-            feature = self.spec_augment(feature)
+            feature_vector = self.spec_augment(feature_vector)
 
-        return feature
+        return feature_vector
 
     def parse_transcript(self, *args, **kwargs):
         raise NotImplementedError

@@ -3,8 +3,8 @@ import numpy as np
 import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
-from typing import Optional, Tuple
-from kospeech.model.modules import Linear, LayerNorm
+from typing import Tuple
+from kospeech.model.modules import Linear
 
 
 class ScaledDotProductAttention(nn.Module):
@@ -58,8 +58,8 @@ class MultiHeadAttention(nn.Module):
         - **State-Of-The-Art Speech Recognition with Sequence-to-Sequence Models**: https://arxiv.org/abs/1712.01769
 
     Contributor:
-        - Soohwan Kim (sooftware)
-        - Deokjin Seo (qute012)
+        - Soohwan Kim @sooftware
+        - Deokjin Seo @qute012
     """
     def __init__(self, hidden_dim: int = 1024, num_heads: int = 8) -> None:
         super(MultiHeadAttention, self).__init__()
@@ -88,7 +88,7 @@ class MultiHeadAttention(nn.Module):
         context, attn = self.scaled_dot_attn(query, key, value)
         context = context.view(self.num_heads, batch_size, -1, self.d_head)
 
-        context = context.permute(1, 2, 0, 3).contiguous().view(batch_size, -1, self.num_heads * self.dim)  # BxTxND
+        context = context.permute(1, 2, 0, 3).contiguous().view(batch_size, -1, self.num_heads * self.d_head)  # BxTxND
         context = torch.cat((context, residual), dim=2)
 
         return context, attn
@@ -125,7 +125,7 @@ class LocationAwareAttention(nn.Module):
         self.linear_q = Linear(hidden_dim, hidden_dim, bias=False)
         self.linear_v = Linear(hidden_dim, hidden_dim, bias=False)
         self.bias = nn.Parameter(torch.rand(hidden_dim).uniform_(-0.1, 0.1))
-        self.fc = nn.Linear(hidden_dim, 1, bias=True)
+        self.linear = nn.Linear(hidden_dim, 1, bias=True)
         self.smoothing = smoothing
 
     def forward(self, query: Tensor, value: Tensor, last_attn: Tensor) -> Tuple[Tensor, Tensor]:
@@ -136,7 +136,7 @@ class LocationAwareAttention(nn.Module):
             last_attn = value.new_zeros(batch_size, seq_len)
 
         conv_attn = torch.transpose(self.conv1d(last_attn.unsqueeze(1)), 1, 2)
-        score = self.fc(torch.tanh(
+        score = self.linear(torch.tanh(
                 self.linear_q(query.reshape(-1, hidden_dim)).view(batch_size, -1, hidden_dim)
                 + self.linear_v(value.reshape(-1, hidden_dim)).view(batch_size, -1, hidden_dim)
                 + conv_attn
@@ -146,6 +146,7 @@ class LocationAwareAttention(nn.Module):
         if self.smoothing:
             score = torch.sigmoid(score)
             attn = torch.div(score, score.sum(dim=-1).unsqueeze(dim=-1))
+
         else:
             attn = F.softmax(score, dim=-1)
 
