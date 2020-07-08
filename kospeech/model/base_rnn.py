@@ -1,6 +1,5 @@
 import torch
 import torch.nn as nn
-from typing import Optional, Any
 
 
 class BaseRNN(nn.Module):
@@ -29,7 +28,7 @@ class BaseRNN(nn.Module):
     }
 
     def __init__(self, input_size: int, hidden_dim: int = 512, num_layers: int = 3, rnn_type: str = 'lstm',
-                 dropout_p: float = 0.3, bidirectional: bool = True, device: Optional[Any] = torch.Tensor('cuda')):
+                 dropout_p: float = 0.3, bidirectional: bool = True, device: str = 'cuda'):
         super(BaseRNN, self).__init__()
         rnn_cell = self.supported_rnns[rnn_type]
         self.rnn = rnn_cell(input_size, hidden_dim, num_layers, True, True, dropout_p, bidirectional)

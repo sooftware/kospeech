@@ -46,7 +46,7 @@ class Speller(BaseRNN):
     def __init__(self, num_classes: int, max_length: int = 120, hidden_dim: int = 1024,
                  sos_id: int = 1, eos_id: int = 2, attn_mechanism: str = 'dot',
                  num_heads: int = 4, num_layers: int = 2, rnn_type: str = 'lstm',
-                 dropout_p: float = 0.3, device: Optional[Any] = torch.Tensor('cuda')):
+                 dropout_p: float = 0.3, device: str = 'cuda'):
         super(Speller, self).__init__(hidden_dim, hidden_dim, num_layers, rnn_type, dropout_p, False, device)
         self.num_classes = num_classes
         self.num_heads = num_heads
