@@ -1,5 +1,7 @@
 import torch
 import torch.nn as nn
+from typing import Tuple
+from torch import Tensor, BoolTensor
 
 
 class MaskConv(nn.Module):
@@ -25,16 +27,16 @@ class MaskConv(nn.Module):
         - **output**: Masked output from the sequential
         - **seq_lengths**: Sequence length of output from the sequential
     """
-    def __init__(self, sequential):
+    def __init__(self, sequential: nn.Sequential) -> None:
         super(MaskConv, self).__init__()
         self.sequential = sequential
 
-    def forward(self, inputs, seq_lengths):
+    def forward(self, inputs: Tensor, seq_lengths: Tensor) -> Tuple[Tensor, Tensor]:
         output = None
 
         for module in self.sequential:
             output = module(inputs)
-            mask = torch.BoolTensor(output.size()).fill_(0)
+            mask = BoolTensor(output.size()).fill_(0)
 
             if output.is_cuda:
                 mask = mask.cuda()
@@ -52,7 +54,7 @@ class MaskConv(nn.Module):
 
         return output, seq_lengths
 
-    def get_seq_lengths(self, module, seq_lengths):
+    def get_seq_lengths(self, module: nn.Module, seq_lengths: Tensor) -> Tensor:
         """
         Calculate convolutional neural network receptive formula
 
@@ -80,7 +82,7 @@ class CNNExtractor(nn.Module):
     Note:
         Do not use this class directly, use one of the sub classes.
     """
-    def __init__(self, activation='hardtanh'):
+    def __init__(self, activation: str = 'hardtanh') -> None:
         super(CNNExtractor, self).__init__()
         if activation.lower() == 'hardtanh':
             self.activation = nn.Hardtanh(0, 20, inplace=True)
@@ -95,7 +97,7 @@ class CNNExtractor(nn.Module):
         else:
             raise ValueError("Unsupported activation function : {0}".format(activation))
 
-    def forward(self, inputs: torch.Tensor, input_lengths: torch.Tensor):
+    def forward(self, inputs: Tensor, input_lengths: Tensor):
         if self.mask_conv:
             conv_feat, seq_lengths = self.conv(inputs, input_lengths)
             return conv_feat, seq_lengths
@@ -110,7 +112,7 @@ class VGGExtractor(CNNExtractor):
     "Advances in Joint CTC-Attention based End-to-End Speech Recognition with a Deep CNN Encoder and RNN-LM" paper
     - https://arxiv.org/pdf/1706.02737.pdf
     """
-    def __init__(self, in_channels: int = 1, activation: str = 'hardtanh', mask_conv: bool = False):
+    def __init__(self, in_channels: int = 1, activation: str = 'hardtanh', mask_conv: bool = False) -> None:
         super(VGGExtractor, self).__init__(activation)
         self.mask_conv = mask_conv
         self.conv = nn.Sequential(
@@ -131,7 +133,7 @@ class VGGExtractor(CNNExtractor):
         if mask_conv:
             self.conv = MaskConv(self.conv)
 
-    def forward(self, inputs: torch.Tensor, input_lengths: torch.Tensor):
+    def forward(self, inputs: Tensor, input_lengths: Tensor):
         return super().forward(inputs, input_lengths)
 
 
@@ -142,7 +144,7 @@ class DeepSpeech2Extractor(CNNExtractor):
     - https://arxiv.org/abs/1512.02595
     """
 
-    def __init__(self, in_channels: int = 1, activation: str = 'hardtanh', mask_conv: bool = False):
+    def __init__(self, in_channels: int = 1, activation: str = 'hardtanh', mask_conv: bool = False) -> None:
         super(DeepSpeech2Extractor, self).__init__(activation)
         self.mask_conv = mask_conv
         self.conv = nn.Sequential(
@@ -156,5 +158,5 @@ class DeepSpeech2Extractor(CNNExtractor):
         if mask_conv:
             self.conv = MaskConv(self.conv)
 
-    def forward(self, inputs: torch.Tensor, input_lengths: torch.Tensor):
+    def forward(self, inputs: Tensor, input_lengths: Tensor):
         return super().forward(inputs, input_lengths)

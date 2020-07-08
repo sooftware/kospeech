@@ -27,8 +27,9 @@ class BaseRNN(nn.Module):
         'rnn': nn.RNN
     }
 
-    def __init__(self, input_size: int, hidden_dim: int = 512, num_layers: int = 3, rnn_type: str = 'lstm',
-                 dropout_p: float = 0.3, bidirectional: bool = True, device: str = 'cuda') -> None:
+    def __init__(self, input_size: int, hidden_dim: int = 512, num_layers: int = 3,
+                 rnn_type: str = 'lstm', dropout_p: float = 0.3,
+                 bidirectional: bool = True, device: str = 'cuda') -> None:
         super(BaseRNN, self).__init__()
         rnn_cell = self.supported_rnns[rnn_type]
         self.rnn = rnn_cell(input_size, hidden_dim, num_layers, True, True, dropout_p, bidirectional)

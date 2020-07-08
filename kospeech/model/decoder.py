@@ -6,7 +6,7 @@ from torch import Tensor, LongTensor
 from kospeech.model.base_rnn import BaseRNN
 from typing import Optional, Any, Tuple
 from kospeech.model.attention import LocationAwareAttention, MultiHeadAttention
-from kospeech.model.modules import Linear
+from kospeech.model.modules import Linear, LayerNorm
 
 
 class Speller(BaseRNN):
@@ -59,8 +59,6 @@ class Speller(BaseRNN):
         self.attn_mechanism = attn_mechanism
         self.embedding = nn.Embedding(num_classes, hidden_dim)
         self.input_dropout = nn.Dropout(dropout_p)
-        self.fc1 = Linear(hidden_dim << 1, hidden_dim, bias=True)
-        self.fc2 = Linear(hidden_dim, num_classes, bias=True)
 
         if attn_mechanism == 'loc':
             self.attention = LocationAwareAttention(hidden_dim, smoothing=True)
@@ -68,6 +66,10 @@ class Speller(BaseRNN):
             self.attention = MultiHeadAttention(hidden_dim, num_heads)
         else:
             raise ValueError("Unsupported attention: %s".format(attn_mechanism))
+
+        self.linear1 = Linear(hidden_dim << 1, hidden_dim, bias=True)
+        self.layer_norm = LayerNorm(hidden_dim)
+        self.linear2 = Linear(hidden_dim, num_classes, bias=True)
 
     def forward_step(self, input_var: Tensor, hidden: Optional[Any],
                      encoder_outputs: Tensor, attn: Tensor) -> Tuple[Tensor, Optional[Any], Tensor]:
@@ -82,12 +84,12 @@ class Speller(BaseRNN):
         output, hidden = self.rnn(embedded, hidden)
 
         if self.attn_mechanism == 'dot':
-            context = self.attention(output, encoder_outputs)
+            context, attn = self.attention(output, encoder_outputs, encoder_outputs)
         else:
             context, attn = self.attention(output, encoder_outputs, attn)
 
-        output = self.fc1(context.view(-1, self.hidden_dim << 1)).view(batch_size, -1, self.hidden_dim)
-        output = self.fc2(torch.tanh(output).contiguous().view(-1, self.hidden_dim))
+        output = self.linear1(context.view(-1, self.hidden_dim << 1)).view(batch_size, -1, self.hidden_dim)
+        output = self.linear2(self.layer_norm(output).contiguous().view(-1, self.hidden_dim))
 
         predicted_softmax = F.log_softmax(output, dim=1)
         step_output = predicted_softmax.view(batch_size, output_lengths, -1).squeeze(1)
@@ -146,8 +148,8 @@ class Speller(BaseRNN):
 
         return decoder_outputs, ret_dict
 
-    def validate_args(self, inputs: Optional[Any], encoder_outputs: Tensor, teacher_forcing_ratio: float,
-                      language_model: Optional[torch.nn.Module]) -> Tuple[Tensor, int, int]:
+    def validate_args(self, inputs: Optional[Any], encoder_outputs: Tensor,
+                      teacher_forcing_ratio: float, language_model: Optional[nn.Module]) -> Tuple[Tensor, int, int]:
         """ Validate arguments """
         batch_size = encoder_outputs.size(0)
 

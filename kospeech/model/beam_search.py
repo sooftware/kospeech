@@ -1,8 +1,9 @@
 import torch
 import torch.nn as nn
+from torch import Tensor, LongTensor
 
 
-def _inflate(tensor, n_repeat, dim):
+def _inflate(tensor: Tensor, n_repeat: int, dim: int):
     """ Given a tensor, 'inflates' it along the given dimension by replicating each slice specified number of times  """
     repeat_dims = [1] * len(tensor.size())
     repeat_dims[dim] *= n_repeat
@@ -42,9 +43,9 @@ class BeamSearchDecoder(nn.Module):
         self.alpha = 1.2
         self.device = decoder.device
 
-    def forward(self, input_var: torch.Tensor, encoder_outputs: torch.Tensor, teacher_forcing_ratio: float = 0.0):
+    def forward(self, input_var: Tensor, encoder_outputs: Tensor, teacher_forcing_ratio: float = 0.0) -> list:
         inputs, batch_size, max_length = self.validate_args(input_var, encoder_outputs, 0.0)
-        self.pos_index = (torch.LongTensor(range(batch_size)) * self.beam_size).view(-1, 1).to(self.device)
+        self.pos_index = (LongTensor(range(batch_size)) * self.beam_size).view(-1, 1).to(self.device)
 
         hidden, attn = None, None
         inflated_encoder_outputs = _inflate(encoder_outputs, self.beam_size, 0)
@@ -57,11 +58,11 @@ class BeamSearchDecoder(nn.Module):
 
         # If beam_size is three, tensor([ 0,  3,  6,  9, 12, 15, 18, 21])
         # sequence_scores: tensor([[0.], [-inf], [-inf], [0.], [-inf], [-inf], [0.], [-inf] ..])  BKx1
-        fill_index = torch.LongTensor([i * self.beam_size for i in range(batch_size)]).to(self.device)
+        fill_index = LongTensor([i * self.beam_size for i in range(batch_size)]).to(self.device)
         sequence_scores.index_fill_(0, fill_index, 0.0)
 
         # Initialize the input vector
-        input_var = torch.transpose(torch.LongTensor([[self.sos_id] * batch_size * self.beam_size]), 0, 1)  # 1xBK => BKx1
+        input_var = torch.transpose(LongTensor([[self.sos_id] * batch_size * self.beam_size]), 0, 1)  # 1xBK => BKx1
         input_var = input_var.to(self.device)
 
         # Store decisions for backtracking
@@ -206,7 +207,7 @@ class BeamSearchDecoder(nn.Module):
         output = [step.index_select(0, re_sorted_idx).view(batch_size, self.beam_size, -1) for step in reversed(output)]
         return output
 
-    def get_length_penalty(self, length):
+    def get_length_penalty(self, length: int) -> float:
         """
         Calculate length-penalty.
         because shorter sentence usually have bigger probability.

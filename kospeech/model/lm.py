@@ -1,15 +1,16 @@
 import random
-import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from typing import Optional, Any
+from torch import Tensor
+from typing import Tuple
+from kospeech.model.modules import Linear
 from kospeech.model.base_rnn import BaseRNN
 
 
 class RNNLanguageModel(BaseRNN):
     def __init__(self, num_classes: int, num_layers: int = 3, rnn_type: str = 'lstm', hidden_dim: int = 512,
                  dropout_p: float = 0.3, max_length: int = 120, sos_id: int = 1, eos_id: int = 2,
-                 device: Optional[Any] = torch.Tensor('cuda')):
+                 device: str = 'cuda') -> None:
         super(RNNLanguageModel, self).__init__(hidden_dim, hidden_dim, num_layers, rnn_type, dropout_p, False, device)
         self.rnn_cell = self.supported_rnns[rnn_type]
         self.max_length = max_length
@@ -17,9 +18,9 @@ class RNNLanguageModel(BaseRNN):
         self.sos_id = sos_id
         self.embedding = nn.Embedding(num_classes, hidden_dim)
         self.input_dropout = nn.Dropout(p=dropout_p)
-        self.fc = nn.Linear(self.hidden_dim, num_classes)
+        self.fc = Linear(self.hidden_dim, num_classes)
 
-    def forward_step(self, input_var, hidden):
+    def forward_step(self, input_var: Tensor, hidden: Tensor) -> Tuple[Tensor, Tensor]:
         """ forward one time step """
         batch_size = input_var.size(0)
         output_length = input_var.size(1)
@@ -37,7 +38,7 @@ class RNNLanguageModel(BaseRNN):
 
         return predicted_softmax, hidden
 
-    def forward(self, inputs: torch.Tensor, teacher_forcing_ratio: float = 1.0):
+    def forward(self, inputs: Tensor, teacher_forcing_ratio: float = 1.0) -> Tensor:
         batch_size = inputs.size(0)
         max_length = inputs.size(1) - 1  # minus the start of sequence symbol
 
@@ -66,5 +67,5 @@ class RNNLanguageModel(BaseRNN):
 
         return outputs
 
-    def flatten_parameters(self):
+    def flatten_parameters(self) -> None:
         self.rnn.flatten_parameters()

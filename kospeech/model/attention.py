@@ -3,8 +3,8 @@ import numpy as np
 import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
-from typing import Optional
-from kospeech.model.modules import Linear
+from typing import Optional, Tuple
+from kospeech.model.modules import Linear, LayerNorm
 
 
 class ScaledDotProductAttention(nn.Module):
@@ -17,26 +17,21 @@ class ScaledDotProductAttention(nn.Module):
         dim (int): dimention of attention
         mask (torch.Tensor): tensor containing indices to be masked
 
-    Inputs: query, key, value, mask
-        - **query** (batch, q_len, d_model): tensor containing projection vector for decoder.
-        - **key** (batch, k_len, d_model): tensor containing projection vector for encoder.
-        - **value** (batch, v_len, d_model): tensor containing features of the encoded input sequence.
-        - **mask** (-): tensor containing indices to be masked
+    Inputs: query, key, value
+        - **query** (batch, q_len, hidden_dim): tensor containing projection vector for decoder.
+        - **key** (batch, k_len, hidden_dim): tensor containing projection vector for encoder.
+        - **value** (batch, v_len, hidden_dim): tensor containing projection vector for encoder.
 
     Returns: context, attn
         - **context**: tensor containing the context vector from attention mechanism.
         - **attn**: tensor containing the attention (alignment) from the encoder outputs.
     """
-    def __init__(self, dim: int):
+    def __init__(self, d_model: int) -> None:
         super(ScaledDotProductAttention, self).__init__()
-        self.sqrt_dim = np.sqrt(dim)
+        self.sqrt_dim = np.sqrt(d_model)
 
-    def forward(self, query: Tensor, key: Tensor, value: Tensor, mask: Optional[Tensor] = None):
+    def forward(self, query: Tensor, key: Tensor, value: Tensor) -> Tuple[Tensor, Tensor]:
         score = torch.bmm(query, key.transpose(1, 2)) / self.sqrt_dim
-
-        if mask is not None:
-            score.masked_fill_(mask.view(score.size()), -float('Inf'))
-
         attn = F.softmax(score, -1)
         context = torch.bmm(attn, value)
         return context, attn
@@ -44,57 +39,43 @@ class ScaledDotProductAttention(nn.Module):
 
 class MultiHeadAttention(nn.Module):
     """
-    Multi-Head Attention proposed in "Attention Is All You Need"
-    Instead of performing a single attention function with d_model-dimensional keys, values, and queries,
-    project the queries, keys and values h times with different, learned linear projections to d_head dimensions.
-    These are concatenated and once again projected, resulting in the final values.
-    Multi-head attention allows the model to jointly attend to information from different representation
-    subspaces at different positions.
-
-    MultiHead(Q, K, V) = Concat(head_1, ..., head_h) · W_o
-        where head_i = Attention(Q · W_q, K · W_k, V · W_v)
+    Applies a multi-headed scaled dot mechanism on the output features from the decoder.
+    Multi-head attention proposed in "Attention Is All You Need" paper.
 
     Args:
-        d_model (int): The dimension of keys / values / quries (default: 512)
-        num_heads (int): The number of attention heads. (default: 8)
+        hidden_dim (int): The number of expected features in the output
+        num_heads (int): The number of heads. (default: )
 
-    Inputs: query, key, value, mask
-        - **query** (batch, q_len, d_model): In transformer, three different ways:
-            Case 1: come from previoys decoder layer
-            Case 2: come from the input embedding
-            Case 3: come from the output embedding (masked)
+    Inputs: query, value
+        - **query** (batch, q_len, hidden_dim): tensor containing the output features from the decoder.
+        - **value** (batch, v_len, hidden_dim): tensor containing features of the encoded input sequence.
 
-        - **key** (batch, k_len, d_model): In transformer, three different ways:
-            Case 1: come from the output of the encoder
-            Case 2: come from the input embeddings
-            Case 3: come from the output embedding (masked)
+    Returns: context
+        - **context** (batch, output_len, dimensions): tensor containing the attended output features from the decoder.
 
-        - **value** (batch, v_len, d_model): In transformer, three different ways:
-            Case 1: come from the output of the encoder
-            Case 2: come from the input embeddings
-            Case 3: come from the output embedding (masked)
+    Reference:
+        - **Attention Is All You Need**: https://arxiv.org/abs/1706.03762
+        - **State-Of-The-Art Speech Recognition with Sequence-to-Sequence Models**: https://arxiv.org/abs/1712.01769
 
-        - **mask** (-): tensor containing indices to be masked
-
-    Returns: output, attn
-        - **output** (batch, output_len, dimensions): tensor containing the attended output features.
-        - **attn** (batch * num_heads, v_len): tensor containing the attention (alignment) from the encoder outputs.
+    Contributor:
+        - Soohwan Kim (sooftware)
+        - Deokjin Seo (qute012)
     """
-    def __init__(self, d_model: int = 512, num_heads: int = 8):
+    def __init__(self, hidden_dim: int = 1024, num_heads: int = 8) -> None:
         super(MultiHeadAttention, self).__init__()
 
-        assert d_model % num_heads == 0, "d_model % num_heads should be zero."
+        assert hidden_dim % num_heads == 0, "d_model % num_heads should be zero."
 
-        self.d_head = int(d_model / num_heads)
+        self.d_head = int(hidden_dim / num_heads)
         self.num_heads = num_heads
-        self.scaled_dot_attn = ScaledDotProductAttention(self.d_head)
-        self.linear_q = Linear(d_model, self.d_head * num_heads)
-        self.linear_k = Linear(d_model, self.d_head * num_heads)
-        self.linear_v = Linear(d_model, self.d_head * num_heads)
-        self.linear = Linear(d_model, d_model)
+        self.scaled_dot_attn = ScaledDotProductAttention(hidden_dim)
+        self.linear_q = Linear(hidden_dim, self.d_head * num_heads)
+        self.linear_k = Linear(hidden_dim, self.d_head * num_heads)
+        self.linear_v = Linear(hidden_dim, self.d_head * num_heads)
 
-    def forward(self, query: Tensor, key: Tensor, value: Tensor):
+    def forward(self, query: Tensor, key: Tensor, value: Tensor) -> Tuple[Tensor, Tensor]:
         batch_size = value.size(0)
+        residual = query
 
         query = self.linear_q(query).view(batch_size, -1, self.num_heads, self.d_head)  # BxQ_LENxNxD
         key = self.linear_k(key).view(batch_size, -1, self.num_heads, self.d_head)      # BxK_LENxNxD
@@ -106,10 +87,11 @@ class MultiHeadAttention(nn.Module):
 
         context, attn = self.scaled_dot_attn(query, key, value)
         context = context.view(self.num_heads, batch_size, -1, self.d_head)
-        context = context.permute(1, 2, 0, 3).contiguous().view(batch_size, -1, self.num_heads * self.d_head)  # BxTxND
 
-        output = self.linear(context)
-        return output, attn
+        context = context.permute(1, 2, 0, 3).contiguous().view(batch_size, -1, self.num_heads * self.dim)  # BxTxND
+        context = torch.cat((context, residual), dim=2)
+
+        return context, attn
 
 
 class LocationAwareAttention(nn.Module):
@@ -136,7 +118,7 @@ class LocationAwareAttention(nn.Module):
         - **Attention-Based Models for Speech Recognition**: https://arxiv.org/abs/1506.07503
         - **ClovaCall**: https://github.com/clovaai/ClovaCall/blob/master/las.pytorch/models/attention.py
     """
-    def __init__(self, hidden_dim: int = 1024, smoothing: bool = True):
+    def __init__(self, hidden_dim: int = 1024, smoothing: bool = True) -> None:
         super(LocationAwareAttention, self).__init__()
         self.hidden_dim = hidden_dim
         self.conv1d = nn.Conv1d(in_channels=1, out_channels=hidden_dim, kernel_size=3, padding=1)
@@ -146,7 +128,7 @@ class LocationAwareAttention(nn.Module):
         self.fc = nn.Linear(hidden_dim, 1, bias=True)
         self.smoothing = smoothing
 
-    def forward(self, query: Tensor, value: Tensor, last_attn: Tensor):
+    def forward(self, query: Tensor, value: Tensor, last_attn: Tensor) -> Tuple[Tensor, Tensor]:
         batch_size, hidden_dim, seq_len = query.size(0), query.size(2), value.size(1)
 
         # Initialize previous attention (alignment) to zeros
