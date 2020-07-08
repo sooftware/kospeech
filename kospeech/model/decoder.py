@@ -2,10 +2,11 @@ import random
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from typing import Optional
+from torch import Tensor, LongTensor
 from kospeech.model.base_rnn import BaseRNN
-from typing import Optional, Any
+from typing import Optional, Any, Tuple
 from kospeech.model.attention import LocationAwareAttention, MultiHeadAttention
+from kospeech.model.modules import Linear
 
 
 class Speller(BaseRNN):
@@ -46,7 +47,7 @@ class Speller(BaseRNN):
     def __init__(self, num_classes: int, max_length: int = 120, hidden_dim: int = 1024,
                  sos_id: int = 1, eos_id: int = 2, attn_mechanism: str = 'dot',
                  num_heads: int = 4, num_layers: int = 2, rnn_type: str = 'lstm',
-                 dropout_p: float = 0.3, device: str = 'cuda'):
+                 dropout_p: float = 0.3, device: str = 'cuda') -> None:
         super(Speller, self).__init__(hidden_dim, hidden_dim, num_layers, rnn_type, dropout_p, False, device)
         self.num_classes = num_classes
         self.num_heads = num_heads
@@ -58,8 +59,8 @@ class Speller(BaseRNN):
         self.attn_mechanism = attn_mechanism
         self.embedding = nn.Embedding(num_classes, hidden_dim)
         self.input_dropout = nn.Dropout(dropout_p)
-        self.fc1 = nn.Linear(hidden_dim << 1, hidden_dim, bias=True)
-        self.fc2 = nn.Linear(hidden_dim, num_classes, bias=True)
+        self.fc1 = Linear(hidden_dim << 1, hidden_dim, bias=True)
+        self.fc2 = Linear(hidden_dim, num_classes, bias=True)
 
         if attn_mechanism == 'loc':
             self.attention = LocationAwareAttention(hidden_dim, smoothing=True)
@@ -68,7 +69,8 @@ class Speller(BaseRNN):
         else:
             raise ValueError("Unsupported attention: %s".format(attn_mechanism))
 
-    def forward_step(self, input_var, hidden, encoder_outputs, attn):
+    def forward_step(self, input_var: Tensor, hidden: Optional[Any],
+                     encoder_outputs: Tensor, attn: Tensor) -> Tuple[Tensor, Optional[Any], Tensor]:
         batch_size, output_lengths = input_var.size(0), input_var.size(1)
 
         embedded = self.embedding(input_var).to(self.device)
@@ -92,8 +94,8 @@ class Speller(BaseRNN):
 
         return step_output, hidden, attn
 
-    def forward(self, inputs: torch.Tensor, encoder_outputs: torch.Tensor,
-                teacher_forcing_ratio: float = 1.0, language_model: Optional[nn.Module] = None):
+    def forward(self, inputs: Tensor, encoder_outputs: Tensor, teacher_forcing_ratio: float = 1.0,
+                language_model: Optional[nn.Module] = None) -> Tuple[Tensor, dict]:
         hidden, attn = None, None
         decoder_outputs, ret_dict = list(), dict()
 
@@ -144,12 +146,13 @@ class Speller(BaseRNN):
 
         return decoder_outputs, ret_dict
 
-    def validate_args(self, inputs, encoder_outputs, teacher_forcing_ratio, language_model):
+    def validate_args(self, inputs: Optional[Any], encoder_outputs: Tensor, teacher_forcing_ratio: float,
+                      language_model: Optional[torch.nn.Module]) -> Tuple[Tensor, int, int]:
         """ Validate arguments """
         batch_size = encoder_outputs.size(0)
 
         if inputs is None:  # inference
-            inputs = torch.LongTensor([self.sos_id] * batch_size).view(batch_size, 1)
+            inputs = LongTensor([self.sos_id] * batch_size).view(batch_size, 1)
             max_length = self.max_length
 
             if torch.cuda.is_available():

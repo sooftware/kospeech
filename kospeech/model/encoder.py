@@ -1,6 +1,7 @@
 import math
 import torch
 import torch.nn as nn
+from torch import Tensor
 from kospeech.model.base_rnn import BaseRNN
 from kospeech.model.conv import VGGExtractor, DeepSpeech2Extractor
 
@@ -27,7 +28,7 @@ class Listener(BaseRNN):
 
     def __init__(self, input_size: int, hidden_dim: int = 256, device: str = 'cuda', dropout_p: float = 0.3,
                  num_layers: int = 3, bidirectional: bool = True, rnn_type: str = 'lstm', extractor: str = 'vgg',
-                 activation: str = 'hardtanh', mask_conv: bool = False):
+                 activation: str = 'hardtanh', mask_conv: bool = False) -> None:
         self.mask_conv = mask_conv
 
         if extractor.lower() == 'vgg':
@@ -45,7 +46,7 @@ class Listener(BaseRNN):
         else:
             raise ValueError("Unsupported Extractor : {0}".format(extractor))
 
-    def forward(self, inputs: torch.Tensor, input_lengths: torch.Tensor):
+    def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tensor:
         if self.mask_conv:
             inputs = inputs.unsqueeze(1).permute(0, 1, 3, 2)
             conv_feat, seq_lengths = self.conv_extractor(inputs, input_lengths)
