@@ -53,11 +53,12 @@ class SpectrogramParser(AudioParser):
     SPEC_AUGMENT = 1      # SpecAugment
     NOISE_INJECTION = 2   # Noise Injection
 
-    def __init__(self, feature_extract_by='librosa', sample_rate=16000, n_mels=80, window_size=20, stride=10,
-                 del_silence=False, input_reverse=True, normalize=False, feature='mel',
-                 time_mask_para=70, freq_mask_para=12, time_mask_num=2, freq_mask_num=2,
-                 sos_id=1, eos_id=2, target_dict=None,
-                 noise_augment=False, dataset_path=None, noiseset_size=0, noise_level=0.7):
+    def __init__(self, feature_extract_by: str = 'librosa', sample_rate: int = 16000,
+                 n_mels: int = 80, window_size: int = 20, stride: int = 10,
+                 del_silence: bool = False, input_reverse: bool = True, normalize: bool = False,  feature: str = 'mel',
+                 time_mask_para: int = 70, freq_mask_para: int = 12, time_mask_num: int = 2, freq_mask_num: int = 2,
+                 sos_id: int = 1, eos_id: int = 2, target_dict: dict = None, noise_augment: bool = False,
+                 dataset_path: str = None, noiseset_size: int = 0, noise_level: float = 0.7):
         super(SpectrogramParser, self).__init__(dataset_path, noiseset_size, sample_rate, noise_level, noise_augment)
         self.del_silence = del_silence
         self.input_reverse = input_reverse
@@ -76,7 +77,7 @@ class SpectrogramParser(AudioParser):
         else:
             raise ValueError("Unsupported feature : {0}".format(feature))
 
-    def parse_audio(self, audio_path, augment_method):
+    def parse_audio(self, audio_path: str, augment_method: int):
         """
         Parses audio.
 

@@ -7,7 +7,8 @@ from kospeech.model.conv import VGGExtractor, DeepSpeech2Extractor
 
 
 class Listener(BaseRNN):
-    """Converts low level speech signals into higher level features
+    """
+    Converts low level speech signals into higher level features
 
     Args:
         input_size (int): size of input

@@ -20,7 +20,7 @@ class Spectrogram(object):
         window_size (int): window size (ms) (Default : 20)
         stride (int): Length of hop between STFT windows. (ms) (Default: 10)
     """
-    def __init__(self, sample_rate=16000, window_size=20, stride=10):
+    def __init__(self, sample_rate: int = 16000, window_size: int = 20, stride: int = 10) -> None:
         self.sample_rate = sample_rate
         self.n_fft = int(sample_rate * 0.001 * window_size)
         self.hop_length = int(sample_rate * 0.001 * (window_size - stride))
