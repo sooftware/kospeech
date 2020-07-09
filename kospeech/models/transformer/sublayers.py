@@ -4,7 +4,7 @@ import torch.nn.functional as F
 import numpy as np
 from torch import Tensor
 from typing import Optional, Tuple
-from kospeech.nn.seq2seq.modules import Linear, LayerNorm
+from kospeech.models.seq2seq.modules import Linear, LayerNorm
 
 
 class AddNorm(nn.Module):

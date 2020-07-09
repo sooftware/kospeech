@@ -4,8 +4,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor, LongTensor
 from typing import Optional, Any, Tuple
-from kospeech.nn.seq2seq.attention import LocationAwareAttention, MultiHeadAttention
-from kospeech.nn.seq2seq.modules import Linear, LayerNorm, BaseRNN
+from kospeech.models.seq2seq.attention import LocationAwareAttention, MultiHeadAttention
+from kospeech.models.seq2seq.modules import Linear, LayerNorm, BaseRNN
 
 
 class Seq2seqDecoder(BaseRNN):

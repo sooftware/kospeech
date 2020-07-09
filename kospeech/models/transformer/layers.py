@@ -1,7 +1,7 @@
 import torch.nn as nn
 from torch import Tensor
 from typing import Tuple
-from kospeech.nn.transformer.sublayers import MultiHeadAttention, PoswiseFeedForwardNet, AddNorm
+from kospeech.models.transformer.sublayers import MultiHeadAttention, PoswiseFeedForwardNet, AddNorm
 
 
 class TransformerEncoderLayer(nn.Module):

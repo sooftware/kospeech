@@ -12,10 +12,10 @@ Reference :
 import torch.nn as nn
 from torch import Tensor
 from typing import Optional, Tuple
-from kospeech.nn.seq2seq.modules import Linear
-from kospeech.nn.transformer.mask import subsequent_masking, pad_masking
-from kospeech.nn.transformer.embeddings import Embedding, PositionalEncoding
-from kospeech.nn.transformer.layers import TransformerEncoderLayer, TransformerDecoderLayer
+from kospeech.models.seq2seq.modules import Linear
+from kospeech.models.transformer.mask import subsequent_masking, pad_masking
+from kospeech.models.transformer.embeddings import Embedding, PositionalEncoding
+from kospeech.models.transformer.layers import TransformerEncoderLayer, TransformerDecoderLayer
 
 
 class Transformer(nn.Module):

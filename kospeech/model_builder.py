@@ -2,11 +2,11 @@ import torch
 import torch.nn as nn
 from astropy.modeling import ParameterError
 from kospeech.decode.ensemble import BasicEnsemble, WeightedEnsemble
-from kospeech.nn.seq2seq.modules import BaseRNN
-from kospeech.nn.seq2seq.seq2seq import Seq2seq
-from kospeech.nn.seq2seq.encoder import Seq2seqEncoder
-from kospeech.nn.seq2seq.decoder import Seq2seqDecoder
-from kospeech.nn.transformer.transformer import Transformer
+from kospeech.models.seq2seq.modules import BaseRNN
+from kospeech.models.seq2seq.seq2seq import Seq2seq
+from kospeech.models.seq2seq.encoder import Seq2seqEncoder
+from kospeech.models.seq2seq.decoder import Seq2seqDecoder
+from kospeech.models.transformer.transformer import Transformer
 from kospeech.utils import char2id, EOS_token, SOS_token, PAD_token
 
 
