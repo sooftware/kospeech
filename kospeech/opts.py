@@ -7,6 +7,9 @@ def build_model_opts(parser):
     Be careful with these as they will be used during inference.
     """
     group = parser.add_argument_group('Model')
+    group.add_argument('--architecture', '-architecture',
+                       type=str, default='seq2seq',
+                       help='which architecture to use: [seq2seq, transformer] (default: seq2seq)')
     group.add_argument('--use_bidirectional', '-use_bidirectional',
                        action='store_true', default=False,
                        help='if True, becomes a bidirectional encoder (defulat: False)')
@@ -233,6 +236,7 @@ def print_preprocess_opts(opt):
 
 def print_model_opts(opt):
     """ Print model options """
+    logger.info('--architecture: %s' % str(opt.architecture))
     logger.info('--use_bidirectional: %s' % str(opt.use_bidirectional))
     logger.info('--mask_conv: %s' % str(opt.mask_conv))
     logger.info('--hidden_dim: %s' % str(opt.hidden_dim))

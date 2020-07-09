@@ -4,7 +4,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
 from typing import Tuple
-from kospeech.model.modules import Linear
+from kospeech.nn.seq2seq.modules import Linear
 
 
 class ScaledDotProductAttention(nn.Module):
@@ -61,10 +61,10 @@ class MultiHeadAttention(nn.Module):
         - Soohwan Kim @sooftware
         - Deokjin Seo @qute012
     """
-    def __init__(self, hidden_dim: int = 1024, num_heads: int = 8) -> None:
+    def __init__(self, hidden_dim: int = 512, num_heads: int = 8) -> None:
         super(MultiHeadAttention, self).__init__()
 
-        assert hidden_dim % num_heads == 0, "d_model % num_heads should be zero."
+        assert hidden_dim % num_heads == 0, "hidden_dim % num_heads should be zero."
 
         self.d_head = int(hidden_dim / num_heads)
         self.num_heads = num_heads
@@ -118,7 +118,7 @@ class LocationAwareAttention(nn.Module):
         - **Attention-Based Models for Speech Recognition**: https://arxiv.org/abs/1506.07503
         - **ClovaCall**: https://github.com/clovaai/ClovaCall/blob/master/las.pytorch/models/attention.py
     """
-    def __init__(self, hidden_dim: int = 1024, smoothing: bool = True) -> None:
+    def __init__(self, hidden_dim: int = 512, smoothing: bool = True) -> None:
         super(LocationAwareAttention, self).__init__()
         self.hidden_dim = hidden_dim
         self.conv1d = nn.Conv1d(in_channels=1, out_channels=hidden_dim, kernel_size=3, padding=1)

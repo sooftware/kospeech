@@ -2,57 +2,69 @@ import torch
 import torch.nn as nn
 from astropy.modeling import ParameterError
 from kospeech.decode.ensemble import BasicEnsemble, WeightedEnsemble
-from kospeech.model.base_rnn import BaseRNN
-from kospeech.model.las import ListenAttendSpell
-from kospeech.model.encoder import Listener
-from kospeech.model.decoder import Speller
-from kospeech.utils import char2id, EOS_token, SOS_token
+from kospeech.nn.seq2seq.modules import BaseRNN
+from kospeech.nn.seq2seq.seq2seq import Seq2seq
+from kospeech.nn.seq2seq.encoder import Seq2seqEncoder
+from kospeech.nn.seq2seq.decoder import Seq2seqDecoder
+from kospeech.nn.transformer.transformer import Transformer
+from kospeech.utils import char2id, EOS_token, SOS_token, PAD_token
 
 
 def build_model(opt, device):
     """ Various model dispatcher function. """
-    if opt.feature.lower() == 'mel' or opt.feature.lower() == 'mfcc':
-        input_size = opt.n_mels
-    else:
+    if opt.feature.lower() == 'spect':
         input_size = 161  # spectrogram size
+    else:
+        input_size = opt.n_mels
 
-    listener = build_listener(input_size=input_size, hidden_dim=opt.hidden_dim, dropout_p=opt.dropout,
-                              num_layers=opt.num_encoder_layers, bidirectional=opt.use_bidirectional,
-                              extractor=opt.extractor, activation=opt.activation,
-                              rnn_type=opt.rnn_type, device=device, mask_conv=opt.mask_conv)
-    speller = build_speller(num_classes=len(char2id), max_len=opt.max_len, sos_id=SOS_token, eos_id=EOS_token,
-                            hidden_dim=opt.hidden_dim << (1 if opt.use_bidirectional else 0),
-                            num_layers=opt.num_decoder_layers, rnn_type=opt.rnn_type, dropout_p=opt.dropout,
-                            num_heads=opt.num_heads, attn_mechanism=opt.attn_mechanism, device=device)
+    if opt.architecture.lower() == 'seq2seq':
+        encoder = build_seq2seq_encoder(input_size=input_size, hidden_dim=opt.hidden_dim, dropout_p=opt.dropout,
+                                        num_layers=opt.num_encoder_layers, bidirectional=opt.use_bidirectional,
+                                        extractor=opt.extractor, activation=opt.activation,
+                                        rnn_type=opt.rnn_type, device=device, mask_conv=opt.mask_conv)
+        decoder = build_seq2seq_decoder(num_classes=len(char2id), max_len=opt.max_len,
+                                        sos_id=SOS_token, eos_id=EOS_token,
+                                        hidden_dim=opt.hidden_dim << (1 if opt.use_bidirectional else 0),
+                                        num_layers=opt.num_decoder_layers, rnn_type=opt.rnn_type, dropout_p=opt.dropout,
+                                        num_heads=opt.num_heads, attn_mechanism=opt.attn_mechanism, device=device)
+        model = build_seq2seq(encoder, decoder, device)
+    elif opt.architecture.lower() == 'transformer':
+        model = build_transformer(num_classes=opt.num_classes, pad_id=PAD_token,
+                                  d_model=opt.d_model, d_ff=opt.d_ff, num_heads=opt.num_heads,
+                                  num_encoder_layers=opt.num_encoder_layers, num_decoder_layers=opt.num_decoder_layers,
+                                  dropout_p=opt.dropout_p, ffnet_style=opt.ffnet_style)
+    else:
+        raise ValueError('Unsupported architecture: {0}'.format(opt.architecture))
 
-    return build_las(listener, speller, device)
+    return model
 
 
-def build_las(listener, speller, device):
+def build_transformer(num_classes: int, pad_id: int, d_model: int, d_ff: int, num_heads: int,
+                      num_encoder_layers: int, num_decoder_layers: int,
+                      dropout_p: float, ffnet_style: str) -> Transformer:
+    if ffnet_style not in {'ff', 'conv'}:
+        raise ParameterError("Unsupported ffnet_style: {0}".format(ffnet_style))
+
+    return Transformer(num_classes=num_classes, pad_id=pad_id,
+                       d_model=d_model, d_ff=d_ff, num_heads=num_heads,
+                       num_encoder_layers=num_encoder_layers, num_decoder_layers=num_decoder_layers,
+                       dropout_p=dropout_p, ffnet_style=ffnet_style)
+
+
+def build_seq2seq(listener: Seq2seqEncoder, speller: Seq2seqDecoder, device: str):
     """ Various Listen, Attend and Spell dispatcher function. """
-    if listener is None:
-        raise ParameterError("listener should not be None")
-    if speller is None:
-        raise ParameterError("speller should not be None")
-
-    model = ListenAttendSpell(listener, speller)
+    model = Seq2seq(listener, speller)
     model.flatten_parameters()
     model = nn.DataParallel(model).to(device)
 
     return model
 
 
-def build_listener(input_size: int, hidden_dim: int, dropout_p: float,
-                   num_layers: int, bidirectional: bool,
-                   rnn_type: str, extractor: str,
-                   activation: str, device: str, mask_conv: bool) -> Listener:
+def build_seq2seq_encoder(input_size: int, hidden_dim: int, dropout_p: float,
+                          num_layers: int, bidirectional: bool,
+                          rnn_type: str, extractor: str,
+                          activation: str, device: str, mask_conv: bool) -> Seq2seqEncoder:
     """ Various encoder dispatcher function. """
-    if not isinstance(input_size, int):
-        raise ParameterError("input_size should be inteager type")
-    if not isinstance(hidden_dim, int):
-        raise ParameterError("hidden_dim should be inteager type")
-    if not isinstance(num_layers, int):
-        raise ParameterError("num_layers should be inteager type")
     if dropout_p < 0.0:
         raise ParameterError("dropout probability should be positive")
     if input_size < 0:
@@ -66,14 +78,15 @@ def build_listener(input_size: int, hidden_dim: int, dropout_p: float,
     if rnn_type.lower() not in BaseRNN.supported_rnns.keys():
         raise ParameterError("Unsupported RNN Cell: {0}".format(rnn_type))
 
-    return Listener(input_size=input_size, hidden_dim=hidden_dim,
-                    dropout_p=dropout_p, num_layers=num_layers, mask_conv=mask_conv,
-                    bidirectional=bidirectional, rnn_type=rnn_type,
-                    extractor=extractor, device=device, activation=activation)
+    return Seq2seqEncoder(input_size=input_size, hidden_dim=hidden_dim,
+                          dropout_p=dropout_p, num_layers=num_layers, mask_conv=mask_conv,
+                          bidirectional=bidirectional, rnn_type=rnn_type,
+                          extractor=extractor, device=device, activation=activation)
 
 
-def build_speller(num_classes, max_len, hidden_dim, sos_id, eos_id, attn_mechanism,
-                  num_layers, rnn_type, dropout_p, num_heads, device):
+def build_seq2seq_decoder(num_classes: int, max_len: int, hidden_dim: int,
+                          sos_id: int, eos_id: int, attn_mechanism: str, num_layers: int,
+                          rnn_type: str, dropout_p: float, num_heads: int, device: str) -> Seq2seqDecoder:
     """ Various decoder dispatcher function. """
     if not isinstance(num_classes, int):
         raise ParameterError("num_classes should be inteager type")
@@ -110,11 +123,11 @@ def build_speller(num_classes, max_len, hidden_dim, sos_id, eos_id, attn_mechani
     if device is None:
         raise ParameterError("device is None")
 
-    return Speller(num_classes=num_classes, max_length=max_len,
-                   hidden_dim=hidden_dim, sos_id=sos_id, eos_id=eos_id,
-                   attn_mechanism=attn_mechanism, num_heads=num_heads,
-                   num_layers=num_layers, rnn_type=rnn_type,
-                   dropout_p=dropout_p, device=device)
+    return Seq2seqDecoder(num_classes=num_classes, max_length=max_len,
+                          hidden_dim=hidden_dim, sos_id=sos_id, eos_id=eos_id,
+                          attn_mechanism=attn_mechanism, num_heads=num_heads,
+                          num_layers=num_layers, rnn_type=rnn_type,
+                          dropout_p=dropout_p, device=device)
 
 
 def load_test_model(opt, device):

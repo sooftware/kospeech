@@ -4,13 +4,13 @@ from torch import Tensor
 from typing import Optional, Tuple
 
 
-class ListenAttendSpell(nn.Module):
+class Seq2seq(nn.Module):
     """
-    Listen, Attend and Spell (LAS) Model
+    Standard sequence-to-sequence architecture with configurable encoder and decoder.
 
     Args:
-        listener (torch.nn.Module): encoder of seq2seq
-        speller (torch.nn.Module): decoder of seq2seq
+        encoder (torch.nn.Module): encoder of seq2seq
+        decoder (torch.nn.Module): decoder of seq2seq
 
     Inputs: inputs, input_lengths, targets, teacher_forcing_ratio
         - **inputs** (torch.Tensor): tensor of sequences, whose length is the batch size and within which
@@ -25,19 +25,16 @@ class ListenAttendSpell(nn.Module):
     Returns: output
         - **output** (seq_len, batch_size, num_classes): list of tensors containing
           the outputs of the decoding function.
-
-    Reference:
-        - **Listen Attend and Spell**: https://arxiv.org/abs/1508.01211
     """
-    def __init__(self, listener: nn.Module, speller: nn.Module) -> None:
-        super(ListenAttendSpell, self).__init__()
-        self.listener = listener
-        self.speller = speller
+    def __init__(self, encoder: nn.Module, decoder: nn.Module) -> None:
+        super(Seq2seq, self).__init__()
+        self.encoder = encoder
+        self.decoder = decoder
 
     def forward(self, inputs: Tensor, input_lengths: Tensor, targets: Optional[Tensor] = None,
                 teacher_forcing_ratio: float = 1.0, language_model: Optional[nn.Module] = None) -> Tuple[Tensor, dict]:
-        encoder_outputs = self.listener(inputs, input_lengths)
-        result = self.speller(targets, encoder_outputs, teacher_forcing_ratio, language_model)
+        encoder_outputs = self.encoder(inputs, input_lengths)
+        result = self.decoder(targets, encoder_outputs, teacher_forcing_ratio, language_model)
         return result
 
     def flatten_parameters(self):
@@ -45,4 +42,4 @@ class ListenAttendSpell(nn.Module):
         self.speller.rnn.flatten_parameters()
 
     def set_speller(self, decoder: nn.Module):
-        self.speller = decoder
+        self.decoder = decoder

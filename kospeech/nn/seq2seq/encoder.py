@@ -2,11 +2,11 @@ import math
 import torch
 import torch.nn as nn
 from torch import Tensor
-from kospeech.model.base_rnn import BaseRNN
-from kospeech.model.conv import VGGExtractor, DeepSpeech2Extractor
+from kospeech.nn.seq2seq.modules import BaseRNN
+from kospeech.nn.seq2seq.conv import VGGExtractor, DeepSpeech2Extractor
 
 
-class Listener(BaseRNN):
+class Seq2seqEncoder(BaseRNN):
     """
     Converts low level speech signals into higher level features
 
@@ -34,14 +34,16 @@ class Listener(BaseRNN):
 
         if extractor.lower() == 'vgg':
             input_size = (input_size - 1) << 5 if input_size % 2 else input_size << 5
-            super(Listener, self).__init__(input_size, hidden_dim, num_layers, rnn_type, dropout_p, bidirectional, device)
+            super(Seq2seqEncoder, self).__init__(input_size, hidden_dim, num_layers,
+                                                 rnn_type, dropout_p, bidirectional, device)
             self.conv_extractor = VGGExtractor(in_channels=1, activation=activation, mask_conv=mask_conv)
 
         elif extractor.lower() == 'ds2':
             input_size = int(math.floor(input_size + 2 * 20 - 41) / 2 + 1)
             input_size = int(math.floor(input_size + 2 * 10 - 21) / 2 + 1)
             input_size <<= 5
-            super(Listener, self).__init__(input_size, hidden_dim, num_layers, rnn_type, dropout_p, bidirectional, device)
+            super(Seq2seqEncoder, self).__init__(input_size, hidden_dim, num_layers,
+                                                 rnn_type, dropout_p, bidirectional, device)
             self.conv_extractor = DeepSpeech2Extractor(in_channels=1, activation=activation, mask_conv=mask_conv)
 
         else:

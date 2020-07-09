@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import pandas as pd
 from kospeech.metrics import CharacterErrorRate
-from kospeech.model.beam_search import BeamSearchDecoder
+from kospeech.seq2seq.beam_search import BeamSearchDecoder
 from kospeech.model_builder import load_language_model
 from kospeech.utils import id2char, EOS_token, logger, label_to_string
 

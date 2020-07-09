@@ -3,13 +3,12 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor, LongTensor
-from kospeech.model.base_rnn import BaseRNN
 from typing import Optional, Any, Tuple
-from kospeech.model.attention import LocationAwareAttention, MultiHeadAttention
-from kospeech.model.modules import Linear, LayerNorm
+from kospeech.nn.seq2seq.attention import LocationAwareAttention, MultiHeadAttention
+from kospeech.nn.seq2seq.modules import Linear, LayerNorm, BaseRNN
 
 
-class Speller(BaseRNN):
+class Seq2seqDecoder(BaseRNN):
     """
     Converts higher level features (from listener) into output utterances
     by specifying a probability distribution over sequences of characters.
@@ -48,7 +47,7 @@ class Speller(BaseRNN):
                  sos_id: int = 1, eos_id: int = 2, attn_mechanism: str = 'dot',
                  num_heads: int = 4, num_layers: int = 2, rnn_type: str = 'lstm',
                  dropout_p: float = 0.3, device: str = 'cuda') -> None:
-        super(Speller, self).__init__(hidden_dim, hidden_dim, num_layers, rnn_type, dropout_p, False, device)
+        super(Seq2seqDecoder, self).__init__(hidden_dim, hidden_dim, num_layers, rnn_type, dropout_p, False, device)
         self.num_classes = num_classes
         self.num_heads = num_heads
         self.max_length = max_length
@@ -102,8 +101,8 @@ class Speller(BaseRNN):
         decoder_outputs, ret_dict = list(), dict()
 
         if not self.training:
-            ret_dict[Speller.KEY_ATTENTION_SCORE] = list()
-            ret_dict[Speller.KEY_SEQUENCE_SYMBOL] = list()
+            ret_dict[Seq2seqDecoder.KEY_ATTENTION_SCORE] = list()
+            ret_dict[Seq2seqDecoder.KEY_SEQUENCE_SYMBOL] = list()
 
         inputs, batch_size, max_length = self.validate_args(inputs, encoder_outputs, teacher_forcing_ratio, language_model)
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
@@ -135,8 +134,8 @@ class Speller(BaseRNN):
                 step_output, hidden, attn = self.forward_step(input_var, hidden, encoder_outputs, attn)
 
                 if not self.training:
-                    ret_dict[Speller.KEY_ATTENTION_SCORE].append(attn)
-                    ret_dict[Speller.KEY_SEQUENCE_SYMBOL].append(input_var)
+                    ret_dict[Seq2seqDecoder.KEY_ATTENTION_SCORE].append(attn)
+                    ret_dict[Seq2seqDecoder.KEY_SEQUENCE_SYMBOL].append(input_var)
 
                     if use_language_model:
                         lm_step_output = language_model.forward_step(prev_tokens, None)[0][:, -1, :].squeeze(1)

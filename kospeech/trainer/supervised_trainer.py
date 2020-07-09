@@ -133,6 +133,7 @@ class SupervisedTrainer(object):
                                     valid_result=[self.valid_dict, 1.0, valid_cer])
             logger.info('Epoch %d Training result saved as a csv file complete !!' % epoch)
 
+        Checkpoint(model, self.optimizer, self.criterion, self.trainset_list, self.validset, num_epochs).save()
         return model
 
     def train_epoches(self, model: nn.Module, epoch: int,
