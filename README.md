@@ -55,9 +55,11 @@ We have referred to many papers to develop the best model possible. And tried to
 
 ## Roadmap
   
-<img src="https://user-images.githubusercontent.com/42150335/85176859-c4467d00-b2b5-11ea-9fe1-4981cfa4bc0e.png"> 
+<img src="https://user-images.githubusercontent.com/42150335/87078321-675c3800-c25f-11ea-99da-0021a402112b.png"> 
   
-Our project can be trained with serveral options. You can choose the CNN extractor from (`ds2` /`vgg`), You can choose attention mechanism from (`location-aware`, `multi-head`) attention. Also, You can choose feature extraction method from (`spectrogram`, `mel-spectrogram`, `mfcc`). In addition to this, You can see a variety of options [here](https://sooftware.github.io/KoSpeech/notes/opts.html).  
+### Seq2seq
+  
+Sequence-to-Sequence can be trained with serveral options. You can choose the CNN extractor from (`ds2` /`vgg`), You can choose attention mechanism from (`location-aware`, `multi-head`) attention. Also, You can choose feature extraction method from (`spectrogram`, `mel-spectrogram`, `mfcc`). In addition to this, You can see a variety of options [here](https://sooftware.github.io/KoSpeech/notes/opts.html).  
   
 Our architecture based on Listen Attend and Spell.   
 We mainly referred to following papers.  
@@ -114,6 +116,11 @@ Seq2seq(
   )
 )
 ``` 
+  
+### Transformer  
+  
+The Transformer model is currently implemented, but the code for learning is not implemented.  
+We will implement as soon as possible.  
   
 ### KoSpeech
 
