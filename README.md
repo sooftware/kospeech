@@ -69,7 +69,7 @@ We mainly referred to following papers.
 
 [「State-of-the-art Speech Recognition with Sequence-to-Sequence Models」](https://arxiv.org/abs/1712.01769)
      
-Our model architeuture is as follows.
+Our seq2seq architeuture is as follows.
   
 ```python
 Seq2seq(
@@ -126,7 +126,7 @@ In addition to this, You can see a variety of options [here](https://sooftware.g
   
 * Options
 ```
-usage: main.py [-h] [--mode] [--sample_rate] [--feature]
+usage: main.py [-h] [--mode] [--sample_rate] [--transform_method]
                [--window_size] [--stride] [--n_mels]
                [--normalize] [--del_silence] [--input_reverse]
                [--feature_extract_by] [--time_mask_para] [--freq_mask_para]
@@ -143,7 +143,7 @@ usage: main.py [-h] [--mode] [--sample_rate] [--feature]
                [--batch_size] [--num_workers]
                [--num_epochs] [--init_lr]
                [--high_plateau_lr] [--low_plateau_lr] [--valid_ratio]
-               [--max_len] [--max_grad_norm]
+               [--max_len] [--max_grad_norm] [--architecture]
                [--rampup_period] [--decay_threshold] [--exp_decay_period]
                [--teacher_forcing_step] [--min_teacher_forcing_ratio]
                [--seed] [--save_result_every] [--mask_conv]
