@@ -225,7 +225,7 @@ For live discussions, please go to our [gitter](https://gitter.im/Korean-Speech-
   
 We appreciate any kind of feedback or contribution.  Feel free to proceed with small issues like bug fixes, documentation improvement.  For major contributions and new features, please discuss with the collaborators in corresponding issues.  
   
-## TODO
+## TODO List
   
 * [X] Add Transformer model 
 * [ ] Train with Transformer model
