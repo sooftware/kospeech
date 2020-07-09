@@ -1,4 +1,3 @@
-import torch
 import numpy as np
 from torch import Tensor, FloatTensor
 from kospeech.data.audio.core import load_audio
@@ -33,7 +32,7 @@ class SpectrogramParser(AudioParser):
     Parses audio file into (spectrogram / mel spectrogram / mfcc) with various options.
 
     Args:
-        feature (str): which feature to use (default: mel)
+        transform_method (str): which feature to use (default: mel)
         sample_rate (int): Sample rate of audio signal. (Default: 16000)
         n_mels (int):  Number of mfc coefficients to retain. (Default: 40)
         window_size (int): window size (ms) (Default : 20)
@@ -61,7 +60,7 @@ class SpectrogramParser(AudioParser):
                  normalize: bool = False,  transform_method: str = 'mel',
                  time_mask_para: int = 70, freq_mask_para: int = 12, time_mask_num: int = 2, freq_mask_num: int = 2,
                  sos_id: int = 1, eos_id: int = 2, target_dict: dict = None, noise_augment: bool = False,
-                 dataset_path: str = None, noiseset_size: int = 0, noise_level: float = 0.7):
+                 dataset_path: str = None, noiseset_size: int = 0, noise_level: float = 0.7) -> None:
         super(SpectrogramParser, self).__init__(dataset_path, noiseset_size, sample_rate, noise_level, noise_augment)
         self.del_silence = del_silence
         self.input_reverse = input_reverse

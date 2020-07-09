@@ -1,8 +1,10 @@
 import math
 import time
 import torch
+import torch.nn as nn
 import queue
 import pandas as pd
+from typing import Tuple
 from kospeech.checkpoint.checkpoint import Checkpoint
 from kospeech.optim.lr_scheduler import ExponentialDecayLR
 from kospeech.metrics import CharacterErrorRate
@@ -32,10 +34,11 @@ class SupervisedTrainer(object):
     VALID_RESULT_PATH = "../data/train_result/eval_result.csv"
     TRAIN_STEP_RESULT_PATH = "../data/train_result/train_step_result.csv"
 
-    def __init__(self, optimizer, criterion, trainset_list, validset, high_plateau_lr, low_plateau_lr,
+    def __init__(self, optimizer, criterion, trainset_list, validset,
+                 high_plateau_lr, low_plateau_lr,
                  exp_decay_period, num_workers, device, decay_threshold,
                  print_every, save_result_every, checkpoint_every,
-                 teacher_forcing_step=0.0, min_teacher_forcing_ratio=0.7):
+                 teacher_forcing_step=0.0, min_teacher_forcing_ratio=0.7) -> None:
         self.num_workers = num_workers
         self.optimizer = optimizer
         self.criterion = criterion
@@ -53,7 +56,8 @@ class SupervisedTrainer(object):
         self.min_teacher_forcing_ratio = min_teacher_forcing_ratio
         self.metric = CharacterErrorRate(id2char, EOS_token)
 
-    def train(self, model, batch_size, epoch_time_step, num_epochs, teacher_forcing_ratio=0.99, resume=False):
+    def train(self, model: nn.Module, batch_size: int, epoch_time_step: int, num_epochs: int,
+              teacher_forcing_ratio: float = 0.99, resume: bool = False) -> nn.Module:
         """
         Run training for a given model.
 
@@ -131,7 +135,9 @@ class SupervisedTrainer(object):
 
         return model
 
-    def train_epoches(self, model, epoch, epoch_time_step, train_begin_time, queue, teacher_forcing_ratio):
+    def train_epoches(self, model: nn.Module, epoch: int,
+                      epoch_time_step: int, train_begin_time: float,
+                      queue: queue.Queue, teacher_forcing_ratio: float) -> Tuple[float, float]:
         """
         Run training one epoch
 
@@ -139,7 +145,7 @@ class SupervisedTrainer(object):
             model (torch.nn.Module): model to train
             epoch (int): number of current epoch
             epoch_time_step (int): total time step in one epoch
-            train_begin_time (int): time of train begin
+            train_begin_time (float): time of train begin
             queue (queue.Queue): training queue, containing input, targets, input_lengths, target_lengths
             teacher_forcing_ratio (float): teaching forcing ratio (default 0.99)
 
@@ -221,7 +227,7 @@ class SupervisedTrainer(object):
         logger.info('train() completed')
         return epoch_loss_total / total_num, cer
 
-    def validate(self, model, queue):
+    def validate(self, model: nn.Module, queue: queue.Queue) -> float:
         """
         Run training one epoch
 
@@ -260,7 +266,7 @@ class SupervisedTrainer(object):
         logger.info('validate() completed')
         return cer
 
-    def _save_epoch_result(self, train_result, valid_result):
+    def _save_epoch_result(self, train_result: list, valid_result: list) -> None:
         """ Save result of epoch """
         train_dict, train_loss, train_cer = train_result
         valid_dict, valid_loss, valid_cer = valid_result
@@ -277,7 +283,7 @@ class SupervisedTrainer(object):
         train_df.to_csv(SupervisedTrainer.TRAIN_RESULT_PATH, encoding="cp949", index=False)
         valid_df.to_csv(SupervisedTrainer.VALID_RESULT_PATH, encoding="cp949", index=False)
 
-    def _save_step_result(self, train_step_result, loss, cer):
+    def _save_step_result(self, train_step_result: dict, loss: float, cer: float) -> None:
         """ Save result of --save_result_every step """
         train_step_result["loss"].append(loss)
         train_step_result["cer"].append(cer)

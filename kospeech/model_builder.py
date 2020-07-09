@@ -46,8 +46,10 @@ def build_las(listener, speller, device, init_uniform=True):
     return model
 
 
-def build_listener(input_size, hidden_dim, dropout_p, num_layers, bidirectional,
-                   rnn_type, extractor, activation, device, mask_conv):
+def build_listener(input_size: int, hidden_dim: int, dropout_p: float,
+                   num_layers: int, bidirectional: bool,
+                   rnn_type: str, extractor: str,
+                   activation: str, device: str, mask_conv: bool) -> Listener:
     """ Various encoder dispatcher function. """
     if not isinstance(input_size, int):
         raise ParameterError("input_size should be inteager type")

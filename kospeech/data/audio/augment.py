@@ -1,6 +1,7 @@
 import os
 import random
 import numpy as np
+from torch import Tensor
 from kospeech.utils import logger
 from kospeech.data.audio.core import split
 
@@ -22,13 +23,13 @@ class SpecAugment(object):
     Returns: spectrogram:
         - **spectrogram**: masked spectrogram feature.
     """
-    def __init__(self, time_mask_para, freq_mask_para, time_mask_num, freq_mask_num):
+    def __init__(self, time_mask_para: int, freq_mask_para: int, time_mask_num: int, freq_mask_num: int) -> None:
         self.time_mask_para = time_mask_para
         self.freq_mask_para = freq_mask_para
         self.time_mask_num = time_mask_num
         self.freq_mask_num = freq_mask_num
 
-    def __call__(self, spectrogram):
+    def __call__(self, spectrogram: Tensor) -> Tensor:
         """ Provides SpecAugmentation for audio """
         time_axis_length = spectrogram.size(0)
         freq_axis_length = spectrogram.size(1)

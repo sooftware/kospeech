@@ -23,8 +23,9 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
         noise_augment (bool): flag indication whether to use noise-augmentation or not (default: True)
         opt (ArgumentParser): set of arguments
     """
-    def __init__(self, audio_paths, script_paths, sos_id, eos_id, target_dict, opt, spec_augment=False,
-                 noise_augment=False, dataset_path=None, noiseset_size=0, noise_level=0.7):
+    def __init__(self, audio_paths, script_paths, sos_id, eos_id,
+                 target_dict, opt, spec_augment=False,
+                 noise_augment=False, dataset_path=None, noiseset_size=0, noise_level=0.7) -> None:
         super(SpectrogramDataset, self).__init__(feature_extract_by=opt.feature_extract_by, sample_rate=opt.sample_rate,
                                                  n_mels=opt.n_mels, window_size=opt.window_size, stride=opt.stride,
                                                  del_silence=opt.del_silence, input_reverse=opt.input_reverse,
