@@ -227,8 +227,8 @@ We appreciate any kind of feedback or contribution.  Feel free to proceed with s
   
 ## TODO
   
-* Add Transformer model (be in the process of implementation)  
-* Add CTC with beam search (Connectionist Temporal Classification)
+* [ ] Add Transformer model (be in the process of implementation)  
+* [ ] Add CTC with beam search (Connectionist Temporal Classification)
   
 ### Code Style
 We follow [PEP-8](https://www.python.org/dev/peps/pep-0008/) for code style. Especially the style of docstrings is important to generate documentation.  
