@@ -68,10 +68,10 @@ class MultiHeadAttention(nn.Module):
 
         self.d_head = int(hidden_dim / num_heads)
         self.num_heads = num_heads
-        self.scaled_dot_attn = ScaledDotProductAttention(hidden_dim)
         self.linear_q = Linear(hidden_dim, self.d_head * num_heads)
         self.linear_k = Linear(hidden_dim, self.d_head * num_heads)
         self.linear_v = Linear(hidden_dim, self.d_head * num_heads)
+        self.scaled_dot_attn = ScaledDotProductAttention(hidden_dim)
 
     def forward(self, query: Tensor, key: Tensor, value: Tensor) -> Tuple[Tensor, Tensor]:
         batch_size = value.size(0)

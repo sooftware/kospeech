@@ -60,9 +60,6 @@ def build_train_opts(parser):
     group.add_argument('--label_path', '-label_path',
                        type=str, default='./data/label/aihub_labels.csv',
                        help='path of character labels')
-    group.add_argument('--init_uniform', '-init_uniform',
-                       action='store_true', default=False,
-                       help='flag indication whether to initiate model`s parameters as uniformly')
     group.add_argument('--spec_augment', '-spec_augment',
                        action='store_true', default=False,
                        help='flag indication whether to use spec augmentation or not')
@@ -88,20 +85,20 @@ def build_train_opts(parser):
                        type=int, default=20,
                        help='number of epochs in training (default: 20)')
     group.add_argument('--init_lr', '-init_lr',
-                       type=float, default=1e-15,
+                       type=float, default=3e-4,
                        help='initial learning rate => before ramp up lr (default: 1e-15)')
     group.add_argument('--high_plateau_lr', '-high_plateau_lr',
                        type=float, default=3e-04,
                        help='high plateau learning rate => after rampup lr (default: 3e-04)')
     group.add_argument('--low_plateau_lr', '-low_plateau_lr',
-                       type=float, default=1e-05,
+                       type=float, default=3e-05,
                        help='low plateau learning rate => after exponential decay (default: 1e-05)')
     group.add_argument('--valid_ratio', '-valid_ratio',
                        type=float, default=0.01,
                        help='validation dataset ratio in training dataset (default: 0.01)')
     group.add_argument('--max_len', '-max_len',
-                       type=int, default=151,
-                       help='maximum characters of sentence (default: 151)')
+                       type=int, default=120,
+                       help='maximum characters of sentence (default: 120)')
     group.add_argument('--max_grad_norm', '-max_grad_norm',
                        type=int, default=400,
                        help='value used for gradient norm clipping (default: 400)')
@@ -256,7 +253,6 @@ def print_train_opts(opt):
     logger.info('--dataset_path: %s' % str(opt.dataset_path))
     logger.info('--data_list_path: %s' % str(opt.data_list_path))
     logger.info('--label_path: %s' % str(opt.label_path))
-    logger.info('--init_uniform: %s' % str(opt.init_uniform))
     logger.info('--spec_augment: %s' % str(opt.spec_augment))
     logger.info('--noise_augment: %s' % str(opt.noise_augment))
     logger.info('--noiseset_size: %s' % str(opt.noiseset_size))

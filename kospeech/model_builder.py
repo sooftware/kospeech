@@ -25,10 +25,10 @@ def build_model(opt, device):
                             num_layers=opt.num_decoder_layers, rnn_type=opt.rnn_type, dropout_p=opt.dropout,
                             num_heads=opt.num_heads, attn_mechanism=opt.attn_mechanism, device=device)
 
-    return build_las(listener, speller, device, opt.init_uniform)
+    return build_las(listener, speller, device)
 
 
-def build_las(listener, speller, device, init_uniform=True):
+def build_las(listener, speller, device):
     """ Various Listen, Attend and Spell dispatcher function. """
     if listener is None:
         raise ParameterError("listener should not be None")
@@ -38,10 +38,6 @@ def build_las(listener, speller, device, init_uniform=True):
     model = ListenAttendSpell(listener, speller)
     model.flatten_parameters()
     model = nn.DataParallel(model).to(device)
-
-    if init_uniform:
-        for param in model.parameters():
-            param.data.uniform_(-0.08, 0.08)
 
     return model
 
