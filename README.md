@@ -227,7 +227,9 @@ We appreciate any kind of feedback or contribution.  Feel free to proceed with s
   
 ## TODO
   
-* [ ] Add Transformer model (be in the process of implementation)  
+* [X] Add Transformer model 
+* [ ] Train with Transformer model
+* [ ] Inference with Transformer model
 * [ ] Add CTC with beam search (Connectionist Temporal Classification)
   
 ### Code Style
