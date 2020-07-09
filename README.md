@@ -77,9 +77,10 @@ If you want to study the feature of audio, We recommend this papers.
 Our model architeuture is as follows.
   
 ```python
-ListenAttendSpell(
-  (listener): Listener(
+Seq2seq(
+  (encoder): Seq2seqEncoder(
     (conv_extractor): VGGExtractor(
+      (activation): Hardtanh(min_val=0, max_val=20, inplace=True)
       (conv): Sequential(
         (0): Conv2d(1, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
         (1): Hardtanh(min_val=0, max_val=20, inplace=True)
@@ -98,16 +99,19 @@ ListenAttendSpell(
     )
     (rnn): LSTM(5120, 512, num_layers=3, batch_first=True, dropout=0.3, bidirectional=True)
   )
-  (speller): Speller(
-    (rnn): LSTM(1024, 1024, num_layers=2, batch_first=True, dropout=0.3)
+  (decoder): Seq2seqDecoder(
     (embedding): Embedding(2038, 1024)
     (input_dropout): Dropout(p=0.3, inplace=False)
+    (rnn): LSTM(1024, 1024, num_layers=2, batch_first=True, dropout=0.3)
     (attention): MultiHeadAttention(
       (linear_q): Linear(in_features=1024, out_features=1024, bias=True)
+      (linear_k): Linear(in_features=1024, out_features=1024, bias=True)
       (linear_v): Linear(in_features=1024, out_features=1024, bias=True)
+      (scaled_dot_attn): ScaledDotProductAttention()
     )
-    (fc1): Linear(in_features=2048, out_features=1024, bias=True)
-    (fc2): Linear(in_features=1024, out_features=2038, bias=True)
+    (linear1): Linear(in_features=2048, out_features=1024, bias=True)
+    (layer_norm): LayerNorm()
+    (linear2): Linear(in_features=1024, out_features=2038, bias=True)
   )
 )
 ``` 
@@ -215,19 +219,17 @@ save_dir
 ```
 You can resume and load from checkpoints.
   
-### Incorporating External Language Model in Performance Test
-We introduce incorporating external language model in performance test.  
-If you are interested in this content, please check [here](https://github.com/sooftware/char-rnnlm).
-  
 ## Troubleshoots and Contributing
 If you have any questions, bug reports, and feature requests, please [open an issue](https://github.com/sooftware/End-to-end-Speech-Recognition/issues) on Github.   
 For live discussions, please go to our [gitter](https://gitter.im/Korean-Speech-Recognition/community) or Contacts sh951011@gmail.com please.
   
 We appreciate any kind of feedback or contribution.  Feel free to proceed with small issues like bug fixes, documentation improvement.  For major contributions and new features, please discuss with the collaborators in corresponding issues.  
   
-## TODO
+## TODO List
   
-* [ ] Add Transformer model (be in the process of implementation)  
+* [X] Add Transformer model 
+* [ ] Train with Transformer model
+* [ ] Inference with Transformer model
 * [ ] Add CTC with beam search (Connectionist Temporal Classification)
   
 ### Code Style
