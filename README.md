@@ -59,23 +59,15 @@ We have referred to many papers to develop the best model possible. And tried to
   
 ### Seq2seq
   
-Sequence-to-Sequence can be trained with serveral options. You can choose the CNN extractor from (`ds2` /`vgg`), You can choose attention mechanism from (`location-aware`, `multi-head`) attention. Also, You can choose feature extraction method from (`spectrogram`, `mel-spectrogram`, `mfcc`). In addition to this, You can see a variety of options [here](https://sooftware.github.io/KoSpeech/notes/opts.html).  
+Sequence-to-Sequence can be trained with serveral options. You can choose the CNN extractor from (`ds2` /`vgg`), You can choose attention mechanism from (`location-aware`, `multi-head`) attention.
   
 Our architecture based on Listen Attend and Spell.   
 We mainly referred to following papers.  
   
  [「Listen, Attend and Spell」](https://arxiv.org/abs/1508.01211)  
-   
-[「Attention Based Models for Speech Recognition」](https://arxiv.org/abs/1506.07503)  
 
 [「State-of-the-art Speech Recognition with Sequence-to-Sequence Models」](https://arxiv.org/abs/1712.01769)
-   
-[「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」](https://arxiv.org/abs/1904.08779).   
-  
-If you want to study the feature of audio, We recommend this papers.  
-  
-[「Voice Recognition Using MFCC Algirithm」](https://ijirae.com/volumes/vol1/issue10/27.NVEC10086.pdf).  
-  
+     
 Our model architeuture is as follows.
   
 ```python
@@ -122,12 +114,14 @@ Seq2seq(
 The Transformer model is currently implemented, but the code for learning is not implemented.  
 We will implement as soon as possible.  
   
-### KoSpeech
-
-<img src="https://user-images.githubusercontent.com/42150335/86276048-2e90e300-bc0f-11ea-8675-476cb27eadb2.png" width=700>   
+We mainly referred to following papers.
   
-`kospeech` module has modularized and extensible components for las models, trainer, evaluator, checkpoints etc...   
-In addition, `kospeech` enables learning in a variety of environments with a simple option setting.  
+ [「Attention Is All You Need」](https://arxiv.org/abs/1706.03762)  
+  
+### Various Options   
+  
+You can choose feature extraction method from (`spectrogram`, `mel-spectrogram`, `mfcc`).   
+In addition to this, You can see a variety of options [here](https://sooftware.github.io/KoSpeech/notes/opts.html).  
   
 * Options
 ```
@@ -154,7 +148,14 @@ usage: main.py [-h] [--mode] [--sample_rate] [--feature]
                [--seed] [--save_result_every] [--mask_conv]
                [--checkpoint_every] [--print_every] [--resume]
 ```
+  
+### KoSpeech
 
+<img src="https://user-images.githubusercontent.com/42150335/86276048-2e90e300-bc0f-11ea-8675-476cb27eadb2.png" width=700>   
+  
+`kospeech` module has modularized and extensible components for las models, trainer, evaluator, checkpoints etc...   
+In addition, `kospeech` enables learning in a variety of environments with a simple option setting.  
+  
 We are constantly updating the progress of the project on the [Wiki page](https://github.com/sooftware/End-to-end-Speech-Recognition/wiki).  Please check this page.  
   
 ## Installation
