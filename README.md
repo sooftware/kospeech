@@ -219,10 +219,6 @@ save_dir
 ```
 You can resume and load from checkpoints.
   
-### Incorporating External Language Model in Performance Test
-We introduce incorporating external language model in performance test.  
-If you are interested in this content, please check [here](https://github.com/sooftware/char-rnnlm).
-  
 ## Troubleshoots and Contributing
 If you have any questions, bug reports, and feature requests, please [open an issue](https://github.com/sooftware/End-to-end-Speech-Recognition/issues) on Github.   
 For live discussions, please go to our [gitter](https://gitter.im/Korean-Speech-Recognition/community) or Contacts sh951011@gmail.com please.
