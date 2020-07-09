@@ -59,7 +59,8 @@ We have referred to many papers to develop the best model possible. And tried to
   
 ### Seq2seq
   
-Sequence-to-Sequence can be trained with serveral options. You can choose the CNN extractor from (`ds2` /`vgg`), You can choose attention mechanism from (`location-aware`, `multi-head`) attention.
+Sequence-to-Sequence can be trained with serveral options. You can choose the CNN extractor from (`ds2` /`vgg`),   
+You can choose attention mechanism from (`location-aware`, `multi-head`) attention.
   
 Our architecture based on Listen Attend and Spell.   
 We mainly referred to following papers.  
