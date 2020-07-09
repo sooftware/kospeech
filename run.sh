@@ -34,10 +34,10 @@ WINDOW_SIZE=20
 SAMPLE_RATE=16000
 STRIDE=10
 N_MELS=80
-FEATURE_EXTRACT_BY='librosa'  # You can set 'torchaudio'
-FEATURE='spect'          # Support feature : mel, spect, mfcc
-EXTRACTOR='vgg'          # Support extractor : vgg, ds2 (DeepSpeech2)
-ACTIVATION='hardtanh'    # Support activation : ReLU, ELU, Hardtanh, GELU, LeakyReLU
+FEATURE_EXTRACT_BY='librosa'      # You can set 'torchaudio'
+TRANSFORM_METHOD='spect'          # Support feature : mel, spect, mfcc
+EXTRACTOR='vgg'                   # Support extractor : vgg, ds2 (DeepSpeech2)
+ACTIVATION='hardtanh'             # Support activation : ReLU, ELU, Hardtanh, GELU, LeakyReLU
 TIME_MASK_PARA=40
 FREQ_MASK_PARA=24
 TIME_MASK_NUM=2
@@ -54,7 +54,7 @@ cd bin
 
 python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epochs $NUM_EPOCHS --use_bidirectional \
 --input_reverse --spec_augment --noise_augment --use_cuda --hidden_dim $HIDDEN_DIM \
---dropout $DROPOUT --num_heads $NUM_HEADS --label_smoothing $LABEL_SMOOTHING --feature $FEATURE \
+--dropout $DROPOUT --num_heads $NUM_HEADS --label_smoothing $LABEL_SMOOTHING --transform_method $TRANSFORM_METHOD \
 --num_encoder_layers $NUM_ENCODER_LAYERS --num_decoder_layers $NUM_DECODER_LAYERS --rnn_type $RNN_TYPE \
 --high_plateau_lr $HIGH_PLATEAU_LR --teacher_forcing_ratio $TEACHER_FORCING_RATIO --valid_ratio $VALID_RATIO \
 --sample_rate $SAMPLE_RATE --window_size $WINDOW_SIZE --stride $STRIDE --n_mels $N_MELS --normalize --del_silence \

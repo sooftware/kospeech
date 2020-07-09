@@ -1,5 +1,6 @@
 import torch
 import numpy as np
+from torch import Tensor, FloatTensor
 from kospeech.data.audio.core import load_audio
 from kospeech.data.audio.augment import NoiseInjector, SpecAugment
 from kospeech.data.audio.feature import MelSpectrogram, MFCC, Spectrogram
@@ -52,10 +53,12 @@ class SpectrogramParser(AudioParser):
     VANILLA = 0           # Not apply augmentation
     SPEC_AUGMENT = 1      # SpecAugment
     NOISE_INJECTION = 2   # Noise Injection
+    HYBRID_AUGMENT = 3    # Noise Injection & SpecAugment
 
     def __init__(self, feature_extract_by: str = 'librosa', sample_rate: int = 16000,
                  n_mels: int = 80, window_size: int = 20, stride: int = 10,
-                 del_silence: bool = False, input_reverse: bool = True, normalize: bool = False,  feature: str = 'mel',
+                 del_silence: bool = False, input_reverse: bool = True,
+                 normalize: bool = False,  transform_method: str = 'mel',
                  time_mask_para: int = 70, freq_mask_para: int = 12, time_mask_num: int = 2, freq_mask_num: int = 2,
                  sos_id: int = 1, eos_id: int = 2, target_dict: dict = None, noise_augment: bool = False,
                  dataset_path: str = None, noiseset_size: int = 0, noise_level: float = 0.7):
@@ -68,16 +71,16 @@ class SpectrogramParser(AudioParser):
         self.target_dict = target_dict
         self.spec_augment = SpecAugment(time_mask_para, freq_mask_para, time_mask_num, freq_mask_num)
 
-        if feature.lower() == 'mel':
+        if transform_method.lower() == 'mel':
             self.transforms = MelSpectrogram(sample_rate, n_mels, window_size, stride, feature_extract_by)
-        elif feature.lower() == 'mfcc':
+        elif transform_method.lower() == 'mfcc':
             self.transforms = MFCC(sample_rate, n_mels, window_size, stride, feature_extract_by)
-        elif feature.lower() == 'spect':
+        elif transform_method.lower() == 'spect':
             self.transforms = Spectrogram(sample_rate, window_size, stride)
         else:
-            raise ValueError("Unsupported feature : {0}".format(feature))
+            raise ValueError("Unsupported feature : {0}".format(transform_method))
 
-    def parse_audio(self, audio_path: str, augment_method: int):
+    def parse_audio(self, audio_path: str, augment_method: int) -> Tensor:
         """
         Parses audio.
 
@@ -90,7 +93,7 @@ class SpectrogramParser(AudioParser):
         """
         signal = load_audio(audio_path, self.del_silence)
 
-        if augment_method == SpectrogramParser.NOISE_INJECTION:
+        if augment_method == SpectrogramParser.NOISE_INJECTION or augment_method == SpectrogramParser.HYBRID_AUGMENT:
             signal = self.noise_injector(signal)
 
         feature_vector = self.transforms(signal)
@@ -100,11 +103,11 @@ class SpectrogramParser(AudioParser):
 
         if self.input_reverse:  # Refer to "Sequence to Sequence Learning with Neural Network" paper
             feature_vector = feature_vector[:, ::-1]
-            feature_vector = torch.FloatTensor(np.ascontiguousarray(np.swapaxes(feature_vector, 0, 1)))
+            feature_vector = FloatTensor(np.ascontiguousarray(np.swapaxes(feature_vector, 0, 1)))
         else:
-            feature_vector = torch.FloatTensor(feature_vector).transpose(0, 1)
+            feature_vector = FloatTensor(feature_vector).transpose(0, 1)
 
-        if augment_method == SpectrogramParser.SPEC_AUGMENT:
+        if augment_method == SpectrogramParser.SPEC_AUGMENT or augment_method == SpectrogramParser.HYBRID_AUGMENT:
             feature_vector = self.spec_augment(feature_vector)
 
         return feature_vector
