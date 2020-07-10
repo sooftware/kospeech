@@ -68,9 +68,9 @@ class Seq2seqDecoder(BaseRNN):
 
         self.feed_forward = nn.Sequential(
             Linear(hidden_dim << 1, hidden_dim, bias=True),
-            View((-1)),
+            View((-1), contiguous=False),
             LayerNorm(hidden_dim),
-            View((-1, self.hidden_dim)),
+            View((-1, self.hidden_dim), contiguous=True),
             Linear(hidden_dim, num_classes, bias=True)
         )
 
