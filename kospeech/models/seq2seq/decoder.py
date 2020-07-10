@@ -5,7 +5,7 @@ import torch.nn.functional as F
 from torch import Tensor, LongTensor
 from typing import Optional, Any, Tuple
 from kospeech.models.seq2seq.attention import LocationAwareAttention, MultiHeadAttention
-from kospeech.models.seq2seq.modules import Linear, LayerNorm, BaseRNN
+from kospeech.models.seq2seq.modules import Linear, LayerNorm, BaseRNN, View
 
 
 class Seq2seqDecoder(BaseRNN):
@@ -66,9 +66,13 @@ class Seq2seqDecoder(BaseRNN):
         else:
             raise ValueError("Unsupported attention: %s".format(attn_mechanism))
 
-        self.linear1 = Linear(hidden_dim << 1, hidden_dim, bias=True)
-        self.layer_norm = LayerNorm(hidden_dim)
-        self.linear2 = Linear(hidden_dim, num_classes, bias=True)
+        self.feed_forward = nn.Sequential(
+            Linear(hidden_dim << 1, hidden_dim, bias=True),
+            View((-1)),
+            LayerNorm(hidden_dim),
+            View((-1, self.hidden_dim)),
+            Linear(hidden_dim, num_classes, bias=True)
+        )
 
     def forward_step(self, input_var: Tensor, hidden: Optional[Any],
                      encoder_outputs: Tensor, attn: Tensor) -> Tuple[Tensor, Optional[Any], Tensor]:
@@ -83,15 +87,12 @@ class Seq2seqDecoder(BaseRNN):
         output, hidden = self.rnn(embedded, hidden)
 
         if self.attn_mechanism == 'dot':
-            context, attn = self.attention(output, encoder_outputs, encoder_outputs)
+            context, attn = self.attention(output, encoder_outputs)
         else:
             context, attn = self.attention(output, encoder_outputs, attn)
 
-        output = self.linear1(context.view(-1, self.hidden_dim << 1)).view(batch_size, -1, self.hidden_dim)
-        output = self.linear2(self.layer_norm(output).contiguous().view(-1, self.hidden_dim))
-
-        predicted_softmax = F.log_softmax(output, dim=1)
-        step_output = predicted_softmax.view(batch_size, output_lengths, -1).squeeze(1)
+        output = self.feed_forward(context.view(-1, self.hidden_dim << 1))
+        step_output = F.log_softmax(output, dim=1).view(batch_size, output_lengths, -1).squeeze(1)
 
         return step_output, hidden, attn
 
@@ -151,6 +152,7 @@ class Seq2seqDecoder(BaseRNN):
                       teacher_forcing_ratio: float, language_model: Optional[nn.Module]) -> Tuple[Tensor, int, int]:
         """ Validate arguments """
         batch_size = encoder_outputs.size(0)
+        self.feed_forward[1].shape = (batch_size, -1, self.hidden_dim)
 
         if inputs is None:  # inference
             inputs = LongTensor([self.sos_id] * batch_size).view(batch_size, 1)

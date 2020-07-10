@@ -43,6 +43,7 @@ class BaseRNN(nn.Module):
 
 
 class Linear(nn.Module):
+    """ Wrapper class of torch.nn.Linear """
     def __init__(self, in_features: int, out_features: int, bias: bool = True) -> None:
         super(Linear, self).__init__()
         self.linear = nn.Linear(in_features, out_features, bias=bias)
@@ -54,6 +55,7 @@ class Linear(nn.Module):
 
 
 class LayerNorm(nn.Module):
+    """ Wrapper class of torch.nn.LayerNorm """
     def __init__(self, dim: int, eps: float = 1e-6) -> None:
         super(LayerNorm, self).__init__()
         self.gamma = nn.Parameter(torch.ones(dim))
@@ -67,3 +69,17 @@ class LayerNorm(nn.Module):
         output = self.gamma * output + self.beta
 
         return output
+
+
+class View(nn.Module):
+    """ Wrapper class of torch.view() for Sequential modeule. """
+    def __init__(self, shape: tuple, contiguous: bool = False):
+        super(View, self).__init__()
+        self.shape = shape
+        self.contiguous = contiguous
+
+    def forward(self, inputs):
+        if self.contiguous:
+            inputs = inputs.contiguous()
+
+        return inputs.view(*self.shape)

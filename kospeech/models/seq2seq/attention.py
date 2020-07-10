@@ -17,9 +17,8 @@ class ScaledDotProductAttention(nn.Module):
         dim (int): dimention of attention
         mask (torch.Tensor): tensor containing indices to be masked
 
-    Inputs: query, key, value
+    Inputs: query, value
         - **query** (batch, q_len, hidden_dim): tensor containing projection vector for decoder.
-        - **key** (batch, k_len, hidden_dim): tensor containing projection vector for encoder.
         - **value** (batch, v_len, hidden_dim): tensor containing projection vector for encoder.
 
     Returns: context, attn
@@ -30,9 +29,9 @@ class ScaledDotProductAttention(nn.Module):
         super(ScaledDotProductAttention, self).__init__()
         self.sqrt_dim = np.sqrt(d_model)
 
-    def forward(self, query: Tensor, key: Tensor, value: Tensor) -> Tuple[Tensor, Tensor]:
-        score = torch.bmm(query, key.transpose(1, 2)) / self.sqrt_dim
-        attn = F.softmax(score, -1)
+    def forward(self, query: Tensor, value: Tensor) -> Tuple[Tensor, Tensor]:
+        score = torch.bmm(query, value.transpose(1, 2)) / self.sqrt_dim
+        attn = F.softmax(score, dim=-1)
         context = torch.bmm(attn, value)
         return context, attn
 
@@ -43,7 +42,7 @@ class MultiHeadAttention(nn.Module):
     Multi-head attention proposed in "Attention Is All You Need" paper.
 
     Args:
-        hidden_dim (int): The number of expected features in the output
+        d_model (int): dimension of model
         num_heads (int): The number of heads. (default: )
 
     Inputs: query, value
@@ -61,31 +60,28 @@ class MultiHeadAttention(nn.Module):
         - Soohwan Kim @sooftware
         - Deokjin Seo @qute012
     """
-    def __init__(self, hidden_dim: int = 512, num_heads: int = 8) -> None:
+    def __init__(self, d_model: int = 512, num_heads: int = 8) -> None:
         super(MultiHeadAttention, self).__init__()
 
-        assert hidden_dim % num_heads == 0, "hidden_dim % num_heads should be zero."
+        assert d_model % num_heads == 0, "hidden_dim % num_heads should be zero."
 
-        self.d_head = int(hidden_dim / num_heads)
+        self.d_head = int(d_model / num_heads)
         self.num_heads = num_heads
-        self.linear_q = Linear(hidden_dim, self.d_head * num_heads)
-        self.linear_k = Linear(hidden_dim, self.d_head * num_heads)
-        self.linear_v = Linear(hidden_dim, self.d_head * num_heads)
-        self.scaled_dot_attn = ScaledDotProductAttention(hidden_dim)
+        self.linear_q = Linear(d_model, self.d_head * num_heads)
+        self.linear_v = Linear(d_model, self.d_head * num_heads)
+        self.scaled_dot_attn = ScaledDotProductAttention(d_model)
 
-    def forward(self, query: Tensor, key: Tensor, value: Tensor) -> Tuple[Tensor, Tensor]:
+    def forward(self, query: Tensor, value: Tensor) -> Tuple[Tensor, Tensor]:
         batch_size = value.size(0)
         residual = query
 
         query = self.linear_q(query).view(batch_size, -1, self.num_heads, self.d_head)  # BxQ_LENxNxD
-        key = self.linear_k(key).view(batch_size, -1, self.num_heads, self.d_head)      # BxK_LENxNxD
         value = self.linear_v(value).view(batch_size, -1, self.num_heads, self.d_head)  # BxV_LENxNxD
 
         query = query.permute(2, 0, 1, 3).contiguous().view(batch_size * self.num_heads, -1, self.d_head)  # BNxQ_LENxD
-        key = key.permute(2, 0, 1, 3).contiguous().view(batch_size * self.num_heads, -1, self.d_head)      # BNxK_LENxD
         value = value.permute(2, 0, 1, 3).contiguous().view(batch_size * self.num_heads, -1, self.d_head)  # BNxV_LENxD
 
-        context, attn = self.scaled_dot_attn(query, key, value)
+        context, attn = self.scaled_dot_attn(query, value)
         context = context.view(self.num_heads, batch_size, -1, self.d_head)
 
         context = context.permute(1, 2, 0, 3).contiguous().view(batch_size, -1, self.num_heads * self.d_head)  # BxTxND
