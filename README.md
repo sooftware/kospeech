@@ -51,7 +51,8 @@ Also our model has recorded **92.0% CRR** in `Kaldi-zeroth corpus`
 * Inference with batching
 * Multi-GPU training
   
-We have referred to many papers to develop the best model possible. And tried to make the code as efficient and easy to use as possible. If you have any minor inconvenience, please let us know anytime. We will response as soon as possible.
+We have referred to several papers to develop the best model possible. And tried to make the code as efficient and easy to use as possible. If you have any minor inconvenience, please let us know anytime.   
+We will response as soon as possible.
 
 ## Roadmap
   
