@@ -38,8 +38,8 @@ class Seq2seq(nn.Module):
         return result
 
     def flatten_parameters(self):
-        self.listener.rnn.flatten_parameters()
-        self.speller.rnn.flatten_parameters()
+        self.encoder.rnn.flatten_parameters()
+        self.decoder.rnn.flatten_parameters()
 
     def set_speller(self, decoder: nn.Module):
         self.decoder = decoder

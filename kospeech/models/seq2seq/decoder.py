@@ -67,7 +67,7 @@ class Seq2seqDecoder(BaseRNN):
             raise ValueError("Unsupported attention: %s".format(attn_mechanism))
 
         self.feed_forward = nn.Sequential(
-            Linear(hidden_dim << 1, hidden_dim, bias=True),
+            Linear(hidden_dim, hidden_dim, bias=True),
             View((-1), contiguous=False),
             LayerNorm(hidden_dim),
             View((-1, self.hidden_dim), contiguous=True),
@@ -87,11 +87,11 @@ class Seq2seqDecoder(BaseRNN):
         output, hidden = self.rnn(embedded, hidden)
 
         if self.attn_mechanism == 'dot':
-            context, attn = self.attention(output, encoder_outputs)
+            context, attn = self.attention(output, encoder_outputs, encoder_outputs)
         else:
             context, attn = self.attention(output, encoder_outputs, attn)
 
-        output = self.feed_forward(context.view(-1, self.hidden_dim << 1))
+        output = self.feed_forward(context.view(-1, self.hidden_dim))
         step_output = F.log_softmax(output, dim=1).view(batch_size, output_lengths, -1).squeeze(1)
 
         return step_output, hidden, attn

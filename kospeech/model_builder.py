@@ -12,7 +12,7 @@ from kospeech.utils import char2id, EOS_token, SOS_token, PAD_token
 
 def build_model(opt, device):
     """ Various model dispatcher function. """
-    if opt.feature.lower() == 'spect':
+    if opt.transform_method.lower() == 'spect':
         input_size = 161  # spectrogram size
     else:
         input_size = opt.n_mels
@@ -51,9 +51,9 @@ def build_transformer(num_classes: int, pad_id: int, d_model: int, d_ff: int, nu
                        dropout_p=dropout_p, ffnet_style=ffnet_style)
 
 
-def build_seq2seq(listener: Seq2seqEncoder, speller: Seq2seqDecoder, device: str):
+def build_seq2seq(encoder: Seq2seqEncoder, decoder: Seq2seqDecoder, device: str):
     """ Various Listen, Attend and Spell dispatcher function. """
-    model = Seq2seq(listener, speller)
+    model = Seq2seq(encoder, decoder)
     model.flatten_parameters()
     model = nn.DataParallel(model).to(device)
 
@@ -134,12 +134,12 @@ def load_test_model(opt, device):
     model = torch.load(opt.model_path, map_location=lambda storage, loc: storage).to(device)
 
     if isinstance(model, nn.DataParallel):
-        model.module.speller.device = device
-        model.module.listener.device = device
+        model.module.decoder.device = device
+        model.module.encoder.device = device
 
     else:
-        model.speller.device = device
         model.listener.device = device
+        model.encoder.device = device
 
     return model
 
