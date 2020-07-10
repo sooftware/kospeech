@@ -4,7 +4,7 @@
   
 # KoSpeech: Open Source Project for Korean End-to-End Automatic Speech Recognition in PyTorch
   
-[KoSpeech: Open Source Project for Korean End-to-End Automatic Speech Recognition in PyTorch](https://github.com/sooftware/KoSpeech)
+[KoSpeech: Open Source Project for Korean End-to-End Automatic Speech Recognition in PyTorch](https://sooftware.github.io/KoSpeech/)
 
 [Soohwan Kim](https://github.com/sooftware)<sup>1,2</sup>, [Seyoung Bae](https://github.com/triplet02)<sup>1</sup>, [Cheolhwang Won](https://github.com/wch18735)<sup>1</sup>, [Suwon Park](https://ei.kw.ac.kr/introduction/professor_view.php?idx=72)<sup>1*</sup>      
   
@@ -51,36 +51,31 @@ Also our model has recorded **92.0% CRR** in `Kaldi-zeroth corpus`
 * Inference with batching
 * Multi-GPU training
   
-We have referred to many papers to develop the best model possible. And tried to make the code as efficient and easy to use as possible. If you have any minor inconvenience, please let us know anytime. We will response as soon as possible.
+We have referred to several papers to develop the best model possible. And tried to make the code as efficient and easy to use as possible. If you have any minor inconvenience, please let us know anytime.   
+We will response as soon as possible.
 
 ## Roadmap
   
-<img src="https://user-images.githubusercontent.com/42150335/85176859-c4467d00-b2b5-11ea-9fe1-4981cfa4bc0e.png"> 
+<img src="https://user-images.githubusercontent.com/42150335/87123286-6c51d380-c2c1-11ea-90ba-be5d5c5bd2ca.png"> 
   
-Our project can be trained with serveral options. You can choose the CNN extractor from (`ds2` /`vgg`), You can choose attention mechanism from (`location-aware`, `multi-head`) attention. Also, You can choose feature extraction method from (`spectrogram`, `mel-spectrogram`, `mfcc`). In addition to this, You can see a variety of options [here](https://sooftware.github.io/KoSpeech/notes/opts.html).  
+### Seq2seq
+  
+Sequence-to-Sequence can be trained with serveral options. You can choose the CNN extractor from (`ds2` /`vgg`),   
+You can choose attention mechanism from (`location-aware`, `multi-head`) attention.
   
 Our architecture based on Listen Attend and Spell.   
 We mainly referred to following papers.  
   
  [「Listen, Attend and Spell」](https://arxiv.org/abs/1508.01211)  
-   
-[「Attention Based Models for Speech Recognition」](https://arxiv.org/abs/1506.07503)  
 
 [「State-of-the-art Speech Recognition with Sequence-to-Sequence Models」](https://arxiv.org/abs/1712.01769)
-   
-[「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」](https://arxiv.org/abs/1904.08779).   
-  
-If you want to study the feature of audio, We recommend this papers.  
-  
-[「Voice Recognition Using MFCC Algirithm」](https://ijirae.com/volumes/vol1/issue10/27.NVEC10086.pdf).  
-  
-Our model architeuture is as follows.
+     
+Our seq2seq architeuture is as follows.
   
 ```python
 Seq2seq(
   (encoder): Seq2seqEncoder(
     (conv_extractor): VGGExtractor(
-      (activation): Hardtanh(min_val=0, max_val=20, inplace=True)
       (conv): Sequential(
         (0): Conv2d(1, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
         (1): Hardtanh(min_val=0, max_val=20, inplace=True)
@@ -116,16 +111,23 @@ Seq2seq(
 )
 ``` 
   
-### KoSpeech
-
-<img src="https://user-images.githubusercontent.com/42150335/86276048-2e90e300-bc0f-11ea-8675-476cb27eadb2.png" width=700>   
+### Transformer  
   
-`kospeech` module has modularized and extensible components for las models, trainer, evaluator, checkpoints etc...   
-In addition, `kospeech` enables learning in a variety of environments with a simple option setting.  
+The Transformer model is currently implemented, but the code for learning is not implemented.  
+We will implement as soon as possible.  
+  
+We mainly referred to following papers.
+  
+ [「Attention Is All You Need」](https://arxiv.org/abs/1706.03762)  
+  
+### Various Options   
+  
+You can choose feature extraction method from (`spectrogram`, `mel-spectrogram`, `mfcc`).   
+In addition to this, You can see a variety of options [here](https://sooftware.github.io/KoSpeech/notes/opts.html).  
   
 * Options
 ```
-usage: main.py [-h] [--mode] [--sample_rate] [--feature]
+usage: main.py [-h] [--mode] [--sample_rate] [--transform_method]
                [--window_size] [--stride] [--n_mels]
                [--normalize] [--del_silence] [--input_reverse]
                [--feature_extract_by] [--time_mask_para] [--freq_mask_para]
@@ -142,13 +144,20 @@ usage: main.py [-h] [--mode] [--sample_rate] [--feature]
                [--batch_size] [--num_workers]
                [--num_epochs] [--init_lr]
                [--high_plateau_lr] [--low_plateau_lr] [--valid_ratio]
-               [--max_len] [--max_grad_norm]
+               [--max_len] [--max_grad_norm] [--architecture]
                [--rampup_period] [--decay_threshold] [--exp_decay_period]
                [--teacher_forcing_step] [--min_teacher_forcing_ratio]
                [--seed] [--save_result_every] [--mask_conv]
                [--checkpoint_every] [--print_every] [--resume]
 ```
+  
+### KoSpeech
 
+<img src="https://user-images.githubusercontent.com/42150335/86276048-2e90e300-bc0f-11ea-8675-476cb27eadb2.png" width=700>   
+  
+`kospeech` module has modularized and extensible components for las models, trainer, evaluator, checkpoints etc...   
+In addition, `kospeech` enables learning in a variety of environments with a simple option setting.  
+  
 We are constantly updating the progress of the project on the [Wiki page](https://github.com/sooftware/End-to-end-Speech-Recognition/wiki).  Please check this page.  
   
 ## Installation
