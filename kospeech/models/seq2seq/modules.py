@@ -83,3 +83,24 @@ class View(nn.Module):
             inputs = inputs.contiguous()
 
         return inputs.view(*self.shape)
+
+
+class AddNorm(nn.Module):
+    """
+    Add & Normalization layer proposed in "Attention Is All You Need".
+    Transformer employ a residual connection around each of the two sub-layers,
+    (Multi-Head Attention & Feed-Forward) followed by layer normalization.
+    """
+    def __init__(self, sublayer: nn.Module, d_model: int = 512) -> None:
+        super(AddNorm, self).__init__()
+        self.sublayer = sublayer
+        self.layer_norm = LayerNorm(d_model)
+
+    def forward(self, *args):
+        residual = args[0]
+        output = self.sublayer(*args)
+
+        if isinstance(output, tuple):
+            return self.layer_norm(output[0] + residual), output[1]
+        else:
+            return self.layer_norm(output + residual)

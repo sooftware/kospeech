@@ -5,7 +5,7 @@ import torch.nn.functional as F
 from torch import Tensor, LongTensor
 from typing import Optional, Any, Tuple
 from kospeech.models.seq2seq.attention import LocationAwareAttention, MultiHeadAttention
-from kospeech.models.seq2seq.modules import Linear, LayerNorm, BaseRNN, View
+from kospeech.models.seq2seq.modules import Linear, LayerNorm, BaseRNN, View, AddNorm
 
 
 class Seq2seqDecoder(BaseRNN):
@@ -62,17 +62,15 @@ class Seq2seqDecoder(BaseRNN):
         if attn_mechanism == 'loc':
             self.attention = LocationAwareAttention(hidden_dim, smoothing=True)
         elif attn_mechanism == 'dot':
-            self.attention = MultiHeadAttention(hidden_dim, num_heads)
+            self.attention = AddNorm(MultiHeadAttention(hidden_dim, num_heads), hidden_dim)
         else:
             raise ValueError("Unsupported attention: %s".format(attn_mechanism))
 
-        self.feed_forward = nn.Sequential(
+        self.feed_forward = AddNorm(nn.Sequential(
             Linear(hidden_dim, hidden_dim, bias=True),
-            View((-1), contiguous=False),
-            LayerNorm(hidden_dim),
-            View((-1, self.hidden_dim), contiguous=True),
-            Linear(hidden_dim, num_classes, bias=True)
-        )
+            View((-1), contiguous=False)
+        ), hidden_dim)
+        self.generator = Linear(hidden_dim, num_classes, bias=True)
 
     def forward_step(self, input_var: Tensor, hidden: Optional[Any],
                      encoder_outputs: Tensor, attn: Tensor) -> Tuple[Tensor, Optional[Any], Tensor]:
@@ -92,7 +90,10 @@ class Seq2seqDecoder(BaseRNN):
             context, attn = self.attention(output, encoder_outputs, attn)
 
         output = self.feed_forward(context.view(-1, self.hidden_dim))
-        step_output = F.log_softmax(output, dim=1).view(batch_size, output_lengths, -1).squeeze(1)
+        output = self.generator(output.view(-1, self.hidden_dim))
+
+        step_output = F.log_softmax(output, dim=1)
+        step_output = step_output.view(batch_size, output_lengths, -1).squeeze(1)
 
         return step_output, hidden, attn
 

@@ -4,7 +4,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
 from typing import Tuple
-from kospeech.models.seq2seq.modules import Linear
+from kospeech.models.seq2seq.modules import Linear, LayerNorm
 
 
 class ScaledDotProductAttention(nn.Module):
@@ -74,7 +74,6 @@ class MultiHeadAttention(nn.Module):
 
     def forward(self, query: Tensor, key: Tensor, value: Tensor) -> Tuple[Tensor, Tensor]:
         batch_size = value.size(0)
-        residual = query
 
         query = self.linear_q(query).view(batch_size, -1, self.num_heads, self.d_head)  # BxQ_LENxNxD
         key = self.linear_k(key).view(batch_size, -1, self.num_heads, self.d_head)      # BxK_LENxNxD
@@ -88,8 +87,6 @@ class MultiHeadAttention(nn.Module):
         context = context.view(self.num_heads, batch_size, -1, self.d_head)
 
         context = context.permute(1, 2, 0, 3).contiguous().view(batch_size, -1, self.num_heads * self.d_head)  # BxTxND
-        context += residual
-
         return context, attn
 
 
