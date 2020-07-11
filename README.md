@@ -98,17 +98,26 @@ Seq2seq(
     (embedding): Embedding(2038, 1024)
     (input_dropout): Dropout(p=0.3, inplace=False)
     (rnn): LSTM(1024, 1024, num_layers=2, batch_first=True, dropout=0.3)
-    (attention): MultiHeadAttention(
-      (linear_q): Linear(in_features=1024, out_features=1024, bias=True)
-      (linear_k): Linear(in_features=1024, out_features=1024, bias=True)
-      (linear_v): Linear(in_features=1024, out_features=1024, bias=True)
-      (scaled_dot_attn): ScaledDotProductAttention()
+    (attention): AddNorm(
+      (sublayer): MultiHeadAttention(
+        (linear_q): Linear(in_features=1024, out_features=1024, bias=True)
+        (linear_k): Linear(in_features=1024, out_features=1024, bias=True)
+        (linear_v): Linear(in_features=1024, out_features=1024, bias=True)
+        (scaled_dot_attn): ScaledDotProductAttention()
+      )
+      (layer_norm): LayerNorm(1024)
     )
-    (feed_forward): Sequential(
-      (0): Linear(in_features=1024, out_features=1024, bias=True)
-      (1): LayerNorm(1024)
-      (2): Linear(in_features=1024, out_features=2038, bias=True)
+    (feed_forward): AddNorm(
+      (feed_forward): Sequential(
+        (0): Linear(in_features=1024, out_features=2048, bias=True),
+        (1): Dropout(p=0.3, inplace=False),
+        (2): ReLU(),
+        (3): Linear(in_features=2048, out_features=1024, bias=True),
+        (4): Dropout(p=0.3, inplace=False)
+      )
+      (layer_norm): LayerNorm(1024)
     )
+    (generator): Linear(in_features=1024, out_features=2038, bias=True)
   )
 )
 ``` 
