@@ -224,7 +224,7 @@ class DeepSpeech2Extractor(CNNExtractor):
 class FeedForwardNet(nn.Module):
     def __init__(self, hidden_dim: int, d_ff: int, dropout_p: float) -> None:
         super(FeedForwardNet, self).__init__()
-        nn.Sequential(
+        self.feed_forward = nn.Sequential(
             Linear(hidden_dim, d_ff, bias=True),
             nn.Dropout(dropout_p),
             nn.ReLU(),
