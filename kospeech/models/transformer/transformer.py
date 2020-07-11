@@ -136,15 +136,13 @@ class TransformerDecoder(nn.Module):
     def forward(self, inputs: Tensor, memory: Tensor,  inputs_mask: Optional[Tensor] = None,
                 memory_mask: Optional[Tensor] = None) -> Tuple[Tensor, Tensor, Tensor]:
         self_attns, encoder_attns = list(), list()
-        output = None
 
         inputs = self.embedding(inputs)
-        inputs = self.positional_encoding(inputs)
+        output = self.positional_encoding(inputs)
 
         for layer in self.layers:
-            output, self_attn, encoder_attn = layer(inputs, memory, inputs_mask, memory_mask)
+            output, self_attn, encoder_attn = layer(output, memory, inputs_mask, memory_mask)
             self_attns.append(self_attn)
             encoder_attns.append(encoder_attn)
-            inputs = output
 
         return output, self_attns, encoder_attns
