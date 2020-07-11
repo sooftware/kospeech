@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 from astropy.modeling import ParameterError
 from kospeech.decode.ensemble import BasicEnsemble, WeightedEnsemble
-from kospeech.models.seq2seq.modules import BaseRNN
+from kospeech.models.seq2seq.sublayers import BaseRNN
 from kospeech.models.seq2seq.seq2seq import Seq2seq
 from kospeech.models.seq2seq.encoder import Seq2seqEncoder
 from kospeech.models.seq2seq.decoder import Seq2seqDecoder
@@ -22,7 +22,7 @@ def build_model(opt, device):
                                         num_layers=opt.num_encoder_layers, bidirectional=opt.use_bidirectional,
                                         extractor=opt.extractor, activation=opt.activation,
                                         rnn_type=opt.rnn_type, device=device, mask_conv=opt.mask_conv)
-        decoder = build_seq2seq_decoder(num_classes=len(char2id), max_len=opt.max_len,
+        decoder = build_seq2seq_decoder(num_classes=len(char2id), max_len=opt.max_len, d_ff=opt.d_ff,
                                         sos_id=SOS_token, eos_id=EOS_token,
                                         hidden_dim=opt.hidden_dim << (1 if opt.use_bidirectional else 0),
                                         num_layers=opt.num_decoder_layers, rnn_type=opt.rnn_type, dropout_p=opt.dropout,
@@ -84,26 +84,10 @@ def build_seq2seq_encoder(input_size: int, hidden_dim: int, dropout_p: float,
                           extractor=extractor, device=device, activation=activation)
 
 
-def build_seq2seq_decoder(num_classes: int, max_len: int, hidden_dim: int,
+def build_seq2seq_decoder(num_classes: int, max_len: int, hidden_dim: int, d_ff: int,
                           sos_id: int, eos_id: int, attn_mechanism: str, num_layers: int,
                           rnn_type: str, dropout_p: float, num_heads: int, device: str) -> Seq2seqDecoder:
     """ Various decoder dispatcher function. """
-    if not isinstance(num_classes, int):
-        raise ParameterError("num_classes should be inteager type")
-    if not isinstance(num_layers, int):
-        raise ParameterError("num_layers should be inteager type")
-    if not isinstance(hidden_dim, int):
-        raise ParameterError("hidden_dim should be inteager type")
-    if not isinstance(sos_id, int):
-        raise ParameterError("sos_id should be inteager type")
-    if not isinstance(eos_id, int):
-        raise ParameterError("eos_id should be inteager type")
-    if not isinstance(num_heads, int):
-        raise ParameterError("num_heads should be inteager type")
-    if not isinstance(max_len, int):
-        raise ParameterError("max_len should be inteager type")
-    if not isinstance(dropout_p, float):
-        raise ParameterError("dropout_p should be float type")
     if hidden_dim % num_heads != 0:
         raise ParameterError("{0} % {1} should be zero".format(hidden_dim, num_heads))
     if dropout_p < 0.0:
@@ -124,7 +108,7 @@ def build_seq2seq_decoder(num_classes: int, max_len: int, hidden_dim: int,
         raise ParameterError("device is None")
 
     return Seq2seqDecoder(num_classes=num_classes, max_length=max_len,
-                          hidden_dim=hidden_dim, sos_id=sos_id, eos_id=eos_id,
+                          hidden_dim=hidden_dim, d_ff=d_ff, sos_id=sos_id, eos_id=eos_id,
                           attn_mechanism=attn_mechanism, num_heads=num_heads,
                           num_layers=num_layers, rnn_type=rnn_type,
                           dropout_p=dropout_p, device=device)

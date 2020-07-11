@@ -2,8 +2,7 @@ import math
 import torch
 import torch.nn as nn
 from torch import Tensor
-from kospeech.models.seq2seq.modules import BaseRNN
-from kospeech.models.seq2seq.conv import VGGExtractor, DeepSpeech2Extractor
+from kospeech.models.seq2seq.sublayers import BaseRNN, VGGExtractor, DeepSpeech2Extractor
 
 
 class Seq2seqEncoder(BaseRNN):

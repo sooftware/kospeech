@@ -98,7 +98,7 @@ class LocationAwareAttention(nn.Module):
     We refer to implementation of ClovaCall Attention style.
 
     Args:
-        hidden_dim (int): The number of expected features in the output
+        d_model (int): dimension of model
         smoothing (bool): flag indication whether to use smoothing or not.
 
     Inputs: query, value, last_attn
@@ -114,14 +114,14 @@ class LocationAwareAttention(nn.Module):
         - **Attention-Based Models for Speech Recognition**: https://arxiv.org/abs/1506.07503
         - **ClovaCall**: https://github.com/clovaai/ClovaCall/blob/master/las.pytorch/models/attention.py
     """
-    def __init__(self, hidden_dim: int = 512, smoothing: bool = True) -> None:
+    def __init__(self, d_model: int = 512, smoothing: bool = True) -> None:
         super(LocationAwareAttention, self).__init__()
-        self.hidden_dim = hidden_dim
-        self.conv1d = nn.Conv1d(in_channels=1, out_channels=hidden_dim, kernel_size=3, padding=1)
-        self.linear_q = Linear(hidden_dim, hidden_dim, bias=False)
-        self.linear_v = Linear(hidden_dim, hidden_dim, bias=False)
-        self.bias = nn.Parameter(torch.rand(hidden_dim).uniform_(-0.1, 0.1))
-        self.linear = nn.Linear(hidden_dim, 1, bias=True)
+        self.d_model = d_model
+        self.conv1d = nn.Conv1d(in_channels=1, out_channels=d_model, kernel_size=3, padding=1)
+        self.linear_q = Linear(d_model, d_model, bias=False)
+        self.linear_v = Linear(d_model, d_model, bias=False)
+        self.bias = nn.Parameter(torch.rand(d_model).uniform_(-0.1, 0.1))
+        self.linear = nn.Linear(d_model, 1, bias=True)
         self.smoothing = smoothing
 
     def forward(self, query: Tensor, value: Tensor, last_attn: Tensor) -> Tuple[Tensor, Tensor]:
@@ -147,6 +147,6 @@ class LocationAwareAttention(nn.Module):
             attn = F.softmax(score, dim=-1)
 
         context = torch.bmm(attn.unsqueeze(dim=1), value).squeeze(dim=1)  # Bx1xT X BxTxD => Bx1xD => BxD
-        context = torch.cat([context, query.squeeze(1)], dim=1)
+        context += query
 
         return context, attn

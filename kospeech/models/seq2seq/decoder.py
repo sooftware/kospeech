@@ -5,7 +5,8 @@ import torch.nn.functional as F
 from torch import Tensor, LongTensor
 from typing import Optional, Any, Tuple
 from kospeech.models.seq2seq.attention import LocationAwareAttention, MultiHeadAttention
-from kospeech.models.seq2seq.modules import Linear, LayerNorm, BaseRNN, View, AddNorm
+from kospeech.models.seq2seq.modules import Linear
+from kospeech.models.seq2seq.sublayers import AddNorm, BaseRNN, FeedForwardNet
 
 
 class Seq2seqDecoder(BaseRNN):
@@ -168,18 +169,3 @@ class Seq2seqDecoder(BaseRNN):
             language_model.eval()
 
         return inputs, batch_size, max_length
-
-
-class FeedForwardNet(nn.Module):
-    def __init__(self, hidden_dim, d_ff, dropout_p):
-        super(FeedForwardNet, self).__init__()
-        nn.Sequential(
-            Linear(hidden_dim, d_ff, bias=True),
-            nn.Dropout(dropout_p),
-            nn.ReLU(),
-            Linear(d_ff, hidden_dim),
-            nn.Dropout(dropout_p)
-        )
-
-    def forward(self, inputs):
-        return self.feed_ward(inputs)
