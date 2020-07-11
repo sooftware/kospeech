@@ -43,7 +43,7 @@ class Seq2seqDecoder(BaseRNN):
     KEY_ATTENTION_SCORE = 'attention_score'
     KEY_SEQUENCE_SYMBOL = 'sequence_symbol'
 
-    def __init__(self, num_classes: int, max_length: int = 120, hidden_dim: int = 1024,
+    def __init__(self, num_classes: int, max_length: int = 120, hidden_dim: int = 1024, d_ff: int = 2048,
                  sos_id: int = 1, eos_id: int = 2, attn_mechanism: str = 'dot',
                  num_heads: int = 4, num_layers: int = 2, rnn_type: str = 'lstm',
                  dropout_p: float = 0.3, device: str = 'cuda') -> None:
@@ -66,7 +66,7 @@ class Seq2seqDecoder(BaseRNN):
         else:
             raise ValueError("Unsupported attention: %s".format(attn_mechanism))
 
-        self.feed_forward = AddNorm(Linear(hidden_dim, hidden_dim, bias=True), hidden_dim)
+        self.feed_forward = AddNorm(FeedForwardNet(hidden_dim, d_ff, dropout_p), hidden_dim)
         self.generator = Linear(hidden_dim, num_classes, bias=True)
 
     def forward_step(self, input_var: Tensor, hidden: Optional[Any],
@@ -168,3 +168,18 @@ class Seq2seqDecoder(BaseRNN):
             language_model.eval()
 
         return inputs, batch_size, max_length
+
+
+class FeedForwardNet(nn.Module):
+    def __init__(self, hidden_dim, d_ff, dropout_p):
+        super(FeedForwardNet, self).__init__()
+        nn.Sequential(
+            Linear(hidden_dim, d_ff, bias=True),
+            nn.Dropout(dropout_p),
+            nn.ReLU(),
+            Linear(d_ff, hidden_dim),
+            nn.Dropout(dropout_p)
+        )
+
+    def forward(self, inputs):
+        return self.feed_ward(inputs)
