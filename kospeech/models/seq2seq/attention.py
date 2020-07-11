@@ -4,7 +4,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
 from typing import Tuple
-from kospeech.models.seq2seq.modules import Linear, LayerNorm
+from kospeech.models.seq2seq.modules import Linear
 
 
 class ScaledDotProductAttention(nn.Module):

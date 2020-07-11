@@ -233,4 +233,4 @@ class FeedForwardNet(nn.Module):
         )
 
     def forward(self, inputs: Tensor) -> Tensor:
-        return self.feed_ward(inputs)
+        return self.feed_forward(inputs)
