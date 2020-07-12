@@ -108,7 +108,7 @@ Seq2seq(
       (layer_norm): LayerNorm(1024)
     )
     (feed_forward): AddNorm(
-      (feed_forward): Sequential(
+      (sublayer): Sequential(
         (0): Linear(in_features=1024, out_features=2048, bias=True),
         (1): Dropout(p=0.3, inplace=False),
         (2): ReLU(),
