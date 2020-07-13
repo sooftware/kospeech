@@ -2,6 +2,7 @@ import random
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import numpy as np
 from torch import Tensor, LongTensor
 from typing import Optional, Any, Tuple
 from kospeech.models.seq2seq.attention import LocationAwareAttention, MultiHeadAttention
@@ -42,6 +43,7 @@ class Seq2seqDecoder(BaseRNN):
           predicted token IDs }.
     """
     KEY_ATTENTION_SCORE = 'attention_score'
+    KEY_LENGTH = 'length'
     KEY_SEQUENCE_SYMBOL = 'sequence_symbol'
 
     def __init__(self, num_classes: int, max_length: int = 120, hidden_dim: int = 1024, d_ff: int = 2048,
@@ -107,6 +109,7 @@ class Seq2seqDecoder(BaseRNN):
         inputs, batch_size, max_length = self.validate_args(inputs, encoder_outputs, teacher_forcing_ratio, language_model)
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
         use_language_model = True if language_model is not None else False
+        lengths = np.array([max_length] * batch_size)
 
         if use_teacher_forcing:
             inputs = inputs[inputs != self.eos_id].view(batch_size, -1)
@@ -132,19 +135,25 @@ class Seq2seqDecoder(BaseRNN):
 
             for di in range(max_length):
                 step_output, hidden, attn = self.forward_step(input_var, hidden, encoder_outputs, attn)
+                decoder_outputs.append(step_output)
+                input_var = decoder_outputs[-1].topk(1)[1]
 
                 if not self.training:
                     ret_dict[Seq2seqDecoder.KEY_ATTENTION_SCORE].append(attn)
                     ret_dict[Seq2seqDecoder.KEY_SEQUENCE_SYMBOL].append(input_var)
+                    eos_batches = input_var.data.eq(self.eos_id)
+
+                    if eos_batches.dim() > 0:
+                        eos_batches = eos_batches.cpu().view(-1).numpy()
+                        update_idx = ((lengths > di) & eos_batches) != 0
+                        lengths[update_idx] = len(ret_dict[Seq2seqDecoder.KEY_SEQUENCE_SYMBOL])
 
                     if use_language_model:
                         lm_step_output = language_model.forward_step(prev_tokens, None)[0][:, -1, :].squeeze(1)
                         step_output = step_output * self.acoustic_weight + lm_step_output * self.language_weight
                         prev_tokens = torch.cat([prev_tokens, step_output.topk(1)[1]], dim=1)
 
-                decoder_outputs.append(step_output)
-                input_var = decoder_outputs[-1].topk(1)[1]
-
+        ret_dict[Seq2seqDecoder.KEY_LENGTH] = lengths
         return decoder_outputs, ret_dict
 
     def validate_args(self, inputs: Optional[Any], encoder_outputs: Tensor,
