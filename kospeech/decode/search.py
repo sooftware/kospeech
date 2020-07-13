@@ -2,8 +2,7 @@ import torch
 import torch.nn as nn
 import pandas as pd
 from kospeech.metrics import CharacterErrorRate
-from kospeech.seq2seq.beam_search import BeamSearchDecoder
-from kospeech.model_builder import load_language_model
+from kospeech.models.seq2seq.beam_search import BeamSearchDecoder
 from kospeech.utils import id2char, EOS_token, logger, label_to_string
 
 
@@ -77,7 +76,7 @@ class BeamSearch(GreedySearch):
         if isinstance(model, nn.DataParallel):
             model.module.set_speller(topk_decoder)
         else:
-            model.set_speller(topk_decoder)
+            model.set_decoder(topk_decoder)
         return super(BeamSearch, self).search(model, queue, device, print_every)
 
 

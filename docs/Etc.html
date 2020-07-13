@@ -90,7 +90,8 @@
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Seq2seq.html">Seq2seq</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Transformer.html">Transformer</a></li>
 </ul>
 <p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul class="current">
@@ -241,27 +242,27 @@ two provided sentences after tokenizing to words.</p>
 <div class="section" id="module-kospeech.model_builder">
 <span id="modelbuilder"></span><h2>ModelBuilder<a class="headerlink" href="#module-kospeech.model_builder" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="kospeech.model_builder.build_las">
-<code class="descclassname">kospeech.model_builder.</code><code class="descname">build_las</code><span class="sig-paren">(</span><em>listener</em>, <em>speller</em>, <em>device</em>, <em>init_uniform=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model_builder.html#build_las"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model_builder.build_las" title="Permalink to this definition">¶</a></dt>
-<dd><p>Various Listen, Attend and Spell dispatcher function.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="kospeech.model_builder.build_listener">
-<code class="descclassname">kospeech.model_builder.</code><code class="descname">build_listener</code><span class="sig-paren">(</span><em>input_size</em>, <em>hidden_dim</em>, <em>dropout_p</em>, <em>num_layers</em>, <em>bidirectional</em>, <em>rnn_type</em>, <em>extractor</em>, <em>activation</em>, <em>device</em>, <em>mask_conv</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model_builder.html#build_listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model_builder.build_listener" title="Permalink to this definition">¶</a></dt>
-<dd><p>Various encoder dispatcher function.</p>
-</dd></dl>
-
-<dl class="function">
 <dt id="kospeech.model_builder.build_model">
 <code class="descclassname">kospeech.model_builder.</code><code class="descname">build_model</code><span class="sig-paren">(</span><em>opt</em>, <em>device</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model_builder.html#build_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model_builder.build_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Various model dispatcher function.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="kospeech.model_builder.build_speller">
-<code class="descclassname">kospeech.model_builder.</code><code class="descname">build_speller</code><span class="sig-paren">(</span><em>num_classes</em>, <em>max_len</em>, <em>hidden_dim</em>, <em>sos_id</em>, <em>eos_id</em>, <em>attn_mechanism</em>, <em>num_layers</em>, <em>rnn_type</em>, <em>dropout_p</em>, <em>num_heads</em>, <em>device</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model_builder.html#build_speller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model_builder.build_speller" title="Permalink to this definition">¶</a></dt>
+<dt id="kospeech.model_builder.build_seq2seq">
+<code class="descclassname">kospeech.model_builder.</code><code class="descname">build_seq2seq</code><span class="sig-paren">(</span><em>encoder: kospeech.models.seq2seq.encoder.Seq2seqEncoder</em>, <em>decoder: kospeech.models.seq2seq.decoder.Seq2seqDecoder</em>, <em>device: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model_builder.html#build_seq2seq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model_builder.build_seq2seq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Various Listen, Attend and Spell dispatcher function.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kospeech.model_builder.build_seq2seq_decoder">
+<code class="descclassname">kospeech.model_builder.</code><code class="descname">build_seq2seq_decoder</code><span class="sig-paren">(</span><em>num_classes: int</em>, <em>max_len: int</em>, <em>hidden_dim: int</em>, <em>d_ff: int</em>, <em>sos_id: int</em>, <em>eos_id: int</em>, <em>attn_mechanism: str</em>, <em>num_layers: int</em>, <em>rnn_type: str</em>, <em>dropout_p: float</em>, <em>num_heads: int</em>, <em>device: str</em><span class="sig-paren">)</span> &#x2192; kospeech.models.seq2seq.decoder.Seq2seqDecoder<a class="reference internal" href="_modules/kospeech/model_builder.html#build_seq2seq_decoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model_builder.build_seq2seq_decoder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Various decoder dispatcher function.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kospeech.model_builder.build_seq2seq_encoder">
+<code class="descclassname">kospeech.model_builder.</code><code class="descname">build_seq2seq_encoder</code><span class="sig-paren">(</span><em>input_size: int</em>, <em>hidden_dim: int</em>, <em>dropout_p: float</em>, <em>num_layers: int</em>, <em>bidirectional: bool</em>, <em>rnn_type: str</em>, <em>extractor: str</em>, <em>activation: str</em>, <em>device: str</em>, <em>mask_conv: bool</em><span class="sig-paren">)</span> &#x2192; kospeech.models.seq2seq.encoder.Seq2seqEncoder<a class="reference internal" href="_modules/kospeech/model_builder.html#build_seq2seq_encoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model_builder.build_seq2seq_encoder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Various encoder dispatcher function.</p>
 </dd></dl>
 
 </div>

@@ -18,7 +18,8 @@ Welcome to KoSpeech's documentation!
    :maxdepth: 2
    :caption: ARCHITECTURE
 
-   Model
+   Seq2seq
+   Transformer
 
 .. toctree::
    :maxdepth: 2

@@ -41,5 +41,5 @@ class Seq2seq(nn.Module):
         self.encoder.rnn.flatten_parameters()
         self.decoder.rnn.flatten_parameters()
 
-    def set_speller(self, decoder: nn.Module):
+    def set_decoder(self, decoder: nn.Module):
         self.decoder = decoder

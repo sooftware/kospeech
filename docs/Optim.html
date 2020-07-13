@@ -91,7 +91,8 @@
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Seq2seq.html">Seq2seq</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Transformer.html">Transformer</a></li>
 </ul>
 <p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul class="current">
@@ -271,8 +272,8 @@ method.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>outputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.7.0a0+a0569ad ))"><em>torch.Tensor</em></a>) – outputs of a batch.</li>
-<li><strong>target</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.7.0a0+a0569ad ))"><em>torch.Tensor</em></a>) – expected output of a batch.</li>
+<li><strong>outputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.7.0a0+98df978 ))"><em>torch.Tensor</em></a>) – outputs of a batch.</li>
+<li><strong>target</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.7.0a0+98df978 ))"><em>torch.Tensor</em></a>) – expected output of a batch.</li>
 </ul>
 </td>
 </tr>
@@ -308,7 +309,7 @@ own logic.
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>weight</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.7.0a0+a0569ad ))"><em>torch.Tensor</em></a><em>, </em><em>optional</em>) – refer to <a class="reference external" href="http://pytorch.org/docs/master/nn.html#nllloss">http://pytorch.org/docs/master/nn.html#nllloss</a></li>
+<li><strong>weight</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.7.0a0+98df978 ))"><em>torch.Tensor</em></a><em>, </em><em>optional</em>) – refer to <a class="reference external" href="http://pytorch.org/docs/master/nn.html#nllloss">http://pytorch.org/docs/master/nn.html#nllloss</a></li>
 <li><strong>mask</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – index of masked token, i.e. weight[mask] = 0.</li>
 <li><strong>size_average</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – refer to <a class="reference external" href="http://pytorch.org/docs/master/nn.html#nllloss">http://pytorch.org/docs/master/nn.html#nllloss</a></li>
 </ul>
@@ -329,8 +330,8 @@ method.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>outputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.7.0a0+a0569ad ))"><em>torch.Tensor</em></a>) – outputs of a batch.</li>
-<li><strong>target</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.7.0a0+a0569ad ))"><em>torch.Tensor</em></a>) – expected output of a batch.</li>
+<li><strong>outputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.7.0a0+98df978 ))"><em>torch.Tensor</em></a>) – outputs of a batch.</li>
+<li><strong>target</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.7.0a0+98df978 ))"><em>torch.Tensor</em></a>) – expected output of a batch.</li>
 </ul>
 </td>
 </tr>
@@ -362,7 +363,7 @@ same, it is the exponential of negative log-likelihood.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>weight</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.7.0a0+a0569ad ))"><em>torch.Tensor</em></a><em>, </em><em>optional</em>) – refer to <a class="reference external" href="http://pytorch.org/docs/master/nn.html#nllloss">http://pytorch.org/docs/master/nn.html#nllloss</a></li>
+<li><strong>weight</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.7.0a0+98df978 ))"><em>torch.Tensor</em></a><em>, </em><em>optional</em>) – refer to <a class="reference external" href="http://pytorch.org/docs/master/nn.html#nllloss">http://pytorch.org/docs/master/nn.html#nllloss</a></li>
 <li><strong>mask</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – index of masked token, i.e. weight[mask] = 0.</li>
 </ul>
 </td>
@@ -382,8 +383,8 @@ method.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>outputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.7.0a0+a0569ad ))"><em>torch.Tensor</em></a>) – outputs of a batch.</li>
-<li><strong>target</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.7.0a0+a0569ad ))"><em>torch.Tensor</em></a>) – expected output of a batch.</li>
+<li><strong>outputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.7.0a0+98df978 ))"><em>torch.Tensor</em></a>) – outputs of a batch.</li>
+<li><strong>target</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.7.0a0+98df978 ))"><em>torch.Tensor</em></a>) – expected output of a batch.</li>
 </ul>
 </td>
 </tr>
@@ -416,7 +417,7 @@ own logic.
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>optimizer</strong> (<a class="reference external" href="https://pytorch.org/docs/master/optim.html#torch.optim.Optimizer" title="(in PyTorch vmaster (1.7.0a0+a0569ad ))"><em>torch.optim.Optimizer</em></a>) – optimizer object, the parameters to be optimized
+<li><strong>optimizer</strong> (<a class="reference external" href="https://pytorch.org/docs/master/optim.html#torch.optim.Optimizer" title="(in PyTorch vmaster (1.7.0a0+98df978 ))"><em>torch.optim.Optimizer</em></a>) – optimizer object, the parameters to be optimized
 should be given when instantiating the object, e.g. torch.optim.Adam, torch.optim</li>
 <li><strong>init_lr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – initial learning rate</li>
 <li><strong>low_plateau_lr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – target learning rate</li>
@@ -447,7 +448,7 @@ should be given when instantiating the object, e.g. torch.optim.Adam, torch.opti
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>optimizer</strong> (<a class="reference external" href="https://pytorch.org/docs/master/optim.html#torch.optim.Optimizer" title="(in PyTorch vmaster (1.7.0a0+a0569ad ))"><em>torch.optim.Optimizer</em></a>) – optimizer object, the parameters to be optimized
+<li><strong>optimizer</strong> (<a class="reference external" href="https://pytorch.org/docs/master/optim.html#torch.optim.Optimizer" title="(in PyTorch vmaster (1.7.0a0+98df978 ))"><em>torch.optim.Optimizer</em></a>) – optimizer object, the parameters to be optimized
 should be given when instantiating the object, e.g. torch.optim.Adam, torch.optim</li>
 <li><strong>init_lr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – initial learning rate</li>
 <li><strong>high_plateau_lr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – target learning rate</li>
@@ -475,7 +476,7 @@ This class provides functionalities for learning rate scheduling and gradient no
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>optim</strong> (<a class="reference external" href="https://pytorch.org/docs/master/optim.html#torch.optim.Optimizer" title="(in PyTorch vmaster (1.7.0a0+a0569ad ))"><em>torch.optim.Optimizer</em></a>) – optimizer object, the parameters to be optimized
+<li><strong>optim</strong> (<a class="reference external" href="https://pytorch.org/docs/master/optim.html#torch.optim.Optimizer" title="(in PyTorch vmaster (1.7.0a0+98df978 ))"><em>torch.optim.Optimizer</em></a>) – optimizer object, the parameters to be optimized
 should be given when instantiating the object, e.g. torch.optim.Adam, torch.optim.SGD</li>
 <li><strong>scheduler</strong> (<em>e2e.optim.lr_scheduler</em><em>, </em><em>optional</em>) – learning rate scheduler</li>
 <li><strong>scheduler_period</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – timestep with learning rate scheduler</li>

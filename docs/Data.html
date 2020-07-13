@@ -91,7 +91,8 @@
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Seq2seq.html">Seq2seq</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Transformer.html">Transformer</a></li>
 </ul>
 <p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul class="current">
@@ -216,7 +217,7 @@ Step 3: Add noise to sound</p>
 
 <dl class="class">
 <dt id="kospeech.data.audio.augment.SpecAugment">
-<em class="property">class </em><code class="descclassname">kospeech.data.audio.augment.</code><code class="descname">SpecAugment</code><span class="sig-paren">(</span><em>time_mask_para</em>, <em>freq_mask_para</em>, <em>time_mask_num</em>, <em>freq_mask_num</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/audio/augment.html#SpecAugment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.audio.augment.SpecAugment" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">kospeech.data.audio.augment.</code><code class="descname">SpecAugment</code><span class="sig-paren">(</span><em>time_mask_para: int</em>, <em>freq_mask_para: int</em>, <em>time_mask_num: int</em>, <em>freq_mask_num: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/audio/augment.html#SpecAugment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.audio.augment.SpecAugment" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provides Spec Augment. A simple data augmentation method for speech recognition.
 This concept proposed in <a class="reference external" href="https://arxiv.org/abs/1904.08779">https://arxiv.org/abs/1904.08779</a></p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -298,7 +299,7 @@ feature_extract_by (str): which library to use for feature extraction(default: l
 
 <dl class="class">
 <dt id="kospeech.data.audio.feature.Spectrogram">
-<em class="property">class </em><code class="descclassname">kospeech.data.audio.feature.</code><code class="descname">Spectrogram</code><span class="sig-paren">(</span><em>sample_rate=16000</em>, <em>window_size=20</em>, <em>stride=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/audio/feature.html#Spectrogram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.audio.feature.Spectrogram" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">kospeech.data.audio.feature.</code><code class="descname">Spectrogram</code><span class="sig-paren">(</span><em>sample_rate: int = 16000</em>, <em>window_size: int = 20</em>, <em>stride: int = 10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/audio/feature.html#Spectrogram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.audio.feature.Spectrogram" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a spectrogram from a audio signal.</p>
 <dl class="docutils">
 <dt>Args: sample_rate, window_size, stride, feature_extract_by</dt>
@@ -331,14 +332,14 @@ stride (int): Length of hop between STFT windows. (ms) (Default: 10)</dd>
 
 <dl class="class">
 <dt id="kospeech.data.audio.parser.SpectrogramParser">
-<em class="property">class </em><code class="descclassname">kospeech.data.audio.parser.</code><code class="descname">SpectrogramParser</code><span class="sig-paren">(</span><em>feature_extract_by='librosa'</em>, <em>sample_rate=16000</em>, <em>n_mels=80</em>, <em>window_size=20</em>, <em>stride=10</em>, <em>del_silence=False</em>, <em>input_reverse=True</em>, <em>normalize=False</em>, <em>feature='mel'</em>, <em>time_mask_para=70</em>, <em>freq_mask_para=12</em>, <em>time_mask_num=2</em>, <em>freq_mask_num=2</em>, <em>sos_id=1</em>, <em>eos_id=2</em>, <em>target_dict=None</em>, <em>noise_augment=False</em>, <em>dataset_path=None</em>, <em>noiseset_size=0</em>, <em>noise_level=0.7</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/audio/parser.html#SpectrogramParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.audio.parser.SpectrogramParser" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">kospeech.data.audio.parser.</code><code class="descname">SpectrogramParser</code><span class="sig-paren">(</span><em>feature_extract_by: str = 'librosa'</em>, <em>sample_rate: int = 16000</em>, <em>n_mels: int = 80</em>, <em>window_size: int = 20</em>, <em>stride: int = 10</em>, <em>del_silence: bool = False</em>, <em>input_reverse: bool = True</em>, <em>normalize: bool = False</em>, <em>transform_method: str = 'mel'</em>, <em>time_mask_para: int = 70</em>, <em>freq_mask_para: int = 12</em>, <em>time_mask_num: int = 2</em>, <em>freq_mask_num: int = 2</em>, <em>sos_id: int = 1</em>, <em>eos_id: int = 2</em>, <em>target_dict: dict = None</em>, <em>noise_augment: bool = False</em>, <em>dataset_path: str = None</em>, <em>noiseset_size: int = 0</em>, <em>noise_level: float = 0.7</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/audio/parser.html#SpectrogramParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.audio.parser.SpectrogramParser" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parses audio file into (spectrogram / mel spectrogram / mfcc) with various options.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>feature</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – which feature to use (default: mel)</li>
+<li><strong>transform_method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – which feature to use (default: mel)</li>
 <li><strong>sample_rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Sample rate of audio signal. (Default: 16000)</li>
 <li><strong>n_mels</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Number of mfc coefficients to retain. (Default: 40)</li>
 <li><strong>window_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – window size (ms) (Default : 20)</li>
@@ -361,7 +362,7 @@ stride (int): Length of hop between STFT windows. (ms) (Default: 10)</dd>
 </table>
 <dl class="method">
 <dt id="kospeech.data.audio.parser.SpectrogramParser.parse_audio">
-<code class="descname">parse_audio</code><span class="sig-paren">(</span><em>audio_path</em>, <em>augment_method</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/audio/parser.html#SpectrogramParser.parse_audio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.audio.parser.SpectrogramParser.parse_audio" title="Permalink to this definition">¶</a></dt>
+<code class="descname">parse_audio</code><span class="sig-paren">(</span><em>audio_path: str</em>, <em>augment_method: int</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/kospeech/data/audio/parser.html#SpectrogramParser.parse_audio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.audio.parser.SpectrogramParser.parse_audio" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parses audio.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />

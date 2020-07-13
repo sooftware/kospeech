@@ -91,7 +91,8 @@
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Seq2seq.html">Seq2seq</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Transformer.html">Transformer</a></li>
 </ul>
 <p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
 <ul class="current">
@@ -183,7 +184,7 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>optimizer</strong> (<em>e2e.optim.optim.Optimizer</em>) – optimizer for training</li>
-<li><strong>criterion</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.7.0a0+a0569ad ))"><em>torch.nn.Module</em></a>) – loss function</li>
+<li><strong>criterion</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.7.0a0+98df978 ))"><em>torch.nn.Module</em></a>) – loss function</li>
 <li><strong>trainset_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – list of training datset</li>
 <li><strong>validset</strong> (<em>e2e.dataset.data_loader.SpectrogramDataset</em>) – validation dataset</li>
 <li><strong>num_workers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of using cpu cores</li>
@@ -198,14 +199,14 @@
 </table>
 <dl class="method">
 <dt id="kospeech.trainer.supervised_trainer.SupervisedTrainer.train">
-<code class="descname">train</code><span class="sig-paren">(</span><em>model</em>, <em>batch_size</em>, <em>epoch_time_step</em>, <em>num_epochs</em>, <em>teacher_forcing_ratio=0.99</em>, <em>resume=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/trainer/supervised_trainer.html#SupervisedTrainer.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.trainer.supervised_trainer.SupervisedTrainer.train" title="Permalink to this definition">¶</a></dt>
+<code class="descname">train</code><span class="sig-paren">(</span><em>model: torch.nn.modules.module.Module</em>, <em>batch_size: int</em>, <em>epoch_time_step: int</em>, <em>num_epochs: int</em>, <em>teacher_forcing_ratio: float = 0.99</em>, <em>resume: bool = False</em><span class="sig-paren">)</span> &#x2192; torch.nn.modules.module.Module<a class="reference internal" href="_modules/kospeech/trainer/supervised_trainer.html#SupervisedTrainer.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.trainer.supervised_trainer.SupervisedTrainer.train" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run training for a given model.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>model</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.7.0a0+a0569ad ))"><em>torch.nn.Module</em></a>) – model to train</li>
+<li><strong>model</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.7.0a0+98df978 ))"><em>torch.nn.Module</em></a>) – model to train</li>
 <li><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – batch size for experiment</li>
 <li><strong>epoch_time_step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of time step for training</li>
 <li><strong>num_epochs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of epochs for training</li>
@@ -220,17 +221,17 @@
 
 <dl class="method">
 <dt id="kospeech.trainer.supervised_trainer.SupervisedTrainer.train_epoches">
-<code class="descname">train_epoches</code><span class="sig-paren">(</span><em>model</em>, <em>epoch</em>, <em>epoch_time_step</em>, <em>train_begin_time</em>, <em>queue</em>, <em>teacher_forcing_ratio</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/trainer/supervised_trainer.html#SupervisedTrainer.train_epoches"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.trainer.supervised_trainer.SupervisedTrainer.train_epoches" title="Permalink to this definition">¶</a></dt>
+<code class="descname">train_epoches</code><span class="sig-paren">(</span><em>model: torch.nn.modules.module.Module</em>, <em>epoch: int</em>, <em>epoch_time_step: int</em>, <em>train_begin_time: float</em>, <em>queue: queue.Queue</em>, <em>teacher_forcing_ratio: float</em><span class="sig-paren">)</span> &#x2192; Tuple[float, float]<a class="reference internal" href="_modules/kospeech/trainer/supervised_trainer.html#SupervisedTrainer.train_epoches"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.trainer.supervised_trainer.SupervisedTrainer.train_epoches" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run training one epoch</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>model</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.7.0a0+a0569ad ))"><em>torch.nn.Module</em></a>) – model to train</li>
+<li><strong>model</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.7.0a0+98df978 ))"><em>torch.nn.Module</em></a>) – model to train</li>
 <li><strong>epoch</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of current epoch</li>
 <li><strong>epoch_time_step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – total time step in one epoch</li>
-<li><strong>train_begin_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – time of train begin</li>
+<li><strong>train_begin_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – time of train begin</li>
 <li><strong>queue</strong> (<a class="reference external" href="https://docs.python.org/3/library/queue.html#queue.Queue" title="(in Python v3.8)"><em>queue.Queue</em></a>) – training queue, containing input, targets, input_lengths, target_lengths</li>
 <li><strong>teacher_forcing_ratio</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – teaching forcing ratio (default 0.99)</li>
 </ul>
@@ -250,14 +251,14 @@
 
 <dl class="method">
 <dt id="kospeech.trainer.supervised_trainer.SupervisedTrainer.validate">
-<code class="descname">validate</code><span class="sig-paren">(</span><em>model</em>, <em>queue</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/trainer/supervised_trainer.html#SupervisedTrainer.validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.trainer.supervised_trainer.SupervisedTrainer.validate" title="Permalink to this definition">¶</a></dt>
+<code class="descname">validate</code><span class="sig-paren">(</span><em>model: torch.nn.modules.module.Module</em>, <em>queue: queue.Queue</em><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="_modules/kospeech/trainer/supervised_trainer.html#SupervisedTrainer.validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.trainer.supervised_trainer.SupervisedTrainer.validate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run training one epoch</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>model</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.7.0a0+a0569ad ))"><em>torch.nn.Module</em></a>) – model to train</li>
+<li><strong>model</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.7.0a0+98df978 ))"><em>torch.nn.Module</em></a>) – model to train</li>
 <li><strong>queue</strong> (<a class="reference external" href="https://docs.python.org/3/library/queue.html#queue.Queue" title="(in Python v3.8)"><em>queue.Queue</em></a>) – validation queue, containing input, targets, input_lengths, target_lengths</li>
 </ul>
 </td>
