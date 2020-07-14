@@ -13,7 +13,8 @@ class Linear(nn.Module):
         super(Linear, self).__init__()
         self.linear = nn.Linear(in_features, out_features, bias=bias)
         init.xavier_uniform_(self.linear.weight)
-        init.zeros_(self.linear.bias)
+        if bias:
+            init.zeros_(self.linear.bias)
 
     def forward(self, x: Tensor) -> Tensor:
         return self.linear(x)

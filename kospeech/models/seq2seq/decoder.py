@@ -153,8 +153,11 @@ class Seq2seqDecoder(BaseRNN):
                         step_output = step_output * self.acoustic_weight + lm_step_output * self.language_weight
                         prev_tokens = torch.cat([prev_tokens, step_output.topk(1)[1]], dim=1)
 
-        ret_dict[Seq2seqDecoder.KEY_LENGTH] = lengths
-        return decoder_outputs, ret_dict
+        if not self. training:
+            ret_dict[Seq2seqDecoder.KEY_LENGTH] = lengths
+            decoder_outputs = tuple(decoder_outputs, ret_dict)
+
+        return decoder_outputs
 
     def validate_args(self, inputs: Optional[Any], encoder_outputs: Tensor,
                       teacher_forcing_ratio: float, language_model: Optional[nn.Module]) -> Tuple[Tensor, int, int]:
