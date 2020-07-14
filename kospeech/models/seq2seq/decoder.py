@@ -69,8 +69,8 @@ class Seq2seqDecoder(BaseRNN):
         else:
             raise ValueError("Unsupported attention: %s".format(attn_mechanism))
 
-        self.feed_forward = AddNorm(FeedForwardNet(hidden_dim, d_ff, dropout_p), hidden_dim)
-        self.generator = Linear(hidden_dim, num_classes, bias=True)
+        self.feed_forward = AddNorm(Linear(hidden_dim, hidden_dim, bias=True), hidden_dim)
+        self.generator = Linear(hidden_dim, num_classes, bias=False)
 
     def forward_step(self, input_var: Tensor, hidden: Optional[Any],
                      encoder_outputs: Tensor, attn: Tensor) -> Tuple[Tensor, Optional[Any], Tensor]:
@@ -90,7 +90,7 @@ class Seq2seqDecoder(BaseRNN):
             context, attn = self.attention(output, encoder_outputs, attn)
 
         output = self.feed_forward(context.view(-1, self.hidden_dim)).view(batch_size, -1, self.hidden_dim)
-        output = self.generator(output.contiguous().view(-1, self.hidden_dim))
+        output = self.generator(torch.tanh(output).contiguous().view(-1, self.hidden_dim))
 
         step_output = F.log_softmax(output, dim=1)
         step_output = step_output.view(batch_size, output_lengths, -1).squeeze(1)
