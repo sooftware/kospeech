@@ -56,7 +56,7 @@ We will response as soon as possible.
 
 ## Roadmap
   
-<img src="https://user-images.githubusercontent.com/42150335/87221984-24a77680-c3ab-11ea-8da6-d609e6ce7cf2.png"> 
+<img src="https://user-images.githubusercontent.com/42150335/87568786-2d78af00-c701-11ea-8ec8-437cb1a1dc5b.png"> 
   
 ### Seq2seq
   
