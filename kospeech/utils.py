@@ -26,7 +26,7 @@ class Logger(object):
 
 
 logger = Logger()
-char2id, id2char = load_label('../data/label/aihub_labels.csv', encoding='utf-8')  # char labels
+char2id, id2char = load_label('../data/label/aihub_labels.csv', encoding='utf-8')
 
 SOS_token = int(char2id['<s>'])
 EOS_token = int(char2id['</s>'])

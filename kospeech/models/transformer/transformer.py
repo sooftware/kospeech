@@ -48,23 +48,8 @@ class Transformer(nn.Module):
                  dropout_p: float = 0.3, ffnet_style: str = 'ff') -> None:
         super(Transformer, self).__init__()
         self.pad_id = pad_id
-        self.encoder = TransformerEncoder(
-            d_model=d_model,
-            num_layers=num_encoder_layers,
-            num_heads=num_heads,
-            dropout_p=dropout_p,
-            pad_id=pad_id
-        )
-        self.decoder = TransformerDecoder(
-            num_embeddings=num_classes,
-            d_model=d_model,
-            d_ff=d_ff,
-            num_layers=num_decoder_layers,
-            num_heads=num_heads,
-            ffnet_style=ffnet_style,
-            dropout_p=dropout_p,
-            pad_id=pad_id
-        )
+        self.encoder = TransformerEncoder(d_model, d_ff,  num_encoder_layers, num_heads, ffnet_style, dropout_p, pad_id)
+        self.decoder = TransformerDecoder(num_classes, d_model, d_ff, num_decoder_layers, num_heads, ffnet_style, dropout_p, pad_id)
         self.linear = Linear(d_model, num_classes)
 
     def forward(self, inputs: Tensor, targets: Optional[Tensor]) -> Tuple[Tensor, Tensor, Tensor, Tensor]:
@@ -75,10 +60,10 @@ class Transformer(nn.Module):
         targets_mask = subsequent_masking(targets) | pad_masking(inputs, input_length)
 
         memory, encoder_self_attns = self.encoder(inputs, inputs_mask)
-        output, decoder_self_attns, decoder_encoder_attns = self.decoder(targets, memory, targets_mask, memory_mask)
+        output, decoder_self_attns, memory_attns = self.decoder(targets, memory, targets_mask, memory_mask)
         output = self.linear(output)
 
-        return output, encoder_self_attns, decoder_self_attns, decoder_encoder_attns
+        return output, encoder_self_attns, decoder_self_attns, memory_attns
 
 
 class TransformerEncoder(nn.Module):
@@ -102,14 +87,11 @@ class TransformerEncoder(nn.Module):
 
     def forward(self, inputs: Tensor, inputs_mask: Optional[Tensor] = None) -> Tuple[Tensor, Tensor]:
         self_attns = list()
-        output = None
-
-        inputs = self.positional_encoding(inputs)
+        output = self.positional_encoding(inputs)
 
         for layer in self.layers:
-            output, attn = layer(inputs, inputs_mask)
+            output, attn = layer(output, inputs_mask)
             self_attns.append(attn)
-            inputs = output
 
         return output, self_attns
 
@@ -120,14 +102,14 @@ class TransformerDecoder(nn.Module):
     Each layer has three sub-layers. The first is a multi-head self-attention mechanism,
     and the second is a multi-head attention mechanism, third is a feed-forward network.
     """
-    def __init__(self, num_embeddings: int, d_model: int = 512, d_ff: int = 512,
+    def __init__(self, num_classes: int, d_model: int = 512, d_ff: int = 512,
                  num_layers: int = 6, num_heads: int = 8, ffnet_style: str = 'ff',
                  dropout_p: float = 0.3, pad_id: int = 0) -> None:
         super(TransformerDecoder, self).__init__()
         self.d_model = d_model
         self.num_layers = num_layers
         self.num_heads = num_heads
-        self.embedding = Embedding(num_embeddings, pad_id, d_model)
+        self.embedding = Embedding(num_classes, pad_id, d_model)
         self.positional_encoding = PositionalEncoding(d_model, dropout_p)
         self.layers = nn.ModuleList(
             [TransformerDecoderLayer(d_model, num_heads, d_ff,  dropout_p, ffnet_style) for _ in range(num_layers)]
@@ -135,7 +117,7 @@ class TransformerDecoder(nn.Module):
 
     def forward(self, inputs: Tensor, memory: Tensor,  inputs_mask: Optional[Tensor] = None,
                 memory_mask: Optional[Tensor] = None) -> Tuple[Tensor, Tensor, Tensor]:
-        self_attns, encoder_attns = list(), list()
+        self_attns, memory_attns = list(), list()
 
         inputs = self.embedding(inputs)
         output = self.positional_encoding(inputs)
@@ -143,6 +125,6 @@ class TransformerDecoder(nn.Module):
         for layer in self.layers:
             output, self_attn, encoder_attn = layer(output, memory, inputs_mask, memory_mask)
             self_attns.append(self_attn)
-            encoder_attns.append(encoder_attn)
+            memory_attns.append(encoder_attn)
 
-        return output, self_attns, encoder_attns
+        return output, self_attns, memory_attns
