@@ -7,12 +7,12 @@ from torch import Tensor, LongTensor
 from typing import Optional, Any, Tuple
 from kospeech.models.seq2seq.attention import LocationAwareAttention, MultiHeadAttention
 from kospeech.models.seq2seq.modules import Linear
-from kospeech.models.seq2seq.sublayers import AddNorm, BaseRNN, FeedForwardNet
+from kospeech.models.seq2seq.sublayers import AddNorm, BaseRNN
 
 
 class Seq2seqDecoder(BaseRNN):
     """
-    Converts higher level features (from listener) into output utterances
+    Converts higher level features (from encoder) into output utterances
     by specifying a probability distribution over sequences of characters.
 
     Args:
@@ -58,13 +58,13 @@ class Seq2seqDecoder(BaseRNN):
         self.sos_id = sos_id
         self.acoutsic_weight = 0.9  # acoustic model weight
         self.language_weight = 0.1  # language model weight
-        self.attn_mechanism = attn_mechanism
+        self.attn_mechanism = attn_mechanism.lower()
         self.embedding = nn.Embedding(num_classes, hidden_dim)
         self.input_dropout = nn.Dropout(dropout_p)
 
-        if attn_mechanism == 'loc':
+        if self.attn_mechanism == 'loc':
             self.attention = LocationAwareAttention(hidden_dim, smoothing=True)
-        elif attn_mechanism == 'dot':
+        elif self.attn_mechanism == 'dot':
             self.attention = AddNorm(MultiHeadAttention(hidden_dim, num_heads), hidden_dim)
         else:
             raise ValueError("Unsupported attention: %s".format(attn_mechanism))

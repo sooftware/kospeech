@@ -35,7 +35,7 @@ class Seq2seqEncoder(BaseRNN):
             input_size = (input_size - 1) << 5 if input_size % 2 else input_size << 5
             super(Seq2seqEncoder, self).__init__(input_size, hidden_dim, num_layers,
                                                  rnn_type, dropout_p, bidirectional, device)
-            self.conv_extractor = VGGExtractor(in_channels=1, activation=activation, mask_conv=mask_conv)
+            self.conv = VGGExtractor(in_channels=1, activation=activation, mask_conv=mask_conv)
 
         elif extractor.lower() == 'ds2':
             input_size = int(math.floor(input_size + 2 * 20 - 41) / 2 + 1)
@@ -43,7 +43,7 @@ class Seq2seqEncoder(BaseRNN):
             input_size <<= 5
             super(Seq2seqEncoder, self).__init__(input_size, hidden_dim, num_layers,
                                                  rnn_type, dropout_p, bidirectional, device)
-            self.conv_extractor = DeepSpeech2Extractor(in_channels=1, activation=activation, mask_conv=mask_conv)
+            self.conv = DeepSpeech2Extractor(in_channels=1, activation=activation, mask_conv=mask_conv)
 
         else:
             raise ValueError("Unsupported Extractor : {0}".format(extractor))
@@ -51,7 +51,7 @@ class Seq2seqEncoder(BaseRNN):
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tensor:
         if self.mask_conv:
             inputs = inputs.unsqueeze(1).permute(0, 1, 3, 2)
-            conv_feat, seq_lengths = self.conv_extractor(inputs, input_lengths)
+            conv_feat, seq_lengths = self.conv(inputs, input_lengths)
 
             batch_size, num_channels, hidden_dim, seq_length = conv_feat.size()
             conv_feat = conv_feat.view(batch_size, num_channels * hidden_dim, seq_length).permute(2, 0, 1).contiguous()
@@ -62,7 +62,7 @@ class Seq2seqEncoder(BaseRNN):
             output = output.transpose(0, 1)
 
         else:
-            conv_feat = self.conv_extractor(inputs.unsqueeze(1), input_lengths).to(self.device)
+            conv_feat = self.conv(inputs.unsqueeze(1), input_lengths).to(self.device)
             conv_feat = conv_feat.transpose(1, 2)
 
             batch_size, num_channels, seq_length, hidden_dim = conv_feat.size()

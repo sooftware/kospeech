@@ -16,7 +16,7 @@ class BeamSearchDecoder(nn.Module):
     Top-K decoding with beam search.
 
     Args:
-        decoder (e2e.model.speller.Speller): decoder to which beam search will be applied
+        decoder (kospeech.models.seq2seq.Seq2seqDecoder): decoder to which beam search will be applied
         beam_size (int): size of beam
 
     Inputs: input_var, encoder_outputs

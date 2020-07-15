@@ -1,5 +1,5 @@
 import torch.nn as nn
-from typing import Tuple
+from typing import Tuple, Optional, Any
 from torch import Tensor, BoolTensor
 from kospeech.models.seq2seq.modules import LayerNorm, Linear
 
@@ -58,9 +58,11 @@ class AddNorm(nn.Module):
         output = self.sublayer(*args)
 
         if isinstance(output, tuple):
-            return self.layer_norm(output[0] + residual), output[1]
+            output = self.layer_norm(output[0] + residual), output[1]
         else:
-            return self.layer_norm(output + residual)
+            output = self.layer_norm(output + residual)
+
+        return output
 
 
 class MaskConv(nn.Module):
@@ -156,13 +158,15 @@ class CNNExtractor(nn.Module):
         else:
             raise ValueError("Unsupported activation function : {0}".format(activation))
 
-    def forward(self, inputs: Tensor, input_lengths: Tensor):
+    def forward(self, inputs: Tensor, input_lengths: Tensor) -> Optional[Any]:
         if self.mask_conv:
             conv_feat, seq_lengths = self.conv(inputs, input_lengths)
-            return conv_feat, seq_lengths
+            output = conv_feat, seq_lengths
         else:
             conv_feat = self.conv(inputs)
-            return conv_feat
+            output = conv_feat
+
+        return output
 
 
 class VGGExtractor(CNNExtractor):
@@ -192,7 +196,7 @@ class VGGExtractor(CNNExtractor):
         if mask_conv:
             self.conv = MaskConv(self.conv)
 
-    def forward(self, inputs: Tensor, input_lengths: Tensor):
+    def forward(self, inputs: Tensor, input_lengths: Tensor) -> Optional[Any]:
         return super().forward(inputs, input_lengths)
 
 
@@ -217,7 +221,7 @@ class DeepSpeech2Extractor(CNNExtractor):
         if mask_conv:
             self.conv = MaskConv(self.conv)
 
-    def forward(self, inputs: Tensor, input_lengths: Tensor):
+    def forward(self, inputs: Tensor, input_lengths: Tensor) -> Optional[Any]:
         return super().forward(inputs, input_lengths)
 
 
