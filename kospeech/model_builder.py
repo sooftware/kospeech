@@ -22,7 +22,7 @@ def build_model(opt, device):
                                         num_layers=opt.num_encoder_layers, bidirectional=opt.use_bidirectional,
                                         extractor=opt.extractor, activation=opt.activation,
                                         rnn_type=opt.rnn_type, device=device, mask_conv=opt.mask_conv)
-        decoder = build_seq2seq_decoder(num_classes=len(char2id), max_len=opt.max_len, d_ff=opt.d_ff,
+        decoder = build_seq2seq_decoder(num_classes=len(char2id), max_len=opt.max_len,
                                         sos_id=SOS_token, eos_id=EOS_token,
                                         hidden_dim=opt.hidden_dim << (1 if opt.use_bidirectional else 0),
                                         num_layers=opt.num_decoder_layers, rnn_type=opt.rnn_type, dropout_p=opt.dropout,
@@ -30,7 +30,7 @@ def build_model(opt, device):
         model = build_seq2seq(encoder, decoder, device)
     elif opt.architecture.lower() == 'transformer':
         model = build_transformer(num_classes=opt.num_classes, pad_id=PAD_token,
-                                  d_model=opt.d_model, d_ff=opt.d_ff, num_heads=opt.num_heads,
+                                  d_model=opt.d_model, num_heads=opt.num_heads,
                                   num_encoder_layers=opt.num_encoder_layers, num_decoder_layers=opt.num_decoder_layers,
                                   dropout_p=opt.dropout_p, ffnet_style=opt.ffnet_style)
     else:
@@ -39,14 +39,14 @@ def build_model(opt, device):
     return model
 
 
-def build_transformer(num_classes: int, pad_id: int, d_model: int, d_ff: int, num_heads: int,
+def build_transformer(num_classes: int, pad_id: int, d_model: int, num_heads: int,
                       num_encoder_layers: int, num_decoder_layers: int,
                       dropout_p: float, ffnet_style: str) -> Transformer:
     if ffnet_style not in {'ff', 'conv'}:
         raise ParameterError("Unsupported ffnet_style: {0}".format(ffnet_style))
 
     return Transformer(num_classes=num_classes, pad_id=pad_id,
-                       d_model=d_model, d_ff=d_ff, num_heads=num_heads,
+                       d_model=d_model, num_heads=num_heads,
                        num_encoder_layers=num_encoder_layers, num_decoder_layers=num_decoder_layers,
                        dropout_p=dropout_p, ffnet_style=ffnet_style)
 
@@ -84,7 +84,7 @@ def build_seq2seq_encoder(input_size: int, hidden_dim: int, dropout_p: float,
                           extractor=extractor, device=device, activation=activation)
 
 
-def build_seq2seq_decoder(num_classes: int, max_len: int, hidden_dim: int, d_ff: int,
+def build_seq2seq_decoder(num_classes: int, max_len: int, hidden_dim: int,
                           sos_id: int, eos_id: int, attn_mechanism: str, num_layers: int,
                           rnn_type: str, dropout_p: float, num_heads: int, device: str) -> Seq2seqDecoder:
     """ Various decoder dispatcher function. """
@@ -108,7 +108,7 @@ def build_seq2seq_decoder(num_classes: int, max_len: int, hidden_dim: int, d_ff:
         raise ParameterError("device is None")
 
     return Seq2seqDecoder(num_classes=num_classes, max_length=max_len,
-                          hidden_dim=hidden_dim, d_ff=d_ff, sos_id=sos_id, eos_id=eos_id,
+                          hidden_dim=hidden_dim, sos_id=sos_id, eos_id=eos_id,
                           attn_mechanism=attn_mechanism, num_heads=num_heads,
                           num_layers=num_layers, rnn_type=rnn_type,
                           dropout_p=dropout_p, device=device)

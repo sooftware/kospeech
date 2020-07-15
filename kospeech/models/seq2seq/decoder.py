@@ -46,7 +46,7 @@ class Seq2seqDecoder(BaseRNN):
     KEY_LENGTH = 'length'
     KEY_SEQUENCE_SYMBOL = 'sequence_symbol'
 
-    def __init__(self, num_classes: int, max_length: int = 120, hidden_dim: int = 1024, d_ff: int = 2048,
+    def __init__(self, num_classes: int, max_length: int = 120, hidden_dim: int = 1024,
                  sos_id: int = 1, eos_id: int = 2, attn_mechanism: str = 'dot',
                  num_heads: int = 4, num_layers: int = 2, rnn_type: str = 'lstm',
                  dropout_p: float = 0.3, device: str = 'cuda') -> None:
@@ -69,7 +69,7 @@ class Seq2seqDecoder(BaseRNN):
         else:
             raise ValueError("Unsupported attention: %s".format(attn_mechanism))
 
-        self.feed_forward = AddNorm(Linear(hidden_dim, hidden_dim, bias=True), hidden_dim)
+        self.residual_linear = AddNorm(Linear(hidden_dim, hidden_dim, bias=True), hidden_dim)
         self.generator = Linear(hidden_dim, num_classes, bias=False)
 
     def forward_step(self, input_var: Tensor, hidden: Optional[Any],
@@ -89,7 +89,7 @@ class Seq2seqDecoder(BaseRNN):
         else:
             context, attn = self.attention(output, encoder_outputs, attn)
 
-        output = self.feed_forward(context.view(-1, self.hidden_dim)).view(batch_size, -1, self.hidden_dim)
+        output = self.residual_linear(context.view(-1, self.hidden_dim)).view(batch_size, -1, self.hidden_dim)
         output = self.generator(torch.tanh(output).contiguous().view(-1, self.hidden_dim))
 
         step_output = F.log_softmax(output, dim=1)
@@ -100,7 +100,7 @@ class Seq2seqDecoder(BaseRNN):
     def forward(self, inputs: Tensor, encoder_outputs: Tensor, teacher_forcing_ratio: float = 1.0,
                 language_model: Optional[nn.Module] = None) -> Tuple[Tensor, dict]:
         hidden, attn = None, None
-        decoder_outputs, ret_dict = list(), dict()
+        result, ret_dict = list(), dict()
 
         if not self.training:
             ret_dict[Seq2seqDecoder.KEY_ATTENTION_SCORE] = list()
@@ -120,14 +120,14 @@ class Seq2seqDecoder(BaseRNN):
                 for di in range(inputs.size(1)):
                     input_var = inputs[:, di].unsqueeze(1)
                     step_output, hidden, attn = self.forward_step(input_var, hidden, encoder_outputs, attn)
-                    decoder_outputs.append(step_output)
+                    result.append(step_output)
 
             else:
                 step_outputs, hidden, attn = self.forward_step(inputs, hidden, encoder_outputs, attn)
 
                 for di in range(step_outputs.size(1)):
                     step_output = step_outputs[:, di, :]
-                    decoder_outputs.append(step_output)
+                    result.append(step_output)
 
         else:
             input_var = inputs[:, 0].unsqueeze(1)
@@ -135,8 +135,8 @@ class Seq2seqDecoder(BaseRNN):
 
             for di in range(max_length):
                 step_output, hidden, attn = self.forward_step(input_var, hidden, encoder_outputs, attn)
-                decoder_outputs.append(step_output)
-                input_var = decoder_outputs[-1].topk(1)[1]
+                result.append(step_output)
+                input_var = result[-1].topk(1)[1]
 
                 if not self.training:
                     ret_dict[Seq2seqDecoder.KEY_ATTENTION_SCORE].append(attn)
@@ -155,9 +155,9 @@ class Seq2seqDecoder(BaseRNN):
 
         if not self. training:
             ret_dict[Seq2seqDecoder.KEY_LENGTH] = lengths
-            decoder_outputs = tuple(decoder_outputs, ret_dict)
+            result = tuple(result, ret_dict)
 
-        return decoder_outputs
+        return result
 
     def validate_args(self, inputs: Optional[Any], encoder_outputs: Tensor,
                       teacher_forcing_ratio: float, language_model: Optional[nn.Module]) -> Tuple[Tensor, int, int]:

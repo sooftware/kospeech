@@ -11,7 +11,6 @@ BATCH_SIZE=32
 NUM_WORKERS=4
 NUM_EPOCHS=20
 HIDDEN_DIM=512
-D_FF=2048
 DROPOUT=0.4
 NUM_HEADS=4
 ATTN_MECHANISM='dot'
@@ -54,7 +53,7 @@ MODE='train'
 cd bin
 
 python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epochs $NUM_EPOCHS --use_bidirectional \
---spec_augment --use_cuda --hidden_dim $HIDDEN_DIM --dropout $DROPOUT --num_heads $NUM_HEADS --d_ff $D_FF \
+--spec_augment --use_cuda --hidden_dim $HIDDEN_DIM --dropout $DROPOUT --num_heads $NUM_HEADS \
 --label_smoothing $LABEL_SMOOTHING --transform_method $TRANSFORM_METHOD \
 --num_encoder_layers $NUM_ENCODER_LAYERS --num_decoder_layers $NUM_DECODER_LAYERS --rnn_type $RNN_TYPE \
 --high_plateau_lr $HIGH_PLATEAU_LR --teacher_forcing_ratio $TEACHER_FORCING_RATIO --valid_ratio $VALID_RATIO \

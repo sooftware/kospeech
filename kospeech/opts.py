@@ -19,9 +19,6 @@ def build_model_opts(parser):
     group.add_argument('--hidden_dim', '-hidden_dim',
                        type=int, default=256,
                        help='hidden state dimension of model (default: 256)')
-    group.add_argument('--d_ff', '-d_ff',
-                       type=int, default=2048,
-                       help='dimension of feed forward network (default: 2048)')
     group.add_argument('--dropout', '-dropout',
                        type=float, default=0.3,
                        help='dropout ratio in training (default: 0.3)')
