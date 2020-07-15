@@ -2,7 +2,8 @@ import torch
 import torch.nn as nn
 import pandas as pd
 from kospeech.metrics import CharacterErrorRate
-from kospeech.models.seq2seq.beam_search import BeamSearchDecoder
+from kospeech.models.seq2seq.decoder import Seq2seqTopKDecoder
+from kospeech.models.seq2seq.seq2seq import Seq2seq
 from kospeech.utils import id2char, EOS_token, logger, label_to_string
 
 
@@ -15,7 +16,7 @@ class GreedySearch(object):
     """
     def __init__(self):
         self.target_list = list()
-        self.hypothesis_list = list()
+        self.y_hats = list()
         self.metric = CharacterErrorRate(id2char, EOS_token)
         self.language_model = None  # load_language_model('lm_path', 'cuda')
 
@@ -36,17 +37,15 @@ class GreedySearch(object):
                 scripts = scripts.to(device)
                 targets = scripts[:, 1:]
 
-                output, _ = model(inputs=inputs, input_lengths=input_lengths,
-                                  teacher_forcing_ratio=0.0, language_model=self.language_model)
-
+                output = model(inputs, input_lengths, teacher_forcing_ratio=0.0, language_model=self.language_model)[0]
                 logit = torch.stack(output, dim=1).to(device)
-                hypothesis = logit.max(-1)[1]
+                y_hat = logit.max(-1)[1]
 
                 for idx in range(targets.size(0)):
                     self.target_list.append(label_to_string(scripts[idx], id2char, EOS_token))
-                    self.hypothesis_list.append(label_to_string(hypothesis[idx].cpu().detach().numpy(), id2char, EOS_token))
+                    self.y_hats.append(label_to_string(y_hat[idx].cpu().detach().numpy(), id2char, EOS_token))
 
-                cer = self.metric(targets, hypothesis)
+                cer = self.metric(targets, y_hat)
                 total_sent_num += scripts.size(0)
 
                 if timestep % print_every == 0:
@@ -59,7 +58,7 @@ class GreedySearch(object):
     def save_result(self, save_path):
         results = {
             'original': self.target_list,
-            'hypothesis': self.hypothesis_list
+            'hypothesis': self.y_hats
         }
         results = pd.DataFrame(results)
         results.to_csv(save_path, index=False, encoding='cp949')
@@ -71,10 +70,10 @@ class BeamSearch(GreedySearch):
         super(BeamSearch, self).__init__()
         self.k = k
 
-    def search(self, model, queue, device, print_every):
-        topk_decoder = BeamSearchDecoder(model.module.speller, self.k)
+    def search(self, model: Seq2seq, queue, device, print_every):
+        topk_decoder = Seq2seqTopKDecoder(model.module.speller, self.k)
         if isinstance(model, nn.DataParallel):
-            model.module.set_speller(topk_decoder)
+            model.module.set_decoder(topk_decoder)
         else:
             model.set_decoder(topk_decoder)
         return super(BeamSearch, self).search(model, queue, device, print_every)

@@ -27,16 +27,8 @@ def inference(opt):
     audio_paths, script_paths = load_data_list(opt.data_list_path, opt.dataset_path)
     target_dict = load_targets(script_paths)
 
-    testset = SpectrogramDataset(
-        audio_paths=audio_paths,
-        script_paths=script_paths,
-        sos_id=SOS_token,
-        eos_id=EOS_token,
-        target_dict=target_dict,
-        opt=opt,
-        spec_augment=False,
-        noise_augment=False
-    )
+    testset = SpectrogramDataset(audio_paths=audio_paths, script_paths=script_paths,  sos_id=SOS_token, eos_id=EOS_token,
+                                 target_dict=target_dict,  opt=opt, spec_augment=False, noise_augment=False)
 
     evaluator = Evaluator(testset, opt.batch_size, device, opt.num_workers, opt.print_every, opt.decode, opt.k)
     evaluator.evaluate(model)

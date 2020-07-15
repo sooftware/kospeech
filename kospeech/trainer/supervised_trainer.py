@@ -184,12 +184,12 @@ class SupervisedTrainer(object):
             output = model(inputs, input_lengths, scripts, teacher_forcing_ratio=teacher_forcing_ratio)
 
             logit = torch.stack(output, dim=1).to(self.device)
-            hypothesis = logit.max(-1)[1]
+            y_hats = logit.max(-1)[1]
 
             loss = self.criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
             epoch_loss_total += loss.item()
 
-            cer = self.metric(targets, hypothesis)
+            cer = self.metric(targets, y_hats)
             total_num += int(input_lengths.sum())
 
             self.optimizer.zero_grad()
@@ -220,7 +220,7 @@ class SupervisedTrainer(object):
             if timestep % self.checkpoint_every == 0:
                 Checkpoint(model, self.optimizer,  self.criterion, self.trainset_list, self.validset, epoch).save()
 
-            del inputs, input_lengths, scripts, targets, output, logit, loss, hypothesis
+            del inputs, input_lengths, scripts, targets, output, logit, loss, y_hats
 
         Checkpoint(model, self.optimizer, self.criterion, self.trainset_list, self.validset, epoch).save()
 
@@ -259,9 +259,9 @@ class SupervisedTrainer(object):
                 output = model(inputs=inputs, input_lengths=input_lengths, teacher_forcing_ratio=0.0)[0]
 
                 logit = torch.stack(output, dim=1).to(self.device)
-                hypothesis = logit.max(-1)[1]
+                y_hats = logit.max(-1)[1]
 
-                cer = self.metric(targets, hypothesis)
+                cer = self.metric(targets, y_hats)
 
         logger.info('validate() completed')
         return cer
@@ -289,4 +289,4 @@ class SupervisedTrainer(object):
         train_step_result["cer"].append(cer)
 
         train_step_df = pd.DataFrame(train_step_result)
-        train_step_df.to_csv(self.TRAIN_STEP_RESULT_PATH, encoding="cp949", index=False)
+        train_step_df.to_csv(SupervisedTrainer.TRAIN_STEP_RESULT_PATH, encoding="cp949", index=False)

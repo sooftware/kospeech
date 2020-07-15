@@ -102,7 +102,7 @@ class MaskConv(nn.Module):
             if output.is_cuda:
                 mask = mask.cuda()
 
-            seq_lengths = self.get_seq_lengths(module, seq_lengths)
+            seq_lengths = self.get_sequence_lengths(module, seq_lengths)
 
             for idx, length in enumerate(seq_lengths):
                 length = length.item()
@@ -115,7 +115,7 @@ class MaskConv(nn.Module):
 
         return output, seq_lengths
 
-    def get_seq_lengths(self, module: nn.Module, seq_lengths: Tensor) -> Tensor:
+    def get_sequence_lengths(self, module: nn.Module, seq_lengths: Tensor) -> Tensor:
         """
         Calculate convolutional neural network receptive formula
 

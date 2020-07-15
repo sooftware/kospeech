@@ -27,31 +27,15 @@ def train(opt):
     optimizer = Optimizer(optimizer, None, 0, opt.max_grad_norm)
     criterion = nn.NLLLoss(reduction='sum', ignore_index=PAD_token).to(device)
 
-    trainer = SupervisedTrainer(
-        optimizer=optimizer,
-        criterion=criterion,
-        trainset_list=trainset_list,
-        validset=validset,
-        num_workers=opt.num_workers,
-        high_plateau_lr=opt.high_plateau_lr,
-        low_plateau_lr=opt.low_plateau_lr,
-        decay_threshold=opt.decay_threshold,
-        exp_decay_period=opt.exp_decay_period,
-        device=device,
-        teacher_forcing_step=opt.teacher_forcing_step,
-        min_teacher_forcing_ratio=opt.min_teacher_forcing_ratio,
-        print_every=opt.print_every,
-        save_result_every=opt.save_result_every,
-        checkpoint_every=opt.checkpoint_every
-    )
-    model = trainer.train(
-        model=model,
-        batch_size=opt.batch_size,
-        epoch_time_step=epoch_time_step,
-        num_epochs=opt.num_epochs,
-        teacher_forcing_ratio=opt.teacher_forcing_ratio,
-        resume=opt.resume
-    )
+    trainer = SupervisedTrainer(optimizer=optimizer, criterion=criterion, trainset_list=trainset_list,
+                                validset=validset, num_workers=opt.num_workers,
+                                high_plateau_lr=opt.high_plateau_lr, low_plateau_lr=opt.low_plateau_lr,
+                                decay_threshold=opt.decay_threshold, exp_decay_period=opt.exp_decay_period,
+                                device=device, teacher_forcing_step=opt.teacher_forcing_step,
+                                min_teacher_forcing_ratio=opt.min_teacher_forcing_ratio, print_every=opt.print_every,
+                                save_result_every=opt.save_result_every, checkpoint_every=opt.checkpoint_every)
+    model = trainer.train(model=model, batch_size=opt.batch_size, epoch_time_step=epoch_time_step,
+                          num_epochs=opt.num_epochs, teacher_forcing_ratio=opt.teacher_forcing_ratio, resume=opt.resume)
     Checkpoint(model, model.optimizer, model.criterion, model.trainset_list, model.validset, opt.num_epochs).save()
 
 
