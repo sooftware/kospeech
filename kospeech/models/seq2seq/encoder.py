@@ -2,7 +2,7 @@ import math
 import torch
 import torch.nn as nn
 from torch import Tensor
-from kospeech.models.seq2seq.sublayers import BaseRNN, VGGExtractor, DeepSpeech2Extractor
+from kospeech.models.seq2seq.sublayers import BaseRNN, VGGExtractor, DeepSpeech2Extractor, ResVGGExtractor
 
 
 class Seq2seqEncoder(BaseRNN):
@@ -30,14 +30,14 @@ class Seq2seqEncoder(BaseRNN):
                  num_layers: int = 3, bidirectional: bool = True, rnn_type: str = 'lstm', extractor: str = 'vgg',
                  activation: str = 'hardtanh', mask_conv: bool = False) -> None:
         self.mask_conv = mask_conv
-
-        if extractor.lower() == 'vgg':
+        self.extractor = extractor.lower()
+        if self.extractor == 'vgg':
             input_size = (input_size - 1) << 5 if input_size % 2 else input_size << 5
             super(Seq2seqEncoder, self).__init__(input_size, hidden_dim, num_layers,
                                                  rnn_type, dropout_p, bidirectional, device)
             self.conv = VGGExtractor(in_channels=1, activation=activation, mask_conv=mask_conv)
 
-        elif extractor.lower() == 'ds2':
+        elif self.extractor == 'ds2':
             input_size = int(math.floor(input_size + 2 * 20 - 41) / 2 + 1)
             input_size = int(math.floor(input_size + 2 * 10 - 21) / 2 + 1)
             input_size <<= 5
@@ -45,11 +45,17 @@ class Seq2seqEncoder(BaseRNN):
                                                  rnn_type, dropout_p, bidirectional, device)
             self.conv = DeepSpeech2Extractor(in_channels=1, activation=activation, mask_conv=mask_conv)
 
+        elif self.extractor == 'res_vgg':
+            input_size = (input_size - 1) << 5 if input_size % 2 else input_size << 5
+            super(Seq2seqEncoder, self).__init__(input_size, hidden_dim, num_layers,
+                                                 rnn_type, dropout_p, bidirectional, device)
+            self.conv = ResVGGExtractor(in_channels=1, activation=activation, mask_conv=mask_conv)
+
         else:
             raise ValueError("Unsupported Extractor : {0}".format(extractor))
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tensor:
-        if self.mask_conv:
+        if self.mask_conv and self.extractor != 'res_vgg':
             inputs = inputs.unsqueeze(1).permute(0, 1, 3, 2)
             conv_feat, seq_lengths = self.conv(inputs, input_lengths)
 

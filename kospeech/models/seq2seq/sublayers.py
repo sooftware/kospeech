@@ -143,30 +143,20 @@ class CNNExtractor(nn.Module):
     Note:
         Do not use this class directly, use one of the sub classes.
     """
+    supported_activations = {
+        'hardtanh': nn.Hardtanh(0, 20, inplace=True),
+        'relu': nn.ReLU(inplace=True),
+        'elu': nn.ELU(inplace=True),
+        'leaky_relu': nn.LeakyReLU(inplace=True),
+        'gelu': nn.GELU()
+    }
+
     def __init__(self, activation: str = 'hardtanh') -> None:
         super(CNNExtractor, self).__init__()
-        if activation.lower() == 'hardtanh':
-            self.activation = nn.Hardtanh(0, 20, inplace=True)
-        elif activation.lower() == 'relu':
-            self.activation = nn.ReLU(inplace=True)
-        elif activation.lower() == 'elu':
-            self.activation = nn.ELU(inplace=True)
-        elif activation.lower() == 'leacky_relu':
-            self.activation = nn.LeakyReLU(inplace=True)
-        elif activation.lower() == 'gelu':
-            self.activation = nn.GELU()
-        else:
-            raise ValueError("Unsupported activation function : {0}".format(activation))
+        self.activation = CNNExtractor.supported_activations[activation]
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Optional[Any]:
-        if self.mask_conv:
-            conv_feat, seq_lengths = self.conv(inputs, input_lengths)
-            output = conv_feat, seq_lengths
-        else:
-            conv_feat = self.conv(inputs)
-            output = conv_feat
-
-        return output
+        raise NotImplementedError
 
 
 class VGGExtractor(CNNExtractor):
@@ -197,7 +187,14 @@ class VGGExtractor(CNNExtractor):
             self.conv = MaskConv(self.conv)
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Optional[Any]:
-        return super().forward(inputs, input_lengths)
+        if self.mask_conv:
+            conv_feat, seq_lengths = self.conv(inputs, input_lengths)
+            output = conv_feat, seq_lengths
+        else:
+            conv_feat = self.conv(inputs)
+            output = conv_feat
+
+        return output
 
 
 class DeepSpeech2Extractor(CNNExtractor):
@@ -222,7 +219,14 @@ class DeepSpeech2Extractor(CNNExtractor):
             self.conv = MaskConv(self.conv)
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Optional[Any]:
-        return super().forward(inputs, input_lengths)
+        if self.mask_conv:
+            conv_feat, seq_lengths = self.conv(inputs, input_lengths)
+            output = conv_feat, seq_lengths
+        else:
+            conv_feat = self.conv(inputs)
+            output = conv_feat
+
+        return output
 
 
 class FeedForwardNet(nn.Module):
@@ -238,3 +242,31 @@ class FeedForwardNet(nn.Module):
 
     def forward(self, inputs: Tensor) -> Tensor:
         return self.feed_forward(inputs)
+
+
+class ResVGGExtractor(CNNExtractor):
+    def __init__(self, in_channels: int = 1, activation: str = 'hardtanh') -> None:
+        super(ResVGGExtractor, self).__init__(activation)
+        self.conv1 = nn.Conv2d(in_channels, 64, kernel_size=3, stride=1, padding=1, bias=False)
+        self.batch_norm1 = nn.BatchNorm2d(num_features=64)
+        self.conv2 = nn.Conv2d(in_channels, 64, kernel_size=3, stride=1, padding=1, bias=False)
+        self.batch_norm2 = nn.BatchNorm2d(num_features=64)
+        self.conv3 = nn.Conv2d(in_channels, 64, kernel_size=3, stride=1, padding=1, bias=False)
+        self.batch_norm3 = nn.BatchNorm2d(num_features=64)
+        self.maxpool2d = nn.MaxPool2d(2, stride=2)
+        self.conv4 = nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1, bias=False)
+        self.batch_norm4 = nn.BatchNorm2d(num_features=128)
+        self.conv5 = nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1, bias=False)
+        self.batch_norm5 = nn.BatchNorm2d(num_features=128)
+        self.conv6 = nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1, bias=False)
+
+    def forward(self, inputs: Tensor, input_lengths: Tensor) -> Optional[Any]:
+        residual = self.activarion(self.batch_norm1(self.conv1(inputs)))
+        output = self.activarion(self.batch_norm2(self.conv2(residual)))
+        output = self.batch_norm3(self.maxpool2d(self.activation(self.conv3(output) + residual)))
+
+        residual = self.batch_norm4(self.activarion(self.conv4(output)))
+        output = self.batch_norm5(self.activarion(self.conv5(residual)))
+        output = self.maxpool2d(self.activation(self.conv6(output) + residual))
+
+        return output
