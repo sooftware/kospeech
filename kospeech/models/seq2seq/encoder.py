@@ -49,7 +49,7 @@ class Seq2seqEncoder(BaseRNN):
             input_size = (input_size - 1) << 5 if input_size % 2 else input_size << 5
             super(Seq2seqEncoder, self).__init__(input_size, hidden_dim, num_layers,
                                                  rnn_type, dropout_p, bidirectional, device)
-            self.conv = ResVGGExtractor(in_channels=1, activation=activation, mask_conv=mask_conv)
+            self.conv = ResVGGExtractor(in_channels=1, activation=activation)
 
         else:
             raise ValueError("Unsupported Extractor : {0}".format(extractor))

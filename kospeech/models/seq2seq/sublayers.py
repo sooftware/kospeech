@@ -261,12 +261,12 @@ class ResVGGExtractor(CNNExtractor):
         self.conv6 = nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1, bias=False)
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Optional[Any]:
-        residual = self.activarion(self.batch_norm1(self.conv1(inputs)))
-        output = self.activarion(self.batch_norm2(self.conv2(residual)))
+        residual = self.activation(self.batch_norm1(self.conv1(inputs)))
+        output = self.activation(self.batch_norm2(self.conv2(residual)))
         output = self.batch_norm3(self.maxpool2d(self.activation(self.conv3(output) + residual)))
 
-        residual = self.batch_norm4(self.activarion(self.conv4(output)))
-        output = self.batch_norm5(self.activarion(self.conv5(residual)))
+        residual = self.activation(self.batch_norm4(self.conv4(output)))
+        output = self.activation(self.batch_norm5(self.conv5(residual)))
         output = self.maxpool2d(self.activation(self.conv6(output) + residual))
 
         return output
