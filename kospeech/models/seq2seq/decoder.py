@@ -93,7 +93,7 @@ class Seq2seqDecoder(BaseRNN):
         output, hidden = self.rnn(embedded, hidden)
 
         if self.attn_mechanism == 'dot':
-            context, attn = self.attention(output, encoder_outputs)
+            context, attn = self.attention(output, encoder_outputs, encoder_outputs)
         else:
             context, attn = self.attention(output, encoder_outputs, attn)
 
