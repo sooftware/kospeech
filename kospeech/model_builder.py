@@ -5,7 +5,7 @@ from kospeech.decode.ensemble import BasicEnsemble, WeightedEnsemble
 from kospeech.models.seq2seq.sublayers import BaseRNN
 from kospeech.models.seq2seq.seq2seq import Seq2seq
 from kospeech.models.seq2seq.encoder import Seq2seqEncoder
-from kospeech.models.seq2seq.decoder import Seq2seqGreedyDecoder
+from kospeech.models.seq2seq.decoder import Seq2seqDecoder
 from kospeech.models.transformer.transformer import Transformer
 from kospeech.utils import char2id, EOS_token, SOS_token, PAD_token
 
@@ -51,7 +51,7 @@ def build_transformer(num_classes: int, pad_id: int, d_model: int, num_heads: in
                        dropout_p=dropout_p, ffnet_style=ffnet_style)
 
 
-def build_seq2seq(encoder: Seq2seqEncoder, decoder: Seq2seqGreedyDecoder, device: str):
+def build_seq2seq(encoder: Seq2seqEncoder, decoder: Seq2seqDecoder, device: str):
     """ Various Listen, Attend and Spell dispatcher function. """
     model = Seq2seq(encoder, decoder)
     model.flatten_parameters()
@@ -86,7 +86,7 @@ def build_seq2seq_encoder(input_size: int, hidden_dim: int, dropout_p: float,
 
 def build_seq2seq_decoder(num_classes: int, max_len: int, hidden_dim: int,
                           sos_id: int, eos_id: int, attn_mechanism: str, num_layers: int,
-                          rnn_type: str, dropout_p: float, num_heads: int, device: str) -> Seq2seqGreedyDecoder:
+                          rnn_type: str, dropout_p: float, num_heads: int, device: str) -> Seq2seqDecoder:
     """ Various decoder dispatcher function. """
     if hidden_dim % num_heads != 0:
         raise ParameterError("{0} % {1} should be zero".format(hidden_dim, num_heads))
@@ -107,11 +107,11 @@ def build_seq2seq_decoder(num_classes: int, max_len: int, hidden_dim: int,
     if device is None:
         raise ParameterError("device is None")
 
-    return Seq2seqGreedyDecoder(num_classes=num_classes, max_length=max_len,
-                                hidden_dim=hidden_dim, sos_id=sos_id, eos_id=eos_id,
-                                attn_mechanism=attn_mechanism, num_heads=num_heads,
-                                num_layers=num_layers, rnn_type=rnn_type,
-                                dropout_p=dropout_p, device=device)
+    return Seq2seqDecoder(num_classes=num_classes, max_length=max_len,
+                          hidden_dim=hidden_dim, sos_id=sos_id, eos_id=eos_id,
+                          attn_mechanism=attn_mechanism, num_heads=num_heads,
+                          num_layers=num_layers, rnn_type=rnn_type,
+                          dropout_p=dropout_p, device=device)
 
 
 def load_test_model(opt, device):

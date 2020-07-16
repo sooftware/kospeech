@@ -18,7 +18,7 @@ def _inflate(tensor: Tensor, n_repeat: int, dim: int):
     return tensor.repeat(*repeat_dims)
 
 
-class Seq2seqGreedyDecoder(BaseRNN):
+class Seq2seqDecoder(BaseRNN):
     """
     Converts higher level features (from encoder) into output utterances
     by specifying a probability distribution over sequences of characters.
@@ -58,7 +58,7 @@ class Seq2seqGreedyDecoder(BaseRNN):
                  sos_id: int = 1, eos_id: int = 2, attn_mechanism: str = 'dot',
                  num_heads: int = 4, num_layers: int = 2, rnn_type: str = 'lstm',
                  dropout_p: float = 0.3, device: str = 'cuda') -> None:
-        super(Seq2seqGreedyDecoder, self).__init__(hidden_dim, hidden_dim, num_layers, rnn_type, dropout_p, False, device)
+        super(Seq2seqDecoder, self).__init__(hidden_dim, hidden_dim, num_layers, rnn_type, dropout_p, False, device)
         self.num_classes = num_classes
         self.num_heads = num_heads
         self.max_length = max_length
@@ -111,8 +111,8 @@ class Seq2seqGreedyDecoder(BaseRNN):
         result, ret_dict = list(), dict()
 
         if not self.training:
-            ret_dict[Seq2seqGreedyDecoder.KEY_ATTENTION_SCORE] = list()
-            ret_dict[Seq2seqGreedyDecoder.KEY_SEQUENCE_SYMBOL] = list()
+            ret_dict[Seq2seqDecoder.KEY_ATTENTION_SCORE] = list()
+            ret_dict[Seq2seqDecoder.KEY_SEQUENCE_SYMBOL] = list()
 
         inputs, batch_size, max_length = self.validate_args(inputs, encoder_outputs, teacher_forcing_ratio, language_model)
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
@@ -147,14 +147,14 @@ class Seq2seqGreedyDecoder(BaseRNN):
                 input_var = result[-1].topk(1)[1]
 
                 if not self.training:
-                    ret_dict[Seq2seqGreedyDecoder.KEY_ATTENTION_SCORE].append(attn)
-                    ret_dict[Seq2seqGreedyDecoder.KEY_SEQUENCE_SYMBOL].append(input_var)
+                    ret_dict[Seq2seqDecoder.KEY_ATTENTION_SCORE].append(attn)
+                    ret_dict[Seq2seqDecoder.KEY_SEQUENCE_SYMBOL].append(input_var)
                     eos_batches = input_var.data.eq(self.eos_id)
 
                     if eos_batches.dim() > 0:
                         eos_batches = eos_batches.cpu().view(-1).numpy()
                         update_idx = ((lengths > di) & eos_batches) != 0
-                        lengths[update_idx] = len(ret_dict[Seq2seqGreedyDecoder.KEY_SEQUENCE_SYMBOL])
+                        lengths[update_idx] = len(ret_dict[Seq2seqDecoder.KEY_SEQUENCE_SYMBOL])
 
                     if use_language_model:
                         lm_step_output = language_model.forward_step(prev_tokens, None)[0][:, -1, :].squeeze(1)
@@ -162,7 +162,7 @@ class Seq2seqGreedyDecoder(BaseRNN):
                         prev_tokens = torch.cat([prev_tokens, step_output.topk(1)[1]], dim=1)
 
         if not self. training:
-            ret_dict[Seq2seqGreedyDecoder.KEY_LENGTH] = lengths
+            ret_dict[Seq2seqDecoder.KEY_LENGTH] = lengths
             result = tuple(result, ret_dict)
 
         return result
@@ -207,7 +207,7 @@ class Seq2seqTopKDecoder(nn.Module):
         - **decoder_outputs** :  list of tensors containing the outputs of the decoding function.
     """
 
-    def __init__(self, decoder: nn.Module, beam_size: int = 3):
+    def __init__(self, decoder: Seq2seqDecoder, beam_size: int = 3):
         super(Seq2seqTopKDecoder, self).__init__()
         self.num_classes = decoder.num_classes
         self.max_length = decoder.max_length
