@@ -92,6 +92,9 @@ class SpectrogramParser(AudioParser):
         """
         signal = load_audio(audio_path, self.del_silence)
 
+        if signal is None:
+            return None
+
         if augment_method == SpectrogramParser.NOISE_INJECTION or augment_method == SpectrogramParser.HYBRID_AUGMENT:
             signal = self.noise_injector(signal)
 
