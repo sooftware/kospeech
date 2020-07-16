@@ -44,9 +44,7 @@ class BaseRNN(nn.Module):
 
 class ResidualConnection(nn.Module):
     """
-    Add & Normalization layer proposed in "Attention Is All You Need".
-    Transformer employ a residual connection around each of the two sub-layers,
-    (Multi-Head Attention & Feed-Forward) followed by layer normalization.
+    a residual connection followed by layer normalization.
     """
     def __init__(self, sublayer: nn.Module, d_model: int = 512) -> None:
         super(ResidualConnection, self).__init__()
@@ -230,18 +228,3 @@ class DeepSpeech2Extractor(CNNExtractor):
             output = conv_feat
 
         return output
-
-
-class FeedForwardNet(nn.Module):
-    def __init__(self, hidden_dim: int, d_ff: int, dropout_p: float) -> None:
-        super(FeedForwardNet, self).__init__()
-        self.feed_forward = nn.Sequential(
-            Linear(hidden_dim, d_ff, bias=True),
-            nn.Dropout(dropout_p),
-            nn.ReLU(),
-            Linear(d_ff, hidden_dim, bias=True),
-            nn.Dropout(dropout_p)
-        )
-
-    def forward(self, inputs: Tensor) -> Tensor:
-        return self.feed_forward(inputs)

@@ -26,16 +26,9 @@ class Spectrogram(object):
         self.hop_length = int(sample_rate * 0.001 * (window_size - stride))
 
     def __call__(self, signal):
-        spectrogram = torch.stft(
-            torch.FloatTensor(signal),
-            self.n_fft,
-            hop_length=self.hop_length,
-            win_length=self.n_fft,
-            window=torch.hamming_window(self.n_fft),
-            center=False,
-            normalized=False,
-            onesided=True
-        )
+        spectrogram = torch.stft(torch.FloatTensor(signal), self.n_fft, hop_length=self.hop_length,
+                                 win_length=self.n_fft, window=torch.hamming_window(self.n_fft),
+                                 center=False, normalized=False, onesided=True)
         spectrogram = (spectrogram[:, :, 0].pow(2) + spectrogram[:, :, 1].pow(2)).pow(0.5)
         spectrogram = np.log1p(spectrogram.numpy())
 
@@ -77,13 +70,8 @@ class MelSpectrogram(object):
             melspectrogram = melspectrogram.numpy()
 
         elif self.feature_extract_by == 'librosa':
-            melspectrogram = librosa.feature.melspectrogram(
-                y=signal,
-                sr=self.sample_rate,
-                n_mels=self.n_mels,
-                n_fft=self.n_fft,
-                hop_length=self.hop_length
-            )
+            melspectrogram = librosa.feature.melspectrogram(signal, sr=self.sample_rate, n_mels=self.n_mels,
+                                                            n_fft=self.n_fft, hop_length=self.hop_length)
             melspectrogram = librosa.amplitude_to_db(melspectrogram, ref=np.max)
 
         else:
