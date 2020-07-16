@@ -7,7 +7,7 @@ from torch import Tensor, LongTensor
 from typing import Optional, Any, Tuple
 from kospeech.models.seq2seq.attention import LocationAwareAttention, MultiHeadAttention
 from kospeech.models.seq2seq.modules import Linear
-from kospeech.models.seq2seq.sublayers import AddNorm, BaseRNN
+from kospeech.models.seq2seq.sublayers import ResidualConnection, BaseRNN
 
 
 def _inflate(tensor: Tensor, n_repeat: int, dim: int):
@@ -73,11 +73,11 @@ class Seq2seqDecoder(BaseRNN):
         if self.attn_mechanism == 'loc':
             self.attention = LocationAwareAttention(hidden_dim, smoothing=True)
         elif self.attn_mechanism == 'dot':
-            self.attention = AddNorm(MultiHeadAttention(hidden_dim, num_heads), hidden_dim)
+            self.attention = ResidualConnection(MultiHeadAttention(hidden_dim, num_heads), hidden_dim)
         else:
             raise ValueError("Unsupported attention: %s".format(attn_mechanism))
 
-        self.residual_linear = AddNorm(Linear(hidden_dim, hidden_dim, bias=True), hidden_dim)
+        self.residual_linear = ResidualConnection(Linear(hidden_dim, hidden_dim, bias=True), hidden_dim)
         self.generator = Linear(hidden_dim, num_classes, bias=False)
 
     def forward_step(self, input_var: Tensor, hidden: Optional[Any],

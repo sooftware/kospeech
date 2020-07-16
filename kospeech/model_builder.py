@@ -73,7 +73,7 @@ def build_seq2seq_encoder(input_size: int, hidden_dim: int, dropout_p: float,
         raise ParameterError("hidden_dim should be greater than 0")
     if num_layers < 0:
         raise ParameterError("num_layers should be greater than 0")
-    if extractor.lower() not in {'vgg', 'ds2', 'res_vgg'}:
+    if extractor.lower() not in {'vgg', 'ds2'}:
         raise ParameterError("Unsupported extractor".format(extractor))
     if rnn_type.lower() not in BaseRNN.supported_rnns.keys():
         raise ParameterError("Unsupported RNN Cell: {0}".format(rnn_type))

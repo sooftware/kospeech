@@ -42,14 +42,14 @@ class BaseRNN(nn.Module):
         raise NotImplementedError
 
 
-class AddNorm(nn.Module):
+class ResidualConnection(nn.Module):
     """
     Add & Normalization layer proposed in "Attention Is All You Need".
     Transformer employ a residual connection around each of the two sub-layers,
     (Multi-Head Attention & Feed-Forward) followed by layer normalization.
     """
     def __init__(self, sublayer: nn.Module, d_model: int = 512) -> None:
-        super(AddNorm, self).__init__()
+        super(ResidualConnection, self).__init__()
         self.sublayer = sublayer
         self.layer_norm = LayerNorm(d_model)
 
@@ -165,22 +165,25 @@ class VGGExtractor(CNNExtractor):
     "Advances in Joint CTC-Attention based End-to-End Speech Recognition with a Deep CNN Encoder and RNN-LM" paper
     - https://arxiv.org/pdf/1706.02737.pdf
     """
-    def __init__(self, in_channels: int = 1, activation: str = 'hardtanh', mask_conv: bool = False) -> None:
+    def __init__(self, activation: str, mask_conv: bool, dropout_p: float):
         super(VGGExtractor, self).__init__(activation)
         self.mask_conv = mask_conv
         self.conv = nn.Sequential(
-            nn.Conv2d(in_channels, 64, kernel_size=3, stride=1, padding=1, bias=False),
-            self.activation,
+            nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1, bias=False),
             nn.BatchNorm2d(num_features=64),
+            self.activation,
             nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
-            self.activation,
-            nn.MaxPool2d(2, stride=2),
             nn.BatchNorm2d(num_features=64),
+            self.activation,
+            nn.Dropout(p=dropout_p),
+            nn.MaxPool2d(2, stride=2),
             nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1, bias=False),
-            self.activation,
             nn.BatchNorm2d(num_features=128),
-            nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1, bias=False),
             self.activation,
+            nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.BatchNorm2d(num_features=128),
+            self.activation,
+            nn.Dropout(p=dropout_p),
             nn.MaxPool2d(2, stride=2)
         )
         if mask_conv:
@@ -204,11 +207,11 @@ class DeepSpeech2Extractor(CNNExtractor):
     - https://arxiv.org/abs/1512.02595
     """
 
-    def __init__(self, in_channels: int = 1, activation: str = 'hardtanh', mask_conv: bool = False) -> None:
+    def __init__(self, activation: str = 'hardtanh', mask_conv: bool = False) -> None:
         super(DeepSpeech2Extractor, self).__init__(activation)
         self.mask_conv = mask_conv
         self.conv = nn.Sequential(
-            nn.Conv2d(in_channels, 32, kernel_size=(41, 11), stride=(2, 2), padding=(20, 5), bias=False),
+            nn.Conv2d(1, 32, kernel_size=(41, 11), stride=(2, 2), padding=(20, 5), bias=False),
             nn.BatchNorm2d(32),
             self.activation,
             nn.Conv2d(32, 32, kernel_size=(21, 11), stride=(2, 1), padding=(10, 5), bias=False),
@@ -242,31 +245,3 @@ class FeedForwardNet(nn.Module):
 
     def forward(self, inputs: Tensor) -> Tensor:
         return self.feed_forward(inputs)
-
-
-class ResVGGExtractor(CNNExtractor):
-    def __init__(self, in_channels: int = 1, activation: str = 'hardtanh') -> None:
-        super(ResVGGExtractor, self).__init__(activation)
-        self.conv1 = nn.Conv2d(in_channels, 64, kernel_size=3, stride=1, padding=1, bias=False)
-        self.batch_norm1 = nn.BatchNorm2d(num_features=64)
-        self.conv2 = nn.Conv2d(in_channels, 64, kernel_size=3, stride=1, padding=1, bias=False)
-        self.batch_norm2 = nn.BatchNorm2d(num_features=64)
-        self.conv3 = nn.Conv2d(in_channels, 64, kernel_size=3, stride=1, padding=1, bias=False)
-        self.batch_norm3 = nn.BatchNorm2d(num_features=64)
-        self.maxpool2d = nn.MaxPool2d(2, stride=2)
-        self.conv4 = nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1, bias=False)
-        self.batch_norm4 = nn.BatchNorm2d(num_features=128)
-        self.conv5 = nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1, bias=False)
-        self.batch_norm5 = nn.BatchNorm2d(num_features=128)
-        self.conv6 = nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1, bias=False)
-
-    def forward(self, inputs: Tensor, input_lengths: Tensor) -> Optional[Any]:
-        residual = self.activation(self.batch_norm1(self.conv1(inputs)))
-        output = self.activation(self.batch_norm2(self.conv2(residual)))
-        output = self.batch_norm3(self.maxpool2d(self.activation(self.conv3(output) + residual)))
-
-        residual = self.activation(self.batch_norm4(self.conv4(output)))
-        output = self.activation(self.batch_norm5(self.conv5(residual)))
-        output = self.maxpool2d(self.activation(self.conv6(output) + residual))
-
-        return output

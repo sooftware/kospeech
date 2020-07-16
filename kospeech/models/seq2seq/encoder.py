@@ -35,7 +35,7 @@ class Seq2seqEncoder(BaseRNN):
             input_size = (input_size - 1) << 5 if input_size % 2 else input_size << 5
             super(Seq2seqEncoder, self).__init__(input_size, hidden_dim, num_layers,
                                                  rnn_type, dropout_p, bidirectional, device)
-            self.conv = VGGExtractor(in_channels=1, activation=activation, mask_conv=mask_conv)
+            self.conv = VGGExtractor(activation, mask_conv, dropout_p)
 
         elif self.extractor == 'ds2':
             input_size = int(math.floor(input_size + 2 * 20 - 41) / 2 + 1)
@@ -43,19 +43,13 @@ class Seq2seqEncoder(BaseRNN):
             input_size <<= 5
             super(Seq2seqEncoder, self).__init__(input_size, hidden_dim, num_layers,
                                                  rnn_type, dropout_p, bidirectional, device)
-            self.conv = DeepSpeech2Extractor(in_channels=1, activation=activation, mask_conv=mask_conv)
-
-        elif self.extractor == 'res_vgg':
-            input_size = (input_size - 1) << 5 if input_size % 2 else input_size << 5
-            super(Seq2seqEncoder, self).__init__(input_size, hidden_dim, num_layers,
-                                                 rnn_type, dropout_p, bidirectional, device)
-            self.conv = ResVGGExtractor(in_channels=1, activation=activation)
+            self.conv = DeepSpeech2Extractor(activation, mask_conv)
 
         else:
             raise ValueError("Unsupported Extractor : {0}".format(extractor))
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tensor:
-        if self.mask_conv and self.extractor != 'res_vgg':
+        if self.mask_conv:
             inputs = inputs.unsqueeze(1).permute(0, 1, 3, 2)
             conv_feat, seq_lengths = self.conv(inputs, input_lengths)
 
