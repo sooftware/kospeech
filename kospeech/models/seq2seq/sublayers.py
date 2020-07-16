@@ -167,7 +167,7 @@ class VGGExtractor(CNNExtractor):
         super(VGGExtractor, self).__init__(activation)
         self.mask_conv = mask_conv
         self.conv = nn.Sequential(
-            nn.Conv2d(in_channels, 64, kernel_size=3, stride=1, padding=1),
+            nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1),
             self.activation,
             nn.BatchNorm2d(num_features=64),
             nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
