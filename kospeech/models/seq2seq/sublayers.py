@@ -163,25 +163,22 @@ class VGGExtractor(CNNExtractor):
     "Advances in Joint CTC-Attention based End-to-End Speech Recognition with a Deep CNN Encoder and RNN-LM" paper
     - https://arxiv.org/pdf/1706.02737.pdf
     """
-    def __init__(self, activation: str, mask_conv: bool, dropout_p: float):
+    def __init__(self, activation: str, mask_conv: bool):
         super(VGGExtractor, self).__init__(activation)
         self.mask_conv = mask_conv
         self.conv = nn.Sequential(
-            nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1, bias=False),
-            nn.BatchNorm2d(num_features=64),
+            nn.Conv2d(in_channels, 64, kernel_size=3, stride=1, padding=1),
             self.activation,
-            nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
             nn.BatchNorm2d(num_features=64),
+            nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
             self.activation,
-            nn.Dropout(p=dropout_p),
             nn.MaxPool2d(2, stride=2),
-            nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1, bias=False),
-            nn.BatchNorm2d(num_features=128),
+            nn.BatchNorm2d(num_features=64),
+            nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1),
             self.activation,
-            nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1, bias=False),
             nn.BatchNorm2d(num_features=128),
+            nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1),
             self.activation,
-            nn.Dropout(p=dropout_p),
             nn.MaxPool2d(2, stride=2)
         )
         if mask_conv:

@@ -7,35 +7,6 @@ from typing import Tuple
 from kospeech.models.seq2seq.modules import Linear
 
 
-class ScaledDotProductAttention(nn.Module):
-    """
-    Scaled Dot-Product Attention proposed in "Attention Is All You Need"
-    Compute the dot products of the query with all keys, divide each by sqrt(dim),
-    and apply a softmax function to obtain the weights on the values
-
-    Args: dim, mask
-        dim (int): dimention of attention
-        mask (torch.Tensor): tensor containing indices to be masked
-
-    Inputs: query, value
-        - **query** (batch, q_len, hidden_dim): tensor containing projection vector for decoder.
-        - **value** (batch, v_len, hidden_dim): tensor containing projection vector for encoder.
-
-    Returns: context, attn
-        - **context**: tensor containing the context vector from attention mechanism.
-        - **attn**: tensor containing the attention (alignment) from the encoder outputs.
-    """
-    def __init__(self, d_model: int) -> None:
-        super(ScaledDotProductAttention, self).__init__()
-        self.sqrt_dim = np.sqrt(d_model)
-
-    def forward(self, query: Tensor, key: Tensor, value: Tensor) -> Tuple[Tensor, Tensor]:
-        score = torch.bmm(query, key.transpose(1, 2)) / self.sqrt_dim
-        attn = F.softmax(score, -1)
-        context = torch.bmm(attn, value)
-        return context, attn
-
-
 class MultiHeadAttention(nn.Module):
     """
     Applies a multi-headed scaled dot mechanism on the output features from the decoder.
@@ -67,26 +38,26 @@ class MultiHeadAttention(nn.Module):
 
         self.d_head = int(d_model / num_heads)
         self.num_heads = num_heads
-        self.linear_q = Linear(d_model, self.d_head * num_heads)
-        self.linear_k = Linear(d_model, self.d_head * num_heads)
-        self.linear_v = Linear(d_model, self.d_head * num_heads)
-        self.scaled_dot_attn = ScaledDotProductAttention(d_model)
+        self.query_proj = Linear(d_model, self.d_head * num_heads)
+        self.value_proj = Linear(d_model, self.d_head * num_heads)
+        self.sqrt_dim = np.sqrt(d_model)
 
-    def forward(self, query: Tensor, key: Tensor, value: Tensor) -> Tuple[Tensor, Tensor]:
+    def forward(self, query: Tensor, value: Tensor) -> Tuple[Tensor, Tensor]:
         batch_size = value.size(0)
 
-        query = self.linear_q(query).view(batch_size, -1, self.num_heads, self.d_head)  # BxQ_LENxNxD
-        key = self.linear_k(key).view(batch_size, -1, self.num_heads, self.d_head)      # BxK_LENxNxD
-        value = self.linear_v(value).view(batch_size, -1, self.num_heads, self.d_head)  # BxV_LENxNxD
+        query = self.query_proj(query).view(batch_size, -1, self.num_heads, self.d_head)  # BxQ_LENxNxD
+        value = self.value_proj(value).view(batch_size, -1, self.num_heads, self.d_head)  # BxV_LENxNxD
 
         query = query.permute(2, 0, 1, 3).contiguous().view(batch_size * self.num_heads, -1, self.d_head)  # BNxQ_LENxD
-        key = key.permute(2, 0, 1, 3).contiguous().view(batch_size * self.num_heads, -1, self.d_head)      # BNxK_LENxD
         value = value.permute(2, 0, 1, 3).contiguous().view(batch_size * self.num_heads, -1, self.d_head)  # BNxV_LENxD
 
-        context, attn = self.scaled_dot_attn(query, key, value)
-        context = context.view(self.num_heads, batch_size, -1, self.d_head)
+        score = torch.bmm(query, value.transpose(1, 2)) / self.sqrt_dim
+        attn = F.softmax(score, dim=-1)
 
+        context = torch.bmm(attn, value)
+        context = context.view(self.num_heads, batch_size, -1, self.d_head)
         context = context.permute(1, 2, 0, 3).contiguous().view(batch_size, -1, self.num_heads * self.d_head)  # BxTxND
+
         return context, attn
 
 
@@ -118,8 +89,8 @@ class LocationAwareAttention(nn.Module):
         super(LocationAwareAttention, self).__init__()
         self.d_model = d_model
         self.conv1d = nn.Conv1d(in_channels=1, out_channels=d_model, kernel_size=3, padding=1)
-        self.linear_q = Linear(d_model, d_model, bias=False)
-        self.linear_v = Linear(d_model, d_model, bias=False)
+        self.query_proj = Linear(d_model, d_model, bias=False)
+        self.value_proj = Linear(d_model, d_model, bias=False)
         self.bias = nn.Parameter(torch.rand(d_model).uniform_(-0.1, 0.1))
         self.linear = nn.Linear(d_model, 1, bias=True)
         self.smoothing = smoothing
@@ -133,8 +104,8 @@ class LocationAwareAttention(nn.Module):
 
         conv_attn = torch.transpose(self.conv1d(last_attn.unsqueeze(1)), 1, 2)
         score = self.linear(torch.tanh(
-                self.linear_q(query.reshape(-1, hidden_dim)).view(batch_size, -1, hidden_dim)
-                + self.linear_v(value.reshape(-1, hidden_dim)).view(batch_size, -1, hidden_dim)
+                self.query_proj(query.reshape(-1, hidden_dim)).view(batch_size, -1, hidden_dim)
+                + self.value_proj(value.reshape(-1, hidden_dim)).view(batch_size, -1, hidden_dim)
                 + conv_attn
                 + self.bias
         )).squeeze(dim=-1)

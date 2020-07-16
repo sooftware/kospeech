@@ -35,7 +35,7 @@ class Seq2seqEncoder(BaseRNN):
             input_size = (input_size - 1) << 5 if input_size % 2 else input_size << 5
             super(Seq2seqEncoder, self).__init__(input_size, hidden_dim, num_layers,
                                                  rnn_type, dropout_p, bidirectional, device)
-            self.conv = VGGExtractor(activation, mask_conv, dropout_p)
+            self.conv = VGGExtractor(activation, mask_conv)
 
         elif self.extractor == 'ds2':
             input_size = int(math.floor(input_size + 2 * 20 - 41) / 2 + 1)

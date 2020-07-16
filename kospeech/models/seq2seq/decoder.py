@@ -77,7 +77,7 @@ class Seq2seqDecoder(BaseRNN):
         else:
             raise ValueError("Unsupported attention: %s".format(attn_mechanism))
 
-        self.residual_linear = ResidualConnection(Linear(hidden_dim, hidden_dim, bias=True), hidden_dim)
+        self.projection = ResidualConnection(Linear(hidden_dim, hidden_dim, bias=True), hidden_dim)
         self.generator = Linear(hidden_dim, num_classes, bias=False)
 
     def forward_step(self, input_var: Tensor, hidden: Optional[Any],
@@ -93,11 +93,11 @@ class Seq2seqDecoder(BaseRNN):
         output, hidden = self.rnn(embedded, hidden)
 
         if self.attn_mechanism == 'dot':
-            context, attn = self.attention(output, encoder_outputs, encoder_outputs)
+            context, attn = self.attention(output, encoder_outputs)
         else:
             context, attn = self.attention(output, encoder_outputs, attn)
 
-        output = self.residual_linear(context.view(-1, self.hidden_dim)).view(batch_size, -1, self.hidden_dim)
+        output = self.projection(context.view(-1, self.hidden_dim)).view(batch_size, -1, self.hidden_dim)
         output = self.generator(torch.tanh(output).contiguous().view(-1, self.hidden_dim))
 
         step_output = F.log_softmax(output, dim=1)
