@@ -33,17 +33,17 @@ class MultiHeadAttention(nn.Module):
 
         self.d_head = int(d_model / num_heads)
         self.num_heads = num_heads
-        self.linear_q = Linear(d_model, self.d_head * num_heads)
-        self.linear_k = Linear(d_model, self.d_head * num_heads)
-        self.linear_v = Linear(d_model, self.d_head * num_heads)
+        self.query_proj = Linear(d_model, self.d_head * num_heads)
+        self.key_proj = Linear(d_model, self.d_head * num_heads)
+        self.value_proj = Linear(d_model, self.d_head * num_heads)
         self.sqrt_dim = np.sqrt(d_model)
 
     def forward(self, query: Tensor, key: Tensor, value: Tensor) -> Tuple[Tensor, Tensor]:
         batch_size = value.size(0)
 
-        query = self.linear_q(query).view(batch_size, -1, self.num_heads, self.d_head)  # BxQ_LENxNxD
-        key = self.linear_k(key).view(batch_size, -1, self.num_heads, self.d_head)      # BxK_LENxNxD
-        value = self.linear_v(value).view(batch_size, -1, self.num_heads, self.d_head)  # BxV_LENxNxD
+        query = self.query_proj(query).view(batch_size, -1, self.num_heads, self.d_head)  # BxQ_LENxNxD
+        key = self.key_proj(key).view(batch_size, -1, self.num_heads, self.d_head)        # BxK_LENxNxD
+        value = self.value_proj(value).view(batch_size, -1, self.num_heads, self.d_head)  # BxV_LENxNxD
 
         query = query.permute(2, 0, 1, 3).contiguous().view(batch_size * self.num_heads, -1, self.d_head)  # BNxQ_LENxD
         key = key.permute(2, 0, 1, 3).contiguous().view(batch_size * self.num_heads, -1, self.d_head)      # BNxK_LENxD
