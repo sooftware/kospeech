@@ -49,4 +49,4 @@ python ./main.py --architecture $ARCHITECTURE --num_classes $NUM_CLASSES --d_mod
 --transform_method $TRANSFORM_METHOD --time_mask_para $TIME_MASK_PARA \
 --freq_mask_para $FREQ_MASK_PARA --time_mask_num $TIME_MASK_NUM --freq_mask_num $FREQ_MASK_NUM \
 --save_result_every $SAVE_RESULT_EVERY --checkpoint_every $CHECKPOINT_EVERY --print_every $PRINT_EVERY \
---noise_level $NOISE_LEVEL --noiset_size $NOISESET_SIZE --mode $MODE
+--noise_level $NOISE_LEVEL --noiseset_size $NOISESET_SIZE --mode $MODE

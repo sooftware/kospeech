@@ -32,7 +32,7 @@ def build_model(opt, device):
         model = build_transformer(num_classes=2038, pad_id=PAD_token,
                                   d_model=opt.d_model, num_heads=opt.num_heads,
                                   num_encoder_layers=opt.num_encoder_layers, num_decoder_layers=opt.num_decoder_layers,
-                                  dropout_p=opt.dropout_p, ffnet_style=opt.ffnet_style)
+                                  dropout_p=opt.dropout, ffnet_style=opt.ffnet_style, device=device)
     else:
         raise ValueError('Unsupported architecture: {0}'.format(opt.architecture))
 
@@ -41,14 +41,16 @@ def build_model(opt, device):
 
 def build_transformer(num_classes: int, pad_id: int, d_model: int, num_heads: int,
                       num_encoder_layers: int, num_decoder_layers: int,
-                      dropout_p: float, ffnet_style: str) -> Transformer:
+                      dropout_p: float, ffnet_style: str, device: str) -> Transformer:
     if ffnet_style not in {'ff', 'conv'}:
         raise ParameterError("Unsupported ffnet_style: {0}".format(ffnet_style))
 
-    return Transformer(num_classes=num_classes, pad_id=pad_id,
-                       d_model=d_model, num_heads=num_heads,
-                       num_encoder_layers=num_encoder_layers, num_decoder_layers=num_decoder_layers,
-                       dropout_p=dropout_p, ffnet_style=ffnet_style)
+    model = Transformer(num_classes=num_classes, pad_id=pad_id, d_model=d_model, num_heads=num_heads,
+                        num_encoder_layers=num_encoder_layers, num_decoder_layers=num_decoder_layers,
+                        dropout_p=dropout_p, ffnet_style=ffnet_style)
+    model.flatten_parameters()
+
+    return nn.DataParallel(model).to(device)
 
 
 def build_seq2seq(encoder: Seq2seqEncoder, decoder: Seq2seqDecoder, device: str):
