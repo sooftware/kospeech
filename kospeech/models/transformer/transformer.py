@@ -12,7 +12,7 @@ Reference :
 import torch.nn as nn
 from torch import Tensor
 from typing import Optional, Tuple
-from kospeech.models.seq2seq.modules import Linear
+from kospeech.models.seq2seq.modules import Linear, LayerNorm
 from kospeech.models.transformer.mask import get_non_pad_mask, get_attn_pad_mask, get_subsequent_mask, \
     get_attn_key_pad_mask
 from kospeech.models.transformer.embeddings import Embedding, PositionalEncoding
@@ -82,13 +82,16 @@ class TransformerEncoder(nn.Module):
         self.num_layers = num_layers
         self.num_heads = num_heads
         self.pad_id = pad_id
-        self.positional_encoding = PositionalEncoding(input_dim, dropout_p)
+        self.input_proj = Linear(input_dim, d_model)
+        self.input_layer_norm = LayerNorm(d_model)
+        self.positional_encoding = PositionalEncoding(d_model, dropout_p)
         self.layers = nn.ModuleList(
-            [TransformerEncoderLayer(d_model, input_dim, num_heads, d_ff, dropout_p, ffnet_style) for _ in range(num_layers)]
+            [TransformerEncoderLayer(d_model, num_heads, d_ff, dropout_p, ffnet_style) for _ in range(num_layers)]
         )
 
     def forward(self, inputs: Tensor, input_lengths: Optional[Tensor] = None) -> Tuple[Tensor, Tensor]:
         self_attns = list()
+        inputs = self.input_layer_norm(self.input_proj(inputs))
         output = self.positional_encoding(inputs)
 
         non_pad_mask = get_non_pad_mask(inputs, input_lengths=input_lengths)
@@ -129,6 +132,7 @@ class TransformerDecoder(nn.Module):
 
         inputs = self.embedding(inputs)
         output = self.input_dropout(self.positional_encoding(inputs))
+        print(inputs.size())
 
         non_pad_mask = get_non_pad_mask(inputs, pad_id=self.pad_id)
         self_attn_mask_subseq = get_subsequent_mask(inputs)
