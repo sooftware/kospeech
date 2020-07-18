@@ -132,8 +132,8 @@ class TransformerDecoder(nn.Module):
                 memory: Tensor = None) -> Tuple[Tensor, Tensor, Tensor]:
         self_attns, memory_attns = list(), list()
 
-        inputs = self.embedding(inputs)
-        output = self.input_dropout(self.positional_encoding(inputs))
+        output = self.embedding(inputs)
+        output = self.input_dropout(self.positional_encoding(output))
         print(inputs.size())
 
         non_pad_mask = get_non_pad_mask(inputs, pad_id=self.pad_id)

@@ -6,14 +6,14 @@ def get_non_pad_mask(inputs, input_lengths=None, pad_id=None):
     assert input_lengths is not None or pad_id is not None
 
     if input_lengths is not None:
-        # padded_input: N x T x ..
+        # inputs: N x T x ..
         batch_size = inputs.size(0)
         non_pad_mask = inputs.new_ones(inputs.size()[:-1])  # N x T
         for i in range(batch_size):
             non_pad_mask[i, input_lengths[i]:] = 0
 
     if pad_id is not None:
-        # padded_input: N x T
+        # inputs: N x T
         assert inputs.dim() == 2
         non_pad_mask = inputs.ne(pad_id).float()
     # unsqueeze(-1) for broadcast
