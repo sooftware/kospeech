@@ -165,7 +165,7 @@ class SupervisedTrainer(object):
 
         num_workers = self.num_workers
         while True:
-            inputs, scripts, input_lengths, target_lengths = queue.get()
+            inputs, targets, input_lengths, target_lengths = queue.get()
 
             if inputs.shape[0] == 0:
                 # Empty feats means closing one loader
@@ -178,19 +178,22 @@ class SupervisedTrainer(object):
                     continue
 
             inputs = inputs.to(self.device)
-            scripts = scripts.to(self.device)
-            targets = scripts[:, 1:]
-
-            model.module.flatten_parameters()
+            targets = targets.to(self.device)
 
             if self.architecture == 'seq2seq':
-                output = model(inputs, input_lengths, scripts, teacher_forcing_ratio=teacher_forcing_ratio)
+                model.module.flatten_parameters()
+
+                output = model(inputs, input_lengths, targets, teacher_forcing_ratio=teacher_forcing_ratio)
                 logit = torch.stack(output, dim=1).to(self.device)
+
             elif self.architecture == 'transformer':
-                logit = model(inputs, scripts)[0]
+                model.cuda()
+                logit = model(inputs, input_lengths, targets, return_attns=False)
+
             else:
                 raise ValueError("Unsupported architecture : {0}".format(self.architecture))
 
+            targets = targets[:, 1:]
             y_hats = logit.max(-1)[1]
             loss = self.criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
             epoch_loss_total += loss.item()
@@ -226,7 +229,7 @@ class SupervisedTrainer(object):
             if timestep % self.checkpoint_every == 0:
                 Checkpoint(model, self.optimizer,  self.criterion, self.trainset_list, self.validset, epoch).save()
 
-            del inputs, input_lengths, scripts, targets, output, logit, loss, y_hats
+            del inputs, input_lengths, targets, output, logit, loss, y_hats
 
         Checkpoint(model, self.optimizer, self.criterion, self.trainset_list, self.validset, epoch).save()
 
@@ -252,21 +255,26 @@ class SupervisedTrainer(object):
 
         with torch.no_grad():
             while True:
-                inputs, scripts, input_lengths, script_lengths = queue.get()
+                inputs, targets, input_lengths, target_lengths = queue.get()
 
                 if inputs.shape[0] == 0:
                     break
 
                 inputs = inputs.to(self.device)
-                scripts = scripts.to(self.device)
-                targets = scripts[:, 1:]
+                targets = targets[:, 1:].to(self.device)
 
-                model.module.flatten_parameters()
-                output = model(inputs=inputs, input_lengths=input_lengths, teacher_forcing_ratio=0.0)[0]
+                if self.architecture == 'seq2seq':
+                    model.module.flatten_parameters()
+                    output = model(inputs, input_lengths, teacher_forcing_ratio=0.0)
+                    logit = torch.stack(output, dim=1).to(self.device)
 
-                logit = torch.stack(output, dim=1).to(self.device)
+                elif self.architecture == 'transformer':
+                    logit = model(inputs, input_lengths, return_attns=False)
+
+                else:
+                    raise ValueError("Unsupported architecture : {0}".format(self.architecture))
+
                 y_hats = logit.max(-1)[1]
-
                 cer = self.metric(targets, y_hats)
 
         logger.info('validate() completed')

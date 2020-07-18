@@ -29,24 +29,23 @@ class GreedySearch(object):
 
         with torch.no_grad():
             while True:
-                inputs, scripts, input_lengths, target_lengths = queue.get()
+                inputs, targets, input_lengths, target_lengths = queue.get()
                 if inputs.shape[0] == 0:
                     break
 
                 inputs = inputs.to(device)
-                scripts = scripts.to(device)
-                targets = scripts[:, 1:]
+                targets = targets.to(device)
 
                 output = model(inputs, input_lengths, teacher_forcing_ratio=0.0, language_model=self.language_model)[0]
                 logit = torch.stack(output, dim=1).to(device)
                 y_hat = logit.max(-1)[1]
 
                 for idx in range(targets.size(0)):
-                    self.target_list.append(label_to_string(scripts[idx], id2char, EOS_token))
+                    self.target_list.append(label_to_string(targets[idx], id2char, EOS_token))
                     self.y_hats.append(label_to_string(y_hat[idx].cpu().detach().numpy(), id2char, EOS_token))
 
-                cer = self.metric(targets, y_hat)
-                total_sent_num += scripts.size(0)
+                cer = self.metric(targets[:, 1:], y_hat)
+                total_sent_num += targets.size(0)
 
                 if timestep % print_every == 0:
                     logger.info('cer: {:.2f}'.format(cer))
