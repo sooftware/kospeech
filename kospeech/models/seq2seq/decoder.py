@@ -106,7 +106,7 @@ class Seq2seqDecoder(BaseRNN):
         return step_output, hidden, attn
 
     def forward(self, inputs: Tensor, encoder_outputs: Tensor, teacher_forcing_ratio: float = 1.0,
-                language_model: Optional[nn.Module] = None) -> Tuple[Tensor, dict]:
+                language_model: Optional[nn.Module] = None, return_ret_dict: bool = False) -> Tuple[Tensor, dict]:
         hidden, attn = None, None
         result, ret_dict = list(), dict()
 
@@ -161,7 +161,7 @@ class Seq2seqDecoder(BaseRNN):
                         step_output = step_output * self.acoustic_weight + lm_step_output * self.language_weight
                         prev_tokens = torch.cat([prev_tokens, step_output.topk(1)[1]], dim=1)
 
-        if not self.training:
+        if return_ret_dict:
             ret_dict[Seq2seqDecoder.KEY_LENGTH] = lengths
             return result, ret_dict
 
