@@ -24,8 +24,6 @@ STRIDE=10
 N_MELS=80
 FEATURE_EXTRACT_BY='librosa'      # You can set 'torchaudio'
 TRANSFORM_METHOD='spect'          # Support feature : spech, mel, mfcc
-EXTRACTOR='vgg'                   # Support extractor : vgg, ds2 (DeepSpeech2)
-ACTIVATION='hardtanh'             # Support activation : ReLU, ELU, Hardtanh, GELU, LeakyReLU
 TIME_MASK_PARA=40
 FREQ_MASK_PARA=12
 TIME_MASK_NUM=2
@@ -48,7 +46,7 @@ python ./main.py --architecture $ARCHITECTURE --num_classes $NUM_CLASSES --d_mod
 --init_lr $INIT_LR --high_plateau_lr $HIGH_PLATEAU_LR --low_plateau_lr $LOW_PLATEAU_LR --rampup_period $RAMPUP_PERIOD \
 --decay_threshold $DECAY_THRESHOLD --exp_decay_period $EXP_DECAY_PERIOD --window_size $WINDOW_SIZE \
 --sample_rate $SAMPLE_RATE --stride $STRIDE --n_mels $N_MELS --feature_extract_by $FEATURE_EXTRACT_BY \
---transform_method $TRANSFORM_METHOD --extractor $EXTRACTOR --activation $ACTIVATION --time_mask_para $TIME_MASK_PARA \
+--transform_method $TRANSFORM_METHOD --time_mask_para $TIME_MASK_PARA \
 --freq_mask_para $FREQ_MASK_PARA --time_mask_num $TIME_MASK_NUM --freq_mask_num $FREQ_MASK_NUM \
 --save_result_every $SAVE_RESULT_EVERY --checkpoint_every $CHECKPOINT_EVERY --print_every $PRINT_EVERY \
 --noise_level $NOISE_LEVEL --noiset_size $NOISESET_SIZE --mode $MODE

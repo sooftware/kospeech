@@ -7,6 +7,9 @@ def build_model_opts(parser):
     Be careful with these as they will be used during inference.
     """
     group = parser.add_argument_group('Model')
+
+    # Seq2seq
+
     group.add_argument('--architecture', '-architecture',
                        type=str, default='seq2seq',
                        help='which architecture to use: [seq2seq, transformer] (default: seq2seq)')
@@ -49,6 +52,21 @@ def build_model_opts(parser):
     group.add_argument('--teacher_forcing_ratio', '-teacher_forcing_ratio',
                        type=float, default=0.99,
                        help='teacher forcing ratio in decoding (default: 0.99)')
+
+    # Transformer
+
+    group.add_argument('--num_classes', '-num_classes',
+                       type=int, default=2038,
+                       help='vocabolary size (default: 2038)')
+    group.add_argument('--d_model', '-d_model',
+                       type=int, default=512,
+                       help='dimension of model (default: 512)')
+    group.add_argument('--ffnet_style', '-ffnet_style',
+                       type=str, default='ff',
+                       help='style of feed forward network [ff, conv] (default: ff)')
+    group.add_argument('--noiseset_size', '-noiseset_size',
+                       type=int, default=1000,
+                       help='size of noiseset (default: 1000)')
 
 
 def build_train_opts(parser):
