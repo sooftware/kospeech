@@ -29,7 +29,7 @@ def build_model(opt, device):
                                         num_heads=opt.num_heads, attn_mechanism=opt.attn_mechanism, device=device)
         model = build_seq2seq(encoder, decoder, device)
     elif opt.architecture.lower() == 'transformer':
-        model = build_transformer(num_classes=2038, pad_id=PAD_token,
+        model = build_transformer(num_classes=opt.num_classes, pad_id=PAD_token, input_size=input_size,
                                   d_model=opt.d_model, num_heads=opt.num_heads,
                                   num_encoder_layers=opt.num_encoder_layers, num_decoder_layers=opt.num_decoder_layers,
                                   dropout_p=opt.dropout, ffnet_style=opt.ffnet_style, device=device)
@@ -39,7 +39,7 @@ def build_model(opt, device):
     return model
 
 
-def build_transformer(num_classes: int, pad_id: int, d_model: int, num_heads: int,
+def build_transformer(num_classes: int, pad_id: int, d_model: int, num_heads: int, input_size: int,
                       num_encoder_layers: int, num_decoder_layers: int,
                       dropout_p: float, ffnet_style: str, device: str) -> Transformer:
     if ffnet_style not in {'ff', 'conv'}:
@@ -47,7 +47,7 @@ def build_transformer(num_classes: int, pad_id: int, d_model: int, num_heads: in
 
     model = Transformer(num_classes=num_classes, pad_id=pad_id, d_model=d_model, num_heads=num_heads,
                         num_encoder_layers=num_encoder_layers, num_decoder_layers=num_decoder_layers,
-                        dropout_p=dropout_p, ffnet_style=ffnet_style)
+                        dropout_p=dropout_p, ffnet_style=ffnet_style, input_dim=input_size)
 
     return nn.DataParallel(model).to(device)
 

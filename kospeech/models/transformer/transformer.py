@@ -44,7 +44,7 @@ class Transformer(nn.Module):
         - **output**: tensor containing the outputs
     """
     def __init__(self, num_classes: int, pad_id: int,
-                 d_model: int = 512, d_ff: int = 2048, num_heads: int = 8,
+                 d_model: int = 512, input_dim: int = 80, d_ff: int = 2048, num_heads: int = 8,
                  num_encoder_layers: int = 6, num_decoder_layers: int = 6,
                  dropout_p: float = 0.3, ffnet_style: str = 'ff') -> None:
         super(Transformer, self).__init__()
@@ -52,7 +52,7 @@ class Transformer(nn.Module):
         assert d_model % num_heads == 0, "d_model % num_heads should be zero."
 
         self.pad_id = pad_id
-        self.encoder = TransformerEncoder(d_model, d_ff,  num_encoder_layers, num_heads, ffnet_style, dropout_p, pad_id)
+        self.encoder = TransformerEncoder(d_model, input_dim, d_ff,  num_encoder_layers, num_heads, ffnet_style, dropout_p, pad_id)
         self.decoder = TransformerDecoder(num_classes, d_model, d_ff, num_decoder_layers, num_heads, ffnet_style, dropout_p, pad_id)
         self.generator = Linear(d_model, num_classes)
 
@@ -74,20 +74,15 @@ class TransformerEncoder(nn.Module):
     Each layer has two sub-layers. The first is a multi-head self-attention mechanism,
     and the second is a simple, position-wise fully connected feed-forward network.
     """
-    def __init__(self,
-                 d_model: int = 512,
-                 d_ff: int = 2048,
-                 num_layers: int = 6,
-                 num_heads: int = 8,
-                 ffnet_style: str = 'ff',
-                 dropout_p: float = 0.3,
-                 pad_id: int = 0) -> None:
+    def __init__(self, d_model: int = 512, input_dim: int = 80, d_ff: int = 2048,
+                 num_layers: int = 6, num_heads: int = 8, ffnet_style: str = 'ff',
+                 dropout_p: float = 0.3, pad_id: int = 0) -> None:
         super(TransformerEncoder, self).__init__()
         self.d_model = d_model
         self.num_layers = num_layers
         self.num_heads = num_heads
         self.pad_id = pad_id
-        self.positional_encoding = PositionalEncoding(d_model, dropout_p)
+        self.positional_encoding = PositionalEncoding(input_dim, dropout_p)
         self.layers = nn.ModuleList(
             [TransformerEncoderLayer(d_model, num_heads, d_ff, dropout_p, ffnet_style) for _ in range(num_layers)]
         )
