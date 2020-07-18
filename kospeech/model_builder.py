@@ -29,7 +29,7 @@ def build_model(opt, device):
                                         num_heads=opt.num_heads, attn_mechanism=opt.attn_mechanism, device=device)
         model = build_seq2seq(encoder, decoder, device)
     elif opt.architecture.lower() == 'transformer':
-        model = build_transformer(num_classes=opt.num_classes, pad_id=PAD_token,
+        model = build_transformer(num_classes=2038, pad_id=PAD_token,
                                   d_model=opt.d_model, num_heads=opt.num_heads,
                                   num_encoder_layers=opt.num_encoder_layers, num_decoder_layers=opt.num_decoder_layers,
                                   dropout_p=opt.dropout_p, ffnet_style=opt.ffnet_style)

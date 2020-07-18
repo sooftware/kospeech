@@ -4,7 +4,7 @@
 #   link = {https://github.com/sooftware/KoSpeech},
 #   year = {2020}
 # }
-
+ARCHITECTURE='seq2seq'
 DATASET_PATH='/data3/'
 DATA_LIST_PATH='../data/data_list/except_outlier_train_list.csv'
 BATCH_SIZE=32
@@ -54,7 +54,7 @@ cd bin
 
 python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epochs $NUM_EPOCHS --use_bidirectional \
 --spec_augment --use_cuda --hidden_dim $HIDDEN_DIM --dropout $DROPOUT --num_heads $NUM_HEADS \
---label_smoothing $LABEL_SMOOTHING --transform_method $TRANSFORM_METHOD \
+--label_smoothing $LABEL_SMOOTHING --transform_method $TRANSFORM_METHOD --architecture $ARCHITECTURE \
 --num_encoder_layers $NUM_ENCODER_LAYERS --num_decoder_layers $NUM_DECODER_LAYERS --rnn_type $RNN_TYPE \
 --high_plateau_lr $HIGH_PLATEAU_LR --teacher_forcing_ratio $TEACHER_FORCING_RATIO --valid_ratio $VALID_RATIO \
 --sample_rate $SAMPLE_RATE --window_size $WINDOW_SIZE --stride $STRIDE --n_mels $N_MELS --normalize --del_silence \
