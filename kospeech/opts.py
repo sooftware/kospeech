@@ -64,9 +64,6 @@ def build_model_opts(parser):
     group.add_argument('--ffnet_style', '-ffnet_style',
                        type=str, default='ff',
                        help='style of feed forward network [ff, conv] (default: ff)')
-    group.add_argument('--noiseset_size', '-noiseset_size',
-                       type=int, default=1000,
-                       help='size of noiseset (default: 1000)')
 
 
 def build_train_opts(parser):
