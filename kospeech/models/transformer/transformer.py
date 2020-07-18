@@ -9,9 +9,9 @@ Reference :
     - **https://github.com/jadore801120/attention-is-all-you-need-pytorch**
     - **https://github.com/JayParks/transformer**
 """
+import torch
 import torch.nn as nn
 from torch import Tensor
-import numpy as np
 from typing import Optional, Tuple
 from kospeech.models.seq2seq.modules import Linear, LayerNorm
 from kospeech.models.seq2seq.sublayers import VGGExtractor
@@ -102,7 +102,7 @@ class TransformerEncoder(nn.Module):
 
         batch_size, num_channels, seq_length, hidden_dim = conv_feat.size()
         conv_feat = conv_feat.contiguous().view(batch_size, num_channels, seq_length * hidden_dim)
-        input_lengths = np.ceil(input_lengths / 4)  # convolution
+        input_lengths = torch.ceil(input_lengths / 4)  # convolution
 
         output = self.input_layer_norm(self.input_proj(conv_feat))
         output = self.positional_encoding(output)
