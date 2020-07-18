@@ -1,7 +1,7 @@
 import torch.nn as nn
 from torch import Tensor
 from typing import Tuple, Optional
-from kospeech.models.transformer.sublayers import MultiHeadAttention, PoswiseFeedForwardNet, ResidualConnection
+from kospeech.models.transformer.sublayers import MultiHeadAttention, PoswiseFeedForwardNet, AddNorm
 
 
 class TransformerEncoderLayer(nn.Module):
@@ -12,8 +12,8 @@ class TransformerEncoderLayer(nn.Module):
     def __init__(self, d_model: int = 512, num_heads: int = 8,
                  d_ff: int = 2048, dropout_p: float = 0.3, ffnet_style: str = 'ff') -> None:
         super(TransformerEncoderLayer, self).__init__()
-        self.self_attention = ResidualConnection(MultiHeadAttention(d_model, num_heads), d_model)
-        self.feed_forward = ResidualConnection(PoswiseFeedForwardNet(d_model, d_ff, dropout_p, ffnet_style), d_model)
+        self.self_attention = AddNorm(MultiHeadAttention(d_model, num_heads), d_model)
+        self.feed_forward = AddNorm(PoswiseFeedForwardNet(d_model, d_ff, dropout_p, ffnet_style), d_model)
 
     def forward(self, inputs: Tensor, non_pad_mask: Optional[Tensor] = None,
                 self_attn_mask: Optional[Tensor] = None) -> Tuple[Tensor, Tensor]:
@@ -38,9 +38,9 @@ class TransformerDecoderLayer(nn.Module):
     def __init__(self, d_model: int = 512, num_heads: int = 8, d_ff: int = 2048,
                  dropout_p: float = 0.3, ffnet_style: str = 'ff') -> None:
         super(TransformerDecoderLayer, self).__init__()
-        self.self_attention = ResidualConnection(MultiHeadAttention(d_model, num_heads), d_model)
-        self.encoder_attention = ResidualConnection(MultiHeadAttention(d_model, num_heads), d_model)
-        self.feed_forward = ResidualConnection(PoswiseFeedForwardNet(d_model, d_ff, dropout_p, ffnet_style), d_model)
+        self.self_attention = AddNorm(MultiHeadAttention(d_model, num_heads), d_model)
+        self.encoder_attention = AddNorm(MultiHeadAttention(d_model, num_heads), d_model)
+        self.feed_forward = AddNorm(PoswiseFeedForwardNet(d_model, d_ff, dropout_p, ffnet_style), d_model)
 
     def forward(self, inputs: Tensor, memory: Tensor,
                 non_pad_mask: Tensor = None,

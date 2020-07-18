@@ -56,7 +56,8 @@ class Transformer(nn.Module):
         self.decoder = TransformerDecoder(num_classes, d_model, d_ff, num_decoder_layers, num_heads, ffnet_style, dropout_p, pad_id)
         self.generator = Linear(d_model, num_classes)
 
-    def forward(self, inputs: Tensor, input_lengths: Tensor, targets: Optional[Tensor] = None,
+    def forward(self, inputs: Tensor, input_lengths: Tensor,
+                targets: Optional[Tensor] = None,
                 return_attns: bool = False) -> Tuple[Tensor, Tensor, Tensor, Tensor]:
         memory, encoder_self_attns = self.encoder(inputs, input_lengths)
         output, decoder_self_attns, memory_attns = self.decoder(targets, input_lengths, memory)
@@ -94,6 +95,7 @@ class TransformerEncoder(nn.Module):
         inputs = self.input_layer_norm(self.input_proj(inputs))
         output = self.positional_encoding(inputs)
 
+        print(inputs.size())
         non_pad_mask = get_non_pad_mask(inputs, input_lengths=input_lengths)
         length = inputs.size(1)
         self_attn_mask = get_attn_pad_mask(inputs, input_lengths, length)

@@ -7,14 +7,14 @@ from typing import Optional, Tuple
 from kospeech.models.seq2seq.modules import Linear, LayerNorm
 
 
-class ResidualConnection(nn.Module):
+class AddNorm(nn.Module):
     """
     Add & Normalization layer proposed in "Attention Is All You Need".
     Transformer employ a residual connection around each of the two sub-layers,
     (Multi-Head Attention & Feed-Forward) followed by layer normalization.
     """
     def __init__(self, sublayer: nn.Module, d_model: int = 512) -> None:
-        super(ResidualConnection, self).__init__()
+        super(AddNorm, self).__init__()
         self.sublayer = sublayer
         self.layer_norm = LayerNorm(d_model)
 
