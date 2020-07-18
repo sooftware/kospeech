@@ -199,7 +199,6 @@ class SupervisedTrainer(object):
             epoch_loss_total += loss.item()
 
             cer = self.metric(targets, y_hats)
-            print(cer)
             total_num += int(input_lengths.sum())
 
             self.optimizer.zero_grad()
