@@ -128,20 +128,18 @@ class TransformerDecoder(nn.Module):
         )
         self.pad_id = pad_id
 
-    def forward(self, inputs: Tensor, input_lengths: Optional[Tensor] = None,
+    def forward(self, targets: Tensor, input_lengths: Optional[Tensor] = None,
                 memory: Tensor = None) -> Tuple[Tensor, Tensor, Tensor]:
         self_attns, memory_attns = list(), list()
 
-        output = self.embedding(inputs)
-        output = self.input_dropout(self.positional_encoding(output))
-        print(inputs.size())
-
-        non_pad_mask = get_non_pad_mask(inputs, pad_id=self.pad_id)
-        self_attn_mask_subseq = get_subsequent_mask(inputs)
-        self_attn_mask_keypad = get_attn_key_pad_mask(inputs, inputs, pad_id=self.pad_id)
+        non_pad_mask = get_non_pad_mask(targets, pad_id=self.pad_id)
+        self_attn_mask_subseq = get_subsequent_mask(targets)
+        self_attn_mask_keypad = get_attn_key_pad_mask(targets, targets, pad_id=self.pad_id)
         self_attn_mask = (self_attn_mask_keypad + self_attn_mask_subseq).gt(0)  # greater than
+        memory_mask = get_attn_pad_mask(memory, input_lengths, targets.size(1))
 
-        memory_mask = get_attn_pad_mask(memory, input_lengths, inputs.size(1))
+        output = self.embedding(targets)
+        output = self.input_dropout(self.positional_encoding(output))
 
         for layer in self.layers:
             output, self_attn, memory_attn = layer(output, memory, non_pad_mask, self_attn_mask, memory_mask)
