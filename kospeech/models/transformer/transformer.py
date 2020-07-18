@@ -84,7 +84,7 @@ class TransformerEncoder(nn.Module):
         self.pad_id = pad_id
         self.positional_encoding = PositionalEncoding(input_dim, dropout_p)
         self.layers = nn.ModuleList(
-            [TransformerEncoderLayer(d_model, num_heads, d_ff, dropout_p, ffnet_style) for _ in range(num_layers)]
+            [TransformerEncoderLayer(d_model, input_dim, num_heads, d_ff, dropout_p, ffnet_style) for _ in range(num_layers)]
         )
 
     def forward(self, inputs: Tensor, input_lengths: Optional[Tensor] = None) -> Tuple[Tensor, Tensor]:

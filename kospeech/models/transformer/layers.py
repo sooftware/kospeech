@@ -9,14 +9,10 @@ class TransformerEncoderLayer(nn.Module):
     EncoderLayer is made up of self-attention and feedforward network.
     This standard encoder layer is based on the paper "Attention Is All You Need".
     """
-    def __init__(self,
-                 d_model: int = 512,
-                 num_heads: int = 8,
-                 d_ff: int = 2048,
-                 dropout_p: float = 0.3,
-                 ffnet_style: str = 'ff') -> None:
+    def __init__(self, d_model: int = 512, input_dim: int = 80, num_heads: int = 8,
+                 d_ff: int = 2048, dropout_p: float = 0.3, ffnet_style: str = 'ff') -> None:
         super(TransformerEncoderLayer, self).__init__()
-        self.self_attention = ResidualConnection(MultiHeadAttention(d_model, num_heads), d_model)
+        self.self_attention = ResidualConnection(MultiHeadAttention(input_dim, num_heads), d_model)
         self.feed_forward = ResidualConnection(PoswiseFeedForwardNet(d_model, d_ff, dropout_p, ffnet_style), d_model)
 
     def forward(self, inputs: Tensor, non_pad_mask: Optional[Tensor] = None,
