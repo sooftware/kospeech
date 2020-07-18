@@ -38,7 +38,7 @@ class SupervisedTrainer(object):
                  high_plateau_lr, low_plateau_lr,
                  exp_decay_period, num_workers, device, decay_threshold,
                  print_every, save_result_every, checkpoint_every,
-                 teacher_forcing_step=0.0, min_teacher_forcing_ratio=0.7) -> None:
+                 teacher_forcing_step=0.0, min_teacher_forcing_ratio=0.7, architecture='seq2seq') -> None:
         self.num_workers = num_workers
         self.optimizer = optimizer
         self.criterion = criterion
@@ -55,6 +55,7 @@ class SupervisedTrainer(object):
         self.teacher_forcing_step = teacher_forcing_step
         self.min_teacher_forcing_ratio = min_teacher_forcing_ratio
         self.metric = CharacterErrorRate(id2char, EOS_token)
+        self.architecture = architecture.lower()
 
     def train(self, model: nn.Module, batch_size: int, epoch_time_step: int, num_epochs: int,
               teacher_forcing_ratio: float = 0.99, resume: bool = False) -> nn.Module:
@@ -181,11 +182,16 @@ class SupervisedTrainer(object):
             targets = scripts[:, 1:]
 
             model.module.flatten_parameters()
-            output = model(inputs, input_lengths, scripts, teacher_forcing_ratio=teacher_forcing_ratio)
 
-            logit = torch.stack(output, dim=1).to(self.device)
+            if self.architecture == 'seq2seq':
+                output = model(inputs, input_lengths, scripts, teacher_forcing_ratio=teacher_forcing_ratio)
+                logit = torch.stack(output, dim=1).to(self.device)
+            elif self.architecture == 'transformer':
+                logit = model(inputs, scripts)[0]
+            else:
+                raise ValueError("Unsupported architecture : {0}".format(self.architecture))
+
             y_hats = logit.max(-1)[1]
-
             loss = self.criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
             epoch_loss_total += loss.item()
 

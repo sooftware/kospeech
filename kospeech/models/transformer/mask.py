@@ -14,7 +14,7 @@ def subsequent_masking(x: Tensor) -> Tensor:
     Makes subsequent masking like following:
 
     Examples::
-        >>> subsequent_mask(x)
+        >>> subsequent_masking(x)
         [[0, 1, 1, 1, 1, 1, 1, 1, 1, 1],
          [0, 0, 1, 1, 1, 1, 1, 1, 1, 1],
          [0, 0, 0, 1, 1, 1, 1, 1, 1, 1],
