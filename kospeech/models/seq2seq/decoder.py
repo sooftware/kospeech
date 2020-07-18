@@ -161,9 +161,9 @@ class Seq2seqDecoder(BaseRNN):
                         step_output = step_output * self.acoustic_weight + lm_step_output * self.language_weight
                         prev_tokens = torch.cat([prev_tokens, step_output.topk(1)[1]], dim=1)
 
-        if not self. training:
+        if not self.training:
             ret_dict[Seq2seqDecoder.KEY_LENGTH] = lengths
-            result = tuple(result, ret_dict)
+            return result, ret_dict
 
         return result
 
