@@ -13,7 +13,7 @@ class TransformerEncoderLayer(nn.Module):
                  d_ff: int = 2048, dropout_p: float = 0.3, ffnet_style: str = 'ff') -> None:
         super(TransformerEncoderLayer, self).__init__()
         self.self_attention = ResidualConnection(MultiHeadAttention(input_dim, num_heads), input_dim)
-        self.feed_forward = ResidualConnection(PoswiseFeedForwardNet(d_model, d_ff, dropout_p, ffnet_style), d_model)
+        self.feed_forward = ResidualConnection(PoswiseFeedForwardNet(input_dim, d_ff, dropout_p, ffnet_style), input_dim)
 
     def forward(self, inputs: Tensor, non_pad_mask: Optional[Tensor] = None,
                 self_attn_mask: Optional[Tensor] = None) -> Tuple[Tensor, Tensor]:
