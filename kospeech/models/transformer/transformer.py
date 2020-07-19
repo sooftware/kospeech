@@ -88,7 +88,7 @@ class TransformerEncoder(nn.Module):
         self.num_layers = num_layers
         self.num_heads = num_heads
         self.pad_id = pad_id
-        self.conv = VGGExtractor('hardtanh', mask_conv=False)
+        # self.conv = VGGExtractor('hardtanh', mask_conv=False)
         # input_dim = (input_dim - 1) << 5 if input_dim % 2 else input_dim << 5
         self.input_proj = Linear(input_dim, d_model)
         self.input_layer_norm = LayerNorm(d_model)
@@ -137,7 +137,6 @@ class TransformerDecoder(nn.Module):
         self.num_heads = num_heads
         self.embedding = Embedding(num_classes, pad_id, d_model)
         self.positional_encoding = PositionalEncoding(d_model, dropout_p)
-        self.input_dropout = nn.Dropout(p=dropout_p)
         self.layers = nn.ModuleList(
             [TransformerDecoderLayer(d_model, num_heads, d_ff,  dropout_p, ffnet_style) for _ in range(num_layers)]
         )
@@ -155,7 +154,7 @@ class TransformerDecoder(nn.Module):
         memory_mask = get_pad_mask(memory, input_lengths).squeeze(-1).unsqueeze(1).expand(-1, targets.size(1), -1)
 
         output = self.embedding(targets)
-        output = self.input_dropout(self.positional_encoding(output))
+        output = self.positional_encoding(output)
 
         for layer in self.layers:
             output, self_attn, memory_attn = layer(output, memory, non_pad_mask, self_attn_mask, memory_mask)

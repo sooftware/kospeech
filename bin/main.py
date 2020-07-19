@@ -46,7 +46,7 @@ def train(opt):
             optimizer = Optimizer(optimizer, None, 0, opt.max_grad_norm)
 
         if opt.architecture == 'transformer':
-            criterion = TransformerLoss(opt.classes, ignore_index=PAD_token, smoothing=opt.label_smoothing).to(device)
+            criterion = TransformerLoss(opt.num_classes, ignore_index=PAD_token, smoothing=opt.label_smoothing).to(device)
 
         else:
             if opt.label_smoothing == 0.0:

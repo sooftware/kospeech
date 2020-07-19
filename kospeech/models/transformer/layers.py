@@ -46,7 +46,15 @@ class TransformerDecoderLayer(nn.Module):
                 non_pad_mask: Tensor = None,
                 self_attn_mask: Tensor = None, memory_mask: Tensor = None) -> Tuple[Tensor, Tensor, Tensor]:
         output, self_attn = self.self_attention(inputs, inputs, inputs, self_attn_mask)
+
+        if non_pad_mask is not None:
+            output *= non_pad_mask
+
         output, encoder_attn = self.encoder_attention(output, memory, memory, memory_mask)
+
+        if non_pad_mask is not None:
+            output *= non_pad_mask
+
         output = self.feed_forward(output)
 
         if non_pad_mask is not None:
