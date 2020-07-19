@@ -63,9 +63,7 @@ class TransformerLoss(nn.Module):
             one_hot = torch.zeros_like(y_hats).scatter(1, target_scatter.view(-1, 1), 1)
             one_hot = one_hot * (1 - eps) + (1 - one_hot) * eps / self.num_classes
 
-            print(y_hats)
             log_prb = F.log_softmax(y_hats, dim=1)
-            print(log_prb)
 
             non_pad_mask = targets.ne(self.ignore_index)
             n_word = non_pad_mask.sum().item()
@@ -74,6 +72,6 @@ class TransformerLoss(nn.Module):
         else:
             loss = F.cross_entropy(y_hats, targets,
                                    ignore_index=self.ignore_index,
-                                   reduction='elementwise_mean')
+                                   reduction='sum')
 
         return loss
