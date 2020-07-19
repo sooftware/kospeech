@@ -195,6 +195,10 @@ class SupervisedTrainer(object):
 
             targets = targets[:, 1:]
             y_hats = logit.max(-1)[1]
+
+            print(logit.size())
+            print(targets.size())
+
             loss = self.criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
             epoch_loss_total += loss.item()
 

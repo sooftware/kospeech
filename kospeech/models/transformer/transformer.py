@@ -66,7 +66,6 @@ class Transformer(nn.Module):
         if return_attns:
             return output, encoder_self_attns, decoder_self_attns, memory_attns
 
-        print("End==")
         return output
 
 
