@@ -43,7 +43,7 @@ class Transformer(nn.Module):
     Returns: output
         - **output**: tensor containing the outputs
     """
-    def __init__(self, num_classes: int, pad_id: int,
+    def __init__(self, num_classes: int, pad_id: int, eos_id: int,
                  d_model: int = 512, input_dim: int = 80, d_ff: int = 2048, num_heads: int = 8,
                  num_encoder_layers: int = 6, num_decoder_layers: int = 6,
                  dropout_p: float = 0.3, ffnet_style: str = 'ff') -> None:
@@ -51,6 +51,7 @@ class Transformer(nn.Module):
 
         assert d_model % num_heads == 0, "d_model % num_heads should be zero."
 
+        self.eos_id = eos_id
         self.pad_id = pad_id
         self.encoder = TransformerEncoder(d_model, input_dim, d_ff,  num_encoder_layers, num_heads, ffnet_style, dropout_p, pad_id)
         self.decoder = TransformerDecoder(num_classes, d_model, d_ff, num_decoder_layers, num_heads, ffnet_style, dropout_p, pad_id)

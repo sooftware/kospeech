@@ -30,7 +30,7 @@ def build_model(opt, device):
         model = build_seq2seq(encoder, decoder, device)
     elif opt.architecture.lower() == 'transformer':
         model = build_transformer(num_classes=opt.num_classes, pad_id=PAD_token, input_size=input_size,
-                                  d_model=opt.d_model, num_heads=opt.num_heads,
+                                  d_model=opt.d_model, num_heads=opt.num_heads, eos_id=EOS_token,
                                   num_encoder_layers=opt.num_encoder_layers, num_decoder_layers=opt.num_decoder_layers,
                                   dropout_p=opt.dropout, ffnet_style=opt.ffnet_style, device=device)
     else:
@@ -41,13 +41,13 @@ def build_model(opt, device):
 
 def build_transformer(num_classes: int, pad_id: int, d_model: int, num_heads: int, input_size: int,
                       num_encoder_layers: int, num_decoder_layers: int,
-                      dropout_p: float, ffnet_style: str, device: str) -> Transformer:
+                      dropout_p: float, ffnet_style: str, device: str, eos_id: int) -> Transformer:
     if ffnet_style not in {'ff', 'conv'}:
         raise ParameterError("Unsupported ffnet_style: {0}".format(ffnet_style))
 
     model = Transformer(num_classes=num_classes, pad_id=pad_id, d_model=d_model, num_heads=num_heads,
                         num_encoder_layers=num_encoder_layers, num_decoder_layers=num_decoder_layers,
-                        dropout_p=dropout_p, ffnet_style=ffnet_style, input_dim=input_size)
+                        dropout_p=dropout_p, ffnet_style=ffnet_style, input_dim=input_size, eos_id=eos_id)
 
     return nn.DataParallel(model).to(device)
 
