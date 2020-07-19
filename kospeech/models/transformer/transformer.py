@@ -60,8 +60,8 @@ class Transformer(nn.Module):
     def forward(self, inputs: Tensor, input_lengths: Tensor,
                 targets: Optional[Tensor] = None,
                 return_attns: bool = False) -> Tuple[Tensor, Tensor, Tensor, Tensor]:
-        batch_size = inputs.size(0)
-        inputs = inputs[inputs != self.eos_id].view(batch_size, -1)
+        batch_size = targets.size(0)
+        targets = targets[targets != self.eos_id].view(batch_size, -1)
 
         memory, encoder_self_attns = self.encoder(inputs, input_lengths)
         output, decoder_self_attns, memory_attns = self.decoder(targets, input_lengths, memory)
