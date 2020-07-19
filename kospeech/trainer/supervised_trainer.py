@@ -183,8 +183,8 @@ class SupervisedTrainer(object):
             if self.architecture == 'seq2seq':
                 model.module.flatten_parameters()
 
-                output = model(inputs, input_lengths, targets, teacher_forcing_ratio=teacher_forcing_ratio)
-                logit = torch.stack(output, dim=1).to(self.device)
+                logit = model(inputs, input_lengths, targets, teacher_forcing_ratio=teacher_forcing_ratio)
+                logit = torch.stack(logit, dim=1).to(self.device)
 
             elif self.architecture == 'transformer':
                 model.cuda()
@@ -195,9 +195,6 @@ class SupervisedTrainer(object):
 
             targets = targets[:, 1:]
             y_hats = logit.max(-1)[1]
-
-            print(logit.size())
-            print(targets.size())
 
             loss = self.criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
             epoch_loss_total += loss.item()
@@ -233,7 +230,7 @@ class SupervisedTrainer(object):
             if timestep % self.checkpoint_every == 0:
                 Checkpoint(model, self.optimizer,  self.criterion, self.trainset_list, self.validset, epoch).save()
 
-            del inputs, input_lengths, targets, output, logit, loss, y_hats
+            del inputs, input_lengths, targets, logit, loss, y_hats
 
         Checkpoint(model, self.optimizer, self.criterion, self.trainset_list, self.validset, epoch).save()
 
