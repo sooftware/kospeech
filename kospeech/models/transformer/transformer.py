@@ -70,7 +70,7 @@ class Transformer(nn.Module):
 
         if return_attns:
             return output, encoder_self_attns, decoder_self_attns, memory_attns
-
+        print(output)
         return output
 
 
@@ -109,7 +109,7 @@ class TransformerEncoder(nn.Module):
         #
         # input_lengths = torch.ceil(input_lengths.float() / 4).int()  # convolution MaxPool x 2
 
-        output = self.input_dropout(self.input_layer_norm(self.input_proj(inputs) + self.positional_encoding(inputs)))
+        output = self.input_dropout(self.input_layer_norm(self.input_proj(inputs))) # + self.positional_encoding(inputs)))
 
         non_pad_mask = get_pad_mask(inputs, input_lengths=input_lengths).eq(0)
         length = inputs.size(1)
@@ -155,7 +155,7 @@ class TransformerDecoder(nn.Module):
         self_attn_mask = (attn_pad_mask + subsequent_mask).gt(0)
         memory_mask = get_pad_mask(memory, input_lengths).squeeze(-1).unsqueeze(1).expand(-1, targets.size(1), -1)
 
-        output = self.input_dropout(self.embedding(targets) * self.logit_scale + self.positional_encoding(targets))
+        output = self.input_dropout(self.embedding(targets) * self.logit_scale)  # + self.positional_encoding(targets))
 
         for layer in self.layers:
             output, self_attn, memory_attn = layer(output, memory, non_pad_mask, self_attn_mask, memory_mask)
