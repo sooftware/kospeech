@@ -17,7 +17,6 @@ class TransformerEncoderLayer(nn.Module):
 
     def forward(self, inputs: Tensor, non_pad_mask: Optional[Tensor] = None,
                 self_attn_mask: Optional[Tensor] = None) -> Tuple[Tensor, Tensor]:
-        print(inputs.size())
         output, attn = self.self_attention(inputs, inputs, inputs, self_attn_mask)
 
         if non_pad_mask is not None:
