@@ -161,9 +161,11 @@ class SupervisedTrainer(object):
         timestep = 0
 
         model.train()
-        begin_time = epoch_begin_time = time.time()
+        model.cuda()
 
+        begin_time = epoch_begin_time = time.time()
         num_workers = self.num_workers
+
         while True:
             inputs, targets, input_lengths, target_lengths = queue.get()
 
@@ -187,7 +189,6 @@ class SupervisedTrainer(object):
                 logit = torch.stack(logit, dim=1).to(self.device)
 
             elif self.architecture == 'transformer':
-                model.cuda()
                 logit = model(inputs, input_lengths, targets, return_attns=False)
 
             else:

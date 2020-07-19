@@ -16,7 +16,7 @@ import torch
 from torch import optim, nn
 sys.path.append('..')
 from kospeech.data.data_loader import split_dataset, load_data_list
-from kospeech.optim.loss import LabelSmoothingLoss
+from kospeech.optim.loss import LabelSmoothingLoss, TransformerLoss
 from kospeech.optim.lr_scheduler import RampUpLR
 from kospeech.optim.optimizer import Optimizer
 from kospeech.trainer.supervised_trainer import SupervisedTrainer
@@ -45,10 +45,14 @@ def train(opt):
         else:
             optimizer = Optimizer(optimizer, None, 0, opt.max_grad_norm)
 
-        if opt.label_smoothing == 0.0:
-            criterion = nn.NLLLoss(reduction='sum', ignore_index=PAD_token).to(device)
+        if opt.architecture == 'transformer':
+            criterion = TransformerLoss(opt.classes, ignore_index=PAD_token, smoothing=opt.label_smoothing).to(device)
+
         else:
-            criterion = LabelSmoothingLoss(len(char2id), PAD_token, opt.label_smoothing, dim=-1).to(device)
+            if opt.label_smoothing == 0.0:
+                criterion = nn.NLLLoss(reduction='sum', ignore_index=PAD_token).to(device)
+            else:
+                criterion = LabelSmoothingLoss(len(char2id), PAD_token, opt.label_smoothing, dim=-1).to(device)
 
     else:
         trainset_list = None
