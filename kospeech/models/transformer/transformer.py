@@ -66,9 +66,7 @@ class Transformer(nn.Module):
 
         memory, encoder_self_attns = self.encoder(inputs, input_lengths)
         output, decoder_self_attns, memory_attns = self.decoder(targets, input_lengths, memory)
-
         output = self.generator(output)
-        output = F.log_softmax(output, dim=-1)
 
         if return_attns:
             return output, encoder_self_attns, decoder_self_attns, memory_attns
