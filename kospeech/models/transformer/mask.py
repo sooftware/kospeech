@@ -22,7 +22,7 @@ def get_pad_mask(inputs, input_lengths=None, pad_id=None):
         assert inputs.dim() == 2
         pad_mask = inputs.eq(pad_id).float()
     # unsqueeze(-1) for broadcast
-    return pad_mask.unsqueeze(-1)
+    return pad_mask.unsqueeze(-1).bool()
 
 
 def get_subsequent_mask(inputs):
