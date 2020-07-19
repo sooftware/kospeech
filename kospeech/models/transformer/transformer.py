@@ -86,7 +86,7 @@ class TransformerEncoder(nn.Module):
         self.num_heads = num_heads
         self.pad_id = pad_id
         self.conv = VGGExtractor('hardtanh', mask_conv=False)
-        input_dim = (input_dim - 1) << 5 if input_dim % 2 else input_dim << 5
+        # input_dim = (input_dim - 1) << 5 if input_dim % 2 else input_dim << 5
         self.input_proj = Linear(input_dim, d_model)
         self.input_layer_norm = LayerNorm(d_model)
         self.positional_encoding = PositionalEncoding(d_model, dropout_p)
@@ -97,15 +97,15 @@ class TransformerEncoder(nn.Module):
     def forward(self, inputs: Tensor, input_lengths: Optional[Tensor] = None) -> Tuple[Tensor, Tensor]:
         self_attns = list()
 
-        conv_feat = self.conv(inputs.unsqueeze(1), input_lengths)
-        conv_feat = conv_feat.transpose(1, 2)
+        # conv_feat = self.conv(inputs.unsqueeze(1), input_lengths)
+        # conv_feat = conv_feat.transpose(1, 2)
+        #
+        # batch_size, num_channels, seq_length, hidden_dim = conv_feat.size()
+        # conv_feat = conv_feat.contiguous().view(batch_size, num_channels, seq_length * hidden_dim)
+        #
+        # input_lengths = torch.ceil(input_lengths.float() / 4).int()  # convolution MaxPool x 2
 
-        batch_size, num_channels, seq_length, hidden_dim = conv_feat.size()
-        conv_feat = conv_feat.contiguous().view(batch_size, num_channels, seq_length * hidden_dim)
-
-        input_lengths = torch.ceil(input_lengths.float() / 4).int()  # convolution MaxPool x 2
-
-        output = self.input_layer_norm(self.input_proj(conv_feat))
+        output = self.input_layer_norm(self.input_proj(inputs))
         output = self.positional_encoding(output)
 
         non_pad_mask = get_non_pad_mask(inputs, input_lengths=input_lengths)
