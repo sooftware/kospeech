@@ -205,7 +205,6 @@ class SupervisedTrainer(object):
 
             self.optimizer.zero_grad()
             loss.backward()
-            model.float()
             self.optimizer.step(model, loss.item())
 
             timestep += 1
