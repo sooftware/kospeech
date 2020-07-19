@@ -92,6 +92,7 @@ class TransformerEncoder(nn.Module):
         # input_dim = (input_dim - 1) << 5 if input_dim % 2 else input_dim << 5
         self.input_proj = Linear(input_dim, d_model)
         self.input_layer_norm = LayerNorm(d_model)
+        self.input_dropout = nn.Dropout(p=dropout_p)
         self.positional_encoding = PositionalEncoding(d_model, dropout_p)
         self.layers = nn.ModuleList(
             [TransformerEncoderLayer(d_model, num_heads, d_ff, dropout_p, ffnet_style) for _ in range(num_layers)]
@@ -108,8 +109,7 @@ class TransformerEncoder(nn.Module):
         #
         # input_lengths = torch.ceil(input_lengths.float() / 4).int()  # convolution MaxPool x 2
 
-        output = self.input_layer_norm(self.input_proj(inputs))
-        output = self.positional_encoding(output)
+        output = self.input_dropout(self.input_layer_norm(self.input_proj(inputs) + self.positional_encoding(inputs)))
 
         non_pad_mask = get_pad_mask(inputs, input_lengths=input_lengths).eq(0)
         length = inputs.size(1)
@@ -137,10 +137,12 @@ class TransformerDecoder(nn.Module):
         self.num_heads = num_heads
         self.embedding = Embedding(num_classes, pad_id, d_model)
         self.positional_encoding = PositionalEncoding(d_model, dropout_p)
+        self.input_dropout = nn.Dropout(p=dropout_p)
         self.layers = nn.ModuleList(
             [TransformerDecoderLayer(d_model, num_heads, d_ff,  dropout_p, ffnet_style) for _ in range(num_layers)]
         )
         self.pad_id = pad_id
+        self.logit_scale = (d_model ** -0.5)
 
     def forward(self, targets: Tensor,
                 input_lengths: Optional[Tensor] = None,
@@ -153,8 +155,7 @@ class TransformerDecoder(nn.Module):
         self_attn_mask = (attn_pad_mask + subsequent_mask).gt(0)
         memory_mask = get_pad_mask(memory, input_lengths).squeeze(-1).unsqueeze(1).expand(-1, targets.size(1), -1)
 
-        output = self.embedding(targets)
-        output = self.positional_encoding(output)
+        output = self.input_dropout(self.embedding(targets) * self.logit_scale + self.positional_encoding(targets))
 
         for layer in self.layers:
             output, self_attn, memory_attn = layer(output, memory, non_pad_mask, self_attn_mask, memory_mask)
