@@ -6,15 +6,9 @@ def get_pad_mask(inputs, input_lengths=None, pad_id=None):
     Padding position is set to 0, either use input_lengths or pad_id
 
     Examples::
-        >>> get_pad_mask(input, input_lengths)
-        [[1, 1, 1, 1, 1, 1, 1, 1],
-         [1, 1, 1, 1, 1, 1, 1, 0],
-         [1, 1, 1, 1, 1, 1, 0, 0],
-         [1, 1, 1, 1, 0, 0, 0, 0],
-         [1, 1, 1, 0, 0, 0, 0, 0],
-         [1, 1, 1, 1, 0, 0, 0, 0]]  0 means pad.
+        >>> get_pad_mask(inputs, input_lengths)
     """
-    assert (input_lengths is None and pad_id) or (input_lengths is not None and not pad_id)
+    assert (input_lengths is None and pad_id is not None) or (input_lengths is not None and pad_id is None)
 
     if input_lengths is not None:
         # inputs: N x T x ..
