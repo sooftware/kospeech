@@ -52,9 +52,6 @@ class TransformerDecoderLayer(nn.Module):
 
         output, encoder_attn = self.encoder_attention(output, memory, memory, memory_mask)
 
-        print(output.size())
-        print(non_pad_mask.size())
-
         if non_pad_mask is not None:
             output *= non_pad_mask
 

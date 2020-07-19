@@ -63,6 +63,7 @@ class Transformer(nn.Module):
                 return_attns: bool = False):
         batch_size = targets.size(0)
         targets = targets[targets != self.eos_id].view(batch_size, -1)
+        input_lengths -= 1
 
         memory, encoder_self_attns = self.encoder(inputs, input_lengths)
         output, decoder_self_attns, memory_attns = self.decoder(targets, input_lengths, memory)

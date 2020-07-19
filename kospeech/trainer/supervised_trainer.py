@@ -204,8 +204,8 @@ class SupervisedTrainer(object):
             total_num += int(input_lengths.sum())
 
             self.optimizer.zero_grad()
-            # loss.backward()
-            # self.optimizer.step(model, loss.item())
+            loss.backward()
+            self.optimizer.step(model, loss.item())
 
             timestep += 1
             torch.cuda.empty_cache()
