@@ -63,7 +63,7 @@ class TransformerLoss(nn.Module):
             one_hot = torch.zeros_like(y_hats).scatter(1, target_scatter.view(-1, 1), 1)
             one_hot = one_hot * (1 - eps) + (1 - one_hot) * eps / self.num_classes
 
-            log_prb = F.log_softmax(y_hats, dim=1)
+            log_prb = F.log_softmax(y_hats, dim=-1)
 
             non_pad_mask = targets.ne(self.ignore_index)
             n_word = non_pad_mask.sum().item()
