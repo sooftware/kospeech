@@ -102,7 +102,9 @@ class TransformerEncoder(nn.Module):
 
         batch_size, num_channels, seq_length, hidden_dim = conv_feat.size()
         conv_feat = conv_feat.contiguous().view(batch_size, num_channels, seq_length * hidden_dim)
-        input_lengths = torch.ceil(input_lengths / 4)  # convolution
+
+        input_lengths = torch.ceil(input_lengths / 4)  # convolution MaxPool x 2
+        input_lengths = Tensor(input_lengths).cuda()
 
         output = self.input_layer_norm(self.input_proj(conv_feat))
         output = self.positional_encoding(output)
