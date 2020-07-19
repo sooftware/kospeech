@@ -109,7 +109,7 @@ class TransformerEncoder(nn.Module):
 
         non_pad_mask = get_pad_mask(inputs, input_lengths=input_lengths).eq(0)
         length = inputs.size(1)
-        self_attn_mask = get_pad_mask(inputs, input_lengths).squeeze(-1).unsqueeze(1).expand(-1, length, -1)
+        self_attn_mask = get_pad_mask(inputs, input_lengths).squeeze(-1).unsqueeze(1).expand(-1, length, -1).bool()
 
         for layer in self.layers:
             output, attn = layer(output, non_pad_mask, self_attn_mask)
