@@ -1,31 +1,42 @@
 import torch
 
 
-def get_non_pad_mask(inputs, input_lengths=None, pad_id=None):
-    """ Padding position is set to 0, either use input_lengths or pad_idx """
-    assert input_lengths is not None or pad_id is not None
+def get_pad_mask(inputs, input_lengths=None, pad_id=None):
+    """
+    Padding position is set to 0, either use input_lengths or pad_id
+
+    Examples::
+        >>> get_pad_mask(input, input_lengths)
+        [[1, 1, 1, 1, 1, 1, 1, 1],
+         [1, 1, 1, 1, 1, 1, 1, 0],
+         [1, 1, 1, 1, 1, 1, 0, 0],
+         [1, 1, 1, 1, 0, 0, 0, 0],
+         [1, 1, 1, 0, 0, 0, 0, 0],
+         [1, 1, 1, 1, 0, 0, 0, 0]]  0 means pad.
+    """
+    assert (input_lengths is None and pad_id) or (input_lengths is not None and not pad_id)
 
     if input_lengths is not None:
         # inputs: N x T x ..
         batch_size = inputs.size(0)
-        non_pad_mask = inputs.new_ones(inputs.size()[:-1])  # N x T
+        pad_mask = inputs.new_zeros(inputs.size()[:-1])  # N x T
         for i in range(batch_size):
-            non_pad_mask[i, input_lengths[i]:] = 0
+            pad_mask[i, input_lengths[i]:] = 1
 
-    if pad_id is not None:
+    else:
         # inputs: N x T
         assert inputs.dim() == 2
-        non_pad_mask = inputs.ne(pad_id).float()
+        pad_mask = inputs.eq(pad_id).float()
     # unsqueeze(-1) for broadcast
-    return non_pad_mask.unsqueeze(-1)
+    return pad_mask.unsqueeze(-1)
 
 
-def get_subsequent_mask(x):
+def get_subsequent_mask(inputs):
     """
     Makes subsequent masking like following:
 
     Examples::
-        >>> get_subsequent_mask(x)
+        >>> get_subsequent_mask(inputs)
         [[0, 1, 1, 1, 1, 1, 1, 1, 1, 1],
          [0, 0, 1, 1, 1, 1, 1, 1, 1, 1],
          [0, 0, 0, 1, 1, 1, 1, 1, 1, 1],
@@ -38,29 +49,18 @@ def get_subsequent_mask(x):
          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]] x batch_size
     """
 
-    batch_size, seq_length = x.size()
-    subsequent_mask = torch.triu(torch.ones((seq_length, seq_length), device=x.device, dtype=torch.uint8), diagonal=1)
+    batch_size, seq_length = inputs.size()
+    subsequent_mask = torch.triu(torch.ones((seq_length, seq_length), device=inputs.device, dtype=torch.uint8), diagonal=1)
     subsequent_mask = subsequent_mask.unsqueeze(0).expand(batch_size, -1, -1)  # BxTxT
 
     return subsequent_mask
 
 
-def get_attn_key_pad_mask(seq_k, seq_q, pad_id):
+def get_attn_pad_mask(key, length, pad_id):
     """ For masking out the padding part of key sequence. """
 
     # Expand to fit the shape of key query attention matrix.
-    len_q = seq_q.size(1)
-    padding_mask = seq_k.eq(pad_id)
-    padding_mask = padding_mask.unsqueeze(1).expand(-1, len_q, -1)  # b x lq x lk
+    attn_pad_mask = key.eq(pad_id)
+    attn_pad_mask = attn_pad_mask.unsqueeze(1).expand(-1, length, -1)  # b x lq x lk
 
-    return padding_mask
-
-
-def get_attn_pad_mask(inputs, input_lengths, expand_length):
-    """mask position is set to 1"""
-    # N x Ti x 1
-    non_pad_mask = get_non_pad_mask(inputs, input_lengths=input_lengths)
-    # N x Ti, lt(1) like not operation
-    pad_mask = non_pad_mask.squeeze(-1).lt(1)
-    attn_mask = pad_mask.unsqueeze(1).expand(-1, expand_length, -1)
-    return attn_mask
+    return attn_pad_mask

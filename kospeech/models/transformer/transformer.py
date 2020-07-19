@@ -9,14 +9,12 @@ Reference :
     - **https://github.com/jadore801120/attention-is-all-you-need-pytorch**
     - **https://github.com/JayParks/transformer**
 """
-import torch
 import torch.nn as nn
 from torch import Tensor
 from typing import Optional, Tuple
 from kospeech.models.seq2seq.modules import Linear, LayerNorm
 from kospeech.models.seq2seq.sublayers import VGGExtractor
-from kospeech.models.transformer.mask import get_non_pad_mask, get_attn_pad_mask, get_subsequent_mask, \
-    get_attn_key_pad_mask
+from kospeech.models.transformer.mask import get_pad_mask, get_subsequent_mask, get_attn_pad_mask
 from kospeech.models.transformer.embeddings import Embedding, PositionalEncoding
 from kospeech.models.transformer.layers import TransformerEncoderLayer, TransformerDecoderLayer
 
@@ -109,9 +107,9 @@ class TransformerEncoder(nn.Module):
         output = self.input_layer_norm(self.input_proj(inputs))
         output = self.positional_encoding(output)
 
-        non_pad_mask = get_non_pad_mask(inputs, input_lengths=input_lengths)
+        non_pad_mask = get_pad_mask(inputs, input_lengths=input_lengths).eq(0).int()
         length = inputs.size(1)
-        self_attn_mask = get_attn_pad_mask(inputs, input_lengths, length)
+        self_attn_mask = get_pad_mask(inputs, input_lengths).squeeze(-1).unsqueeze(1).expand(-1, length, -1)
 
         for layer in self.layers:
             output, attn = layer(output, non_pad_mask, self_attn_mask)
@@ -141,15 +139,16 @@ class TransformerDecoder(nn.Module):
         )
         self.pad_id = pad_id
 
-    def forward(self, targets: Tensor, input_lengths: Optional[Tensor] = None,
+    def forward(self, targets: Tensor,
+                input_lengths: Optional[Tensor] = None,
                 memory: Tensor = None) -> Tuple[Tensor, Tensor, Tensor]:
         self_attns, memory_attns = list(), list()
 
-        non_pad_mask = get_non_pad_mask(targets, pad_id=self.pad_id)
-        self_attn_mask_subseq = get_subsequent_mask(targets)
-        self_attn_mask_keypad = get_attn_key_pad_mask(targets, targets, pad_id=self.pad_id)
-        self_attn_mask = (self_attn_mask_keypad + self_attn_mask_subseq).gt(0)  # greater than
-        memory_mask = get_attn_pad_mask(memory, input_lengths, targets.size(1))
+        non_pad_mask = get_pad_mask(targets, pad_id=self.pad_id).eq(0).int()
+        subsequent_mask = get_subsequent_mask(targets)
+        attn_pad_mask = get_attn_pad_mask(targets, targets.size(1), pad_id=self.pad_id)
+        self_attn_mask = (attn_pad_mask + subsequent_mask).gt(0)
+        memory_mask = get_pad_mask(memory, input_lengths).squeeze(-1).unsqueeze(1).expand(-1, targets.size(1), -1)
 
         output = self.embedding(targets)
         output = self.input_dropout(self.positional_encoding(output))
