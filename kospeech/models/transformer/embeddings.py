@@ -14,10 +14,8 @@ class PositionalEncoding(nn.Module):
         PE_(pos, 2i)    =  sin(pos / power(10000, 2i / d_model))
         PE_(pos, 2i+1)  =  cos(pos / power(10000, 2i / d_model))
     """
-    def __init__(self, d_model: int = 80, dropout_p: float = 0.1, max_len: int = 5000) -> None:
+    def __init__(self, d_model: int = 80, max_len: int = 5000) -> None:
         super(PositionalEncoding, self).__init__()
-        self.dropout = nn.Dropout(dropout_p)
-
         pe = torch.zeros(max_len, d_model, requires_grad=False)
         position = torch.arange(0, max_len, dtype=torch.float).unsqueeze(1).float()
         div_term = torch.exp(torch.arange(0, d_model, 2).float() * -(math.log(10000.0) / d_model))

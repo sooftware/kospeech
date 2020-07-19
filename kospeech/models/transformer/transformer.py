@@ -93,7 +93,7 @@ class TransformerEncoder(nn.Module):
         self.input_proj = Linear(input_dim, d_model)
         self.input_layer_norm = LayerNorm(d_model)
         self.input_dropout = nn.Dropout(p=dropout_p)
-        self.positional_encoding = PositionalEncoding(d_model, dropout_p)
+        self.positional_encoding = PositionalEncoding(d_model)
         self.layers = nn.ModuleList(
             [TransformerEncoderLayer(d_model, num_heads, d_ff, dropout_p, ffnet_style) for _ in range(num_layers)]
         )
@@ -136,7 +136,7 @@ class TransformerDecoder(nn.Module):
         self.num_layers = num_layers
         self.num_heads = num_heads
         self.embedding = Embedding(num_classes, pad_id, d_model)
-        self.positional_encoding = PositionalEncoding(d_model, dropout_p)
+        self.positional_encoding = PositionalEncoding(d_model)
         self.input_dropout = nn.Dropout(p=dropout_p)
         self.layers = nn.ModuleList(
             [TransformerDecoderLayer(d_model, num_heads, d_ff,  dropout_p, ffnet_style) for _ in range(num_layers)]
