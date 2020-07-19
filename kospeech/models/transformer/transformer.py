@@ -60,7 +60,7 @@ class Transformer(nn.Module):
 
     def forward(self, inputs: Tensor, input_lengths: Tensor,
                 targets: Optional[Tensor] = None,
-                return_attns: bool = False) -> Tuple[Tensor, Tensor, Tensor, Tensor]:
+                return_attns: bool = False):
         batch_size = targets.size(0)
         targets = targets[targets != self.eos_id].view(batch_size, -1)
 
