@@ -24,8 +24,8 @@ class PositionalEncoding(nn.Module):
         pe = pe.unsqueeze(0)
         self.register_buffer('pe', pe)
 
-    def forward(self, inputs: Tensor) -> Tensor:
-        return self.pe[:, inputs.size(1)]
+    def forward(self, length: int) -> Tensor:
+        return self.pe[:, :length]
 
 
 class Embedding(nn.Module):
