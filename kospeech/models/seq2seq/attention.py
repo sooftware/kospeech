@@ -59,8 +59,8 @@ class MultiHeadAttention(nn.Module):
 
         context = torch.bmm(attn, value)
         context = context.view(self.num_heads, batch_size, -1, self.d_head)
-
         context = context.permute(1, 2, 0, 3).contiguous().view(batch_size, -1, self.num_heads * self.d_head)  # BxTxND
+
         return context, attn
 
 

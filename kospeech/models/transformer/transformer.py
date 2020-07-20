@@ -98,7 +98,7 @@ class TransformerEncoder(nn.Module):
     def forward(self, inputs: Tensor, input_lengths: Optional[Tensor] = None) -> Tuple[Tensor, Tensor]:
         self_attns = list()
 
-        output = self.input_dropout(self.input_layer_norm(self.input_proj(inputs) + self.pos_encoding(inputs.size(1))))
+        output = self.input_dropout(self.input_layer_norm(self.input_proj(inputs)) + self.pos_encoding(inputs.size(1)))
 
         non_pad_mask = get_pad_mask(inputs, input_lengths=input_lengths).eq(0)
         length = inputs.size(1)
