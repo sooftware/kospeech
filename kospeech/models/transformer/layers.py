@@ -39,7 +39,7 @@ class TransformerDecoderLayer(nn.Module):
                  dropout_p: float = 0.3, ffnet_style: str = 'ff') -> None:
         super(TransformerDecoderLayer, self).__init__()
         self.self_attention = AddNorm(MultiHeadAttention(d_model, num_heads), d_model)
-        self.encoder_attention = AddNorm(MultiHeadAttention(d_model, num_heads), d_model)
+        self.memory_attention = AddNorm(MultiHeadAttention(d_model, num_heads), d_model)
         self.feed_forward = AddNorm(PoswiseFeedForwardNet(d_model, d_ff, dropout_p, ffnet_style), d_model)
 
     def forward(self, inputs: Tensor, memory: Tensor,
@@ -50,7 +50,7 @@ class TransformerDecoderLayer(nn.Module):
         if non_pad_mask is not None:
             output *= non_pad_mask
 
-        output, encoder_attn = self.encoder_attention(output, memory, memory, memory_mask)
+        output, memory_attn = self.memory_attention(output, memory, memory, memory_mask)
 
         if non_pad_mask is not None:
             output *= non_pad_mask
@@ -60,4 +60,4 @@ class TransformerDecoderLayer(nn.Module):
         if non_pad_mask is not None:
             output *= non_pad_mask
 
-        return output, self_attn, encoder_attn
+        return output, self_attn, memory_attn

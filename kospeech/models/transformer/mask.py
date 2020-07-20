@@ -11,16 +11,16 @@ def get_pad_mask(inputs, input_lengths=None, pad_id=None):
     assert (input_lengths is None and pad_id is not None) or (input_lengths is not None and pad_id is None)
 
     if input_lengths is not None:
-        # inputs: N x T x ..
+        # inputs: NxTxD
         batch_size = inputs.size(0)
         pad_mask = inputs.new_zeros(inputs.size()[:-1])  # N x T
         for i in range(batch_size):
             pad_mask[i, input_lengths[i]:] = 1
 
     else:
-        # inputs: N x T
+        # inputs: NxT
         assert inputs.dim() == 2
-        pad_mask = inputs.eq(pad_id).float()
+        pad_mask = inputs.eq(pad_id)
     # unsqueeze(-1) for broadcast
     return pad_mask.unsqueeze(-1).bool()
 
