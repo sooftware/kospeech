@@ -7,7 +7,8 @@ from torch import Tensor, LongTensor
 from typing import Optional, Any, Tuple
 from kospeech.models.seq2seq.attention import LocationAwareAttention, MultiHeadAttention
 from kospeech.models.seq2seq.modules import Linear
-from kospeech.models.seq2seq.sublayers import ResidualConnection, BaseRNN
+from kospeech.models.seq2seq.sublayers import BaseRNN
+from kospeech.models.transformer.sublayers import AddNorm
 
 
 def _inflate(tensor: Tensor, n_repeat: int, dim: int):
@@ -55,9 +56,9 @@ class Seq2seqDecoder(BaseRNN):
     KEY_SEQUENCE_SYMBOL = 'sequence_symbol'
 
     def __init__(self, num_classes: int, max_length: int = 120, hidden_dim: int = 1024,
-                 sos_id: int = 1, eos_id: int = 2, attn_mechanism: str = 'dot',
-                 num_heads: int = 4, num_layers: int = 2, rnn_type: str = 'lstm',
-                 dropout_p: float = 0.3, device: str = 'cuda') -> None:
+                 sos_id: int = 1, eos_id: int = 2,
+                 attn_mechanism: str = 'dot', num_heads: int = 4, num_layers: int = 2,
+                 rnn_type: str = 'lstm', dropout_p: float = 0.3, device: str = 'cuda') -> None:
         super(Seq2seqDecoder, self).__init__(hidden_dim, hidden_dim, num_layers, rnn_type, dropout_p, False, device)
         self.num_classes = num_classes
         self.num_heads = num_heads
@@ -73,11 +74,11 @@ class Seq2seqDecoder(BaseRNN):
         if self.attn_mechanism == 'loc':
             self.attention = LocationAwareAttention(hidden_dim, smoothing=True)
         elif self.attn_mechanism == 'dot':
-            self.attention = ResidualConnection(MultiHeadAttention(hidden_dim, num_heads), hidden_dim)
+            self.attention = AddNorm(MultiHeadAttention(hidden_dim, num_heads), hidden_dim)
         else:
             raise ValueError("Unsupported attention: %s".format(attn_mechanism))
 
-        self.projection = ResidualConnection(Linear(hidden_dim, hidden_dim, bias=True), hidden_dim)
+        self.projection = AddNorm(Linear(hidden_dim, hidden_dim, bias=True), hidden_dim)
         self.generator = Linear(hidden_dim, num_classes, bias=False)
 
     def forward_step(self, input_var: Tensor, hidden: Optional[Any],
@@ -207,7 +208,7 @@ class Seq2seqTopKDecoder(nn.Module):
         - **decoder_outputs** :  list of tensors containing the outputs of the decoding function.
     """
 
-    def __init__(self, decoder: Seq2seqDecoder, beam_size: int = 3):
+    def __init__(self, decoder: Seq2seqDecoder, beam_size: int = 3) -> None:
         super(Seq2seqTopKDecoder, self).__init__()
         self.num_classes = decoder.num_classes
         self.max_length = decoder.max_length

@@ -42,27 +42,6 @@ class BaseRNN(nn.Module):
         raise NotImplementedError
 
 
-class ResidualConnection(nn.Module):
-    """
-    a residual connection followed by layer normalization.
-    """
-    def __init__(self, sublayer: nn.Module, d_model: int = 512) -> None:
-        super(ResidualConnection, self).__init__()
-        self.sublayer = sublayer
-        self.layer_norm = LayerNorm(d_model)
-
-    def forward(self, *args):
-        residual = args[0]
-        output = self.sublayer(*args)
-
-        if isinstance(output, tuple):
-            output = self.layer_norm(output[0] + residual), output[1]
-        else:
-            output = self.layer_norm(output + residual)
-
-        return output
-
-
 class MaskConv(nn.Module):
     """
     Masking Convolutional Neural Network
