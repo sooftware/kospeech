@@ -108,7 +108,7 @@ class MultiHeadAttention(nn.Module):
 
         self.d_head = int(d_model / num_heads)
         self.num_heads = num_heads
-        self.scaled_dot_attn = ScaledDotProductAttention(self.d_model)
+        self.scaled_dot_attn = ScaledDotProductAttention(d_model)
         self.query_proj = Linear(d_model, self.d_head * num_heads)
         self.key_proj = Linear(d_model, self.d_head * num_heads)
         self.value_proj = Linear(d_model, self.d_head * num_heads)
