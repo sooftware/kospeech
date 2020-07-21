@@ -11,7 +11,7 @@ from kospeech.utils import logger, PAD_token, SOS_token, EOS_token
 
 class SpectrogramDataset(Dataset, SpectrogramParser):
     """
-    Dataset for mel-spectrogram & transcript matching
+    Dataset for feature & transcript matching
 
     Args:
         audio_paths (list): set of audio path
@@ -45,12 +45,12 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
     def get_item(self, idx):
         """ get feature & transcript """
         transcript = self.parse_transcript(self.script_paths[idx])
-        feature = self.parse_audio(self.audio_paths[idx], self.augment_methods[idx])
+        feature_vector = self.parse_audio(self.audio_paths[idx], self.augment_methods[idx])
 
-        if feature is None:
+        if feature_vector is None:
             return None, None
         else:
-            return feature, transcript
+            return feature_vector, transcript
 
     def parse_transcript(self, script_path):
         """ Parses scripts @Override """
