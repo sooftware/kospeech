@@ -28,8 +28,8 @@ class Spectrogram(object):
             self.frame_length = window_size
             self.frame_shift = stride
         else:
-            self.n_fft = int(sample_rate * 0.001 * window_size)
-            self.hop_length = int(sample_rate * 0.001 * (window_size - stride))
+            self.n_fft = int(round(sample_rate * 0.001 * window_size))
+            self.hop_length = int(round(sample_rate * 0.001 * stride))
 
     def __call__(self, signal):
         if self.kaldi:
@@ -61,8 +61,8 @@ class MelSpectrogram(object):
     def __init__(self, sample_rate=16000, n_mels=80, window_size=20, stride=10, feature_extract_by='librosa'):
         self.sample_rate = sample_rate
         self.n_mels = n_mels
-        self.n_fft = int(sample_rate * 0.001 * window_size)
-        self.hop_length = int(sample_rate * 0.001 * stride)
+        self.n_fft = int(round(sample_rate * 0.001 * window_size))
+        self.hop_length = int(round(sample_rate * 0.001 * stride))
         self.feature_extract_by = feature_extract_by.lower()
 
         if self.feature_extract_by == 'torchaudio':
@@ -102,8 +102,8 @@ class MFCC(object):
     def __init__(self, sample_rate=16000, n_mfcc=40, window_size=20, stride=10, feature_extract_by='librosa'):
         self.sample_rate = sample_rate
         self.n_mfcc = n_mfcc
-        self.n_fft = int(sample_rate * 0.001 * window_size)
-        self.hop_length = int(sample_rate * 0.001 * stride)
+        self.n_fft = int(round(sample_rate * 0.001 * window_size))
+        self.hop_length = int(round(sample_rate * 0.001 * stride))
         self.feature_extract_by = feature_extract_by.lower()
 
         if self.feature_extract_by == 'torchaudio':
