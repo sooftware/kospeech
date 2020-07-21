@@ -37,7 +37,7 @@ Also our model has recorded **92.0% CRR** in `Kaldi-zeroth corpus`
 * [Various Options](https://sooftware.github.io/KoSpeech/notes/opts.html)
 * [(VGG / DeepSpeech2) Extractor](https://sooftware.github.io/KoSpeech/Seq2seq.html#module-kospeech.models.seq2seq.sublayers)
 * [MaskCNN & pack_padded_sequence](https://sooftware.github.io/KoSpeech/Seq2seq.html#module-kospeech.models.seq2seq.sublayers)
-* [Multi-headed (location-aware / scaled dot-product) Attention](https://sooftware.github.io/KoSpeech/Seq2seq.html#module-kospeech.models.seq2seq.attention)
+* [Attention (Multi-Head / Location-Aware)](https://sooftware.github.io/KoSpeech/Seq2seq.html#module-kospeech.models.seq2seq.attention)
 * [Top K Decoding (Beam Search)](https://sooftware.github.io/KoSpeech/Seq2seq.html#module-kospeech.models.seq2seq.beam_search)
 * [Various Feature (Spectrogram / Mel-Spectrogram / MFCC)](https://sooftware.github.io/KoSpeech/Data.html#module-kospeech.data.audio.feature)
 * [Delete silence](https://sooftware.github.io/KoSpeech/Data.html#module-kospeech.data.audio.core)
