@@ -3,6 +3,7 @@ import time
 import shutil
 import torch
 import torch.nn as nn
+from kospeech.models.seq2seq.seq2seq import Seq2seq
 from kospeech.utils import logger
 
 
@@ -88,10 +89,11 @@ class Checkpoint(object):
             resume_checkpoint = torch.load(os.path.join(path, self.TRAINER_STATE_NAME), map_location=lambda storage, loc: storage)
             model = torch.load(os.path.join(path, self.MODEL_NAME), map_location=lambda storage, loc: storage)
 
-        if isinstance(model, nn.DataParallel):
-            model.module.flatten_parameters()  # make RNN parameters contiguous
-        else:
-            model.flatten_parameters()
+        if isinstance(model, Seq2seq):
+            if isinstance(model, nn.DataParallel):
+                model.module.flatten_parameters()  # make RNN parameters contiguous
+            else:
+                model.flatten_parameters()
 
         return Checkpoint(model=model, optimizer=resume_checkpoint['optimizer'], epoch=resume_checkpoint['epoch'],
                           criterion=resume_checkpoint['criterion'], trainset_list=resume_checkpoint['trainset_list'],
