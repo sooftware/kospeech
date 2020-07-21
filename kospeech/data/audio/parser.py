@@ -87,8 +87,8 @@ class SpectrogramParser(AudioParser):
              audio_path (str): path of audio file
              augment_method (int): flag indication which augmentation method to use.
 
-        Returns: feature
-            - **feature** (torch.FloatTensor): feature from audio file.
+        Returns: feature_vector
+            - **feature_vector** (torch.FloatTensor): feature from audio file.
         """
         signal = load_audio(audio_path, self.del_silence)
 
