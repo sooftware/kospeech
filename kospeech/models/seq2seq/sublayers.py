@@ -1,7 +1,6 @@
 import torch.nn as nn
 from typing import Tuple, Optional, Any
 from torch import Tensor, BoolTensor
-from kospeech.models.seq2seq.modules import LayerNorm, Linear
 
 
 class BaseRNN(nn.Module):
@@ -180,7 +179,6 @@ class DeepSpeech2Extractor(CNNExtractor):
     "Deep Speech 2: End-to-End Speech Recognition in English and Mandarin" paper
     - https://arxiv.org/abs/1512.02595
     """
-
     def __init__(self, activation: str = 'hardtanh', mask_conv: bool = False) -> None:
         super(DeepSpeech2Extractor, self).__init__(activation)
         self.mask_conv = mask_conv

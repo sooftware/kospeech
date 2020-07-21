@@ -161,7 +161,9 @@ class SupervisedTrainer(object):
         timestep = 0
 
         model.train()
-        model.cuda()
+
+        if self.device == 'cuda':
+            model.cuda()
 
         begin_time = epoch_begin_time = time.time()
         num_workers = self.num_workers

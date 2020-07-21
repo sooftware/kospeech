@@ -26,9 +26,11 @@ class Evaluator(object):
 
         if decode == 'greedy':
             self.decoder = GreedySearch()
+
         elif decode == 'beam':
             assert beam_size > 1, "beam_size should be greater than 1. You can choose `greedy` search"
             self.decoder = BeamSearch(beam_size)
+
         else:
             raise ValueError("Unsupported decode : {0}".format(decode))
 
