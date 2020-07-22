@@ -30,9 +30,9 @@ LOW_PLATEAU_LR=1e-05
 RAMPUP_PERIOD=0
 DECAY_THRESHOLD=0.02
 EXP_DECAY_PERIOD=120000
-WINDOW_SIZE=20
+FRAME_LENGTH=20
 SAMPLE_RATE=16000
-STRIDE=10
+FRAME_SHIFT=10
 N_MELS=80
 FEATURE_EXTRACT_BY='librosa'      # You can set 'torchaudio'
 TRANSFORM_METHOD='spect'          # Support feature : spech, mel, mfcc
@@ -57,7 +57,7 @@ python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epoch
 --label_smoothing $LABEL_SMOOTHING --transform_method $TRANSFORM_METHOD --architecture $ARCHITECTURE \
 --num_encoder_layers $NUM_ENCODER_LAYERS --num_decoder_layers $NUM_DECODER_LAYERS --rnn_type $RNN_TYPE \
 --high_plateau_lr $HIGH_PLATEAU_LR --teacher_forcing_ratio $TEACHER_FORCING_RATIO --valid_ratio $VALID_RATIO \
---sample_rate $SAMPLE_RATE --window_size $WINDOW_SIZE --stride $STRIDE --n_mels $N_MELS --normalize --del_silence \
+--sample_rate $SAMPLE_RATE --frame_length $FRAME_LENGTH --frame_shift $FRAME_SHIFT --n_mels $N_MELS --normalize --del_silence \
 --feature_extract_by $FEATURE_EXTRACT_BY --time_mask_para $TIME_MASK_PARA --freq_mask_para $FREQ_MASK_PARA \
 --time_mask_num $TIME_MASK_NUM --freq_mask_num $FREQ_MASK_NUM --save_result_every $SAVE_RESULT_EVERY \
 --checkpoint_every $CHECKPOINT_EVERY --print_every $PRINT_EVERY --init_lr $INIT_LR  \

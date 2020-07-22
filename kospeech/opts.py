@@ -158,12 +158,12 @@ def build_preprocess_opts(parser):
     group.add_argument('--sample_rate', '-sample_rate',
                        type=int, default=16000,
                        help='sample rate (default: 16000)')
-    group.add_argument('--window_size', '-window_size',
+    group.add_argument('--frame_length', '-frame_length',
                        type=int, default=20,
-                       help='Window size for spectrogram (default: 20ms)')
-    group.add_argument('--stride', '-stride',
+                       help='frame size for spectrogram (default: 20ms)')
+    group.add_argument('--frame_shift', '-frame_shift',
                        type=int, default=10,
-                       help='Window stride for spectrogram (default: 10ms)')
+                       help='frame shift for spectrogram (default: 10ms)')
     group.add_argument('--n_mels', '-n_mels',
                        type=int, default=80,
                        help='number of mel filter (default: 80)')
@@ -178,10 +178,10 @@ def build_preprocess_opts(parser):
                        help='flag indication whether to reverse input or not')
     group.add_argument('--feature_extract_by', '-feature_extract_by',
                        type=str, default='librosa',
-                       help='which library to use for feature extraction: [librosa, torchaudio] (default: librosa)')
+                       help='which library to use for feature extraction: [librosa, torchaudio, kaldi] (default: librosa)')
     group.add_argument('--transform_method', '-transform_method',
                        type=str, default='mel',
-                       help='which feature to use: [mel, mfcc, spect] (default: mel)')
+                       help='which feature to use: [mel, mfcc, spect, fbank] (default: mel)')
     group.add_argument('--time_mask_para', '-time_mask_para',
                        type=int, default=50,
                        help='Hyper Parameter for Time Masking to limit time masking length (default: 50)')
@@ -236,8 +236,8 @@ def print_preprocess_opts(opt):
     logger.info('--mode: %s' % str(opt.mode))
     logger.info('--transform_method: %s' % str(opt.transform_method))
     logger.info('--sample_rate: %s' % str(opt.sample_rate))
-    logger.info('--window_size: %s' % str(opt.window_size))
-    logger.info('--stride: %s' % str(opt.stride))
+    logger.info('--frame_length: %s' % str(opt.frame_length))
+    logger.info('--frame_shift: %s' % str(opt.frame_shift))
     logger.info('--n_mels: %s' % str(opt.n_mels))
     logger.info('--normalize: %s' % str(opt.normalize))
     logger.info('--del_silence: %s' % str(opt.del_silence))

@@ -1,4 +1,5 @@
 import torch.nn as nn
+import torch.nn.init as init
 from typing import Tuple, Optional, Any
 from torch import Tensor, BoolTensor
 
@@ -36,9 +37,19 @@ class BaseRNN(nn.Module):
         self.rnn = rnn_cell(input_size, hidden_dim, num_layers, True, True, dropout_p, bidirectional)
         self.hidden_dim = hidden_dim
         self.device = device
+        self._init_params()
 
     def forward(self, *args, **kwargs):
         raise NotImplementedError
+
+    def _init_params(self):
+        for name, param in self.rnn.named_parameters():
+            if name.startswith('weight_ih'):
+                init.xavier_uniform_(param)
+            elif name.startswith('weight_hh'):
+                init.xavier_uniform_(param)
+            elif name.startswith('bias'):
+                init.zeros_(param)
 
 
 class MaskConv(nn.Module):
@@ -145,17 +156,17 @@ class VGGExtractor(CNNExtractor):
         super(VGGExtractor, self).__init__(activation)
         self.mask_conv = mask_conv
         self.conv = nn.Sequential(
-            nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1),
+            nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1, bias=False),
             self.activation,
             nn.BatchNorm2d(num_features=64),
-            nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
+            nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
             self.activation,
             nn.MaxPool2d(2, stride=2),
             nn.BatchNorm2d(num_features=64),
-            nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1),
+            nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1, bias=False),
             self.activation,
             nn.BatchNorm2d(num_features=128),
-            nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1),
+            nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1, bias=False),
             self.activation,
             nn.MaxPool2d(2, stride=2)
         )

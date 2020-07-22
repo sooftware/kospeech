@@ -2,10 +2,10 @@ import torch
 import librosa
 import platform
 import numpy as np
-from torch import Tensor
+from torch import Tensor, FloatTensor
 
-# torchaudio is only supported on Linux
-if platform.system() == 'Linux':
+# torchaudio is only supported on Linux (Linux, Mac)
+if platform.system().lower() == 'linux':
     try:
         import torchaudio
     except ImportError:
@@ -16,26 +16,31 @@ class Spectrogram(object):
     """
     Create a spectrogram from a audio signal.
 
-    Args: sample_rate, window_size, stride, feature_extract_by
+    Args: sample_rate, window_size, frame_shift, feature_extract_by
         sample_rate (int): Sample rate of audio signal. (Default: 16000)
-        window_size (int): window size (ms) (Default : 20)
-        stride (int): Length of hop between STFT windows. (ms) (Default: 10)
+        frame_length (int): frame length for spectrogram (ms) (Default : 20)
+        frame_shift (int): Length of hop between STFT windows. (ms) (Default: 10)
     """
-    def __init__(self, sample_rate: int = 16000, window_size: int = 20, stride: int = 10, kaldi: bool = False) -> None:
+    def __init__(self, sample_rate: int = 16000, frame_length: int = 20, frame_shift: int = 10,
+                 feature_extract_by: str = 'torch') -> None:
         self.sample_rate = sample_rate
-        self.kaldi = kaldi
-        if kaldi:
-            self.frame_length = window_size
-            self.frame_shift = stride
+        self.feature_extract_by = feature_extract_by.lower()
+
+        if self.feature_extract_by == 'kaldi':
+            # torchaudio is only supported on Linux (Linux, Mac)
+            assert platform.system().lower() == 'linux' or platform.system().lower() == 'darwin'
+            self.frame_length = frame_length
+            self.frame_shift = frame_shift
+
         else:
-            self.n_fft = int(round(sample_rate * 0.001 * window_size))
-            self.hop_length = int(round(sample_rate * 0.001 * stride))
+            self.n_fft = int(round(sample_rate * 0.001 * frame_length))
+            self.hop_length = int(round(sample_rate * 0.001 * frame_shift))
 
     def __call__(self, signal):
-        if self.kaldi:
+        if self.feature_extract_by == 'kaldi':
             spectrogram = torchaudio.compliance.kaldi.spectrogram(Tensor(signal).unsqueeze(0),
                                                                   frame_length=self.frame_length,
-                                                                  frame_shigt=self.frame_shift,
+                                                                  frame_shift=self.frame_shift,
                                                                   sample_frequency=self.sample_rate)
         else:
             spectrogram = torch.stft(Tensor(signal), self.n_fft, hop_length=self.hop_length,
@@ -51,22 +56,25 @@ class MelSpectrogram(object):
     """
     Create MelSpectrogram for a raw audio signal. This is a composition of Spectrogram and MelScale.
 
-    Args: sample_rate, n_mels, window_size, stride, feature_extract_by
+    Args: sample_rate, n_mels, frame_length, frame_shift, feature_extract_by
         sample_rate (int): Sample rate of audio signal. (Default: 16000)
         n_mels (int):  Number of mfc coefficients to retain. (Default: 80)
-        window_size (int): window size (ms) (Default : 20)
-        stride (int): Length of hop between STFT windows. (ms) (Default: 10)
+        frame_length (int): frame length for spectrogram (ms) (Default : 20)
+        frame_shift (int): Length of hop between STFT windows. (ms) (Default: 10)
         feature_extract_by (str): which library to use for feature extraction(default: librosa)
     """
-    def __init__(self, sample_rate=16000, n_mels=80, window_size=20, stride=10, feature_extract_by='librosa'):
+    def __init__(self, sample_rate=16000, n_mels=80, frame_length=20, frame_shift=10, feature_extract_by='librosa'):
         self.sample_rate = sample_rate
         self.n_mels = n_mels
-        self.n_fft = int(round(sample_rate * 0.001 * window_size))
-        self.hop_length = int(round(sample_rate * 0.001 * stride))
+        self.n_fft = int(round(sample_rate * 0.001 * frame_length))
+        self.hop_length = int(round(sample_rate * 0.001 * frame_shift))
         self.feature_extract_by = feature_extract_by.lower()
 
         if self.feature_extract_by == 'torchaudio':
-            self.transforms = torchaudio.transforms.MelSpectrogram(sample_rate=sample_rate, win_length=window_size,
+            # torchaudio is only supported on Linux (Linux, Mac)
+            assert platform.system().lower() == 'linux' or platform.system().lower() == 'darwin'
+
+            self.transforms = torchaudio.transforms.MelSpectrogram(sample_rate=sample_rate, win_length=frame_length,
                                                                    hop_length=self.hop_length, n_fft=self.n_fft,
                                                                    n_mels=n_mels)
             self.amplitude_to_db = torchaudio.transforms.AmplitudeToDB()
@@ -92,28 +100,31 @@ class MFCC(object):
     """
     Create the Mel-frequency cepstrum coefficients (MFCCs) from an audio signal.
 
-    Args: sample_rate, n_mfcc, window_size, stride, feature_extract_by
+    Args: sample_rate, n_mfcc, frame_length, frame_shift, feature_extract_by
         sample_rate (int): Sample rate of audio signal. (Default: 16000)
         n_mfcc (int):  Number of mfc coefficients to retain. (Default: 40)
-        window_size (int): window size (ms) (Default : 20)
-        stride (int): Length of hop between STFT windows. (ms) (Default: 10)
+        frame_length (int): frame length for spectrogram (ms) (Default : 20)
+        frame_shift (int): Length of hop between STFT windows. (ms) (Default: 10)
         feature_extract_by (str): which library to use for feature extraction(default: librosa)
     """
-    def __init__(self, sample_rate=16000, n_mfcc=40, window_size=20, stride=10, feature_extract_by='librosa'):
+    def __init__(self, sample_rate=16000, n_mfcc=40, frame_length=20, frame_shift=10, feature_extract_by='librosa'):
         self.sample_rate = sample_rate
         self.n_mfcc = n_mfcc
-        self.n_fft = int(round(sample_rate * 0.001 * window_size))
-        self.hop_length = int(round(sample_rate * 0.001 * stride))
+        self.n_fft = int(round(sample_rate * 0.001 * frame_length))
+        self.hop_length = int(round(sample_rate * 0.001 * frame_shift))
         self.feature_extract_by = feature_extract_by.lower()
 
         if self.feature_extract_by == 'torchaudio':
+            # torchaudio is only supported on Linux (Linux, Mac)
+            assert platform.system().lower() == 'linux' or platform.system().lower() == 'darwin'
+
             self.transforms = torchaudio.transforms.MFCC(sample_rate=sample_rate, n_mfcc=n_mfcc,
-                                                         log_mels=True, win_length=window_size,
+                                                         log_mels=True, win_length=frame_length,
                                                          hop_length=self.hop_length, n_fft=self.n_fft)
 
     def __call__(self, signal):
         if self.feature_extract_by == 'torchaudio':
-            mfcc = self.transforms(torch.FloatTensor(signal))
+            mfcc = self.transforms(FloatTensor(signal))
             mfcc = mfcc.numpy()
 
         elif self.feature_extract_by == 'librosa':
@@ -124,3 +135,27 @@ class MFCC(object):
             raise ValueError("Unsupported library : {0}".format(self.feature_extract_by))
 
         return mfcc
+
+
+class FilterBank(object):
+    """
+    Create a fbank from a raw audio signal. This matches the input/output of Kaldi’s compute-fbank-feats
+
+        Args: sample_rate, n_mels, frame_length, frame_shift, feature_extract_by
+            sample_rate (int): Sample rate of audio signal. (Default: 16000)
+            n_mels (int):  Number of mfc coefficients to retain. (Default: 80)
+            frame_length (int): frame length for spectrogram (ms) (Default : 20)
+            frame_shift (int): Length of hop between STFT windows. (ms) (Default: 10)
+    """
+    def __init__(self, sample_rate=16000, n_mels=80, frame_length=20, frame_shift=10):
+        # torchaudio is only supported on Linux (Linux, Mac)
+        assert platform.system().lower() == 'linux' or platform.system().lower() == 'darwin'
+
+        self.sample_rate = sample_rate
+        self.n_mels = n_mels
+        self.frame_length = frame_length
+        self.frame_shift = frame_shift
+
+    def __call__(self, signal):
+        return torchaudio.compliance.kaldi.fbank(signal.unsqueeze(0), num_mel_bins=self.n_mels, window_type='hamming',
+                                                 frame_length=self.frame_length, frame_shift=self.frame_shift).numpy()

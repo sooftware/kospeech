@@ -27,7 +27,8 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
                  target_dict, opt, spec_augment=False,
                  noise_augment=False, dataset_path=None, noiseset_size=0, noise_level=0.7) -> None:
         super(SpectrogramDataset, self).__init__(feature_extract_by=opt.feature_extract_by, sample_rate=opt.sample_rate,
-                                                 n_mels=opt.n_mels, window_size=opt.window_size, stride=opt.stride,
+                                                 n_mels=opt.n_mels,
+                                                 frame_length=opt.frame_length, frame_shift=opt.frame_shift,
                                                  del_silence=opt.del_silence, input_reverse=opt.input_reverse,
                                                  normalize=opt.normalize, target_dict=target_dict,
                                                  time_mask_para=opt.time_mask_para, freq_mask_para=opt.freq_mask_para,

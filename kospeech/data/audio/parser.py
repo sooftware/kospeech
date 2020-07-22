@@ -2,7 +2,7 @@ import numpy as np
 from torch import Tensor, FloatTensor
 from kospeech.data.audio.core import load_audio
 from kospeech.data.audio.augment import NoiseInjector, SpecAugment
-from kospeech.data.audio.feature import MelSpectrogram, MFCC, Spectrogram
+from kospeech.data.audio.feature import MelSpectrogram, MFCC, Spectrogram, FilterBank
 
 
 class AudioParser(object):
@@ -35,8 +35,8 @@ class SpectrogramParser(AudioParser):
         transform_method (str): which feature to use (default: mel)
         sample_rate (int): Sample rate of audio signal. (Default: 16000)
         n_mels (int):  Number of mfc coefficients to retain. (Default: 40)
-        window_size (int): window size (ms) (Default : 20)
-        stride (int): Length of hop between STFT windows. (ms) (Default: 10)
+        frame_length (int): frame length for spectrogram (ms) (Default : 20)
+        frame_shift (int): Length of hop between STFT windows. (ms) (Default: 10)
         feature_extract_by (str): which library to use for feature extraction(default: librosa)
         del_silence (bool): flag indication whether to delete silence or not (default: True)
         input_reverse (bool): flag indication whether to reverse input or not (default: True)
@@ -55,7 +55,7 @@ class SpectrogramParser(AudioParser):
     HYBRID_AUGMENT = 3    # Noise Injection & SpecAugment
 
     def __init__(self, feature_extract_by: str = 'librosa', sample_rate: int = 16000,
-                 n_mels: int = 80, window_size: int = 20, stride: int = 10,
+                 n_mels: int = 80, frame_length: int = 20, frame_shift: int = 10,
                  del_silence: bool = False, input_reverse: bool = True,
                  normalize: bool = False,  transform_method: str = 'mel',
                  time_mask_para: int = 70, freq_mask_para: int = 12, time_mask_num: int = 2, freq_mask_num: int = 2,
@@ -71,11 +71,17 @@ class SpectrogramParser(AudioParser):
         self.spec_augment = SpecAugment(time_mask_para, freq_mask_para, time_mask_num, freq_mask_num)
 
         if transform_method.lower() == 'mel':
-            self.transforms = MelSpectrogram(sample_rate, n_mels, window_size, stride, feature_extract_by)
+            self.transforms = MelSpectrogram(sample_rate, n_mels, frame_length, frame_shift, feature_extract_by)
+
         elif transform_method.lower() == 'mfcc':
-            self.transforms = MFCC(sample_rate, n_mels, window_size, stride, feature_extract_by)
+            self.transforms = MFCC(sample_rate, n_mels, frame_length, frame_shift, feature_extract_by)
+
         elif transform_method.lower() == 'spect':
-            self.transforms = Spectrogram(sample_rate, window_size, stride)
+            self.transforms = Spectrogram(sample_rate, frame_length, frame_shift, feature_extract_by)
+
+        elif transform_method.lower() == 'fbank':
+            self.transforms = FilterBank(sample_rate, n_mels, frame_length, frame_shift)
+
         else:
             raise ValueError("Unsupported feature : {0}".format(transform_method))
 
