@@ -56,7 +56,7 @@ class ScaledDotProductAttention(nn.Module):
         score = torch.bmm(query, key.transpose(1, 2)) / self.sqrt_dim
 
         if mask is not None:
-            score.masked_fill_(mask.view(score.size()), -1e9)
+            score.masked_fill_(mask.view(score.size()), -float('inf'))
 
         attn = F.softmax(score, -1)
         context = torch.bmm(attn, value)
@@ -81,7 +81,7 @@ class MultiHeadAttention(nn.Module):
 
     Inputs: query, key, value, mask
         - **query** (batch, q_len, d_model): In transformer, three different ways:
-            Case 1: come from previoys decoder layer
+            Case 1: come from previous decoder layer
             Case 2: come from the input embedding
             Case 3: come from the output embedding (masked)
 

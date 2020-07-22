@@ -141,11 +141,11 @@ class FilterBank(object):
     """
     Create a fbank from a raw audio signal. This matches the input/output of Kaldi’s compute-fbank-feats
 
-        Args: sample_rate, n_mels, frame_length, frame_shift, feature_extract_by
-            sample_rate (int): Sample rate of audio signal. (Default: 16000)
-            n_mels (int):  Number of mfc coefficients to retain. (Default: 80)
-            frame_length (int): frame length for spectrogram (ms) (Default : 20)
-            frame_shift (int): Length of hop between STFT windows. (ms) (Default: 10)
+    Args: sample_rate, n_mels, frame_length, frame_shift, feature_extract_by
+        sample_rate (int): Sample rate of audio signal. (Default: 16000)
+        n_mels (int):  Number of mfc coefficients to retain. (Default: 80)
+        frame_length (int): frame length for spectrogram (ms) (Default : 20)
+        frame_shift (int): Length of hop between STFT windows. (ms) (Default: 10)
     """
     def __init__(self, sample_rate=16000, n_mels=80, frame_length=20, frame_shift=10):
         # torchaudio is only supported on Linux (Linux, Mac)

@@ -100,7 +100,7 @@ class TransformerEncoder(nn.Module):
 
         output = self.input_dropout(self.input_layer_norm(self.input_proj(inputs)) + self.pos_encoding(inputs.size(1)))
 
-        non_pad_mask = get_pad_mask(inputs, input_lengths=input_lengths).eq(0)
+        non_pad_mask = get_pad_mask(inputs, input_lengths=input_lengths).eq(False)
         length = inputs.size(1)
         self_attn_mask = get_pad_mask(inputs, input_lengths).squeeze(-1).unsqueeze(1).expand(-1, length, -1)
 
@@ -138,7 +138,7 @@ class TransformerDecoder(nn.Module):
                 memory: Tensor = None) -> Tuple[Tensor, Tensor, Tensor]:
         self_attns, memory_attns = list(), list()
 
-        non_pad_mask = get_pad_mask(targets, pad_id=self.pad_id).eq(0)
+        non_pad_mask = get_pad_mask(targets, pad_id=self.pad_id).eq(False)
         self_attn_mask = get_attn_pad_mask(targets, self.pad_id) | get_subsequent_mask(targets)
         memory_mask = get_pad_mask(memory, input_lengths).squeeze(-1).unsqueeze(1).expand(-1, targets.size(1), -1)
 
