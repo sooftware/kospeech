@@ -105,6 +105,6 @@ class Checkpoint(object):
         Precondition: at least one checkpoint has been made (i.e., latest checkpoint subdirectory exists).
         """
         checkpoints_path = os.path.join(self.SAVE_PATH, self.CHECKPOINT_DIR_NAME)
-        all_times = sorted(os.listdir(checkpoints_path), reverse=True)
+        sorted_listdir = sorted(os.listdir(checkpoints_path), reverse=True)
 
-        return os.path.join(checkpoints_path, all_times[0])
+        return os.path.join(checkpoints_path, sorted_listdir[0])

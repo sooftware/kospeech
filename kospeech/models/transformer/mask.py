@@ -61,7 +61,6 @@ def get_subsequent_mask(inputs: Tensor) -> Tensor:
 
 def get_attn_pad_mask(key: Tensor, pad_id: int) -> Tensor:
     """ For masking out the padding part of key sequence. """
-
     # Expand to fit the shape of key query attention matrix.
     attn_pad_mask = key.eq(pad_id)
     attn_pad_mask = attn_pad_mask.unsqueeze(1).expand(-1, key.size(1), -1)  # b x lq x lk
