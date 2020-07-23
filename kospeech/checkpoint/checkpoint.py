@@ -15,11 +15,11 @@ class Checkpoint(object):
     to write parameters to disk.
 
     Args:
-        model (nn.Module): LAS model being trained
+        model (nn.Module): model being trained
         optimizer (torch.optim): stores the state of the optimizer
         criterion (nn.Module): loss function
         trainset_list (list): list of trainset
-        validset (e2e.data_loader.data_loader.SpectrogramDataset): validation dataset
+        validset (kospeech.data.data_loader.SpectrogramDataset): validation dataset
         epoch (int): current epoch (an epoch is a loop through the full training data)
 
     Attributes:
