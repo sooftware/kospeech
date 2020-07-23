@@ -39,7 +39,7 @@ Also our model has recorded **92.0% CRR** in `Kaldi-zeroth corpus`
 * [MaskCNN & pack_padded_sequence](https://sooftware.github.io/KoSpeech/Seq2seq.html#module-kospeech.models.seq2seq.sublayers)
 * [Attention (Multi-Head / Location-Aware)](https://sooftware.github.io/KoSpeech/Seq2seq.html#module-kospeech.models.seq2seq.attention)
 * [Top K Decoding (Beam Search)](https://sooftware.github.io/KoSpeech/Seq2seq.html#module-kospeech.models.seq2seq.beam_search)
-* [Various Feature (Spectrogram / Mel-Spectrogram / MFCC)](https://sooftware.github.io/KoSpeech/Data.html#module-kospeech.data.audio.feature)
+* [Various Feature (Spectrogram / Mel-Spectrogram / MFCC / Filter-Bank)](https://sooftware.github.io/KoSpeech/Data.html#module-kospeech.data.audio.feature)
 * [Delete silence](https://sooftware.github.io/KoSpeech/Data.html#module-kospeech.data.audio.core)
 * [SpecAugment / NoiseAugment](https://sooftware.github.io/KoSpeech/Data.html#module-kospeech.data.audio.augment)
 * [Label Smoothing](https://sooftware.github.io/KoSpeech/Optim.html#module-kospeech.optim.loss)
@@ -157,8 +157,6 @@ usage: main.py [-h] [--mode] [--sample_rate] [--transform_method]
 ```
   
 ### KoSpeech
-
-<img src="https://user-images.githubusercontent.com/42150335/86276048-2e90e300-bc0f-11ea-8675-476cb27eadb2.png" width=700>   
   
 `kospeech` module has modularized and extensible components for las models, trainer, evaluator, checkpoints etc...   
 In addition, `kospeech` enables learning in a variety of environments with a simple option setting.  
