@@ -100,14 +100,14 @@ Seq2seq(
     (rnn): LSTM(1024, 1024, num_layers=2, batch_first=True, dropout=0.3)
     (attention): AddNorm(
       (sublayer): MultiHeadAttention(
-        (linear_q): Linear(in_features=1024, out_features=1024, bias=True)
-        (linear_k): Linear(in_features=1024, out_features=1024, bias=True)
-        (linear_v): Linear(in_features=1024, out_features=1024, bias=True)
+        (query_proj): Linear(in_features=1024, out_features=1024, bias=True)
+        (key_proj): Linear(in_features=1024, out_features=1024, bias=True)
+        (value_proj): Linear(in_features=1024, out_features=1024, bias=True)
         (scaled_dot_attn): ScaledDotProductAttention()
       )
       (layer_norm): LayerNorm(1024)
     )
-    (residual_linear): AddNorm(
+    (projection): AddNorm(
       (0): Linear(in_features=1024, out_features=1024, bias=True),
       (1): LayerNorm(1024)
     )
@@ -217,7 +217,7 @@ $ ./eval.sh
 ```
 python ./bin/eval.py -dataset_path dataset_path -data_list_path data_list_path -mode eval
 ```
-Now you have a model which you can use to predict on new data. We do this by running `beam search` (or `greedy search`).  
+Now you have a model which you can use to predict on new data. We do this by running `greedy search` or `beam search`.  
 Like training, you can choose between `Default setting` or `Custom setting`.  
   
 ### Checkpoints   
