@@ -247,7 +247,7 @@ We appreciate any kind of feedback or contribution.  Feel free to proceed with s
 ### Code Style
 We follow [PEP-8](https://www.python.org/dev/peps/pep-0008/) for code style. Especially the style of docstrings is important to generate documentation.  
     
-### References
+### Paper References
   
 Ilya Sutskever et al. [Sequence to Sequence Learning with Neural Networks](https://arxiv.org/abs/1409.3215) arXiv: 1409.3215  
   
@@ -273,6 +273,15 @@ Rafael Muller et al. [When Does Label Smoothing Help?](https://arxiv.org/abs/190
     
 Jung-Woo Ha et al. [ClovaCall: Korean Goal-Oriented Dialog Speech Corpus for Automatic Speech Recognition of Contact Centers](https://arxiv.org/abs/2004.09367) arXiv: 2004.09367
     
+### Github References
+  
+[IBM/Pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)  
+  
+[SeanNaren/deepspeech.pytorch](https://github.com/SeanNaren/deepspeech.pytorch)  
+  
+[kaituoxu/Speech-Transformer](https://github.com/kaituoxu/Speech-Transformer)  
+  
+[OpenNMT/OpenNMT-py](https://github.com/OpenNMT/OpenNMT-py)
  
 ### Citing
 ```
