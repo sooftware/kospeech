@@ -107,13 +107,13 @@ class Seq2seqDecoder(BaseRNN):
         return step_output, hidden, attn
 
     def forward(self, inputs: Tensor, encoder_outputs: Tensor, teacher_forcing_ratio: float = 1.0,
-                language_model: Optional[nn.Module] = None, return_ret_dict: bool = False) -> Tuple[Tensor, dict]:
+                language_model: Optional[nn.Module] = None, return_decode_info: bool = False) -> Tuple[Tensor, dict]:
         hidden, attn = None, None
-        result, ret_dict = list(), dict()
+        result, decode_info = list(), dict()
 
         if not self.training:
-            ret_dict[Seq2seqDecoder.KEY_ATTENTION_SCORE] = list()
-            ret_dict[Seq2seqDecoder.KEY_SEQUENCE_SYMBOL] = list()
+            decode_info[Seq2seqDecoder.KEY_ATTENTION_SCORE] = list()
+            decode_info[Seq2seqDecoder.KEY_SEQUENCE_SYMBOL] = list()
 
         inputs, batch_size, max_length = self.validate_args(inputs, encoder_outputs, teacher_forcing_ratio, language_model)
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
@@ -148,23 +148,23 @@ class Seq2seqDecoder(BaseRNN):
                 input_var = result[-1].topk(1)[1]
 
                 if not self.training:
-                    ret_dict[Seq2seqDecoder.KEY_ATTENTION_SCORE].append(attn)
-                    ret_dict[Seq2seqDecoder.KEY_SEQUENCE_SYMBOL].append(input_var)
+                    decode_info[Seq2seqDecoder.KEY_ATTENTION_SCORE].append(attn)
+                    decode_info[Seq2seqDecoder.KEY_SEQUENCE_SYMBOL].append(input_var)
                     eos_batches = input_var.data.eq(self.eos_id)
 
                     if eos_batches.dim() > 0:
                         eos_batches = eos_batches.cpu().view(-1).numpy()
                         update_idx = ((lengths > di) & eos_batches) != 0
-                        lengths[update_idx] = len(ret_dict[Seq2seqDecoder.KEY_SEQUENCE_SYMBOL])
+                        lengths[update_idx] = len(decode_info[Seq2seqDecoder.KEY_SEQUENCE_SYMBOL])
 
                     if use_language_model:
                         lm_step_output = language_model.forward_step(prev_tokens, None)[0][:, -1, :].squeeze(1)
                         step_output = step_output * self.acoustic_weight + lm_step_output * self.language_weight
                         prev_tokens = torch.cat([prev_tokens, step_output.topk(1)[1]], dim=1)
 
-        if return_ret_dict:
-            ret_dict[Seq2seqDecoder.KEY_LENGTH] = lengths
-            return result, ret_dict
+        if return_decode_info:
+            decode_info[Seq2seqDecoder.KEY_LENGTH] = lengths
+            return result, decode_info
 
         return result
 
