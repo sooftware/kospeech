@@ -45,14 +45,10 @@ def train(opt):
         else:
             optimizer = Optimizer(optimizer, None, 0, opt.max_grad_norm)
 
-        if opt.architecture == 'transformer':
-            criterion = TransformerLoss(opt.num_classes, ignore_index=PAD_token, smoothing=opt.label_smoothing).to(device)
-
+        if opt.label_smoothing == 0.0:
+            criterion = nn.CrossEntropyLoss(reduction='sum', ignore_index=PAD_token).to(device)
         else:
-            if opt.label_smoothing == 0.0:
-                criterion = nn.NLLLoss(reduction='sum', ignore_index=PAD_token).to(device)
-            else:
-                criterion = LabelSmoothingLoss(len(char2id), PAD_token, opt.label_smoothing, dim=-1).to(device)
+            criterion = LabelSmoothingLoss(len(char2id), PAD_token, opt.label_smoothing, dim=-1).to(device)
 
     else:
         trainset_list = None
