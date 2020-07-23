@@ -7,7 +7,7 @@
 
 DATASET_PATH='your_dataset_path'
 MODEL_PATH='set_model_path'
-DATA_LIST_PATH='../data/data_list/filter_test_list.csv'
+DATA_LIST_PATH='../data/data_list/except_outlier_test_list.csv'
 BATCH_SIZE=32
 NUM_WORKERS=4
 SAMPLE_RATE=16000

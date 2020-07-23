@@ -5,7 +5,7 @@ from numpy.lib.stride_tricks import as_strided
 from kospeech.utils import logger
 
 
-def load_audio(audio_path, del_silence):
+def load_audio(audio_path: str, del_silence: bool = False):
     """
     Load audio file (PCM) to sound. if del_silence is True, Eliminate all sounds below 30dB.
     If exception occurs in numpy.memmap(), return None.

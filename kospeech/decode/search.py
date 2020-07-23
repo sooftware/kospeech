@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import pandas as pd
+from queue import Queue
 from kospeech.metrics import CharacterErrorRate
 from kospeech.models.seq2seq.decoder import Seq2seqTopKDecoder
 from kospeech.models.seq2seq.seq2seq import Seq2seq
@@ -20,7 +21,7 @@ class GreedySearch(object):
         self.metric = CharacterErrorRate(id2char, EOS_token)
         self.language_model = None  # load_language_model('lm_path', 'cuda')
 
-    def search(self, model, queue, device, print_every):
+    def search(self, model: nn.Module, queue: Queue, device: str, print_every: int) -> float:
         cer = 0
         total_sent_num = 0
         timestep = 0
@@ -55,7 +56,7 @@ class GreedySearch(object):
 
         return cer
 
-    def save_result(self, save_path):
+    def save_result(self, save_path: str) -> None:
         results = {
             'original': self.target_list,
             'hypothesis': self.y_hats
@@ -70,7 +71,7 @@ class BeamSearch(GreedySearch):
         super(BeamSearch, self).__init__()
         self.k = k
 
-    def search(self, model: Seq2seq, queue, device, print_every):
+    def search(self, model: Seq2seq, queue: Queue, device: str, print_every: int) -> float:
         if isinstance(model, nn.DataParallel):
             topk_decoder = Seq2seqTopKDecoder(model.module.speller, self.k)
             model.module.set_decoder(topk_decoder)
