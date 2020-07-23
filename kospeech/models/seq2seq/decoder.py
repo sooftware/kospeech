@@ -44,10 +44,10 @@ class Seq2seqDecoder(BaseRNN):
           drawn uniformly from 0-1 for every decoding token, and if the sample is smaller than the given value,
           teacher forcing would be used (default is 0).
 
-    Returns: decoder_outputs, ret_dict
+    Returns: decoder_outputs, decode_info
         - **decoder_outputs** (seq_len, batch, num_classes): list of tensors containing
           the outputs of the decoding function.
-        - **ret_dict**: dictionary containing additional information as follows {*KEY_ATTENTION_SCORE* : list of scores
+        - **decode_info**: dictionary containing additional information as follows {*KEY_ATTENTION_SCORE* : list of scores
           representing encoder outputs, *KEY_SEQUENCE_SYMBOL* : list of sequences, where each sequence is a list of
           predicted token IDs }.
     """
