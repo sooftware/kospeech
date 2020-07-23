@@ -127,7 +127,7 @@ We mainly referred to following papers.
   
 ### Various Options   
   
-You can choose feature extraction method from (`spectrogram`, `mel-spectrogram`, `mfcc`).   
+You can choose feature extraction method from (`spectrogram`, `mel-spectrogram`, `mfcc`, `filter-bank`).   
 In addition to this, You can see a variety of options [here](https://sooftware.github.io/KoSpeech/notes/opts.html).  
   
 * Options
