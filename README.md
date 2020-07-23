@@ -217,7 +217,7 @@ $ ./eval.sh
 ```
 python ./bin/eval.py -dataset_path dataset_path -data_list_path data_list_path -mode eval
 ```
-Now you have a model which you can use to predict on new data. We do this by running `beam search` (or `greedy search`).  
+Now you have a model which you can use to predict on new data. We do this by running `greedy search` or `beam search`.  
 Like training, you can choose between `Default setting` or `Custom setting`.  
   
 ### Checkpoints   
