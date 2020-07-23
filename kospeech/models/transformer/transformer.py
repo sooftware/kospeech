@@ -95,9 +95,8 @@ class TransformerEncoder(nn.Module):
             [TransformerEncoderLayer(d_model, num_heads, d_ff, dropout_p, ffnet_style) for _ in range(num_layers)]
         )
 
-    def forward(self, inputs: Tensor, input_lengths: Optional[Tensor] = None) -> Tuple[Tensor, Tensor]:
+    def forward(self, inputs: Tensor, input_lengths: Tensor = None) -> Tuple[Tensor, Tensor]:
         self_attns = list()
-
         output = self.input_dropout(self.input_layer_norm(self.input_proj(inputs)) + self.pos_encoding(inputs.size(1)))
 
         non_pad_mask = get_pad_mask(inputs, input_lengths=input_lengths).eq(False)

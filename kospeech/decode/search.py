@@ -36,7 +36,8 @@ class GreedySearch(object):
                 inputs = inputs.to(device)
                 targets = targets.to(device)
 
-                output = model(inputs, input_lengths, teacher_forcing_ratio=0.0, language_model=self.language_model)[0]
+                output = model(inputs, input_lengths, teacher_forcing_ratio=0.0,
+                               language_model=self.language_model, return_attns=False)
                 logit = torch.stack(output, dim=1).to(device)
                 y_hat = logit.max(-1)[1]
 
@@ -70,10 +71,11 @@ class BeamSearch(GreedySearch):
         self.k = k
 
     def search(self, model: Seq2seq, queue, device, print_every):
-        topk_decoder = Seq2seqTopKDecoder(model.module.speller, self.k)
         if isinstance(model, nn.DataParallel):
+            topk_decoder = Seq2seqTopKDecoder(model.module.speller, self.k)
             model.module.set_decoder(topk_decoder)
         else:
+            topk_decoder = Seq2seqTopKDecoder(model.speller, self.k)
             model.set_decoder(topk_decoder)
         return super(BeamSearch, self).search(model, queue, device, print_every)
 

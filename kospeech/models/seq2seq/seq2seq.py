@@ -32,9 +32,10 @@ class Seq2seq(nn.Module):
         self.decoder = decoder
 
     def forward(self, inputs: Tensor, input_lengths: Tensor, targets: Optional[Tensor] = None,
-                teacher_forcing_ratio: float = 1.0, language_model: Optional[nn.Module] = None) -> Tuple[Tensor, dict]:
+                teacher_forcing_ratio: float = 1.0, language_model: Optional[nn.Module] = None,
+                return_attns: bool = False) -> Tuple[Tensor, dict]:
         output = self.encoder(inputs, input_lengths)
-        result = self.decoder(targets, output, teacher_forcing_ratio, language_model)
+        result = self.decoder(targets, output, teacher_forcing_ratio, language_model, return_attns)
         return result
 
     def flatten_parameters(self):

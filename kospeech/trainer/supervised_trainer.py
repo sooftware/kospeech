@@ -82,7 +82,7 @@ class SupervisedTrainer(object):
             self.criterion = resume_checkpoint.criterion
             self.trainset_list = resume_checkpoint.trainset_list
             self.validset = resume_checkpoint.validset
-            start_epoch = resume_checkpoint.epoch
+            start_epoch = resume_checkpoint.epoch + 1
             epoch_time_step = 0
             for trainset in self.trainset_list:
                 epoch_time_step += len(trainset)
