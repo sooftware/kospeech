@@ -281,8 +281,10 @@ Jung-Woo Ha et al. [ClovaCall: Korean Goal-Oriented Dialog Speech Corpus for Aut
   
 [kaituoxu/Speech-Transformer](https://github.com/kaituoxu/Speech-Transformer)  
   
-[OpenNMT/OpenNMT-py](https://github.com/OpenNMT/OpenNMT-py)
- 
+[OpenNMT/OpenNMT-py](https://github.com/OpenNMT/OpenNMT-py)  
+  
+[clovaai/ClovaCall](https://github.com/clovaai/ClovaCall)
+  
 ### Citing
 ```
 @github{
