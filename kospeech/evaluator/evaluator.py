@@ -10,7 +10,7 @@ class Evaluator(object):
     Class to evaluate models with given datasets.
 
     Args:
-        dataset (e2e.data_loader.SpectrogramDataset): dataset for spectrogram & script matching
+        dataset (kospeech.data.data_loader.SpectrogramDataset): dataset for spectrogram & script matching
         batch_size (int): size of batch. recommended batch size is 1.
         device (torch.device): device - 'cuda' or 'cpu'
         num_workers (int): the number of cpu cores used

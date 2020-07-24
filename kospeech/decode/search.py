@@ -73,10 +73,10 @@ class BeamSearch(GreedySearch):
 
     def search(self, model: Seq2seq, queue: Queue, device: str, print_every: int) -> float:
         if isinstance(model, nn.DataParallel):
-            topk_decoder = Seq2seqTopKDecoder(model.module.speller, self.k)
+            topk_decoder = Seq2seqTopKDecoder(model.module.decoder, self.k)
             model.module.set_decoder(topk_decoder)
         else:
-            topk_decoder = Seq2seqTopKDecoder(model.speller, self.k)
+            topk_decoder = Seq2seqTopKDecoder(model.decoder, self.k)
             model.set_decoder(topk_decoder)
         return super(BeamSearch, self).search(model, queue, device, print_every)
 

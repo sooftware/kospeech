@@ -3,6 +3,8 @@ import torch.nn as nn
 from torch import Tensor
 from typing import Optional, Tuple
 
+from kospeech.models.seq2seq.decoder import Seq2seqTopKDecoder
+
 
 class Seq2seq(nn.Module):
     """
@@ -34,8 +36,13 @@ class Seq2seq(nn.Module):
     def forward(self, inputs: Tensor, input_lengths: Tensor, targets: Optional[Tensor] = None,
                 teacher_forcing_ratio: float = 1.0, language_model: Optional[nn.Module] = None,
                 return_dec_dict: bool = False) -> Tuple[Tensor, dict]:
-        output = self.encoder(inputs, input_lengths)
-        result = self.decoder(targets, output, teacher_forcing_ratio, language_model, return_dec_dict)
+        output, hidden = self.encoder(inputs, input_lengths)
+
+        if isinstance(self.decoder, Seq2seqTopKDecoder):
+            result = self.decoder(targets, output)
+        else:
+            result = self.decoder(targets, output, teacher_forcing_ratio, language_model, return_dec_dict)
+
         return result
 
     def flatten_parameters(self):

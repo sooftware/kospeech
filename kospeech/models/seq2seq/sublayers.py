@@ -13,9 +13,9 @@ class BaseRNN(nn.Module):
 
     Args:
         input_size (int): size of input
-        hidden_dim (int): the number of features in the hidden state `h`
-        num_layers (int, optional): number of recurrent layers (default: 1)
-        bidirectional (bool, optional): if True, becomes a bidirectional encoder (defulat: False)
+        hidden_dim (int): dimension of RNN`s hidden state vector
+        num_layers (int, optional): number of RNN layers (default: 1)
+        bidirectional (bool, optional): if True, becomes a bidirectional RNN (defulat: False)
         rnn_type (str, optional): type of RNN cell (default: gru)
         dropout_p (float, optional): dropout probability (default: 0)
         device (torch.device): device - 'cuda' or 'cpu'
@@ -29,9 +29,14 @@ class BaseRNN(nn.Module):
         'rnn': nn.RNN
     }
 
-    def __init__(self, input_size: int, hidden_dim: int = 512, num_layers: int = 3,
-                 rnn_type: str = 'lstm', dropout_p: float = 0.3,
-                 bidirectional: bool = True, device: str = 'cuda') -> None:
+    def __init__(self,
+                 input_size: int,                       # size of input
+                 hidden_dim: int = 512,                 # dimension of RNN`s hidden state vector
+                 num_layers: int = 1,                   # number of recurrent layers
+                 rnn_type: str = 'lstm',                # number of RNN layers
+                 dropout_p: float = 0.3,                # dropout probability
+                 bidirectional: bool = True,            # if True, becomes a bidirectional rnn
+                 device: str = 'cuda') -> None:         # device - 'cuda' or 'cpu'
         super(BaseRNN, self).__init__()
         rnn_cell = self.supported_rnns[rnn_type]
         self.rnn = rnn_cell(input_size, hidden_dim, num_layers, True, True, dropout_p, bidirectional)
@@ -68,7 +73,7 @@ class MaskConv(nn.Module):
         sequential (torch.nn): sequential list of convolution layer
 
     Inputs: inputs, seq_lengths
-        - **inputs** (torch.FloatTensor): The input of size BxCxHxS
+        - **inputs** (torch.FloatTensor): The input of size BxCxHxT
         - **seq_lengths** (torch.IntTensor): The actual length of each sequence in the batch
 
     Returns: output, seq_lengths

@@ -9,7 +9,7 @@ class Optimizer(object):
     Args:
         optim (torch.optim.Optimizer): optimizer object, the parameters to be optimized
             should be given when instantiating the object, e.g. torch.optim.Adam, torch.optim.SGD
-        scheduler (e2e.optim.lr_scheduler, optional): learning rate scheduler
+        scheduler (kospeech.optim.lr_scheduler, optional): learning rate scheduler
         scheduler_period (int, optional): timestep with learning rate scheduler
         max_grad_norm (int, optional): value used for gradient norm clipping
     """
@@ -52,3 +52,7 @@ class Optimizer(object):
     def get_lr(self):
         for g in self.optimizer.param_groups:
             return g['lr']
+
+    def set_lr(self, lr):
+        for g in self.optimizer.param_groups:
+            g['lr'] = lr

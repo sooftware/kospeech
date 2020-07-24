@@ -14,7 +14,7 @@ class MultiHeadAttention(nn.Module):
 
     Args:
         d_model (int): dimension of model
-        num_heads (int): The number of heads. (default: 4)
+        num_heads (int): number of heads. (default: 4)
 
     Inputs: query, value
         - **query** (batch, q_len, hidden_dim): tensor containing the output features from the decoder.

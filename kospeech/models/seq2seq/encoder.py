@@ -2,6 +2,7 @@ import math
 import torch
 import torch.nn as nn
 from torch import Tensor
+from typing import Tuple
 from kospeech.models.seq2seq.sublayers import BaseRNN, VGGExtractor, DeepSpeech2Extractor
 
 
@@ -15,20 +16,32 @@ class Seq2seqEncoder(BaseRNN):
         num_layers (int, optional): number of recurrent layers (default: 1)
         bidirectional (bool, optional): if True, becomes a bidirectional encoder (defulat: False)
         rnn_type (str, optional): type of RNN cell (default: gru)
-        dropout_p (float, optional): dropout probability (default: 0)
+        dropout_p (float, optional): dropout probability (default: 0.3)
+        extractor (str): type of CNN extractor (default: vgg)
         device (torch.device): device - 'cuda' or 'cpu'
+        activation (str): type of activation function (default: hardtanh)
+        mask_conv (bool): flag indication whether apply mask convolution or not
 
-    Inputs: inputs, hidden
+    Inputs: inputs, input_lengths
         - **inputs**: list of sequences, whose length is the batch size and within which each sequence is list of tokens
-        - **hidden**: variable containing the features in the hidden state h
+        - **input_lengths**: list of sequence lengths
 
-    Returns: output
+    Returns: output, hidden
         - **output**: tensor containing the encoded features of the input sequence
+        - **hidden**: variable containing the features in the hidden state h
     """
 
-    def __init__(self, input_size: int, hidden_dim: int = 256, device: str = 'cuda', dropout_p: float = 0.3,
-                 num_layers: int = 3, bidirectional: bool = True, rnn_type: str = 'lstm', extractor: str = 'vgg',
-                 activation: str = 'hardtanh', mask_conv: bool = False) -> None:
+    def __init__(self,
+                 input_size: int,                       # size of input
+                 hidden_dim: int = 512,                 # dimension of RNN`s hidden state
+                 device: str = 'cuda',                  # device - 'cuda' or 'cpu'
+                 dropout_p: float = 0.3,                # dropout probability
+                 num_layers: int = 3,                   # number of RNN layers
+                 bidirectional: bool = True,            # if True, becomes a bidirectional encoder
+                 rnn_type: str = 'lstm',                # type of RNN cell
+                 extractor: str = 'vgg',                # type of CNN extractor
+                 activation: str = 'hardtanh',          # type of activation function
+                 mask_conv: bool = False) -> None:      # flag indication whether apply mask convolution or not
         self.mask_conv = mask_conv
         self.extractor = extractor.lower()
         if self.extractor == 'vgg':
@@ -48,7 +61,7 @@ class Seq2seqEncoder(BaseRNN):
         else:
             raise ValueError("Unsupported Extractor : {0}".format(extractor))
 
-    def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tensor:
+    def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
         if self.mask_conv:
             inputs = inputs.unsqueeze(1).permute(0, 1, 3, 2)
             conv_feat, seq_lengths = self.conv(inputs, input_lengths)
@@ -73,4 +86,4 @@ class Seq2seqEncoder(BaseRNN):
 
             output, hidden = self.rnn(conv_feat)
 
-        return output
+        return output, hidden

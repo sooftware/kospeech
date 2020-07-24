@@ -8,8 +8,9 @@ from typing import Tuple
 from kospeech.checkpoint.checkpoint import Checkpoint
 from kospeech.optim.lr_scheduler import ExponentialDecayLR
 from kospeech.metrics import CharacterErrorRate
+from kospeech.optim.optimizer import Optimizer
 from kospeech.utils import EOS_token, logger, id2char
-from kospeech.data.data_loader import MultiDataLoader, AudioDataLoader
+from kospeech.data.data_loader import MultiDataLoader, AudioDataLoader, SpectrogramDataset
 
 
 class SupervisedTrainer(object):
@@ -17,12 +18,15 @@ class SupervisedTrainer(object):
     The SupervisedTrainer class helps in setting up training framework in a supervised setting.
 
     Args:
-        optimizer (e2e.optim.optim.Optimizer): optimizer for training
+        optimizer (kospeech.optim.optimizer.Optimizer): optimizer for training
         criterion (torch.nn.Module): loss function
         trainset_list (list): list of training datset
-        validset (e2e.dataset.data_loader.SpectrogramDataset): validation dataset
+        validset (kospeech.data.data_loader.SpectrogramDataset): validation dataset
+        high_plateau_lr (float): high plateau learning rate
+        low_plateau_lr (float): low plateau learning rate
         num_workers (int): number of using cpu cores
         device (torch.device): device - 'cuda' or 'cpu'
+        decay_threshold (float): criteria by which exp learning ratedecay is started
         print_every (int): number of timesteps to print result after
         save_result_every (int): number of timesteps to save result after
         checkpoint_every (int): number of timesteps to checkpoint after
@@ -34,11 +38,23 @@ class SupervisedTrainer(object):
     VALID_RESULT_PATH = "../data/train_result/eval_result.csv"
     TRAIN_STEP_RESULT_PATH = "../data/train_result/train_step_result.csv"
 
-    def __init__(self, optimizer, criterion, trainset_list, validset,
-                 high_plateau_lr, low_plateau_lr,
-                 exp_decay_period, num_workers, device, decay_threshold,
-                 print_every, save_result_every, checkpoint_every,
-                 teacher_forcing_step=0.0, min_teacher_forcing_ratio=0.7, architecture='seq2seq') -> None:
+    def __init__(self,
+                 optimizer: Optimizer,                          # optimizer for training
+                 criterion: nn.Module,                          # loss function
+                 trainset_list: list,                           # list of training dataset
+                 validset: SpectrogramDataset,                  # validation dataset
+                 high_plateau_lr: float,                        # high plateau learning rate
+                 low_plateau_lr: float,                         # low plateau learning rate
+                 exp_decay_period: int,                         # exponential decay learning rate period
+                 num_workers: int,                              # number of threads
+                 device: str,                                   # device - cuda or cpu
+                 decay_threshold: float,                        # criteria by which exp learning ratedecay is started
+                 print_every: int,                              # number of timesteps to save result after
+                 save_result_every: int,                        # nimber of timesteps to save result after
+                 checkpoint_every: int,                         # number of timesteps to checkpoint after
+                 teacher_forcing_step: float = 0.2,             # step of teacher forcing ratio decrease per epoch.
+                 min_teacher_forcing_ratio: float = 0.8,        # minimum value of teacher forcing ratio
+                 architecture: str = 'seq2seq') -> None:        # LAS architecture to train - seq2seq, transformer
         self.num_workers = num_workers
         self.optimizer = optimizer
         self.criterion = criterion
@@ -100,6 +116,10 @@ class SupervisedTrainer(object):
             # Training
             train_loader = MultiDataLoader(self.trainset_list, train_queue, batch_size, self.num_workers)
             train_loader.start()
+
+            if epoch == 1:
+                self.optimizer.set_lr(1e-04)
+
             train_loss, train_cer = self.train_epoches(model, epoch, epoch_time_step, train_begin_time,
                                                        train_queue, teacher_forcing_ratio)
             train_loader.join()
@@ -185,7 +205,10 @@ class SupervisedTrainer(object):
             targets = targets.to(self.device)
 
             if self.architecture == 'seq2seq':
-                model.module.flatten_parameters()
+                if isinstance(model, nn.DataParallel):
+                    model.module.flatten_parameters()
+                else:
+                    model.flatten_parameters()
 
                 logit = model(inputs, input_lengths, targets, teacher_forcing_ratio=teacher_forcing_ratio)
                 logit = torch.stack(logit, dim=1).to(self.device)
@@ -269,7 +292,9 @@ class SupervisedTrainer(object):
 
                 if self.architecture == 'seq2seq':
                     model.module.flatten_parameters()
-                    output = model(inputs, input_lengths, teacher_forcing_ratio=0.0)
+                    output = model(inputs=inputs, input_lengths=input_lengths,
+                                   teacher_forcing_ratio=0.0,
+                                   language_model=None, return_dec_dict=False)
                     logit = torch.stack(output, dim=1).to(self.device)
 
                 elif self.architecture == 'transformer':

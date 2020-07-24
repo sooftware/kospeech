@@ -25,14 +25,16 @@ class Seq2seqDecoder(BaseRNN):
     by specifying a probability distribution over sequences of characters.
 
     Args:
-        num_classes (int): the number of classfication
+        num_classes (int): number of classfication
         max_length (int): a maximum allowed length for the sequence to be processed
-        hidden_dim (int): the number of features in the hidden state `h`
+        hidden_dim (int): dimension of RNN`s hidden state vector
         sos_id (int): index of the start of sentence symbol
         eos_id (int): index of the end of sentence symbol
+        attn_mechanism (str): type of attention mechanism (default: dot)
+        num_heads (int): number of attention heads. (default: 4)
         num_layers (int, optional): number of recurrent layers (default: 1)
-        rnn_type (str, optional): type of RNN cell (default: gru)
-        dropout_p (float, optional): dropout probability (default: 0)
+        rnn_type (str, optional): type of RNN cell (default: lstm)
+        dropout_p (float, optional): dropout probability (default: 0.3)
         device (torch.device): device - 'cuda' or 'cpu'
 
     Inputs: inputs, encoder_outputs, teacher_forcing_ratio
@@ -55,10 +57,18 @@ class Seq2seqDecoder(BaseRNN):
     KEY_LENGTH = 'length'
     KEY_SEQUENCE_SYMBOL = 'sequence_symbol'
 
-    def __init__(self, num_classes: int, max_length: int = 120, hidden_dim: int = 1024,
-                 sos_id: int = 1, eos_id: int = 2,
-                 attn_mechanism: str = 'dot', num_heads: int = 4, num_layers: int = 2,
-                 rnn_type: str = 'lstm', dropout_p: float = 0.3, device: str = 'cuda') -> None:
+    def __init__(self,
+                 num_classes: int,                    # number of classfication
+                 max_length: int = 120,               # a maximum allowed length for the sequence to be processed
+                 hidden_dim: int = 1024,              # dimension of RNN`s hidden state vector
+                 sos_id: int = 1,                     # start of sentence token`s id
+                 eos_id: int = 2,                     # end of sentence token`s id
+                 attn_mechanism: str = 'dot',         # type of attention mechanism
+                 num_heads: int = 4,                  # number of attention heads
+                 num_layers: int = 2,                 # number of RNN layers (default: 1)
+                 rnn_type: str = 'lstm',              # type of RNN cell (default: lstm)
+                 dropout_p: float = 0.3,              # dropout probability (default: 0.3)
+                 device: str = 'cuda') -> None:       # device - 'cuda' or 'cpu'
         super(Seq2seqDecoder, self).__init__(hidden_dim, hidden_dim, num_layers, rnn_type, dropout_p, False, device)
         self.num_classes = num_classes
         self.num_heads = num_heads
@@ -169,7 +179,8 @@ class Seq2seqDecoder(BaseRNN):
         return result
 
     def validate_args(self, inputs: Optional[Any], encoder_outputs: Tensor,
-                      teacher_forcing_ratio: float, language_model: Optional[nn.Module]) -> Tuple[Tensor, int, int]:
+                      teacher_forcing_ratio: float,
+                      language_model: Optional[nn.Module] = None) -> Tuple[Tensor, int, int]:
         """ Validate arguments """
         batch_size = encoder_outputs.size(0)
 
@@ -224,7 +235,7 @@ class Seq2seqTopKDecoder(nn.Module):
         self.alpha = 1.2
         self.device = decoder.device
 
-    def forward(self, input_var: Tensor, encoder_outputs: Tensor, teacher_forcing_ratio: float = 0.0) -> list:
+    def forward(self, input_var: Tensor, encoder_outputs: Tensor) -> list:
         inputs, batch_size, max_length = self.validate_args(input_var, encoder_outputs, 0.0)
         self.pos_index = (LongTensor(range(batch_size)) * self.beam_size).view(-1, 1).to(self.device)
 
