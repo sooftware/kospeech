@@ -11,6 +11,7 @@
   
 <sup>1</sup>Elcomm, Kwangwoon Univ. <sup>2</sup>Spoken Language Lab (of Sogang Univ.)  
   
+Soohwan designed and implemented system, Seyoung reviewed source code, Cheolhwang experimented signal processing.  
 \* author is advisor to this work.  
   
 End-to-end (E2E) automatic speech recognition (ASR) is an emerging paradigm in the field of neural network-based speech recognition that offers multiple benefits. Traditional “hybrid” ASR systems, which are comprised of an acoustic model, language model, and pronunciation model, require separate training of these components, each of which can be complex.   
