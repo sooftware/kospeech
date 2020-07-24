@@ -178,10 +178,11 @@ class Seq2seqDecoder(BaseRNN):
 
         return result
 
-    def validate_args(self, inputs: Optional[Any], encoder_outputs: Tensor,
-                      teacher_forcing_ratio: float,
+    def validate_args(self, inputs: Optional[Any] = None, encoder_outputs: Tensor = None,
+                      teacher_forcing_ratio: float = 1.0,
                       language_model: Optional[nn.Module] = None) -> Tuple[Tensor, int, int]:
         """ Validate arguments """
+        assert encoder_outputs is not None
         batch_size = encoder_outputs.size(0)
 
         if inputs is None:  # inference

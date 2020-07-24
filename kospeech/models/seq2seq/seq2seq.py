@@ -2,7 +2,6 @@ import torch
 import torch.nn as nn
 from torch import Tensor
 from typing import Optional, Tuple
-
 from kospeech.models.seq2seq.decoder import Seq2seqTopKDecoder
 
 
