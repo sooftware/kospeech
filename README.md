@@ -11,7 +11,7 @@
   
 <sup>1</sup>Elcomm, Kwangwoon Univ. <sup>2</sup>Spoken Language Lab (of Sogang Univ.)  
   
-[Soohwan Kim](https://github.com/sooftware) designed and implemented system, [Seyoung Bae]((https://github.com/triplet02) reviewed source code,   [Cheolhwang Won](https://github.com/wch18735) experimented signal processing. [Suwon Park](https://ei.kw.ac.kr/introduction/professor_view.php?idx=72) is advisor to this work.  
+[Soohwan Kim](https://github.com/sooftware) designed and implemented system, [Seyoung Bae](https://github.com/triplet02) reviewed source code,   [Cheolhwang Won](https://github.com/wch18735) experimented signal processing. [Suwon Park](https://ei.kw.ac.kr/introduction/professor_view.php?idx=72) is advisor to this work.  
   
 End-to-end (E2E) automatic speech recognition (ASR) is an emerging paradigm in the field of neural network-based speech recognition that offers multiple benefits. Traditional “hybrid” ASR systems, which are comprised of an acoustic model, language model, and pronunciation model, require separate training of these components, each of which can be complex.   
   
