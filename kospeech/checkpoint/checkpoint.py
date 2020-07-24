@@ -3,7 +3,6 @@ import time
 import shutil
 import torch
 import torch.nn as nn
-
 from kospeech.data.data_loader import SpectrogramDataset
 from kospeech.models.seq2seq.seq2seq import Seq2seq
 from kospeech.optim.optimizer import Optimizer

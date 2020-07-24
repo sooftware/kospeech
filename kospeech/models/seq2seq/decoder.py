@@ -37,7 +37,7 @@ class Seq2seqDecoder(BaseRNN):
         dropout_p (float, optional): dropout probability (default: 0.3)
         device (torch.device): device - 'cuda' or 'cpu'
 
-    Inputs: inputs, encoder_outputs, teacher_forcing_ratio
+    Inputs: inputs, encoder_outputs, teacher_forcing_ratio, return_decode_dict
         - **inputs** (batch, seq_len, input_size): list of sequences, whose length is the batch size and within which
           each sequence is a list of token IDs.  It is used for teacher forcing when provided. (default `None`)
         - **encoder_outputs** (batch, seq_len, hidden_dim): tensor with containing the outputs of the listener.
@@ -45,11 +45,12 @@ class Seq2seqDecoder(BaseRNN):
         - **teacher_forcing_ratio** (float): The probability that teacher forcing will be used. A random number is
           drawn uniformly from 0-1 for every decoding token, and if the sample is smaller than the given value,
           teacher forcing would be used (default is 0).
+        - **return_decode_dict** (dict): dictionary which contains decode informations.
 
-    Returns: decoder_outputs, decode_info
+    Returns: decoder_outputs, decode_dict
         - **decoder_outputs** (seq_len, batch, num_classes): list of tensors containing
           the outputs of the decoding function.
-        - **decode_info**: dictionary containing additional information as follows {*KEY_ATTENTION_SCORE* : list of scores
+        - **decode_dict**: dictionary containing additional information as follows {*KEY_ATTENTION_SCORE* : list of scores
           representing encoder outputs, *KEY_SEQUENCE_SYMBOL* : list of sequences, where each sequence is a list of
           predicted token IDs }.
     """
