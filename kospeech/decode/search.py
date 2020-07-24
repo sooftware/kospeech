@@ -38,7 +38,7 @@ class GreedySearch(object):
                 targets = targets.to(device)
 
                 output = model(inputs, input_lengths, teacher_forcing_ratio=0.0,
-                               language_model=self.language_model, return_decode_info=False)
+                               language_model=self.language_model, return_decode_dict=False)
                 logit = torch.stack(output, dim=1).to(device)
                 y_hat = logit.max(-1)[1]
 

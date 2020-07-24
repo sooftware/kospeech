@@ -3,7 +3,10 @@ import time
 import shutil
 import torch
 import torch.nn as nn
+
+from kospeech.data.data_loader import SpectrogramDataset
 from kospeech.models.seq2seq.seq2seq import Seq2seq
+from kospeech.optim.optimizer import Optimizer
 from kospeech.utils import logger
 
 
@@ -34,7 +37,13 @@ class Checkpoint(object):
     SAVE_PATH = '../data/checkpoint'
     MODEL_NAME = 'model.pt'
 
-    def __init__(self, model=None, optimizer=None, criterion=None, trainset_list=None, validset=None, epoch=None):
+    def __init__(self,
+                 model: nn.Module = None,                   # model being trained
+                 optimizer: Optimizer = None,               # stores the state of the optimizer
+                 criterion: nn.Module = None,               # loss function
+                 trainset_list: list = None,                # list of trainset
+                 validset: SpectrogramDataset = None,       # validation dataset
+                 epoch: int = None) -> None:                # current epoch is a loop through the full training datav
         self.model = model
         self.optimizer = optimizer
         self.criterion = criterion

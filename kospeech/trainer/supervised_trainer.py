@@ -214,7 +214,7 @@ class SupervisedTrainer(object):
                 logit = torch.stack(logit, dim=1).to(self.device)
 
             elif self.architecture == 'transformer':
-                logit = model(inputs, input_lengths, targets, return_decode_info=False)
+                logit = model(inputs, input_lengths, targets, return_decode_dict=False)
 
             else:
                 raise ValueError("Unsupported architecture : {0}".format(self.architecture))
@@ -294,11 +294,11 @@ class SupervisedTrainer(object):
                     model.module.flatten_parameters()
                     output = model(inputs=inputs, input_lengths=input_lengths,
                                    teacher_forcing_ratio=0.0,
-                                   language_model=None, return_dec_dict=False)
+                                   language_model=None, return_decode_dict=False)
                     logit = torch.stack(output, dim=1).to(self.device)
 
                 elif self.architecture == 'transformer':
-                    logit = model(inputs, input_lengths, return_decode_info=False)
+                    logit = model(inputs, input_lengths, return_decode_dict=False)
 
                 else:
                     raise ValueError("Unsupported architecture : {0}".format(self.architecture))

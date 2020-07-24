@@ -34,7 +34,7 @@ class MultiHeadAttention(nn.Module):
     def __init__(self, d_model: int = 512, num_heads: int = 8) -> None:
         super(MultiHeadAttention, self).__init__()
 
-        assert d_model % num_heads == 0, "hidden_dim % num_heads should be zero."
+        assert d_model % num_heads == 0, "d_model % num_heads should be zero."
 
         self.d_head = int(d_model / num_heads)
         self.num_heads = num_heads
@@ -121,6 +121,5 @@ class LocationAwareAttention(nn.Module):
             attn = F.softmax(score, dim=-1)
 
         context = torch.bmm(attn.unsqueeze(dim=1), value).squeeze(dim=1)  # Bx1xT X BxTxD => Bx1xD => BxD
-        context += query
 
         return context, attn
