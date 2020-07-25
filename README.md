@@ -76,7 +76,8 @@ Our seq2seq architeuture is as follows.
 ```python
 Seq2seq(
   (encoder): Seq2seqEncoder(
-    (conv_extractor): VGGExtractor(
+    (conv): VGGExtractor(
+      (activation): Hardtanh(min_val=0, max_val=20, inplace=True)
       (conv): Sequential(
         (0): Conv2d(1, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
         (1): Hardtanh(min_val=0, max_val=20, inplace=True)
@@ -93,7 +94,7 @@ Seq2seq(
         (12): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
       )
     )
-    (rnn): LSTM(5120, 512, num_layers=3, batch_first=True, dropout=0.3, bidirectional=True)
+    (rnn): LSTM(2560, 512, num_layers=3, batch_first=True, dropout=0.3, bidirectional=True)
   )
   (decoder): Seq2seqDecoder(
     (embedding): Embedding(2038, 1024)
@@ -104,15 +105,15 @@ Seq2seq(
         (query_proj): Linear(in_features=1024, out_features=1024, bias=True)
         (key_proj): Linear(in_features=1024, out_features=1024, bias=True)
         (value_proj): Linear(in_features=1024, out_features=1024, bias=True)
-        (scaled_dot_attn): ScaledDotProductAttention()
       )
       (layer_norm): LayerNorm(1024)
     )
     (projection): AddNorm(
-      (0): Linear(in_features=1024, out_features=1024, bias=True),
-      (1): LayerNorm(1024)
+      (sublayer): Linear(in_features=1024, out_features=1024, bias=True)
+      )
+      (layer_norm): LayerNorm(1024)
     )
-    (generator): Linear(in_features=1024, out_features=2038, bias=True)
+    (generator): Linear(in_features=1024, out_features=2038, bias=False)
   )
 )
 ``` 
