@@ -69,9 +69,11 @@ We mainly referred to following papers.
   
  [「Listen, Attend and Spell」](https://arxiv.org/abs/1508.01211)  
 
-[「State-of-the-art Speech Recognition with Sequence-to-Sequence Models」](https://arxiv.org/abs/1712.01769)
-     
-Our seq2seq architeuture is as follows.
+[「State-Of-The-Art Speech Recognition with Sequence-to-Sequence Models」](https://arxiv.org/abs/1712.01769)  
+  
+[「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」](https://arxiv.org/abs/1904.08779)  
+      
+Our Seq2seq architeuture is as follows.
   
 ```python
 Seq2seq(
