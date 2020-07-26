@@ -72,6 +72,8 @@ We mainly referred to following papers.
 [「State-Of-The-Art Speech Recognition with Sequence-to-Sequence Models」](https://arxiv.org/abs/1712.01769)  
   
 [「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」](https://arxiv.org/abs/1904.08779)  
+  
+[「Attention Is All You Need」](https://arxiv.org/abs/1706.03762)  
       
 Our Seq2seq architeuture is as follows.
   
