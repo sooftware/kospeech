@@ -9,12 +9,7 @@ from kospeech.utils import id2char, EOS_token, logger, label_to_string
 
 
 class GreedySearch(object):
-    """
-    Provides some functions : search, save result to csv format.
-
-    Note:
-        You can use this class directly and you can use one of the sub classes.
-    """
+    """ Provides greedy search and save result to csv format """
     def __init__(self):
         self.target_list = list()
         self.y_hats = list()
