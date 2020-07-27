@@ -189,11 +189,11 @@ class AdditiveAttention(nn.Module):
         self.score_proj = Linear(d_model, 1)
 
     def forward(self, query: Tensor, key: Tensor, value: Tensor) -> Tuple[Tensor, Tensor]:
-        batch_size, hidden_dim = query.size(0), query.size(2)
+        batch_size, d_model = query.size(0), query.size(2)
 
         score = self.score_proj(torch.tanh(
-            self.query_proj(query.reshape(-1, hidden_dim)).view(batch_size, -1, hidden_dim)
-            + self.key_proj(key.reshape(-1, hidden_dim)).view(batch_size, -1, hidden_dim)
+            self.key_proj(key.reshape(-1, d_model)).view(batch_size, -1, d_model)
+            + self.query_proj(query.reshape(-1, d_model)).view(batch_size, -1, d_model)
             + self.bias
         )).squeeze(-1)
         attn = F.softmax(score, dim=1)
