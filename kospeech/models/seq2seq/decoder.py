@@ -90,7 +90,7 @@ class Seq2seqDecoder(BaseRNN):
         elif self.attn_mechanism == 'additive':
             self.attention = AddNorm(AdditiveAttention(hidden_dim), hidden_dim)
         elif self.attn_mechanism == 'scaled-dot':
-            self.attn_mechanism = AddNorm(ScaledDotProductAttention(hidden_dim), hidden_dim)
+            self.attention = AddNorm(ScaledDotProductAttention(hidden_dim), hidden_dim)
         else:
             raise ValueError("Unsupported attention: %s".format(attn_mechanism))
 
