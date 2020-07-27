@@ -12,7 +12,7 @@ Reference :
 import torch.nn as nn
 from torch import Tensor
 from typing import Optional, Tuple
-from kospeech.models.seq2seq.modules import Linear, LayerNorm
+from kospeech.models.modules import Linear, LayerNorm
 from kospeech.models.transformer.mask import get_pad_mask, get_subsequent_mask, get_attn_pad_mask
 from kospeech.models.transformer.embeddings import Embedding, PositionalEncoding
 from kospeech.models.transformer.layers import TransformerEncoderLayer, TransformerDecoderLayer

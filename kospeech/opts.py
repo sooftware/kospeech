@@ -47,8 +47,8 @@ def build_model_opts(parser):
                        type=str, default='hardtanh',
                        help='activation function in listener`s cnn: [hardtanh, relu, elu] (default: hardtanh)')
     group.add_argument('--attn_mechanism', '-attn_mechanism',
-                       type=str, default='loc',
-                       help='option to specify the attention mechanism method')
+                       type=str, default='multi-head',
+                       help='option to specify the attention mechanism method [multi-head, loc, scaled-dot, additive]')
     group.add_argument('--teacher_forcing_ratio', '-teacher_forcing_ratio',
                        type=float, default=0.99,
                        help='teacher forcing ratio in decoding (default: 0.99)')

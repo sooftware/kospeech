@@ -5,8 +5,9 @@ import torch.nn.functional as F
 import numpy as np
 from torch import Tensor, LongTensor
 from typing import Optional, Any, Tuple
-from kospeech.models.seq2seq.attention import LocationAwareAttention, MultiHeadAttention
-from kospeech.models.seq2seq.modules import Linear
+from kospeech.models.attention import LocationAwareAttention, MultiHeadAttention, AdditiveAttention, \
+    ScaledDotProductAttention
+from kospeech.models.modules import Linear
 from kospeech.models.seq2seq.sublayers import BaseRNN
 from kospeech.models.transformer.sublayers import AddNorm
 
@@ -66,9 +67,9 @@ class Seq2seqDecoder(BaseRNN):
                  eos_id: int = 2,                     # end of sentence token`s id
                  attn_mechanism: str = 'dot',         # type of attention mechanism
                  num_heads: int = 4,                  # number of attention heads
-                 num_layers: int = 2,                 # number of RNN layers (default: 1)
-                 rnn_type: str = 'lstm',              # type of RNN cell (default: lstm)
-                 dropout_p: float = 0.3,              # dropout probability (default: 0.3)
+                 num_layers: int = 2,                 # number of RNN layers
+                 rnn_type: str = 'lstm',              # type of RNN cell
+                 dropout_p: float = 0.3,              # dropout probability
                  device: str = 'cuda') -> None:       # device - 'cuda' or 'cpu'
         super(Seq2seqDecoder, self).__init__(hidden_dim, hidden_dim, num_layers, rnn_type, dropout_p, False, device)
         self.num_classes = num_classes
@@ -84,8 +85,12 @@ class Seq2seqDecoder(BaseRNN):
 
         if self.attn_mechanism == 'loc':
             self.attention = AddNorm(LocationAwareAttention(hidden_dim, smoothing=True), hidden_dim)
-        elif self.attn_mechanism == 'dot':
+        elif self.attn_mechanism == 'multi-head':
             self.attention = AddNorm(MultiHeadAttention(hidden_dim, num_heads), hidden_dim)
+        elif self.attn_mechanism == 'additive':
+            self.attention = AddNorm(AdditiveAttention(hidden_dim), hidden_dim)
+        elif self.attn_mechanism == 'scaled-dot':
+            self.attn_mechanism = AddNorm(ScaledDotProductAttention(hidden_dim), hidden_dim)
         else:
             raise ValueError("Unsupported attention: %s".format(attn_mechanism))
 
@@ -104,10 +109,10 @@ class Seq2seqDecoder(BaseRNN):
 
         output, hidden = self.rnn(embedded, hidden)
 
-        if self.attn_mechanism == 'dot':
-            context, attn = self.attention(output, encoder_outputs, encoder_outputs)
-        else:
+        if self.attn_mechanism == 'loc':
             context, attn = self.attention(output, encoder_outputs, attn)
+        else:
+            context, attn = self.attention(output, encoder_outputs, encoder_outputs)
 
         output = self.projection(context.view(-1, self.hidden_dim)).view(batch_size, -1, self.hidden_dim)
         output = self.generator(torch.tanh(output).contiguous().view(-1, self.hidden_dim))
