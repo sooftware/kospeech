@@ -183,8 +183,8 @@ class AdditiveAttention(nn.Module):
     """
     def __init__(self, d_model: int) -> None:
         super(AdditiveAttention, self).__init__()
+        self.query_proj = Linear(d_model, d_model, bias=False)
         self.key_proj = Linear(d_model, d_model, bias=False)
-        self.value_proj = Linear(d_model, d_model, bias=False)
         self.bias = nn.Parameter(torch.rand(d_model).uniform_(-0.1, 0.1))
         self.score_proj = Linear(d_model, 1)
 
