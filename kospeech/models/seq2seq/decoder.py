@@ -65,7 +65,7 @@ class Seq2seqDecoder(BaseRNN):
                  hidden_dim: int = 1024,              # dimension of RNN`s hidden state vector
                  sos_id: int = 1,                     # start of sentence token`s id
                  eos_id: int = 2,                     # end of sentence token`s id
-                 attn_mechanism: str = 'dot',         # type of attention mechanism
+                 attn_mechanism: str = 'multi-head',  # type of attention mechanism
                  num_heads: int = 4,                  # number of attention heads
                  num_layers: int = 2,                 # number of RNN layers
                  rnn_type: str = 'lstm',              # type of RNN cell
@@ -122,8 +122,9 @@ class Seq2seqDecoder(BaseRNN):
 
         return step_output, hidden, attn
 
-    def forward(self, inputs: Tensor, encoder_outputs: Tensor, teacher_forcing_ratio: float = 1.0,
-                language_model: Optional[nn.Module] = None, return_decode_dict: bool = False) -> Tuple[Tensor, dict]:
+    def forward(self, inputs: Tensor, encoder_outputs: Tensor,
+                teacher_forcing_ratio: float = 1.0, language_model: Optional[nn.Module] = None,
+                return_decode_dict: bool = False) -> Tuple[Tensor, dict]:
         hidden, attn = None, None
         result, decode_dict = list(), dict()
 
