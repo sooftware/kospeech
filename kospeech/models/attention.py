@@ -148,16 +148,16 @@ class LocationAwareAttention(nn.Module):
                 + self.value_proj(value.reshape(-1, hidden_dim)).view(batch_size, -1, hidden_dim)
                 + conv_attn
                 + self.bias
-        )).squeeze(dim=-1)
+        )).squeeze(-1)
 
         if self.smoothing:
             score = torch.sigmoid(score)
-            attn = torch.div(score, score.sum(dim=-1).unsqueeze(dim=-1))
+            attn = torch.div(score, score.sum(-1).unsqueeze(-1))
 
         else:
             attn = F.softmax(score, dim=-1)
 
-        context = torch.bmm(attn.unsqueeze(dim=1), value).squeeze(dim=1)  # Bx1xT X BxTxD => Bx1xD => BxD
+        context = torch.bmm(attn.unsqueeze(1), value).squeeze(1)  # Bx1xT X BxTxD => Bx1xD => BxD
 
         return context, attn
 
@@ -189,13 +189,7 @@ class AdditiveAttention(nn.Module):
         self.score_proj = Linear(d_model, 1)
 
     def forward(self, query: Tensor, key: Tensor, value: Tensor) -> Tuple[Tensor, Tensor]:
-        batch_size, d_model = query.size(0), query.size(2)
-
-        score = self.score_proj(torch.tanh(
-            self.key_proj(key.reshape(-1, d_model)).view(batch_size, -1, d_model)
-            + self.query_proj(query.reshape(-1, d_model)).view(batch_size, -1, d_model)
-            + self.bias
-        )).squeeze(-1)
-        attn = F.softmax(score, dim=1)
+        score = self.score_proj(torch.tanh(self.key_proj(key) + self.query_proj(query) + self.bias)).squeeze(-1)
+        attn = F.softmax(score, dim=-1)
         context = torch.bmm(attn.unsqueeze(1), value)
         return context, attn
