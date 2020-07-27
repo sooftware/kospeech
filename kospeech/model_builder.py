@@ -13,7 +13,10 @@ from kospeech.utils import char2id, EOS_token, SOS_token, PAD_token
 def build_model(opt, device):
     """ Various model dispatcher function. """
     if opt.transform_method.lower() == 'spect':
-        input_size = (opt.frame_length << 3) + 1
+        if opt.feature_extract_by == 'kaldi':
+            input_size = 257
+        else:
+            input_size = (opt.frame_length << 3) + 1
     else:
         input_size = opt.n_mels
 
