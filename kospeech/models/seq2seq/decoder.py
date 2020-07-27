@@ -140,9 +140,7 @@ class Seq2seqDecoder(BaseRNN):
         if use_teacher_forcing:
             inputs = inputs[inputs != self.eos_id].view(batch_size, -1)
 
-            # Call forward_step() at every timestep when attention mechanism is location-aware
-            # Because location-aware attention requires previous attention (alignment).
-            if self.attn_mechanism == 'loc':
+            if self.attn_mechanism == 'loc' or self.attn_mechanism == 'additive':
                 for di in range(inputs.size(1)):
                     input_var = inputs[:, di].unsqueeze(1)
                     step_output, hidden, attn = self.forward_step(input_var, hidden, encoder_outputs, attn)
