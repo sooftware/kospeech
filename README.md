@@ -7,30 +7,21 @@
   
 [KoSpeech: Open Source Project for Korean End-to-End Automatic Speech Recognition in PyTorch](https://sooftware.github.io/KoSpeech/)     
   
-[Soohwan Kim](https://github.com/sooftware)<sup>1,2</sup> designed and implemented system   
-[Seyoung Bae](https://github.com/triplet02)<sup>1</sup> reviewed source code     
-[Cheolhwang Won](https://github.com/wch18735)<sup>1</sup> experimented signal processing   
-[Suwon Park](https://ei.kw.ac.kr/introduction/professor_view.php?idx=72)<sup>1*</sup> advisor to this work.  
+[Soohwan Kim](https://github.com/sooftware)<sup>1,2</sup>, [Seyoung Bae](https://github.com/triplet02)<sup>1</sup>, [Cheolhwang Won](https://github.com/wch18735)<sup>1</sup>, [Suwon Park](https://ei.kw.ac.kr/introduction/professor_view.php?idx=72)<sup>1*</sup>
   
-<sup>1</sup>Elcomm, Kwangwoon Univ. <sup>2</sup>Spoken Language Lab (of Sogang Univ.)  
+<sup>1</sup>Elcomm, Kwangwoon Univ. <sup>2</sup>Spoken Language Lab (of Sogang Univ.) <sup>*</sup> author is advisor to this work  
   
-End-to-end (E2E) automatic speech recognition (ASR) is an emerging paradigm in the field of neural network-based speech recognition that offers multiple benefits. Traditional “hybrid” ASR systems, which are comprised of an acoustic model, language model, and pronunciation model, require separate training of these components, each of which can be complex.   
-  
-For example, training of an acoustic model is a multi-stage process of model training and time alignment between the speech acoustic feature sequence and output label sequence. In contrast, E2E ASR is a single integrated approach with a much simpler training pipeline with models that operate at low audio frame rates. This reduces the training time, decoding time, and allows joint optimization with downstream processing such as natural language understanding.   
+`KoSpeech` is an End-to-End open source project for Korean speech recognition. The goal of this work is to help research speech recognition. It was developed with a focus on readability and extensibility of code. Learning is possible through various options such as feature extraction, attention mechanism, and data augmentation, etc..   
+We used `KsponSpeech` corpus which containing **1000h** of Korean speech data. At present our model has recorded an **89.69%** character recognition rate. We are always updating this work for increased recognition rate and extensibility.   
+So, We appreciate any kind of [feedback or contribution](https://github.com/sooftware/End-to-end-Speech-Recognition/issues).    
   
 [Korean.ver](https://github.com/sooftware/KoSpeech/blob/master/docs/README_ko.md)  
 
 ## Intro
-
-`KoSpeech` is project for End-to-end (E2E) automatic speech recognition implemented in [PyTorch](http://pytorch.org).   
-`KoSpeech` has modularized and extensible components for las models, training and evalutaion, checkpoints, etc.   
-We appreciate any kind of [feedback or contribution](https://github.com/sooftware/End-to-end-Speech-Recognition/issues).
   
-We used `KsponSpeech` corpus which containing **1000h** of Korean speech data.   
-At present our model has recorded an **89.69% CRR**, and we are working for a higher recognition rate.  
-Also our model has recorded **92.0% CRR** in `Kaldi-zeroth corpus`    
+End-to-end (E2E) automatic speech recognition (ASR) is an emerging paradigm in the field of neural network-based speech recognition that offers multiple benefits. Traditional “hybrid” ASR systems, which are comprised of an acoustic model, language model, and pronunciation model, require separate training of these components, each of which can be complex.   
   
-###### ( **CRR** : Character Recognition Rate ) 
+For example, training of an acoustic model is a multi-stage process of model training and time alignment between the speech acoustic feature sequence and output label sequence. In contrast, E2E ASR is a single integrated approach with a much simpler training pipeline with models that operate at low audio frame rates. This reduces the training time, decoding time, and allows joint optimization with downstream processing such as natural language understanding.  
   
 ## Features  
   
