@@ -314,16 +314,13 @@ class Seq2seqTopKDecoder(nn.Module):
         return decoder_outputs
 
     def _backtrack(self, stored_outputs, stored_predecessors, stored_emitted_symbols, stored_scores, batch_size):
-        """
-        Backtracks over batch to generate optimal k-sequences.
-
+        """Backtracks over batch to generate optimal k-sequences.
         Args:
             stored_outputs [(batch*k, vocab_size)] * sequence_length: A Tensor of outputs from network
             stored_predecessors [(batch*k)] * sequence_length: A Tensor of predecessors
             stored_emitted_symbols [(batch*k)] * sequence_length: A Tensor of predicted tokens
             scores [(batch*k)] * sequence_length: A Tensor containing sequence scores for every token t = [0, ... , seq_len - 1]
             batch_size: Size of the batch
-
         Returns:
             output [(batch, k, vocab_size)] * sequence_length: A list of the output probabilities (p_n)
             from the last layer of the RNN, for every n = [0, ... , seq_len - 1]
@@ -355,26 +352,54 @@ class Seq2seqTopKDecoder(nn.Module):
             # the current step
             t_predecessors = stored_predecessors[t].index_select(0, t_predecessors).squeeze()
 
+            # This tricky block handles dropped sequences that see EOS earlier.
+            # The basic idea is summarized below:
+            #
+            #   Terms:
+            #       Ended sequences = sequences that see EOS early and dropped
+            #       Survived sequences = sequences in the last step of the beams
+            #
+            #       Although the ended sequences are dropped during decoding,
+            #   their generated symbols and complete backtracking information are still
+            #   in the backtracking variables.
+            #   For each batch, everytime we see an EOS in the backtracking process,
+            #       1. If there is survived sequences in the return variables, replace
+            #       the one with the lowest survived sequence score with the new ended
+            #       sequences
+            #       2. Otherwise, replace the ended sequence with the lowest sequence
+            #       score with the new ended sequence
+            #
             eos_indices = stored_emitted_symbols[t].data.squeeze(1).eq(self.eos_id).nonzero()
             if eos_indices.dim() > 0:
                 for i in range(eos_indices.size(0) - 1, -1, -1):
+                    # Indices of the EOS symbol for both variables
+                    # with b*k as the first dimension, and b, k for
+                    # the first two dimensions
                     idx = eos_indices[i]
                     b_idx = int(idx[0] / self.beam_size)
-
+                    # The indices of the replacing position
+                    # according to the replacement strategy noted above
                     res_k_idx = self.beam_size - (batch_eos_found[b_idx] % self.beam_size) - 1
                     batch_eos_found[b_idx] += 1
                     res_idx = b_idx * self.beam_size + res_k_idx
 
+                    # Replace the old information in return variables
+                    # with the new ended sequence information
                     t_predecessors[res_idx] = stored_predecessors[t][idx[0]]
                     current_output[res_idx, :] = stored_outputs[t][idx[0], :]
 
+            # record the back tracked results
             output.append(current_output)
 
             t -= 1
 
+        # Sort and re-order again as the added ended sequences may change
+        # the order (very unlikely)
         s, re_sorted_idx = s.topk(self.beam_size)
         re_sorted_idx = (re_sorted_idx + self.pos_index.expand_as(re_sorted_idx)).view(batch_size * self.beam_size)
 
+        # Reverse the sequences and re-order at the same time
+        # It is reversed because the backtracking happens in reverse time order
         output = [step.index_select(0, re_sorted_idx).view(batch_size, self.beam_size, -1) for step in reversed(output)]
         return output
 
