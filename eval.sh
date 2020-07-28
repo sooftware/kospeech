@@ -24,7 +24,7 @@ MODE='eval'
 # shellcheck disable=SC2164
 cd bin
 
-python ./eval.py --sample_rate $SAMPLE_RATE --window_size $FRAME_LENGTH=20 --frame_shift $FRAME_SHIFT --n_mels $N_MELS \
+python ./eval.py --sample_rate $SAMPLE_RATE --frame_length $FRAME_LENGTH --frame_shift $FRAME_SHIFT --n_mels $N_MELS \
 --normalize --del_silence --feature_extract_by $FEATURE_EXTRACT_BY  \
 --num_workers $NUM_WORKERS --use_cuda --batch_size $BATCH_SIZE --k $K  --decode $DECODE \
 --print_every $PRINT_EVERY --mode $MODE --dataset_path $DATASET_PATH --data_list_path $DATA_LIST_PATH \
