@@ -241,7 +241,7 @@ class Seq2seqTopKDecoder(nn.Module):
         self.alpha = 1.2
         self.device = decoder.device
 
-    def forward(self, input_var: Tensor, encoder_outputs: Tensor) -> list:
+    def forward(self, input_var=None, encoder_outputs: Tensor = None) -> list:
         inputs, batch_size, max_length = self.validate_args(input_var, encoder_outputs, 0.0)
         self.pos_index = (LongTensor(range(batch_size)) * self.beam_size).view(-1, 1).to(self.device)
 

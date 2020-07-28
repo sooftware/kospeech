@@ -126,8 +126,8 @@ def load_test_model(opt, device):
         model.module.encoder.device = device
 
     else:
-        model.listener.device = device
         model.encoder.device = device
+        model.decoder.device = device
 
     return model
 
