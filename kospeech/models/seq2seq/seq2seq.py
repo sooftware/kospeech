@@ -34,13 +34,13 @@ class Seq2seq(nn.Module):
 
     def forward(self, inputs: Tensor, input_lengths: Tensor, targets: Optional[Tensor] = None,
                 teacher_forcing_ratio: float = 1.0, language_model: Optional[nn.Module] = None,
-                return_dec_dict: bool = False):
+                return_decode_dict: bool = False):
         output, hidden = self.encoder(inputs, input_lengths)
 
         if isinstance(self.decoder, Seq2seqTopKDecoder):
             result = self.decoder(targets, output)
         else:
-            result = self.decoder(targets, output, teacher_forcing_ratio, language_model, return_dec_dict)
+            result = self.decoder(targets, output, teacher_forcing_ratio, language_model, return_decode_dict)
 
         return result
 
