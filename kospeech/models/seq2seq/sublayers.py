@@ -1,7 +1,10 @@
+import torch
 import torch.nn as nn
 import torch.nn.init as init
 from typing import Tuple, Optional, Any
 from torch import Tensor, BoolTensor
+
+from kospeech.models.modules import LayerNorm
 
 
 class BaseRNN(nn.Module):
@@ -218,3 +221,20 @@ class DeepSpeech2Extractor(CNNExtractor):
             output = conv_feat
 
         return output
+
+
+class ConcatNorm(nn.Module):
+    """ Concat & Normalization layer """
+    def __init__(self, sublayer: nn.Module, d_model: int = 512) -> None:
+        super(ConcatNorm, self).__init__()
+        self.sublayer = sublayer
+        self.layer_norm = LayerNorm(d_model)
+
+    def forward(self, *args):
+        residual = args[0]
+        output = self.sublayer(*args)
+
+        if isinstance(output, tuple):
+            return self.layer_norm(torch.cat((output, residual), dim=1)), output[1]
+        else:
+            return self.layer_norm(torch.cat((output, residual), dim=1))

@@ -8,7 +8,7 @@ from typing import Optional, Any, Tuple
 from kospeech.models.attention import LocationAwareAttention, MultiHeadAttention, AdditiveAttention, \
     ScaledDotProductAttention
 from kospeech.models.modules import Linear
-from kospeech.models.seq2seq.sublayers import BaseRNN
+from kospeech.models.seq2seq.sublayers import BaseRNN, ConcatNorm
 from kospeech.models.transformer.sublayers import AddNorm
 
 
@@ -70,6 +70,7 @@ class Seq2seqDecoder(BaseRNN):
                  num_layers: int = 2,                 # number of RNN layers
                  rnn_type: str = 'lstm',              # type of RNN cell
                  dropout_p: float = 0.3,              # dropout probability
+                 combine_method: str = 'add',         # concat or add
                  device: str = 'cuda') -> None:       # device - 'cuda' or 'cpu'
         super(Seq2seqDecoder, self).__init__(hidden_dim, hidden_dim, num_layers, rnn_type, dropout_p, False, device)
         self.num_classes = num_classes
@@ -84,17 +85,26 @@ class Seq2seqDecoder(BaseRNN):
         self.input_dropout = nn.Dropout(dropout_p)
 
         if self.attn_mechanism == 'loc':
-            self.attention = AddNorm(LocationAwareAttention(hidden_dim, smoothing=True), hidden_dim)
+            self.attention = LocationAwareAttention(hidden_dim, smoothing=True)
         elif self.attn_mechanism == 'multi-head':
-            self.attention = AddNorm(MultiHeadAttention(hidden_dim, num_heads), hidden_dim)
+            self.attention = MultiHeadAttention(hidden_dim, num_heads)
         elif self.attn_mechanism == 'additive':
-            self.attention = AddNorm(AdditiveAttention(hidden_dim), hidden_dim)
+            self.attention = AdditiveAttention(hidden_dim)
         elif self.attn_mechanism == 'scaled-dot':
-            self.attention = AddNorm(ScaledDotProductAttention(hidden_dim), hidden_dim)
+            self.attention = ScaledDotProductAttention(hidden_dim)
         else:
             raise ValueError("Unsupported attention: %s".format(attn_mechanism))
 
-        self.projection = AddNorm(Linear(hidden_dim, hidden_dim, bias=True), hidden_dim)
+        if combine_method.lower() == 'add':
+            self.attention = AddNorm(self.attention, hidden_dim)
+            self.projection_size = hidden_dim
+        elif combine_method.lower() == 'concat':
+            self.attention = ConcatNorm(self.attention, hidden_dim << 1)
+            self.projection_size = hidden_dim << 1
+        else:
+            raise ValueError("Unsupported combine_method: %s".format(combine_method))
+
+        self.projection = AddNorm(Linear(self.projection_size, hidden_dim, bias=True), hidden_dim)
         self.generator = Linear(hidden_dim, num_classes, bias=False)
 
     def forward_step(self, input_var: Tensor, hidden: Optional[Any],
@@ -114,7 +124,7 @@ class Seq2seqDecoder(BaseRNN):
         else:
             context, attn = self.attention(output, encoder_outputs, encoder_outputs)
 
-        output = self.projection(context.view(-1, self.hidden_dim)).view(batch_size, -1, self.hidden_dim)
+        output = self.projection(context.view(-1, self.projection_size)).view(batch_size, -1, self.hidden_dim)
         output = self.generator(torch.tanh(output).contiguous().view(-1, self.hidden_dim))
 
         step_output = F.log_softmax(output, dim=1)

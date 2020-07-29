@@ -132,7 +132,7 @@ class LocationAwareAttention(nn.Module):
         self.query_proj = Linear(d_model, d_model, bias=False)
         self.value_proj = Linear(d_model, d_model, bias=False)
         self.bias = nn.Parameter(torch.rand(d_model).uniform_(-0.1, 0.1))
-        self.score_proj = nn.Linear(d_model, 1, bias=True)
+        self.score_proj = Linear(d_model, 1, bias=True)
         self.smoothing = smoothing
 
     def forward(self, query: Tensor, value: Tensor, last_attn: Tensor) -> Tuple[Tensor, Tensor]:

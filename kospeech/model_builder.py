@@ -26,7 +26,7 @@ def build_model(opt, device):
                                         extractor=opt.extractor, activation=opt.activation,
                                         rnn_type=opt.rnn_type, device=device, mask_conv=opt.mask_conv)
         decoder = build_seq2seq_decoder(num_classes=len(char2id), max_len=opt.max_len,
-                                        sos_id=SOS_token, eos_id=EOS_token,
+                                        sos_id=SOS_token, eos_id=EOS_token, combine_method=opt.combine_method,
                                         hidden_dim=opt.hidden_dim << (1 if opt.use_bidirectional else 0),
                                         num_layers=opt.num_decoder_layers, rnn_type=opt.rnn_type, dropout_p=opt.dropout,
                                         num_heads=opt.num_heads, attn_mechanism=opt.attn_mechanism, device=device)
@@ -88,7 +88,7 @@ def build_seq2seq_encoder(input_size: int, hidden_dim: int, dropout_p: float,
                           extractor=extractor, device=device, activation=activation)
 
 
-def build_seq2seq_decoder(num_classes: int, max_len: int, hidden_dim: int,
+def build_seq2seq_decoder(num_classes: int, max_len: int, hidden_dim: int, combine_method: str,
                           sos_id: int, eos_id: int, attn_mechanism: str, num_layers: int,
                           rnn_type: str, dropout_p: float, num_heads: int, device: str) -> Seq2seqDecoder:
     """ Various decoder dispatcher function. """
@@ -115,7 +115,7 @@ def build_seq2seq_decoder(num_classes: int, max_len: int, hidden_dim: int,
                           hidden_dim=hidden_dim, sos_id=sos_id, eos_id=eos_id,
                           attn_mechanism=attn_mechanism, num_heads=num_heads,
                           num_layers=num_layers, rnn_type=rnn_type,
-                          dropout_p=dropout_p, device=device)
+                          dropout_p=dropout_p, device=devic, combine_method=combine_method)
 
 
 def load_test_model(opt, device):

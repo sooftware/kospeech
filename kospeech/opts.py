@@ -49,6 +49,9 @@ def build_model_opts(parser):
     group.add_argument('--attn_mechanism', '-attn_mechanism',
                        type=str, default='multi-head',
                        help='option to specify the attention mechanism method [multi-head, loc, scaled-dot, additive]')
+    group.add_argument('--combine_method', '-combine_method',
+                       type=str, default='add',
+                       help='option to specify combine method [add, concat]')
     group.add_argument('--teacher_forcing_ratio', '-teacher_forcing_ratio',
                        type=float, default=0.99,
                        help='teacher forcing ratio in decoding (default: 0.99)')
