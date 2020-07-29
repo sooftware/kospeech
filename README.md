@@ -53,7 +53,7 @@ We will response as soon as possible.
 ### Seq2seq
   
 Sequence-to-Sequence can be trained with serveral options. You can choose the CNN extractor from (`ds2` /`vgg`),   
-You can choose attention mechanism from (`location-aware`, `multi-head`, `additive`, 'scaled-dot') attention.
+You can choose attention mechanism from (`location-aware`, `multi-head`, `additive`, `scaled-dot`) attention.
   
 Our architecture based on Listen Attend and Spell.   
 We mainly referred to following papers.  
@@ -72,7 +72,6 @@ Our Seq2seq architeuture is as follows.
 Seq2seq(
   (encoder): Seq2seqEncoder(
     (conv): VGGExtractor(
-      (activation): Hardtanh(min_val=0, max_val=20, inplace=True)
       (conv): Sequential(
         (0): Conv2d(1, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
         (1): Hardtanh(min_val=0, max_val=20, inplace=True)
