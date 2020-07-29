@@ -15,6 +15,7 @@ HIDDEN_DIM=512
 DROPOUT=0.3
 NUM_HEADS=4
 ATTN_MECHANISM='multi-head'   # multi-head, loc, additive, scaled-dot
+COMBINE_METHOD='add'
 LABEL_SMOOTHING=0.1
 NUM_ENCODER_LAYERS=3
 NUM_DECODER_LAYERS=2
@@ -62,7 +63,7 @@ python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epoch
 --feature_extract_by $FEATURE_EXTRACT_BY --time_mask_para $TIME_MASK_PARA --freq_mask_para $FREQ_MASK_PARA \
 --time_mask_num $TIME_MASK_NUM --freq_mask_num $FREQ_MASK_NUM --save_result_every $SAVE_RESULT_EVERY \
 --checkpoint_every $CHECKPOINT_EVERY --print_every $PRINT_EVERY --init_lr $INIT_LR  \
---mode $MODE --dataset_path $DATASET_PATH --data_list_path $DATA_LIST_PATH \
+--mode $MODE --dataset_path $DATASET_PATH --data_list_path $DATA_LIST_PATH --combine_method $COMBINE_METHOD \
 --max_grad_norm $MAX_GRAD_NORM --rampup_period $RAMPUP_PERIOD --max_len $MAX_LEN --decay_threshold $DECAY_THRESHOLD \
 --exp_decay_period  $EXP_DECAY_PERIOD --low_plateau_lr $LOW_PLATEAU_LR --noiseset_size $NOISESET_SIZE \
 --noise_level $NOISE_LEVEL --attn_mechanism $ATTN_MECHANISM --teacher_forcing_step $TEACHER_FORCING_STEP \
