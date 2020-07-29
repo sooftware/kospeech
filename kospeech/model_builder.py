@@ -115,7 +115,7 @@ def build_seq2seq_decoder(num_classes: int, max_len: int, hidden_dim: int, combi
                           hidden_dim=hidden_dim, sos_id=sos_id, eos_id=eos_id,
                           attn_mechanism=attn_mechanism, num_heads=num_heads,
                           num_layers=num_layers, rnn_type=rnn_type,
-                          dropout_p=dropout_p, device=devic, combine_method=combine_method)
+                          dropout_p=dropout_p, device=device, combine_method=combine_method)
 
 
 def load_test_model(opt, device):
