@@ -119,6 +119,8 @@ class SupervisedTrainer(object):
 
             if epoch == 1:
                 self.optimizer.set_lr(1e-04)
+            elif epoch == 2:
+                self.optimizer.set_lr(5e-05)
 
             train_loss, train_cer = self.train_epoches(model, epoch, epoch_time_step, train_begin_time,
                                                        train_queue, teacher_forcing_ratio)
