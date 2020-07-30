@@ -58,13 +58,16 @@ You can choose attention mechanism from (`location-aware`, `multi-head`, `additi
 Our architecture based on Listen Attend and Spell.   
 We mainly referred to following papers.  
   
- [「Listen, Attend and Spell」](https://arxiv.org/abs/1508.01211)  
-
-[「State-Of-The-Art Speech Recognition with Sequence-to-Sequence Models」](https://arxiv.org/abs/1712.01769)  
+[Wiliam Chan et al.「Listen, Attend and Spell」ICASSP 2016](https://arxiv.org/abs/1508.01211)  
   
-[「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」](https://arxiv.org/abs/1904.08779)  
+[Ashish Vaswani et al 「Attention Is All You Need」 NIPS 2017
+](https://arxiv.org/abs/1706.03762)  
   
-[「Attention Is All You Need」](https://arxiv.org/abs/1706.03762)  
+[Chiu et al 「StateOf-The-Art Speech Recognition with Sequence-to-Sequence Models」 ICASSP 2018
+](https://arxiv.org/abs/1712.01769)  
+  
+[Daniel S. Park et al 「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」 Interspeech 2019
+](https://arxiv.org/abs/1904.08779)  
       
 Our Seq2seq architeuture is as follows.
   
@@ -118,7 +121,8 @@ We will implement as soon as possible.
   
 We mainly referred to following papers.
   
- [「Attention Is All You Need」](https://arxiv.org/abs/1706.03762)  
+[Ashish Vaswani et al 「Attention Is All You Need」 NIPS 2017
+](https://arxiv.org/abs/1706.03762)  
   
 ### Various Options   
   
