@@ -66,7 +66,7 @@ We mainly referred to following papers.
 [Chiu et al 「StateOf-The-Art Speech Recognition with Sequence-to-Sequence Models」 ICASSP 2018
 ](https://arxiv.org/abs/1712.01769)  
   
-[Daniel S. Park et al 「SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition」 Interspeech 2019
+[Daniel S. Park et al 「SpecAugment: A Simple Data Augmentation Method for ASR」 Interspeech 2019
 ](https://arxiv.org/abs/1904.08779)  
       
 Our Seq2seq architeuture is as follows.
