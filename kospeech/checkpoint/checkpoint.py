@@ -3,10 +3,10 @@ import time
 import shutil
 import torch
 import torch.nn as nn
+from kospeech.utils import logger
 from kospeech.data.data_loader import SpectrogramDataset
 from kospeech.models.seq2seq.seq2seq import Seq2seq
 from kospeech.optim.optimizer import Optimizer
-from kospeech.utils import logger
 
 
 class Checkpoint(object):
@@ -114,5 +114,4 @@ class Checkpoint(object):
         """
         checkpoints_path = os.path.join(self.SAVE_PATH, self.CHECKPOINT_DIR_NAME)
         sorted_listdir = sorted(os.listdir(checkpoints_path), reverse=True)
-
         return os.path.join(checkpoints_path, sorted_listdir[0])

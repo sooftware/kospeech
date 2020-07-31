@@ -21,16 +21,8 @@ def build_model(opt, device):
         input_size = opt.n_mels
 
     if opt.architecture.lower() == 'seq2seq':
-        encoder = build_seq2seq_encoder(input_size=input_size, hidden_dim=opt.hidden_dim, dropout_p=opt.dropout,
-                                        num_layers=opt.num_encoder_layers, bidirectional=opt.use_bidirectional,
-                                        extractor=opt.extractor, activation=opt.activation,
-                                        rnn_type=opt.rnn_type, device=device, mask_conv=opt.mask_conv)
-        decoder = build_seq2seq_decoder(num_classes=len(char2id), max_len=opt.max_len,
-                                        sos_id=SOS_token, eos_id=EOS_token,
-                                        hidden_dim=opt.hidden_dim << (1 if opt.use_bidirectional else 0),
-                                        num_layers=opt.num_decoder_layers, rnn_type=opt.rnn_type, dropout_p=opt.dropout,
-                                        num_heads=opt.num_heads, attn_mechanism=opt.attn_mechanism, device=device)
-        model = build_seq2seq(encoder, decoder, device)
+        model = build_seq2seq(input_size, opt, device)
+
     elif opt.architecture.lower() == 'transformer':
         model = build_transformer(num_classes=opt.num_classes, pad_id=PAD_token, input_size=input_size,
                                   d_model=opt.d_model, num_heads=opt.num_heads, eos_id=EOS_token,
@@ -55,8 +47,18 @@ def build_transformer(num_classes: int, pad_id: int, d_model: int, num_heads: in
     return nn.DataParallel(model).to(device)
 
 
-def build_seq2seq(encoder: Seq2seqEncoder, decoder: Seq2seqDecoder, device: str):
+def build_seq2seq(input_size, opt, device):
     """ Various Listen, Attend and Spell dispatcher function. """
+    encoder = build_seq2seq_encoder(input_size=input_size, hidden_dim=opt.hidden_dim, dropout_p=opt.dropout,
+                                    num_layers=opt.num_encoder_layers, bidirectional=opt.use_bidirectional,
+                                    extractor=opt.extractor, activation=opt.activation,
+                                    rnn_type=opt.rnn_type, device=device, mask_conv=opt.mask_conv)
+    decoder = build_seq2seq_decoder(num_classes=len(char2id), max_len=opt.max_len,
+                                    sos_id=SOS_token, eos_id=EOS_token,
+                                    hidden_dim=opt.hidden_dim << (1 if opt.use_bidirectional else 0),
+                                    num_layers=opt.num_decoder_layers, rnn_type=opt.rnn_type, dropout_p=opt.dropout,
+                                    num_heads=opt.num_heads, attn_mechanism=opt.attn_mechanism, device=device)
+
     model = Seq2seq(encoder, decoder)
     model.flatten_parameters()
     model = nn.DataParallel(model).to(device)

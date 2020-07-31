@@ -29,10 +29,10 @@ class SpecAugment(object):
         self.time_mask_num = time_mask_num
         self.freq_mask_num = freq_mask_num
 
-    def __call__(self, spectrogram: Tensor) -> Tensor:
+    def __call__(self, feature_vector: Tensor) -> Tensor:
         """ Provides SpecAugmentation for audio """
-        time_axis_length = spectrogram.size(0)
-        freq_axis_length = spectrogram.size(1)
+        time_axis_length = feature_vector.size(0)
+        freq_axis_length = feature_vector.size(1)
 
         # time mask
         for _ in range(self.time_mask_num):
@@ -40,16 +40,16 @@ class SpecAugment(object):
             t = int(t)
             if time_axis_length - t > 0:
                 t0 = random.randint(0, time_axis_length - t)
-                spectrogram[t0: t0 + t, :] = 0
+                feature_vector[t0: t0 + t, :] = 0
 
         # freq mask
         for _ in range(self.freq_mask_num):
             f = np.random.uniform(low=0.0, high=self.freq_mask_para)
             f = int(f)
             f0 = random.randint(0, freq_axis_length - f)
-            spectrogram[:, f0: f0 + f] = 0
+            feature_vector[:, f0: f0 + f] = 0
 
-        return spectrogram
+        return feature_vector
 
 
 class NoiseInjector(object):
