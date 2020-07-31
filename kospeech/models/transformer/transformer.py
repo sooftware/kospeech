@@ -10,6 +10,7 @@ Reference :
     - **https://github.com/JayParks/transformer**
 """
 import torch.nn as nn
+import torch.nn.functional as F
 from torch import Tensor
 from typing import Optional, Tuple
 from kospeech.models.modules import Linear, LayerNorm
@@ -25,8 +26,10 @@ class Transformer(nn.Module):
 
     Args:
         num_classes (int): the number of classfication
-        pad_id (int): identification of <PAD_token>
         d_model (int): dimension of model (default: 512)
+        input_dim (int): dimension of input
+        pad_id (int): identification of <PAD_token>
+        eos_id (int): identification of <EOS_token>
         d_ff (int): dimension of feed forward network (default: 2048)
         num_encoder_layers (int): number of encoder layers (default: 6)
         num_decoder_layers (int): number of decoder layers (default: 6)
@@ -42,11 +45,18 @@ class Transformer(nn.Module):
     Returns: output
         - **output**: tensor containing the outputs
     """
-    def __init__(self, num_classes: int, d_model: int = 512, input_dim: int = 80,
-                 pad_id: int = 0, eos_id: int = 2,
-                 d_ff: int = 2048, num_heads: int = 8,
-                 num_encoder_layers: int = 6, num_decoder_layers: int = 6,
-                 dropout_p: float = 0.3, ffnet_style: str = 'ff') -> None:
+    def __init__(self,
+                 num_classes: int,                      # the number of classfication
+                 d_model: int = 512,                    # dimension of model
+                 input_dim: int = 80,                   # dimension of input
+                 pad_id: int = 0,                       # identification of <PAD_token>
+                 eos_id: int = 2,                       # identification of <EOS_token>
+                 d_ff: int = 2048,                      # dimension of feed forward network
+                 num_heads: int = 8,                    # number of attention heads
+                 num_encoder_layers: int = 6,           # number of encoder layers
+                 num_decoder_layers: int = 6,           # number of decoder layers
+                 dropout_p: float = 0.3,                # dropout probability
+                 ffnet_style: str = 'ff') -> None:      # feed forward network style 'ff' or 'conv'
         super(Transformer, self).__init__()
 
         assert d_model % num_heads == 0, "d_model % num_heads should be zero."
@@ -58,14 +68,15 @@ class Transformer(nn.Module):
         self.generator = Linear(d_model, num_classes)
 
     def forward(self, inputs: Tensor, input_lengths: Tensor,
-                targets: Optional[Tensor] = None,
-                return_attns: bool = False):
+                targets: Optional[Tensor] = None, return_attns: bool = False):
         batch_size = targets.size(0)
         targets = targets[targets != self.eos_id].view(batch_size, -1)
 
         memory, encoder_self_attns = self.encoder(inputs, input_lengths)
         output, decoder_self_attns, memory_attns = self.decoder(targets, input_lengths, memory)
+
         output = self.generator(output)
+        output = F.log_softmax(output, dim=-1)
 
         if return_attns:
             return output, encoder_self_attns, decoder_self_attns, memory_attns
