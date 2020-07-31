@@ -184,9 +184,6 @@ class SupervisedTrainer(object):
 
         model.train()
 
-        if self.device == 'cuda':
-            model.cuda()
-
         begin_time = epoch_begin_time = time.time()
         num_workers = self.num_workers
 
@@ -205,6 +202,7 @@ class SupervisedTrainer(object):
 
             inputs = inputs.to(self.device)
             targets = targets.to(self.device)
+            model.cuda()
 
             if self.architecture == 'seq2seq':
                 if isinstance(model, nn.DataParallel):
