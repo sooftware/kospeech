@@ -45,19 +45,9 @@ class BaseRNN(nn.Module):
         self.rnn = rnn_cell(input_size, hidden_dim, num_layers, True, True, dropout_p, bidirectional)
         self.hidden_dim = hidden_dim
         self.device = device
-        self._init_params()
 
     def forward(self, *args, **kwargs):
         raise NotImplementedError
-
-    def _init_params(self):
-        for name, param in self.rnn.named_parameters():
-            if name.startswith('weight_ih'):
-                init.xavier_uniform_(param)
-            elif name.startswith('weight_hh'):
-                init.xavier_uniform_(param)
-            elif name.startswith('bias'):
-                init.zeros_(param)
 
 
 class MaskConv(nn.Module):

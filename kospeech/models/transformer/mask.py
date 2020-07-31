@@ -1,8 +1,9 @@
 import torch
 from torch import Tensor
+from typing import Any, Optional
 
 
-def get_pad_mask(inputs: Tensor, input_lengths: Tensor = None, pad_id: int = None) -> Tensor:
+def get_pad_mask(inputs: Tensor, input_lengths: Optional[Any] = None, pad_id: int = None) -> Tensor:
     """
     Padding position is set to True, either use input_lengths or pad_id
 

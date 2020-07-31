@@ -12,7 +12,7 @@ Reference :
 import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Any
 from kospeech.models.modules import Linear, LayerNorm
 from kospeech.models.transformer.mask import get_pad_mask, get_subsequent_mask, get_attn_pad_mask
 from kospeech.models.transformer.embeddings import Embedding, PositionalEncoding
@@ -146,7 +146,7 @@ class TransformerDecoder(nn.Module):
         self.logit_scale = (d_model ** -0.5)
 
     def forward(self, targets: Tensor,
-                input_lengths: Optional[Tensor] = None,
+                input_lengths: Optional[Any] = None,
                 memory: Tensor = None) -> Tuple[Tensor, Tensor, Tensor]:
         self_attns, memory_attns = list(), list()
 

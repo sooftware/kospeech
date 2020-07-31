@@ -1,6 +1,6 @@
 import torch.nn as nn
 from torch import Tensor
-from typing import Tuple, Optional
+from typing import Tuple, Optional, Any
 from kospeech.models.attention import MultiHeadAttention
 from kospeech.models.transformer.sublayers import PoswiseFeedForwardNet, AddNorm
 
@@ -16,8 +16,8 @@ class TransformerEncoderLayer(nn.Module):
         self.self_attention = AddNorm(MultiHeadAttention(d_model, num_heads), d_model)
         self.feed_forward = AddNorm(PoswiseFeedForwardNet(d_model, d_ff, dropout_p, ffnet_style), d_model)
 
-    def forward(self, inputs: Tensor, non_pad_mask: Optional[Tensor] = None,
-                self_attn_mask: Optional[Tensor] = None) -> Tuple[Tensor, Tensor]:
+    def forward(self, inputs: Tensor, non_pad_mask: Optional[Any] = None,
+                self_attn_mask: Optional[Any] = None) -> Tuple[Tensor, Tensor]:
         output, attn = self.self_attention(inputs, inputs, inputs, self_attn_mask)
 
         if non_pad_mask is not None:
@@ -44,8 +44,8 @@ class TransformerDecoderLayer(nn.Module):
         self.feed_forward = AddNorm(PoswiseFeedForwardNet(d_model, d_ff, dropout_p, ffnet_style), d_model)
 
     def forward(self, inputs: Tensor, memory: Tensor,
-                non_pad_mask: Tensor = None,
-                self_attn_mask: Tensor = None, memory_mask: Tensor = None) -> Tuple[Tensor, Tensor, Tensor]:
+                non_pad_mask: Optional[Any] = None, self_attn_mask: Optional[Any] = None,
+                memory_mask: Optional[Any] = None) -> Tuple[Tensor, Tensor, Tensor]:
         output, self_attn = self.self_attention(inputs, inputs, inputs, self_attn_mask)
 
         if non_pad_mask is not None:

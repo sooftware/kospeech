@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 from torch import Tensor
-from typing import Optional
+from typing import Optional, Any
 from kospeech.models.seq2seq.decoder import Seq2seqTopKDecoder
 
 
@@ -32,8 +32,8 @@ class Seq2seq(nn.Module):
         self.encoder = encoder
         self.decoder = decoder
 
-    def forward(self, inputs: Tensor, input_lengths: Tensor, targets: Optional[Tensor] = None,
-                teacher_forcing_ratio: float = 1.0, language_model: Optional[nn.Module] = None,
+    def forward(self, inputs: Tensor, input_lengths: Tensor, targets: Optional[Any] = None,
+                teacher_forcing_ratio: float = 1.0, language_model: Optional[Any] = None,
                 return_decode_dict: bool = False):
         output, hidden = self.encoder(inputs, input_lengths)
 
