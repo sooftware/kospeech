@@ -216,7 +216,7 @@ class SupervisedTrainer(object):
                 logit = torch.stack(logit, dim=1).to(self.device)
 
             elif self.architecture == 'transformer':
-                logit = model(inputs, input_lengths, targets, return_decode_dict=False)
+                logit = model(inputs, input_lengths, targets, return_attns=False)
 
             else:
                 raise ValueError("Unsupported architecture : {0}".format(self.architecture))
