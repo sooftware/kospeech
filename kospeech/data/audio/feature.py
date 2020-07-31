@@ -42,7 +42,7 @@ class Spectrogram(object):
             spectrogram = torchaudio.compliance.kaldi.spectrogram(Tensor(signal).unsqueeze(0),
                                                                   frame_length=self.frame_length,
                                                                   frame_shift=self.frame_shift,
-                                                                  sample_frequency=self.sample_rate)
+                                                                  sample_frequency=self.sample_rate).transpose(0, 1)
         else:
             spectrogram = torch.stft(Tensor(signal), self.n_fft, hop_length=self.hop_length,
                                      win_length=self.n_fft, window=torch.hamming_window(self.n_fft),

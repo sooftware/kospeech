@@ -96,7 +96,7 @@ class MultiHeadAttention(nn.Module):
             mask = mask.unsqueeze(1).repeat(1, self.num_heads, 1, 1)  # BxNxQ_LENxK_LEN
 
         context, attn = self.scaled_dot_attn(query, key, value, mask)
-        
+
         context = context.view(self.num_heads, batch_size, -1, self.d_head)
         context = context.permute(1, 2, 0, 3).contiguous().view(batch_size, -1, self.num_heads * self.d_head)  # BxTxND
 
