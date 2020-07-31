@@ -5,7 +5,7 @@ import torch.nn.functional as F
 import numpy as np
 from torch import Tensor, LongTensor
 from typing import Optional, Any, Tuple
-from kospeech.models.attention import LocationAwareAttention, MultiHeadAttention, AdditiveAttention, \
+from kospeech.models.seq2seq.attention import LocationAwareAttention, MultiHeadAttention, AdditiveAttention, \
     ScaledDotProductAttention
 from kospeech.models.modules import Linear
 from kospeech.models.seq2seq.sublayers import BaseRNN
