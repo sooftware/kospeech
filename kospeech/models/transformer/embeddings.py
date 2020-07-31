@@ -22,7 +22,7 @@ class PositionalEncoding(nn.Module):
         pe[:, 0::2] = torch.sin(position * div_term)
         pe[:, 1::2] = torch.cos(position * div_term)
         pe = pe.unsqueeze(0)
-        self.pe = nn.Embedding.from_pretrained(pe, freeze=True)
+        self.register_buffer('pe', pe)
 
     def forward(self, length: int) -> Tensor:
         return self.pe[:, :length]

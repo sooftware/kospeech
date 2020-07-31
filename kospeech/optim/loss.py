@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+from torch import Tensor
 
 
 class LabelSmoothingLoss(nn.Module):
@@ -20,7 +21,7 @@ class LabelSmoothingLoss(nn.Module):
     Returns: label_smoothed
         - **label_smoothed** (float): sum of loss
     """
-    def __init__(self, num_classes, ignore_index, smoothing=0.1, dim=-1):
+    def __init__(self, num_classes: int, ignore_index: int, smoothing: float = 0.1, dim: int = -1):
         super(LabelSmoothingLoss, self).__init__()
         self.confidence = 1.0 - smoothing
         self.smoothing = smoothing
@@ -28,7 +29,7 @@ class LabelSmoothingLoss(nn.Module):
         self.dim = dim
         self.ignore_index = ignore_index
 
-    def forward(self, logit, target):
+    def forward(self, logit: Tensor, target: Tensor):
         with torch.no_grad():
             label_smoothed = torch.zeros_like(logit)
             label_smoothed.fill_(self.smoothing / (self.num_classes - 1))

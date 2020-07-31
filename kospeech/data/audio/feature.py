@@ -21,7 +21,8 @@ class Spectrogram(object):
         frame_length (int): frame length for spectrogram (ms) (Default : 20)
         frame_shift (int): Length of hop between STFT windows. (ms) (Default: 10)
     """
-    def __init__(self, sample_rate: int = 16000, frame_length: int = 20, frame_shift: int = 10,
+    def __init__(self, sample_rate: int = 16000,
+                 frame_length: int = 20, frame_shift: int = 10,
                  feature_extract_by: str = 'torch') -> None:
         self.sample_rate = sample_rate
         self.feature_extract_by = feature_extract_by.lower()

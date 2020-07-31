@@ -12,7 +12,7 @@ from kospeech.models.seq2seq.sublayers import BaseRNN
 from kospeech.models.transformer.sublayers import AddNorm
 
 
-def _inflate(tensor: Tensor, n_repeat: int, dim: int):
+def _inflate(tensor: Tensor, n_repeat: int, dim: int) -> Tensor:
     """ Given a tensor, 'inflates' it along the given dimension by replicating each slice specified number of times  """
     repeat_dims = [1] * len(tensor.size())
     repeat_dims[dim] *= n_repeat
