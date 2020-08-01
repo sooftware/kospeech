@@ -1,7 +1,7 @@
 [<img src="http://img.shields.io/badge/documentation-Built with Sphinx provided by Read the Docs-9cf?logo=Read%20the%20Docs&logoColor=white">](https://sooftware.github.io/KoSpeech/) [<img src="http://img.shields.io/badge/chat%20on-gitter-9cf?logo=Gitter&logoColor=white">](https://gitter.im/Korean-Speech-Recognition/community)  
 [<img src="http://img.shields.io/badge/demo%20web%20application-Built%20with%20Flask-9cf?logo=Google%20Chrome&logoColor=white">](http://www.kospeech.com/) [<img src="http://img.shields.io/badge/issue-welcome-9cf?logo=Github&logoColor=white">](https://github.com/sooftware/KoSpeech/issues)   
 [<img src="http://img.shields.io/badge/PyTorch-1.3.0%20or%20above%20Recommended-9cf?logo=Pytorch&logoColor=white">](https://pytorch.org/)  [<img src="http://img.shields.io/badge/NVIDIA%20CUDA-9.2%20or%20above%20Recommended-9cf?logo=Nvidia&logoColor=white">](https://developer.nvidia.com/cuda-downloads)   
-<img src="http://img.shields.io/badge/Run transformer-fail-ff"> [<img src="http://img.shields.io/badge/help wanted-issue 37-ff">](https://github.com/sooftware/KoSpeech/issues/37)   
+<img src="http://img.shields.io/badge/Run transformer-fail-ff"> [<img src="http://img.shields.io/badge/help wanted-issue 37-ff">](https://github.com/sooftware/KoSpeech/issues/37) [![CodeFactor](https://www.codefactor.io/repository/github/sooftware/kospeech/badge)](https://www.codefactor.io/repository/github/sooftware/kospeech)     
   
 # KoSpeech: Open Source Project for Korean End-to-End Automatic Speech Recognition in PyTorch
   
