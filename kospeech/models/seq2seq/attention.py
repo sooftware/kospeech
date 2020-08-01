@@ -70,6 +70,7 @@ class MultiHeadAttention(nn.Module):
         self.query_proj = Linear(d_model, self.d_head * num_heads)
         self.key_proj = Linear(d_model, self.d_head * num_heads)
         self.value_proj = Linear(d_model, self.d_head * num_heads)
+        self.sqrt_dim = np.sqrt(d_model)
 
     def forward(self, query: Tensor, key: Tensor, value: Tensor) -> Tuple[Tensor, Tensor]:
         batch_size = value.size(0)
