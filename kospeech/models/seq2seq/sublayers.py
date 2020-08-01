@@ -111,15 +111,12 @@ class MaskConv(nn.Module):
         Returns: seq_lengths
             - **seq_lengths**: Sequence length of output from the module
         """
-        max_length = int(max(seq_lengths))
-
         if isinstance(module, nn.Conv2d):
             numerator = seq_lengths + 2 * module.padding[1] - module.dilation[1] * (module.kernel_size[1] - 1) - 1
             seq_lengths = numerator / module.stride[1] + 1
 
         elif isinstance(module, nn.MaxPool2d):
-            seq_lengths = (seq_lengths >> 1) + 1
-            seq_lengths[seq_lengths.gt(max_length)] = max_length
+            seq_lengths >>= 1
 
         return seq_lengths.int()
 
