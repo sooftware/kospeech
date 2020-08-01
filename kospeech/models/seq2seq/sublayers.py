@@ -1,10 +1,7 @@
 import torch
 import torch.nn as nn
-import torch.nn.init as init
 from typing import Tuple, Optional, Any
 from torch import Tensor, BoolTensor
-
-from kospeech.models.modules import LayerNorm
 
 
 class BaseRNN(nn.Module):

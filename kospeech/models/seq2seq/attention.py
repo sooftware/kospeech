@@ -3,7 +3,7 @@ import numpy as np
 import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
-from typing import Tuple, Optional, Any
+from typing import Tuple
 from kospeech.models.modules import Linear
 
 
@@ -31,7 +31,7 @@ class ScaledDotProductAttention(nn.Module):
         super(ScaledDotProductAttention, self).__init__()
         self.sqrt_dim = np.sqrt(dim)
 
-    def forward(self, query: Tensor, key: Tensor, value: Tensor, mask: Optional[Any] = None) -> Tuple[Tensor, Tensor]:
+    def forward(self, query: Tensor, key: Tensor, value: Tensor) -> Tuple[Tensor, Tensor]:
         score = torch.bmm(query, key.transpose(1, 2)) / self.sqrt_dim
         attn = F.softmax(score, -1)
         context = torch.bmm(attn, value)
@@ -70,7 +70,6 @@ class MultiHeadAttention(nn.Module):
         self.query_proj = Linear(d_model, self.d_head * num_heads)
         self.key_proj = Linear(d_model, self.d_head * num_heads)
         self.value_proj = Linear(d_model, self.d_head * num_heads)
-        self.sqrt_dim = np.sqrt(d_model)
 
     def forward(self, query: Tensor, key: Tensor, value: Tensor) -> Tuple[Tensor, Tensor]:
         batch_size = value.size(0)

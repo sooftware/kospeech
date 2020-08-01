@@ -20,13 +20,13 @@ class Optimizer(object):
         self.max_grad_norm = max_grad_norm
         self.count = 0
 
-    def step(self, model, loss):
+    def step(self, model):
         if self.max_grad_norm > 0:
             torch.nn.utils.clip_grad_norm_(model.parameters(), self.max_grad_norm)
         self.optimizer.step()
 
         if self.scheduler is not None:
-            self.update(loss)
+            self.update()
             self.count += 1
 
             if self.scheduler_period == self.count:
@@ -39,10 +39,9 @@ class Optimizer(object):
         self.scheduler_period = scheduler_period
         self.count = 0
 
-    def update(self, loss):
+    def update(self):
         if isinstance(self.scheduler, torch.optim.lr_scheduler.ReduceLROnPlateau):
-            self.scheduler.step(loss)
-
+            pass
         else:
             self.scheduler.step()
 

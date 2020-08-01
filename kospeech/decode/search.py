@@ -12,7 +12,7 @@ class GreedySearch(object):
     """ Provides greedy search and save result to csv format """
     def __init__(self):
         self.target_list = list()
-        self.y_hats = list()
+        self.predict_list = list()
         self.metric = CharacterErrorRate(id2char, EOS_token)
         self.language_model = None  # load_language_model('lm_path', 'cuda')
 
@@ -35,13 +35,13 @@ class GreedySearch(object):
                 output = model(inputs, input_lengths, teacher_forcing_ratio=0.0,
                                language_model=self.language_model, return_decode_dict=False)
                 logit = torch.stack(output, dim=1).to(device)
-                y_hat = logit.max(-1)[1]
+                pred = logit.max(-1)[1]
 
                 for idx in range(targets.size(0)):
                     self.target_list.append(label_to_string(targets[idx], id2char, EOS_token))
-                    self.y_hats.append(label_to_string(y_hat[idx].cpu().detach().numpy(), id2char, EOS_token))
+                    self.predict_list.append(label_to_string(pred[idx].cpu().detach().numpy(), id2char, EOS_token))
 
-                cer = self.metric(targets[:, 1:], y_hat)
+                cer = self.metric(targets[:, 1:], pred)
                 total_sent_num += targets.size(0)
 
                 if timestep % print_every == 0:
@@ -53,8 +53,8 @@ class GreedySearch(object):
 
     def save_result(self, save_path: str) -> None:
         results = {
-            'original': self.target_list,
-            'hypothesis': self.y_hats
+            'targets': self.target_list,
+            'predictions': self.predict_list
         }
         results = pd.DataFrame(results)
         results.to_csv(save_path, index=False, encoding='cp949')

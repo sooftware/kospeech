@@ -27,10 +27,7 @@ MAX_LEN=120
 MAX_GRAD_NORM=400
 INIT_LR=3e-05
 HIGH_PLATEAU_LR=3e-04
-LOW_PLATEAU_LR=1e-05
 RAMPUP_PERIOD=400
-DECAY_THRESHOLD=0.02
-EXP_DECAY_PERIOD=120000
 FRAME_LENGTH=20
 FRAME_SHIFT=10
 SAMPLE_RATE=16000
@@ -63,7 +60,7 @@ python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epoch
 --time_mask_num $TIME_MASK_NUM --freq_mask_num $FREQ_MASK_NUM --save_result_every $SAVE_RESULT_EVERY \
 --checkpoint_every $CHECKPOINT_EVERY --print_every $PRINT_EVERY --init_lr $INIT_LR  \
 --mode $MODE --dataset_path $DATASET_PATH --data_list_path $DATA_LIST_PATH  \
---max_grad_norm $MAX_GRAD_NORM --rampup_period $RAMPUP_PERIOD --max_len $MAX_LEN --decay_threshold $DECAY_THRESHOLD \
---exp_decay_period  $EXP_DECAY_PERIOD --low_plateau_lr $LOW_PLATEAU_LR --noiseset_size $NOISESET_SIZE \
+--max_grad_norm $MAX_GRAD_NORM --rampup_period $RAMPUP_PERIOD --max_len $MAX_LEN \
+--exp_decay_period --low_plateau_lr --noiseset_size $NOISESET_SIZE \
 --noise_level $NOISE_LEVEL --attn_mechanism $ATTN_MECHANISM --teacher_forcing_step $TEACHER_FORCING_STEP \
 --min_teacher_forcing_ratio $MIN_TEACHER_FORCING_RATIO --extractor $EXTRACTOR --activation $ACTIVATION

@@ -5,8 +5,8 @@ import torch.nn as nn
 import queue
 import pandas as pd
 from typing import Tuple
+from torch.optim.lr_scheduler import ReduceLROnPlateau
 from kospeech.checkpoint.checkpoint import Checkpoint
-from kospeech.optim.lr_scheduler import ExponentialDecayLR
 from kospeech.metrics import CharacterErrorRate
 from kospeech.optim.optimizer import Optimizer
 from kospeech.utils import EOS_token, logger, id2char
@@ -87,7 +87,6 @@ class SupervisedTrainer(object):
             resume(bool, optional): resume training with the latest checkpoint, (default False)
         """
         start_epoch = 0
-        prev_train_cer = 1.
 
         if resume:
             checkpoint = Checkpoint()
@@ -121,25 +120,16 @@ class SupervisedTrainer(object):
                 self.optimizer.set_lr(1e-04)
             elif epoch == 2:
                 self.optimizer.set_lr(5e-05)
+            elif epoch == 3:
+                self.optimizer.set_scheduler(ReduceLROnPlateau(self.optimizer, patience=1, factor=0.5), 999999)
 
-            train_loss, train_cer = self.train_epoches(model, epoch, epoch_time_step, train_begin_time,
-                                                       train_queue, teacher_forcing_ratio)
+            train_loss, train_cer = self.__train_epoches(model, epoch, epoch_time_step, train_begin_time,
+                                                         train_queue, teacher_forcing_ratio)
             train_loader.join()
 
             Checkpoint(model, self.optimizer, self.criterion, self.trainset_list, self.validset, epoch).save()
             logger.info('Epoch %d (Training) Loss %0.4f CER %0.4f' % (epoch, train_loss, train_cer))
 
-            if prev_train_cer - train_cer < self.decay_threshold:
-                self.optimizer.set_scheduler(
-                    ExponentialDecayLR(
-                        self.optimizer.optimizer,
-                        self.optimizer.get_lr(),
-                        self.low_plateau_lr,
-                        self.exp_decay_period
-                    ), self.exp_decay_period
-                )
-
-            prev_train_cer = train_cer
             teacher_forcing_ratio -= self.teacher_forcing_step
             teacher_forcing_ratio = max(self.min_teacher_forcing_ratio, teacher_forcing_ratio)
 
@@ -148,18 +138,21 @@ class SupervisedTrainer(object):
             valid_loader = AudioDataLoader(self.validset, valid_queue, batch_size, 0)
             valid_loader.start()
 
-            valid_cer = self.validate(model, valid_queue)
+            valid_loss, valid_cer = self.validate(model, valid_queue)
             valid_loader.join()
 
-            logger.info('Epoch %d (Validate) Loss %0.4f CER %0.4f' % (epoch, 1.0, valid_cer))
-            self._save_epoch_result(train_result=[self.train_dict, train_loss, train_cer],
-                                    valid_result=[self.valid_dict, 1.0, valid_cer])
+            if isinstance(self.optimizer.scheduler, ReduceLROnPlateau):
+                self.optimizer.scheduler.step(valid_loss)
+
+            logger.info('Epoch %d (Validate) Loss %0.4f CER %0.4f' % (epoch, valid_loss, valid_cer))
+            self.__save_epoch_result(train_result=[self.train_dict, train_loss, train_cer],
+                                    valid_result=[self.valid_dict, valid_loss, valid_cer])
             logger.info('Epoch %d Training result saved as a csv file complete !!' % epoch)
 
         Checkpoint(model, self.optimizer, self.criterion, self.trainset_list, self.validset, num_epochs).save()
         return model
 
-    def train_epoches(self, model: nn.Module, epoch: int,
+    def __train_epoches(self, model: nn.Module, epoch: int,
                       epoch_time_step: int, train_begin_time: float,
                       queue: queue.Queue, teacher_forcing_ratio: float) -> Tuple[float, float]:
         """
@@ -202,7 +195,7 @@ class SupervisedTrainer(object):
 
             inputs = inputs.to(self.device)
             targets = targets.to(self.device)
-            model.cuda()
+            model.to(self.device)
 
             if self.architecture == 'seq2seq':
                 if isinstance(model, nn.DataParallel):
@@ -230,7 +223,7 @@ class SupervisedTrainer(object):
 
             self.optimizer.zero_grad()
             loss.backward()
-            self.optimizer.step(model, loss.item())
+            self.optimizer.step(model)
 
             timestep += 1
             torch.cuda.empty_cache()
@@ -251,7 +244,7 @@ class SupervisedTrainer(object):
                 begin_time = time.time()
 
             if timestep % self.save_result_every == 0:
-                self._save_step_result(self.train_step_result, epoch_loss_total / total_num, cer)
+                self.__save_step_result(self.train_step_result, epoch_loss_total / total_num, cer)
 
             if timestep % self.checkpoint_every == 0:
                 Checkpoint(model, self.optimizer,  self.criterion, self.trainset_list, self.validset, epoch).save()
@@ -276,6 +269,8 @@ class SupervisedTrainer(object):
             - **cer** (float): character error rate of validation
         """
         cer = 1.0
+        total_loss = 0.
+        total_num = 0.
 
         model.eval()
         logger.info('validate() start')
@@ -303,13 +298,17 @@ class SupervisedTrainer(object):
                 else:
                     raise ValueError("Unsupported architecture : {0}".format(self.architecture))
 
+                loss = self.criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
+                total_loss += loss.item()
+                total_num += sum(input_lengths)
+
                 y_hats = logit.max(-1)[1]
                 cer = self.metric(targets, y_hats)
 
         logger.info('validate() completed')
-        return cer
+        return total_loss / total_num, cer
 
-    def _save_epoch_result(self, train_result: list, valid_result: list) -> None:
+    def __save_epoch_result(self, train_result: list, valid_result: list) -> None:
         """ Save result of epoch """
         train_dict, train_loss, train_cer = train_result
         valid_dict, valid_loss, valid_cer = valid_result
@@ -326,7 +325,7 @@ class SupervisedTrainer(object):
         train_df.to_csv(SupervisedTrainer.TRAIN_RESULT_PATH, encoding="cp949", index=False)
         valid_df.to_csv(SupervisedTrainer.VALID_RESULT_PATH, encoding="cp949", index=False)
 
-    def _save_step_result(self, train_step_result: dict, loss: float, cer: float) -> None:
+    def __save_step_result(self, train_step_result: dict, loss: float, cer: float) -> None:
         """ Save result of --save_result_every step """
         train_step_result["loss"].append(loss)
         train_step_result["cer"].append(cer)
