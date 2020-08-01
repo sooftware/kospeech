@@ -70,6 +70,8 @@ def label_to_string(labels, id2char, eos_id):
     Returns: sentence
         - **sentence** (str or list): symbol of labels
     """
+    assert labels.shape == 1 or labels.shape == 2
+
     if len(labels.shape) == 1:
         sentence = str()
         for label in labels:
@@ -78,16 +80,12 @@ def label_to_string(labels, id2char, eos_id):
             sentence += id2char[label.item()]
         return sentence
 
-    elif len(labels.shape) == 2:
-        sentences = list()
-        for batch in labels:
-            sentence = str()
-            for label in batch:
-                if label.item() == eos_id:
-                    break
-                sentence += id2char[label.item()]
-            sentences.append(sentence)
-        return sentences
-
-    else:
-        logger.info("Unsupported shape : {0}".format(str(labels.shape)))
+    sentences = list()
+    for batch in labels:
+        sentence = str()
+        for label in batch:
+            if label.item() == eos_id:
+                break
+            sentence += id2char[label.item()]
+        sentences.append(sentence)
+    return sentences

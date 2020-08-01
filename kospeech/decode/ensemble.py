@@ -1,6 +1,5 @@
 import torch
 import torch.nn as nn
-# TODO: IMPLEMENTS ENSEMBLE
 
 
 class Ensemble(nn.Module):

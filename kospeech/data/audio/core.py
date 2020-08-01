@@ -83,7 +83,7 @@ def __to_mono(y):
             raise ParameterError('Invalid shape for monophonic audio: '
                                  'ndim={:d}, shape={}'.format(y.ndim, y.shape))
 
-        elif y.ndim > 2 or y.ndim == 0:
+        if y.ndim > 2 or y.ndim == 0:
             raise ParameterError('Audio data must have shape (samples,) or (channels, samples). '
                                  'Received shape={}'.format(y.shape))
 
