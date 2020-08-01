@@ -102,8 +102,8 @@ Seq2seq(
         (query_proj): Linear(in_features=1024, out_features=1024, bias=True)
         (key_proj): Linear(in_features=1024, out_features=1024, bias=True)
         (value_proj): Linear(in_features=1024, out_features=1024, bias=True)
-        (layer_norm): LayerNorm(1024)
       )
+      (layer_norm): LayerNorm(1024)
     )
     (projection): AddNorm(
       (sublayer): Linear(in_features=1024, out_features=1024, bias=True)
