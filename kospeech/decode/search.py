@@ -74,14 +74,3 @@ class BeamSearch(GreedySearch):
             topk_decoder = Seq2seqTopKDecoder(model.decoder, self.k)
             model.set_decoder(topk_decoder)
         return super(BeamSearch, self).search(model, queue, device, print_every)
-
-
-class EnsembleSearch(GreedySearch):
-    """ Provides ensemble search decoding. """
-    def __init__(self, method='basic'):
-        super(EnsembleSearch, self).__init__()
-        self.method = method
-
-    def search(self, models, queue, device, print_every):
-        # TODO : IMPLEMENTS ENSEMBLE SEARCH
-        return super(EnsembleSearch, self).search(models, queue, device, print_every)

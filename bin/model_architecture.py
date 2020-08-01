@@ -7,11 +7,3 @@ decoder = Seq2seqDecoder(2038, 151, 1024, 1, 2)
 model = Seq2seq(encoder, decoder)
 
 print(model)
-
-"""
-listener = Listener(80, 256, 'cpu', extractor='ds2')
-speller = Speller(2038, 151, 512, 1, 2, attn_mechanism='loc')
-model = ListenAttendSpell(listener, speller)
-
-print(model)
-"""

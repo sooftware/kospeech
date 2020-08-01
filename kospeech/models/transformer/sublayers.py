@@ -23,9 +23,11 @@ class AddNorm(nn.Module):
         output = self.sublayer(*args)
 
         if isinstance(output, tuple):
-            return self.layer_norm(output[0] + residual), output[1]
+            output = (self.layer_norm(output[0] + residual), output[1])
         else:
-            return self.layer_norm(output + residual)
+            output = self.layer_norm(output + residual)
+
+        return output
 
 
 class PoswiseFeedForwardNet(nn.Module):

@@ -49,9 +49,9 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
         feature_vector = self.parse_audio(self.audio_paths[idx], self.augment_methods[idx])
 
         if feature_vector is None:
-            return None, None
-        else:
-            return feature_vector, transcript
+            feature_vector, transcript = None, None
+
+        return feature_vector, transcript
 
     def parse_transcript(self, script_path):
         """ Parses scripts @Override """
