@@ -160,4 +160,4 @@ class FilterBank(object):
     def __call__(self, signal):
         return torchaudio.compliance.kaldi.fbank(Tensor(signal).unsqueeze(0), num_mel_bins=self.n_mels,
                                                  frame_length=self.frame_length, frame_shift=self.frame_shift,
-                                                 window_type='hamming').transpose(0, 1).numpy()
+                                                 window_type='povey').transpose(0, 1).numpy()

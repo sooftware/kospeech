@@ -111,12 +111,15 @@ class MaskConv(nn.Module):
         Returns: seq_lengths
             - **seq_lengths**: Sequence length of output from the module
         """
+        max_length = seq_lengths.size(1)
+
         if isinstance(module, nn.Conv2d):
             numerator = seq_lengths + 2 * module.padding[1] - module.dilation[1] * (module.kernel_size[1] - 1) - 1
             seq_lengths = numerator / module.stride[1] + 1
 
         elif isinstance(module, nn.MaxPool2d):
-            seq_lengths >>= 1
+            seq_lengths = (seq_lengths >> 1) + 1
+            seq_lengths[seq_lengths.gt(max_length)] = max_length
 
         return seq_lengths.int()
 
@@ -155,16 +158,17 @@ class VGGExtractor(CNNExtractor):
         self.mask_conv = mask_conv
         self.conv = nn.Sequential(
             nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1, bias=False),
-            self.activation,
             nn.BatchNorm2d(num_features=64),
+            self.activation,
             nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.BatchNorm2d(num_features=64),
             self.activation,
             nn.MaxPool2d(2, stride=2),
-            nn.BatchNorm2d(num_features=64),
             nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1, bias=False),
-            self.activation,
             nn.BatchNorm2d(num_features=128),
+            self.activation,
             nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.BatchNorm2d(num_features=128),
             self.activation,
             nn.MaxPool2d(2, stride=2)
         )

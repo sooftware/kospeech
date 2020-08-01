@@ -5,7 +5,7 @@ import torch.nn.functional as F
 import numpy as np
 from torch import Tensor, LongTensor
 from typing import Optional, Any, Tuple
-from kospeech.models.seq2seq.attention import LocationAwareAttention, MultiHeadAttention, AdditiveAttention, \
+from kospeech.models.attention import LocationAwareAttention, MultiHeadAttention, AdditiveAttention, \
     ScaledDotProductAttention
 from kospeech.models.modules import Linear
 from kospeech.models.seq2seq.sublayers import BaseRNN
@@ -180,6 +180,8 @@ class Seq2seqDecoder(BaseRNN):
         if return_decode_dict:
             decode_dict[Seq2seqDecoder.KEY_LENGTH] = lengths
             return result, decode_dict
+        else:
+            del decode_dict
 
         return result
 
