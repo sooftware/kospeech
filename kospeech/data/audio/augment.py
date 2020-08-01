@@ -36,16 +36,15 @@ class SpecAugment(object):
 
         # time mask
         for _ in range(self.time_mask_num):
-            t = np.random.uniform(low=0.0, high=self.time_mask_para)
-            t = int(t)
+            t = int(np.random.uniform(low=0.0, high=self.time_mask_para))
+
             if time_axis_length - t > 0:
                 t0 = random.randint(0, time_axis_length - t)
                 feature_vector[t0: t0 + t, :] = 0
 
         # freq mask
         for _ in range(self.freq_mask_num):
-            f = np.random.uniform(low=0.0, high=self.freq_mask_para)
-            f = int(f)
+            f = int(np.random.uniform(low=0.0, high=self.freq_mask_para))
             f0 = random.randint(0, freq_axis_length - f)
             feature_vector[:, f0: f0 + f] = 0
 

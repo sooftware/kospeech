@@ -255,13 +255,13 @@ def split_dataset(opt, audio_paths, script_paths):
     total_time_step = math.ceil(len(audio_paths) / opt.batch_size)
     valid_time_step = math.ceil(total_time_step * opt.valid_ratio)
     train_time_step = total_time_step - valid_time_step
-    residual = train_time_step
+    base_time_step = train_time_step
 
     if opt.spec_augment:
-        train_time_step += residual
+        train_time_step += base_time_step
 
     if opt.noise_augment:
-        train_time_step += residual
+        train_time_step += base_time_step
 
     train_num_per_worker = math.ceil(train_num / opt.num_workers)
 

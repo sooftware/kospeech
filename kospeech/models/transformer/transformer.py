@@ -79,7 +79,7 @@ class Transformer(nn.Module):
         output = F.log_softmax(output, dim=-1)
 
         if return_attns:
-            return output, encoder_self_attns, decoder_self_attns, memory_attns
+            output = (output, encoder_self_attns, decoder_self_attns, memory_attns)
         else:
             del encoder_self_attns, decoder_self_attns, memory_attns
 

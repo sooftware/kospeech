@@ -148,8 +148,8 @@ def load_language_model(path, device):
 def build_ensemble(model_paths, method, device):
     models = list()
 
-    for idx in range(len(model_paths)):
-        models.append(torch.load(model_paths[idx], map_location=lambda storage, loc: storage))
+    for model_path in model_paths:
+        models.append(torch.load(model_path, map_location=lambda storage, loc: storage))
 
     if method == 'basic':
         ensemble = BasicEnsemble(models).to(device)

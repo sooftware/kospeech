@@ -179,7 +179,7 @@ class Seq2seqDecoder(BaseRNN):
 
         if return_decode_dict:
             decode_dict[Seq2seqDecoder.KEY_LENGTH] = lengths
-            return result, decode_dict
+            result = (result, decode_dict)
         else:
             del decode_dict
 

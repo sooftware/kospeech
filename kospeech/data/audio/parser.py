@@ -109,7 +109,8 @@ class SpectrogramParser(AudioParser):
         if self.normalize:
             feature_vector -= feature_vector.mean()
 
-        if self.input_reverse:  # Refer to "Sequence to Sequence Learning with Neural Network" paper
+        # Refer to "Sequence to Sequence Learning with Neural Network" paper
+        if self.input_reverse:
             feature_vector = feature_vector[:, ::-1]
             feature_vector = FloatTensor(np.ascontiguousarray(np.swapaxes(feature_vector, 0, 1)))
         else:
