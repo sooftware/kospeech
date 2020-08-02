@@ -167,25 +167,22 @@
 <span></span><span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">queue</span> <span class="k">import</span> <span class="n">Queue</span>
 <span class="kn">from</span> <span class="nn">kospeech.metrics</span> <span class="k">import</span> <span class="n">CharacterErrorRate</span>
-<span class="kn">from</span> <span class="nn">kospeech.models.seq2seq.beam_search</span> <span class="k">import</span> <span class="n">BeamSearchDecoder</span>
+<span class="kn">from</span> <span class="nn">kospeech.models.seq2seq.decoder</span> <span class="k">import</span> <span class="n">Seq2seqTopKDecoder</span>
+<span class="kn">from</span> <span class="nn">kospeech.models.seq2seq.seq2seq</span> <span class="k">import</span> <span class="n">Seq2seq</span>
 <span class="kn">from</span> <span class="nn">kospeech.utils</span> <span class="k">import</span> <span class="n">id2char</span><span class="p">,</span> <span class="n">EOS_token</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">label_to_string</span>
 
 
 <div class="viewcode-block" id="GreedySearch"><a class="viewcode-back" href="../../../Decode.html#kospeech.decode.search.GreedySearch">[docs]</a><span class="k">class</span> <span class="nc">GreedySearch</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Provides some functions : search, save result to csv format.</span>
-
-<span class="sd">    Note:</span>
-<span class="sd">        You can use this class directly and you can use one of the sub classes.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot; Provides greedy search and save result to csv format &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">target_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hypothesis_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">predict_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">metric</span> <span class="o">=</span> <span class="n">CharacterErrorRate</span><span class="p">(</span><span class="n">id2char</span><span class="p">,</span> <span class="n">EOS_token</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">language_model</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># load_language_model(&#39;lm_path&#39;, &#39;cuda&#39;)</span>
 
-    <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">queue</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">print_every</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span> <span class="n">queue</span><span class="p">:</span> <span class="n">Queue</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">print_every</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
         <span class="n">cer</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">total_sent_num</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">timestep</span> <span class="o">=</span> <span class="mi">0</span>
@@ -194,26 +191,24 @@
 
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
             <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-                <span class="n">inputs</span><span class="p">,</span> <span class="n">scripts</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">,</span> <span class="n">target_lengths</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+                <span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">,</span> <span class="n">target_lengths</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="k">break</span>
 
                 <span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-                <span class="n">scripts</span> <span class="o">=</span> <span class="n">scripts</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-                <span class="n">targets</span> <span class="o">=</span> <span class="n">scripts</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:]</span>
+                <span class="n">targets</span> <span class="o">=</span> <span class="n">targets</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
 
-                <span class="n">output</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="o">=</span><span class="n">input_lengths</span><span class="p">,</span>
-                                  <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">language_model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">language_model</span><span class="p">)</span>
-
+                <span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+                               <span class="n">language_model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">language_model</span><span class="p">,</span> <span class="n">return_decode_dict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
                 <span class="n">logit</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-                <span class="n">hypothesis</span> <span class="o">=</span> <span class="n">logit</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">pred</span> <span class="o">=</span> <span class="n">logit</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
 
                 <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">targets</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">target_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label_to_string</span><span class="p">(</span><span class="n">scripts</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">id2char</span><span class="p">,</span> <span class="n">EOS_token</span><span class="p">))</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">hypothesis_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label_to_string</span><span class="p">(</span><span class="n">hypothesis</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span> <span class="n">id2char</span><span class="p">,</span> <span class="n">EOS_token</span><span class="p">))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">target_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label_to_string</span><span class="p">(</span><span class="n">targets</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">id2char</span><span class="p">,</span> <span class="n">EOS_token</span><span class="p">))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">predict_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label_to_string</span><span class="p">(</span><span class="n">pred</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span> <span class="n">id2char</span><span class="p">,</span> <span class="n">EOS_token</span><span class="p">))</span>
 
-                <span class="n">cer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">hypothesis</span><span class="p">)</span>
-                <span class="n">total_sent_num</span> <span class="o">+=</span> <span class="n">scripts</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">cer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="p">(</span><span class="n">targets</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:],</span> <span class="n">pred</span><span class="p">)</span>
+                <span class="n">total_sent_num</span> <span class="o">+=</span> <span class="n">targets</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
                 <span class="k">if</span> <span class="n">timestep</span> <span class="o">%</span> <span class="n">print_every</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;cer: </span><span class="si">{:.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cer</span><span class="p">))</span>
@@ -222,10 +217,10 @@
 
         <span class="k">return</span> <span class="n">cer</span>
 
-    <span class="k">def</span> <span class="nf">save_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_path</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">save_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">results</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;original&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_list</span><span class="p">,</span>
-            <span class="s1">&#39;hypothesis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">hypothesis_list</span>
+            <span class="s1">&#39;targets&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_list</span><span class="p">,</span>
+            <span class="s1">&#39;predictions&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict_list</span>
         <span class="p">}</span>
         <span class="n">results</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
         <span class="n">results</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;cp949&#39;</span><span class="p">)</span></div>
@@ -237,24 +232,14 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">BeamSearch</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">=</span> <span class="n">k</span>
 
-    <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">queue</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">print_every</span><span class="p">):</span>
-        <span class="n">topk_decoder</span> <span class="o">=</span> <span class="n">BeamSearchDecoder</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">speller</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">Seq2seq</span><span class="p">,</span> <span class="n">queue</span><span class="p">:</span> <span class="n">Queue</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">print_every</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">DataParallel</span><span class="p">):</span>
-            <span class="n">model</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">set_speller</span><span class="p">(</span><span class="n">topk_decoder</span><span class="p">)</span>
+            <span class="n">topk_decoder</span> <span class="o">=</span> <span class="n">Seq2seqTopKDecoder</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">decoder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">)</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">set_decoder</span><span class="p">(</span><span class="n">topk_decoder</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="n">topk_decoder</span> <span class="o">=</span> <span class="n">Seq2seqTopKDecoder</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">decoder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">)</span>
             <span class="n">model</span><span class="o">.</span><span class="n">set_decoder</span><span class="p">(</span><span class="n">topk_decoder</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">BeamSearch</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">queue</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">print_every</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="EnsembleSearch"><a class="viewcode-back" href="../../../Decode.html#kospeech.decode.search.EnsembleSearch">[docs]</a><span class="k">class</span> <span class="nc">EnsembleSearch</span><span class="p">(</span><span class="n">GreedySearch</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Provides ensemble search decoding. &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;basic&#39;</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">EnsembleSearch</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">method</span>
-
-    <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">models</span><span class="p">,</span> <span class="n">queue</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">print_every</span><span class="p">):</span>
-        <span class="c1"># TODO : IMPLEMENTS ENSEMBLE SEARCH</span>
-        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">EnsembleSearch</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="n">queue</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">print_every</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

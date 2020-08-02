@@ -26,16 +26,10 @@ Attention
 .. automodule:: kospeech.models.seq2seq.attention
     :members:
 
-BeamSearch
---------------------------------------------
-
-.. automodule:: kospeech.models.seq2seq.beam_search
-    :members:
-
 Modules
 --------------------------------------------
 
-.. automodule:: kospeech.models.seq2seq.modules
+.. automodule:: kospeech.models.modules
     :members:
 
 Sublayers

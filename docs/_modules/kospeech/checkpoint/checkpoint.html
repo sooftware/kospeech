@@ -170,6 +170,9 @@
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
 <span class="kn">from</span> <span class="nn">kospeech.utils</span> <span class="k">import</span> <span class="n">logger</span>
+<span class="kn">from</span> <span class="nn">kospeech.data.data_loader</span> <span class="k">import</span> <span class="n">SpectrogramDataset</span>
+<span class="kn">from</span> <span class="nn">kospeech.models.seq2seq.seq2seq</span> <span class="k">import</span> <span class="n">Seq2seq</span>
+<span class="kn">from</span> <span class="nn">kospeech.optim.optimizer</span> <span class="k">import</span> <span class="n">Optimizer</span>
 
 
 <div class="viewcode-block" id="Checkpoint"><a class="viewcode-back" href="../../../Checkpoint.html#kospeech.checkpoint.checkpoint.Checkpoint">[docs]</a><span class="k">class</span> <span class="nc">Checkpoint</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -180,11 +183,11 @@
 <span class="sd">    to write parameters to disk.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        model (nn.Module): LAS model being trained</span>
+<span class="sd">        model (nn.Module): model being trained</span>
 <span class="sd">        optimizer (torch.optim): stores the state of the optimizer</span>
 <span class="sd">        criterion (nn.Module): loss function</span>
 <span class="sd">        trainset_list (list): list of trainset</span>
-<span class="sd">        validset (e2e.data_loader.data_loader.SpectrogramDataset): validation dataset</span>
+<span class="sd">        validset (kospeech.data.data_loader.SpectrogramDataset): validation dataset</span>
 <span class="sd">        epoch (int): current epoch (an epoch is a loop through the full training data)</span>
 
 <span class="sd">    Attributes:</span>
@@ -199,7 +202,13 @@
     <span class="n">SAVE_PATH</span> <span class="o">=</span> <span class="s1">&#39;../data/checkpoint&#39;</span>
     <span class="n">MODEL_NAME</span> <span class="o">=</span> <span class="s1">&#39;model.pt&#39;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">criterion</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">trainset_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">validset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">epoch</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>                   <span class="c1"># model being trained</span>
+                 <span class="n">optimizer</span><span class="p">:</span> <span class="n">Optimizer</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>               <span class="c1"># stores the state of the optimizer</span>
+                 <span class="n">criterion</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>               <span class="c1"># loss function</span>
+                 <span class="n">trainset_list</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>                <span class="c1"># list of trainset</span>
+                 <span class="n">validset</span><span class="p">:</span> <span class="n">SpectrogramDataset</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>       <span class="c1"># validation dataset</span>
+                 <span class="n">epoch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>                <span class="c1"># current epoch is a loop through the full training datav</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">optimizer</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span> <span class="o">=</span> <span class="n">criterion</span>
@@ -254,10 +263,11 @@
             <span class="n">resume_checkpoint</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">TRAINER_STATE_NAME</span><span class="p">),</span> <span class="n">map_location</span><span class="o">=</span><span class="k">lambda</span> <span class="n">storage</span><span class="p">,</span> <span class="n">loc</span><span class="p">:</span> <span class="n">storage</span><span class="p">)</span>
             <span class="n">model</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">MODEL_NAME</span><span class="p">),</span> <span class="n">map_location</span><span class="o">=</span><span class="k">lambda</span> <span class="n">storage</span><span class="p">,</span> <span class="n">loc</span><span class="p">:</span> <span class="n">storage</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">DataParallel</span><span class="p">):</span>
-            <span class="n">model</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">flatten_parameters</span><span class="p">()</span>  <span class="c1"># make RNN parameters contiguous</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">model</span><span class="o">.</span><span class="n">flatten_parameters</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">Seq2seq</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">DataParallel</span><span class="p">):</span>
+                <span class="n">model</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">flatten_parameters</span><span class="p">()</span>  <span class="c1"># make RNN parameters contiguous</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">model</span><span class="o">.</span><span class="n">flatten_parameters</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="n">Checkpoint</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">resume_checkpoint</span><span class="p">[</span><span class="s1">&#39;optimizer&#39;</span><span class="p">],</span> <span class="n">epoch</span><span class="o">=</span><span class="n">resume_checkpoint</span><span class="p">[</span><span class="s1">&#39;epoch&#39;</span><span class="p">],</span>
                           <span class="n">criterion</span><span class="o">=</span><span class="n">resume_checkpoint</span><span class="p">[</span><span class="s1">&#39;criterion&#39;</span><span class="p">],</span> <span class="n">trainset_list</span><span class="o">=</span><span class="n">resume_checkpoint</span><span class="p">[</span><span class="s1">&#39;trainset_list&#39;</span><span class="p">],</span>
@@ -269,9 +279,8 @@
 <span class="sd">        Precondition: at least one checkpoint has been made (i.e., latest checkpoint subdirectory exists).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">checkpoints_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SAVE_PATH</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">CHECKPOINT_DIR_NAME</span><span class="p">)</span>
-        <span class="n">all_times</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">checkpoints_path</span><span class="p">),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">checkpoints_path</span><span class="p">,</span> <span class="n">all_times</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div></div>
+        <span class="n">sorted_listdir</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">checkpoints_path</span><span class="p">),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">checkpoints_path</span><span class="p">,</span> <span class="n">sorted_listdir</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div></div>
 </pre></div>
 
            </div>

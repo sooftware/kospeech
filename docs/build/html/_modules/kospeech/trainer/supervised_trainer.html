@@ -171,11 +171,12 @@
 <span class="kn">import</span> <span class="nn">queue</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">torch.optim.lr_scheduler</span> <span class="k">import</span> <span class="n">ReduceLROnPlateau</span>
 <span class="kn">from</span> <span class="nn">kospeech.checkpoint.checkpoint</span> <span class="k">import</span> <span class="n">Checkpoint</span>
-<span class="kn">from</span> <span class="nn">kospeech.optim.lr_scheduler</span> <span class="k">import</span> <span class="n">ExponentialDecayLR</span>
 <span class="kn">from</span> <span class="nn">kospeech.metrics</span> <span class="k">import</span> <span class="n">CharacterErrorRate</span>
+<span class="kn">from</span> <span class="nn">kospeech.optim.optimizer</span> <span class="k">import</span> <span class="n">Optimizer</span>
 <span class="kn">from</span> <span class="nn">kospeech.utils</span> <span class="k">import</span> <span class="n">EOS_token</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">id2char</span>
-<span class="kn">from</span> <span class="nn">kospeech.data.data_loader</span> <span class="k">import</span> <span class="n">MultiDataLoader</span><span class="p">,</span> <span class="n">AudioDataLoader</span>
+<span class="kn">from</span> <span class="nn">kospeech.data.data_loader</span> <span class="k">import</span> <span class="n">MultiDataLoader</span><span class="p">,</span> <span class="n">AudioDataLoader</span><span class="p">,</span> <span class="n">SpectrogramDataset</span>
 
 
 <div class="viewcode-block" id="SupervisedTrainer"><a class="viewcode-back" href="../../../Trainer.html#kospeech.trainer.supervised_trainer.SupervisedTrainer">[docs]</a><span class="k">class</span> <span class="nc">SupervisedTrainer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -183,12 +184,15 @@
 <span class="sd">    The SupervisedTrainer class helps in setting up training framework in a supervised setting.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        optimizer (e2e.optim.optim.Optimizer): optimizer for training</span>
+<span class="sd">        optimizer (kospeech.optim.optimizer.Optimizer): optimizer for training</span>
 <span class="sd">        criterion (torch.nn.Module): loss function</span>
 <span class="sd">        trainset_list (list): list of training datset</span>
-<span class="sd">        validset (e2e.dataset.data_loader.SpectrogramDataset): validation dataset</span>
+<span class="sd">        validset (kospeech.data.data_loader.SpectrogramDataset): validation dataset</span>
+<span class="sd">        high_plateau_lr (float): high plateau learning rate</span>
+<span class="sd">        low_plateau_lr (float): low plateau learning rate</span>
 <span class="sd">        num_workers (int): number of using cpu cores</span>
 <span class="sd">        device (torch.device): device - &#39;cuda&#39; or &#39;cpu&#39;</span>
+<span class="sd">        decay_threshold (float): criteria by which exp learning ratedecay is started</span>
 <span class="sd">        print_every (int): number of timesteps to print result after</span>
 <span class="sd">        save_result_every (int): number of timesteps to save result after</span>
 <span class="sd">        checkpoint_every (int): number of timesteps to checkpoint after</span>
@@ -200,11 +204,23 @@
     <span class="n">VALID_RESULT_PATH</span> <span class="o">=</span> <span class="s2">&quot;../data/train_result/eval_result.csv&quot;</span>
     <span class="n">TRAIN_STEP_RESULT_PATH</span> <span class="o">=</span> <span class="s2">&quot;../data/train_result/train_step_result.csv&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">trainset_list</span><span class="p">,</span> <span class="n">validset</span><span class="p">,</span>
-                 <span class="n">high_plateau_lr</span><span class="p">,</span> <span class="n">low_plateau_lr</span><span class="p">,</span>
-                 <span class="n">exp_decay_period</span><span class="p">,</span> <span class="n">num_workers</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">decay_threshold</span><span class="p">,</span>
-                 <span class="n">print_every</span><span class="p">,</span> <span class="n">save_result_every</span><span class="p">,</span> <span class="n">checkpoint_every</span><span class="p">,</span>
-                 <span class="n">teacher_forcing_step</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">min_teacher_forcing_ratio</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">optimizer</span><span class="p">:</span> <span class="n">Optimizer</span><span class="p">,</span>                          <span class="c1"># optimizer for training</span>
+                 <span class="n">criterion</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span>                          <span class="c1"># loss function</span>
+                 <span class="n">trainset_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>                           <span class="c1"># list of training dataset</span>
+                 <span class="n">validset</span><span class="p">:</span> <span class="n">SpectrogramDataset</span><span class="p">,</span>                  <span class="c1"># validation dataset</span>
+                 <span class="n">high_plateau_lr</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>                        <span class="c1"># high plateau learning rate</span>
+                 <span class="n">low_plateau_lr</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>                         <span class="c1"># low plateau learning rate</span>
+                 <span class="n">exp_decay_period</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>                         <span class="c1"># exponential decay learning rate period</span>
+                 <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>                              <span class="c1"># number of threads</span>
+                 <span class="n">device</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>                                   <span class="c1"># device - cuda or cpu</span>
+                 <span class="n">decay_threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>                        <span class="c1"># criteria by which exp learning ratedecay is started</span>
+                 <span class="n">print_every</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>                              <span class="c1"># number of timesteps to save result after</span>
+                 <span class="n">save_result_every</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>                        <span class="c1"># nimber of timesteps to save result after</span>
+                 <span class="n">checkpoint_every</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>                         <span class="c1"># number of timesteps to checkpoint after</span>
+                 <span class="n">teacher_forcing_step</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span>             <span class="c1"># step of teacher forcing ratio decrease per epoch.</span>
+                 <span class="n">min_teacher_forcing_ratio</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">,</span>        <span class="c1"># minimum value of teacher forcing ratio</span>
+                 <span class="n">architecture</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;seq2seq&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>        <span class="c1"># LAS architecture to train - seq2seq, transformer</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span> <span class="o">=</span> <span class="n">num_workers</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">optimizer</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span> <span class="o">=</span> <span class="n">criterion</span>
@@ -221,6 +237,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">teacher_forcing_step</span> <span class="o">=</span> <span class="n">teacher_forcing_step</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">min_teacher_forcing_ratio</span> <span class="o">=</span> <span class="n">min_teacher_forcing_ratio</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">metric</span> <span class="o">=</span> <span class="n">CharacterErrorRate</span><span class="p">(</span><span class="n">id2char</span><span class="p">,</span> <span class="n">EOS_token</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">architecture</span> <span class="o">=</span> <span class="n">architecture</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
 <div class="viewcode-block" id="SupervisedTrainer.train"><a class="viewcode-back" href="../../../Trainer.html#kospeech.trainer.supervised_trainer.SupervisedTrainer.train">[docs]</a>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">epoch_time_step</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">num_epochs</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
               <span class="n">teacher_forcing_ratio</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.99</span><span class="p">,</span> <span class="n">resume</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">:</span>
@@ -236,7 +253,6 @@
 <span class="sd">            resume(bool, optional): resume training with the latest checkpoint, (default False)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">start_epoch</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">prev_train_cer</span> <span class="o">=</span> <span class="mf">1.</span>
 
         <span class="k">if</span> <span class="n">resume</span><span class="p">:</span>
             <span class="n">checkpoint</span> <span class="o">=</span> <span class="n">Checkpoint</span><span class="p">()</span>
@@ -247,7 +263,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span> <span class="o">=</span> <span class="n">resume_checkpoint</span><span class="o">.</span><span class="n">criterion</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">trainset_list</span> <span class="o">=</span> <span class="n">resume_checkpoint</span><span class="o">.</span><span class="n">trainset_list</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">validset</span> <span class="o">=</span> <span class="n">resume_checkpoint</span><span class="o">.</span><span class="n">validset</span>
-            <span class="n">start_epoch</span> <span class="o">=</span> <span class="n">resume_checkpoint</span><span class="o">.</span><span class="n">epoch</span>
+            <span class="n">start_epoch</span> <span class="o">=</span> <span class="n">resume_checkpoint</span><span class="o">.</span><span class="n">epoch</span> <span class="o">+</span> <span class="mi">1</span>
             <span class="n">epoch_time_step</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">for</span> <span class="n">trainset</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainset_list</span><span class="p">:</span>
                 <span class="n">epoch_time_step</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">trainset</span><span class="p">)</span>
@@ -265,24 +281,21 @@
             <span class="c1"># Training</span>
             <span class="n">train_loader</span> <span class="o">=</span> <span class="n">MultiDataLoader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trainset_list</span><span class="p">,</span> <span class="n">train_queue</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">)</span>
             <span class="n">train_loader</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-            <span class="n">train_loss</span><span class="p">,</span> <span class="n">train_cer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_epoches</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">epoch_time_step</span><span class="p">,</span> <span class="n">train_begin_time</span><span class="p">,</span>
-                                                       <span class="n">train_queue</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">epoch</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">set_lr</span><span class="p">(</span><span class="mf">1e-04</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">epoch</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">set_lr</span><span class="p">(</span><span class="mf">5e-05</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">epoch</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">set_scheduler</span><span class="p">(</span><span class="n">ReduceLROnPlateau</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">patience</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span> <span class="mi">999999</span><span class="p">)</span>
+
+            <span class="n">train_loss</span><span class="p">,</span> <span class="n">train_cer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__train_epoches</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">epoch_time_step</span><span class="p">,</span> <span class="n">train_begin_time</span><span class="p">,</span>
+                                                         <span class="n">train_queue</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="p">)</span>
             <span class="n">train_loader</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
             <span class="n">Checkpoint</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainset_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">validset</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Epoch </span><span class="si">%d</span><span class="s1"> (Training) Loss </span><span class="si">%0.4f</span><span class="s1"> CER </span><span class="si">%0.4f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">train_loss</span><span class="p">,</span> <span class="n">train_cer</span><span class="p">))</span>
 
-            <span class="k">if</span> <span class="n">prev_train_cer</span> <span class="o">-</span> <span class="n">train_cer</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">decay_threshold</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">set_scheduler</span><span class="p">(</span>
-                    <span class="n">ExponentialDecayLR</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">get_lr</span><span class="p">(),</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">low_plateau_lr</span><span class="p">,</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">exp_decay_period</span>
-                    <span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">exp_decay_period</span>
-                <span class="p">)</span>
-
-            <span class="n">prev_train_cer</span> <span class="o">=</span> <span class="n">train_cer</span>
             <span class="n">teacher_forcing_ratio</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">teacher_forcing_step</span>
             <span class="n">teacher_forcing_ratio</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">min_teacher_forcing_ratio</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="p">)</span>
 
@@ -291,18 +304,21 @@
             <span class="n">valid_loader</span> <span class="o">=</span> <span class="n">AudioDataLoader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">validset</span><span class="p">,</span> <span class="n">valid_queue</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
             <span class="n">valid_loader</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
-            <span class="n">valid_cer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">valid_queue</span><span class="p">)</span>
+            <span class="n">valid_loss</span><span class="p">,</span> <span class="n">valid_cer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">valid_queue</span><span class="p">)</span>
             <span class="n">valid_loader</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Epoch </span><span class="si">%d</span><span class="s1"> (Validate) Loss </span><span class="si">%0.4f</span><span class="s1"> CER </span><span class="si">%0.4f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">valid_cer</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_save_epoch_result</span><span class="p">(</span><span class="n">train_result</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">train_dict</span><span class="p">,</span> <span class="n">train_loss</span><span class="p">,</span> <span class="n">train_cer</span><span class="p">],</span>
-                                    <span class="n">valid_result</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">valid_dict</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">valid_cer</span><span class="p">])</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">scheduler</span><span class="p">,</span> <span class="n">ReduceLROnPlateau</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">valid_loss</span><span class="p">)</span>
+
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Epoch </span><span class="si">%d</span><span class="s1"> (Validate) Loss </span><span class="si">%0.4f</span><span class="s1"> CER </span><span class="si">%0.4f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">valid_loss</span><span class="p">,</span> <span class="n">valid_cer</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__save_epoch_result</span><span class="p">(</span><span class="n">train_result</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">train_dict</span><span class="p">,</span> <span class="n">train_loss</span><span class="p">,</span> <span class="n">train_cer</span><span class="p">],</span>
+                                    <span class="n">valid_result</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">valid_dict</span><span class="p">,</span> <span class="n">valid_loss</span><span class="p">,</span> <span class="n">valid_cer</span><span class="p">])</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Epoch </span><span class="si">%d</span><span class="s1"> Training result saved as a csv file complete !!&#39;</span> <span class="o">%</span> <span class="n">epoch</span><span class="p">)</span>
 
         <span class="n">Checkpoint</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainset_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">validset</span><span class="p">,</span> <span class="n">num_epochs</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">model</span></div>
 
-<div class="viewcode-block" id="SupervisedTrainer.train_epoches"><a class="viewcode-back" href="../../../Trainer.html#kospeech.trainer.supervised_trainer.SupervisedTrainer.train_epoches">[docs]</a>    <span class="k">def</span> <span class="nf">train_epoches</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span> <span class="n">epoch</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="k">def</span> <span class="nf">__train_epoches</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span> <span class="n">epoch</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                       <span class="n">epoch_time_step</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">train_begin_time</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
                       <span class="n">queue</span><span class="p">:</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -326,11 +342,12 @@
         <span class="n">timestep</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
-        <span class="n">begin_time</span> <span class="o">=</span> <span class="n">epoch_begin_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
+        <span class="n">begin_time</span> <span class="o">=</span> <span class="n">epoch_begin_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
         <span class="n">num_workers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span>
+
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="n">inputs</span><span class="p">,</span> <span class="n">scripts</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">,</span> <span class="n">target_lengths</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+            <span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">,</span> <span class="n">target_lengths</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 
             <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="c1"># Empty feats means closing one loader</span>
@@ -343,25 +360,36 @@
                     <span class="k">continue</span>
 
             <span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-            <span class="n">scripts</span> <span class="o">=</span> <span class="n">scripts</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-            <span class="n">targets</span> <span class="o">=</span> <span class="n">scripts</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:]</span>
+            <span class="n">targets</span> <span class="o">=</span> <span class="n">targets</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
 
-            <span class="n">model</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">flatten_parameters</span><span class="p">()</span>
-            <span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="o">=</span><span class="n">input_lengths</span><span class="p">,</span>
-                           <span class="n">targets</span><span class="o">=</span><span class="n">scripts</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="n">teacher_forcing_ratio</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">architecture</span> <span class="o">==</span> <span class="s1">&#39;seq2seq&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">DataParallel</span><span class="p">):</span>
+                    <span class="n">model</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">flatten_parameters</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">model</span><span class="o">.</span><span class="n">flatten_parameters</span><span class="p">()</span>
 
-            <span class="n">logit</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-            <span class="n">hypothesis</span> <span class="o">=</span> <span class="n">logit</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">logit</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="n">teacher_forcing_ratio</span><span class="p">)</span>
+                <span class="n">logit</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">logit</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">architecture</span> <span class="o">==</span> <span class="s1">&#39;transformer&#39;</span><span class="p">:</span>
+                <span class="n">logit</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">return_attns</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unsupported architecture : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">architecture</span><span class="p">))</span>
+
+            <span class="n">targets</span> <span class="o">=</span> <span class="n">targets</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:]</span>
+            <span class="n">y_hats</span> <span class="o">=</span> <span class="n">logit</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
 
             <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">(</span><span class="n">logit</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">logit</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)),</span> <span class="n">targets</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
             <span class="n">epoch_loss_total</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
 
-            <span class="n">cer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">hypothesis</span><span class="p">)</span>
+            <span class="n">cer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">y_hats</span><span class="p">)</span>
             <span class="n">total_num</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">input_lengths</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
             <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
 
             <span class="n">timestep</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">empty_cache</span><span class="p">()</span>
@@ -382,17 +410,17 @@
                 <span class="n">begin_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
             <span class="k">if</span> <span class="n">timestep</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_result_every</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_save_step_result</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_step_result</span><span class="p">,</span> <span class="n">epoch_loss_total</span> <span class="o">/</span> <span class="n">total_num</span><span class="p">,</span> <span class="n">cer</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__save_step_result</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_step_result</span><span class="p">,</span> <span class="n">epoch_loss_total</span> <span class="o">/</span> <span class="n">total_num</span><span class="p">,</span> <span class="n">cer</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">timestep</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkpoint_every</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">Checkpoint</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span>  <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainset_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">validset</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
 
-            <span class="k">del</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">,</span> <span class="n">scripts</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">logit</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">hypothesis</span>
+            <span class="k">del</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">logit</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">y_hats</span>
 
         <span class="n">Checkpoint</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainset_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">validset</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;train() completed&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">epoch_loss_total</span> <span class="o">/</span> <span class="n">total_num</span><span class="p">,</span> <span class="n">cer</span></div>
+        <span class="k">return</span> <span class="n">epoch_loss_total</span> <span class="o">/</span> <span class="n">total_num</span><span class="p">,</span> <span class="n">cer</span>
 
 <div class="viewcode-block" id="SupervisedTrainer.validate"><a class="viewcode-back" href="../../../Trainer.html#kospeech.trainer.supervised_trainer.SupervisedTrainer.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span> <span class="n">queue</span><span class="p">:</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -407,33 +435,46 @@
 <span class="sd">            - **cer** (float): character error rate of validation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">cer</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="n">total_loss</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="n">total_num</span> <span class="o">=</span> <span class="mf">0.</span>
 
         <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;validate() start&#39;</span><span class="p">)</span>
 
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
             <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-                <span class="n">inputs</span><span class="p">,</span> <span class="n">scripts</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">,</span> <span class="n">script_lengths</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+                <span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">,</span> <span class="n">target_lengths</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 
                 <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="k">break</span>
 
                 <span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-                <span class="n">scripts</span> <span class="o">=</span> <span class="n">scripts</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-                <span class="n">targets</span> <span class="o">=</span> <span class="n">scripts</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:]</span>
+                <span class="n">targets</span> <span class="o">=</span> <span class="n">targets</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
 
-                <span class="n">model</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">flatten_parameters</span><span class="p">()</span>
-                <span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="o">=</span><span class="n">input_lengths</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">architecture</span> <span class="o">==</span> <span class="s1">&#39;seq2seq&#39;</span><span class="p">:</span>
+                    <span class="n">model</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">flatten_parameters</span><span class="p">()</span>
+                    <span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="o">=</span><span class="n">input_lengths</span><span class="p">,</span>
+                                   <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+                                   <span class="n">language_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_decode_dict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="n">logit</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
 
-                <span class="n">logit</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-                <span class="n">hypothesis</span> <span class="o">=</span> <span class="n">logit</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">architecture</span> <span class="o">==</span> <span class="s1">&#39;transformer&#39;</span><span class="p">:</span>
+                    <span class="n">logit</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">,</span> <span class="n">return_decode_dict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-                <span class="n">cer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">hypothesis</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unsupported architecture : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">architecture</span><span class="p">))</span>
+
+                <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">(</span><span class="n">logit</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">logit</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)),</span> <span class="n">targets</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+                <span class="n">total_loss</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+                <span class="n">total_num</span> <span class="o">+=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">input_lengths</span><span class="p">)</span>
+
+                <span class="n">y_hats</span> <span class="o">=</span> <span class="n">logit</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">cer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">y_hats</span><span class="p">)</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;validate() completed&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">cer</span></div>
+        <span class="k">return</span> <span class="n">total_loss</span> <span class="o">/</span> <span class="n">total_num</span><span class="p">,</span> <span class="n">cer</span></div>
 
-    <span class="k">def</span> <span class="nf">_save_epoch_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train_result</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">valid_result</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__save_epoch_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train_result</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">valid_result</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot; Save result of epoch &quot;&quot;&quot;</span>
         <span class="n">train_dict</span><span class="p">,</span> <span class="n">train_loss</span><span class="p">,</span> <span class="n">train_cer</span> <span class="o">=</span> <span class="n">train_result</span>
         <span class="n">valid_dict</span><span class="p">,</span> <span class="n">valid_loss</span><span class="p">,</span> <span class="n">valid_cer</span> <span class="o">=</span> <span class="n">valid_result</span>
@@ -450,13 +491,13 @@
         <span class="n">train_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">SupervisedTrainer</span><span class="o">.</span><span class="n">TRAIN_RESULT_PATH</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;cp949&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">valid_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">SupervisedTrainer</span><span class="o">.</span><span class="n">VALID_RESULT_PATH</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;cp949&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_save_step_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train_step_result</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">loss</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">cer</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__save_step_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train_step_result</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">loss</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">cer</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot; Save result of --save_result_every step &quot;&quot;&quot;</span>
         <span class="n">train_step_result</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
         <span class="n">train_step_result</span><span class="p">[</span><span class="s2">&quot;cer&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cer</span><span class="p">)</span>
 
         <span class="n">train_step_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">train_step_result</span><span class="p">)</span>
-        <span class="n">train_step_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">TRAIN_STEP_RESULT_PATH</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;cp949&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+        <span class="n">train_step_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">SupervisedTrainer</span><span class="o">.</span><span class="n">TRAIN_STEP_RESULT_PATH</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;cp949&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
