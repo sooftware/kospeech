@@ -79,7 +79,7 @@ def __to_mono(y):
         if not np.issubdtype(y.dtype, np.floating):
             raise ParameterError('Audio data must be floating-point')
 
-        if mono and y.ndim != 1:
+        elif mono and y.ndim != 1:
             raise ParameterError('Invalid shape for monophonic audio: '
                                  'ndim={:d}, shape={}'.format(y.ndim, y.shape))
 
