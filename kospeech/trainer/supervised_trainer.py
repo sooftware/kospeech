@@ -203,7 +203,8 @@ class SupervisedTrainer(object):
                 else:
                     model.flatten_parameters()
 
-                logit = model(inputs, input_lengths, targets, teacher_forcing_ratio=teacher_forcing_ratio)
+                logit = model(inputs=inputs, input_lengths=input_lengths,
+                              targets=targets, teacher_forcing_ratio=teacher_forcing_ratio)
                 logit = torch.stack(logit, dim=1).to(self.device)
 
             elif self.architecture == 'transformer':
