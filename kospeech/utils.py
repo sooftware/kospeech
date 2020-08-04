@@ -70,8 +70,6 @@ def label_to_string(labels, id2char, eos_id):
     Returns: sentence
         - **sentence** (str or list): symbol of labels
     """
-    assert labels.shape == 1 or labels.shape == 2
-
     if len(labels.shape) == 1:
         sentence = str()
         for label in labels:
