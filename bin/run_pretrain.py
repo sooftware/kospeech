@@ -1,6 +1,8 @@
 import argparse
 import torch
 import torchaudio
+import sys
+sys.path.append('..')
 from torch import Tensor
 from kospeech.data.audio.core import load_audio
 from kospeech.model_builder import load_test_model
