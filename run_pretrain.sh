@@ -1,4 +1,4 @@
-MODEL_PATH='../pretrin/model.pt'
+MODEL_PATH='../pretrain/model.pt'
 AUDIO_PATH='../pretrain/sample_audio.pcm'
 DEVICE='cuda'
 
