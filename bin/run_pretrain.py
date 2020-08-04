@@ -3,6 +3,7 @@ import torch
 import torchaudio
 from torch import Tensor
 from kospeech.data.audio.core import load_audio
+from kospeech.model_builder import load_test_model
 from kospeech.utils import label_to_string, id2char, EOS_token
 
 
@@ -20,6 +21,7 @@ def parse_audio(audio_path: str, del_silence: bool = True) -> Tensor:
 
 
 parser = argparse.ArgumentParser(description='Run Pretrain')
+parser.add_argument('--model_path', type=str, default='../pretrain/model.pt')
 parser.add_argument('--audio_path', type=str, default='../pretrain/sample_audio.pcm')
 parser.add_argument('--device', type=str, default='cuda')
 opt = parser.parse_args()
@@ -27,7 +29,8 @@ opt = parser.parse_args()
 feature_vector = parse_audio('audio_path', del_silence=True)
 input_length = torch.IntTensor([len(feature_vector)])
 
-model = torch.load('../pretrain/model.pt').to(opt.device)
+model = load_test_model(opt, opt.device)
+model.eval()
 
 output = model(feature_vector.unsqueeze(0), input_length, teacher_forcing_ratio=0.0, return_attns=False)
 logit = torch.stack(output, dim=1).to(opt.device)
