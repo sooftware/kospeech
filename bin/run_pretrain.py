@@ -28,7 +28,7 @@ parser.add_argument('--audio_path', type=str, default='../pretrain/sample_audio.
 parser.add_argument('--device', type=str, default='cuda')
 opt = parser.parse_args()
 
-feature_vector = parse_audio('audio_path', del_silence=True)
+feature_vector = parse_audio(opt.audio_path, del_silence=True)
 input_length = torch.IntTensor([len(feature_vector)])
 
 model = load_test_model(opt, opt.device)
