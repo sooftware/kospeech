@@ -200,7 +200,7 @@ python bin/setup.py install
   
 ## Get Started
 
-### Step 0: Try speech recognition with a pre-train model.
+### Step 0: Try quick speech recognition with a pre-train model.
 
 * Command
 ```
