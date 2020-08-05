@@ -200,7 +200,7 @@ python bin/setup.py install
   
 ## Get Started
 
-### Step 0: Try quick speech recognition with a pre-train model.
+### Step 0: Try quick speech recognition with a pre-trained model.
 
 * Command
 ```
@@ -209,8 +209,8 @@ $ ./run_pretrain.sh
 * Output
 ```
 아 뭔 소리야 그건 또
-```
-You can simplify speech recognition using the pre-train model.
+```  
+You can get a quick look of pre-trained model's inference, with a sample data which has chosen randomly from dataset.  
   
 ### Step 1: Data Preprocessing  
     
