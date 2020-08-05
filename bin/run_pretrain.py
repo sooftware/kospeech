@@ -34,7 +34,8 @@ input_length = torch.IntTensor([len(feature_vector)])
 model = load_test_model(opt, opt.device)
 model.eval()
 
-output = model(feature_vector.unsqueeze(0), input_length, teacher_forcing_ratio=0.0, return_attns=False)
+output = model(inputs=feature_vector.unsqueeze(0), input_lengths=input_length,
+               teacher_forcing_ratio=0.0, return_decode_dict=False)
 logit = torch.stack(output, dim=1).to(opt.device)
 pred = logit.max(-1)[1]
 
