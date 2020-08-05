@@ -201,6 +201,13 @@ python bin/setup.py install
 ```
   
 ## Get Started
+
+### Step 0: Run Pretrain Model
+  
+```
+$ ./run_pretrain.sh
+```
+  
 ### Step 1: Data Preprocessing  
     
 you can preprocess `KsponSpeech corpus` refer [wiki](https://github.com/sooftware/KoSpeech/wiki/Preparation-before-Training) or [this repo](https://github.com/sooftware/KsponSpeech-preprocess).       
