@@ -210,7 +210,7 @@ $ ./run_pretrain.sh
 ```
 아 뭔 소리야 그건 또
 ```  
-You can get a quick look of pre-trained model's inference, with a sample data which has chosen randomly from dataset.  
+You can get a quick look of pre-trained model's inference, with a sample data.  
   
 ### Step 1: Data Preprocessing  
     
