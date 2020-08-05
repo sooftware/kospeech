@@ -202,11 +202,17 @@ python bin/setup.py install
   
 ## Get Started
 
-### Step 0: Run Pretrain Model
-  
+### Step 0: Run Pretrain Model with Sample Audio
+
+* Command
 ```
 $ ./run_pretrain.sh
 ```
+* Output
+```
+아 뭔 소리야 그건 또
+```
+You can simplify speech recognition using the pre-train model.
   
 ### Step 1: Data Preprocessing  
     
