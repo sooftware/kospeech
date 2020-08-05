@@ -299,12 +299,14 @@ class SupervisedTrainer(object):
                 else:
                     raise ValueError("Unsupported architecture : {0}".format(self.architecture))
 
-                loss = self.criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
-                total_loss += loss.item()
-                total_num += sum(input_lengths)
-
                 y_hats = logit.max(-1)[1]
                 cer = self.metric(targets, y_hats)
+
+                logit = logit[:, :targets.size(1), :]
+                loss = self.criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
+
+                total_loss += loss.item()
+                total_num += sum(input_lengths)
 
         logger.info('validate() completed')
         return total_loss / total_num, cer
