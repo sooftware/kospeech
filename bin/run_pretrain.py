@@ -16,7 +16,6 @@ def parse_audio(audio_path: str, del_silence: bool = True) -> Tensor:
                                                        frame_length=20, frame_shift=10,
                                                        window_type='hamming').transpose(0, 1).numpy()
     feature_vector -= feature_vector.mean()
-
     feature_vector = Tensor(feature_vector).transpose(0, 1)
 
     return feature_vector

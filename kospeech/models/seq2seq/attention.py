@@ -53,9 +53,11 @@ class MultiHeadAttention(nn.Module):
 
     Returns: context
         - **context** (batch, output_len, dimensions): tensor containing the attended output features from the decoder.
+
     Reference:
         - **Attention Is All You Need**: https://arxiv.org/abs/1706.03762
         - **State-Of-The-Art Speech Recognition with Sequence-to-Sequence Models**: https://arxiv.org/abs/1712.01769
+
     Contributor:
         - Soohwan Kim @sooftware
         - Deokjin Seo @qute012
