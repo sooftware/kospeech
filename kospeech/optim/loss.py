@@ -37,8 +37,6 @@ class CrossEntrypyLoss(nn.Module):
                 label_smoothed.fill_(self.smoothing / (self.num_classes - 1))
                 label_smoothed.scatter_(1, target.data.unsqueeze(1), self.confidence)
                 label_smoothed[target == self.ignore_index, :] = 0
-                loss = torch.sum(-label_smoothed * logit)
-        else:
-            loss = F.cross_entropy(logit, target, ignore_index=PAD_token, reduction='sum')
+                return torch.sum(-label_smoothed * logit)
 
-        return loss
+        return F.cross_entropy(logit, target, ignore_index=PAD_token, reduction='sum')
