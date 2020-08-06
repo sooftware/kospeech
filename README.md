@@ -12,8 +12,10 @@
 <sup>1</sup>Elcomm, Kwangwoon Univ. <sup>2</sup>Spoken Language Lab (of Sogang Univ.) <sup>*</sup> author is advisor to this work  
   
 `KoSpeech` is an End-to-End open source project for Korean speech recognition. The goal of this work is to help research speech recognition. It was developed with a focus on readability and extensibility of code. Learning is possible through various options such as feature extraction, attention mechanism, and data augmentation, etc..   
-We used `KsponSpeech` corpus which containing **1000h** of Korean speech data. At present our model has recorded an **89.69%** character recognition rate. We are always updating this work for increased recognition rate and extensibility.   
+We used `KsponSpeech` corpus which containing **1000h** of Korean speech data. At present our model has recorded an **10.31%** character error rate. We are always updating this work for increased recognition rate and extensibility.   
 We appreciate any kind of [feedback or contribution](https://github.com/sooftware/End-to-end-Speech-Recognition/issues).    
+  
+[Download pre-train model](https://drive.google.com/file/d/1Sq3ah7UijgxR-PGZfOVEY8aT12Y4JRdB/view?usp=sharing)
   
 ## Intro
   
