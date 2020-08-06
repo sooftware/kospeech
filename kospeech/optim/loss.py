@@ -2,7 +2,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
-from kospeech.utils import PAD_token
 
 
 class CrossEntrypyLoss(nn.Module):
@@ -39,4 +38,4 @@ class CrossEntrypyLoss(nn.Module):
                 label_smoothed[target == self.ignore_index, :] = 0
             return torch.sum(-label_smoothed * logit)
 
-        return F.cross_entropy(logit, target, ignore_index=PAD_token, reduction='sum')
+        return F.cross_entropy(logit, target, ignore_index=self.ignore_index, reduction='sum')
