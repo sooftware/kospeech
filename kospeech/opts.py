@@ -120,6 +120,9 @@ def build_train_opts(parser):
     group.add_argument('--max_grad_norm', '-max_grad_norm',
                        type=int, default=400,
                        help='value used for gradient norm clipping (default: 400)')
+    group.add_argument('--weight_decay', '-weight_decay',
+                       type=float, default=1e-05,
+                       help='value used for weight decay (default: 1e-05)')
     group.add_argument('--rampup_period', '-rampup_period',
                        type=int, default=1000,
                        help='timestep of learning rate rampup (default: 1000)')

@@ -16,7 +16,7 @@ import torch
 from torch import optim, nn
 sys.path.append('..')
 from kospeech.data.data_loader import split_dataset, load_data_list
-from kospeech.optim.loss import CrossEntrypyLoss
+from kospeech.optim.loss import LabelSmoothingLoss
 from kospeech.optim.lr_scheduler import RampUpLR
 from kospeech.optim.optimizer import Optimizer
 from kospeech.trainer.supervised_trainer import SupervisedTrainer
@@ -37,7 +37,7 @@ def train(opt):
         epoch_time_step, trainset_list, validset = split_dataset(opt, audio_paths, script_paths)
         model = build_model(opt, device)
 
-        optimizer = optim.Adam(model.module.parameters(), lr=opt.init_lr, weight_decay=1e-05)
+        optimizer = optim.Adam(model.module.parameters(), lr=opt.init_lr, weight_decay=opt.weight_decay)
 
         if opt.rampup_period > 0:
             scheduler = RampUpLR(optimizer, opt.init_lr, opt.high_plateau_lr, opt.rampup_period)
@@ -45,7 +45,7 @@ def train(opt):
         else:
             optimizer = Optimizer(optimizer, None, 0, opt.max_grad_norm)
 
-        criterion = CrossEntrypyLoss(len(char2id), PAD_token, opt.label_smoothing, dim=-1).to(device)
+        criterion = LabelSmoothingLoss(len(char2id), PAD_token, opt.label_smoothing, dim=-1).to(device)
 
     else:
         trainset_list = None

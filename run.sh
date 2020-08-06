@@ -25,6 +25,7 @@ MIN_TEACHER_FORCING_RATIO=0.8
 VALID_RATIO=0.05
 MAX_LEN=120
 MAX_GRAD_NORM=400
+WEIGHT_DECAY=1e-05
 INIT_LR=3e-05
 HIGH_PLATEAU_LR=3e-04
 RAMPUP_PERIOD=400
@@ -61,6 +62,6 @@ python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epoch
 --checkpoint_every $CHECKPOINT_EVERY --print_every $PRINT_EVERY --init_lr $INIT_LR  \
 --mode $MODE --dataset_path $DATASET_PATH --data_list_path $DATA_LIST_PATH  \
 --max_grad_norm $MAX_GRAD_NORM --rampup_period $RAMPUP_PERIOD --max_len $MAX_LEN \
---noiseset_size $NOISESET_SIZE \
+--noiseset_size $NOISESET_SIZE --weight_decay $WEIGHT_DECAY \
 --noise_level $NOISE_LEVEL --attn_mechanism $ATTN_MECHANISM --teacher_forcing_step $TEACHER_FORCING_STEP \
 --min_teacher_forcing_ratio $MIN_TEACHER_FORCING_RATIO --extractor $EXTRACTOR --activation $ACTIVATION
