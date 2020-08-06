@@ -15,6 +15,8 @@
 We used `KsponSpeech` corpus which containing **1000h** of Korean speech data. At present our model has recorded an **89.69%** character recognition rate. We are always updating this work for increased recognition rate and extensibility.   
 We appreciate any kind of [feedback or contribution](https://github.com/sooftware/End-to-end-Speech-Recognition/issues).    
   
+[Download Pre-train Model](https://drive.google.com/file/d/1Sq3ah7UijgxR-PGZfOVEY8aT12Y4JRdB/view?usp=sharing)
+  
 ## Intro
   
 End-to-end (E2E) automatic speech recognition (ASR) is an emerging paradigm in the field of neural network-based speech recognition that offers multiple benefits. Traditional “hybrid” ASR systems, which are comprised of an acoustic model, language model, and pronunciation model, require separate training of these components, each of which can be complex.   
