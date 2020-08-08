@@ -38,7 +38,7 @@ class PoswiseFeedForwardNet(nn.Module):
     Another way of describing this is as two convolutions with kernel size 1.
     """
     def __init__(self, d_model: int = 512, d_ff: int = 2048,
-                 dropout_p: float = 0.3, ffnet_style: str = 'feed_forward') -> None:
+                 dropout_p: float = 0.3, ffnet_style: str = 'ff') -> None:
         super(PoswiseFeedForwardNet, self).__init__()
         self.ffnet_style = ffnet_style.lower()
         if self.ffnet_style == 'ff':

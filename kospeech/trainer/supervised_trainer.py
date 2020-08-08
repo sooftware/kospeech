@@ -99,8 +99,10 @@ class SupervisedTrainer(object):
             self.validset = resume_checkpoint.validset
             start_epoch = resume_checkpoint.epoch + 1
             epoch_time_step = 0
+
             for trainset in self.trainset_list:
                 epoch_time_step += len(trainset)
+
             epoch_time_step = math.ceil(epoch_time_step / batch_size)
 
         logger.info('start')
@@ -109,6 +111,7 @@ class SupervisedTrainer(object):
         for epoch in range(start_epoch, num_epochs):
             logger.info('Epoch %d start' % epoch)
             train_queue = queue.Queue(self.num_workers << 1)
+
             for trainset in self.trainset_list:
                 trainset.shuffle()
 
@@ -146,7 +149,7 @@ class SupervisedTrainer(object):
 
             logger.info('Epoch %d (Validate) Loss %0.4f CER %0.4f' % (epoch, valid_loss, valid_cer))
             self.__save_epoch_result(train_result=[self.train_dict, train_loss, train_cer],
-                                    valid_result=[self.valid_dict, valid_loss, valid_cer])
+                                     valid_result=[self.valid_dict, valid_loss, valid_cer])
             logger.info('Epoch %d Training result saved as a csv file complete !!' % epoch)
 
         Checkpoint(model, self.optimizer, self.criterion, self.trainset_list, self.validset, num_epochs).save()
