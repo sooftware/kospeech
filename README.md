@@ -17,7 +17,7 @@ We appreciate any kind of [feedback or contribution](https://github.com/sooftwar
   
 |Description|Dataset|Model|  
 |-----------|-------|-----|  
-|KoSpeech 0.0|[KsponSpeech](http://www.aihub.or.kr/aidata/105)|[download](https://drive.google.com/file/d/1Sq3ah7UijgxR-PGZfOVEY8aT12Y4JRdB/view?usp=sharing)|   
+|kospeech_seq2seq|[KsponSpeech](http://www.aihub.or.kr/aidata/105)|[download](https://drive.google.com/file/d/1Sq3ah7UijgxR-PGZfOVEY8aT12Y4JRdB/view?usp=sharing)|   
   
 ## Intro
   
