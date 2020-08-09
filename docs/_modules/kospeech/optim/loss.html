@@ -164,10 +164,9 @@
            <div itemprop="articleBody">
             
   <h1>Source code for kospeech.optim.loss</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">math</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">torch</span>
+<span></span><span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="k">import</span> <span class="n">Tensor</span>
 
 
 <div class="viewcode-block" id="LabelSmoothingLoss"><a class="viewcode-back" href="../../../Optim.html#kospeech.optim.loss.LabelSmoothingLoss">[docs]</a><span class="k">class</span> <span class="nc">LabelSmoothingLoss</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -188,7 +187,7 @@
 <span class="sd">    Returns: label_smoothed</span>
 <span class="sd">        - **label_smoothed** (float): sum of loss</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">,</span> <span class="n">ignore_index</span><span class="p">,</span> <span class="n">smoothing</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">ignore_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">smoothing</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">dim</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">LabelSmoothingLoss</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">confidence</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">smoothing</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">smoothing</span> <span class="o">=</span> <span class="n">smoothing</span>
@@ -196,7 +195,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">=</span> <span class="n">dim</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ignore_index</span> <span class="o">=</span> <span class="n">ignore_index</span>
 
-<div class="viewcode-block" id="LabelSmoothingLoss.forward"><a class="viewcode-back" href="../../../Optim.html#kospeech.optim.loss.LabelSmoothingLoss.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logit</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+<div class="viewcode-block" id="LabelSmoothingLoss.forward"><a class="viewcode-back" href="../../../Optim.html#kospeech.optim.loss.LabelSmoothingLoss.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logit</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">):</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
             <span class="n">label_smoothed</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">logit</span><span class="p">)</span>
             <span class="n">label_smoothed</span><span class="o">.</span><span class="n">fill_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">smoothing</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
@@ -204,156 +203,6 @@
             <span class="n">label_smoothed</span><span class="p">[</span><span class="n">target</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_index</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="n">label_smoothed</span> <span class="o">*</span> <span class="n">logit</span><span class="p">)</span></div></div>
-
-
-<span class="c1"># Loss for Language Model ===</span>
-
-<div class="viewcode-block" id="Loss"><a class="viewcode-back" href="../../../Optim.html#kospeech.optim.loss.Loss">[docs]</a><span class="k">class</span> <span class="nc">Loss</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Base class for encapsulation of the loss functions.</span>
-<span class="sd">    This class defines interfaces that are commonly used with loss functions</span>
-<span class="sd">    in training and inferencing.  For information regarding individual loss</span>
-<span class="sd">    functions, please refer to http://pytorch.org/docs/master/nn.html#loss-functions</span>
-
-<span class="sd">    Note:</span>
-<span class="sd">        Do not use this class directly, use one of the sub classes.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        name (str): name of the loss function used by logging messages.</span>
-<span class="sd">        criterion (torch.nn._Loss): one of PyTorch&#39;s loss function.  Refer</span>
-<span class="sd">            to http://pytorch.org/docs/master/nn.html#loss-functions for</span>
-<span class="sd">            a list of them.</span>
-
-<span class="sd">    Attributes:</span>
-<span class="sd">        name (str): name of the loss function used by logging messages.</span>
-<span class="sd">        criterion (torch.nn._Loss): one of PyTorch&#39;s loss function.  Refer</span>
-<span class="sd">            to http://pytorch.org/docs/master/nn.html#loss-functions for</span>
-<span class="sd">            a list of them.  Implementation depends on individual</span>
-<span class="sd">            sub-classes.</span>
-<span class="sd">        acc_loss (int or torcn.nn.Tensor): variable that stores accumulated loss.</span>
-<span class="sd">        norm_term (float): normalization term that can be used to calculate</span>
-<span class="sd">            the loss of multiple batches.  Implementation depends on individual</span>
-<span class="sd">            sub-classes.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">criterion</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span> <span class="o">=</span> <span class="n">criterion</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">issubclass</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">),</span> <span class="n">nn</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">loss</span><span class="o">.</span><span class="n">_Loss</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Criterion has to be a subclass of torch.nn._Loss&quot;</span><span class="p">)</span>
-        <span class="c1"># accumulated loss</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">acc_loss</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="c1"># normalization term</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">norm_term</span> <span class="o">=</span> <span class="mi">0</span>
-
-<div class="viewcode-block" id="Loss.reset"><a class="viewcode-back" href="../../../Optim.html#kospeech.optim.loss.Loss.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Reset the accumulated loss. &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">acc_loss</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">norm_term</span> <span class="o">=</span> <span class="mi">0</span></div>
-
-<div class="viewcode-block" id="Loss.get_loss"><a class="viewcode-back" href="../../../Optim.html#kospeech.optim.loss.Loss.get_loss">[docs]</a>    <span class="k">def</span> <span class="nf">get_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Get the loss.</span>
-<span class="sd">        This method defines how to calculate the averaged loss given the</span>
-<span class="sd">        accumulated loss and the normalization term.  Override to define your</span>
-<span class="sd">        own logic.</span>
-<span class="sd">        Returns:</span>
-<span class="sd">            loss (float): value of the loss.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
-
-<div class="viewcode-block" id="Loss.eval_batch"><a class="viewcode-back" href="../../../Optim.html#kospeech.optim.loss.Loss.eval_batch">[docs]</a>    <span class="k">def</span> <span class="nf">eval_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outputs</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Evaluate and accumulate loss given outputs and expected results.</span>
-<span class="sd">        This method is called after each batch with the batch outputs and</span>
-<span class="sd">        the target (expected) results.  The loss and normalization term are</span>
-<span class="sd">        accumulated in this method.  Override it to define your own accumulation</span>
-<span class="sd">        method.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            outputs (torch.Tensor): outputs of a batch.</span>
-<span class="sd">            target (torch.Tensor): expected output of a batch.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
-
-    <span class="k">def</span> <span class="nf">cuda</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">backward</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">acc_loss</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No loss to back propagate.&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">acc_loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="NLLLoss"><a class="viewcode-back" href="../../../Optim.html#kospeech.optim.loss.NLLLoss">[docs]</a><span class="k">class</span> <span class="nc">NLLLoss</span><span class="p">(</span><span class="n">Loss</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Batch averaged negative log-likelihood loss.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        weight (torch.Tensor, optional): refer to http://pytorch.org/docs/master/nn.html#nllloss</span>
-<span class="sd">        mask (int, optional): index of masked token, i.e. weight[mask] = 0.</span>
-<span class="sd">        size_average (bool, optional): refer to http://pytorch.org/docs/master/nn.html#nllloss</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">_NAME</span> <span class="o">=</span> <span class="s2">&quot;Avg NLLLoss&quot;</span>
-
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">size_average</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">size_average</span> <span class="o">=</span> <span class="n">size_average</span>
-        <span class="k">if</span> <span class="n">mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">weight</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must provide weight with a mask.&quot;</span><span class="p">)</span>
-            <span class="n">weight</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-
-        <span class="nb">super</span><span class="p">(</span><span class="n">NLLLoss</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_NAME</span><span class="p">,</span>
-            <span class="n">nn</span><span class="o">.</span><span class="n">NLLLoss</span><span class="p">(</span><span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;sum&#39;</span><span class="p">))</span>
-
-<div class="viewcode-block" id="NLLLoss.get_loss"><a class="viewcode-back" href="../../../Optim.html#kospeech.optim.loss.NLLLoss.get_loss">[docs]</a>    <span class="k">def</span> <span class="nf">get_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">acc_loss</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-            <span class="k">return</span> <span class="mi">0</span>
-        <span class="c1"># total loss for all batches</span>
-        <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">acc_loss</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">size_average</span><span class="p">:</span>
-            <span class="c1"># average loss per batch</span>
-            <span class="n">loss</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm_term</span>
-        <span class="k">return</span> <span class="n">loss</span></div>
-
-<div class="viewcode-block" id="NLLLoss.eval_batch"><a class="viewcode-back" href="../../../Optim.html#kospeech.optim.loss.NLLLoss.eval_batch">[docs]</a>    <span class="k">def</span> <span class="nf">eval_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outputs</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">acc_loss</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">norm_term</span> <span class="o">+=</span> <span class="mi">1</span></div></div>
-
-
-<div class="viewcode-block" id="Perplexity"><a class="viewcode-back" href="../../../Optim.html#kospeech.optim.loss.Perplexity">[docs]</a><span class="k">class</span> <span class="nc">Perplexity</span><span class="p">(</span><span class="n">NLLLoss</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Language model perplexity loss.</span>
-<span class="sd">    Perplexity is the token averaged likelihood.  When the averaging options are the</span>
-<span class="sd">    same, it is the exponential of negative log-likelihood.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        weight (torch.Tensor, optional): refer to http://pytorch.org/docs/master/nn.html#nllloss</span>
-<span class="sd">        mask (int, optional): index of masked token, i.e. weight[mask] = 0.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">_NAME</span> <span class="o">=</span> <span class="s2">&quot;Perplexity&quot;</span>
-    <span class="n">_MAX_EXP</span> <span class="o">=</span> <span class="mi">100</span>
-
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Perplexity</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">,</span> <span class="n">size_average</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span>
-
-<div class="viewcode-block" id="Perplexity.eval_batch"><a class="viewcode-back" href="../../../Optim.html#kospeech.optim.loss.Perplexity.eval_batch">[docs]</a>    <span class="k">def</span> <span class="nf">eval_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outputs</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">acc_loss</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">norm_term</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">norm_term</span> <span class="o">+=</span> <span class="n">target</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ne</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span></div>
-
-<div class="viewcode-block" id="Perplexity.get_loss"><a class="viewcode-back" href="../../../Optim.html#kospeech.optim.loss.Perplexity.get_loss">[docs]</a>    <span class="k">def</span> <span class="nf">get_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">nll</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">Perplexity</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_loss</span><span class="p">()</span>
-        <span class="n">nll</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm_term</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">nll</span> <span class="o">&gt;</span> <span class="n">Perplexity</span><span class="o">.</span><span class="n">_MAX_EXP</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;WARNING: Loss exceeded maximum value, capping to e^100&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">Perplexity</span><span class="o">.</span><span class="n">_MAX_EXP</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">nll</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

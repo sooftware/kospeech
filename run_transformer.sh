@@ -1,4 +1,6 @@
-DATASET_PATH='/data3/'
+# It has not yet been fully implemented yet
+
+DATASET_PATH='your_dataset_path'
 DATA_LIST_PATH='../data/data_list/except_outlier_train_list.csv'
 BATCH_SIZE=32
 NUM_WORKERS=4
@@ -18,12 +20,12 @@ LOW_PLATEAU_LR=1e-05
 RAMPUP_PERIOD=0
 DECAY_THRESHOLD=0.02
 EXP_DECAY_PERIOD=120000
-WINDOW_SIZE=20
+FRAME_LENGTH=20
 SAMPLE_RATE=16000
-STRIDE=10
+FRAME_SHIFT=10
 N_MELS=80
 FEATURE_EXTRACT_BY='librosa'      # You can set 'torchaudio'
-TRANSFORM_METHOD='spect'          # Support feature : spech, mel, mfcc
+TRANSFORM_METHOD='mel'          # Support feature : spech, mel, mfcc
 TIME_MASK_PARA=40
 FREQ_MASK_PARA=12
 TIME_MASK_NUM=2
@@ -44,8 +46,8 @@ python ./main.py --architecture $ARCHITECTURE --num_classes $NUM_CLASSES --d_mod
 --dropout $DROPOUT --ffnet_style $FFNET_STYLE --dataset_path $DATASET_PATH --data_list_path $DATA_LIST_PATH \
 --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epochs $NUM_EPOCHS --label_smoothing $LABEL_SMOOTHING \
 --init_lr $INIT_LR --high_plateau_lr $HIGH_PLATEAU_LR --low_plateau_lr $LOW_PLATEAU_LR --rampup_period $RAMPUP_PERIOD \
---decay_threshold $DECAY_THRESHOLD --exp_decay_period $EXP_DECAY_PERIOD --window_size $WINDOW_SIZE \
---sample_rate $SAMPLE_RATE --stride $STRIDE --n_mels $N_MELS --feature_extract_by $FEATURE_EXTRACT_BY \
+--decay_threshold $DECAY_THRESHOLD --exp_decay_period $EXP_DECAY_PERIOD --frame_length $FRAME_LENGTH \
+--sample_rate $SAMPLE_RATE --frame_shift $FRAME_SHIFT --n_mels $N_MELS --feature_extract_by $FEATURE_EXTRACT_BY \
 --transform_method $TRANSFORM_METHOD --time_mask_para $TIME_MASK_PARA \
 --freq_mask_para $FREQ_MASK_PARA --time_mask_num $TIME_MASK_NUM --freq_mask_num $FREQ_MASK_NUM \
 --save_result_every $SAVE_RESULT_EVERY --checkpoint_every $CHECKPOINT_EVERY --print_every $PRINT_EVERY \

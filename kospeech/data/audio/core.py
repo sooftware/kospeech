@@ -5,7 +5,7 @@ from numpy.lib.stride_tricks import as_strided
 from kospeech.utils import logger
 
 
-def load_audio(audio_path, del_silence):
+def load_audio(audio_path: str, del_silence: bool = False):
     """
     Load audio file (PCM) to sound. if del_silence is True, Eliminate all sounds below 30dB.
     If exception occurs in numpy.memmap(), return None.
@@ -79,11 +79,11 @@ def __to_mono(y):
         if not np.issubdtype(y.dtype, np.floating):
             raise ParameterError('Audio data must be floating-point')
 
-        if mono and y.ndim != 1:
+        elif mono and y.ndim != 1:
             raise ParameterError('Invalid shape for monophonic audio: '
                                  'ndim={:d}, shape={}'.format(y.ndim, y.shape))
 
-        elif y.ndim > 2 or y.ndim == 0:
+        if y.ndim > 2 or y.ndim == 0:
             raise ParameterError('Audio data must have shape (samples,) or (channels, samples). '
                                  'Received shape={}'.format(y.shape))
 

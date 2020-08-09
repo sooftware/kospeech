@@ -11,7 +11,7 @@ from kospeech.utils import logger, PAD_token, SOS_token, EOS_token
 
 class SpectrogramDataset(Dataset, SpectrogramParser):
     """
-    Dataset for mel-spectrogram & transcript matching
+    Dataset for feature & transcript matching
 
     Args:
         audio_paths (list): set of audio path
@@ -27,7 +27,8 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
                  target_dict, opt, spec_augment=False,
                  noise_augment=False, dataset_path=None, noiseset_size=0, noise_level=0.7) -> None:
         super(SpectrogramDataset, self).__init__(feature_extract_by=opt.feature_extract_by, sample_rate=opt.sample_rate,
-                                                 n_mels=opt.n_mels, window_size=opt.window_size, stride=opt.stride,
+                                                 n_mels=opt.n_mels,
+                                                 frame_length=opt.frame_length, frame_shift=opt.frame_shift,
                                                  del_silence=opt.del_silence, input_reverse=opt.input_reverse,
                                                  normalize=opt.normalize, target_dict=target_dict,
                                                  time_mask_para=opt.time_mask_para, freq_mask_para=opt.freq_mask_para,
@@ -45,12 +46,12 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
     def get_item(self, idx):
         """ get feature & transcript """
         transcript = self.parse_transcript(self.script_paths[idx])
-        feature = self.parse_audio(self.audio_paths[idx], self.augment_methods[idx])
+        feature_vector = self.parse_audio(self.audio_paths[idx], self.augment_methods[idx])
 
-        if feature is None:
-            return None, None
-        else:
-            return feature, transcript
+        if feature_vector is None:
+            feature_vector, transcript = None, None
+
+        return feature_vector, transcript
 
     def parse_transcript(self, script_path):
         """ Parses scripts @Override """
@@ -254,13 +255,13 @@ def split_dataset(opt, audio_paths, script_paths):
     total_time_step = math.ceil(len(audio_paths) / opt.batch_size)
     valid_time_step = math.ceil(total_time_step * opt.valid_ratio)
     train_time_step = total_time_step - valid_time_step
-    residual = train_time_step
+    base_time_step = train_time_step
 
     if opt.spec_augment:
-        train_time_step += residual
+        train_time_step += base_time_step
 
     if opt.noise_augment:
-        train_time_step += residual
+        train_time_step += base_time_step
 
     train_num_per_worker = math.ceil(train_num / opt.num_workers)
 

@@ -5,7 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from kospeech.data.audio.core import split
-from kospeech.seq2seq.decoder import Speller
+from kospeech.models.seq2seq.decoder import Seq2seqDecoder
 
 MODEL_PATH = '../data/checkpoints/model.pt'
 AUDIO_PATH = '../data/sample/KaiSpeech_000098.pcm'
@@ -28,6 +28,7 @@ def load_audio(audio_path, del_silence):
     return sound
 
 
+# Set your parse_audio() method used in training.
 def parse_audio(audio_path):
     sound = load_audio(audio_path, DEL_SILENCE)
 
@@ -41,7 +42,6 @@ def parse_audio(audio_path):
         spectrogram /= std
 
     spectrogram = spectrogram[:, ::-1]
-
     spectrogram = torch.FloatTensor(np.ascontiguousarray(np.swapaxes(spectrogram, 0, 1)))
 
     return spectrogram
@@ -52,7 +52,7 @@ model = torch.load(MODEL_PATH)
 
 _, metadata = model(spectrogram.unsqueeze(0), torch.IntTensor([len(spectrogram)]), teacher_forcing_ratio=0.0)  # D(NxT)
 
-alignments = metadata[Speller.KEY_ATTN_SCORE]
+alignments = metadata[Seq2seqDecoder.KEY_ATTN_SCORE]
 attention_maps = None
 
 for decode_timestep in alignments:

@@ -9,7 +9,7 @@ class Optimizer(object):
     Args:
         optim (torch.optim.Optimizer): optimizer object, the parameters to be optimized
             should be given when instantiating the object, e.g. torch.optim.Adam, torch.optim.SGD
-        scheduler (e2e.optim.lr_scheduler, optional): learning rate scheduler
+        scheduler (kospeech.optim.lr_scheduler, optional): learning rate scheduler
         scheduler_period (int, optional): timestep with learning rate scheduler
         max_grad_norm (int, optional): value used for gradient norm clipping
     """
@@ -20,13 +20,13 @@ class Optimizer(object):
         self.max_grad_norm = max_grad_norm
         self.count = 0
 
-    def step(self, model, loss):
+    def step(self, model):
         if self.max_grad_norm > 0:
             torch.nn.utils.clip_grad_norm_(model.parameters(), self.max_grad_norm)
         self.optimizer.step()
 
         if self.scheduler is not None:
-            self.update(loss)
+            self.update()
             self.count += 1
 
             if self.scheduler_period == self.count:
@@ -39,10 +39,9 @@ class Optimizer(object):
         self.scheduler_period = scheduler_period
         self.count = 0
 
-    def update(self, loss):
+    def update(self):
         if isinstance(self.scheduler, torch.optim.lr_scheduler.ReduceLROnPlateau):
-            self.scheduler.step(loss)
-
+            pass
         else:
             self.scheduler.step()
 
@@ -52,3 +51,7 @@ class Optimizer(object):
     def get_lr(self):
         for g in self.optimizer.param_groups:
             return g['lr']
+
+    def set_lr(self, lr):
+        for g in self.optimizer.param_groups:
+            g['lr'] = lr

@@ -196,7 +196,7 @@
 </dl>
 <dl class="class">
 <dt id="kospeech.models.transformer.transformer.Transformer">
-<em class="property">class </em><code class="descclassname">kospeech.models.transformer.transformer.</code><code class="descname">Transformer</code><span class="sig-paren">(</span><em>num_classes: int</em>, <em>pad_id: int</em>, <em>d_model: int = 512</em>, <em>d_ff: int = 2048</em>, <em>num_heads: int = 8</em>, <em>num_encoder_layers: int = 6</em>, <em>num_decoder_layers: int = 6</em>, <em>dropout_p: float = 0.3</em>, <em>ffnet_style: str = 'ff'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/models/transformer/transformer.html#Transformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.transformer.transformer.Transformer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">kospeech.models.transformer.transformer.</code><code class="descname">Transformer</code><span class="sig-paren">(</span><em>num_classes: int</em>, <em>d_model: int = 512</em>, <em>input_dim: int = 80</em>, <em>pad_id: int = 0</em>, <em>eos_id: int = 2</em>, <em>d_ff: int = 2048</em>, <em>num_heads: int = 8</em>, <em>num_encoder_layers: int = 6</em>, <em>num_decoder_layers: int = 6</em>, <em>dropout_p: float = 0.3</em>, <em>ffnet_style: str = 'ff'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/models/transformer/transformer.html#Transformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.transformer.transformer.Transformer" title="Permalink to this definition">¶</a></dt>
 <dd><p>A Transformer model. User is able to modify the attributes as needed.
 The architecture is based on the paper “Attention Is All You Need”.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -205,8 +205,10 @@ The architecture is based on the paper “Attention Is All You Need”.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>num_classes</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – the number of classfication</li>
-<li><strong>pad_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of &lt;PAD_token&gt;</li>
 <li><strong>d_model</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – dimension of model (default: 512)</li>
+<li><strong>input_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – dimension of input</li>
+<li><strong>pad_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of &lt;PAD_token&gt;</li>
+<li><strong>eos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of &lt;EOS_token&gt;</li>
 <li><strong>d_ff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – dimension of feed forward network (default: 2048)</li>
 <li><strong>num_encoder_layers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of encoder layers (default: 6)</li>
 <li><strong>num_decoder_layers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of decoder layers (default: 6)</li>
@@ -234,7 +236,7 @@ otherwise, position-wise feed forward network to be a convolution layer. (defaul
 </dl>
 <dl class="method">
 <dt id="kospeech.models.transformer.transformer.Transformer.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs: torch.Tensor, targets: Optional[torch.Tensor]</em><span class="sig-paren">)</span> &#x2192; Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]<a class="reference internal" href="_modules/kospeech/models/transformer/transformer.html#Transformer.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.transformer.transformer.Transformer.forward" title="Permalink to this definition">¶</a></dt>
+<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs: torch.Tensor</em>, <em>input_lengths: torch.Tensor</em>, <em>targets: Optional[torch.Tensor] = None</em>, <em>return_attns: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/models/transformer/transformer.html#Transformer.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.transformer.transformer.Transformer.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -250,13 +252,13 @@ registered hooks while the latter silently ignores them.</p>
 
 <dl class="class">
 <dt id="kospeech.models.transformer.transformer.TransformerDecoder">
-<em class="property">class </em><code class="descclassname">kospeech.models.transformer.transformer.</code><code class="descname">TransformerDecoder</code><span class="sig-paren">(</span><em>num_embeddings: int</em>, <em>d_model: int = 512</em>, <em>d_ff: int = 512</em>, <em>num_layers: int = 6</em>, <em>num_heads: int = 8</em>, <em>ffnet_style: str = 'ff'</em>, <em>dropout_p: float = 0.3</em>, <em>pad_id: int = 0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/models/transformer/transformer.html#TransformerDecoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.transformer.transformer.TransformerDecoder" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">kospeech.models.transformer.transformer.</code><code class="descname">TransformerDecoder</code><span class="sig-paren">(</span><em>num_classes: int</em>, <em>d_model: int = 512</em>, <em>d_ff: int = 512</em>, <em>num_layers: int = 6</em>, <em>num_heads: int = 8</em>, <em>ffnet_style: str = 'ff'</em>, <em>dropout_p: float = 0.3</em>, <em>pad_id: int = 0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/models/transformer/transformer.html#TransformerDecoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.transformer.transformer.TransformerDecoder" title="Permalink to this definition">¶</a></dt>
 <dd><p>The TransformerDecoder is composed of a stack of N identical layers.
 Each layer has three sub-layers. The first is a multi-head self-attention mechanism,
 and the second is a multi-head attention mechanism, third is a feed-forward network.</p>
 <dl class="method">
 <dt id="kospeech.models.transformer.transformer.TransformerDecoder.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs: torch.Tensor</em>, <em>memory: torch.Tensor</em>, <em>inputs_mask: Optional[torch.Tensor] = None</em>, <em>memory_mask: Optional[torch.Tensor] = None</em><span class="sig-paren">)</span> &#x2192; Tuple[torch.Tensor, torch.Tensor, torch.Tensor]<a class="reference internal" href="_modules/kospeech/models/transformer/transformer.html#TransformerDecoder.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.transformer.transformer.TransformerDecoder.forward" title="Permalink to this definition">¶</a></dt>
+<code class="descname">forward</code><span class="sig-paren">(</span><em>targets: torch.Tensor</em>, <em>input_lengths: Optional[Any] = None</em>, <em>memory: torch.Tensor = None</em><span class="sig-paren">)</span> &#x2192; Tuple[torch.Tensor, torch.Tensor, torch.Tensor]<a class="reference internal" href="_modules/kospeech/models/transformer/transformer.html#TransformerDecoder.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.transformer.transformer.TransformerDecoder.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -272,13 +274,13 @@ registered hooks while the latter silently ignores them.</p>
 
 <dl class="class">
 <dt id="kospeech.models.transformer.transformer.TransformerEncoder">
-<em class="property">class </em><code class="descclassname">kospeech.models.transformer.transformer.</code><code class="descname">TransformerEncoder</code><span class="sig-paren">(</span><em>d_model: int = 512</em>, <em>d_ff: int = 2048</em>, <em>num_layers: int = 6</em>, <em>num_heads: int = 8</em>, <em>ffnet_style: str = 'ff'</em>, <em>dropout_p: float = 0.3</em>, <em>pad_id: int = 0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/models/transformer/transformer.html#TransformerEncoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.transformer.transformer.TransformerEncoder" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">kospeech.models.transformer.transformer.</code><code class="descname">TransformerEncoder</code><span class="sig-paren">(</span><em>d_model: int = 512</em>, <em>input_dim: int = 80</em>, <em>d_ff: int = 2048</em>, <em>num_layers: int = 6</em>, <em>num_heads: int = 8</em>, <em>ffnet_style: str = 'ff'</em>, <em>dropout_p: float = 0.3</em>, <em>pad_id: int = 0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/models/transformer/transformer.html#TransformerEncoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.transformer.transformer.TransformerEncoder" title="Permalink to this definition">¶</a></dt>
 <dd><p>The TransformerEncoder is composed of a stack of N identical layers.
 Each layer has two sub-layers. The first is a multi-head self-attention mechanism,
 and the second is a simple, position-wise fully connected feed-forward network.</p>
 <dl class="method">
 <dt id="kospeech.models.transformer.transformer.TransformerEncoder.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs: torch.Tensor</em>, <em>inputs_mask: Optional[torch.Tensor] = None</em><span class="sig-paren">)</span> &#x2192; Tuple[torch.Tensor, torch.Tensor]<a class="reference internal" href="_modules/kospeech/models/transformer/transformer.html#TransformerEncoder.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.transformer.transformer.TransformerEncoder.forward" title="Permalink to this definition">¶</a></dt>
+<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs: torch.Tensor</em>, <em>input_lengths: torch.Tensor = None</em><span class="sig-paren">)</span> &#x2192; Tuple[torch.Tensor, torch.Tensor]<a class="reference internal" href="_modules/kospeech/models/transformer/transformer.html#TransformerEncoder.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.transformer.transformer.TransformerEncoder.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -302,7 +304,7 @@ registered hooks while the latter silently ignores them.</p>
 This standard decoder layer is based on the paper “Attention Is All You Need”.</p>
 <dl class="method">
 <dt id="kospeech.models.transformer.layers.TransformerDecoderLayer.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs: torch.Tensor</em>, <em>memory: torch.Tensor</em>, <em>inputs_mask: torch.Tensor</em>, <em>memory_mask: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; Tuple[torch.Tensor, torch.Tensor, torch.Tensor]<a class="reference internal" href="_modules/kospeech/models/transformer/layers.html#TransformerDecoderLayer.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.transformer.layers.TransformerDecoderLayer.forward" title="Permalink to this definition">¶</a></dt>
+<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs: torch.Tensor</em>, <em>memory: torch.Tensor</em>, <em>non_pad_mask: Optional[Any] = None</em>, <em>self_attn_mask: Optional[Any] = None</em>, <em>memory_mask: Optional[Any] = None</em><span class="sig-paren">)</span> &#x2192; Tuple[torch.Tensor, torch.Tensor, torch.Tensor]<a class="reference internal" href="_modules/kospeech/models/transformer/layers.html#TransformerDecoderLayer.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.transformer.layers.TransformerDecoderLayer.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -323,7 +325,7 @@ registered hooks while the latter silently ignores them.</p>
 This standard encoder layer is based on the paper “Attention Is All You Need”.</p>
 <dl class="method">
 <dt id="kospeech.models.transformer.layers.TransformerEncoderLayer.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs: torch.Tensor</em>, <em>inputs_mask: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; Tuple[torch.Tensor, torch.Tensor]<a class="reference internal" href="_modules/kospeech/models/transformer/layers.html#TransformerEncoderLayer.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.transformer.layers.TransformerEncoderLayer.forward" title="Permalink to this definition">¶</a></dt>
+<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs: torch.Tensor</em>, <em>non_pad_mask: Optional[Any] = None</em>, <em>self_attn_mask: Optional[Any] = None</em><span class="sig-paren">)</span> &#x2192; Tuple[torch.Tensor, torch.Tensor]<a class="reference internal" href="_modules/kospeech/models/transformer/layers.html#TransformerEncoderLayer.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.transformer.layers.TransformerEncoderLayer.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -390,27 +392,9 @@ subspaces at different positions.</p>
 <dl class="docutils">
 <dt>Inputs: query, key, value, mask</dt>
 <dd><ul class="first last simple">
-<li><dl class="first docutils">
-<dt><strong>query</strong> (batch, q_len, d_model): In transformer, three different ways:</dt>
-<dd>Case 1: come from previoys decoder layer
-Case 2: come from the input embedding
-Case 3: come from the output embedding (masked)</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt><strong>key</strong> (batch, k_len, d_model): In transformer, three different ways:</dt>
-<dd>Case 1: come from the output of the encoder
-Case 2: come from the input embeddings
-Case 3: come from the output embedding (masked)</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt><strong>value</strong> (batch, v_len, d_model): In transformer, three different ways:</dt>
-<dd>Case 1: come from the output of the encoder
-Case 2: come from the input embeddings
-Case 3: come from the output embedding (masked)</dd>
-</dl>
-</li>
+<li><strong>query</strong> (batch, q_len, d_model): tensor containing projection vector for decoder.</li>
+<li><strong>key</strong> (batch, k_len, d_model): tensor containing projection vector for encoder.</li>
+<li><strong>value</strong> (batch, v_len, d_model): tensor containing features of the encoded input sequence.</li>
 <li><strong>mask</strong> (-): tensor containing indices to be masked</li>
 </ul>
 </dd>
@@ -423,7 +407,7 @@ Case 3: come from the output embedding (masked)</dd>
 </dl>
 <dl class="method">
 <dt id="kospeech.models.transformer.sublayers.MultiHeadAttention.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>query: torch.Tensor</em>, <em>key: torch.Tensor</em>, <em>value: torch.Tensor</em>, <em>mask: Optional[torch.Tensor] = None</em><span class="sig-paren">)</span> &#x2192; Tuple[torch.Tensor, torch.Tensor]<a class="reference internal" href="_modules/kospeech/models/transformer/sublayers.html#MultiHeadAttention.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.transformer.sublayers.MultiHeadAttention.forward" title="Permalink to this definition">¶</a></dt>
+<code class="descname">forward</code><span class="sig-paren">(</span><em>query: torch.Tensor</em>, <em>key: torch.Tensor</em>, <em>value: torch.Tensor</em>, <em>mask: Optional[Any] = None</em><span class="sig-paren">)</span> &#x2192; Tuple[torch.Tensor, torch.Tensor]<a class="reference internal" href="_modules/kospeech/models/transformer/sublayers.html#MultiHeadAttention.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.transformer.sublayers.MultiHeadAttention.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -487,7 +471,7 @@ mask (torch.Tensor): tensor containing indices to be masked</dd>
 </dl>
 <dl class="method">
 <dt id="kospeech.models.transformer.sublayers.ScaledDotProductAttention.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>query: torch.Tensor</em>, <em>key: torch.Tensor</em>, <em>value: torch.Tensor</em>, <em>mask: Optional[torch.Tensor] = None</em><span class="sig-paren">)</span> &#x2192; Tuple[torch.Tensor, torch.Tensor]<a class="reference internal" href="_modules/kospeech/models/transformer/sublayers.html#ScaledDotProductAttention.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.transformer.sublayers.ScaledDotProductAttention.forward" title="Permalink to this definition">¶</a></dt>
+<code class="descname">forward</code><span class="sig-paren">(</span><em>query: torch.Tensor</em>, <em>key: torch.Tensor</em>, <em>value: torch.Tensor</em>, <em>mask: Optional[Any] = None</em><span class="sig-paren">)</span> &#x2192; Tuple[torch.Tensor, torch.Tensor]<a class="reference internal" href="_modules/kospeech/models/transformer/sublayers.html#ScaledDotProductAttention.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.transformer.sublayers.ScaledDotProductAttention.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -528,7 +512,7 @@ registered hooks while the latter silently ignores them.</p>
 
 <dl class="class">
 <dt id="kospeech.models.transformer.embeddings.PositionalEncoding">
-<em class="property">class </em><code class="descclassname">kospeech.models.transformer.embeddings.</code><code class="descname">PositionalEncoding</code><span class="sig-paren">(</span><em>d_model: int = 512</em>, <em>dropout_p: float = 0.1</em>, <em>max_len: int = 5000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/models/transformer/embeddings.html#PositionalEncoding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.transformer.embeddings.PositionalEncoding" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">kospeech.models.transformer.embeddings.</code><code class="descname">PositionalEncoding</code><span class="sig-paren">(</span><em>d_model: int = 80</em>, <em>max_len: int = 5000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/models/transformer/embeddings.html#PositionalEncoding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.transformer.embeddings.PositionalEncoding" title="Permalink to this definition">¶</a></dt>
 <dd><p>Positional Encoding proposed in “Attention Is All You Need”.
 Since transformer contains no recurrence and no convolution, in order for the model to make
 use of the order of the sequence, we must add some positional information.</p>
@@ -539,7 +523,7 @@ PE_(pos, 2i+1)  =  cos(pos / power(10000, 2i / d_model))</dd>
 </dl>
 <dl class="method">
 <dt id="kospeech.models.transformer.embeddings.PositionalEncoding.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>embedded: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/kospeech/models/transformer/embeddings.html#PositionalEncoding.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.transformer.embeddings.PositionalEncoding.forward" title="Permalink to this definition">¶</a></dt>
+<code class="descname">forward</code><span class="sig-paren">(</span><em>length: int</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/kospeech/models/transformer/embeddings.html#PositionalEncoding.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.transformer.embeddings.PositionalEncoding.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -557,12 +541,41 @@ registered hooks while the latter silently ignores them.</p>
 <div class="section" id="module-kospeech.models.transformer.mask">
 <span id="mask"></span><h2>Mask<a class="headerlink" href="#module-kospeech.models.transformer.mask" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="kospeech.models.transformer.mask.subsequent_masking">
-<code class="descclassname">kospeech.models.transformer.mask.</code><code class="descname">subsequent_masking</code><span class="sig-paren">(</span><em>x: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/kospeech/models/transformer/mask.html#subsequent_masking"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.transformer.mask.subsequent_masking" title="Permalink to this definition">¶</a></dt>
+<dt id="kospeech.models.transformer.mask.get_attn_pad_mask">
+<code class="descclassname">kospeech.models.transformer.mask.</code><code class="descname">get_attn_pad_mask</code><span class="sig-paren">(</span><em>key: torch.Tensor</em>, <em>pad_id: int</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/kospeech/models/transformer/mask.html#get_attn_pad_mask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.transformer.mask.get_attn_pad_mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>For masking out the padding part of key sequence.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kospeech.models.transformer.mask.get_pad_mask">
+<code class="descclassname">kospeech.models.transformer.mask.</code><code class="descname">get_pad_mask</code><span class="sig-paren">(</span><em>inputs: torch.Tensor</em>, <em>input_lengths: Optional[Any] = None</em>, <em>pad_id: int = None</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/kospeech/models/transformer/mask.html#get_pad_mask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.transformer.mask.get_pad_mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Padding position is set to True, either use input_lengths or pad_id</p>
+<dl class="docutils">
+<dt>Examples::</dt>
+<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_pad_mask</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">)</span>
+<span class="go">[[0, 0, 0, 0, 0, 0, 1, 1, 1, 1],</span>
+<span class="go"> [0, 0, 0, 0, 0, 1, 1, 1, 1, 1],</span>
+<span class="go"> [0, 0, 0, 1, 1, 1, 1, 1, 1, 1],</span>
+<span class="go"> [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],</span>
+<span class="go"> [0, 0, 0, 0, 1, 1, 1, 1, 1, 1],</span>
+<span class="go"> [0, 0, 0, 0, 0, 0, 0, 1, 1, 1],</span>
+<span class="go"> [0, 0, 0, 0, 0, 0, 0, 1, 1, 1],</span>
+<span class="go"> [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],</span>
+<span class="go"> [0, 0, 0, 0, 0, 1, 1, 1, 1, 1],</span>
+<span class="go"> [0, 0, 0, 0, 0, 0, 1, 1, 1, 1]] x batch_size</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="kospeech.models.transformer.mask.get_subsequent_mask">
+<code class="descclassname">kospeech.models.transformer.mask.</code><code class="descname">get_subsequent_mask</code><span class="sig-paren">(</span><em>inputs: torch.Tensor</em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/kospeech/models/transformer/mask.html#get_subsequent_mask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.transformer.mask.get_subsequent_mask" title="Permalink to this definition">¶</a></dt>
 <dd><p>Makes subsequent masking like following:</p>
 <dl class="docutils">
 <dt>Examples::</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">subsequent_mask</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_subsequent_mask</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
 <span class="go">[[0, 1, 1, 1, 1, 1, 1, 1, 1, 1],</span>
 <span class="go"> [0, 0, 1, 1, 1, 1, 1, 1, 1, 1],</span>
 <span class="go"> [0, 0, 0, 1, 1, 1, 1, 1, 1, 1],</span>

@@ -5,12 +5,14 @@ import torch.nn.functional as F
 import numpy as np
 from torch import Tensor, LongTensor
 from typing import Optional, Any, Tuple
-from kospeech.models.seq2seq.attention import LocationAwareAttention, MultiHeadAttention
-from kospeech.models.seq2seq.modules import Linear
-from kospeech.models.seq2seq.sublayers import ResidualConnection, BaseRNN
+from kospeech.models.seq2seq.attention import LocationAwareAttention, MultiHeadAttention, AdditiveAttention, \
+    ScaledDotProductAttention
+from kospeech.models.modules import Linear
+from kospeech.models.seq2seq.sublayers import BaseRNN
+from kospeech.models.transformer.sublayers import AddNorm
 
 
-def _inflate(tensor: Tensor, n_repeat: int, dim: int):
+def _inflate(tensor: Tensor, n_repeat: int, dim: int) -> Tensor:
     """ Given a tensor, 'inflates' it along the given dimension by replicating each slice specified number of times  """
     repeat_dims = [1] * len(tensor.size())
     repeat_dims[dim] *= n_repeat
@@ -24,17 +26,19 @@ class Seq2seqDecoder(BaseRNN):
     by specifying a probability distribution over sequences of characters.
 
     Args:
-        num_classes (int): the number of classfication
+        num_classes (int): number of classfication
         max_length (int): a maximum allowed length for the sequence to be processed
-        hidden_dim (int): the number of features in the hidden state `h`
+        hidden_dim (int): dimension of RNN`s hidden state vector
         sos_id (int): index of the start of sentence symbol
         eos_id (int): index of the end of sentence symbol
+        attn_mechanism (str): type of attention mechanism (default: dot)
+        num_heads (int): number of attention heads. (default: 4)
         num_layers (int, optional): number of recurrent layers (default: 1)
-        rnn_type (str, optional): type of RNN cell (default: gru)
-        dropout_p (float, optional): dropout probability (default: 0)
+        rnn_type (str, optional): type of RNN cell (default: lstm)
+        dropout_p (float, optional): dropout probability (default: 0.3)
         device (torch.device): device - 'cuda' or 'cpu'
 
-    Inputs: inputs, encoder_outputs, teacher_forcing_ratio
+    Inputs: inputs, encoder_outputs, teacher_forcing_ratio, return_decode_dict
         - **inputs** (batch, seq_len, input_size): list of sequences, whose length is the batch size and within which
           each sequence is a list of token IDs.  It is used for teacher forcing when provided. (default `None`)
         - **encoder_outputs** (batch, seq_len, hidden_dim): tensor with containing the outputs of the listener.
@@ -42,11 +46,12 @@ class Seq2seqDecoder(BaseRNN):
         - **teacher_forcing_ratio** (float): The probability that teacher forcing will be used. A random number is
           drawn uniformly from 0-1 for every decoding token, and if the sample is smaller than the given value,
           teacher forcing would be used (default is 0).
+        - **return_decode_dict** (dict): dictionary which contains decode informations.
 
-    Returns: decoder_outputs, ret_dict
+    Returns: decoder_outputs, decode_dict
         - **decoder_outputs** (seq_len, batch, num_classes): list of tensors containing
           the outputs of the decoding function.
-        - **ret_dict**: dictionary containing additional information as follows {*KEY_ATTENTION_SCORE* : list of scores
+        - **decode_dict**: dictionary containing additional information as follows {*KEY_ATTENTION_SCORE* : list of scores
           representing encoder outputs, *KEY_SEQUENCE_SYMBOL* : list of sequences, where each sequence is a list of
           predicted token IDs }.
     """
@@ -54,10 +59,18 @@ class Seq2seqDecoder(BaseRNN):
     KEY_LENGTH = 'length'
     KEY_SEQUENCE_SYMBOL = 'sequence_symbol'
 
-    def __init__(self, num_classes: int, max_length: int = 120, hidden_dim: int = 1024,
-                 sos_id: int = 1, eos_id: int = 2, attn_mechanism: str = 'dot',
-                 num_heads: int = 4, num_layers: int = 2, rnn_type: str = 'lstm',
-                 dropout_p: float = 0.3, device: str = 'cuda') -> None:
+    def __init__(self,
+                 num_classes: int,                    # number of classfication
+                 max_length: int = 120,               # a maximum allowed length for the sequence to be processed
+                 hidden_dim: int = 1024,              # dimension of RNN`s hidden state vector
+                 sos_id: int = 1,                     # start of sentence token`s id
+                 eos_id: int = 2,                     # end of sentence token`s id
+                 attn_mechanism: str = 'multi-head',  # type of attention mechanism
+                 num_heads: int = 4,                  # number of attention heads
+                 num_layers: int = 2,                 # number of RNN layers
+                 rnn_type: str = 'lstm',              # type of RNN cell
+                 dropout_p: float = 0.3,              # dropout probability
+                 device: str = 'cuda') -> None:       # device - 'cuda' or 'cpu'
         super(Seq2seqDecoder, self).__init__(hidden_dim, hidden_dim, num_layers, rnn_type, dropout_p, False, device)
         self.num_classes = num_classes
         self.num_heads = num_heads
@@ -71,13 +84,17 @@ class Seq2seqDecoder(BaseRNN):
         self.input_dropout = nn.Dropout(dropout_p)
 
         if self.attn_mechanism == 'loc':
-            self.attention = LocationAwareAttention(hidden_dim, smoothing=True)
-        elif self.attn_mechanism == 'dot':
-            self.attention = ResidualConnection(MultiHeadAttention(hidden_dim, num_heads), hidden_dim)
+            self.attention = AddNorm(LocationAwareAttention(hidden_dim, smoothing=True), hidden_dim)
+        elif self.attn_mechanism == 'multi-head':
+            self.attention = AddNorm(MultiHeadAttention(hidden_dim, num_heads), hidden_dim)
+        elif self.attn_mechanism == 'additive':
+            self.attention = AddNorm(AdditiveAttention(hidden_dim), hidden_dim)
+        elif self.attn_mechanism == 'scaled-dot':
+            self.attention = AddNorm(ScaledDotProductAttention(hidden_dim), hidden_dim)
         else:
             raise ValueError("Unsupported attention: %s".format(attn_mechanism))
 
-        self.projection = ResidualConnection(Linear(hidden_dim, hidden_dim, bias=True), hidden_dim)
+        self.projection = AddNorm(Linear(hidden_dim, hidden_dim, bias=True), hidden_dim)
         self.generator = Linear(hidden_dim, num_classes, bias=False)
 
     def forward_step(self, input_var: Tensor, hidden: Optional[Any],
@@ -92,10 +109,10 @@ class Seq2seqDecoder(BaseRNN):
 
         output, hidden = self.rnn(embedded, hidden)
 
-        if self.attn_mechanism == 'dot':
-            context, attn = self.attention(output, encoder_outputs, encoder_outputs)
-        else:
+        if self.attn_mechanism == 'loc':
             context, attn = self.attention(output, encoder_outputs, attn)
+        else:
+            context, attn = self.attention(output, encoder_outputs, encoder_outputs)
 
         output = self.projection(context.view(-1, self.hidden_dim)).view(batch_size, -1, self.hidden_dim)
         output = self.generator(torch.tanh(output).contiguous().view(-1, self.hidden_dim))
@@ -105,14 +122,15 @@ class Seq2seqDecoder(BaseRNN):
 
         return step_output, hidden, attn
 
-    def forward(self, inputs: Tensor, encoder_outputs: Tensor, teacher_forcing_ratio: float = 1.0,
-                language_model: Optional[nn.Module] = None, return_ret_dict: bool = False) -> Tuple[Tensor, dict]:
+    def forward(self, inputs: Tensor, encoder_outputs: Tensor,
+                teacher_forcing_ratio: float = 1.0, language_model: Optional[nn.Module] = None,
+                return_decode_dict: bool = False) -> Tuple[Tensor, dict]:
         hidden, attn = None, None
-        result, ret_dict = list(), dict()
+        result, decode_dict = list(), dict()
 
         if not self.training:
-            ret_dict[Seq2seqDecoder.KEY_ATTENTION_SCORE] = list()
-            ret_dict[Seq2seqDecoder.KEY_SEQUENCE_SYMBOL] = list()
+            decode_dict[Seq2seqDecoder.KEY_ATTENTION_SCORE] = list()
+            decode_dict[Seq2seqDecoder.KEY_SEQUENCE_SYMBOL] = list()
 
         inputs, batch_size, max_length = self.validate_args(inputs, encoder_outputs, teacher_forcing_ratio, language_model)
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
@@ -122,9 +140,7 @@ class Seq2seqDecoder(BaseRNN):
         if use_teacher_forcing:
             inputs = inputs[inputs != self.eos_id].view(batch_size, -1)
 
-            # Call forward_step() at every timestep when attention mechanism is location-aware
-            # Because location-aware attention requires previous attention (alignment).
-            if self.attn_mechanism == 'loc':
+            if self.attn_mechanism == 'loc' or self.attn_mechanism == 'additive':
                 for di in range(inputs.size(1)):
                     input_var = inputs[:, di].unsqueeze(1)
                     step_output, hidden, attn = self.forward_step(input_var, hidden, encoder_outputs, attn)
@@ -147,29 +163,33 @@ class Seq2seqDecoder(BaseRNN):
                 input_var = result[-1].topk(1)[1]
 
                 if not self.training:
-                    ret_dict[Seq2seqDecoder.KEY_ATTENTION_SCORE].append(attn)
-                    ret_dict[Seq2seqDecoder.KEY_SEQUENCE_SYMBOL].append(input_var)
+                    decode_dict[Seq2seqDecoder.KEY_ATTENTION_SCORE].append(attn)
+                    decode_dict[Seq2seqDecoder.KEY_SEQUENCE_SYMBOL].append(input_var)
                     eos_batches = input_var.data.eq(self.eos_id)
 
                     if eos_batches.dim() > 0:
                         eos_batches = eos_batches.cpu().view(-1).numpy()
                         update_idx = ((lengths > di) & eos_batches) != 0
-                        lengths[update_idx] = len(ret_dict[Seq2seqDecoder.KEY_SEQUENCE_SYMBOL])
+                        lengths[update_idx] = len(decode_dict[Seq2seqDecoder.KEY_SEQUENCE_SYMBOL])
 
                     if use_language_model:
                         lm_step_output = language_model.forward_step(prev_tokens, None)[0][:, -1, :].squeeze(1)
                         step_output = step_output * self.acoustic_weight + lm_step_output * self.language_weight
                         prev_tokens = torch.cat([prev_tokens, step_output.topk(1)[1]], dim=1)
 
-        if return_ret_dict:
-            ret_dict[Seq2seqDecoder.KEY_LENGTH] = lengths
-            return result, ret_dict
+        if return_decode_dict:
+            decode_dict[Seq2seqDecoder.KEY_LENGTH] = lengths
+            result = (result, decode_dict)
+        else:
+            del decode_dict
 
         return result
 
-    def validate_args(self, inputs: Optional[Any], encoder_outputs: Tensor,
-                      teacher_forcing_ratio: float, language_model: Optional[nn.Module]) -> Tuple[Tensor, int, int]:
+    def validate_args(self, inputs: Optional[Any] = None, encoder_outputs: Tensor = None,
+                      teacher_forcing_ratio: float = 1.0,
+                      language_model: Optional[nn.Module] = None) -> Tuple[Tensor, int, int]:
         """ Validate arguments """
+        assert encoder_outputs is not None
         batch_size = encoder_outputs.size(0)
 
         if inputs is None:  # inference
@@ -207,7 +227,7 @@ class Seq2seqTopKDecoder(nn.Module):
         - **decoder_outputs** :  list of tensors containing the outputs of the decoding function.
     """
 
-    def __init__(self, decoder: Seq2seqDecoder, beam_size: int = 3):
+    def __init__(self, decoder: Seq2seqDecoder, beam_size: int = 3) -> None:
         super(Seq2seqTopKDecoder, self).__init__()
         self.num_classes = decoder.num_classes
         self.max_length = decoder.max_length
@@ -223,7 +243,7 @@ class Seq2seqTopKDecoder(nn.Module):
         self.alpha = 1.2
         self.device = decoder.device
 
-    def forward(self, input_var: Tensor, encoder_outputs: Tensor, teacher_forcing_ratio: float = 0.0) -> list:
+    def forward(self, input_var=None, encoder_outputs: Tensor = None) -> list:
         inputs, batch_size, max_length = self.validate_args(input_var, encoder_outputs, 0.0)
         self.pos_index = (LongTensor(range(batch_size)) * self.beam_size).view(-1, 1).to(self.device)
 
@@ -296,16 +316,13 @@ class Seq2seqTopKDecoder(nn.Module):
         return decoder_outputs
 
     def _backtrack(self, stored_outputs, stored_predecessors, stored_emitted_symbols, stored_scores, batch_size):
-        """
-        Backtracks over batch to generate optimal k-sequences.
-
+        """Backtracks over batch to generate optimal k-sequences.
         Args:
             stored_outputs [(batch*k, vocab_size)] * sequence_length: A Tensor of outputs from network
             stored_predecessors [(batch*k)] * sequence_length: A Tensor of predecessors
             stored_emitted_symbols [(batch*k)] * sequence_length: A Tensor of predicted tokens
             scores [(batch*k)] * sequence_length: A Tensor containing sequence scores for every token t = [0, ... , seq_len - 1]
             batch_size: Size of the batch
-
         Returns:
             output [(batch, k, vocab_size)] * sequence_length: A list of the output probabilities (p_n)
             from the last layer of the RNN, for every n = [0, ... , seq_len - 1]
@@ -337,26 +354,54 @@ class Seq2seqTopKDecoder(nn.Module):
             # the current step
             t_predecessors = stored_predecessors[t].index_select(0, t_predecessors).squeeze()
 
+            # This tricky block handles dropped sequences that see EOS earlier.
+            # The basic idea is summarized below:
+            #
+            #   Terms:
+            #       Ended sequences = sequences that see EOS early and dropped
+            #       Survived sequences = sequences in the last step of the beams
+            #
+            #       Although the ended sequences are dropped during decoding,
+            #   their generated symbols and complete backtracking information are still
+            #   in the backtracking variables.
+            #   For each batch, everytime we see an EOS in the backtracking process,
+            #       1. If there is survived sequences in the return variables, replace
+            #       the one with the lowest survived sequence score with the new ended
+            #       sequences
+            #       2. Otherwise, replace the ended sequence with the lowest sequence
+            #       score with the new ended sequence
+            #
             eos_indices = stored_emitted_symbols[t].data.squeeze(1).eq(self.eos_id).nonzero()
             if eos_indices.dim() > 0:
                 for i in range(eos_indices.size(0) - 1, -1, -1):
+                    # Indices of the EOS symbol for both variables
+                    # with b*k as the first dimension, and b, k for
+                    # the first two dimensions
                     idx = eos_indices[i]
                     b_idx = int(idx[0] / self.beam_size)
-
+                    # The indices of the replacing position
+                    # according to the replacement strategy noted above
                     res_k_idx = self.beam_size - (batch_eos_found[b_idx] % self.beam_size) - 1
                     batch_eos_found[b_idx] += 1
                     res_idx = b_idx * self.beam_size + res_k_idx
 
+                    # Replace the old information in return variables
+                    # with the new ended sequence information
                     t_predecessors[res_idx] = stored_predecessors[t][idx[0]]
                     current_output[res_idx, :] = stored_outputs[t][idx[0], :]
 
+            # record the back tracked results
             output.append(current_output)
 
             t -= 1
 
+        # Sort and re-order again as the added ended sequences may change
+        # the order (very unlikely)
         s, re_sorted_idx = s.topk(self.beam_size)
         re_sorted_idx = (re_sorted_idx + self.pos_index.expand_as(re_sorted_idx)).view(batch_size * self.beam_size)
 
+        # Reverse the sequences and re-order at the same time
+        # It is reversed because the backtracking happens in reverse time order
         output = [step.index_select(0, re_sorted_idx).view(batch_size, self.beam_size, -1) for step in reversed(output)]
         return output
 

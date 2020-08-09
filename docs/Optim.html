@@ -178,7 +178,7 @@
 <span id="loss"></span><h2>Loss<a class="headerlink" href="#module-kospeech.optim.loss" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="kospeech.optim.loss.LabelSmoothingLoss">
-<em class="property">class </em><code class="descclassname">kospeech.optim.loss.</code><code class="descname">LabelSmoothingLoss</code><span class="sig-paren">(</span><em>num_classes</em>, <em>ignore_index</em>, <em>smoothing=0.1</em>, <em>dim=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/loss.html#LabelSmoothingLoss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.loss.LabelSmoothingLoss" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">kospeech.optim.loss.</code><code class="descname">LabelSmoothingLoss</code><span class="sig-paren">(</span><em>num_classes: int</em>, <em>ignore_index: int</em>, <em>smoothing: float = 0.1</em>, <em>dim: int = -1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/loss.html#LabelSmoothingLoss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.loss.LabelSmoothingLoss" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provides Label-Smoothing loss.
 Copied from <a class="reference external" href="https://github.com/pytorch/pytorch/issues/7455">https://github.com/pytorch/pytorch/issues/7455</a></p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -207,7 +207,7 @@ target (torch.Tensor): ground-thruth encoded to integers which directly point a 
 </dl>
 <dl class="method">
 <dt id="kospeech.optim.loss.LabelSmoothingLoss.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>logit</em>, <em>target</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/loss.html#LabelSmoothingLoss.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.loss.LabelSmoothingLoss.forward" title="Permalink to this definition">¶</a></dt>
+<code class="descname">forward</code><span class="sig-paren">(</span><em>logit: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/loss.html#LabelSmoothingLoss.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.loss.LabelSmoothingLoss.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the computation performed at every call.</p>
 <p>Should be overridden by all subclasses.</p>
 <div class="admonition note">
@@ -217,190 +217,6 @@ this function, one should call the <code class="xref py py-class docutils litera
 instead of this since the former takes care of running the
 registered hooks while the latter silently ignores them.</p>
 </div>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="kospeech.optim.loss.Loss">
-<em class="property">class </em><code class="descclassname">kospeech.optim.loss.</code><code class="descname">Loss</code><span class="sig-paren">(</span><em>name</em>, <em>criterion</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/loss.html#Loss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.loss.Loss" title="Permalink to this definition">¶</a></dt>
-<dd><p>Base class for encapsulation of the loss functions.
-This class defines interfaces that are commonly used with loss functions
-in training and inferencing.  For information regarding individual loss
-functions, please refer to <a class="reference external" href="http://pytorch.org/docs/master/nn.html#loss-functions">http://pytorch.org/docs/master/nn.html#loss-functions</a></p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Do not use this class directly, use one of the sub classes.</p>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – name of the loss function used by logging messages.</li>
-<li><strong>criterion</strong> (<em>torch.nn._Loss</em>) – one of PyTorch’s loss function.  Refer
-to <a class="reference external" href="http://pytorch.org/docs/master/nn.html#loss-functions">http://pytorch.org/docs/master/nn.html#loss-functions</a> for
-a list of them.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
-<li><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – name of the loss function used by logging messages.</li>
-<li><strong>criterion</strong> (<em>torch.nn._Loss</em>) – one of PyTorch’s loss function.  Refer
-to <a class="reference external" href="http://pytorch.org/docs/master/nn.html#loss-functions">http://pytorch.org/docs/master/nn.html#loss-functions</a> for
-a list of them.  Implementation depends on individual
-sub-classes.</li>
-<li><strong>acc_loss</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> or </em><em>torcn.nn.Tensor</em>) – variable that stores accumulated loss.</li>
-<li><strong>norm_term</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – normalization term that can be used to calculate
-the loss of multiple batches.  Implementation depends on individual
-sub-classes.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="kospeech.optim.loss.Loss.eval_batch">
-<code class="descname">eval_batch</code><span class="sig-paren">(</span><em>outputs</em>, <em>target</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/loss.html#Loss.eval_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.loss.Loss.eval_batch" title="Permalink to this definition">¶</a></dt>
-<dd><p>Evaluate and accumulate loss given outputs and expected results.
-This method is called after each batch with the batch outputs and
-the target (expected) results.  The loss and normalization term are
-accumulated in this method.  Override it to define your own accumulation
-method.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>outputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.7.0a0+98df978 ))"><em>torch.Tensor</em></a>) – outputs of a batch.</li>
-<li><strong>target</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.7.0a0+98df978 ))"><em>torch.Tensor</em></a>) – expected output of a batch.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="kospeech.optim.loss.Loss.get_loss">
-<code class="descname">get_loss</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/loss.html#Loss.get_loss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.loss.Loss.get_loss" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the loss.
-This method defines how to calculate the averaged loss given the
-accumulated loss and the normalization term.  Override to define your
-own logic.
-:returns: value of the loss.
-:rtype: loss (float)</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="kospeech.optim.loss.Loss.reset">
-<code class="descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/loss.html#Loss.reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.loss.Loss.reset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reset the accumulated loss.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="kospeech.optim.loss.NLLLoss">
-<em class="property">class </em><code class="descclassname">kospeech.optim.loss.</code><code class="descname">NLLLoss</code><span class="sig-paren">(</span><em>weight=None</em>, <em>mask=None</em>, <em>size_average=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/loss.html#NLLLoss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.loss.NLLLoss" title="Permalink to this definition">¶</a></dt>
-<dd><p>Batch averaged negative log-likelihood loss.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>weight</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.7.0a0+98df978 ))"><em>torch.Tensor</em></a><em>, </em><em>optional</em>) – refer to <a class="reference external" href="http://pytorch.org/docs/master/nn.html#nllloss">http://pytorch.org/docs/master/nn.html#nllloss</a></li>
-<li><strong>mask</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – index of masked token, i.e. weight[mask] = 0.</li>
-<li><strong>size_average</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – refer to <a class="reference external" href="http://pytorch.org/docs/master/nn.html#nllloss">http://pytorch.org/docs/master/nn.html#nllloss</a></li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="kospeech.optim.loss.NLLLoss.eval_batch">
-<code class="descname">eval_batch</code><span class="sig-paren">(</span><em>outputs</em>, <em>target</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/loss.html#NLLLoss.eval_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.loss.NLLLoss.eval_batch" title="Permalink to this definition">¶</a></dt>
-<dd><p>Evaluate and accumulate loss given outputs and expected results.
-This method is called after each batch with the batch outputs and
-the target (expected) results.  The loss and normalization term are
-accumulated in this method.  Override it to define your own accumulation
-method.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>outputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.7.0a0+98df978 ))"><em>torch.Tensor</em></a>) – outputs of a batch.</li>
-<li><strong>target</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.7.0a0+98df978 ))"><em>torch.Tensor</em></a>) – expected output of a batch.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="kospeech.optim.loss.NLLLoss.get_loss">
-<code class="descname">get_loss</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/loss.html#NLLLoss.get_loss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.loss.NLLLoss.get_loss" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the loss.
-This method defines how to calculate the averaged loss given the
-accumulated loss and the normalization term.  Override to define your
-own logic.
-:returns: value of the loss.
-:rtype: loss (float)</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="kospeech.optim.loss.Perplexity">
-<em class="property">class </em><code class="descclassname">kospeech.optim.loss.</code><code class="descname">Perplexity</code><span class="sig-paren">(</span><em>weight=None</em>, <em>mask=None</em>, <em>device=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/loss.html#Perplexity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.loss.Perplexity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Language model perplexity loss.
-Perplexity is the token averaged likelihood.  When the averaging options are the
-same, it is the exponential of negative log-likelihood.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>weight</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.7.0a0+98df978 ))"><em>torch.Tensor</em></a><em>, </em><em>optional</em>) – refer to <a class="reference external" href="http://pytorch.org/docs/master/nn.html#nllloss">http://pytorch.org/docs/master/nn.html#nllloss</a></li>
-<li><strong>mask</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – index of masked token, i.e. weight[mask] = 0.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="kospeech.optim.loss.Perplexity.eval_batch">
-<code class="descname">eval_batch</code><span class="sig-paren">(</span><em>outputs</em>, <em>target</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/loss.html#Perplexity.eval_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.loss.Perplexity.eval_batch" title="Permalink to this definition">¶</a></dt>
-<dd><p>Evaluate and accumulate loss given outputs and expected results.
-This method is called after each batch with the batch outputs and
-the target (expected) results.  The loss and normalization term are
-accumulated in this method.  Override it to define your own accumulation
-method.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>outputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.7.0a0+98df978 ))"><em>torch.Tensor</em></a>) – outputs of a batch.</li>
-<li><strong>target</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.7.0a0+98df978 ))"><em>torch.Tensor</em></a>) – expected output of a batch.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="kospeech.optim.loss.Perplexity.get_loss">
-<code class="descname">get_loss</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/loss.html#Perplexity.get_loss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.loss.Perplexity.get_loss" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the loss.
-This method defines how to calculate the averaged loss given the
-accumulated loss and the normalization term.  Override to define your
-own logic.
-:returns: value of the loss.
-:rtype: loss (float)</p>
 </dd></dl>
 
 </dd></dl>
@@ -417,7 +233,7 @@ own logic.
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>optimizer</strong> (<a class="reference external" href="https://pytorch.org/docs/master/optim.html#torch.optim.Optimizer" title="(in PyTorch vmaster (1.7.0a0+98df978 ))"><em>torch.optim.Optimizer</em></a>) – optimizer object, the parameters to be optimized
+<li><strong>optimizer</strong> (<a class="reference external" href="https://pytorch.org/docs/master/optim.html#torch.optim.Optimizer" title="(in PyTorch vmaster (1.7.0a0+b87f0e5 ))"><em>torch.optim.Optimizer</em></a>) – optimizer object, the parameters to be optimized
 should be given when instantiating the object, e.g. torch.optim.Adam, torch.optim</li>
 <li><strong>init_lr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – initial learning rate</li>
 <li><strong>low_plateau_lr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – target learning rate</li>
@@ -448,7 +264,7 @@ should be given when instantiating the object, e.g. torch.optim.Adam, torch.opti
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>optimizer</strong> (<a class="reference external" href="https://pytorch.org/docs/master/optim.html#torch.optim.Optimizer" title="(in PyTorch vmaster (1.7.0a0+98df978 ))"><em>torch.optim.Optimizer</em></a>) – optimizer object, the parameters to be optimized
+<li><strong>optimizer</strong> (<a class="reference external" href="https://pytorch.org/docs/master/optim.html#torch.optim.Optimizer" title="(in PyTorch vmaster (1.7.0a0+b87f0e5 ))"><em>torch.optim.Optimizer</em></a>) – optimizer object, the parameters to be optimized
 should be given when instantiating the object, e.g. torch.optim.Adam, torch.optim</li>
 <li><strong>init_lr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – initial learning rate</li>
 <li><strong>high_plateau_lr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – target learning rate</li>
@@ -476,9 +292,9 @@ This class provides functionalities for learning rate scheduling and gradient no
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>optim</strong> (<a class="reference external" href="https://pytorch.org/docs/master/optim.html#torch.optim.Optimizer" title="(in PyTorch vmaster (1.7.0a0+98df978 ))"><em>torch.optim.Optimizer</em></a>) – optimizer object, the parameters to be optimized
+<li><strong>optim</strong> (<a class="reference external" href="https://pytorch.org/docs/master/optim.html#torch.optim.Optimizer" title="(in PyTorch vmaster (1.7.0a0+b87f0e5 ))"><em>torch.optim.Optimizer</em></a>) – optimizer object, the parameters to be optimized
 should be given when instantiating the object, e.g. torch.optim.Adam, torch.optim.SGD</li>
-<li><strong>scheduler</strong> (<em>e2e.optim.lr_scheduler</em><em>, </em><em>optional</em>) – learning rate scheduler</li>
+<li><strong>scheduler</strong> (<em>kospeech.optim.lr_scheduler</em><em>, </em><em>optional</em>) – learning rate scheduler</li>
 <li><strong>scheduler_period</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – timestep with learning rate scheduler</li>
 <li><strong>max_grad_norm</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – value used for gradient norm clipping</li>
 </ul>

@@ -4,6 +4,9 @@ import shutil
 import torch
 import torch.nn as nn
 from kospeech.utils import logger
+from kospeech.data.data_loader import SpectrogramDataset
+from kospeech.models.seq2seq.seq2seq import Seq2seq
+from kospeech.optim.optimizer import Optimizer
 
 
 class Checkpoint(object):
@@ -14,11 +17,11 @@ class Checkpoint(object):
     to write parameters to disk.
 
     Args:
-        model (nn.Module): LAS model being trained
+        model (nn.Module): model being trained
         optimizer (torch.optim): stores the state of the optimizer
         criterion (nn.Module): loss function
         trainset_list (list): list of trainset
-        validset (e2e.data_loader.data_loader.SpectrogramDataset): validation dataset
+        validset (kospeech.data.data_loader.SpectrogramDataset): validation dataset
         epoch (int): current epoch (an epoch is a loop through the full training data)
 
     Attributes:
@@ -33,7 +36,13 @@ class Checkpoint(object):
     SAVE_PATH = '../data/checkpoint'
     MODEL_NAME = 'model.pt'
 
-    def __init__(self, model=None, optimizer=None, criterion=None, trainset_list=None, validset=None, epoch=None):
+    def __init__(self,
+                 model: nn.Module = None,                   # model being trained
+                 optimizer: Optimizer = None,               # stores the state of the optimizer
+                 criterion: nn.Module = None,               # loss function
+                 trainset_list: list = None,                # list of trainset
+                 validset: SpectrogramDataset = None,       # validation dataset
+                 epoch: int = None) -> None:                # current epoch is a loop through the full training datav
         self.model = model
         self.optimizer = optimizer
         self.criterion = criterion
@@ -88,10 +97,11 @@ class Checkpoint(object):
             resume_checkpoint = torch.load(os.path.join(path, self.TRAINER_STATE_NAME), map_location=lambda storage, loc: storage)
             model = torch.load(os.path.join(path, self.MODEL_NAME), map_location=lambda storage, loc: storage)
 
-        if isinstance(model, nn.DataParallel):
-            model.module.flatten_parameters()  # make RNN parameters contiguous
-        else:
-            model.flatten_parameters()
+        if isinstance(model, Seq2seq):
+            if isinstance(model, nn.DataParallel):
+                model.module.flatten_parameters()  # make RNN parameters contiguous
+            else:
+                model.flatten_parameters()
 
         return Checkpoint(model=model, optimizer=resume_checkpoint['optimizer'], epoch=resume_checkpoint['epoch'],
                           criterion=resume_checkpoint['criterion'], trainset_list=resume_checkpoint['trainset_list'],
@@ -103,6 +113,5 @@ class Checkpoint(object):
         Precondition: at least one checkpoint has been made (i.e., latest checkpoint subdirectory exists).
         """
         checkpoints_path = os.path.join(self.SAVE_PATH, self.CHECKPOINT_DIR_NAME)
-        all_times = sorted(os.listdir(checkpoints_path), reverse=True)
-
-        return os.path.join(checkpoints_path, all_times[0])
+        sorted_listdir = sorted(os.listdir(checkpoints_path), reverse=True)
+        return os.path.join(checkpoints_path, sorted_listdir[0])

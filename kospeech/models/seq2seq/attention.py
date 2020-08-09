@@ -4,24 +4,60 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
 from typing import Tuple
-from kospeech.models.seq2seq.modules import Linear
+from kospeech.models.modules import Linear
+
+
+class ScaledDotProductAttention(nn.Module):
+    """
+    Scaled Dot-Product Attention proposed in "Attention Is All You Need"
+    Compute the dot products of the query with all keys, divide each by sqrt(dim),
+    and apply a softmax function to obtain the weights on the values
+
+    Args: dim, mask
+        dim (int): dimention of attention
+        mask (torch.Tensor): tensor containing indices to be masked
+
+    Inputs: query, key, value, mask
+        - **query** (batch, q_len, d_model): tensor containing projection vector for decoder.
+        - **key** (batch, k_len, d_model): tensor containing projection vector for encoder.
+        - **value** (batch, v_len, d_model): tensor containing features of the encoded input sequence.
+        - **mask** (-): tensor containing indices to be masked
+
+    Returns: context, attn
+        - **context**: tensor containing the context vector from attention mechanism.
+        - **attn**: tensor containing the attention (alignment) from the encoder outputs.
+    """
+    def __init__(self, dim: int) -> None:
+        super(ScaledDotProductAttention, self).__init__()
+        self.sqrt_dim = np.sqrt(dim)
+
+    def forward(self, query: Tensor, key: Tensor, value: Tensor) -> Tuple[Tensor, Tensor]:
+        score = torch.bmm(query, key.transpose(1, 2)) / self.sqrt_dim
+        attn = F.softmax(score, -1)
+        context = torch.bmm(attn, value)
+        return context, attn
 
 
 class MultiHeadAttention(nn.Module):
     """
     Applies a multi-headed scaled dot mechanism on the output features from the decoder.
     Multi-head attention proposed in "Attention Is All You Need" paper.
+
     Args:
         d_model (int): dimension of model
-        num_heads (int): The number of heads. (default: )
+        num_heads (int): The number of heads. (default: 4)
+
     Inputs: query, value
         - **query** (batch, q_len, hidden_dim): tensor containing the output features from the decoder.
         - **value** (batch, v_len, hidden_dim): tensor containing features of the encoded input sequence.
+
     Returns: context
         - **context** (batch, output_len, dimensions): tensor containing the attended output features from the decoder.
+
     Reference:
         - **Attention Is All You Need**: https://arxiv.org/abs/1706.03762
         - **State-Of-The-Art Speech Recognition with Sequence-to-Sequence Models**: https://arxiv.org/abs/1712.01769
+
     Contributor:
         - Soohwan Kim @sooftware
         - Deokjin Seo @qute012
@@ -54,8 +90,8 @@ class MultiHeadAttention(nn.Module):
 
         context = torch.bmm(attn, value)
         context = context.view(self.num_heads, batch_size, -1, self.d_head)
-
         context = context.permute(1, 2, 0, 3).contiguous().view(batch_size, -1, self.num_heads * self.d_head)  # BxTxND
+
         return context, attn
 
 
@@ -90,32 +126,63 @@ class LocationAwareAttention(nn.Module):
         self.query_proj = Linear(d_model, d_model, bias=False)
         self.value_proj = Linear(d_model, d_model, bias=False)
         self.bias = nn.Parameter(torch.rand(d_model).uniform_(-0.1, 0.1))
-        self.linear = nn.Linear(d_model, 1, bias=True)
+        self.score_proj = Linear(d_model, 1, bias=True)
         self.smoothing = smoothing
 
     def forward(self, query: Tensor, value: Tensor, last_attn: Tensor) -> Tuple[Tensor, Tensor]:
         batch_size, hidden_dim, seq_len = query.size(0), query.size(2), value.size(1)
 
-        # Initialize previous attention (alignment) to zeros
         if last_attn is None:
             last_attn = value.new_zeros(batch_size, seq_len)
 
         conv_attn = torch.transpose(self.conv1d(last_attn.unsqueeze(1)), 1, 2)
-        score = self.linear(torch.tanh(
+        score = self.score_proj(torch.tanh(
                 self.query_proj(query.reshape(-1, hidden_dim)).view(batch_size, -1, hidden_dim)
                 + self.value_proj(value.reshape(-1, hidden_dim)).view(batch_size, -1, hidden_dim)
                 + conv_attn
                 + self.bias
-        )).squeeze(dim=-1)
+        )).squeeze(-1)
 
         if self.smoothing:
             score = torch.sigmoid(score)
-            attn = torch.div(score, score.sum(dim=-1).unsqueeze(dim=-1))
+            attn = torch.div(score, score.sum(-1).unsqueeze(-1))
 
         else:
             attn = F.softmax(score, dim=-1)
 
-        context = torch.bmm(attn.unsqueeze(dim=1), value).squeeze(dim=1)  # Bx1xT X BxTxD => Bx1xD => BxD
-        context += query
+        context = torch.bmm(attn.unsqueeze(1), value).squeeze(1)  # Bx1xT X BxTxD => Bx1xD => BxD
 
+        return context, attn
+
+
+class AdditiveAttention(nn.Module):
+    """
+     Applies a additive attention (bahdanau) mechanism on the output features from the decoder.
+     Additive attention proposed in "Neural Machine Translation by Jointly Learning to Align and Translate" paper.
+
+     Args:
+         d_model (int): dimension of model
+
+     Inputs: query, value
+         - **query** (batch_size, q_len, hidden_dim): tensor containing the output features from the decoder.
+         - **value** (batch_size, v_len, hidden_dim): tensor containing features of the encoded input sequence.
+
+     Returns: context, attn
+         - **context**: tensor containing the context vector from attention mechanism.
+         - **attn**: tensor containing the alignment from the encoder outputs.
+
+     Reference:
+         - **Neural Machine Translation by Jointly Learning to Align and Translate**: https://arxiv.org/abs/1409.0473
+    """
+    def __init__(self, d_model: int) -> None:
+        super(AdditiveAttention, self).__init__()
+        self.query_proj = Linear(d_model, d_model, bias=False)
+        self.key_proj = Linear(d_model, d_model, bias=False)
+        self.bias = nn.Parameter(torch.rand(d_model).uniform_(-0.1, 0.1))
+        self.score_proj = Linear(d_model, 1)
+
+    def forward(self, query: Tensor, key: Tensor, value: Tensor) -> Tuple[Tensor, Tensor]:
+        score = self.score_proj(torch.tanh(self.key_proj(key) + self.query_proj(query) + self.bias)).squeeze(-1)
+        attn = F.softmax(score, dim=-1)
+        context = torch.bmm(attn.unsqueeze(1), value)
         return context, attn

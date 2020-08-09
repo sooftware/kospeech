@@ -4,16 +4,17 @@
 #   link = {https://github.com/sooftware/KoSpeech},
 #   year = {2020}
 # }
+
 ARCHITECTURE='seq2seq'
-DATASET_PATH='/data3/'
+DATASET_PATH='your_dataset_path'
 DATA_LIST_PATH='../data/data_list/except_outlier_train_list.csv'
 BATCH_SIZE=32
 NUM_WORKERS=4
 NUM_EPOCHS=20
 HIDDEN_DIM=512
-DROPOUT=0.4
+DROPOUT=0.3
 NUM_HEADS=4
-ATTN_MECHANISM='dot'
+ATTN_MECHANISM='multi-head'   # multi-head, loc, additive, scaled-dot
 LABEL_SMOOTHING=0.1
 NUM_ENCODER_LAYERS=3
 NUM_DECODER_LAYERS=2
@@ -21,21 +22,19 @@ RNN_TYPE='lstm'
 TEACHER_FORCING_RATIO=1.0
 TEACHER_FORCING_STEP=0.02
 MIN_TEACHER_FORCING_RATIO=0.8
-VALID_RATIO=0.002
+VALID_RATIO=0.05
 MAX_LEN=120
 MAX_GRAD_NORM=400
-INIT_LR=3e-04
+WEIGHT_DECAY=1e-05
+INIT_LR=3e-05
 HIGH_PLATEAU_LR=3e-04
-LOW_PLATEAU_LR=1e-05
-RAMPUP_PERIOD=0
-DECAY_THRESHOLD=0.02
-EXP_DECAY_PERIOD=120000
-WINDOW_SIZE=20
+RAMPUP_PERIOD=400
+FRAME_LENGTH=20
+FRAME_SHIFT=10
 SAMPLE_RATE=16000
-STRIDE=10
 N_MELS=80
-FEATURE_EXTRACT_BY='librosa'      # You can set 'torchaudio'
-TRANSFORM_METHOD='spect'          # Support feature : spech, mel, mfcc
+FEATURE_EXTRACT_BY='torchaudio'   # You can set 'librosa'
+TRANSFORM_METHOD='mel'            # Support feature : spect, mel, mfcc, fbank
 EXTRACTOR='vgg'                   # Support extractor : vgg, ds2 (DeepSpeech2)
 ACTIVATION='hardtanh'             # Support activation : ReLU, ELU, Hardtanh, GELU, LeakyReLU
 TIME_MASK_PARA=40
@@ -57,12 +56,12 @@ python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epoch
 --label_smoothing $LABEL_SMOOTHING --transform_method $TRANSFORM_METHOD --architecture $ARCHITECTURE \
 --num_encoder_layers $NUM_ENCODER_LAYERS --num_decoder_layers $NUM_DECODER_LAYERS --rnn_type $RNN_TYPE \
 --high_plateau_lr $HIGH_PLATEAU_LR --teacher_forcing_ratio $TEACHER_FORCING_RATIO --valid_ratio $VALID_RATIO \
---sample_rate $SAMPLE_RATE --window_size $WINDOW_SIZE --stride $STRIDE --n_mels $N_MELS --normalize --del_silence \
+--sample_rate $SAMPLE_RATE --frame_length $FRAME_LENGTH --frame_shift $FRAME_SHIFT --n_mels $N_MELS --normalize --del_silence \
 --feature_extract_by $FEATURE_EXTRACT_BY --time_mask_para $TIME_MASK_PARA --freq_mask_para $FREQ_MASK_PARA \
 --time_mask_num $TIME_MASK_NUM --freq_mask_num $FREQ_MASK_NUM --save_result_every $SAVE_RESULT_EVERY \
 --checkpoint_every $CHECKPOINT_EVERY --print_every $PRINT_EVERY --init_lr $INIT_LR  \
---mode $MODE --dataset_path $DATASET_PATH --data_list_path $DATA_LIST_PATH \
---max_grad_norm $MAX_GRAD_NORM --rampup_period $RAMPUP_PERIOD --max_len $MAX_LEN --decay_threshold $DECAY_THRESHOLD \
---exp_decay_period  $EXP_DECAY_PERIOD --low_plateau_lr $LOW_PLATEAU_LR --noiseset_size $NOISESET_SIZE \
+--mode $MODE --dataset_path $DATASET_PATH --data_list_path $DATA_LIST_PATH  \
+--max_grad_norm $MAX_GRAD_NORM --rampup_period $RAMPUP_PERIOD --max_len $MAX_LEN \
+--noiseset_size $NOISESET_SIZE --weight_decay $WEIGHT_DECAY \
 --noise_level $NOISE_LEVEL --attn_mechanism $ATTN_MECHANISM --teacher_forcing_step $TEACHER_FORCING_STEP \
 --min_teacher_forcing_ratio $MIN_TEACHER_FORCING_RATIO --extractor $EXTRACTOR --activation $ACTIVATION
