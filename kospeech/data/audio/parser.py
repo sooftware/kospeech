@@ -108,6 +108,7 @@ class SpectrogramParser(AudioParser):
 
         if self.normalize:
             feature_vector -= feature_vector.mean()
+            feature_vector /= np.std(feature_vector)
 
         # Refer to "Sequence to Sequence Learning with Neural Network" paper
         if self.input_reverse:
