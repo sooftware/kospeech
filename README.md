@@ -1,4 +1,4 @@
-<img src="https://user-images.githubusercontent.com/42150335/89764985-6d7c5780-db30-11ea-9e88-bc0ebd99625f.png" width=750>
+<img src="https://user-images.githubusercontent.com/42150335/89766602-63a82380-db33-11ea-8f5f-916ea90e1ed1.png" width=750>
   
 # KoSpeech: Korean Speech Recognition Toolkit
 
