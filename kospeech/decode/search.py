@@ -3,8 +3,8 @@ import torch.nn as nn
 import pandas as pd
 from queue import Queue
 from kospeech.metrics import CharacterErrorRate
-from kospeech.models.seq2seq.decoder import Seq2seqTopKDecoder
-from kospeech.models.seq2seq.seq2seq import Seq2seq
+from kospeech.models.acoustic.seq2seq.decoder import SpeechTopKDecoder
+from kospeech.models.acoustic.seq2seq.seq2seq import SpeechSeq2seq
 from kospeech.utils import id2char, EOS_token, logger, label_to_string
 
 
@@ -14,7 +14,6 @@ class GreedySearch(object):
         self.target_list = list()
         self.predict_list = list()
         self.metric = CharacterErrorRate(id2char, EOS_token)
-        self.language_model = None  # load_language_model('lm_path', 'cuda')
 
     def search(self, model: nn.Module, queue: Queue, device: str, print_every: int) -> float:
         cer = 0
@@ -32,8 +31,7 @@ class GreedySearch(object):
                 inputs = inputs.to(device)
                 targets = targets.to(device)
 
-                output = model(inputs, input_lengths, teacher_forcing_ratio=0.0,
-                               language_model=self.language_model, return_decode_dict=False)
+                output = model(inputs, input_lengths, teacher_forcing_ratio=0.0, return_decode_dict=False)
                 logit = torch.stack(output, dim=1).to(device)
                 pred = logit.max(-1)[1]
 
@@ -66,11 +64,11 @@ class BeamSearch(GreedySearch):
         super(BeamSearch, self).__init__()
         self.k = k
 
-    def search(self, model: Seq2seq, queue: Queue, device: str, print_every: int) -> float:
+    def search(self, model: SpeechSeq2seq, queue: Queue, device: str, print_every: int) -> float:
         if isinstance(model, nn.DataParallel):
-            topk_decoder = Seq2seqTopKDecoder(model.module.decoder, self.k)
+            topk_decoder = SpeechTopKDecoder(model.module.decoder, self.k)
             model.module.set_decoder(topk_decoder)
         else:
-            topk_decoder = Seq2seqTopKDecoder(model.decoder, self.k)
+            topk_decoder = SpeechTopKDecoder(model.decoder, self.k)
             model.set_decoder(topk_decoder)
         return super(BeamSearch, self).search(model, queue, device, print_every)

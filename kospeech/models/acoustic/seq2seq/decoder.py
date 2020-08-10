@@ -5,11 +5,15 @@ import torch.nn.functional as F
 import numpy as np
 from torch import Tensor, LongTensor
 from typing import Optional, Any, Tuple
-from kospeech.models.seq2seq.attention import LocationAwareAttention, MultiHeadAttention, AdditiveAttention, \
-    ScaledDotProductAttention
 from kospeech.models.modules import Linear
-from kospeech.models.seq2seq.sublayers import BaseRNN
-from kospeech.models.transformer.sublayers import AddNorm
+from kospeech.models.modules import BaseRNN
+from kospeech.models.acoustic.transformer.sublayers import AddNorm
+from kospeech.models.attention import (
+    LocationAwareAttention,
+    MultiHeadAttention,
+    AdditiveAttention,
+    ScaledDotProductAttention
+)
 
 
 def _inflate(tensor: Tensor, n_repeat: int, dim: int) -> Tensor:
@@ -20,7 +24,7 @@ def _inflate(tensor: Tensor, n_repeat: int, dim: int) -> Tensor:
     return tensor.repeat(*repeat_dims)
 
 
-class Seq2seqDecoder(BaseRNN):
+class SpeechDecoderRNN(BaseRNN):
     """
     Converts higher level features (from encoder) into output utterances
     by specifying a probability distribution over sequences of characters.
@@ -71,14 +75,12 @@ class Seq2seqDecoder(BaseRNN):
                  rnn_type: str = 'lstm',              # type of RNN cell
                  dropout_p: float = 0.3,              # dropout probability
                  device: str = 'cuda') -> None:       # device - 'cuda' or 'cpu'
-        super(Seq2seqDecoder, self).__init__(hidden_dim, hidden_dim, num_layers, rnn_type, dropout_p, False, device)
+        super(SpeechDecoderRNN, self).__init__(hidden_dim, hidden_dim, num_layers, rnn_type, dropout_p, False, device)
         self.num_classes = num_classes
         self.num_heads = num_heads
         self.max_length = max_length
         self.eos_id = eos_id
         self.sos_id = sos_id
-        self.acoutsic_weight = 0.9  # acoustic model weight
-        self.language_weight = 0.1  # language model weight
         self.attn_mechanism = attn_mechanism.lower()
         self.embedding = nn.Embedding(num_classes, hidden_dim)
         self.input_dropout = nn.Dropout(dropout_p)
@@ -123,18 +125,16 @@ class Seq2seqDecoder(BaseRNN):
         return step_output, hidden, attn
 
     def forward(self, inputs: Tensor, encoder_outputs: Tensor,
-                teacher_forcing_ratio: float = 1.0, language_model: Optional[nn.Module] = None,
-                return_decode_dict: bool = False) -> Tuple[Tensor, dict]:
+                teacher_forcing_ratio: float = 1.0, return_decode_dict: bool = False) -> Tuple[Tensor, dict]:
         hidden, attn = None, None
         result, decode_dict = list(), dict()
 
         if not self.training:
-            decode_dict[Seq2seqDecoder.KEY_ATTENTION_SCORE] = list()
-            decode_dict[Seq2seqDecoder.KEY_SEQUENCE_SYMBOL] = list()
+            decode_dict[SpeechDecoderRNN.KEY_ATTENTION_SCORE] = list()
+            decode_dict[SpeechDecoderRNN.KEY_SEQUENCE_SYMBOL] = list()
 
-        inputs, batch_size, max_length = self.validate_args(inputs, encoder_outputs, teacher_forcing_ratio, language_model)
+        inputs, batch_size, max_length = self.validate_args(inputs, encoder_outputs, teacher_forcing_ratio)
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
-        use_language_model = True if language_model is not None else False
         lengths = np.array([max_length] * batch_size)
 
         if use_teacher_forcing:
@@ -155,7 +155,6 @@ class Seq2seqDecoder(BaseRNN):
 
         else:
             input_var = inputs[:, 0].unsqueeze(1)
-            prev_tokens = input_var.clone() if use_language_model else None
 
             for di in range(max_length):
                 step_output, hidden, attn = self.forward_step(input_var, hidden, encoder_outputs, attn)
@@ -163,22 +162,17 @@ class Seq2seqDecoder(BaseRNN):
                 input_var = result[-1].topk(1)[1]
 
                 if not self.training:
-                    decode_dict[Seq2seqDecoder.KEY_ATTENTION_SCORE].append(attn)
-                    decode_dict[Seq2seqDecoder.KEY_SEQUENCE_SYMBOL].append(input_var)
+                    decode_dict[SpeechDecoderRNN.KEY_ATTENTION_SCORE].append(attn)
+                    decode_dict[SpeechDecoderRNN.KEY_SEQUENCE_SYMBOL].append(input_var)
                     eos_batches = input_var.data.eq(self.eos_id)
 
                     if eos_batches.dim() > 0:
                         eos_batches = eos_batches.cpu().view(-1).numpy()
                         update_idx = ((lengths > di) & eos_batches) != 0
-                        lengths[update_idx] = len(decode_dict[Seq2seqDecoder.KEY_SEQUENCE_SYMBOL])
-
-                    if use_language_model:
-                        lm_step_output = language_model.forward_step(prev_tokens, None)[0][:, -1, :].squeeze(1)
-                        step_output = step_output * self.acoustic_weight + lm_step_output * self.language_weight
-                        prev_tokens = torch.cat([prev_tokens, step_output.topk(1)[1]], dim=1)
+                        lengths[update_idx] = len(decode_dict[SpeechDecoderRNN.KEY_SEQUENCE_SYMBOL])
 
         if return_decode_dict:
-            decode_dict[Seq2seqDecoder.KEY_LENGTH] = lengths
+            decode_dict[SpeechDecoderRNN.KEY_LENGTH] = lengths
             result = (result, decode_dict)
         else:
             del decode_dict
@@ -186,8 +180,7 @@ class Seq2seqDecoder(BaseRNN):
         return result
 
     def validate_args(self, inputs: Optional[Any] = None, encoder_outputs: Tensor = None,
-                      teacher_forcing_ratio: float = 1.0,
-                      language_model: Optional[nn.Module] = None) -> Tuple[Tensor, int, int]:
+                      teacher_forcing_ratio: float = 1.0) -> Tuple[Tensor, int, int]:
         """ Validate arguments """
         assert encoder_outputs is not None
         batch_size = encoder_outputs.size(0)
@@ -205,13 +198,10 @@ class Seq2seqDecoder(BaseRNN):
         else:
             max_length = inputs.size(1) - 1  # minus the start of sequence symbol
 
-        if language_model is not None:
-            language_model.eval()
-
         return inputs, batch_size, max_length
 
 
-class Seq2seqTopKDecoder(nn.Module):
+class SpeechTopKDecoder(nn.Module):
     """
     Top-K decoding with beam search.
 
@@ -227,8 +217,8 @@ class Seq2seqTopKDecoder(nn.Module):
         - **decoder_outputs** :  list of tensors containing the outputs of the decoding function.
     """
 
-    def __init__(self, decoder: Seq2seqDecoder, beam_size: int = 3) -> None:
-        super(Seq2seqTopKDecoder, self).__init__()
+    def __init__(self, decoder: SpeechDecoderRNN, beam_size: int = 3) -> None:
+        super(SpeechTopKDecoder, self).__init__()
         self.num_classes = decoder.num_classes
         self.max_length = decoder.max_length
         self.hidden_dim = decoder.hidden_dim

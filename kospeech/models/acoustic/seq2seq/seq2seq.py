@@ -2,12 +2,12 @@ import torch
 import torch.nn as nn
 from torch import Tensor
 from typing import Optional, Any
-from kospeech.models.seq2seq.decoder import Seq2seqTopKDecoder
+from kospeech.models.acoustic.seq2seq.decoder import SpeechTopKDecoder
 
 
-class Seq2seq(nn.Module):
+class SpeechSeq2seq(nn.Module):
     """
-    Standard sequence-to-sequence architecture with configurable encoder and decoder.
+    Speech sequence-to-sequence architecture with configurable encoder and decoder.
 
     Args:
         encoder (torch.nn.Module): encoder of seq2seq
@@ -28,19 +28,18 @@ class Seq2seq(nn.Module):
           the outputs of the decoding function.
     """
     def __init__(self, encoder: nn.Module, decoder: nn.Module) -> None:
-        super(Seq2seq, self).__init__()
+        super(SpeechSeq2seq, self).__init__()
         self.encoder = encoder
         self.decoder = decoder
 
     def forward(self, inputs: Tensor, input_lengths: Tensor, targets: Optional[Any] = None,
-                teacher_forcing_ratio: float = 1.0, language_model: Optional[Any] = None,
-                return_decode_dict: bool = False):
+                teacher_forcing_ratio: float = 1.0, return_decode_dict: bool = False):
         output, hidden = self.encoder(inputs, input_lengths)
 
-        if isinstance(self.decoder, Seq2seqTopKDecoder):
+        if isinstance(self.decoder, SpeechTopKDecoder):
             result = self.decoder(targets, output)
         else:
-            result = self.decoder(targets, output, teacher_forcing_ratio, language_model, return_decode_dict)
+            result = self.decoder(targets, output, teacher_forcing_ratio, return_decode_dict)
 
         return result
 

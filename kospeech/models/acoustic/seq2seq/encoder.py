@@ -3,10 +3,14 @@ import torch
 import torch.nn as nn
 from torch import Tensor
 from typing import Tuple
-from kospeech.models.seq2seq.sublayers import BaseRNN, VGGExtractor, DeepSpeech2Extractor
+from kospeech.models.modules import BaseRNN
+from kospeech.models.acoustic.seq2seq.sublayers import (
+    VGGExtractor,
+    DeepSpeech2Extractor
+)
 
 
-class Seq2seqEncoder(BaseRNN):
+class SpeechEncoderRNN(BaseRNN):
     """
     Converts low level speech signals into higher level features
 
@@ -46,16 +50,16 @@ class Seq2seqEncoder(BaseRNN):
         self.extractor = extractor.lower()
         if self.extractor == 'vgg':
             input_size = (input_size - 1) << 5 if input_size % 2 else input_size << 5
-            super(Seq2seqEncoder, self).__init__(input_size, hidden_dim, num_layers,
-                                                 rnn_type, dropout_p, bidirectional, device)
+            super(SpeechEncoderRNN, self).__init__(input_size, hidden_dim, num_layers,
+                                                   rnn_type, dropout_p, bidirectional, device)
             self.conv = VGGExtractor(activation, mask_conv)
 
         elif self.extractor == 'ds2':
             input_size = int(math.floor(input_size + 2 * 20 - 41) / 2 + 1)
             input_size = int(math.floor(input_size + 2 * 10 - 21) / 2 + 1)
             input_size <<= 5
-            super(Seq2seqEncoder, self).__init__(input_size, hidden_dim, num_layers,
-                                                 rnn_type, dropout_p, bidirectional, device)
+            super(SpeechEncoderRNN, self).__init__(input_size, hidden_dim, num_layers,
+                                                   rnn_type, dropout_p, bidirectional, device)
             self.conv = DeepSpeech2Extractor(activation, mask_conv)
 
         else:
@@ -69,8 +73,8 @@ class Seq2seqEncoder(BaseRNN):
             batch_size, num_channels, hidden_dim, seq_length = conv_feat.size()
             conv_feat = conv_feat.view(batch_size, num_channels * hidden_dim, seq_length).permute(2, 0, 1).contiguous()
 
-            inputs = nn.utils.rnn.pack_padded_sequence(conv_feat, seq_lengths)
-            output, hidden = self.rnn(inputs)
+            conv_feat = nn.utils.rnn.pack_padded_sequence(conv_feat, seq_lengths)
+            output, hidden = self.rnn(conv_feat)
             output, _ = nn.utils.rnn.pad_packed_sequence(output)
             output = output.transpose(0, 1)
 

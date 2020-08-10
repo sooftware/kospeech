@@ -4,6 +4,49 @@ import torch.nn.init as init
 from torch import Tensor
 
 
+class BaseRNN(nn.Module):
+    """
+    Applies a multi-layer RNN to an input sequence.
+
+    Note:
+        Do not use this class directly, use one of the sub classes.
+
+    Args:
+        input_size (int): size of input
+        hidden_dim (int): dimension of RNN`s hidden state vector
+        num_layers (int, optional): number of RNN layers (default: 1)
+        bidirectional (bool, optional): if True, becomes a bidirectional RNN (defulat: False)
+        rnn_type (str, optional): type of RNN cell (default: gru)
+        dropout_p (float, optional): dropout probability (default: 0)
+        device (torch.device): device - 'cuda' or 'cpu'
+
+    Attributes:
+          supported_rnns = Dictionary of supported rnns
+    """
+    supported_rnns = {
+        'lstm': nn.LSTM,
+        'gru': nn.GRU,
+        'rnn': nn.RNN
+    }
+
+    def __init__(self,
+                 input_size: int,                       # size of input
+                 hidden_dim: int = 512,                 # dimension of RNN`s hidden state vector
+                 num_layers: int = 1,                   # number of recurrent layers
+                 rnn_type: str = 'lstm',                # number of RNN layers
+                 dropout_p: float = 0.3,                # dropout probability
+                 bidirectional: bool = True,            # if True, becomes a bidirectional rnn
+                 device: str = 'cuda') -> None:         # device - 'cuda' or 'cpu'
+        super(BaseRNN, self).__init__()
+        rnn_cell = self.supported_rnns[rnn_type]
+        self.rnn = rnn_cell(input_size, hidden_dim, num_layers, True, True, dropout_p, bidirectional)
+        self.hidden_dim = hidden_dim
+        self.device = device
+
+    def forward(self, *args, **kwargs):
+        raise NotImplementedError
+
+
 class Linear(nn.Module):
     """
     Wrapper class of torch.nn.Linear

@@ -4,9 +4,9 @@ import torch.nn.functional as F
 from torch import Tensor
 
 
-class LabelSmoothingLoss(nn.Module):
+class CrossEntropyWithSmoothingLoss(nn.Module):
     """
-    Wrapper class of torch.nn.CrossEntropyLoss. ( Add label smoothing )
+    A Cross Entropy with Label Smoothing Loss.
 
     Args:
         num_classes (int): the number of classfication
@@ -22,7 +22,7 @@ class LabelSmoothingLoss(nn.Module):
         - **label_smoothed** (float): sum of loss
     """
     def __init__(self, num_classes: int, ignore_index: int, smoothing: float = 0.1, dim: int = -1):
-        super(LabelSmoothingLoss, self).__init__()
+        super(CrossEntropyWithSmoothingLoss, self).__init__()
         self.confidence = 1.0 - smoothing
         self.smoothing = smoothing
         self.num_classes = num_classes

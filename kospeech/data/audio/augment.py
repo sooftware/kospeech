@@ -38,7 +38,7 @@ class SpecAugment(object):
         for _ in range(self.time_mask_num):
             t = int(np.random.uniform(low=0.0, high=self.time_mask_para))
 
-            if time_axis_length - t > 0:
+            if time_axis_length > 3 * t:
                 t0 = random.randint(0, time_axis_length - t)
                 feature_vector[t0: t0 + t, :] = 0
 

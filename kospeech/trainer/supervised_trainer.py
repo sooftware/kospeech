@@ -292,8 +292,7 @@ class SupervisedTrainer(object):
                 if self.architecture == 'seq2seq':
                     model.module.flatten_parameters()
                     output = model(inputs=inputs, input_lengths=input_lengths,
-                                   teacher_forcing_ratio=0.0,
-                                   language_model=None, return_decode_dict=False)
+                                   teacher_forcing_ratio=0.0, return_decode_dict=False)
                     logit = torch.stack(output, dim=1).to(self.device)
 
                 elif self.architecture == 'transformer':

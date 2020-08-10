@@ -14,14 +14,24 @@ import torch.nn.functional as F
 from torch import Tensor
 from typing import Optional, Tuple, Any
 from kospeech.models.modules import Linear, LayerNorm
-from kospeech.models.transformer.mask import get_pad_mask, get_subsequent_mask, get_attn_pad_mask
-from kospeech.models.transformer.embeddings import Embedding, PositionalEncoding
-from kospeech.models.transformer.layers import TransformerEncoderLayer, TransformerDecoderLayer
+from kospeech.models.acoustic.transformer.mask import (
+    get_pad_mask,
+    get_subsequent_mask,
+    get_attn_pad_mask
+)
+from kospeech.models.acoustic.transformer.embeddings import (
+    Embedding,
+    PositionalEncoding
+)
+from kospeech.models.acoustic.transformer.layers import (
+    SpeechTransformerEncoderLayer,
+    SpeechTransformerDecoderLayer
+)
 
 
-class Transformer(nn.Module):
+class SpeechTransformer(nn.Module):
     """
-    A Transformer model. User is able to modify the attributes as needed.
+    A Speech Transformer model. User is able to modify the attributes as needed.
     The architecture is based on the paper "Attention Is All You Need".
 
     Args:
@@ -57,14 +67,32 @@ class Transformer(nn.Module):
                  num_decoder_layers: int = 6,           # number of decoder layers
                  dropout_p: float = 0.3,                # dropout probability
                  ffnet_style: str = 'ff') -> None:      # feed forward network style 'ff' or 'conv'
-        super(Transformer, self).__init__()
+        super(SpeechTransformer, self).__init__()
 
         assert d_model % num_heads == 0, "d_model % num_heads should be zero."
 
         self.eos_id = eos_id
         self.pad_id = pad_id
-        self.encoder = TransformerEncoder(d_model, input_dim, d_ff,  num_encoder_layers, num_heads, ffnet_style, dropout_p, pad_id)
-        self.decoder = TransformerDecoder(num_classes, d_model, d_ff, num_decoder_layers, num_heads, ffnet_style, dropout_p, pad_id)
+        self.encoder = SpeechTransformerEncoder(
+            d_model=d_model,
+            input_dim=input_dim,
+            d_ff=d_ff,
+            num_layers=num_encoder_layers,
+            num_heads=num_heads,
+            ffnet_style=ffnet_style,
+            dropout_p=dropout_p,
+            pad_id=pad_id
+        )
+        self.decoder = SpeechTransformerDecoder(
+            num_classes=num_classes,
+            d_model=d_model,
+            d_ff=d_ff,
+            num_layers=num_decoder_layers,
+            num_heads=num_heads,
+            ffnet_style=ffnet_style,
+            dropout_p=dropout_p,
+            pad_id=pad_id
+        )
         self.generator = Linear(d_model, num_classes)
 
     def forward(self, inputs: Tensor, input_lengths: Tensor,
@@ -86,7 +114,7 @@ class Transformer(nn.Module):
         return output
 
 
-class TransformerEncoder(nn.Module):
+class SpeechTransformerEncoder(nn.Module):
     """
     The TransformerEncoder is composed of a stack of N identical layers.
     Each layer has two sub-layers. The first is a multi-head self-attention mechanism,
@@ -95,7 +123,7 @@ class TransformerEncoder(nn.Module):
     def __init__(self, d_model: int = 512, input_dim: int = 80, d_ff: int = 2048,
                  num_layers: int = 6, num_heads: int = 8, ffnet_style: str = 'ff',
                  dropout_p: float = 0.3, pad_id: int = 0) -> None:
-        super(TransformerEncoder, self).__init__()
+        super(SpeechTransformerEncoder, self).__init__()
         self.d_model = d_model
         self.num_layers = num_layers
         self.num_heads = num_heads
@@ -105,7 +133,7 @@ class TransformerEncoder(nn.Module):
         self.input_dropout = nn.Dropout(p=dropout_p)
         self.pos_encoding = PositionalEncoding(d_model)
         self.layers = nn.ModuleList(
-            [TransformerEncoderLayer(d_model, num_heads, d_ff, dropout_p, ffnet_style) for _ in range(num_layers)]
+            [SpeechTransformerEncoderLayer(d_model, num_heads, d_ff, dropout_p, ffnet_style) for _ in range(num_layers)]
         )
 
     def forward(self, inputs: Tensor, input_lengths: Tensor = None) -> Tuple[Tensor, Tensor]:
@@ -123,7 +151,7 @@ class TransformerEncoder(nn.Module):
         return output, self_attns
 
 
-class TransformerDecoder(nn.Module):
+class SpeechTransformerDecoder(nn.Module):
     """
     The TransformerDecoder is composed of a stack of N identical layers.
     Each layer has three sub-layers. The first is a multi-head self-attention mechanism,
@@ -132,7 +160,7 @@ class TransformerDecoder(nn.Module):
     def __init__(self, num_classes: int, d_model: int = 512, d_ff: int = 512,
                  num_layers: int = 6, num_heads: int = 8, ffnet_style: str = 'ff',
                  dropout_p: float = 0.3, pad_id: int = 0) -> None:
-        super(TransformerDecoder, self).__init__()
+        super(SpeechTransformerDecoder, self).__init__()
         self.d_model = d_model
         self.num_layers = num_layers
         self.num_heads = num_heads
@@ -140,7 +168,7 @@ class TransformerDecoder(nn.Module):
         self.pos_encoding = PositionalEncoding(d_model)
         self.input_dropout = nn.Dropout(p=dropout_p)
         self.layers = nn.ModuleList(
-            [TransformerDecoderLayer(d_model, num_heads, d_ff,  dropout_p, ffnet_style) for _ in range(num_layers)]
+            [SpeechTransformerDecoderLayer(d_model, num_heads, d_ff,  dropout_p, ffnet_style) for _ in range(num_layers)]
         )
         self.pad_id = pad_id
         self.logit_scale = (d_model ** -0.5)
