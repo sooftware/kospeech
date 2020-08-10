@@ -288,7 +288,7 @@ class SupervisedTrainer(object):
 
                 inputs = inputs.to(self.device)
                 targets = targets[:, 1:].to(self.device)
-                model.cuda()
+                model.to(self.device)
 
                 if self.architecture == 'seq2seq':
                     model.module.flatten_parameters()
