@@ -1,4 +1,6 @@
-# KoSpeech: Open Source Project for Korean End-to-End Automatic Speech Recognition in PyTorch
+<img src="https://user-images.githubusercontent.com/42150335/89764985-6d7c5780-db30-11ea-9e88-bc0ebd99625f.png" width=800>
+  
+# KoSpeech: Korean End-to-End Automatic Speech Recognition Toolkit in PyTorch
 
 [![CodeFactor](https://www.codefactor.io/repository/github/sooftware/kospeech/badge)](https://www.codefactor.io/repository/github/sooftware/kospeech) [<img src="http://img.shields.io/badge/docs-passing-success">](https://sooftware.github.io/KoSpeech/) [<img src="http://img.shields.io/badge/help wanted-issue 37-ff">](https://github.com/sooftware/KoSpeech/issues/37) <img src="http://img.shields.io/badge/Run Seq2seq-success-success"> <img src="http://img.shields.io/badge/Run transformer-fail-red"> 
 
