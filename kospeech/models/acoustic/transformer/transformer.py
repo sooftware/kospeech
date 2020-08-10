@@ -131,7 +131,7 @@ class SpeechTransformerEncoder(nn.Module):
         self.input_proj = Linear(input_dim, d_model)
         self.input_layer_norm = LayerNorm(d_model)
         self.input_dropout = nn.Dropout(p=dropout_p)
-        self.pos_encoding = PositionalEncoding(d_model)
+        self.positional_encoding = PositionalEncoding(d_model)
         self.layers = nn.ModuleList(
             [SpeechTransformerEncoderLayer(d_model, num_heads, d_ff, dropout_p, ffnet_style) for _ in range(num_layers)]
         )
@@ -143,7 +143,10 @@ class SpeechTransformerEncoder(nn.Module):
         length = inputs.size(1)
         self_attn_mask = get_pad_mask(inputs, input_lengths).squeeze(-1).unsqueeze(1).expand(-1, length, -1)
 
-        output = self.input_dropout(self.input_layer_norm(self.input_proj(inputs)) + self.pos_encoding(inputs.size(1)))
+        output = self.input_dropout(
+            self.input_layer_norm(self.input_proj(inputs))
+            + self.positional_encoding(inputs.size(1))
+        )
 
         for layer in self.layers:
             output, attn = layer(output, non_pad_mask, self_attn_mask)
@@ -166,7 +169,7 @@ class SpeechTransformerDecoder(nn.Module):
         self.num_layers = num_layers
         self.num_heads = num_heads
         self.embedding = Embedding(num_classes, pad_id, d_model)
-        self.pos_encoding = PositionalEncoding(d_model)
+        self.positional_encoding = PositionalEncoding(d_model)
         self.input_dropout = nn.Dropout(p=dropout_p)
         self.layers = nn.ModuleList(
             [SpeechTransformerDecoderLayer(d_model, num_heads, d_ff,  dropout_p, ffnet_style) for _ in range(num_layers)]
@@ -183,7 +186,11 @@ class SpeechTransformerDecoder(nn.Module):
         self_attn_mask = get_attn_pad_mask(targets, self.pad_id) | get_subsequent_mask(targets)
         memory_mask = get_pad_mask(memory, input_lengths).squeeze(-1).unsqueeze(1).expand(-1, targets.size(1), -1)
 
-        output = self.input_dropout(self.embedding(targets) * self.logit_scale + self.pos_encoding(targets.size(1)))
+        output = self.input_dropout(
+            self.embedding(targets)
+            * self.logit_scale
+            + self.positional_encoding(targets.size(1))
+        )
 
         for layer in self.layers:
             output, self_attn, memory_attn = layer(output, memory, non_pad_mask, self_attn_mask, memory_mask)
