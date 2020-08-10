@@ -198,7 +198,7 @@ class SupervisedTrainer(object):
 
             inputs = inputs.to(self.device)
             targets = targets.to(self.device)
-            model.cuda()
+            model = model.to(self.device)
 
             if self.architecture == 'seq2seq':
                 if isinstance(model, nn.DataParallel):

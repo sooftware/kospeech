@@ -19,11 +19,9 @@ class AddNorm(nn.Module):
         output = self.sublayer(*args)
 
         if isinstance(output, tuple):
-            output = (self.layer_norm(output[0] + residual), output[1])
-        else:
-            output = self.layer_norm(output + residual)
+            return self.layer_norm(output[0] + residual), output[1]
 
-        return output
+        return self.layer_norm(output + residual)
 
 
 class PositionWiseFeedForwardNet(nn.Module):
@@ -55,12 +53,9 @@ class PositionWiseFeedForwardNet(nn.Module):
             raise ValueError("Unsupported mode: {0}".format(self.mode))
 
     def forward(self, inputs: Tensor) -> Tensor:
-        if self.ffnet_style == 'ff':
-            output = self.feed_forward(inputs)
-
-        else:
+        if self.ffnet_style == 'conv':
             output = self.conv1(inputs.transpose(1, 2))
             output = self.relu(output)
-            output = self.conv2(output).transpose(1, 2)
+            return self.conv2(output).transpose(1, 2)
 
-        return output
+        return self.feed_forward(inputs)

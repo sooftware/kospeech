@@ -138,11 +138,12 @@ class SpeechTransformerEncoder(nn.Module):
 
     def forward(self, inputs: Tensor, input_lengths: Tensor = None) -> Tuple[Tensor, Tensor]:
         self_attns = list()
-        output = self.input_dropout(self.input_layer_norm(self.input_proj(inputs)) + self.pos_encoding(inputs.size(1)))
 
         non_pad_mask = get_pad_mask(inputs, input_lengths=input_lengths).eq(False)
         length = inputs.size(1)
         self_attn_mask = get_pad_mask(inputs, input_lengths).squeeze(-1).unsqueeze(1).expand(-1, length, -1)
+
+        output = self.input_dropout(self.input_layer_norm(self.input_proj(inputs)) + self.pos_encoding(inputs.size(1)))
 
         for layer in self.layers:
             output, attn = layer(output, non_pad_mask, self_attn_mask)
@@ -171,7 +172,7 @@ class SpeechTransformerDecoder(nn.Module):
             [SpeechTransformerDecoderLayer(d_model, num_heads, d_ff,  dropout_p, ffnet_style) for _ in range(num_layers)]
         )
         self.pad_id = pad_id
-        self.logit_scale = (d_model ** -0.5)
+        self.logit_scale = (d_model ** 0.5)
 
     def forward(self, targets: Tensor,
                 input_lengths: Optional[Any] = None,
