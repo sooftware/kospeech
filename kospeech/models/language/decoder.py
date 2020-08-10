@@ -10,7 +10,7 @@ from kospeech.models.acoustic.transformer.sublayers import AddNorm
 from kospeech.models.attention import MultiHeadAttention
 
 
-class LanguageModelDecoder(BaseRNN):
+class LanguageDecoderRNN(BaseRNN):
     def __init__(self,
                  num_classes: int,                    # number of classfication
                  max_length: int = 120,               # a maximum allowed length for the sequence to be processed
@@ -23,7 +23,7 @@ class LanguageModelDecoder(BaseRNN):
                  rnn_type: str = 'lstm',              # type of RNN cell
                  dropout_p: float = 0.3,              # dropout probability
                  device: str = 'cuda') -> None:       # device - 'cuda' or 'cpu'
-        super(LanguageModelDecoder, self).__init__(hidden_dim, hidden_dim, num_layers, rnn_type, dropout_p, False, device)
+        super(LanguageDecoderRNN, self).__init__(hidden_dim, hidden_dim, num_layers, rnn_type, dropout_p, False, device)
         self.num_classes = num_classes
         self.num_heads = num_heads
         self.max_length = max_length

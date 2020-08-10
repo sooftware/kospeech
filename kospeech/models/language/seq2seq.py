@@ -3,15 +3,14 @@ from torch import Tensor
 from typing import Optional, Any
 
 
-class Seq2seqLanguageModel(nn.Module):
+class LanguageSeq2seq(nn.Module):
     def __init__(self, encoder, decoder):
         super().__init__()
         self.encoder = encoder
         self.decoder = decoder
 
-    def forward(self, inputs: Tensor, input_lengths: Tensor,
-                targets: Optional[Any] = None, teacher_forcing_ratio: float = 1.0):
-        output, hidden = self.encoder(inputs, input_lengths)
+    def forward(self, inputs: Tensor, targets: Optional[Any] = None, teacher_forcing_ratio: float = 1.0):
+        output, hidden = self.encoder(inputs)
         output = self.decoder(targets, output, teacher_forcing_ratio)
 
         return output
