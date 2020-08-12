@@ -2,7 +2,7 @@
   
 # KoSpeech: Korean Speech Recognition Toolkit
 
-[![CodeFactor](https://www.codefactor.io/repository/github/sooftware/kospeech/badge)](https://www.codefactor.io/repository/github/sooftware/kospeech) [<img src="http://img.shields.io/badge/docs-passing-success">](https://sooftware.github.io/KoSpeech/) [<img src="http://img.shields.io/badge/help wanted-issue 37-ff">](https://github.com/sooftware/KoSpeech/issues/37) <img src="http://img.shields.io/badge/Run Seq2seq-success-success"> <img src="http://img.shields.io/badge/Run transformer-fail-red"> 
+[![CodeFactor](https://www.codefactor.io/repository/github/sooftware/kospeech/badge)](https://www.codefactor.io/repository/github/sooftware/kospeech) [<img src="http://img.shields.io/badge/docs-passing-success">](https://sooftware.github.io/KoSpeech/) [<img src="http://img.shields.io/badge/help wanted-issue 37-ff">](https://github.com/sooftware/KoSpeech/issues/37) <img src="http://img.shields.io/badge/Run Seq2seq-success-success"> <img src="http://img.shields.io/badge/Run transformer-fail-red"> <img src="https://img.shields.io/github/downloads/sooftware/KoSpeech/total"> 
 
 [KoSpeech: Korean Speech Recognition Toolkit](https://sooftware.github.io/KoSpeech/)     
   
