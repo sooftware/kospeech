@@ -49,8 +49,12 @@ def load_targets(label_paths):
         try:
             with open(file=label_txt, mode="r") as f:
                 label = f.readline()
-                file_num = label_txt.split('/')[-1].split('.')[0].split('_')[-1]
-                target_dict['KsponScript_%s' % file_num] = label
+                if "Kspon" in label_txt:  # AIHub Dataset(KsponSpeech)
+                    file_num = label_txt.split('/')[-1].split('.')[0].split('_')[-1]
+                    target_dict['KsponScript_%s' % file_num] = label
+                elif "Libri" in label_txt:  # LibriSpeech Dataset
+                    file_num = label_txt.split('/')[-1].split('.')[0]
+                    target_dict[file_num] = label
         except IOError:
             raise IOError("label paths file (csv format) doesn`t exist : {0}".format(label_paths))
 

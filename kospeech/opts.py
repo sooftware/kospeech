@@ -76,7 +76,7 @@ def build_train_opts(parser):
                        type=str, default='./data/data_list/filter_train_list.csv',
                        help='list of training / test set')
     group.add_argument('--label_path', '-label_path',
-                       type=str, default='./data/label/aihub_labels.csv',
+                       type=str, default='G:/LibriSpeech/LibriSpeech_TrainDataset/labels/LibriSpeech_labels.csv',
                        help='path of character labels')
     group.add_argument('--spec_augment', '-spec_augment',
                        action='store_true', default=False,

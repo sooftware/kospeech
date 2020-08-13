@@ -6,8 +6,10 @@
 # }
 
 ARCHITECTURE='seq2seq'
-DATASET_PATH='your_dataset_path'
-DATA_LIST_PATH='../data/data_list/except_outlier_train_list.csv'
+DATASET_PATH='G:/LibriSpeech/LibriSpeech_TrainDataset/'
+DATA_LIST_PATH='G:/LibriSpeech/LibriSpeech_TrainDataset/train_list/train_list.csv'
+#LABEL_PATH='G:/LibriSpeech/LibriSpeech_TrainDataset/labels/LibriSpeech_labels.csv'
+#setting LABEL_PATH didn't worked, so path is hard-coded in 'trainer/opts.py' temporarily.
 BATCH_SIZE=32
 NUM_WORKERS=4
 NUM_EPOCHS=20
@@ -65,3 +67,5 @@ python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epoch
 --noiseset_size $NOISESET_SIZE --weight_decay $WEIGHT_DECAY \
 --noise_level $NOISE_LEVEL --attn_mechanism $ATTN_MECHANISM --teacher_forcing_step $TEACHER_FORCING_STEP \
 --min_teacher_forcing_ratio $MIN_TEACHER_FORCING_RATIO --extractor $EXTRACTOR --activation $ACTIVATION
+
+cmd /k
