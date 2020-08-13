@@ -5,11 +5,11 @@
 #   year = {2020}
 # }
 
+# LABEL_PATH='G:/LibriSpeech/LibriSpeech_TrainDataset/labels/LibriSpeech_labels.csv'
+# setting LABEL_PATH didn't worked, so path is hard-coded in 'trainer/opts.py' temporarily.
 ARCHITECTURE='seq2seq'
-DATASET_PATH='G:/LibriSpeech/LibriSpeech_TrainDataset/'
-DATA_LIST_PATH='G:/LibriSpeech/LibriSpeech_TrainDataset/train_list/train_list.csv'
-#LABEL_PATH='G:/LibriSpeech/LibriSpeech_TrainDataset/labels/LibriSpeech_labels.csv'
-#setting LABEL_PATH didn't worked, so path is hard-coded in 'trainer/opts.py' temporarily.
+DATASET_PATH='your_dataset_path'
+DATA_LIST_PATH='../data/data_list/train_list.csv'
 BATCH_SIZE=32
 NUM_WORKERS=4
 NUM_EPOCHS=20
