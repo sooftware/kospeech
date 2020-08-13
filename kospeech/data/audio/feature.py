@@ -2,7 +2,10 @@ import torch
 import librosa
 import platform
 import numpy as np
-from torch import Tensor, FloatTensor
+from torch import (
+    Tensor,
+    FloatTensor
+)
 
 # torchaudio is only supported on Linux (Linux, Mac)
 if platform.system().lower() == 'linux':

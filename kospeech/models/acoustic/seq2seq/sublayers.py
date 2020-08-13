@@ -1,7 +1,14 @@
 import torch
 import torch.nn as nn
-from typing import Tuple, Optional, Any
-from torch import Tensor, BoolTensor
+from typing import (
+    Tuple,
+    Optional,
+    Any
+)
+from torch import (
+    Tensor,
+    BoolTensor
+)
 
 
 class MaskConv(nn.Module):

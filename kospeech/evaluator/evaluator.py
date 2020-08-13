@@ -2,7 +2,10 @@ import queue
 import torch
 from kospeech.utils import logger
 from kospeech.data.data_loader import AudioDataLoader
-from kospeech.decode.search import GreedySearch, BeamSearch
+from kospeech.decode.search import (
+    GreedySearch,
+    BeamSearch
+)
 
 
 class Evaluator(object):

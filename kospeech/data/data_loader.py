@@ -49,17 +49,14 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
         self.shuffle()
 
     def get_item(self, idx):
-        """ get feature & transcript """
-        transcript = self.parse_transcript(self.script_paths[idx])
+        """ get feature vector & transcript """
         feature_vector = self.parse_audio(self.audio_paths[idx], self.augment_methods[idx])
-
-        if feature_vector is None:
-            return None, None
+        transcript = self.parse_transcript(self.script_paths[idx])
 
         return feature_vector, transcript
 
     def parse_transcript(self, script_path):
-        """ Parses scripts @Override """
+        """ Parses transcript """
         transcripts = list()
 
         key = script_path.split('/')[-1].split('.')[0]
@@ -145,10 +142,10 @@ class AudioDataLoader(threading.Thread):
                 if self.index >= self.dataset_count:
                     break
 
-                spectrogram, transcript = self.dataset.get_item(self.index)
+                feature_vector, transcript = self.dataset.get_item(self.index)
 
-                if spectrogram is not None:
-                    items.append((spectrogram, transcript))
+                if feature_vector is not None:
+                    items.append((feature_vector, transcript))
 
                 self.index += 1
 

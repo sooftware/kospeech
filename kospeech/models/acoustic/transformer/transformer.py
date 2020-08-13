@@ -12,8 +12,15 @@ Reference :
 import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
-from typing import Optional, Tuple, Any
-from kospeech.models.modules import Linear, LayerNorm
+from typing import (
+    Optional,
+    Tuple,
+    Any
+)
+from kospeech.models.modules import (
+    Linear,
+    LayerNorm
+)
 from kospeech.models.acoustic.transformer.mask import (
     get_pad_mask,
     get_subsequent_mask,

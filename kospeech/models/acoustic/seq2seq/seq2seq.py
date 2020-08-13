@@ -1,7 +1,10 @@
 import torch
 import torch.nn as nn
 from torch import Tensor
-from typing import Optional, Any
+from typing import (
+    Optional,
+    Any
+)
 from kospeech.models.acoustic.seq2seq.decoder import SpeechTopKDecoder
 
 

@@ -1,6 +1,9 @@
 import torch
 from torch import Tensor
-from typing import Any, Optional
+from typing import (
+    Any,
+    Optional
+)
 
 
 def get_pad_mask(inputs: Tensor, input_lengths: Optional[Any] = None, pad_id: int = None) -> Tensor:

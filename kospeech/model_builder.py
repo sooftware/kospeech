@@ -25,11 +25,19 @@ def build_model(opt, device):
 
     elif opt.architecture.lower() == 'transformer':
         model = build_transformer(
-            num_classes=opt.num_classes, pad_id=PAD_token, input_size=input_size,
-            d_model=opt.d_model, num_heads=opt.num_heads, eos_id=EOS_token,
-            num_encoder_layers=opt.num_encoder_layers, num_decoder_layers=opt.num_decoder_layers,
-            dropout_p=opt.dropout, ffnet_style=opt.ffnet_style, device=device
+            num_classes=opt.num_classes,
+            pad_id=PAD_token,
+            input_size=input_size,
+            d_model=opt.d_model,
+            num_heads=opt.num_heads,
+            eos_id=EOS_token,
+            num_encoder_layers=opt.num_encoder_layers,
+            num_decoder_layers=opt.num_decoder_layers,
+            dropout_p=opt.dropout,
+            ffnet_style=opt.ffnet_style,
+            device=device
         )
+
     else:
         raise ValueError('Unsupported architecture: {0}'.format(opt.architecture))
 
@@ -43,9 +51,16 @@ def build_transformer(num_classes: int, pad_id: int, d_model: int, num_heads: in
         raise ParameterError("Unsupported ffnet_style: {0}".format(ffnet_style))
 
     model = SpeechTransformer(
-        num_classes=num_classes, pad_id=pad_id, d_model=d_model, num_heads=num_heads,
-        num_encoder_layers=num_encoder_layers, num_decoder_layers=num_decoder_layers,
-        dropout_p=dropout_p, ffnet_style=ffnet_style, input_dim=input_size, eos_id=eos_id
+        num_classes=num_classes,
+        pad_id=pad_id,
+        d_model=d_model,
+        num_heads=num_heads,
+        num_encoder_layers=num_encoder_layers,
+        num_decoder_layers=num_decoder_layers,
+        dropout_p=dropout_p,
+        ffnet_style=ffnet_style,
+        input_dim=input_size,
+        eos_id=eos_id
     )
 
     return nn.DataParallel(model).to(device)
@@ -69,9 +84,8 @@ def build_seq2seq(input_size, opt, device):
 
     model = SpeechSeq2seq(encoder, decoder)
     model.flatten_parameters()
-    model = nn.DataParallel(model).to(device)
 
-    return model
+    return nn.DataParallel(model).to(device)
 
 
 def build_seq2seq_encoder(input_size: int, hidden_dim: int, dropout_p: float,
@@ -93,10 +107,16 @@ def build_seq2seq_encoder(input_size: int, hidden_dim: int, dropout_p: float,
         raise ParameterError("Unsupported RNN Cell: {0}".format(rnn_type))
 
     return SpeechEncoderRNN(
-        input_size=input_size, hidden_dim=hidden_dim,
-        dropout_p=dropout_p, num_layers=num_layers, mask_conv=mask_conv,
-        bidirectional=bidirectional, rnn_type=rnn_type,
-        extractor=extractor, device=device, activation=activation
+        input_size=input_size,
+        hidden_dim=hidden_dim,
+        dropout_p=dropout_p,
+        num_layers=num_layers,
+        mask_conv=mask_conv,
+        bidirectional=bidirectional,
+        rnn_type=rnn_type,
+        extractor=extractor,
+        device=device,
+        activation=activation
     )
 
 
@@ -124,11 +144,17 @@ def build_seq2seq_decoder(num_classes: int, max_len: int, hidden_dim: int,
         raise ParameterError("device is None")
 
     return SpeechDecoderRNN(
-        num_classes=num_classes, max_length=max_len,
-        hidden_dim=hidden_dim, sos_id=sos_id, eos_id=eos_id,
-        attn_mechanism=attn_mechanism, num_heads=num_heads,
-        num_layers=num_layers, rnn_type=rnn_type,
-        dropout_p=dropout_p, device=device
+        num_classes=num_classes,
+        max_length=max_len,
+        hidden_dim=hidden_dim,
+        sos_id=sos_id,
+        eos_id=eos_id,
+        attn_mechanism=attn_mechanism,
+        num_heads=num_heads,
+        num_layers=num_layers,
+        rnn_type=rnn_type,
+        dropout_p=dropout_p,
+        device=device
     )
 
 

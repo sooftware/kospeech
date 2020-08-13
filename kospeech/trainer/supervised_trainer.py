@@ -9,8 +9,16 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 from kospeech.checkpoint.checkpoint import Checkpoint
 from kospeech.metrics import CharacterErrorRate
 from kospeech.optim.optimizer import Optimizer
-from kospeech.utils import EOS_token, logger, id2char
-from kospeech.data.data_loader import MultiDataLoader, AudioDataLoader, SpectrogramDataset
+from kospeech.utils import (
+    EOS_token,
+    logger,
+    id2char
+)
+from kospeech.data.data_loader import (
+    MultiDataLoader,
+    AudioDataLoader,
+    SpectrogramDataset
+)
 
 
 class SupervisedTrainer(object):

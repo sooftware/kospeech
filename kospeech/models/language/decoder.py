@@ -2,8 +2,15 @@ import random
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torch import Tensor, LongTensor
-from typing import Optional, Any, Tuple
+from torch import (
+    Tensor,
+    LongTensor
+)
+from typing import (
+    Optional,
+    Any,
+    Tuple
+)
 from kospeech.models.modules import Linear
 from kospeech.models.modules import BaseRNN
 from kospeech.models.acoustic.transformer.sublayers import AddNorm

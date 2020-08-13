@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import pandas as pd
 from queue import Queue
-from kospeech.metrics import CharacterErrorRate
+from kospeech.metrics import CharacterErrorRate, WordErrorRate
 from kospeech.models.acoustic.seq2seq.decoder import SpeechTopKDecoder
 from kospeech.models.acoustic.seq2seq.seq2seq import SpeechSeq2seq
 from kospeech.utils import id2char, EOS_token, logger, label_to_string
@@ -10,10 +10,16 @@ from kospeech.utils import id2char, EOS_token, logger, label_to_string
 
 class GreedySearch(object):
     """ Provides greedy search and save result to csv format """
-    def __init__(self):
+    def __init__(self, metric: str = 'char'):
         self.target_list = list()
         self.predict_list = list()
-        self.metric = CharacterErrorRate(id2char, EOS_token)
+
+        if metric == 'char':
+            self.metric = CharacterErrorRate(id2char, EOS_token)
+        elif metric == 'word':
+            self.metric = WordErrorRate(id2char, EOS_token)
+        else:
+            raise ValueError("Unsupported metric : {0}".format(metric))
 
     def search(self, model: nn.Module, queue: Queue, device: str, print_every: int) -> float:
         cer = 0
