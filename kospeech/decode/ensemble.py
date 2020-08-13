@@ -60,8 +60,7 @@ class WeightedEnsemble(Ensemble):
         )
 
     def forward(self, inputs, input_lengths):
-        hypothesis = None
-        outputs = list()
+        hypothesis, outputs = None, list()
         weights = torch.FloatTensor([1.] * self.num_models)
 
         # model`s parameters are fixed

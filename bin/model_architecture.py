@@ -1,9 +1,9 @@
-from kospeech.models.seq2seq.encoder import Seq2seqEncoder
-from kospeech.models.seq2seq.decoder import Seq2seqDecoder
-from kospeech.models.seq2seq.seq2seq import Seq2seq
+from kospeech.models.acoustic.seq2seq.encoder import SpeechEncoderRNN
+from kospeech.models.acoustic.seq2seq.decoder import SpeechDecoderRNN
+from kospeech.models.acoustic.seq2seq.seq2seq import SpeechSeq2seq
 
-encoder = Seq2seqEncoder(80, 512, 'cpu')
-decoder = Seq2seqDecoder(2038, 151, 1024, 1, 2)
-model = Seq2seq(encoder, decoder)
+encoder = SpeechEncoderRNN(80, 512, 'cpu')
+decoder = SpeechDecoderRNN(2038, 151, 1024, 1, 2)
+model = SpeechSeq2seq(encoder, decoder)
 
 print(model)

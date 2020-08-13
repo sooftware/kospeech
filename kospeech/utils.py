@@ -33,7 +33,7 @@ EOS_token = int(char2id['</s>'])
 PAD_token = int(char2id['_'])
 
 
-def check_envirionment(use_cuda):
+def check_envirionment(use_cuda: bool):
     """
     Check execution envirionment.
     OS, Processor, CUDA version, Pytorch version, ... etc.
@@ -58,7 +58,7 @@ def check_envirionment(use_cuda):
     return device
 
 
-def label_to_string(labels, id2char, eos_id):
+def label_to_string(labels, id2char: dict, eos_id: int):
     """
     Converts label to string (number => Hangeul)
 
