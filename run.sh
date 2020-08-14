@@ -9,7 +9,7 @@
 # setting LABEL_PATH didn't worked, so path is hard-coded in 'trainer/opts.py' temporarily.
 ARCHITECTURE='seq2seq'
 DATASET_PATH='your_dataset_path'
-DATA_LIST_PATH='../data/data_list/train_list.csv'
+DATA_LIST_PATH='../data/data_list/except_outlier_train_list.csv'
 BATCH_SIZE=32
 NUM_WORKERS=4
 NUM_EPOCHS=20
@@ -28,7 +28,7 @@ VALID_RATIO=0.05
 MAX_LEN=120
 MAX_GRAD_NORM=400
 WEIGHT_DECAY=1e-05
-INIT_LR=3e-05
+INIT_LR=3e-06
 HIGH_PLATEAU_LR=3e-04
 RAMPUP_PERIOD=400
 FRAME_LENGTH=20
