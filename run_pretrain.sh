@@ -1,5 +1,5 @@
-MODEL_PATH='../pretrain/model.pt'
-AUDIO_PATH='../pretrain/sample_audio.pcm'
+MODEL_PATH='set_pretrain_model_path'
+AUDIO_PATH='data/sample/sample_audio.pcm'
 DEVICE='cuda'
 
 # shellcheck disable=SC2164
