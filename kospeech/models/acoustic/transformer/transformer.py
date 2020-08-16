@@ -24,8 +24,8 @@ from kospeech.models.modules import (
 from kospeech.models.acoustic.transformer.mask import (
     get_pad_mask,
     get_subsequent_mask,
-    get_attn_pad_mask
-)
+    get_attn_pad_mask,
+    get_attn_key_pad_mask)
 from kospeech.models.acoustic.transformer.embeddings import (
     Embedding,
     PositionalEncoding
@@ -73,7 +73,8 @@ class SpeechTransformer(nn.Module):
                  num_encoder_layers: int = 6,           # number of encoder layers
                  num_decoder_layers: int = 6,           # number of decoder layers
                  dropout_p: float = 0.3,                # dropout probability
-                 ffnet_style: str = 'ff') -> None:      # feed forward network style 'ff' or 'conv'
+                 ffnet_style: str = 'ff'                # feed forward network style 'ff' or 'conv'
+                 ) -> None:
         super(SpeechTransformer, self).__init__()
 
         assert d_model % num_heads == 0, "d_model % num_heads should be zero."
@@ -98,20 +99,22 @@ class SpeechTransformer(nn.Module):
             num_heads=num_heads,
             ffnet_style=ffnet_style,
             dropout_p=dropout_p,
-            pad_id=pad_id
+            pad_id=pad_id,
+            eos_id=eos_id
         )
-        self.generator = Linear(d_model, num_classes)
 
-    def forward(self, inputs: Tensor, input_lengths: Tensor,
-                targets: Optional[Tensor] = None, return_attns: bool = False):
-        batch_size = targets.size(0)
-        targets = targets[targets != self.eos_id].view(batch_size, -1)
-
+    def forward(self,  inputs: Tensor, input_lengths: Tensor,
+                targets: Optional[Tensor] = None,
+                return_attns: bool = False) -> None:
+        """
+        Args:
+            inputs: BxT_inputxD_Feature
+            input_lengths: Bx1
+            targets: BxT_output
+            return_attns: bool
+        """
         memory, encoder_self_attns = self.encoder(inputs, input_lengths)
         output, decoder_self_attns, memory_attns = self.decoder(targets, input_lengths, memory)
-
-        output = self.generator(output)
-        output = F.log_softmax(output, dim=-1)
 
         if return_attns:
             output = (output, encoder_self_attns, decoder_self_attns, memory_attns)
@@ -144,11 +147,16 @@ class SpeechTransformerEncoder(nn.Module):
         )
 
     def forward(self, inputs: Tensor, input_lengths: Tensor = None) -> Tuple[Tensor, Tensor]:
+        """
+        Args:
+            inputs: BxT_inputxD
+            input_lengths: Bx1
+        """
         self_attns = list()
 
         non_pad_mask = get_pad_mask(inputs, input_lengths=input_lengths).eq(False)
         length = inputs.size(1)
-        self_attn_mask = get_pad_mask(inputs, input_lengths).squeeze(-1).unsqueeze(1).expand(-1, length, -1)
+        self_attn_mask = get_attn_pad_mask(inputs, input_lengths, length)
 
         output = self.input_dropout(
             self.input_layer_norm(self.input_proj(inputs))
@@ -170,7 +178,7 @@ class SpeechTransformerDecoder(nn.Module):
     """
     def __init__(self, num_classes: int, d_model: int = 512, d_ff: int = 512,
                  num_layers: int = 6, num_heads: int = 8, ffnet_style: str = 'ff',
-                 dropout_p: float = 0.3, pad_id: int = 0) -> None:
+                 dropout_p: float = 0.3, pad_id: int = 0, eos_id: int = 2) -> None:
         super(SpeechTransformerDecoder, self).__init__()
         self.d_model = d_model
         self.num_layers = num_layers
@@ -182,16 +190,21 @@ class SpeechTransformerDecoder(nn.Module):
             [SpeechTransformerDecoderLayer(d_model, num_heads, d_ff,  dropout_p, ffnet_style) for _ in range(num_layers)]
         )
         self.pad_id = pad_id
+        self.eos_id = eos_id
+        self.generator = Linear(d_model, num_classes)
+
+        self.generator.weight = self.embedding.weight
         self.logit_scale = (d_model ** 0.5)
 
-    def forward(self, targets: Tensor,
-                input_lengths: Optional[Any] = None,
+    def forward(self, targets: Tensor, input_lengths: Optional[Any] = None,
                 memory: Tensor = None) -> Tuple[Tensor, Tensor, Tensor]:
         self_attns, memory_attns = list(), list()
 
-        non_pad_mask = get_pad_mask(targets, pad_id=self.pad_id).eq(False)
-        self_attn_mask = get_attn_pad_mask(targets, self.pad_id) | get_subsequent_mask(targets)
-        memory_mask = get_pad_mask(memory, input_lengths).squeeze(-1).unsqueeze(1).expand(-1, targets.size(1), -1)
+        non_pad_mask = get_pad_mask(targets, pad_id=self.eos_id).eq(False)
+        self_attn_mask = get_attn_key_pad_mask(targets, targets, self.eos_id) | get_subsequent_mask(targets)
+
+        output_length = targets.size(1)
+        memory_mask = get_attn_pad_mask(memory, input_lengths, output_length)
 
         output = self.input_dropout(
             self.embedding(targets)
@@ -203,5 +216,8 @@ class SpeechTransformerDecoder(nn.Module):
             output, self_attn, memory_attn = layer(output, memory, non_pad_mask, self_attn_mask, memory_mask)
             self_attns.append(self_attn)
             memory_attns.append(memory_attn)
+
+        output = self.generator(output)
+        output = F.log_softmax(output, dim=-1)
 
         return output, self_attns, memory_attns

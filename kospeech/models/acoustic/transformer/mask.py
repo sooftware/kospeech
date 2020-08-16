@@ -27,11 +27,12 @@ def get_pad_mask(inputs: Tensor, input_lengths: Optional[Any] = None, pad_id: in
 
     if input_lengths is not None:
         batch_size = inputs.size(0)
-        pad_mask = inputs.new_zeros(inputs.size()[:-1])  # N x T
+        pad_mask = inputs.new_zeros(inputs.size()[:-1])  # B x T
+
         for i in range(batch_size):
             pad_mask[i, input_lengths[i]:] = 1
 
-    else:
+    if pad_id is not None:
         assert inputs.dim() == 2
         pad_mask = inputs.eq(pad_id)
 
@@ -63,10 +64,22 @@ def get_subsequent_mask(inputs: Tensor) -> Tensor:
     return subsequent_mask.bool()
 
 
-def get_attn_pad_mask(key: Tensor, pad_id: int) -> Tensor:
-    """ For masking out the padding part of key sequence. """
-    # Expand to fit the shape of key query attention matrix.
-    attn_pad_mask = key.eq(pad_id)
-    attn_pad_mask = attn_pad_mask.unsqueeze(1).expand(-1, key.size(1), -1)  # b x lq x lk
+def get_attn_pad_mask(padded_input, input_lengths, expand_length):
+    """ mask position is set to 1 """
+    # N x Ti x 1
+    non_pad_mask = get_pad_mask(padded_input, input_lengths=input_lengths).eq(False)
+    # N x Ti, lt(1) like not operation
+    pad_mask = non_pad_mask.squeeze(-1).lt(1)
+    attn_mask = pad_mask.unsqueeze(1).expand(-1, expand_length, -1)
+    return attn_mask
 
-    return attn_pad_mask.bool()
+
+def get_attn_key_pad_mask(seq_k, seq_q, pad_idx):
+    """ For masking out the padding part of key sequence. """
+
+    # Expand to fit the shape of key query attention matrix.
+    len_q = seq_q.size(1)
+    padding_mask = seq_k.eq(pad_idx)
+    padding_mask = padding_mask.unsqueeze(1).expand(-1, len_q, -1)  # b x lq x lk
+
+    return padding_mask
