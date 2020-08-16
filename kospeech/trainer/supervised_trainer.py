@@ -8,7 +8,6 @@ from typing import Tuple
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from kospeech.checkpoint.checkpoint import Checkpoint
 from kospeech.metrics import CharacterErrorRate
-from kospeech.optim.loss import cal_performance
 from kospeech.optim.optimizer import Optimizer
 from kospeech.utils import (
     EOS_token,
@@ -312,18 +311,18 @@ class SupervisedTrainer(object):
                     output = model(inputs=inputs, input_lengths=input_lengths,
                                    teacher_forcing_ratio=0.0, return_decode_dict=False)
                     logit = torch.stack(output, dim=1).to(self.device)
-                    hypothesis = logit.max(-1)[1]
-                    cer = self.metric(targets, hypothesis)
-
-                    logit = logit[:, :targets.size(1), :]
-                    loss = self.criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
 
                 elif self.architecture == 'transformer':
                     logit = model(inputs, input_lengths, return_decode_dict=False)
-                    loss, n_correct = cal_performance(logit, targets, smoothing=0.1)
 
                 else:
                     raise ValueError("Unsupported architecture : {0}".format(self.architecture))
+
+                hypothesis = logit.max(-1)[1]
+                cer = self.metric(targets, hypothesis)
+
+                logit = logit[:, :targets.size(1), :]
+                loss = self.criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
 
                 total_loss += loss.item()
                 total_num += sum(input_lengths)
