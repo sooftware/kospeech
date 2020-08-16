@@ -46,23 +46,25 @@ class SupervisedTrainer(object):
     VALID_RESULT_PATH = "../data/train_result/eval_result.csv"
     TRAIN_STEP_RESULT_PATH = "../data/train_result/train_step_result.csv"
 
-    def __init__(self,
-                 optimizer: Optimizer,                          # optimizer for training
-                 criterion: nn.Module,                          # loss function
-                 trainset_list: list,                           # list of training dataset
-                 validset: SpectrogramDataset,                  # validation dataset
-                 high_plateau_lr: float,                        # high plateau learning rate
-                 low_plateau_lr: float,                         # low plateau learning rate
-                 exp_decay_period: int,                         # exponential decay learning rate period
-                 num_workers: int,                              # number of threads
-                 device: str,                                   # device - cuda or cpu
-                 decay_threshold: float,                        # criteria by which exp learning ratedecay is started
-                 print_every: int,                              # number of timesteps to save result after
-                 save_result_every: int,                        # nimber of timesteps to save result after
-                 checkpoint_every: int,                         # number of timesteps to checkpoint after
-                 teacher_forcing_step: float = 0.2,             # step of teacher forcing ratio decrease per epoch.
-                 min_teacher_forcing_ratio: float = 0.8,        # minimum value of teacher forcing ratio
-                 architecture: str = 'seq2seq') -> None:        # LAS architecture to train - seq2seq, transformer
+    def __init__(
+            self,
+            optimizer: Optimizer,                          # optimizer for training
+            criterion: nn.Module,                          # loss function
+            trainset_list: list,                           # list of training dataset
+            validset: SpectrogramDataset,                  # validation dataset
+            high_plateau_lr: float,                        # high plateau learning rate
+            low_plateau_lr: float,                         # low plateau learning rate
+            exp_decay_period: int,                         # exponential decay learning rate period
+            num_workers: int,                              # number of threads
+            device: str,                                   # device - cuda or cpu
+            decay_threshold: float,                        # criteria by which exp learning ratedecay is started
+            print_every: int,                              # number of timesteps to save result after
+            save_result_every: int,                        # nimber of timesteps to save result after
+            checkpoint_every: int,                         # number of timesteps to checkpoint after
+            teacher_forcing_step: float = 0.2,             # step of teacher forcing ratio decrease per epoch.
+            min_teacher_forcing_ratio: float = 0.8,        # minimum value of teacher forcing ratio
+            architecture: str = 'seq2seq'                  # architecture to train - seq2seq, transformer
+    ) -> None:
         self.num_workers = num_workers
         self.optimizer = optimizer
         self.criterion = criterion
@@ -81,8 +83,15 @@ class SupervisedTrainer(object):
         self.metric = CharacterErrorRate(id2char, EOS_token)
         self.architecture = architecture.lower()
 
-    def train(self, model: nn.Module, batch_size: int, epoch_time_step: int, num_epochs: int,
-              teacher_forcing_ratio: float = 0.99, resume: bool = False) -> nn.Module:
+    def train(
+            self,
+            model: nn.Module,
+            batch_size: int,
+            epoch_time_step: int,
+            num_epochs: int,
+            teacher_forcing_ratio: float = 0.99,
+            resume: bool = False
+    ) -> nn.Module:
         """
         Run training for a given model.
 

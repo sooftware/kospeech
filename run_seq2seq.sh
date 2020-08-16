@@ -18,6 +18,7 @@ DROPOUT=0.3
 NUM_HEADS=4
 ATTN_MECHANISM='multi-head'   # multi-head, loc, additive, scaled-dot
 LABEL_SMOOTHING=0.1
+REDUCTION='sum'
 NUM_ENCODER_LAYERS=3
 NUM_DECODER_LAYERS=2
 RNN_TYPE='lstm'
@@ -64,7 +65,7 @@ python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epoch
 --checkpoint_every $CHECKPOINT_EVERY --print_every $PRINT_EVERY --init_lr $INIT_LR  \
 --mode $MODE --dataset_path $DATASET_PATH --data_list_path $DATA_LIST_PATH  \
 --max_grad_norm $MAX_GRAD_NORM --rampup_period $RAMPUP_PERIOD --max_len $MAX_LEN \
---noiseset_size $NOISESET_SIZE --weight_decay $WEIGHT_DECAY \
+--noiseset_size $NOISESET_SIZE --weight_decay $WEIGHT_DECAY --reduction $REDUCTION \
 --noise_level $NOISE_LEVEL --attn_mechanism $ATTN_MECHANISM --teacher_forcing_step $TEACHER_FORCING_STEP \
 --min_teacher_forcing_ratio $MIN_TEACHER_FORCING_RATIO --extractor $EXTRACTOR --activation $ACTIVATION
 

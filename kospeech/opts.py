@@ -123,6 +123,9 @@ def build_train_opts(parser):
     group.add_argument('--weight_decay', '-weight_decay',
                        type=float, default=1e-05,
                        help='value used for weight decay (default: 1e-05)')
+    group.add_argument('--reduction', '-reduction',
+                       type=str, default='sum',
+                       help='loss reduction method (default: sum)')
     group.add_argument('--rampup_period', '-rampup_period',
                        type=int, default=1000,
                        help='timestep of learning rate rampup (default: 1000)')

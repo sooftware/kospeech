@@ -1,12 +1,13 @@
 # It has not yet been fully implemented yet
 
+ARCHITECTURE='transformer'
 DATASET_PATH='your_dataset_path'
 DATA_LIST_PATH='../data/data_list/except_outlier_train_list.csv'
 BATCH_SIZE=32
 NUM_WORKERS=4
 NUM_EPOCHS=20
 LABEL_SMOOTHING=0.1
-ARCHITECTURE='transformer'
+REDUCTION='mean'
 NUM_CLASSES=2038
 D_MODEL=512
 NUM_HEADS=8
@@ -41,7 +42,7 @@ MODE='train'
 
 # shellcheck disable=SC2164
 cd bin
-python ./main.py --architecture $ARCHITECTURE --num_classes $NUM_CLASSES --d_model $D_MODEL \
+python ./main.py --architecture $ARCHITECTURE --num_classes $NUM_CLASSES --d_model $D_MODEL --reduction $REDUCTION \
 --num_heads $NUM_HEADS --num_encoder_layers $NUM_ENCODER_LAYERS --num_decoder_layers $NUM_DECODER_LAYERS \
 --dropout $DROPOUT --ffnet_style $FFNET_STYLE --dataset_path $DATASET_PATH --data_list_path $DATA_LIST_PATH \
 --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epochs $NUM_EPOCHS --label_smoothing $LABEL_SMOOTHING \

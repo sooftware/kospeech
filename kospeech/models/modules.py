@@ -29,14 +29,16 @@ class BaseRNN(nn.Module):
         'rnn': nn.RNN
     }
 
-    def __init__(self,
-                 input_size: int,                       # size of input
-                 hidden_dim: int = 512,                 # dimension of RNN`s hidden state vector
-                 num_layers: int = 1,                   # number of recurrent layers
-                 rnn_type: str = 'lstm',                # number of RNN layers
-                 dropout_p: float = 0.3,                # dropout probability
-                 bidirectional: bool = True,            # if True, becomes a bidirectional rnn
-                 device: str = 'cuda') -> None:         # device - 'cuda' or 'cpu'
+    def __init__(
+            self,
+            input_size: int,                       # size of input
+            hidden_dim: int = 512,                 # dimension of RNN`s hidden state vector
+            num_layers: int = 1,                   # number of recurrent layers
+            rnn_type: str = 'lstm',                # number of RNN layers
+            dropout_p: float = 0.3,                # dropout probability
+            bidirectional: bool = True,            # if True, becomes a bidirectional rnn
+            device: str = 'cuda'                   # device - 'cuda' or 'cpu'
+    ) -> None:
         super(BaseRNN, self).__init__()
         rnn_cell = self.supported_rnns[rnn_type]
         self.rnn = rnn_cell(input_size, hidden_dim, num_layers, True, True, dropout_p, bidirectional)

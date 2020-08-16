@@ -21,13 +21,19 @@ class CrossEntropyWithSmoothingLoss(nn.Module):
     Returns: label_smoothed
         - **label_smoothed** (float): sum of loss
     """
-    def __init__(self, num_classes: int, ignore_index: int, smoothing: float = 0.1, dim: int = -1):
+    def __init__(self, num_classes: int, ignore_index: int, smoothing: float = 0.1, dim: int = -1, reduction='sum'):
         super(CrossEntropyWithSmoothingLoss, self).__init__()
         self.confidence = 1.0 - smoothing
         self.smoothing = smoothing
         self.num_classes = num_classes
         self.dim = dim
         self.ignore_index = ignore_index
+        self.reduction = reduction
+
+        if self.reduction.lower() == 'sum':
+            self.reduction_method = torch.sum
+        elif self.reduction.lower() == 'mean':
+            self.reduction_method = torch.mean
 
     def forward(self, logit: Tensor, target: Tensor):
         if self.smoothing > 0.0:
@@ -36,6 +42,6 @@ class CrossEntropyWithSmoothingLoss(nn.Module):
                 label_smoothed.fill_(self.smoothing / (self.num_classes - 1))
                 label_smoothed.scatter_(1, target.data.unsqueeze(1), self.confidence)
                 label_smoothed[target == self.ignore_index, :] = 0
-            return torch.sum(-label_smoothed * logit)
+            return self.reduction_method(-label_smoothed * logit)
 
-        return F.cross_entropy(logit, target, ignore_index=self.ignore_index, reduction='sum')
+        return F.cross_entropy(logit, target, ignore_index=self.ignore_index, reduction=self.reduction)

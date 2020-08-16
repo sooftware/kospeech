@@ -50,7 +50,13 @@ def train(opt):
         else:
             optimizer = Optimizer(optimizer, None, 0, opt.max_grad_norm)
 
-        criterion = CrossEntropyWithSmoothingLoss(len(char2id), PAD_token, opt.label_smoothing, dim=-1).to(device)
+        criterion = CrossEntropyWithSmoothingLoss(
+            num_classes=len(char2id),
+            ignore_index=PAD_token,
+            smoothing=opt.label_smoothing,
+            dim=-1,
+            reduction=opt.reduction
+        ).to(device)
 
     else:
         trainset_list = None
