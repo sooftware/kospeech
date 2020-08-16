@@ -3,12 +3,12 @@ import numpy as np
 import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
+from kospeech.models.modules import Linear
 from typing import (
     Tuple,
     Optional,
     Any
 )
-from kospeech.models.modules import Linear
 
 
 class ScaledDotProductAttention(nn.Module):

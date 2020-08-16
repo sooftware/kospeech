@@ -41,10 +41,9 @@ class PositionWiseFeedForwardNet(nn.Module):
         if self.ffnet_style == 'ff':
             self.feed_forward = nn.Sequential(
                 Linear(d_model, d_ff),
-                nn.Dropout(dropout_p),
                 nn.ReLU(),
                 Linear(d_ff, d_model),
-                nn.Dropout(dropout_p)
+                nn.Dropout(dropout_p),
             )
 
         elif self.ffnet_style == 'conv':

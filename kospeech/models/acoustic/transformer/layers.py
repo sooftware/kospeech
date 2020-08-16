@@ -23,8 +23,12 @@ class SpeechTransformerEncoderLayer(nn.Module):
         self.self_attention = AddNorm(MultiHeadAttention(d_model, num_heads), d_model)
         self.feed_forward = AddNorm(PositionWiseFeedForwardNet(d_model, d_ff, dropout_p, ffnet_style), d_model)
 
-    def forward(self, inputs: Tensor, non_pad_mask: Optional[Any] = None,
-                self_attn_mask: Optional[Any] = None) -> Tuple[Tensor, Tensor]:
+    def forward(
+            self,
+            inputs: Tensor,
+            non_pad_mask: Optional[Any] = None,
+            self_attn_mask: Optional[Any] = None
+    ) -> Tuple[Tensor, Tensor]:
         output, attn = self.self_attention(inputs, inputs, inputs, self_attn_mask)
 
         if non_pad_mask is not None:
@@ -54,9 +58,14 @@ class SpeechTransformerDecoderLayer(nn.Module):
         self.memory_attention = AddNorm(MultiHeadAttention(d_model, num_heads), d_model)
         self.feed_forward = AddNorm(PositionWiseFeedForwardNet(d_model, d_ff, dropout_p, ffnet_style), d_model)
 
-    def forward(self, inputs: Tensor, memory: Tensor,
-                non_pad_mask: Optional[Any] = None, self_attn_mask: Optional[Any] = None,
-                memory_mask: Optional[Any] = None) -> Tuple[Tensor, Tensor, Tensor]:
+    def forward(
+            self,
+            inputs: Tensor,
+            memory: Tensor,
+            non_pad_mask: Optional[Any] = None,
+            self_attn_mask: Optional[Any] = None,
+            memory_mask: Optional[Any] = None
+    ) -> Tuple[Tensor, Tensor, Tensor]:
         output, self_attn = self.self_attention(inputs, inputs, inputs, self_attn_mask)
 
         if non_pad_mask is not None:
