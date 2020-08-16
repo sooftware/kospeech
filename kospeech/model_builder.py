@@ -50,20 +50,20 @@ def build_transformer(num_classes: int, pad_id: int, d_model: int, num_heads: in
     if ffnet_style not in {'ff', 'conv'}:
         raise ParameterError("Unsupported ffnet_style: {0}".format(ffnet_style))
 
-    model = SpeechTransformer(
-        num_classes=num_classes,
-        pad_id=pad_id,
-        d_model=d_model,
-        num_heads=num_heads,
-        num_encoder_layers=num_encoder_layers,
-        num_decoder_layers=num_decoder_layers,
-        dropout_p=dropout_p,
-        ffnet_style=ffnet_style,
-        input_dim=input_size,
-        eos_id=eos_id
-    )
-
-    return nn.DataParallel(model).to(device)
+    return nn.DataParallel(
+        SpeechTransformer(
+            num_classes=num_classes,
+            pad_id=pad_id,
+            d_model=d_model,
+            num_heads=num_heads,
+            num_encoder_layers=num_encoder_layers,
+            num_decoder_layers=num_decoder_layers,
+            dropout_p=dropout_p,
+            ffnet_style=ffnet_style,
+            input_dim=input_size,
+            eos_id=eos_id
+        )
+    ).to(device)
 
 
 def build_seq2seq(input_size, opt, device):

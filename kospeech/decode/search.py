@@ -3,7 +3,7 @@ import torch.nn as nn
 import pandas as pd
 from queue import Queue
 from kospeech.metrics import CharacterErrorRate, WordErrorRate
-from kospeech.models.acoustic.seq2seq.decoder import SpeechTopKDecoder
+from kospeech.models.acoustic.seq2seq.topk_decoder import SpeechTopKDecoder
 from kospeech.models.acoustic.seq2seq.seq2seq import SpeechSeq2seq
 from kospeech.utils import id2char, EOS_token, logger, label_to_string
 
