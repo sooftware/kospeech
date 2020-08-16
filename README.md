@@ -211,19 +211,21 @@ $ ./run_pretrain.sh
 ```  
 You can get a quick look of pre-trained model's inference, with a sample data.  
   
-### Step 1: Data Preprocessing  
-    
-you can preprocess `KsponSpeech corpus` refer [wiki](https://github.com/sooftware/KoSpeech/wiki/Preparation-before-Training) or [this repo](https://github.com/sooftware/KsponSpeech-preprocess).       
-This documentation contains information regarding the preprocessing of `KsponSpeech`.   
+### Step 1: Prepare Dataset  
+   
+you can preprocess `KsponSpeech corpus` refer [wiki](https://github.com/sooftware/KoSpeech/wiki/Preparation-before-Training) or following.  
+```
+$ python ./preprocess/prepare_ksponspeech.py --dataset_path $DATASET_PATH --new_path $NEW_PATH --script_prefix $SCRIPT_PREFIX
+```
 
 ### Step 2: Run `main.py`
 * Default setting  
 ```
-$ ./run.sh
+$ ./run_seq2seq.sh
 ```
 * Custom setting
 ```shell
-python ./bin/main.py -batch_size 32 -num_workers 4 -num_epochs 20  -spec_augment
+python ./bin/main.py --batch_size 32 --num_workers 4 --num_epochs 20  --spec_augment
 ```
   
 You can train the model by above command.  
@@ -258,13 +260,6 @@ If you have any questions, bug reports, and feature requests, please [open an is
 For live discussions, please go to our [gitter](https://gitter.im/Korean-Speech-Recognition/community) or Contacts sh951011@gmail.com please.
   
 We appreciate any kind of feedback or contribution.  Feel free to proceed with small issues like bug fixes, documentation improvement.  For major contributions and new features, please discuss with the collaborators in corresponding issues.  
-  
-## TODO List
-  
-* [X] Add Transformer model 
-* [ ] Train with Transformer model
-* [ ] Inference with Transformer model
-* [ ] Add CTC with beam search (Connectionist Temporal Classification)
   
 ### Code Style
 We follow [PEP-8](https://www.python.org/dev/peps/pep-0008/) for code style. Especially the style of docstrings is important to generate documentation.  
