@@ -39,7 +39,7 @@ class ScaledDotProductAttention(nn.Module):
         score = torch.bmm(query, key.transpose(1, 2)) / self.sqrt_dim
 
         if mask is not None:
-            score.masked_fill_(mask.view(score.size()), -float('inf'))
+            score.masked_fill_(mask, -np.inf)
 
         attn = F.softmax(score, -1)
         context = torch.bmm(attn, value)
@@ -97,7 +97,7 @@ class MultiHeadAttention(nn.Module):
         value = value.permute(2, 0, 1, 3).contiguous().view(batch_size * self.num_heads, -1, self.d_head)  # BNxV_LENxD
 
         if mask is not None:
-            mask = mask.unsqueeze(1).repeat(1, self.num_heads, 1, 1)  # BxNxQ_LENxK_LEN
+            mask = mask.repeat(self.num_heads, 1, 1)
 
         context, attn = self.scaled_dot_attn(query, key, value, mask)
         context = context.view(self.num_heads, batch_size, -1, self.d_head)

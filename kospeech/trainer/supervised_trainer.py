@@ -234,12 +234,11 @@ class SupervisedTrainer(object):
             else:
                 raise ValueError("Unsupported architecture : {0}".format(self.architecture))
 
-            y_hats = logit.max(-1)[1]
-
+            hypothesis = logit.max(-1)[1]
             loss = self.criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
             epoch_loss_total += loss.item()
 
-            cer = self.metric(targets, y_hats)
+            cer = self.metric(targets, hypothesis)
             total_num += int(input_lengths.sum())
 
             self.optimizer.zero_grad()
@@ -270,7 +269,7 @@ class SupervisedTrainer(object):
             if timestep % self.checkpoint_every == 0:
                 Checkpoint(model, self.optimizer,  self.criterion, self.trainset_list, self.validset, epoch).save()
 
-            del inputs, input_lengths, targets, logit, loss, y_hats
+            del inputs, input_lengths, targets, logit, loss, hypothesis
 
         Checkpoint(model, self.optimizer, self.criterion, self.trainset_list, self.validset, epoch).save()
 
@@ -319,8 +318,8 @@ class SupervisedTrainer(object):
                 else:
                     raise ValueError("Unsupported architecture : {0}".format(self.architecture))
 
-                y_hats = logit.max(-1)[1]
-                cer = self.metric(targets, y_hats)
+                hypothesis = logit.max(-1)[1]
+                cer = self.metric(targets, hypothesis)
 
                 logit = logit[:, :targets.size(1), :]
                 loss = self.criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
