@@ -28,12 +28,14 @@ class CrossEntropyWithSmoothingLoss(nn.Module):
         self.num_classes = num_classes
         self.dim = dim
         self.ignore_index = ignore_index
-        self.reduction = reduction
+        self.reduction = reduction.lower()
 
-        if self.reduction.lower() == 'sum':
+        if self.reduction == 'sum':
             self.reduction_method = torch.sum
-        elif self.reduction.lower() == 'mean':
+        elif self.reduction == 'mean':
             self.reduction_method = torch.mean
+        else:
+            raise ValueError("Unsupported reduction method {0}".format(reduction))
 
     def forward(self, logit: Tensor, target: Tensor):
         if self.smoothing > 0.0:
