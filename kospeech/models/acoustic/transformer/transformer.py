@@ -62,19 +62,20 @@ class SpeechTransformer(nn.Module):
     Returns: output
         - **output**: tensor containing the outputs
     """
-    def __init__(self,
-                 num_classes: int,                      # the number of classfication
-                 d_model: int = 512,                    # dimension of model
-                 input_dim: int = 80,                   # dimension of input
-                 pad_id: int = 0,                       # identification of <PAD_token>
-                 eos_id: int = 2,                       # identification of <EOS_token>
-                 d_ff: int = 2048,                      # dimension of feed forward network
-                 num_heads: int = 8,                    # number of attention heads
-                 num_encoder_layers: int = 6,           # number of encoder layers
-                 num_decoder_layers: int = 6,           # number of decoder layers
-                 dropout_p: float = 0.3,                # dropout probability
-                 ffnet_style: str = 'ff'                # feed forward network style 'ff' or 'conv'
-                 ) -> None:
+    def __init__(
+            self,
+            num_classes: int,                      # the number of classfication
+            d_model: int = 512,                    # dimension of model
+            input_dim: int = 80,                   # dimension of input
+            pad_id: int = 0,                       # identification of <PAD_token>
+            eos_id: int = 2,                       # identification of <EOS_token>
+            d_ff: int = 2048,                      # dimension of feed forward network
+            num_heads: int = 8,                    # number of attention heads
+            num_encoder_layers: int = 6,           # number of encoder layers
+            num_decoder_layers: int = 6,           # number of decoder layers
+            dropout_p: float = 0.3,                # dropout probability
+            ffnet_style: str = 'ff'                # feed forward network style 'ff' or 'conv'
+    ) -> None:
         super(SpeechTransformer, self).__init__()
 
         assert d_model % num_heads == 0, "d_model % num_heads should be zero."
@@ -103,9 +104,13 @@ class SpeechTransformer(nn.Module):
             eos_id=eos_id
         )
 
-    def forward(self,  inputs: Tensor, input_lengths: Tensor,
-                targets: Optional[Tensor] = None,
-                return_attns: bool = False) -> None:
+    def forward(
+            self,
+            inputs: Tensor,
+            input_lengths: Tensor,
+            targets: Optional[Tensor] = None,
+            return_attns: bool = False
+    ) -> None:
         """
         Args:
             inputs: BxT_inputxD_Feature
@@ -193,7 +198,7 @@ class SpeechTransformerDecoder(nn.Module):
         self.eos_id = eos_id
         self.generator = Linear(d_model, num_classes)
 
-        self.generator.weight = self.embedding.weight
+        self.generator.weight = self.embedding.embedding.weight
         self.logit_scale = (d_model ** 0.5)
 
     def forward(self, targets: Tensor, input_lengths: Optional[Any] = None,
