@@ -1,11 +1,11 @@
 import torch
 import torch.nn as nn
 from torch import Tensor
+from kospeech.models.acoustic.seq2seq.topk_decoder import SpeechTopKDecoder
 from typing import (
     Optional,
     Any
 )
-from kospeech.models.acoustic.seq2seq.decoder import SpeechTopKDecoder
 
 
 class SpeechSeq2seq(nn.Module):
