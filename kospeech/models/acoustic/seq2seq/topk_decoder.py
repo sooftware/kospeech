@@ -35,19 +35,15 @@ class SpeechTopKDecoder(nn.Module):
         self.eos_id = decoder.eos_id
         self.device = decoder.device
         self.max_length = decoder.max_length
-        self.init_state = decoder.init_state
         self.num_layers = decoder.num_layers
         self.ongoing_beams = None
         self.cumulative_ps = None
         self.finished = [[] for _ in range(batch_size)]
         self.finished_ps = [[] for _ in range(batch_size)]
         self.forward_step = decoder.forward_step
-        self.alpha = 1.2
-        self.min_length = 5
 
-    def forward(self, input_var, encoder_outputs, k=5):
-        batch_size = encoder_outputs.size(0)
-        hidden = self.init_state(batch_size)
+    def forward(self, input_var: Tensor, encoder_outputs: Tensor, k=3):
+        batch_size, hidden = encoder_outputs.size(0), None
 
         step_outputs, hidden, attn = self.forward_step(input_var, hidden, encoder_outputs)
         self.cumulative_ps, self.ongoing_beams = step_outputs.topk(k)
@@ -193,10 +189,10 @@ class SpeechTopKDecoder(nn.Module):
 
         return matched
 
-    def get_length_penalty(self, length):
+    def get_length_penalty(self, length: int, alpha: float = 1.2, min_length: int = 5):
         """
         Calculate length-penalty.
         because shorter sentence usually have bigger probability.
         using alpha = 1.2, min_length = 5 usually.
         """
-        return ((self.min_length + length) / (self.min_length + 1)) ** self.alpha
+        return ((min_length + length) / (min_length + 1)) ** alpha

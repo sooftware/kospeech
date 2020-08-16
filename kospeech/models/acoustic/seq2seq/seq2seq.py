@@ -35,8 +35,14 @@ class SpeechSeq2seq(nn.Module):
         self.encoder = encoder
         self.decoder = decoder
 
-    def forward(self, inputs: Tensor, input_lengths: Tensor, targets: Optional[Any] = None,
-                teacher_forcing_ratio: float = 1.0, return_decode_dict: bool = False):
+    def forward(
+            self,
+            inputs: Tensor,                         # tensor of sequences whose contains input variables
+            input_lengths: Tensor,                  # tensor of sequences whose contains lengths of inputs
+            targets: Optional[Any] = None,          # tensor of sequences whose contains target variables
+            teacher_forcing_ratio: float = 1.0,     # the probability that teacher forcing will be used
+            return_decode_dict: bool = False        # flag indication whether return decode_dict or not
+    ):
         output, hidden = self.encoder(inputs, input_lengths)
 
         if isinstance(self.decoder, SpeechTopKDecoder):

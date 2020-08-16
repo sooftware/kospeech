@@ -76,7 +76,7 @@ def build_seq2seq(input_size, opt, device):
     )
     decoder = build_seq2seq_decoder(
         num_classes=len(char2id), max_len=opt.max_len,
-        sos_id=SOS_token, eos_id=EOS_token,
+        pad_id=PAD_token, sos_id=SOS_token, eos_id=EOS_token,
         hidden_dim=opt.hidden_dim << (1 if opt.use_bidirectional else 0),
         num_layers=opt.num_decoder_layers, rnn_type=opt.rnn_type, dropout_p=opt.dropout,
         num_heads=opt.num_heads, attn_mechanism=opt.attn_mechanism, device=device
