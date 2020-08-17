@@ -84,8 +84,8 @@ class SpeechEncoderRNN(BaseRNN):
             conv_feat = self.conv(inputs.unsqueeze(1), input_lengths).to(self.device)
             conv_feat = conv_feat.transpose(1, 2)
 
-            batch_size, num_channels, seq_length, hidden_dim = conv_feat.size()
-            conv_feat = conv_feat.contiguous().view(batch_size, num_channels, seq_length * hidden_dim)
+            batch_size, seq_length, num_channels, hidden_dim = conv_feat.size()
+            conv_feat = conv_feat.contiguous().view(batch_size, seq_length, num_channels * hidden_dim)
 
             if self.training:
                 self.rnn.flatten_parameters()

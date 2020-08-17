@@ -130,10 +130,14 @@ class SpeechTransformer(nn.Module):
             targets: B x T_output
             return_attns: bool
         """
-        inputs = self.conv(inputs, input_lengths)
+        conv_feat = self.conv(inputs.unsqueeze(1), input_lengths).to(self.device)
+        conv_feat = conv_feat.transpose(1, 2)
+
+        batch_size, seq_length, num_channels, hidden_dim = conv_feat.size()
+        conv_feat = conv_feat.contiguous().view(batch_size, seq_length, num_channels * hidden_dim)
         input_lengths = (input_lengths >> 2).int()
 
-        memory, encoder_self_attns = self.encoder(inputs, input_lengths)
+        memory, encoder_self_attns = self.encoder(conv_feat, input_lengths)
         output, decoder_self_attns, memory_attns = self.decoder(targets, input_lengths, memory)
         output = self.generator(output)
 
