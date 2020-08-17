@@ -33,6 +33,35 @@ def get_pad_mask(inputs: Tensor, input_lengths: Optional[Any] = None, pad_id: in
 
 
 def get_decoder_self_attn_mask(seq_k: Tensor, seq_q: Tensor, pad_id):
+    """
+    For masking the decoder self attention
+
+    Example::
+        >>> get_decoder_self_attn_mask(seq_k, seq_q, pad_id)
+        tensor([[[False,  True,  True,  True,  True,  True,  True],
+                 [False, False,  True,  True,  True,  True,  True],
+                 [False, False, False,  True,  True,  True,  True],
+                 [False, False, False, False,  True,  True,  True],
+                 [False, False, False, False,  True,  True,  True],
+                 [False, False, False, False,  True,  True,  True],
+                 [False, False, False, False,  True,  True,  True]],
+
+                [[False,  True,  True,  True,  True,  True,  True],
+                 [False, False,  True,  True,  True,  True,  True],
+                 [False, False, False,  True,  True,  True,  True],
+                 [False, False, False, False,  True,  True,  True],
+                 [False, False, False, False, False,  True,  True],
+                 [False, False, False, False, False,  True,  True],
+                 [False, False, False, False, False,  True,  True]],
+
+                [[False,  True,  True,  True,  True,  True,  True],
+                 [False, False,  True,  True,  True,  True,  True],
+                 [False, False, False,  True,  True,  True,  True],
+                 [False, False, False, False,  True,  True,  True],
+                 [False, False, False, False, False,  True,  True],
+                 [False, False, False, False, False, False,  True],
+                 [False, False, False, False, False, False,  True]]])
+    """
     def get_attn_key_pad_mask(seq_k, seq_q, pad_id):
         """ For masking out the padding part of key sequence. """
 
@@ -49,35 +78,29 @@ def get_decoder_self_attn_mask(seq_k: Tensor, seq_q: Tensor, pad_id):
 
         Examples::
             >>> get_subsequent_mask(inputs)
-            tensor([[[False,  True,  True,  True,  True,  True,  True,  True,  True],
-                     [False, False,  True,  True,  True,  True,  True,  True,  True],
-                     [False, False, False,  True,  True,  True,  True,  True,  True],
-                     [False, False, False, False,  True,  True,  True,  True,  True],
-                     [False, False, False, False, False,  True,  True,  True,  True],
-                     [False, False, False, False, False, False,  True,  True,  True],
-                     [False, False, False, False, False, False, False,  True,  True],
-                     [False, False, False, False, False, False, False, False,  True],
-                     [False, False, False, False, False, False, False, False, False]],
+            tensor([[[False,  True,  True,  True,  True,  True,  True],
+                     [False, False,  True,  True,  True,  True,  True],
+                     [False, False, False,  True,  True,  True,  True],
+                     [False, False, False, False,  True,  True,  True],
+                     [False, False, False, False, False,  True,  True],
+                     [False, False, False, False, False, False,  True],
+                     [False, False, False, False, False, False, False]],
 
-                    [[False,  True,  True,  True,  True,  True,  True,  True,  True],
-                     [False, False,  True,  True,  True,  True,  True,  True,  True],
-                     [False, False, False,  True,  True,  True,  True,  True,  True],
-                     [False, False, False, False,  True,  True,  True,  True,  True],
-                     [False, False, False, False, False,  True,  True,  True,  True],
-                     [False, False, False, False, False, False,  True,  True,  True],
-                     [False, False, False, False, False, False, False,  True,  True],
-                     [False, False, False, False, False, False, False, False,  True],
-                     [False, False, False, False, False, False, False, False, False]],
+                    [[False,  True,  True,  True,  True,  True,  True],
+                     [False, False,  True,  True,  True,  True,  True],
+                     [False, False, False,  True,  True,  True,  True],
+                     [False, False, False, False,  True,  True,  True],
+                     [False, False, False, False, False,  True,  True],
+                     [False, False, False, False, False, False,  True],
+                     [False, False, False, False, False, False, False]],
 
-                    [[False,  True,  True,  True,  True,  True,  True,  True,  True],
-                     [False, False,  True,  True,  True,  True,  True,  True,  True],
-                     [False, False, False,  True,  True,  True,  True,  True,  True],
-                     [False, False, False, False,  True,  True,  True,  True,  True],
-                     [False, False, False, False, False,  True,  True,  True,  True],
-                     [False, False, False, False, False, False,  True,  True,  True],
-                     [False, False, False, False, False, False, False,  True,  True],
-                     [False, False, False, False, False, False, False, False,  True],
-                     [False, False, False, False, False, False, False, False, False]]])
+                    [[False,  True,  True,  True,  True,  True,  True],
+                     [False, False,  True,  True,  True,  True,  True],
+                     [False, False, False,  True,  True,  True,  True],
+                     [False, False, False, False,  True,  True,  True],
+                     [False, False, False, False, False,  True,  True],
+                     [False, False, False, False, False, False,  True],
+                     [False, False, False, False, False, False, False]]])
         """
 
         batch_size, seq_length = inputs.size()
@@ -127,8 +150,15 @@ def get_attn_pad_mask(inputs, input_lengths, expand_length):
 
     """
     # N x Ti x 1
-    non_pad_mask = get_pad_mask(inputs, input_lengths=input_lengths).eq(False)
-    # N x Ti, lt(1) like not operation
+    batch_size = inputs.size(0)
+    pad_mask = inputs.new_zeros(inputs.size()[:-1])  # B x T
+
+    for i in range(batch_size):
+        pad_mask[i, input_lengths[i]:] = 1
+
+    pad_mask = pad_mask.unsqueeze(-1).bool()
+    non_pad_mask = pad_mask.eq(False)
+
     pad_mask = non_pad_mask.squeeze(-1).eq(False)
     attn_mask = pad_mask.unsqueeze(1).expand(-1, expand_length, -1)
     return attn_mask

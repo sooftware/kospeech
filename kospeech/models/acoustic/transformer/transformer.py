@@ -177,10 +177,7 @@ class SpeechTransformerEncoder(nn.Module):
         non_pad_mask = get_pad_mask(inputs, input_lengths=input_lengths).eq(False)
         self_attn_mask = get_attn_pad_mask(inputs, input_lengths, inputs.size(1))
 
-        output = self.input_dropout(
-            self.input_layer_norm(self.input_proj(inputs))
-            + self.positional_encoding(inputs.size(1))
-        )
+        output = self.input_dropout(self.input_layer_norm(self.input_proj(inputs)) + self.positional_encoding(inputs.size(1)))
 
         for layer in self.layers:
             output, attn = layer(output, non_pad_mask, self_attn_mask)
