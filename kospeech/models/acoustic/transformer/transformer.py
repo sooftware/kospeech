@@ -116,8 +116,6 @@ class SpeechTransformer(nn.Module):
         else:
             raise ValueError("Unsupported Extractor : {0}".format(extractor))
 
-        self.eos_id = eos_id
-        self.pad_id = pad_id
         self.encoder = SpeechTransformerEncoder(
             d_model=d_model,
             input_dim=input_dim,
@@ -139,6 +137,9 @@ class SpeechTransformer(nn.Module):
             pad_id=pad_id,
             eos_id=eos_id
         )
+
+        self.eos_id = eos_id
+        self.pad_id = pad_id
         self.generator = Linear(d_model, num_classes)
 
     def forward(self, inputs: Tensor, input_lengths: Tensor,
@@ -151,7 +152,7 @@ class SpeechTransformer(nn.Module):
             targets: B x T_output
             return_attns: bool
         """
-        conv_feat = self.conv(inputs.unsqueeze(1), input_lengths).to(self.device)
+        conv_feat = self.conv(inputs.unsqueeze(1))
         conv_feat = conv_feat.transpose(1, 2)
 
         batch_size, seq_length, num_channels, hidden_dim = conv_feat.size()
