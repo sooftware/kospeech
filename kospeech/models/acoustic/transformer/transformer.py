@@ -10,7 +10,6 @@ Reference :
     - **https://github.com/JayParks/transformer**
 """
 import torch.nn as nn
-import torch.nn.functional as F
 from torch import Tensor
 from typing import (
     Optional,

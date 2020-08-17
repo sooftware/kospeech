@@ -121,7 +121,7 @@ def build_seq2seq_encoder(input_size: int, hidden_dim: int, dropout_p: float,
 
 
 def build_seq2seq_decoder(num_classes: int, max_len: int, hidden_dim: int,
-                          sos_id: int, eos_id: int, attn_mechanism: str, num_layers: int,
+                          sos_id: int, eos_id: int, pad_id: int, attn_mechanism: str, num_layers: int,
                           rnn_type: str, dropout_p: float, num_heads: int, device: str) -> SpeechDecoderRNN:
     """ Various decoder dispatcher function. """
     if hidden_dim % num_heads != 0:
@@ -147,6 +147,7 @@ def build_seq2seq_decoder(num_classes: int, max_len: int, hidden_dim: int,
         num_classes=num_classes,
         max_length=max_len,
         hidden_dim=hidden_dim,
+        pad_id=pad_id,
         sos_id=sos_id,
         eos_id=eos_id,
         attn_mechanism=attn_mechanism,
