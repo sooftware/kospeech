@@ -82,11 +82,11 @@ class SpeechTransformer(nn.Module):
 
         assert d_model % num_heads == 0, "d_model % num_heads should be zero."
 
-        if self.extractor == 'vgg':
+        if extractor.lower() == 'vgg':
             input_dim = (input_dim - 1) << 5 if input_dim % 2 else input_dim << 5
             self.conv = VGGExtractor('hardtanh', False)
 
-        elif self.extractor == 'ds2':
+        elif extractor.lower() == 'ds2':
             input_dim = int(math.floor(input_dim + 2 * 20 - 41) / 2 + 1)
             input_dim = int(math.floor(input_dim + 2 * 10 - 21) / 2 + 1)
             input_dim <<= 5
