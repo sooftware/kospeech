@@ -16,8 +16,6 @@ from typing import (
     Optional,
     Any
 )
-
-from kospeech.models.acoustic.seq2seq.sublayers import VGGExtractor, DeepSpeech2Extractor
 from kospeech.models.modules import (
     Linear,
     LayerNorm
@@ -63,20 +61,21 @@ class SpeechTransformer(nn.Module):
     Returns: output
         - **output**: tensor containing the outputs
     """
+
     def __init__(
             self,
-            num_classes: int,                      # the number of classfication
-            d_model: int = 512,                    # dimension of model
-            input_dim: int = 80,                   # dimension of input
-            pad_id: int = 0,                       # identification of <PAD_token>
-            eos_id: int = 2,                       # identification of <EOS_token>
-            d_ff: int = 2048,                      # dimension of feed forward network
-            num_heads: int = 8,                    # number of attention heads
-            num_encoder_layers: int = 6,           # number of encoder layers
-            num_decoder_layers: int = 6,           # number of decoder layers
-            dropout_p: float = 0.3,                # dropout probability
-            ffnet_style: str = 'ff',               # feed forward network style 'ff' or 'conv'
-            extractor: str = 'vgg'                 # CNN extractor [vgg, ds2]
+            num_classes: int,               # the number of classfication
+            d_model: int = 512,             # dimension of model
+            input_dim: int = 80,            # dimension of input
+            pad_id: int = 0,                # identification of <PAD_token>
+            eos_id: int = 2,                # identification of <EOS_token>
+            d_ff: int = 2048,               # dimension of feed forward network
+            num_heads: int = 8,             # number of attention heads
+            num_encoder_layers: int = 6,    # number of encoder layers
+            num_decoder_layers: int = 6,    # number of decoder layers
+            dropout_p: float = 0.3,         # dropout probability
+            ffnet_style: str = 'ff',        # feed forward network style 'ff' or 'conv'
+            extractor: str = 'vgg'          # CNN extractor [vgg, ds2]
     ) -> None:
         super(SpeechTransformer, self).__init__()
 
@@ -84,13 +83,35 @@ class SpeechTransformer(nn.Module):
 
         if extractor.lower() == 'vgg':
             input_dim = (input_dim - 1) << 5 if input_dim % 2 else input_dim << 5
-            self.conv = VGGExtractor('hardtanh', False)
+            self.conv = self.conv = nn.Sequential(
+                nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1, bias=False),
+                nn.BatchNorm2d(num_features=64),
+                nn.Hardtanh(0, 20, inplace=True),
+                nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1, bias=False),
+                nn.BatchNorm2d(num_features=64),
+                nn.Hardtanh(0, 20, inplace=True),
+                nn.MaxPool2d(2, stride=2),
+                nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1, bias=False),
+                nn.BatchNorm2d(num_features=128),
+                nn.Hardtanh(0, 20, inplace=True),
+                nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1, bias=False),
+                nn.BatchNorm2d(num_features=128),
+                nn.Hardtanh(0, 20, inplace=True),
+                nn.MaxPool2d(2, stride=2)
+            )
 
         elif extractor.lower() == 'ds2':
             input_dim = int(math.floor(input_dim + 2 * 20 - 41) / 2 + 1)
             input_dim = int(math.floor(input_dim + 2 * 10 - 21) / 2 + 1)
             input_dim <<= 5
-            self.conv = DeepSpeech2Extractor('hardtanh', False)
+            self.conv = nn.Sequential(
+                nn.Conv2d(1, 32, kernel_size=(41, 11), stride=(2, 2), padding=(20, 5), bias=False),
+                nn.BatchNorm2d(32),
+                nn.Hardtanh(0, 20, inplace=True),
+                nn.Conv2d(32, 32, kernel_size=(21, 11), stride=(2, 1), padding=(10, 5), bias=False),
+                nn.BatchNorm2d(32),
+                nn.Hardtanh(0, 20, inplace=True),
+            )
 
         else:
             raise ValueError("Unsupported Extractor : {0}".format(extractor))
@@ -165,6 +186,7 @@ class SpeechTransformerEncoder(nn.Module):
         dropout_p:  probability of dropout (default: 0.3)
         pad_id: identification of pad token (default: 0)
     """
+
     def __init__(
             self,
             d_model: int = 512,         # dimension of model
@@ -226,17 +248,18 @@ class SpeechTransformerDecoder(nn.Module):
         pad_id: identification of pad token
         eos_id: identification of end of sentence token
     """
+
     def __init__(
             self,
-            num_classes: int,               # number of classes
-            d_model: int = 512,             # dimension of model
-            d_ff: int = 512,                # dimension of feed forward network
-            num_layers: int = 6,            # number of decoder layers
-            num_heads: int = 8,             # number of attention heads
-            ffnet_style: str = 'ff',        # style of feed forward network
-            dropout_p: float = 0.3,         # probability of dropout
-            pad_id: int = 0,                # identification of pad token
-            eos_id: int = 2                 # identification of end of sentence token
+            num_classes: int,           # number of classes
+            d_model: int = 512,         # dimension of model
+            d_ff: int = 512,            # dimension of feed forward network
+            num_layers: int = 6,        # number of decoder layers
+            num_heads: int = 8,         # number of attention heads
+            ffnet_style: str = 'ff',    # style of feed forward network
+            dropout_p: float = 0.3,     # probability of dropout
+            pad_id: int = 0,            # identification of pad token
+            eos_id: int = 2             # identification of end of sentence token
     ) -> None:
         super(SpeechTransformerDecoder, self).__init__()
         self.d_model = d_model
@@ -246,7 +269,7 @@ class SpeechTransformerDecoder(nn.Module):
         self.positional_encoding = PositionalEncoding(d_model)
         self.input_dropout = nn.Dropout(p=dropout_p)
         self.layers = nn.ModuleList(
-            [SpeechTransformerDecoderLayer(d_model, num_heads, d_ff,  dropout_p, ffnet_style) for _ in range(num_layers)]
+            [SpeechTransformerDecoderLayer(d_model, num_heads, d_ff, dropout_p, ffnet_style) for _ in range(num_layers)]
         )
         self.pad_id = pad_id
         self.eos_id = eos_id
