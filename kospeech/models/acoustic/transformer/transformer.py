@@ -131,6 +131,8 @@ class SpeechTransformer(nn.Module):
             return_attns: bool
         """
         inputs = self.conv(inputs, input_lengths)
+        input_lengths = (input_lengths >> 2).int()
+
         memory, encoder_self_attns = self.encoder(inputs, input_lengths)
         output, decoder_self_attns, memory_attns = self.decoder(targets, input_lengths, memory)
         output = self.generator(output)
