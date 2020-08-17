@@ -159,14 +159,3 @@ def get_attn_pad_mask(inputs, input_lengths, expand_length):
     pad_mask = non_pad_mask.squeeze(-1).eq(False)
     attn_mask = pad_mask.unsqueeze(1).expand(-1, expand_length, -1)
     return attn_mask
-
-
-def get_attn_key_pad_mask(seq_k, seq_q, pad_idx):
-    """ For masking out the padding part of key sequence. """
-
-    # Expand to fit the shape of key query attention matrix.
-    len_q = seq_q.size(1)
-    padding_mask = seq_k.eq(pad_idx)
-    padding_mask = padding_mask.unsqueeze(1).expand(-1, len_q, -1)  # b x lq x lk
-
-    return padding_mask
