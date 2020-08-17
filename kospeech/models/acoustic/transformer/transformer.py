@@ -102,23 +102,21 @@ class SpeechTransformer(nn.Module):
             pad_id=pad_id,
             eos_id=eos_id
         )
+        self.generator = Linear(d_model, num_classes)
 
-    def forward(
-            self,
-            inputs: Tensor,
-            input_lengths: Tensor,
-            targets: Optional[Tensor] = None,
-            return_attns: bool = False
-    ) -> None:
+    def forward(self, inputs: Tensor, input_lengths: Tensor,
+                targets: Optional[Tensor] = None,
+                return_attns: bool = False):
         """
         Args:
-            inputs: BxT_inputxD_Feature
-            input_lengths: Bx1
-            targets: BxT_output
+            inputs: B x T_input x D_Feature
+            input_lengths: B x 1
+            targets: B x T_output
             return_attns: bool
         """
         memory, encoder_self_attns = self.encoder(inputs, input_lengths)
         output, decoder_self_attns, memory_attns = self.decoder(targets, input_lengths, memory)
+        output = self.generator(output)
 
         if return_attns:
             output = (output, encoder_self_attns, decoder_self_attns, memory_attns)
@@ -133,10 +131,28 @@ class SpeechTransformerEncoder(nn.Module):
     The TransformerEncoder is composed of a stack of N identical layers.
     Each layer has two sub-layers. The first is a multi-head self-attention mechanism,
     and the second is a simple, position-wise fully connected feed-forward network.
+
+    Args:
+        d_model: dimension of model (default: 512)
+        input_dim: dimension of feature vector (default: 80)
+        d_ff: dimension of feed forward network (default: 2048)
+        num_layers: number of encoder layers (default: 6)
+        num_heads: number of attention heads (default: 8)
+        ffnet_style: style of feed forward network [ff, conv] (default: ff)
+        dropout_p:  probability of dropout (default: 0.3)
+        pad_id: identification of pad token (default: 0)
     """
-    def __init__(self, d_model: int = 512, input_dim: int = 80, d_ff: int = 2048,
-                 num_layers: int = 6, num_heads: int = 8, ffnet_style: str = 'ff',
-                 dropout_p: float = 0.3, pad_id: int = 0) -> None:
+    def __init__(
+            self,
+            d_model: int = 512,         # dimension of model
+            input_dim: int = 80,        # dimension of feature vector
+            d_ff: int = 2048,           # dimension of feed forward network
+            num_layers: int = 6,        # number of encoder layers
+            num_heads: int = 8,         # number of attention heads
+            ffnet_style: str = 'ff',    # style of feed forward network [ff, conv]
+            dropout_p: float = 0.3,     # probability of dropout
+            pad_id: int = 0             # identification of pad token
+    ) -> None:
         super(SpeechTransformerEncoder, self).__init__()
         self.d_model = d_model
         self.num_layers = num_layers
@@ -150,7 +166,7 @@ class SpeechTransformerEncoder(nn.Module):
             [SpeechTransformerEncoderLayer(d_model, num_heads, d_ff, dropout_p, ffnet_style) for _ in range(num_layers)]
         )
 
-    def forward(self, inputs: Tensor, input_lengths: Tensor = None) -> Tuple[Tensor, Tensor]:
+    def forward(self, inputs: Tensor, input_lengths: Tensor = None):
         """
         Args:
             inputs: BxT_inputxD
@@ -159,8 +175,7 @@ class SpeechTransformerEncoder(nn.Module):
         self_attns = list()
 
         non_pad_mask = get_pad_mask(inputs, input_lengths=input_lengths).eq(False)
-        length = inputs.size(1)
-        self_attn_mask = get_attn_pad_mask(inputs, input_lengths, length)
+        self_attn_mask = get_attn_pad_mask(inputs, input_lengths, inputs.size(1))
 
         output = self.input_dropout(
             self.input_layer_norm(self.input_proj(inputs))
@@ -179,10 +194,30 @@ class SpeechTransformerDecoder(nn.Module):
     The TransformerDecoder is composed of a stack of N identical layers.
     Each layer has three sub-layers. The first is a multi-head self-attention mechanism,
     and the second is a multi-head attention mechanism, third is a feed-forward network.
+
+    Args:
+        num_classes: umber of classes
+        d_model: dimension of model
+        d_ff: dimension of feed forward network
+        num_layers: number of decoder layers
+        num_heads: number of attention heads
+        ffnet_style: style of feed forward network
+        dropout_p: probability of dropout
+        pad_id: identification of pad token
+        eos_id: identification of end of sentence token
     """
-    def __init__(self, num_classes: int, d_model: int = 512, d_ff: int = 512,
-                 num_layers: int = 6, num_heads: int = 8, ffnet_style: str = 'ff',
-                 dropout_p: float = 0.3, pad_id: int = 0, eos_id: int = 2) -> None:
+    def __init__(
+            self,
+            num_classes: int,               # number of classes
+            d_model: int = 512,             # dimension of model
+            d_ff: int = 512,                # dimension of feed forward network
+            num_layers: int = 6,            # number of decoder layers
+            num_heads: int = 8,             # number of attention heads
+            ffnet_style: str = 'ff',        # style of feed forward network
+            dropout_p: float = 0.3,         # probability of dropout
+            pad_id: int = 0,                # identification of pad token
+            eos_id: int = 2                 # identification of end of sentence token
+    ) -> None:
         super(SpeechTransformerDecoder, self).__init__()
         self.d_model = d_model
         self.num_layers = num_layers
@@ -195,32 +230,21 @@ class SpeechTransformerDecoder(nn.Module):
         )
         self.pad_id = pad_id
         self.eos_id = eos_id
-        self.generator = Linear(d_model, num_classes)
 
-        self.generator.weight = self.embedding.embedding.weight
-        self.logit_scale = (d_model ** 0.5)
-
-    def forward(self, targets: Tensor, input_lengths: Optional[Any] = None,
-                memory: Tensor = None) -> Tuple[Tensor, Tensor, Tensor]:
+    def forward(self, inputs: Tensor, input_lengths: Optional[Any] = None, memory: Tensor = None):
         self_attns, memory_attns = list(), list()
+        batch_size, output_length = inputs.size(0), inputs.size(1)
+        inputs = inputs[inputs != self.eos_id].view(batch_size, -1)
 
-        non_pad_mask = get_pad_mask(targets, pad_id=self.eos_id).eq(False)
-        self_attn_mask = get_attn_key_pad_mask(targets, targets, self.eos_id) | get_subsequent_mask(targets)
-
-        output_length = targets.size(1)
+        non_pad_mask = get_pad_mask(inputs, pad_id=self.pad_id).eq(False)
+        self_attn_mask = get_attn_key_pad_mask(inputs, inputs, self.pad_id) | get_subsequent_mask(inputs)
         memory_mask = get_attn_pad_mask(memory, input_lengths, output_length)
 
-        output = self.input_dropout(
-            self.embedding(targets)
-            * self.logit_scale
-            + self.positional_encoding(targets.size(1))
-        )
+        output = self.input_dropout(self.embedding(inputs) + self.positional_encoding(inputs.size(1)))
 
         for layer in self.layers:
             output, self_attn, memory_attn = layer(output, memory, non_pad_mask, self_attn_mask, memory_mask)
             self_attns.append(self_attn)
             memory_attns.append(memory_attn)
-
-        output = self.generator(output)
 
         return output, self_attns, memory_attns
