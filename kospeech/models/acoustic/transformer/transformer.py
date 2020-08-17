@@ -22,9 +22,9 @@ from kospeech.models.modules import (
 )
 from kospeech.models.acoustic.transformer.mask import (
     get_pad_mask,
-    get_subsequent_mask,
     get_attn_pad_mask,
-    get_attn_key_pad_mask)
+    get_decoder_self_attn_mask
+)
 from kospeech.models.acoustic.transformer.embeddings import (
     Embedding,
     PositionalEncoding
@@ -237,7 +237,7 @@ class SpeechTransformerDecoder(nn.Module):
         inputs = inputs[inputs != self.eos_id].view(batch_size, -1)
 
         non_pad_mask = get_pad_mask(inputs, pad_id=self.pad_id).eq(False)
-        self_attn_mask = get_attn_key_pad_mask(inputs, inputs, self.pad_id) | get_subsequent_mask(inputs)
+        self_attn_mask = get_decoder_self_attn_mask(inputs, inputs, self.pad_id)
         memory_mask = get_attn_pad_mask(memory, input_lengths, output_length)
 
         output = self.input_dropout(self.embedding(inputs) + self.positional_encoding(inputs.size(1)))
