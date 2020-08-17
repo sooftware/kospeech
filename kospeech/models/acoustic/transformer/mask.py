@@ -20,7 +20,11 @@ def get_pad_mask(inputs: Tensor, input_lengths: Optional[Any] = None, pad_id: in
 
     if input_lengths is not None:
         batch_size = inputs.size(0)
-        pad_mask = inputs.new_zeros(inputs.size())  # B x T
+
+        if len(inputs.size()) == 2:
+            pad_mask = inputs.new_zeros(inputs.size())  # B x T
+        else:
+            pad_mask = inputs.new_zeros(inputs.size()[:-1])  # B x T
 
         for i in range(batch_size):
             pad_mask[i, input_lengths[i]:] = 1
@@ -150,15 +154,8 @@ def get_attn_pad_mask(inputs, input_lengths, expand_length):
 
     """
     # N x Ti x 1
-    batch_size = inputs.size(0)
-    pad_mask = inputs.new_zeros(inputs.size()[:-1])  # B x T
-
-    for i in range(batch_size):
-        pad_mask[i, input_lengths[i]:] = 1
-
-    pad_mask = pad_mask.unsqueeze(-1).bool()
-    non_pad_mask = pad_mask.eq(False)
-
+    non_pad_mask = get_pad_mask(inputs, input_lengths=input_lengths).eq(False)
+    # N x Ti, lt(1) like not operation
     pad_mask = non_pad_mask.squeeze(-1).eq(False)
     attn_mask = pad_mask.unsqueeze(1).expand(-1, expand_length, -1)
     return attn_mask
