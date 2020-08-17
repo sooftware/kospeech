@@ -55,7 +55,8 @@ def train(opt):
             ignore_index=PAD_token,
             smoothing=opt.label_smoothing,
             dim=-1,
-            reduction=opt.reduction
+            reduction=opt.reduction,
+            architecture=opt.architecture
         ).to(device)
 
     else:

@@ -42,7 +42,7 @@ class SpeechTopKDecoder(nn.Module):
         self.finished_ps = [[] for _ in range(batch_size)]
         self.forward_step = decoder.forward_step
 
-    def forward(self, input_var: Tensor, encoder_outputs: Tensor, k=3):
+    def forward(self, input_var: Tensor, encoder_outputs: Tensor, k: int = 3):
         batch_size, hidden = encoder_outputs.size(0), None
 
         step_outputs, hidden, attn = self.forward_step(input_var, hidden, encoder_outputs)

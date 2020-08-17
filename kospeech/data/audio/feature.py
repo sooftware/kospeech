@@ -19,7 +19,7 @@ class Spectrogram(object):
     """
     Create a spectrogram from a audio signal.
 
-    Args: sample_rate, window_size, frame_shift, feature_extract_by
+    Args:
         sample_rate (int): Sample rate of audio signal. (Default: 16000)
         frame_length (int): frame length for spectrogram (ms) (Default : 20)
         frame_shift (int): Length of hop between STFT windows. (ms) (Default: 10)
@@ -64,7 +64,7 @@ class MelSpectrogram(object):
     """
     Create MelSpectrogram for a raw audio signal. This is a composition of Spectrogram and MelScale.
 
-    Args: sample_rate, n_mels, frame_length, frame_shift, feature_extract_by
+    Args:
         sample_rate (int): Sample rate of audio signal. (Default: 16000)
         n_mels (int):  Number of mfc coefficients to retain. (Default: 80)
         frame_length (int): frame length for spectrogram (ms) (Default : 20)
@@ -111,7 +111,7 @@ class MFCC(object):
     """
     Create the Mel-frequency cepstrum coefficients (MFCCs) from an audio signal.
 
-    Args: sample_rate, n_mfcc, frame_length, frame_shift, feature_extract_by
+    Args:
         sample_rate (int): Sample rate of audio signal. (Default: 16000)
         n_mfcc (int):  Number of mfc coefficients to retain. (Default: 40)
         frame_length (int): frame length for spectrogram (ms) (Default : 20)
@@ -155,7 +155,7 @@ class FilterBank(object):
     """
     Create a fbank from a raw audio signal. This matches the input/output of Kaldi’s compute-fbank-feats
 
-    Args: sample_rate, n_mels, frame_length, frame_shift, feature_extract_by
+    Args:
         sample_rate (int): Sample rate of audio signal. (Default: 16000)
         n_mels (int):  Number of mfc coefficients to retain. (Default: 80)
         frame_length (int): frame length for spectrogram (ms) (Default : 20)
@@ -174,5 +174,5 @@ class FilterBank(object):
         return torchaudio.compliance.kaldi.fbank(
             Tensor(signal).unsqueeze(0), num_mel_bins=self.n_mels,
             frame_length=self.frame_length, frame_shift=self.frame_shift,
-            window_type='povey'
+            window_type='hamming'
         ).transpose(0, 1).numpy()

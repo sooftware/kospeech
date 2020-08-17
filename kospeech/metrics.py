@@ -10,7 +10,7 @@ class ErrorRate(object):
         Do not use this class directly, use one of the sub classes.
     """
 
-    def __init__(self, id2char, eos_id):
+    def __init__(self, id2char: dict, eos_id: int) -> None:
         self.total_dist = 0.0
         self.total_length = 0.0
         self.id2char = id2char

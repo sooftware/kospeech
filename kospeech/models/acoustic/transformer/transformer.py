@@ -223,6 +223,5 @@ class SpeechTransformerDecoder(nn.Module):
             memory_attns.append(memory_attn)
 
         output = self.generator(output)
-        output = F.log_softmax(output, dim=-1)
 
         return output, self_attns, memory_attns

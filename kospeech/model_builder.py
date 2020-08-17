@@ -68,21 +68,21 @@ def build_transformer(num_classes: int, pad_id: int, d_model: int, num_heads: in
 
 def build_seq2seq(input_size, opt, device):
     """ Various Listen, Attend and Spell dispatcher function. """
-    encoder = build_seq2seq_encoder(
-        input_size=input_size, hidden_dim=opt.hidden_dim, dropout_p=opt.dropout,
-        num_layers=opt.num_encoder_layers, bidirectional=opt.use_bidirectional,
-        extractor=opt.extractor, activation=opt.activation,
-        rnn_type=opt.rnn_type, device=device, mask_conv=opt.mask_conv
+    model = SpeechSeq2seq(
+        build_seq2seq_encoder(
+            input_size=input_size, hidden_dim=opt.hidden_dim, dropout_p=opt.dropout,
+            num_layers=opt.num_encoder_layers, bidirectional=opt.use_bidirectional,
+            extractor=opt.extractor, activation=opt.activation,
+            rnn_type=opt.rnn_type, device=device, mask_conv=opt.mask_conv
+        ),
+        build_seq2seq_decoder(
+            num_classes=len(char2id), max_len=opt.max_len,
+            pad_id=PAD_token, sos_id=SOS_token, eos_id=EOS_token,
+            hidden_dim=opt.hidden_dim << (1 if opt.use_bidirectional else 0),
+            num_layers=opt.num_decoder_layers, rnn_type=opt.rnn_type, dropout_p=opt.dropout,
+            num_heads=opt.num_heads, attn_mechanism=opt.attn_mechanism, device=device
+        )
     )
-    decoder = build_seq2seq_decoder(
-        num_classes=len(char2id), max_len=opt.max_len,
-        pad_id=PAD_token, sos_id=SOS_token, eos_id=EOS_token,
-        hidden_dim=opt.hidden_dim << (1 if opt.use_bidirectional else 0),
-        num_layers=opt.num_decoder_layers, rnn_type=opt.rnn_type, dropout_p=opt.dropout,
-        num_heads=opt.num_heads, attn_mechanism=opt.attn_mechanism, device=device
-    )
-
-    model = SpeechSeq2seq(encoder, decoder)
     model.flatten_parameters()
 
     return nn.DataParallel(model).to(device)

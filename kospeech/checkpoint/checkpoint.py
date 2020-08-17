@@ -36,13 +36,15 @@ class Checkpoint(object):
     SAVE_PATH = '../data/checkpoint'
     MODEL_NAME = 'model.pt'
 
-    def __init__(self,
-                 model: nn.Module = None,                   # model being trained
-                 optimizer: Optimizer = None,               # stores the state of the optimizer
-                 criterion: nn.Module = None,               # loss function
-                 trainset_list: list = None,                # list of trainset
-                 validset: SpectrogramDataset = None,       # validation dataset
-                 epoch: int = None) -> None:                # current epoch is a loop through the full training datav
+    def __init__(
+            self,
+            model: nn.Module = None,                   # model being trained
+            optimizer: Optimizer = None,               # stores the state of the optimizer
+            criterion: nn.Module = None,               # loss function
+            trainset_list: list = None,                # list of trainset
+            validset: SpectrogramDataset = None,       # validation dataset
+            epoch: int = None                          # current epoch is a loop through the full training data
+    ) -> None:
         self.model = model
         self.optimizer = optimizer
         self.criterion = criterion

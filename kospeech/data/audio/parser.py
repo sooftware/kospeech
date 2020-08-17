@@ -48,7 +48,7 @@ class SpectrogramParser(AudioParser):
         n_mels (int):  Number of mfc coefficients to retain. (Default: 40)
         frame_length (int): frame length for spectrogram (ms) (Default : 20)
         frame_shift (int): Length of hop between STFT windows. (ms) (Default: 10)
-        feature_extract_by (str): which library to use for feature extraction(default: librosa)
+        feature_extract_by (str): which library to use for feature extraction (default: librosa)
         del_silence (bool): flag indication whether to delete silence or not (default: True)
         input_reverse (bool): flag indication whether to reverse input or not (default: True)
         normalize (bool): flag indication whether to normalize spectrum or not (default:True)
@@ -59,19 +59,39 @@ class SpectrogramParser(AudioParser):
         sos_id (int): start of sentence token`s identification
         eos_id (int): end of sentence token`s identification
         target_dict (dict): dictionary of filename and labels
+        noise_augment (bool): flag indication to use noise augment or not
+        dataset_path (str): noise dataset path
+        noiseset_size (int): noise dataset size
+        noise_level (float): noise leve (to multifly)
     """
     VANILLA = 0           # Not apply augmentation
     SPEC_AUGMENT = 1      # SpecAugment
     NOISE_INJECTION = 2   # Noise Injection
     HYBRID_AUGMENT = 3    # Noise Injection & SpecAugment
 
-    def __init__(self, feature_extract_by: str = 'librosa', sample_rate: int = 16000,
-                 n_mels: int = 80, frame_length: int = 20, frame_shift: int = 10,
-                 del_silence: bool = False, input_reverse: bool = True,
-                 normalize: bool = False,  transform_method: str = 'mel',
-                 time_mask_para: int = 70, freq_mask_para: int = 12, time_mask_num: int = 2, freq_mask_num: int = 2,
-                 sos_id: int = 1, eos_id: int = 2, target_dict: dict = None, noise_augment: bool = False,
-                 dataset_path: str = None, noiseset_size: int = 0, noise_level: float = 0.7) -> None:
+    def __init__(
+            self,
+            feature_extract_by: str = 'librosa',      # which library to use for feature extraction
+            sample_rate: int = 16000,                 # sample rate of audio signal.
+            n_mels: int = 80,                         # Number of mfc coefficients to retain.
+            frame_length: int = 20,                   # frame length for spectrogram
+            frame_shift: int = 10,                    # Length of hop between STFT windows.
+            del_silence: bool = False,                # flag indication whether to delete silence or not
+            input_reverse: bool = True,               # flag indication whether to reverse input or not
+            normalize: bool = False,                  # flag indication whether to normalize spectrum or not
+            transform_method: str = 'mel',            # which feature to use [mel, fbank, spect, mfcc]
+            time_mask_para: int = 70,                 # hyper Parameter for Time Masking to limit time masking length
+            freq_mask_para: int = 12,                 # hyper Parameter for Freq Masking to limit freq masking length
+            time_mask_num: int = 2,                   # how many time-masked area to make
+            freq_mask_num: int = 2,                   # how many freq-masked area to make
+            sos_id: int = 1,                          # start of sentence token`s identification
+            eos_id: int = 2,                          # end of sentence token`s identification
+            target_dict: dict = None,                 # dictionary of filename and labels
+            noise_augment: bool = False,              # flag indication to use noise augment or not
+            dataset_path: str = None,                 # noise dataset path
+            noiseset_size: int = 0,                   # noise dataset size
+            noise_level: float = 0.7                  # noise level (to multifly)
+    ) -> None:
         super(SpectrogramParser, self).__init__(dataset_path, noiseset_size, sample_rate, noise_level, noise_augment)
         self.del_silence = del_silence
         self.input_reverse = input_reverse

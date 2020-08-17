@@ -1,5 +1,6 @@
 import math
 import threading
+from argparse import ArgumentParser
 import pandas as pd
 import torch
 import random
@@ -19,28 +20,54 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
     Dataset for feature & transcript matching
 
     Args:
-        audio_paths (list): set of audio path
-        script_paths (list): set of script paths
+        audio_paths (list): list of audio path
+        script_paths (list): list of script paths
         sos_id (int): identification of <start of sequence>
         eos_id (int): identification of <end of sequence>
         target_dict (dict): dictionary of filename and labels
         spec_augment (bool): flag indication whether to use spec-augmentation or not (default: True)
         noise_augment (bool): flag indication whether to use noise-augmentation or not (default: True)
         opt (ArgumentParser): set of arguments
+        dataset_path (str): noise dataset path
+        noiseset_size (int): noise dataset size
+        noise_level (float): noise level (to multifly)
     """
-    def __init__(self, audio_paths, script_paths, sos_id, eos_id,
-                 target_dict, opt, spec_augment=False,
-                 noise_augment=False, dataset_path=None, noiseset_size=0, noise_level=0.7) -> None:
-        super(SpectrogramDataset, self).__init__(feature_extract_by=opt.feature_extract_by, sample_rate=opt.sample_rate,
-                                                 n_mels=opt.n_mels,
-                                                 frame_length=opt.frame_length, frame_shift=opt.frame_shift,
-                                                 del_silence=opt.del_silence, input_reverse=opt.input_reverse,
-                                                 normalize=opt.normalize, target_dict=target_dict,
-                                                 time_mask_para=opt.time_mask_para, freq_mask_para=opt.freq_mask_para,
-                                                 time_mask_num=opt.time_mask_num, freq_mask_num=opt.freq_mask_num,
-                                                 sos_id=sos_id, eos_id=eos_id, dataset_path=dataset_path,
-                                                 noiseset_size=noiseset_size, noise_level=noise_level,
-                                                 noise_augment=noise_augment, transform_method=opt.transform_method)
+    def __init__(
+            self,
+            audio_paths: list,              # list of audio paths
+            script_paths: list,             # list of transcript paths
+            sos_id: int,                    # identification of start of sequence token
+            eos_id: int,                    # identification of end of sequence token
+            target_dict: dict,              # dictionary of filename and lables
+            opt: ArgumentParser,            # set of arguments
+            spec_augment: bool = False,     # flag indication whether to use spec-augmentation of not
+            noise_augment: bool = False,    # flag indication whether to use noise-augmentation of not
+            dataset_path: str = None,       # noise dataset path
+            noiseset_size: int = 0,         # noise dataset size
+            noise_level: float = 0.7        # noise level (to multifly)
+    ) -> None:
+        super(SpectrogramDataset, self).__init__(
+            feature_extract_by=opt.feature_extract_by,
+            sample_rate=opt.sample_rate,
+            n_mels=opt.n_mels,
+            frame_length=opt.frame_length,
+            frame_shift=opt.frame_shift,
+            del_silence=opt.del_silence,
+            input_reverse=opt.input_reverse,
+            normalize=opt.normalize,
+            target_dict=target_dict,
+            time_mask_para=opt.time_mask_para,
+            freq_mask_para=opt.freq_mask_para,
+            time_mask_num=opt.time_mask_num,
+            freq_mask_num=opt.freq_mask_num,
+            sos_id=sos_id,
+            eos_id=eos_id,
+            dataset_path=dataset_path,
+            noiseset_size=noiseset_size,
+            noise_level=noise_level,
+            noise_augment=noise_augment,
+            transform_method=opt.transform_method
+        )
         self.audio_paths = list(audio_paths)
         self.script_paths = list(script_paths)
         self.augment_methods = [self.VANILLA] * len(self.audio_paths)

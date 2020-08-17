@@ -17,11 +17,11 @@ class SpecAugment(object):
         time_mask_num (int): how many times to apply time masking
         freq_mask_num (int): how many times to apply frequency masking
 
-    Inputs: spectrogram
-        - **spectrogram** (torch.FloatTensor): spectrogram feature from audio file.
+    Inputs: feature_vector
+        - **feature_vector** (torch.FloatTensor): feature vector from audio file.
 
-    Returns: spectrogram:
-        - **spectrogram**: masked spectrogram feature.
+    Returns: feature_vector:
+        - **feature_vector**: masked feature vector.
     """
     def __init__(self, time_mask_para: int, freq_mask_para: int, time_mask_num: int, freq_mask_num: int) -> None:
         self.time_mask_para = time_mask_para
@@ -37,10 +37,8 @@ class SpecAugment(object):
         # time mask
         for _ in range(self.time_mask_num):
             t = int(np.random.uniform(low=0.0, high=self.time_mask_para))
-
-            if time_axis_length > 3 * t:
-                t0 = random.randint(0, time_axis_length - t)
-                feature_vector[t0: t0 + t, :] = 0
+            t0 = random.randint(0, time_axis_length - t)
+            feature_vector[t0: t0 + t, :] = 0
 
         # freq mask
         for _ in range(self.freq_mask_num):
