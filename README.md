@@ -304,10 +304,7 @@ You can get a quick look of pre-trained model's inference, with a sample data.
   
 ### Step 1: Prepare Dataset  
    
-you can preprocess `KsponSpeech corpus` refer [wiki](https://github.com/sooftware/KoSpeech/wiki/Preparation-before-Training) or following.  
-```
-$ python ./preprocess/prepare_ksponspeech.py --dataset_path $DATASET_PATH --new_path $NEW_PATH --script_prefix $SCRIPT_PREFIX
-```
+you can preprocess `KsponSpeech corpus` refer [this repo](https://github.com/sooftware/KsponSpeech-preprocess)
 
 ### Step 2: Run `main.py`
 * Default setting  
