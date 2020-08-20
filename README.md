@@ -116,6 +116,95 @@ Seq2seq(
 The Transformer model is currently implemented, but the code for learning is not implemented.  
 We will implement as soon as possible.  
   
+```python
+SpeechTransformer(
+  (conv): Sequential(
+    (0): Conv2d(1, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+    (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): Hardtanh(min_val=0, max_val=20, inplace=True)
+    (3): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+    (4): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (5): Hardtanh(min_val=0, max_val=20, inplace=True)
+    (6): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (7): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+    (8): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (9): Hardtanh(min_val=0, max_val=20, inplace=True)
+    (10): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+    (11): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (12): Hardtanh(min_val=0, max_val=20, inplace=True)
+    (13): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+  )
+  (encoder): SpeechTransformerEncoder(
+    (input_proj): Linear(in_features=2560, out_features=512, bias=True)
+    (input_norm): LayerNorm()
+    (input_dropout): Dropout(p=0.3, inplace=False)
+    (layers): ModuleList(
+      (N): SpeechTransformerEncoderLayer(
+        (self_attention): AddNorm(
+          (sublayer): MultiHeadAttention(
+            (query_proj): Linear(in_features=512, out_features=512, bias=True)
+            (key_proj): Linear(in_features=512, out_features=512, bias=True)
+            (value_proj): Linear(in_features=512, out_features=512, bias=True)
+          )
+          (layer_norm): LayerNorm()
+        )
+        (feed_forward): AddNorm(
+          (sublayer): PositionWiseFeedForwardNet(
+            (feed_forward): Sequential(
+              (0): Linear(in_features=512, out_features=2048, bias=True)
+              (1): Dropout(p=0.3, inplace=False)
+              (2): ReLU()
+              (3): Linear(in_features=2048, out_features=512, bias=True)
+              (4): Dropout(p=0.3, inplace=False)
+            )
+          )
+          (layer_norm): LayerNorm()
+        )
+      )
+    )
+  )
+  (decoder): SpeechTransformerDecoder(
+    (embedding): Embedding(2038, 512, padding_idx=0)
+    (input_dropout): Dropout(p=0.3, inplace=False)
+    (layers): ModuleList(
+      (N): SpeechTransformerDecoderLayer(
+        (self_attention): AddNorm(
+          (sublayer): MultiHeadAttention(
+            (query_proj): Linear(in_features=512, out_features=512, bias=True)
+            (key_proj): Linear(in_features=512, out_features=512, bias=True)
+            (value_proj): Linear(in_features=512, out_features=512, bias=True)
+          )
+          (layer_norm): LayerNorm()
+        )
+        (memory_attention): AddNorm(
+          (sublayer): MultiHeadAttention(
+            (query_proj): Linear(in_features=512, out_features=512, bias=True)
+            (key_proj): Linear(in_features=512, out_features=512, bias=True)
+            (value_proj): Linear(in_features=512, out_features=512, bias=True)
+          )
+          (layer_norm): LayerNorm()
+        )
+        (feed_forward): AddNorm(
+          (sublayer): PositionWiseFeedForwardNet(
+            (feed_forward): Sequential(
+              (0): Linear(in_features=512, out_features=2048, bias=True)
+              (1): Dropout(p=0.3, inplace=False)
+              (2): ReLU()
+              (3): Linear(in_features=2048, out_features=512, bias=True)
+              (4): Dropout(p=0.3, inplace=False)
+            )
+          )
+          (layer_norm): LayerNorm()
+        )
+      )
+    )
+  )
+  (generator): Linear(
+    (linear): Linear(in_features=512, out_features=2038, bias=True)
+  )
+)
+```
+  
 We mainly referred to following papers.
   
 [Ashish Vaswani et al 「Attention Is All You Need」 NIPS 2017
