@@ -4,7 +4,9 @@
 
 [![CodeFactor](https://www.codefactor.io/repository/github/sooftware/kospeech/badge)](https://www.codefactor.io/repository/github/sooftware/kospeech) [<img src="http://img.shields.io/badge/docs-passing-success">](https://sooftware.github.io/KoSpeech/) [<img src="http://img.shields.io/badge/help wanted-issue 37-ff">](https://github.com/sooftware/KoSpeech/issues/37) <img src="http://img.shields.io/badge/Run seq2seq-success-success"> <img src="http://img.shields.io/badge/Run transformer-fail-red">      
   
-[Soohwan Kim](https://github.com/sooftware), [Seyoung Bae](https://github.com/triplet02), [Cheolhwang Won](https://github.com/wch18735)  
+[Soohwan Kim](https://github.com/sooftware)<sup>1,2</sup>, [Seyoung Bae](https://github.com/triplet02)<sup>1</sup>, [Cheolhwang Won](https://github.com/wch18735)<sup>1</sup>  
+  
+<sup>1</sup>Elcomm, Kwangwoon Univ. <sup>2</sup>KakaoBrain Corp.     
   
 `KoSpeech` is an End-to-End open source project for Korean speech recognition. The goal of this work is to help research speech recognition. It was developed with a focus on readability and extensibility of code. Learning is possible through various options such as feature extraction, attention mechanism, and data augmentation, etc..   
 We used `KsponSpeech` corpus which containing **1000h** of Korean speech data. At present our model has recorded an **10.31%** character error rate. We are always updating this work for increased recognition rate and extensibility.   
