@@ -4,7 +4,9 @@
 
 [![CodeFactor](https://www.codefactor.io/repository/github/sooftware/kospeech/badge)](https://www.codefactor.io/repository/github/sooftware/kospeech) [<img src="http://img.shields.io/badge/docs-passing-success">](https://sooftware.github.io/KoSpeech/) [<img src="http://img.shields.io/badge/help wanted-issue 37-ff">](https://github.com/sooftware/KoSpeech/issues/37) <img src="http://img.shields.io/badge/Run seq2seq-success-success"> <img src="http://img.shields.io/badge/Run transformer-fail-red">      
   
-[Soohwan Kim](https://github.com/sooftware), [Seyoung Bae](https://github.com/triplet02), [Cheolhwang Won](https://github.com/wch18735)  
+[Soohwan Kim](https://github.com/sooftware)<sup>1,2</sup>, [Seyoung Bae](https://github.com/triplet02)<sup>1</sup>, [Cheolhwang Won](https://github.com/wch18735)<sup>1</sup>  
+  
+<sup>1</sup>Elcomm, Kwangwoon Univ. <sup>2</sup>KakaoBrain Corp.     
   
 `KoSpeech` is an End-to-End open source project for Korean speech recognition. The goal of this work is to help research speech recognition. It was developed with a focus on readability and extensibility of code. Learning is possible through various options such as feature extraction, attention mechanism, and data augmentation, etc..   
 We used `KsponSpeech` corpus which containing **1000h** of Korean speech data. At present our model has recorded an **10.31%** character error rate. We are always updating this work for increased recognition rate and extensibility.   
@@ -45,7 +47,7 @@ We will response as soon as possible.
 
 ## Roadmap
   
-<img src="https://user-images.githubusercontent.com/42150335/87572553-afb7a200-c706-11ea-9b5e-cd7b6b832f01.png"> 
+<img src="https://user-images.githubusercontent.com/42150335/90785887-d8ead400-e33d-11ea-874f-4a89efef32fa.png"> 
   
 ### Seq2seq
   
@@ -115,6 +117,95 @@ Seq2seq(
   
 The Transformer model is currently implemented, but the code for learning is not implemented.  
 We will implement as soon as possible.  
+  
+```python
+SpeechTransformer(
+  (conv): Sequential(
+    (0): Conv2d(1, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+    (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): Hardtanh(min_val=0, max_val=20, inplace=True)
+    (3): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+    (4): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (5): Hardtanh(min_val=0, max_val=20, inplace=True)
+    (6): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (7): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+    (8): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (9): Hardtanh(min_val=0, max_val=20, inplace=True)
+    (10): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+    (11): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (12): Hardtanh(min_val=0, max_val=20, inplace=True)
+    (13): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+  )
+  (encoder): SpeechTransformerEncoder(
+    (input_proj): Linear(in_features=2560, out_features=512, bias=True)
+    (input_norm): LayerNorm()
+    (input_dropout): Dropout(p=0.3, inplace=False)
+    (layers): ModuleList(
+      (N): SpeechTransformerEncoderLayer(
+        (self_attention): AddNorm(
+          (sublayer): MultiHeadAttention(
+            (query_proj): Linear(in_features=512, out_features=512, bias=True)
+            (key_proj): Linear(in_features=512, out_features=512, bias=True)
+            (value_proj): Linear(in_features=512, out_features=512, bias=True)
+          )
+          (layer_norm): LayerNorm()
+        )
+        (feed_forward): AddNorm(
+          (sublayer): PositionWiseFeedForwardNet(
+            (feed_forward): Sequential(
+              (0): Linear(in_features=512, out_features=2048, bias=True)
+              (1): Dropout(p=0.3, inplace=False)
+              (2): ReLU()
+              (3): Linear(in_features=2048, out_features=512, bias=True)
+              (4): Dropout(p=0.3, inplace=False)
+            )
+          )
+          (layer_norm): LayerNorm()
+        )
+      )
+    )
+  )
+  (decoder): SpeechTransformerDecoder(
+    (embedding): Embedding(2038, 512, padding_idx=0)
+    (input_dropout): Dropout(p=0.3, inplace=False)
+    (layers): ModuleList(
+      (N): SpeechTransformerDecoderLayer(
+        (self_attention): AddNorm(
+          (sublayer): MultiHeadAttention(
+            (query_proj): Linear(in_features=512, out_features=512, bias=True)
+            (key_proj): Linear(in_features=512, out_features=512, bias=True)
+            (value_proj): Linear(in_features=512, out_features=512, bias=True)
+          )
+          (layer_norm): LayerNorm()
+        )
+        (memory_attention): AddNorm(
+          (sublayer): MultiHeadAttention(
+            (query_proj): Linear(in_features=512, out_features=512, bias=True)
+            (key_proj): Linear(in_features=512, out_features=512, bias=True)
+            (value_proj): Linear(in_features=512, out_features=512, bias=True)
+          )
+          (layer_norm): LayerNorm()
+        )
+        (feed_forward): AddNorm(
+          (sublayer): PositionWiseFeedForwardNet(
+            (feed_forward): Sequential(
+              (0): Linear(in_features=512, out_features=2048, bias=True)
+              (1): Dropout(p=0.3, inplace=False)
+              (2): ReLU()
+              (3): Linear(in_features=2048, out_features=512, bias=True)
+              (4): Dropout(p=0.3, inplace=False)
+            )
+          )
+          (layer_norm): LayerNorm()
+        )
+      )
+    )
+  )
+  (generator): Linear(
+    (linear): Linear(in_features=512, out_features=2038, bias=True)
+  )
+)
+```
   
 We mainly referred to following papers.
   
@@ -213,10 +304,7 @@ You can get a quick look of pre-trained model's inference, with a sample data.
   
 ### Step 1: Prepare Dataset  
    
-you can preprocess `KsponSpeech corpus` refer [wiki](https://github.com/sooftware/KoSpeech/wiki/Preparation-before-Training) or following.  
-```
-$ python ./preprocess/prepare_ksponspeech.py --dataset_path $DATASET_PATH --new_path $NEW_PATH --script_prefix $SCRIPT_PREFIX
-```
+you can preprocess `KsponSpeech corpus` refer [this repo](https://github.com/sooftware/KsponSpeech-preprocess)
 
 ### Step 2: Run `main.py`
 * Default setting  
@@ -302,14 +390,6 @@ Jung-Woo Ha et al. [ClovaCall: Korean Goal-Oriented Dialog Speech Corpus for Aut
   
 [clovaai/ClovaCall](https://github.com/clovaai/ClovaCall)
   
-### Citing
-```
-@github{
-  title = {KoSpeech: Open Source Project for Korean End-to-End Automatic Speech Recognition in PyTorch},
-  author = {Soohwan Kim, Seyoung Bae, Cheolhwang Won, Suwon Park},
-  publisher = {GitHub},
-  docs = {https://sooftware.github.io/KoSpeech/},
-  url = {https://github.com/sooftware/KoSpeech},
-  year = {2020}
-}
-```
+## Author
+* [Soohwan Kim](https://github.com/sooftware), [Seyoung Bae](https://github.com/triplet02), [Cheolhwang Won](https://github.com/wch18735)  
+* Contacts: sh951011@gmail.com
