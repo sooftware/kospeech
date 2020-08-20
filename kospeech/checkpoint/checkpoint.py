@@ -19,7 +19,6 @@ class Checkpoint(object):
     Args:
         model (nn.Module): model being trained
         optimizer (torch.optim): stores the state of the optimizer
-        criterion (nn.Module): loss function
         trainset_list (list): list of trainset
         validset (kospeech.data.data_loader.SpectrogramDataset): validation dataset
         epoch (int): current epoch (an epoch is a loop through the full training data)
@@ -40,14 +39,12 @@ class Checkpoint(object):
             self,
             model: nn.Module = None,                   # model being trained
             optimizer: Optimizer = None,               # stores the state of the optimizer
-            criterion: nn.Module = None,               # loss function
             trainset_list: list = None,                # list of trainset
             validset: SpectrogramDataset = None,       # validation dataset
             epoch: int = None                          # current epoch is a loop through the full training data
     ) -> None:
         self.model = model
         self.optimizer = optimizer
-        self.criterion = criterion
         self.trainset_list = trainset_list
         self.validset = validset
         self.epoch = epoch
@@ -66,7 +63,6 @@ class Checkpoint(object):
 
         trainer_states = {
             'optimizer': self.optimizer,
-            'criterion': self.criterion,
             'trainset_list': self.trainset_list,
             'validset': self.validset,
             'epoch': self.epoch
@@ -107,7 +103,7 @@ class Checkpoint(object):
 
         return Checkpoint(
             model=model, optimizer=resume_checkpoint['optimizer'], epoch=resume_checkpoint['epoch'],
-            criterion=resume_checkpoint['criterion'], trainset_list=resume_checkpoint['trainset_list'],
+            trainset_list=resume_checkpoint['trainset_list'],
             validset=resume_checkpoint['validset']
         )
 

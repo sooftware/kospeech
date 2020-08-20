@@ -111,7 +111,6 @@ class SupervisedTrainer(object):
             resume_checkpoint = checkpoint.load(latest_checkpoint_path)
             model = resume_checkpoint.model
             self.optimizer = resume_checkpoint.optimizer
-            self.criterion = resume_checkpoint.criterion
             self.trainset_list = resume_checkpoint.trainset_list
             self.validset = resume_checkpoint.validset
             start_epoch = resume_checkpoint.epoch + 1
@@ -254,24 +253,24 @@ class SupervisedTrainer(object):
                 epoch_elapsed = (current_time - epoch_begin_time) / 60.0
                 train_elapsed = (current_time - train_begin_time) / 3600.0
 
-                logger.info('timestep: {:4d}/{:4d}, loss: {:.4f}, cer: {:.2f}, elapsed: {:.2f}s {:.2f}m {:.2f}h'.format(
-                    timestep,
-                    epoch_time_step,
+                logger.info('timestep: {:4d}/{:4d}, loss: {:.4f}, cer: {:.2f}, elapsed: {:.2f}s {:.2f}m {:.2f}h, lr: {:.2f}'.format(
+                    timestep, epoch_time_step,
                     epoch_loss_total / total_num,
                     cer,
-                    elapsed, epoch_elapsed, train_elapsed)
-                )
+                    elapsed, epoch_elapsed, train_elapsed,
+                    self.optimizer.get_lr()
+                ))
                 begin_time = time.time()
 
             if timestep % self.save_result_every == 0:
                 self.__save_step_result(self.train_step_result, epoch_loss_total / total_num, cer)
 
             if timestep % self.checkpoint_every == 0:
-                Checkpoint(model, self.optimizer,  self.criterion, self.trainset_list, self.validset, epoch).save()
+                Checkpoint(model, self.optimizer,  self.trainset_list, self.validset, epoch).save()
 
             del inputs, input_lengths, targets, logit, loss, hypothesis
 
-        Checkpoint(model, self.optimizer, self.criterion, self.trainset_list, self.validset, epoch).save()
+        Checkpoint(model, self.optimizer, self.trainset_list, self.validset, epoch).save()
 
         logger.info('train() completed')
         return epoch_loss_total / total_num, cer

@@ -64,7 +64,14 @@ def train(opt):
         validset = None
         model = None
         optimizer = None
-        criterion = None
+        criterion = CrossEntropyWithSmoothingLoss(
+            num_classes=len(char2id),
+            ignore_index=PAD_token,
+            smoothing=opt.label_smoothing,
+            dim=-1,
+            reduction=opt.reduction,
+            architecture=opt.architecture
+        ).to(device)
         epoch_time_step = None
 
     trainer = SupervisedTrainer(optimizer=optimizer, criterion=criterion, trainset_list=trainset_list,
