@@ -80,6 +80,7 @@ class SpeechDecoderRNN(BaseRNN):
         super(SpeechDecoderRNN, self).__init__(hidden_dim, hidden_dim, num_layers, rnn_type, dropout_p, False, device)
         self.num_classes = num_classes
         self.num_heads = num_heads
+        self.num_layers = num_layers
         self.max_length = max_length
         self.eos_id = eos_id
         self.sos_id = sos_id

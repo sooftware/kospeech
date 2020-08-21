@@ -34,16 +34,17 @@ class SpeechTopKDecoder(nn.Module):
         self.pad_id = decoder.pad_id
         self.eos_id = decoder.eos_id
         self.device = decoder.device
-        self.max_length = decoder.max_length
         self.num_layers = decoder.num_layers
         self.ongoing_beams = None
         self.cumulative_ps = None
         self.finished = [[] for _ in range(batch_size)]
         self.finished_ps = [[] for _ in range(batch_size)]
+        self.validate_args = decoder.validate_args
         self.forward_step = decoder.forward_step
 
     def forward(self, input_var: Tensor, encoder_outputs: Tensor, k: int = 3):
         batch_size, hidden = encoder_outputs.size(0), None
+        inputs, batch_size, max_length = self.validate_args(input_var, encoder_outputs, teacher_forcing_ratio=0.0)
 
         step_outputs, hidden, attn = self.forward_step(input_var, hidden, encoder_outputs)
         self.cumulative_ps, self.ongoing_beams = step_outputs.topk(k)
@@ -60,7 +61,7 @@ class SpeechTopKDecoder(nn.Module):
         encoder_outputs = encoder_outputs.reshape(batch_size * k, -1, encoder_dim)
         hidden = _inflate(hidden, k, dim=1)
 
-        for di in range(self.max_length - 1):
+        for di in range(max_length - 1):
             if self.is_all_finished(k):
                 break
 
