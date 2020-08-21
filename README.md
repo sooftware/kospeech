@@ -14,7 +14,7 @@ We appreciate any kind of [feedback or contribution](https://github.com/sooftwar
   
 |Description|Feature|Dataset|Model|  
 |-----------|-----|-------|-----|  
-|seq2seq_vgg_multihead_epoch0|kaldi_fbank_80|[KsponSpeech](http://www.aihub.or.kr/aidata/105)|[download](https://drive.google.com/file/d/1Sq3ah7UijgxR-PGZfOVEY8aT12Y4JRdB/view?usp=sharing)|   
+|seq2seq_vgg_multihead_epoch0|kaldi_fbank_80|[KsponSpeech](http://www.aihub.or.kr/aidata/105)|[download](https://drive.google.com/file/d/1LZNOFfTQY15M3e4Ahr1yNdSHSyFPQy7x/view?usp=sharing)|   
   
 ## Intro
   
