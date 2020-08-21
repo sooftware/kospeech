@@ -12,9 +12,9 @@
 We used `KsponSpeech` corpus which containing **1000h** of Korean speech data. At present our model has recorded an **10.31%** character error rate. We are always updating this work for increased recognition rate and extensibility.   
 We appreciate any kind of [feedback or contribution](https://github.com/sooftware/End-to-end-Speech-Recognition/issues).    
   
-|Description|Dataset|Model|  
-|-----------|-------|-----|  
-|seq2seq_vgg_multihead_epoch0|[KsponSpeech](http://www.aihub.or.kr/aidata/105)|[download](https://drive.google.com/file/d/1Sq3ah7UijgxR-PGZfOVEY8aT12Y4JRdB/view?usp=sharing)|   
+|Description|Feature|Dataset|Model|  
+|-----------|-----|-------|-----|  
+|seq2seq_vgg_multihead_epoch0|kaldi_fbank_80|[KsponSpeech](http://www.aihub.or.kr/aidata/105)|[download](https://drive.google.com/file/d/1Sq3ah7UijgxR-PGZfOVEY8aT12Y4JRdB/view?usp=sharing)|   
   
 ## Intro
   
@@ -57,7 +57,7 @@ You can choose attention mechanism from (`location-aware`, `multi-head`, `additi
 Our architecture based on Listen Attend and Spell.   
 We mainly referred to following papers.  
   
-[Wiliam Chan et al.「Listen, Attend and Spell」ICASSP 2016](https://arxiv.org/abs/1508.01211)  
+[Wiliam Chan et al.「Listen, Attend and Spell」 ICASSP 2016](https://arxiv.org/abs/1508.01211)  
   
 [Ashish Vaswani et al 「Attention Is All You Need」 NIPS 2017
 ](https://arxiv.org/abs/1706.03762)  
@@ -255,13 +255,6 @@ usage: main.py [-h] [--mode MODE] [--sample_rate SAMPLE_RATE]
                [--print_every PRINT_EVERY] [--resume]
 
 ```
-  
-### KoSpeech
-  
-`kospeech` module has modularized and extensible components for las models, trainer, evaluator, checkpoints etc...   
-In addition, `kospeech` enables learning in a variety of environments with a simple option setting.  
-  
-We are constantly updating the progress of the project on the [Wiki page](https://github.com/sooftware/End-to-end-Speech-Recognition/wiki).  Please check this page.  
   
 ## Installation
 This project recommends Python 3.7 or higher.   
