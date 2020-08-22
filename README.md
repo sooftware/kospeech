@@ -297,7 +297,8 @@ You can get a quick look of pre-trained model's inference, with a sample data.
   
 ### Step 1: Prepare Dataset  
    
-you can preprocess `KsponSpeech corpus` refer [this repo](https://github.com/sooftware/KsponSpeech-preprocess)
+You can preprocess `KsponSpeech Corpus` through [this repo](https://github.com/sooftware/KsponSpeech-preprocess).   
+We recommended that you read README of this repository.
 
 ### Step 2: Run `main.py`
 * Default setting  
