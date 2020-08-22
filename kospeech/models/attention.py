@@ -162,6 +162,7 @@ class LocationAwareAttention(nn.Module):
             attn = F.softmax(score, dim=-1)
 
         context = torch.bmm(attn.unsqueeze(1), value).squeeze(1)  # Bx1xT X BxTxD => Bx1xD => BxD
+        context += query
 
         return context, attn
 
@@ -196,4 +197,7 @@ class AdditiveAttention(nn.Module):
         score = self.score_proj(torch.tanh(self.key_proj(key) + self.query_proj(query) + self.bias)).squeeze(-1)
         attn = F.softmax(score, dim=-1)
         context = torch.bmm(attn.unsqueeze(1), value)
+
+        context += query
+
         return context, attn

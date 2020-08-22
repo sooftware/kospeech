@@ -90,11 +90,11 @@ class SpeechDecoderRNN(BaseRNN):
         self.input_dropout = nn.Dropout(dropout_p)
 
         if self.attn_mechanism == 'loc':
-            self.attention = AddNorm(LocationAwareAttention(hidden_dim, smoothing=True), hidden_dim)
+            self.attention = LocationAwareAttention(hidden_dim, smoothing=True)
         elif self.attn_mechanism == 'multi-head':
             self.attention = AddNorm(MultiHeadAttention(hidden_dim, num_heads), hidden_dim)
         elif self.attn_mechanism == 'additive':
-            self.attention = AddNorm(AdditiveAttention(hidden_dim), hidden_dim)
+            self.attention = AdditiveAttention(hidden_dim)
         elif self.attn_mechanism == 'scaled-dot':
             self.attention = AddNorm(ScaledDotProductAttention(hidden_dim), hidden_dim)
         else:
