@@ -374,15 +374,14 @@ Jung-Woo Ha et al. [ClovaCall: Korean Goal-Oriented Dialog Speech Corpus for Aut
     
 ### Github References
   
-[IBM/Pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)  
+* [IBM/Pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)  
+* [SeanNaren/deepspeech.pytorch](https://github.com/SeanNaren/deepspeech.pytorch)  
+* [kaituoxu/Speech-Transformer](https://github.com/kaituoxu/Speech-Transformer)  
+* [OpenNMT/OpenNMT-py](https://github.com/OpenNMT/OpenNMT-py)  
+* [clovaai/ClovaCall](https://github.com/clovaai/ClovaCall)
   
-[SeanNaren/deepspeech.pytorch](https://github.com/SeanNaren/deepspeech.pytorch)  
-  
-[kaituoxu/Speech-Transformer](https://github.com/kaituoxu/Speech-Transformer)  
-  
-[OpenNMT/OpenNMT-py](https://github.com/OpenNMT/OpenNMT-py)  
-  
-[clovaai/ClovaCall](https://github.com/clovaai/ClovaCall)
+### License
+This project is licensed under the Apache-2.0 LICENSE - see the [LICENSE.md](https://github.com/sooftware/KoSpeech/blob/master/LICENSE) file for details
   
 ## Author
 * [Soohwan Kim](https://github.com/sooftware), [Seyoung Bae](https://github.com/triplet02), [Cheolhwang Won](https://github.com/wch18735)  
