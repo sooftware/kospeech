@@ -12,9 +12,9 @@
 We used `KsponSpeech` corpus which containing **1000h** of Korean speech data. At present our model has recorded an **10.31%** character error rate. We are always updating this work for increased recognition rate and extensibility.   
 We appreciate any kind of [feedback or contribution](https://github.com/sooftware/End-to-end-Speech-Recognition/issues).    
   
-|Description|Feature|Dataset|Model|  
-|-----------|-----|-------|-----|  
-|seq2seq_vgg_multihead_epoch0|kaldi_fbank_80|[KsponSpeech](http://www.aihub.or.kr/aidata/105)|[download](https://drive.google.com/file/d/1Sq3ah7UijgxR-PGZfOVEY8aT12Y4JRdB/view?usp=sharing)|   
+|Description|Feature|Dataset|Model|CER|  
+|-----------|-----|-------|-----|------|  
+|seq2seq_vgg_multihead_epoch0|kaldi_fbank_80|[KsponSpeech](http://www.aihub.or.kr/aidata/105)|[download](https://drive.google.com/file/d/1LZNOFfTQY15M3e4Ahr1yNdSHSyFPQy7x/view?usp=sharing)|16.6|   
   
 ## Intro
   
@@ -297,7 +297,8 @@ You can get a quick look of pre-trained model's inference, with a sample data.
   
 ### Step 1: Prepare Dataset  
    
-you can preprocess `KsponSpeech corpus` refer [this repo](https://github.com/sooftware/KsponSpeech-preprocess)
+You can preprocess `KsponSpeech Corpus` through [this repo](https://github.com/sooftware/KsponSpeech-preprocess).   
+We recommended that you read README of this repository.
 
 ### Step 2: Run `main.py`
 * Default setting  
