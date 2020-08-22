@@ -105,10 +105,10 @@ class SpeechDecoderRNN(BaseRNN):
 
     def forward_step(
             self,
-            input_var: Tensor,
-            hidden: Optional[Any],
-            encoder_outputs: Tensor,
-            attn: Optional[Any] = None
+            input_var: Tensor,                  # tensor of sequences whose contains target variables
+            hidden: Optional[Any],              # tensor containing hidden state vector of RNN
+            encoder_outputs: Tensor,            # tensor with containing the outputs of the encoder
+            attn: Optional[Any] = None          # tensor containing attention distribution
     ) -> Tuple[Tensor, Optional[Any], Tensor]:
         batch_size, output_lengths = input_var.size(0), input_var.size(1)
 
@@ -194,8 +194,12 @@ class SpeechDecoderRNN(BaseRNN):
 
         return result
 
-    def validate_args(self, inputs: Optional[Any] = None, encoder_outputs: Tensor = None,
-                      teacher_forcing_ratio: float = 1.0) -> Tuple[Tensor, int, int]:
+    def validate_args(
+            self,
+            inputs: Optional[Any] = None,           # tensor of sequences whose contains target variables
+            encoder_outputs: Tensor = None,         # tensor with containing the outputs of the encoder
+            teacher_forcing_ratio: float = 1.0      # the probability that teacher forcing will be used
+    ) -> Tuple[Tensor, int, int]:
         """ Validate arguments """
         assert encoder_outputs is not None
         batch_size = encoder_outputs.size(0)
