@@ -124,31 +124,13 @@ def get_attn_pad_mask(inputs, input_lengths, expand_length):
         >>> get_attn_pad_mask(inputs, input_lengths, expand_length)
         tensor([[[False, False, False, False, False,  True,  True,  True,  True],
                  [False, False, False, False, False,  True,  True,  True,  True],
-                 [False, False, False, False, False,  True,  True,  True,  True],
-                 [False, False, False, False, False,  True,  True,  True,  True],
-                 [False, False, False, False, False,  True,  True,  True,  True],
-                 [False, False, False, False, False,  True,  True,  True,  True],
-                 [False, False, False, False, False,  True,  True,  True,  True],
-                 [False, False, False, False, False,  True,  True,  True,  True],
                  [False, False, False, False, False,  True,  True,  True,  True]],
 
                 [[False, False, False, False, False, False,  True,  True,  True],
                  [False, False, False, False, False, False,  True,  True,  True],
-                 [False, False, False, False, False, False,  True,  True,  True],
-                 [False, False, False, False, False, False,  True,  True,  True],
-                 [False, False, False, False, False, False,  True,  True,  True],
-                 [False, False, False, False, False, False,  True,  True,  True],
-                 [False, False, False, False, False, False,  True,  True,  True],
-                 [False, False, False, False, False, False,  True,  True,  True],
                  [False, False, False, False, False, False,  True,  True,  True]],
 
                 [[False, False, False, False, False, False, False, False,  True],
-                 [False, False, False, False, False, False, False, False,  True],
-                 [False, False, False, False, False, False, False, False,  True],
-                 [False, False, False, False, False, False, False, False,  True],
-                 [False, False, False, False, False, False, False, False,  True],
-                 [False, False, False, False, False, False, False, False,  True],
-                 [False, False, False, False, False, False, False, False,  True],
                  [False, False, False, False, False, False, False, False,  True],
                  [False, False, False, False, False, False, False, False,  True]]])
 

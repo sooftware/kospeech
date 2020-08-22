@@ -142,16 +142,13 @@ class SpeechTransformer(nn.Module):
         self.pad_id = pad_id
         self.generator = Linear(d_model, num_classes)
 
-    def forward(self, inputs: Tensor, input_lengths: Tensor,
-                targets: Optional[Tensor] = None,
-                return_attns: bool = False):
-        """
-        Args:
-            inputs: B x T_input x D_Feature
-            input_lengths: B x 1
-            targets: B x T_output
-            return_attns: bool
-        """
+    def forward(
+            self,
+            inputs: Tensor,                     # B x T_input x D_Feature
+            input_lengths: Tensor,              # B
+            targets: Optional[Tensor] = None,   # B x T_output => <sos> a b c d e . . . <eos> <pad> <pad> <pad>
+            return_attns: bool = False          # bool
+    ):
         conv_feat = self.conv(inputs.unsqueeze(1))
         conv_feat = conv_feat.transpose(1, 2)
 
@@ -278,7 +275,6 @@ class SpeechTransformerDecoder(nn.Module):
     def forward(self, inputs: Tensor, input_lengths: Optional[Any] = None, memory: Tensor = None):
         self_attns, memory_attns = list(), list()
         batch_size, output_length = inputs.size(0), inputs.size(1)
-        # inputs = inputs[inputs != self.eos_id].view(batch_size, -1)
 
         non_pad_mask = get_pad_mask(inputs, pad_id=self.pad_id).eq(False)
         self_attn_mask = get_decoder_self_attn_mask(inputs, inputs, self.pad_id)
