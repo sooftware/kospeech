@@ -6,7 +6,7 @@
   
 [Soohwan Kim](https://github.com/sooftware)<sup>1,2</sup>, [Seyoung Bae](https://github.com/triplet02)<sup>1</sup>, [Cheolhwang Won](https://github.com/wch18735)<sup>1</sup>  
   
-<sup>1</sup>Electronic and Communication Engineering, Kwangwoon Univ. <sup>2</sup>KakaoBrain Corp.     
+<sup>1</sup>Kwangwoon University. <sup>2</sup>Kakao Brain.     
   
 `KoSpeech` is an End-to-End open source project for Korean speech recognition. The goal of this work is to help research speech recognition. It was developed with a focus on readability and extensibility of code. Learning is possible through various options such as feature extraction, attention mechanism, and data augmentation, etc..   
 We used `KsponSpeech` corpus which containing **1000h** of Korean speech data. At present our model has recorded an **10.31%** character error rate. We are always updating this work for increased recognition rate and extensibility.   
