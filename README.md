@@ -6,7 +6,7 @@
   
 [Soohwan Kim](https://github.com/sooftware)<sup>1,2</sup>, [Seyoung Bae](https://github.com/triplet02)<sup>1</sup>, [Cheolhwang Won](https://github.com/wch18735)<sup>1</sup>  
   
-<sup>1</sup>Kwangwoon University. <sup>2</sup>Kakao Brain.     
+<sup>1</sup>Kwangwoon University. <sup>2</sup>Kakao Brain Corp.     
   
   This repo introduces a new open-source toolkit for end-to-end Korean speech recognition, which we dub *KoSpeech*. KoSpeech mainly focuses on end-to-end Korean automatic speech recognition (ASR) and provides various options for training models. Although AI Hub opened 1,000 hours of Korean speech corpus, KsponSpeech, there is no established preprocessing method and baseline model released to compare model performance, yet. Therefore this paper proposes preprocessing methods for KsponSpeech corpus, and baseline model to make benchmarks. By KoSpeech, we hope this will be a guideline for those who research Korean speech recognition. Our baseline model which is based on Listen, Attend and Spell (LAS) architecture achieved 10.31% character error rate (CER) only using acoustic model.    
   We appreciate any kind of [feedback or contribution](https://github.com/sooftware/End-to-end-Speech-Recognition/issues).    
