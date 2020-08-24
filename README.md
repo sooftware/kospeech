@@ -8,7 +8,7 @@
   
 [Soohwan Kim](https://github.com/sooftware)<sup>1,2</sup>, [Seyoung Bae](https://github.com/triplet02)<sup>1</sup>, [Cheolhwang Won](https://github.com/wch18735)<sup>1</sup>  
   
-<sup>1</sup>Dept of elcomm, Kwangwoon University. <sup>2</sup>Kakao Brain Corp.     
+<sup>1</sup>Kwangwoon University. <sup>2</sup>Kakao Brain.     
   
 We present KoSpeech, an open-source software, modular, extensible end-to-end Korean automatic speech recognition (ASR) toolkit based on the deep learning library PyTorch. Several automatic speech recognition open-source toolkits are released, but all of them deal with English speech recognition. (e.g. ESPnet, Espresso) Also AI Hub opened 1,000 hours of Korean speech corpus, KsponSpeech, there is no established preprocessing method and baseline model released to compare model performance, yet. For this reason, we proposes preprocessing methods for KsponSpeech corpus and baseline model to make benchmarks. By KoSpeech, we hope this will be a guideline for those who research Korean speech recognition. Our baseline model which is based on Listen, Attend and Spell (LAS) architecture achieved 10.31% character error rate (CER) only using acoustic model.          
   
