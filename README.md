@@ -6,11 +6,10 @@
   
 [Soohwan Kim](https://github.com/sooftware)<sup>1,2</sup>, [Seyoung Bae](https://github.com/triplet02)<sup>1</sup>, [Cheolhwang Won](https://github.com/wch18735)<sup>1</sup>  
   
-<sup>1</sup>Elcomm, Kwangwoon Univ. <sup>2</sup>KakaoBrain Corp.     
+<sup>1</sup>Kwangwoon University. <sup>2</sup>Kakao Brain Corp.     
   
-`KoSpeech` is an End-to-End open source project for Korean speech recognition. The goal of this work is to help research speech recognition. It was developed with a focus on readability and extensibility of code. Learning is possible through various options such as feature extraction, attention mechanism, and data augmentation, etc..   
-We used `KsponSpeech` corpus which containing **1000h** of Korean speech data. At present our model has recorded an **10.31%** character error rate. We are always updating this work for increased recognition rate and extensibility.   
-We appreciate any kind of [feedback or contribution](https://github.com/sooftware/End-to-end-Speech-Recognition/issues).    
+  This repo introduces a new open-source toolkit for end-to-end Korean speech recognition, which we dub *KoSpeech*. KoSpeech mainly focuses on end-to-end Korean automatic speech recognition (ASR) and provides various options for training models. Although AI Hub opened 1,000 hours of Korean speech corpus, KsponSpeech, there is no established preprocessing method and baseline model released to compare model performance, yet. Therefore this paper proposes preprocessing methods for KsponSpeech corpus, and baseline model to make benchmarks. By KoSpeech, we hope this will be a guideline for those who research Korean speech recognition. Our baseline model which is based on Listen, Attend and Spell (LAS) architecture achieved 10.31% character error rate (CER) only using acoustic model.    
+  We appreciate any kind of [feedback or contribution](https://github.com/sooftware/End-to-end-Speech-Recognition/issues).    
   
 |Description|Feature|Dataset|Model|CER|  
 |-----------|-----|-------|-----|------|  
