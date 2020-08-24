@@ -58,7 +58,7 @@ class SpellingCorrectorDecoder(nn.Module):
 class SpellingCorrectorDecoderLayer(BaseRNN):
     def __init__(self, hidden_dim, rnn_type, dropout_p, device):
         super(SpellingCorrectorDecoderLayer, self).__init__(
-            input_size=hidden_dim,
+            input_size=hidden_dim << 1,
             hidden_dim=hidden_dim,
             num_layers=1,
             rnn_type=rnn_type,
