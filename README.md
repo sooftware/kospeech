@@ -1,8 +1,10 @@
 <img src="https://user-images.githubusercontent.com/42150335/89766602-63a82380-db33-11ea-8f5f-916ea90e1ed1.png" width=750>
   
-# KoSpeech: Korean Speech Recognition Toolkit
+# KoSpeech: End-to-End Korean Speech Recognition Toolkit
 
 [![CodeFactor](https://www.codefactor.io/repository/github/sooftware/kospeech/badge)](https://www.codefactor.io/repository/github/sooftware/kospeech) [<img src="http://img.shields.io/badge/docs-passing-success">](https://sooftware.github.io/KoSpeech/) [<img src="http://img.shields.io/badge/help wanted-issue 37-ff">](https://github.com/sooftware/KoSpeech/issues/37) <img src="http://img.shields.io/badge/Run seq2seq-success-success"> <img src="http://img.shields.io/badge/Run transformer-fail-red">      
+  
+[KoSpeech: End-to-End Korean Speech Recognition Toolkit](https://sooftware.github.io/KoSpeech/)
   
 [Soohwan Kim](https://github.com/sooftware)<sup>1,2</sup>, [Seyoung Bae](https://github.com/triplet02)<sup>1</sup>, [Cheolhwang Won](https://github.com/wch18735)<sup>1</sup>  
   
