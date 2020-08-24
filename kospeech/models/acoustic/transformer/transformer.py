@@ -266,9 +266,9 @@ class SpeechTransformerDecoder(nn.Module):
         self.embedding = Embedding(num_classes, pad_id, d_model)
         self.positional_encoding = PositionalEncoding(d_model)
         self.input_dropout = nn.Dropout(p=dropout_p)
-        self.layers = nn.ModuleList(
-            [SpeechTransformerDecoderLayer(d_model, num_heads, d_ff, dropout_p, ffnet_style) for _ in range(num_layers)]
-        )
+        self.layers = nn.ModuleList([
+            SpeechTransformerDecoderLayer(d_model, num_heads, d_ff, dropout_p, ffnet_style) for _ in range(num_layers)
+        ])
         self.pad_id = pad_id
         self.eos_id = eos_id
 
