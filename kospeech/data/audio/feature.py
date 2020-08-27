@@ -163,8 +163,6 @@ class FilterBank(object):
     """
     def __init__(self, sample_rate=16000, n_mels=80, frame_length=20, frame_shift=10):
         # torchaudio is only supported on Linux (Linux, Mac)
-        assert platform.system().lower() == 'linux' or platform.system().lower() == 'darwin'
-
         self.sample_rate = sample_rate
         self.n_mels = n_mels
         self.frame_length = frame_length

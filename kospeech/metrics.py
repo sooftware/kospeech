@@ -73,6 +73,13 @@ class CharacterErrorRate(ErrorRate):
         s1 = s1.replace(' ', '')
         s2 = s2.replace(' ', '')
 
+        # if '_' in sentence, means subword-unit, delete '_'
+        if '_' in s1:
+            s1 = s1.replace('_', '')
+
+        if '_' in s2:
+            s2 = s2.replace('_', '')
+
         dist = Lev.distance(s2, s1)
         length = len(s1.replace(' ', ''))
 
