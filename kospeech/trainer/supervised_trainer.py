@@ -146,7 +146,7 @@ class SupervisedTrainer(object):
                                                          train_queue, teacher_forcing_ratio)
             train_loader.join()
 
-            Checkpoint(model, self.optimizer, self.criterion, self.trainset_list, self.validset, epoch).save()
+            Checkpoint(model, self.optimizer, self.trainset_list, self.validset, epoch).save()
             logger.info('Epoch %d (Training) Loss %0.4f CER %0.4f' % (epoch, train_loss, train_cer))
 
             teacher_forcing_ratio -= self.teacher_forcing_step
