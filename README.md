@@ -300,7 +300,7 @@ You can get a quick look of pre-trained model's inference, with a sample data.
 You can preprocess `KsponSpeech Corpus` through [this repo](https://github.com/sooftware/KsponSpeech-preprocess).   
 We recommended that you read README of this repository.
 
-1. Set options in [./datasets/prepare-ksponspeech.sh](https://github.com/sooftware/KoSpeech/blob/master/prepare-ksponspeech.sh)  
+1. Set options in [./datasets/prepare-ksponspeech.sh](https://github.com/sooftware/KoSpeech/blob/master/dataset/prepare-ksponspeech.sh)  
   
 <img src="https://user-images.githubusercontent.com/42150335/90811422-8ae6c800-e35f-11ea-8768-5b9cd3417fab.png" width=700>
   
