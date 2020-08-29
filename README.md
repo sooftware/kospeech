@@ -300,6 +300,70 @@ You can get a quick look of pre-trained model's inference, with a sample data.
 You can preprocess `KsponSpeech Corpus` through [this repo](https://github.com/sooftware/KsponSpeech-preprocess).   
 We recommended that you read README of this repository.
 
+1. Set options in [./datasets/prepare-ksponspeech.sh](https://github.com/sooftware/KoSpeech/blob/master/prepare-ksponspeech.sh)  
+  
+<img src="https://user-images.githubusercontent.com/42150335/90811422-8ae6c800-e35f-11ea-8768-5b9cd3417fab.png" width=700>
+  
+  
+2. Run [run.sh](https://github.com/sooftware/KsponSpeech-preprocess/blob/master/run.sh)  
+```shell
+$ ./run.sh
+```
+  
+3. Leave the computer for hours or days.  
+   
+#### Preprocess
+  
+You can choose between phonetic transcription and spelling transcription to preprocess.  
+  
+* Raw data
+```
+b/ (70%)/(칠 십 퍼센트) 확률이라니 아/ (뭐+ 뭔)/(모+ 몬) 소리야 진짜 (100%)(백 프로)가 왜 안돼? n/
+``` 
+  
+* Delete noise labels, such as b/, n/, / ..
+```
+(70%)/(칠 십 퍼센트) 확률이라니 아/ (뭐+ 뭔)/(모+ 몬) 소리야 진짜 (100%)(백 프로)가 왜 안돼?
+```
+  
+* Delete labels such as '/', '*', '+', etc. (used for gantour representation)
+```
+(70%)/(칠 십 퍼센트) 확률이라니 아 (뭐 뭔)/(모 몬) 소리야 진짜 (100%)(백 프로)가 왜 안돼?
+```
+  
+* Option1 : phonetic transcript
+```
+칠 십 퍼센트 확률이라니 아 모 몬 소리야 진짜 백 프로가 왜 안돼?
+```
+
+* Option2 : spelling transcript
+```
+70% 확률이라니 아 뭐 뭔 소리야 진짜 100%가 왜 안돼?
+```
+* Option3 : numeric_phonetic_otherwise_spelling
+```
+칠 십 퍼센트 확률이라니 아 뭐 뭔 소리야 진짜 백 프로가 왜 안돼?
+```
+  
+#### Output-Unit
+   
+This project provides processing in characters, subwords, and grapheme units.   
+  
+* Character-Unit
+```
+아 모 몬 소리야 칠 십 퍼센트 확률이라니
+```
+  
+* Subword-Unit
+```
+▁아 ▁모 ▁ 몬 ▁소리 야 ▁ 칠 ▁ 십 ▁퍼 센트 ▁확 률 이라 니
+```
+
+* Grapheme-Unit
+```
+ㅇㅏ ㅁㅗ ㅁㅗㄴ ㅅㅗㄹㅣㅇㅑ ㅊㅣㄹ ㅅㅣㅂ ㅍㅓㅅㅔㄴㅌㅡ ㅎㅘㄱㄹㅠㄹㅇㅣㄹㅏㄴㅣ
+```
+
 ### Step 2: Run `main.py`
 * Default setting  
 ```
