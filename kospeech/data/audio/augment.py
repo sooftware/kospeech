@@ -12,7 +12,6 @@ class SpecAugment(object):
     This concept proposed in https://arxiv.org/abs/1904.08779
 
     Args:
-        time_mask_para (int): maximum time masking length
         freq_mask_para (int): maximum frequency masking length
         time_mask_num (int): how many times to apply time masking
         freq_mask_num (int): how many times to apply frequency masking
@@ -23,8 +22,7 @@ class SpecAugment(object):
     Returns: feature_vector:
         - **feature_vector**: masked feature vector.
     """
-    def __init__(self, time_mask_para: int, freq_mask_para: int, time_mask_num: int, freq_mask_num: int) -> None:
-        self.time_mask_para = time_mask_para
+    def __init__(self, freq_mask_para: int = 27, time_mask_num: int = 10, freq_mask_num: int = 2) -> None:
         self.freq_mask_para = freq_mask_para
         self.time_mask_num = time_mask_num
         self.freq_mask_num = freq_mask_num
@@ -33,13 +31,13 @@ class SpecAugment(object):
         """ Provides SpecAugmentation for audio """
         time_axis_length = feature_vector.size(0)
         freq_axis_length = feature_vector.size(1)
+        time_mask_para = time_axis_length / 20      # Refer to "Specaugment on large scale dataset" paper
 
         # time mask
         for _ in range(self.time_mask_num):
-            t = int(np.random.uniform(low=0.0, high=self.time_mask_para))
-            if time_axis_length > t:
-                t0 = random.randint(0, time_axis_length - t)
-                feature_vector[t0: t0 + t, :] = 0
+            t = int(np.random.uniform(low=0.0, high=time_mask_para))
+            t0 = random.randint(0, time_axis_length - t)
+            feature_vector[t0: t0 + t, :] = 0
 
         # freq mask
         for _ in range(self.freq_mask_num):

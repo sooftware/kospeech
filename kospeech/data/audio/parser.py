@@ -99,7 +99,7 @@ class SpectrogramParser(AudioParser):
         self.sos_id = sos_id
         self.eos_id = eos_id
         self.target_dict = target_dict
-        self.spec_augment = SpecAugment(time_mask_para, freq_mask_para, time_mask_num, freq_mask_num)
+        self.spec_augment = SpecAugment(freq_mask_para, time_mask_num, freq_mask_num)
 
         if transform_method.lower() == 'mel':
             self.transforms = MelSpectrogram(sample_rate, n_mels, frame_length, frame_shift, feature_extract_by)
