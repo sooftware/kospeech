@@ -98,7 +98,7 @@ def sentence_to_subwords(dataset_path, subword_save_path, script_prefix, use_pre
     if use_pretrain_kobert_tokenizer:
         tok_path = get_tokenizer()
         sp = SentencepieceTokenizer(tok_path)
-        
+
     else:
         sp = spm.SentencePieceProcessor()
         vocab_file = "aihub_sentencepiece.model"
