@@ -6,9 +6,9 @@
   
 [Soohwan Kim](https://github.com/sooftware)<sup>1,2*</sup>, [Seyoung Bae](https://github.com/triplet02)<sup>2*</sup>, [Cheolhwang Won](https://github.com/wch18735)<sup>2*</sup>, [Soyoung Cho](https://github.com/SoYoungCho)<sup>3</sup>, [Jeongwon Kwak](https://github.com/jeongwonkwak)<sup>3</sup>   
   
-<sup>1</sup>KakaoBrain Corp.   <sup>2</sup>School of Elcomm, Kwangwoon University 
+<sup>1</sup>KakaoBrain Corp.   <sup>2</sup>The Kwangwoon University of Electronic Information Technology  
   
-<sup>3</sup>School of information convergence. Kwangwoon University   
+<sup>3</sup>The Kwangwoon University of Information Convergence   
    
 <sup>*</sup>First authors.
   
