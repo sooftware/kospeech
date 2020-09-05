@@ -4,13 +4,13 @@
   
 ***[KoSpeech:  Open-Source Toolkit for End-to-End Korean Speech Recognition](https://sooftware.github.io/KoSpeech/)***
   
-[Soohwan Kim](https://github.com/sooftware)<sup>1,2*</sup>, [Seyoung Bae](https://github.com/triplet02)<sup>1*</sup>, [Cheolhwang Won](https://github.com/wch18735)<sup>1*</sup>, [Soyoung Cho](https://github.com/SoYoungCho)<sup>2</sup>, [Jeongwon Kwak](https://github.com/jeongwonkwak)<sup>2</sup>   
+[Soohwan Kim](https://github.com/sooftware)<sup>1,2*</sup>, [Seyoung Bae](https://github.com/triplet02)<sup>2*</sup>, [Cheolhwang Won](https://github.com/wch18735)<sup>2*</sup>, [Soyoung Cho](https://github.com/SoYoungCho)<sup>3</sup>, [Jeongwon Kwak](https://github.com/jeongwonkwak)<sup>3</sup>   
   
-<sup>1</sup>School of Electronic and Communication Engineering, Kwangwoon University. <sup>2</sup>Kakao Brain Corp.   
+<sup>1</sup>Kakao Brain Corp.   <sup>2</sup>School of Electronic and Communication Engineering, Kwangwoon University 
   
-<sup>3</sup>School of Information Convergence. Kwangwoon University   
+<sup>3</sup>School of information convergence. Kwangwoon University   
    
-<sup>*</sup>These authors are first authors.
+<sup>*</sup>First authors.
   
 We present ***KoSpeech***, an open-source software, which is modular and extensible end-to-end Korean automatic speech recognition (ASR) toolkit based on the deep learning library PyTorch. Several automatic speech recognition open-source toolkits have been released, but all of them deal with non-Korean languages, such as English. (e.g. ESPnet, Espresso) And although AI Hub opened 1,000 hours of Korean speech corpus known as KsponSpeech2, there are no established preprocessing methods and no baseline models to compare model performances. Therefore, we propose preprocessing methods for KsponSpeech corpus and a baseline model for benchmarks. Our baseline model is based on Listen, Attend and Spell (LAS) architecture and ables to customize various training hyperparameters conveniently. By KoSpeech, we hope this could be a guideline for those who research Korean speech recognition. Our baseline model achieved **10.31%** character error rate (CER) with acoustic model only at KsponSpeech corpus.             
   
