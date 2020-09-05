@@ -4,9 +4,9 @@ import torch.nn.functional as F
 from torch import Tensor
 
 
-class CrossEntropyWithSmoothingLoss(nn.Module):
+class LabelSmoothedCrossEntropyLoss(nn.Module):
     """
-    A Cross Entropy with Label Smoothing Loss.
+    Label smoothed cross entropy loss function.
 
     Args:
         num_classes (int): the number of classfication
@@ -32,7 +32,7 @@ class CrossEntropyWithSmoothingLoss(nn.Module):
             reduction='sum',            # reduction method [sum, mean]
             architecture='seq2seq'      # speech model`s architecture [seq2seq, transformer]
     ) -> None:
-        super(CrossEntropyWithSmoothingLoss, self).__init__()
+        super(LabelSmoothedCrossEntropyLoss, self).__init__()
         self.confidence = 1.0 - smoothing
         self.smoothing = smoothing
         self.num_classes = num_classes

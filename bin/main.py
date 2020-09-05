@@ -16,7 +16,7 @@ import torch
 from torch import optim
 sys.path.append('..')
 from kospeech.data.data_loader import split_dataset, load_data_list
-from kospeech.optim.loss import CrossEntropyWithSmoothingLoss
+from kospeech.criterion.label_smoothed_cross_entropy import LabelSmoothedCrossEntropyLoss
 from kospeech.optim.lr_scheduler import RampUpLR
 from kospeech.optim.optimizer import Optimizer
 from kospeech.trainer.supervised_trainer import SupervisedTrainer
@@ -50,13 +50,10 @@ def train(opt):
         else:
             optimizer = Optimizer(optimizer, None, 0, opt.max_grad_norm)
 
-        criterion = CrossEntropyWithSmoothingLoss(
-            num_classes=len(char2id),
-            ignore_index=PAD_token,
-            smoothing=opt.label_smoothing,
-            dim=-1,
-            reduction=opt.reduction,
-            architecture=opt.architecture
+        criterion = LabelSmoothedCrossEntropyLoss(
+            num_classes=len(char2id), ignore_index=PAD_token,
+            smoothing=opt.label_smoothing, dim=-1,
+            reduction=opt.reduction, architecture=opt.architecture
         ).to(device)
 
     else:
@@ -64,26 +61,31 @@ def train(opt):
         validset = None
         model = None
         optimizer = None
-        criterion = CrossEntropyWithSmoothingLoss(
-            num_classes=len(char2id),
-            ignore_index=PAD_token,
-            smoothing=opt.label_smoothing,
-            dim=-1,
-            reduction=opt.reduction,
-            architecture=opt.architecture
+        criterion = LabelSmoothedCrossEntropyLoss(
+            num_classes=len(char2id), ignore_index=PAD_token,
+            smoothing=opt.label_smoothing, dim=-1,
+            reduction=opt.reduction, architecture=opt.architecture
         ).to(device)
         epoch_time_step = None
 
-    trainer = SupervisedTrainer(optimizer=optimizer, criterion=criterion, trainset_list=trainset_list,
-                                validset=validset, num_workers=opt.num_workers,
-                                high_plateau_lr=opt.high_plateau_lr, low_plateau_lr=opt.low_plateau_lr,
-                                decay_threshold=opt.decay_threshold, exp_decay_period=opt.exp_decay_period,
-                                device=device, teacher_forcing_step=opt.teacher_forcing_step,
-                                min_teacher_forcing_ratio=opt.min_teacher_forcing_ratio, print_every=opt.print_every,
-                                save_result_every=opt.save_result_every, checkpoint_every=opt.checkpoint_every,
-                                architecture=opt.architecture)
-    model = trainer.train(model=model, batch_size=opt.batch_size, epoch_time_step=epoch_time_step,
-                          num_epochs=opt.num_epochs, teacher_forcing_ratio=opt.teacher_forcing_ratio, resume=opt.resume)
+    trainer = SupervisedTrainer(
+        optimizer=optimizer, criterion=criterion, trainset_list=trainset_list,
+        validset=validset, num_workers=opt.num_workers,
+        high_plateau_lr=opt.high_plateau_lr, low_plateau_lr=opt.low_plateau_lr,
+        decay_threshold=opt.decay_threshold, exp_decay_period=opt.exp_decay_period,
+        device=device, teacher_forcing_step=opt.teacher_forcing_step,
+        min_teacher_forcing_ratio=opt.min_teacher_forcing_ratio, print_every=opt.print_every,
+        save_result_every=opt.save_result_every, checkpoint_every=opt.checkpoint_every,
+        architecture=opt.architecture
+    )
+    model = trainer.train(
+        model=model,
+        batch_size=opt.batch_size,
+        epoch_time_step=epoch_time_step,
+        num_epochs=opt.num_epochs,
+        teacher_forcing_ratio=opt.teacher_forcing_ratio,
+        resume=opt.resume
+    )
     return model
 
 
