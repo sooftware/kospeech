@@ -457,7 +457,7 @@ This project is licensed under the Apache-2.0 LICENSE - see the [LICENSE.md](htt
 A technical report on KoSpeech is available. If you use the system for academic work, please cite:
   
 ```
-@ARTICLE{2017opennmt,
+@ARTICLE{2020kospeech,
   author = {Soohwan Kim, Seyoung Bae, Cheolhwang Won},
   title = "{KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition}",
   journal = {ArXiv e-prints},
