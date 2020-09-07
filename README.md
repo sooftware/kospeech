@@ -452,6 +452,15 @@ We follow [PEP-8](https://www.python.org/dev/peps/pep-0008/) for code style. Esp
 ### License
 This project is licensed under the Apache-2.0 LICENSE - see the [LICENSE.md](https://github.com/sooftware/KoSpeech/blob/master/LICENSE) file for details
   
-## Author
-* [Soohwan Kim](https://github.com/sooftware), [Seyoung Bae](https://github.com/triplet02), [Cheolhwang Won](https://github.com/wch18735)  
-* Contacts: sh951011@gmail.com
+## Citation
+  
+A technical report on KoSpeech is available. If you use the system for academic work, please cite:
+  
+```
+@ARTICLE{2017opennmt,
+  author = {Soohwan Kim, Seyoung Bae, Cheolhwang Won},
+  title = "{KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition}",
+  journal = {ArXiv e-prints},
+  eprint = {-}
+}
+```
