@@ -453,7 +453,7 @@ This project is licensed under the Apache-2.0 LICENSE - see the [LICENSE.md](htt
   
 ## Citation
   
-A technical report on KoSpeech is available. If you use the system for academic work, please cite:
+A [technical report](https://arxiv.org/abs/2009.03092) on KoSpeech is available. If you use the system for academic work, please cite:
   
 ```
 @ARTICLE{2020kospeech,
