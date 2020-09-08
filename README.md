@@ -2,7 +2,7 @@
 
 [![CodeFactor](https://www.codefactor.io/repository/github/sooftware/kospeech/badge)](https://www.codefactor.io/repository/github/sooftware/kospeech) [<img src="http://img.shields.io/badge/docs-passing-success">](https://sooftware.github.io/KoSpeech/) [<img src="http://img.shields.io/badge/help wanted-issue 37-ff">](https://github.com/sooftware/KoSpeech/issues/37) [<img src="http://img.shields.io/badge/web application-click-ff">](http://www.kospeech.com/) <img src="http://img.shields.io/badge/Run seq2seq-success-success"> <img src="http://img.shields.io/badge/Run transformer-fail-red">      
   
-***[KoSpeech:  Open-Source Toolkit for End-to-End Korean Speech Recognition](https://sooftware.github.io/KoSpeech/)***
+***[KoSpeech:  Open-Source Toolkit for End-to-End Korean Speech Recognition](https://arxiv.org/abs/2009.03092)***
   
 [Soohwan Kim](https://github.com/sooftware)<sup>1,2*</sup>, [Seyoung Bae](https://github.com/triplet02)<sup>2*</sup>, [Cheolhwang Won](https://github.com/wch18735)<sup>2*</sup>, [Soyoung Cho](https://github.com/SoYoungCho)<sup>3</sup>, [Jeongwon Kwak](https://github.com/jeongwonkwak)<sup>3</sup>   
   
@@ -460,6 +460,6 @@ A technical report on KoSpeech is available. If you use the system for academic 
   author = {Soohwan Kim, Seyoung Bae, Cheolhwang Won},
   title = "{KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition}",
   journal = {ArXiv e-prints},
-  eprint = {-}
+  eprint = {2009.03092}
 }
 ```
