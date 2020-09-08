@@ -49,7 +49,7 @@ We will response as soon as possible.
 
 ## Roadmap
   
-<img src="https://user-images.githubusercontent.com/42150335/90785887-d8ead400-e33d-11ea-874f-4a89efef32fa.png"> 
+<img src="https://user-images.githubusercontent.com/42150335/92522886-62653600-f25a-11ea-886a-cb5add6c8114.png"> 
   
 ### Seq2seq
   
