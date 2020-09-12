@@ -1,14 +1,18 @@
 # KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition
 
-[![CodeFactor](https://www.codefactor.io/repository/github/sooftware/kospeech/badge)](https://www.codefactor.io/repository/github/sooftware/kospeech) [<img src="http://img.shields.io/badge/docs-passing-success">](https://sooftware.github.io/KoSpeech/) [<img src="http://img.shields.io/badge/help wanted-issue 37-ff">](https://github.com/sooftware/KoSpeech/issues/37) [<img src="http://img.shields.io/badge/web application-click-ff">](http://www.kospeech.com/) <img src="http://img.shields.io/badge/Run seq2seq-success-success"> <img src="http://img.shields.io/badge/Run transformer-fail-red">      
+[![CodeFactor](https://www.codefactor.io/repository/github/sooftware/kospeech/badge)](https://www.codefactor.io/repository/github/sooftware/kospeech) [<img src="http://img.shields.io/badge/docs-passing-success">](https://sooftware.github.io/KoSpeech/) [<img src="http://img.shields.io/badge/help wanted-issue 37-ff">](https://github.com/sooftware/KoSpeech/issues/37) <img src="http://img.shields.io/badge/Run seq2seq-success-success"> <img src="http://img.shields.io/badge/Run transformer-fail-red">      
   
-***[KoSpeech:  Open-Source Toolkit for End-to-End Korean Speech Recognition](https://sooftware.github.io/KoSpeech/)***
+### ***[KoSpeech:  Open-Source Toolkit for End-to-End Korean Speech Recognition \[Technical Report\]](https://arxiv.org/abs/2009.03092)***
   
-[Soohwan Kim](https://github.com/sooftware)<sup>1,2</sup>, [Seyoung Bae](https://github.com/triplet02)<sup>1</sup>, [Cheolhwang Won](https://github.com/wch18735)<sup>1</sup>  
+[Soohwan Kim](https://github.com/sooftware)<sup>1,2*</sup>, [Seyoung Bae](https://github.com/triplet02)<sup>2*</sup>, [Cheolhwang Won](https://github.com/wch18735)<sup>2*</sup>, [Soyoung Cho](https://github.com/SoYoungCho)<sup>3</sup>, [Jeongwon Kwak](https://github.com/jeongwonkwak)<sup>3</sup>   
   
-<sup>1</sup>Kwangwoon University. <sup>2</sup>Kakao Brain     
+<sup>1</sup>Kakao Brain  <sup>2</sup>The Kwangwoon University of Electronic Information Technology  
   
-We present ***KoSpeech***, an open-source software, which is modular and extensible end-to-end Korean automatic speech recognition (ASR) toolkit based on the deep learning library PyTorch. Several automatic speech recognition open-source toolkits have been released, but all of them deal with non-Korean languages, such as English. (e.g. ESPnet, Espresso) And although AI Hub opened 1,000 hours of Korean speech corpus known as KsponSpeech2, there are no established preprocessing methods and no baseline models to compare model performances. Therefore, we propose preprocessing methods for KsponSpeech corpus and a baseline model for benchmarks. Our baseline model is based on Listen, Attend and Spell (LAS) architecture and ables to customize various training hyperparameters conveniently. By KoSpeech, we hope this could be a guideline for those who research Korean speech recognition. Our baseline model achieved **10.31%** character error rate (CER) with acoustic model only at KsponSpeech corpus.             
+<sup>3</sup>The Kwangwoon University of Information Convergence   
+   
+<sup>*</sup>First authors.
+  
+We present ***KoSpeech***, an open-source software, is modular and extensible end-to-end Korean automatic speech recognition (ASR) toolkit based on the deep learning library PyTorch. Several automatic speech recognition open-source toolkits have been released, but all of them deal with non-Korean languages, such as English (e.g. ESPnet, Espresso). Although AI Hub opened 1,000 hours of Korean speech corpus known as KsponSpeech1, there is no established preprocessing method and baseline model to compare model performances. Therefore, we propose preprocessing methods for KsponSpeech corpus and a baseline model for benchmarks. Our baseline model is based on Listen, Attend and Spell (LAS) architecture and ables to customize various training hyperparameters conveniently. By KoSpeech, we hope this could be a guideline for those who research Korean speech recognition. Our baseline model achieved **10.31%** character error rate (CER) at KsponSpeech corpus only with the acoustic model.  
   
 |Description|Feature|Dataset|Model|CER|  
 |-----------|-----|-------|-----|------|  
@@ -45,7 +49,7 @@ We will response as soon as possible.
 
 ## Roadmap
   
-<img src="https://user-images.githubusercontent.com/42150335/90785887-d8ead400-e33d-11ea-874f-4a89efef32fa.png"> 
+<img src="https://user-images.githubusercontent.com/42150335/92522886-62653600-f25a-11ea-886a-cb5add6c8114.png"> 
   
 ### Seq2seq
   
@@ -447,6 +451,15 @@ We follow [PEP-8](https://www.python.org/dev/peps/pep-0008/) for code style. Esp
 ### License
 This project is licensed under the Apache-2.0 LICENSE - see the [LICENSE.md](https://github.com/sooftware/KoSpeech/blob/master/LICENSE) file for details
   
-## Author
-* [Soohwan Kim](https://github.com/sooftware), [Seyoung Bae](https://github.com/triplet02), [Cheolhwang Won](https://github.com/wch18735)  
-* Contacts: sh951011@gmail.com
+## Citation
+  
+A [technical report](https://arxiv.org/abs/2009.03092) on KoSpeech is available. If you use the system for academic work, please cite:
+  
+```
+@ARTICLE{2020kospeech,
+  author = {Soohwan Kim, Seyoung Bae, Cheolhwang Won},
+  title = "{KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition}",
+  journal = {ArXiv e-prints},
+  eprint = {2009.03092}
+}
+```
