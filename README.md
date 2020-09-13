@@ -51,168 +51,15 @@ We will response as soon as possible.
   
 <img src="https://user-images.githubusercontent.com/42150335/92522886-62653600-f25a-11ea-886a-cb5add6c8114.png"> 
   
-### Seq2seq
+### Listen, Attend and Spell
   
-Sequence-to-Sequence can be trained with serveral options. You can choose the CNN extractor from (`ds2` /`vgg`),   
+Listen, Attend and Spell can be trained with serveral options. You can choose the CNN extractor from (`ds2` /`vgg`),   
 You can choose attention mechanism from (`location-aware`, `multi-head`, `additive`, `scaled-dot`) attention.
-  
-Our architecture based on Listen Attend and Spell.   
-We mainly referred to following papers.  
-  
-[Wiliam Chan et al.「Listen, Attend and Spell」 ICASSP 2016](https://arxiv.org/abs/1508.01211)  
-  
-[Ashish Vaswani et al 「Attention Is All You Need」 NIPS 2017
-](https://arxiv.org/abs/1706.03762)  
-  
-[Chiu et al 「StateOf-The-Art Speech Recognition with Sequence-to-Sequence Models」 ICASSP 2018
-](https://arxiv.org/abs/1712.01769)  
-  
-[Daniel S. Park et al 「SpecAugment: A Simple Data Augmentation Method for ASR」 Interspeech 2019
-](https://arxiv.org/abs/1904.08779)  
-      
-Our Seq2seq architeuture is as follows.
-  
-```python
-Seq2seq(
-  (encoder): Seq2seqEncoder(
-    (conv): VGGExtractor(
-      (conv): Sequential(
-        (0): Conv2d(1, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-        (1): Hardtanh(min_val=0, max_val=20, inplace=True)
-        (2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-        (3): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-        (4): Hardtanh(min_val=0, max_val=20, inplace=True)
-        (5): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
-        (6): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-        (7): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-        (8): Hardtanh(min_val=0, max_val=20, inplace=True)
-        (9): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-        (10): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-        (11): Hardtanh(min_val=0, max_val=20, inplace=True)
-        (12): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
-      )
-    )
-    (rnn): LSTM(2560, 512, num_layers=3, batch_first=True, dropout=0.3, bidirectional=True)
-  )
-  (decoder): Seq2seqDecoder(
-    (embedding): Embedding(2038, 1024)
-    (input_dropout): Dropout(p=0.3, inplace=False)
-    (rnn): LSTM(1024, 1024, num_layers=2, batch_first=True, dropout=0.3)
-    (attention): AddNorm(
-      (sublayer): MultiHeadAttention(
-        (query_proj): Linear(in_features=1024, out_features=1024, bias=True)
-        (key_proj): Linear(in_features=1024, out_features=1024, bias=True)
-        (value_proj): Linear(in_features=1024, out_features=1024, bias=True)
-      )
-      (layer_norm): LayerNorm(1024)
-    )
-    (projection): AddNorm(
-      (sublayer): Linear(in_features=1024, out_features=1024, bias=True)
-      (layer_norm): LayerNorm(1024)
-    )
-    (generator): Linear(in_features=1024, out_features=2038, bias=False)
-  )
-)
-``` 
   
 ### Transformer  
   
-The Transformer model is currently implemented, but the code for learning is not implemented.  
-We will implement as soon as possible.  
-  
-```python
-SpeechTransformer(
-  (conv): Sequential(
-    (0): Conv2d(1, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-    (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-    (2): Hardtanh(min_val=0, max_val=20, inplace=True)
-    (3): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-    (4): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-    (5): Hardtanh(min_val=0, max_val=20, inplace=True)
-    (6): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
-    (7): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-    (8): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-    (9): Hardtanh(min_val=0, max_val=20, inplace=True)
-    (10): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
-    (11): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-    (12): Hardtanh(min_val=0, max_val=20, inplace=True)
-    (13): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
-  )
-  (encoder): SpeechTransformerEncoder(
-    (input_proj): Linear(in_features=2560, out_features=512, bias=True)
-    (input_norm): LayerNorm()
-    (input_dropout): Dropout(p=0.3, inplace=False)
-    (layers): ModuleList(
-      (N): SpeechTransformerEncoderLayer(
-        (self_attention): AddNorm(
-          (sublayer): MultiHeadAttention(
-            (query_proj): Linear(in_features=512, out_features=512, bias=True)
-            (key_proj): Linear(in_features=512, out_features=512, bias=True)
-            (value_proj): Linear(in_features=512, out_features=512, bias=True)
-          )
-          (layer_norm): LayerNorm()
-        )
-        (feed_forward): AddNorm(
-          (sublayer): PositionWiseFeedForwardNet(
-            (feed_forward): Sequential(
-              (0): Linear(in_features=512, out_features=2048, bias=True)
-              (1): Dropout(p=0.3, inplace=False)
-              (2): ReLU()
-              (3): Linear(in_features=2048, out_features=512, bias=True)
-              (4): Dropout(p=0.3, inplace=False)
-            )
-          )
-          (layer_norm): LayerNorm()
-        )
-      )
-    )
-  )
-  (decoder): SpeechTransformerDecoder(
-    (embedding): Embedding(2038, 512, padding_idx=0)
-    (input_dropout): Dropout(p=0.3, inplace=False)
-    (layers): ModuleList(
-      (N): SpeechTransformerDecoderLayer(
-        (self_attention): AddNorm(
-          (sublayer): MultiHeadAttention(
-            (query_proj): Linear(in_features=512, out_features=512, bias=True)
-            (key_proj): Linear(in_features=512, out_features=512, bias=True)
-            (value_proj): Linear(in_features=512, out_features=512, bias=True)
-          )
-          (layer_norm): LayerNorm()
-        )
-        (memory_attention): AddNorm(
-          (sublayer): MultiHeadAttention(
-            (query_proj): Linear(in_features=512, out_features=512, bias=True)
-            (key_proj): Linear(in_features=512, out_features=512, bias=True)
-            (value_proj): Linear(in_features=512, out_features=512, bias=True)
-          )
-          (layer_norm): LayerNorm()
-        )
-        (feed_forward): AddNorm(
-          (sublayer): PositionWiseFeedForwardNet(
-            (feed_forward): Sequential(
-              (0): Linear(in_features=512, out_features=2048, bias=True)
-              (1): Dropout(p=0.3, inplace=False)
-              (2): ReLU()
-              (3): Linear(in_features=2048, out_features=512, bias=True)
-              (4): Dropout(p=0.3, inplace=False)
-            )
-          )
-          (layer_norm): LayerNorm()
-        )
-      )
-    )
-  )
-  (generator): Linear(
-    (linear): Linear(in_features=512, out_features=2038, bias=True)
-  )
-)
-```
-  
-We mainly referred to following papers.
-  
-[Ashish Vaswani et al 「Attention Is All You Need」 NIPS 2017
-](https://arxiv.org/abs/1706.03762)  
+The Transformer model is currently implemented, but There is a bug, so I can't learn at the moment.    
+We will fix as soon as possible.   
   
 ### Various Options   
   
@@ -387,7 +234,7 @@ $ ./eval.sh
 ```
 * Custom setting
 ```
-python ./bin/eval.py -dataset_path dataset_path -data_list_path data_list_path -mode eval
+python ./bin/eval.py --dataset_path $DATASET_PATH --model_path $MODEL_PATH --mode eval
 ```
 Now you have a model which you can use to predict on new data. We do this by running `greedy search` or `beam search`.  
 Like training, you can choose between `Default setting` or `Custom setting`.  
