@@ -80,7 +80,6 @@ class SpectrogramParser(AudioParser):
             input_reverse: bool = True,               # flag indication whether to reverse input or not
             normalize: bool = False,                  # flag indication whether to normalize spectrum or not
             transform_method: str = 'mel',            # which feature to use [mel, fbank, spect, mfcc]
-            time_mask_para: int = 70,                 # hyper Parameter for Time Masking to limit time masking length
             freq_mask_para: int = 12,                 # hyper Parameter for Freq Masking to limit freq masking length
             time_mask_num: int = 2,                   # how many time-masked area to make
             freq_mask_num: int = 2,                   # how many freq-masked area to make

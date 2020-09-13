@@ -56,7 +56,6 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
             input_reverse=opt.input_reverse,
             normalize=opt.normalize,
             target_dict=target_dict,
-            time_mask_para=opt.time_mask_para,
             freq_mask_para=opt.freq_mask_para,
             time_mask_num=opt.time_mask_num,
             freq_mask_num=opt.freq_mask_num,
