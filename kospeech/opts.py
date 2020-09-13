@@ -243,7 +243,6 @@ def print_preprocess_opts(opt):
     logger.info('--del_silence: %s' % str(opt.del_silence))
     logger.info('--input_reverse: %s' % str(opt.input_reverse))
     logger.info('--feature_extract_by: %s' % str(opt.feature_extract_by))
-    logger.info('--time_mask_para: %s' % str(opt.time_mask_para))
     logger.info('--freq_mask_para: %s' % str(opt.freq_mask_para))
     logger.info('--time_mask_num: %s' % str(opt.time_mask_num))
     logger.info('--freq_mask_num: %s' % str(opt.freq_mask_num))
@@ -271,7 +270,6 @@ def print_train_opts(opt):
     """ Print train options """
     logger.info('--dataset_path: %s' % str(opt.dataset_path))
     logger.info('--data_list_path: %s' % str(opt.data_list_path))
-    logger.info('--label_path: %s' % str(opt.label_path))
     logger.info('--spec_augment: %s' % str(opt.spec_augment))
     logger.info('--noise_augment: %s' % str(opt.noise_augment))
     logger.info('--noiseset_size: %s' % str(opt.noiseset_size))

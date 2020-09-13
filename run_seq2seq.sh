@@ -5,8 +5,6 @@
 #   year = {2020}
 # }
 
-# LABEL_PATH='G:/LibriSpeech/LibriSpeech_TrainDataset/labels/LibriSpeech_labels.csv'
-# setting LABEL_PATH didn't worked, so path is hard-coded in 'trainer/opts.py' temporarily.
 ARCHITECTURE='seq2seq'
 DATASET_PATH='your_dataset_path'
 DATA_LIST_PATH='../data/data_list/except_outlier_train_list.csv'
@@ -36,8 +34,8 @@ FRAME_LENGTH=25
 FRAME_SHIFT=10
 SAMPLE_RATE=16000
 N_MELS=80
-FEATURE_EXTRACT_BY='torchaudio'   # You can set 'librosa'
-TRANSFORM_METHOD='mel'            # Support feature : spect, mel, mfcc, fbank
+FEATURE_EXTRACT_BY='kaldi'        # You can set 'librosa', 'torchaudio'
+TRANSFORM_METHOD='fbank'          # Support feature : spect, mel, mfcc, fbank
 EXTRACTOR='vgg'                   # Support extractor : vgg, ds2 (DeepSpeech2)
 ACTIVATION='hardtanh'             # Support activation : ReLU, ELU, Hardtanh, GELU, LeakyReLU
 FREQ_MASK_PARA=27
@@ -67,5 +65,3 @@ python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epoch
 --noiseset_size $NOISESET_SIZE --weight_decay $WEIGHT_DECAY --reduction $REDUCTION \
 --noise_level $NOISE_LEVEL --attn_mechanism $ATTN_MECHANISM --teacher_forcing_step $TEACHER_FORCING_STEP \
 --min_teacher_forcing_ratio $MIN_TEACHER_FORCING_RATIO --extractor $EXTRACTOR --activation $ACTIVATION
-
-cmd /k
