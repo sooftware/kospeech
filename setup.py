@@ -10,6 +10,7 @@ setup(
         'numpy',
         'pandas',
         'tqdm',
-        'matplotlib'
+        'matplotlib',
+        'astropy'
     ]
 )
