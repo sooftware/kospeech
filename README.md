@@ -123,11 +123,7 @@ We recommend creating a new virtual environment for this project (using virtual 
 Currently we only support installation from source code using setuptools. Checkout the source code and run the   
 following commands:  
 ```
-pip install -r requirements.txt
-```
-```
-python bin/setup.py build
-python bin/setup.py install
+pip install -e .
 ```
   
 ## Get Started
