@@ -75,9 +75,6 @@ def build_train_opts(parser):
     group.add_argument('--data_list_path', '-data_list_path',
                        type=str, default='./data/data_list/filter_train_list.csv',
                        help='list of training / test set')
-    group.add_argument('--label_path', '-label_path',
-                       type=str, default='G:/LibriSpeech/LibriSpeech_TrainDataset/labels/LibriSpeech_labels.csv',
-                       help='path of character labels')
     group.add_argument('--spec_augment', '-spec_augment',
                        action='store_true', default=False,
                        help='flag indication whether to use spec augmentation or not')
@@ -188,14 +185,11 @@ def build_preprocess_opts(parser):
     group.add_argument('--transform_method', '-transform_method',
                        type=str, default='mel',
                        help='which feature to use: [mel, mfcc, spect, fbank] (default: mel)')
-    group.add_argument('--time_mask_para', '-time_mask_para',
-                       type=int, default=50,
-                       help='Hyper Parameter for Time Masking to limit time masking length (default: 50)')
     group.add_argument('--freq_mask_para', '-freq_mask_para',
                        type=int, default=12,
                        help='Hyper Parameter for Freq Masking to limit freq masking length (default: 12)')
     group.add_argument('--time_mask_num', '-time_mask_num',
-                       type=int, default=2,
+                       type=int, default=10,
                        help='how many time-masked area to make (default: 2)')
     group.add_argument('--freq_mask_num', '-freq_mask_num',
                        type=int, default=2,

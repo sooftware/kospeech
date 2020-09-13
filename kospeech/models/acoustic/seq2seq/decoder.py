@@ -64,18 +64,18 @@ class SpeechDecoderRNN(BaseRNN):
 
     def __init__(
             self,
-            num_classes: int,                    # number of classfication
-            max_length: int = 120,               # a maximum allowed length for the sequence to be processed
-            hidden_dim: int = 1024,              # dimension of RNN`s hidden state vector
-            pad_id: int = 0,                     # pad token`s id
-            sos_id: int = 1,                     # start of sentence token`s id
-            eos_id: int = 2,                     # end of sentence token`s id
-            attn_mechanism: str = 'multi-head',  # type of attention mechanism
-            num_heads: int = 4,                  # number of attention heads
-            num_layers: int = 2,                 # number of RNN layers
-            rnn_type: str = 'lstm',              # type of RNN cell
-            dropout_p: float = 0.3,              # dropout probability
-            device: str = 'cuda'                 # device - 'cuda' or 'cpu'
+            num_classes: int,                      # number of classfication
+            max_length: int = 150,                 # a maximum allowed length for the sequence to be processed
+            hidden_dim: int = 1024,                # dimension of RNN`s hidden state vector
+            pad_id: int = 0,                       # pad token`s id
+            sos_id: int = 1,                       # start of sentence token`s id
+            eos_id: int = 2,                       # end of sentence token`s id
+            attn_mechanism: str = 'multi-head',    # type of attention mechanism
+            num_heads: int = 4,                    # number of attention heads
+            num_layers: int = 2,                   # number of RNN layers
+            rnn_type: str = 'lstm',                # type of RNN cell
+            dropout_p: float = 0.3,                # dropout probability
+            device: str = 'cuda'                   # device - 'cuda' or 'cpu'
     ) -> None:
         super(SpeechDecoderRNN, self).__init__(hidden_dim, hidden_dim, num_layers, rnn_type, dropout_p, False, device)
         self.num_classes = num_classes

@@ -10,7 +10,7 @@ from kospeech.models.acoustic.transformer.sublayers import (
     AddNorm,
     PositionWiseFeedForwardNet
 )
-from kospeech.models.attention import MultiHeadAttention
+from kospeech.models.acoustic.transformer.attention import MultiHeadAttention
 
 
 class SpeechTransformerEncoderLayer(nn.Module):
