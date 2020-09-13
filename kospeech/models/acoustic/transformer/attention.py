@@ -1,33 +1,30 @@
+import numpy as np
 import torch
 import torch.nn as nn
-import numpy as np
 
 
 class MultiHeadAttention(nn.Module):
-    ''' Multi-Head Attention module '''
+    """ Multi-Head Attention module """
 
-    def __init__(self, n_head, d_model, d_k, d_v, dropout=0.1):
+    def __init__(self, d_model, num_heads, dropout_p=0.15):
         super().__init__()
 
-        self.n_head = n_head
-        self.d_k = d_k
-        self.d_v = d_v
+        self.num_heads = num_heads
+        self.d_k = d_model / num_heads
+        self.d_v = d_model / num_heads
 
-        self.w_qs = nn.Linear(d_model, n_head * d_k)
-        self.w_ks = nn.Linear(d_model, n_head * d_k)
-        self.w_vs = nn.Linear(d_model, n_head * d_v)
-        nn.init.normal_(self.w_qs.weight, mean=0, std=np.sqrt(2.0 / (d_model + d_k)))
-        nn.init.normal_(self.w_ks.weight, mean=0, std=np.sqrt(2.0 / (d_model + d_k)))
-        nn.init.normal_(self.w_vs.weight, mean=0, std=np.sqrt(2.0 / (d_model + d_v)))
+        self.w_qs = nn.Linear(d_model, num_heads * self.d_k)
+        self.w_ks = nn.Linear(d_model, num_heads * self.d_k)
+        self.w_vs = nn.Linear(d_model, num_heads * self.d_v)
+        nn.init.normal_(self.w_qs.weight, mean=0, std=np.sqrt(2.0 / (d_model + self.d_k)))
+        nn.init.normal_(self.w_ks.weight, mean=0, std=np.sqrt(2.0 / (d_model + self.d_k)))
+        nn.init.normal_(self.w_vs.weight, mean=0, std=np.sqrt(2.0 / (d_model + self.d_k)))
 
-        self.attention = ScaledDotProductAttention(temperature=np.power(d_k, 0.5),
-                                                   attn_dropout=dropout)
-        self.layer_norm = nn.LayerNorm(d_model)
+        self.attention = ScaledDotProductAttention(temperature=np.power(self.d_k, 0.5), attn_dropout=dropout_p)
 
-        self.fc = nn.Linear(n_head * d_v, d_model)
+        self.fc = nn.Linear(num_heads * self.d_v, d_model)
         nn.init.xavier_normal_(self.fc.weight)
-
-        self.dropout = nn.Dropout(dropout)
+        self.dropout = nn.Dropout(dropout_p)
 
     def forward(self, q, k, v, mask=None):
 
@@ -36,8 +33,6 @@ class MultiHeadAttention(nn.Module):
         sz_b, len_q, _ = q.size()
         sz_b, len_k, _ = k.size()
         sz_b, len_v, _ = v.size()
-
-        residual = q
 
         q = self.w_qs(q).view(sz_b, len_q, n_head, d_k)
         k = self.w_ks(k).view(sz_b, len_k, n_head, d_k)
@@ -56,13 +51,12 @@ class MultiHeadAttention(nn.Module):
         output = output.permute(1, 2, 0, 3).contiguous().view(sz_b, len_q, -1) # b x lq x (n*dv)
 
         output = self.dropout(self.fc(output))
-        output = self.layer_norm(output + residual)
 
         return output, attn
 
 
 class ScaledDotProductAttention(nn.Module):
-    ''' Scaled Dot-Product Attention '''
+    """ Scaled Dot-Product Attention """
 
     def __init__(self, temperature, attn_dropout=0.1):
         super().__init__()

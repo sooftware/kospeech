@@ -18,7 +18,7 @@ class ScaledDotProductAttention(nn.Module):
     and apply a softmax function to obtain the weights on the values
 
     Args: dim, mask
-        dim (int): dimention of attention
+        dim (int): dimension of attention
         mask (torch.Tensor): tensor containing indices to be masked
 
     Inputs: query, key, value, mask

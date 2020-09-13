@@ -1,15 +1,7 @@
 import torch.nn as nn
 from torch import Tensor
-from typing import (
-    Tuple,
-    Optional,
-    Any
-)
-
-from kospeech.models.acoustic.transformer.sublayers import (
-    AddNorm,
-    PositionWiseFeedForwardNet
-)
+from typing import Tuple, Optional, Any
+from kospeech.models.acoustic.transformer.sublayers import AddNorm, PositionWiseFeedForwardNet
 from kospeech.models.acoustic.transformer.attention import MultiHeadAttention
 
 
