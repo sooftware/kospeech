@@ -10,8 +10,8 @@ class MultiHeadAttention(nn.Module):
         super().__init__()
 
         self.num_heads = num_heads
-        self.d_k = d_model / num_heads
-        self.d_v = d_model / num_heads
+        self.d_k = int(d_model / num_heads)
+        self.d_v = int(d_model / num_heads)
 
         self.w_qs = nn.Linear(d_model, num_heads * self.d_k)
         self.w_ks = nn.Linear(d_model, num_heads * self.d_k)
@@ -28,7 +28,7 @@ class MultiHeadAttention(nn.Module):
 
     def forward(self, q, k, v, mask=None):
 
-        d_k, d_v, n_head = self.d_k, self.d_v, self.n_head
+        d_k, d_v, n_head = self.d_k, self.d_v, self.num_heads
 
         sz_b, len_q, _ = q.size()
         sz_b, len_k, _ = k.size()
@@ -70,7 +70,7 @@ class ScaledDotProductAttention(nn.Module):
         attn = attn / self.temperature
 
         if mask is not None:
-            attn = attn.masked_fill(mask, -np.inf)
+            attn = attn.masked_fill(mask, -1e9)
 
         attn = self.softmax(attn)
         attn = self.dropout(attn)
