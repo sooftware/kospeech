@@ -15,8 +15,8 @@ FRAME_LENGTH=20
 FRAME_SHIFT=10
 N_MELS=80
 DECODE='greedy'
-TRANSFORM_METHOD='mel'
-FEATURE_EXTRACT_BY='torchaudio'
+TRANSFORM_METHOD='fbank'
+FEATURE_EXTRACT_BY='kaldi'
 PRINT_EVERY=10
 K=5                # if use beam search
 MODE='eval'
@@ -28,4 +28,4 @@ python ./eval.py --sample_rate $SAMPLE_RATE --frame_length $FRAME_LENGTH --frame
 --normalize --del_silence --feature_extract_by $FEATURE_EXTRACT_BY  \
 --num_workers $NUM_WORKERS --use_cuda --batch_size $BATCH_SIZE --k $K  --decode $DECODE \
 --print_every $PRINT_EVERY --mode $MODE --dataset_path $DATASET_PATH --data_list_path $DATA_LIST_PATH \
---model_path $MODEL_PATH --transform_method $TRANSFORM_METHOD
+--model_path $MODEL_PATH --transform_method $TRANSFORM_METHOD --input_reverse

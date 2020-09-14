@@ -23,14 +23,14 @@ RNN_TYPE='lstm'
 TEACHER_FORCING_RATIO=1.0
 TEACHER_FORCING_STEP=0.01
 MIN_TEACHER_FORCING_RATIO=0.9
-VALID_RATIO=0.05
+VALID_RATIO=0.01
 MAX_LEN=150
 MAX_GRAD_NORM=400
 WEIGHT_DECAY=1e-05
 INIT_LR=3e-06
 HIGH_PLATEAU_LR=3e-04
 RAMPUP_PERIOD=400
-FRAME_LENGTH=25
+FRAME_LENGTH=20
 FRAME_SHIFT=10
 SAMPLE_RATE=16000
 N_MELS=80
@@ -38,8 +38,8 @@ FEATURE_EXTRACT_BY='kaldi'        # You can set 'librosa', 'torchaudio'
 TRANSFORM_METHOD='fbank'          # Support feature : spect, mel, mfcc, fbank
 EXTRACTOR='vgg'                   # Support extractor : vgg, ds2 (DeepSpeech2)
 ACTIVATION='hardtanh'             # Support activation : ReLU, ELU, Hardtanh, GELU, LeakyReLU
-FREQ_MASK_PARA=27
-TIME_MASK_NUM=10
+FREQ_MASK_PARA=18
+TIME_MASK_NUM=4
 FREQ_MASK_NUM=2
 SAVE_RESULT_EVERY=1000
 CHECKPOINT_EVERY=5000
@@ -64,4 +64,4 @@ python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epoch
 --max_grad_norm $MAX_GRAD_NORM --rampup_period $RAMPUP_PERIOD --max_len $MAX_LEN \
 --noiseset_size $NOISESET_SIZE --weight_decay $WEIGHT_DECAY --reduction $REDUCTION \
 --noise_level $NOISE_LEVEL --attn_mechanism $ATTN_MECHANISM --teacher_forcing_step $TEACHER_FORCING_STEP \
---min_teacher_forcing_ratio $MIN_TEACHER_FORCING_RATIO --extractor $EXTRACTOR --activation $ACTIVATION
+--min_teacher_forcing_ratio $MIN_TEACHER_FORCING_RATIO --extractor $EXTRACTOR --activation $ACTIVATION --input_reverse

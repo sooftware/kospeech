@@ -22,7 +22,7 @@ class SpecAugment(object):
     Returns: feature_vector:
         - **feature_vector**: masked feature vector.
     """
-    def __init__(self, freq_mask_para: int = 27, time_mask_num: int = 10, freq_mask_num: int = 2) -> None:
+    def __init__(self, freq_mask_para: int = 18, time_mask_num: int = 10, freq_mask_num: int = 2) -> None:
         self.freq_mask_para = freq_mask_para
         self.time_mask_num = time_mask_num
         self.freq_mask_num = freq_mask_num
