@@ -1,13 +1,9 @@
-"""
--*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
+# Soohwan Kim, Seyoung Bae, Cheolhwang Won.
+# @ArXiv : KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition
+# This source code is licensed under the Apache 2.0 License license found in the
+# LICENSE file in the root directory of this source tree.
 
-@github{
-  title = {KoSpeech},
-  author = {Soohwan Kim, Seyoung Bae, Cheolhwang Won},
-  link = {https://github.com/sooftware/KoSpeech},
-  year = {2020}
-}
-"""
 import sys
 import argparse
 import warnings

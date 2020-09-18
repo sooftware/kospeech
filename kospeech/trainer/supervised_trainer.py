@@ -9,11 +9,7 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 from kospeech.checkpoint.checkpoint import Checkpoint
 from kospeech.metrics import CharacterErrorRate
 from kospeech.optim.optimizer import Optimizer
-from kospeech.utils import (
-    EOS_token,
-    logger,
-    id2char
-)
+from kospeech.utils import EOS_token, logger, id2char
 from kospeech.data.data_loader import (
     MultiDataLoader,
     AudioDataLoader,
@@ -84,13 +80,13 @@ class SupervisedTrainer(object):
         self.architecture = architecture.lower()
 
     def train(
-            self,
-            model: nn.Module,
-            batch_size: int,
-            epoch_time_step: int,
-            num_epochs: int,
-            teacher_forcing_ratio: float = 0.99,
-            resume: bool = False
+        self,
+        model: nn.Module,
+        batch_size: int,
+        epoch_time_step: int,
+        num_epochs: int,
+        teacher_forcing_ratio: float = 0.99,
+        resume: bool = False
     ) -> nn.Module:
         """
         Run training for a given model.
@@ -172,9 +168,14 @@ class SupervisedTrainer(object):
         Checkpoint(model, self.optimizer, self.criterion, self.trainset_list, self.validset, num_epochs).save()
         return model
 
-    def __train_epoches(self, model: nn.Module, epoch: int,
-                      epoch_time_step: int, train_begin_time: float,
-                      queue: queue.Queue, teacher_forcing_ratio: float) -> Tuple[float, float]:
+    def __train_epoches(
+            self, model: nn.Module,
+            epoch: int,
+            epoch_time_step: int,
+            train_begin_time: float,
+            queue: queue.Queue,
+            teacher_forcing_ratio: float
+    ) -> Tuple[float, float]:
         """
         Run training one epoch
 
