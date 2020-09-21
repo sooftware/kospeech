@@ -38,7 +38,7 @@ def train(opt):
         epoch_time_step, trainset_list, validset = split_dataset(opt, audio_paths, script_paths)
         model = build_model(opt, device)
 
-        optimizer = optim.Adam(model.module.parameters(), lr=opt.init_lr, weight_decay=opt.weight_decay)
+        optimizer = optim.Adam(model.module.parameters(), lr=opt.init_lr, weight_decay=opt.weight_decay, eps=1e-04)
 
         if opt.rampup_period > 0:
             scheduler = RampUpLR(optimizer, opt.init_lr, opt.high_plateau_lr, opt.rampup_period)
