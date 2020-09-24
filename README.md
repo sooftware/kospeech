@@ -1,6 +1,6 @@
 # KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition
 
-[![CodeFactor](https://www.codefactor.io/repository/github/sooftware/kospeech/badge)](https://www.codefactor.io/repository/github/sooftware/kospeech) [<img src="http://img.shields.io/badge/docs-passing-success">](https://sooftware.github.io/KoSpeech/) [<img src="http://img.shields.io/badge/help wanted-issue 37-ff">](https://github.com/sooftware/KoSpeech/issues/37) <img src="https://img.shields.io/github/stars/sooftware/KoSpeech"> <img src="https://img.shields.io/github/fork/sooftware/KoSpeech">
+[![CodeFactor](https://www.codefactor.io/repository/github/sooftware/kospeech/badge)](https://www.codefactor.io/repository/github/sooftware/kospeech) [<img src="http://img.shields.io/badge/docs-passing-success">](https://sooftware.github.io/KoSpeech/) [<img src="http://img.shields.io/badge/help wanted-issue 37-ff">](https://github.com/sooftware/KoSpeech/issues/37) <img src="https://img.shields.io/github/stars/sooftware/KoSpeech"> <img src="https://img.shields.io/github/forks/sooftware/KoSpeech">
   
 ### ***[KoSpeech:  Open-Source Toolkit for End-to-End Korean Speech Recognition \[Technical Report\]](https://arxiv.org/abs/2009.03092)***
   
