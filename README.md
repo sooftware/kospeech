@@ -124,7 +124,7 @@ pip install -e .
 
 * Command
 ```
-$ ./run_pretrain.sh
+$ ./infer.sh
 ```
 * Output
 ```
@@ -144,7 +144,8 @@ We recommended that you read README of this repository.
   
 2. Run [run.sh](https://github.com/sooftware/KsponSpeech-preprocess/blob/master/run.sh)  
 ```shell
-$ ./run.sh
+$ cd ~KoSpeech/dataset
+$ ./prepare-ksponspeech.sh
 ```
   
 3. Leave the computer for hours or days.  
@@ -201,14 +202,9 @@ This project provides processing in characters, subwords, and grapheme units.
 ㅇㅏ ㅁㅗ ㅁㅗㄴ ㅅㅗㄹㅣㅇㅑ ㅊㅣㄹ ㅅㅣㅂ ㅍㅓㅅㅔㄴㅌㅡ ㅎㅘㄱㄹㅠㄹㅇㅣㄹㅏㄴㅣ
 ```
 
-### Step 2: Run `main.py`
-* Default setting  
+### Step 2: Run `main.py`  
 ```
-$ ./run_seq2seq.sh
-```
-* Custom setting
-```shell
-python ./bin/main.py --batch_size 32 --num_workers 4 --num_epochs 20  --spec_augment
+$ ./run-seq2seq.sh
 ```
   
 You can train the model by above command.  
@@ -216,14 +212,10 @@ You can train the model by above command.
  Or if you want to train by custom setting, you can designate hyperparameters by `Custom setting` command.
 
 ### Step 3: Run `eval.py`
-* Default setting
 ```
 $ ./eval.sh
 ```
-* Custom setting
-```
-python ./bin/eval.py --dataset_path $DATASET_PATH --model_path $MODEL_PATH --mode eval
-```
+  
 Now you have a model which you can use to predict on new data. We do this by running `greedy search` or `beam search`.  
 Like training, you can choose between `Default setting` or `Custom setting`.  
   
