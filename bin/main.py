@@ -13,7 +13,7 @@ from torch import optim
 sys.path.append('..')
 from kospeech.data.data_loader import split_dataset, load_data_list
 from kospeech.criterion.label_smoothed_cross_entropy import LabelSmoothedCrossEntropyLoss
-from kospeech.optim.lr_scheduler import RampUpLR
+from kospeech.optim.lr_scheduler import ThreeStateLRScheduler
 from kospeech.optim.optimizer import Optimizer
 from kospeech.trainer.supervised_trainer import SupervisedTrainer
 from kospeech.model_builder import build_model
@@ -35,16 +35,23 @@ def train(opt):
     if not opt.resume:
         audio_paths, script_paths = load_data_list(opt.data_list_path, opt.dataset_path)
 
+        audio_paths = audio_paths[:100]
+        script_paths = script_paths[:100]
+
         epoch_time_step, trainset_list, validset = split_dataset(opt, audio_paths, script_paths)
         model = build_model(opt, device)
 
         optimizer = optim.Adam(model.module.parameters(), lr=opt.init_lr, weight_decay=opt.weight_decay)
 
-        if opt.rampup_period > 0:
-            scheduler = RampUpLR(optimizer, opt.init_lr, opt.high_plateau_lr, opt.rampup_period)
-            optimizer = Optimizer(optimizer, scheduler, opt.rampup_period, opt.max_grad_norm)
-        else:
-            optimizer = Optimizer(optimizer, None, 0, opt.max_grad_norm)
+        lr_scheduler = ThreeStateLRScheduler(
+            optimizer=optimizer,
+            init_lr=opt.init_lr,
+            high_plateau_lr=opt.high_plateau_lr,
+            low_plateau_lr=opt.low_plateau_lr,
+            warmup_steps=opt.rampup_period,
+            total_steps=int(opt.num_epochs * epoch_time_step)
+        )
+        optimizer = Optimizer(optimizer, lr_scheduler, opt.rampup_period, opt.max_grad_norm)
 
         criterion = LabelSmoothedCrossEntropyLoss(
             num_classes=len(char2id), ignore_index=PAD_token,

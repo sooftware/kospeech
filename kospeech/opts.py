@@ -110,7 +110,7 @@ def build_train_opts(parser):
                        help='initial learning rate => before ramp up lr (default: 1e-15)')
     group.add_argument('--high_plateau_lr', '-high_plateau_lr',
                        type=float, default=3e-04,
-                       help='high plateau learning rate => after rampup lr (default: 3e-04)')
+                       help='high plateau learning rate => after warmup lr (default: 3e-04)')
     group.add_argument('--low_plateau_lr', '-low_plateau_lr',
                        type=float, default=3e-05,
                        help='low plateau learning rate => after exponential decay (default: 1e-05)')
@@ -129,9 +129,9 @@ def build_train_opts(parser):
     group.add_argument('--reduction', '-reduction',
                        type=str, default='sum',
                        help='loss reduction method (default: sum)')
-    group.add_argument('--rampup_period', '-rampup_period',
+    group.add_argument('--warmup_steps', '-warmup_steps',
                        type=int, default=1000,
-                       help='timestep of learning rate rampup (default: 1000)')
+                       help='timestep of learning rate warmup (default: 4000)')
     group.add_argument('--decay_threshold', '-decay_threshold',
                        type=float, default=0.02,
                        help='If the improvement of cer less than this, exponential decay lr start. (default: 0.02)')
@@ -288,7 +288,7 @@ def print_train_opts(opt):
     logger.info('--high_plateau_lr: %s' % str(opt.high_plateau_lr))
     logger.info('--low_plateau_lr: %s' % str(opt.low_plateau_lr))
     logger.info('--decay_threshold: %s' % str(opt.decay_threshold))
-    logger.info('--rampup_period: %s' % str(opt.rampup_period))
+    logger.info('--warmup_steps: %s' % str(opt.warmup_steps))
     logger.info('--exp_decay_period: %s' % str(opt.exp_decay_period))
     logger.info('--valid_ratio: %s' % str(opt.valid_ratio))
     logger.info('--max_len: %s' % str(opt.max_len))

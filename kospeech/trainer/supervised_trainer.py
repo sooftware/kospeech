@@ -131,15 +131,14 @@ class SupervisedTrainer(object):
             train_loader = MultiDataLoader(self.trainset_list, train_queue, batch_size, self.num_workers)
             train_loader.start()
 
-            if epoch == 1:
-                self.optimizer.set_lr(1e-04)
-            elif epoch == 2:
-                self.optimizer.set_lr(5e-05)
-            elif epoch == 3:
-                self.optimizer.set_scheduler(ReduceLROnPlateau(self.optimizer.optimizer, patience=1, factor=0.5), 999999)
-
-            train_loss, train_cer = self.__train_epoches(model, epoch, epoch_time_step, train_begin_time,
-                                                         train_queue, teacher_forcing_ratio)
+            train_loss, train_cer = self.__train_epoches(
+                model,
+                epoch,
+                epoch_time_step,
+                train_begin_time,
+                train_queue,
+                teacher_forcing_ratio
+            )
             train_loader.join()
 
             Checkpoint(model, self.optimizer, self.trainset_list, self.validset, epoch).save()

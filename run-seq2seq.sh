@@ -26,9 +26,10 @@ VALID_RATIO=0.01
 MAX_LEN=150
 MAX_GRAD_NORM=400
 WEIGHT_DECAY=1e-05
-INIT_LR=3e-06
-HIGH_PLATEAU_LR=3e-04
-RAMPUP_PERIOD=400
+INIT_LR=1e-08
+HIGH_PLATEAU_LR=1e-04
+LOW_PLATEAU_LR=1e-06
+WARMUP_STEPS=2000
 FRAME_LENGTH=20
 FRAME_SHIFT=10
 SAMPLE_RATE=16000
@@ -60,7 +61,7 @@ python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epoch
 --time_mask_num $TIME_MASK_NUM --freq_mask_num $FREQ_MASK_NUM --save_result_every $SAVE_RESULT_EVERY \
 --checkpoint_every $CHECKPOINT_EVERY --print_every $PRINT_EVERY --init_lr $INIT_LR  \
 --mode $MODE --dataset_path $DATASET_PATH --data_list_path $DATA_LIST_PATH  \
---max_grad_norm $MAX_GRAD_NORM --rampup_period $RAMPUP_PERIOD --max_len $MAX_LEN \
+--max_grad_norm $MAX_GRAD_NORM --warmup_steps $WARMUP_STEPS --max_len $MAX_LEN \
 --noiseset_size $NOISESET_SIZE --weight_decay $WEIGHT_DECAY --reduction $REDUCTION \
 --noise_level $NOISE_LEVEL --attn_mechanism $ATTN_MECHANISM --teacher_forcing_step $TEACHER_FORCING_STEP \
 --min_teacher_forcing_ratio $MIN_TEACHER_FORCING_RATIO --extractor $EXTRACTOR --activation $ACTIVATION --input_reverse
