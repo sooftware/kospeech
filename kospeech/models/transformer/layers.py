@@ -7,8 +7,8 @@
 import torch.nn as nn
 from torch import Tensor
 from typing import Tuple, Optional, Any
-from kospeech.models.acoustic.transformer.sublayers import AddNorm, PositionWiseFeedForwardNet
-from kospeech.models.acoustic.transformer.attention import MultiHeadAttention
+from kospeech.models.transformer.sublayers import AddNorm, PositionWiseFeedForwardNet
+from kospeech.models.attention import MultiHeadAttention
 
 
 class SpeechTransformerEncoderLayer(nn.Module):

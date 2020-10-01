@@ -7,17 +7,17 @@
 import torch
 import torch.nn as nn
 from torch import Tensor
-from kospeech.models.acoustic.seq2seq.topk_decoder import SpeechTopKDecoder
+from kospeech.models.las.topk_decoder import SpeechTopKDecoder
 from typing import Optional, Any
 
 
-class SpeechSeq2seq(nn.Module):
+class ListenAttendSpell(nn.Module):
     """
-    Speech sequence-to-sequence architecture with configurable encoder and decoder.
+    Listen, Attend and Spell architecture with configurable encoder and decoder.
 
     Args:
-        encoder (torch.nn.Module): encoder of seq2seq
-        decoder (torch.nn.Module): decoder of seq2seq
+        encoder (torch.nn.Module): encoder of las
+        decoder (torch.nn.Module): decoder of las
 
     Inputs: inputs, input_lengths, targets, teacher_forcing_ratio
         - **inputs** (torch.Tensor): tensor of sequences, whose length is the batch size and within which
@@ -34,7 +34,7 @@ class SpeechSeq2seq(nn.Module):
           the outputs of the decoding function.
     """
     def __init__(self, encoder: nn.Module, decoder: nn.Module) -> None:
-        super(SpeechSeq2seq, self).__init__()
+        super(ListenAttendSpell, self).__init__()
         self.encoder = encoder
         self.decoder = decoder
 

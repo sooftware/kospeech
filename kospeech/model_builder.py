@@ -9,10 +9,10 @@ import torch.nn as nn
 from astropy.modeling import ParameterError
 from kospeech.decode.ensemble import BasicEnsemble, WeightedEnsemble
 from kospeech.models.modules import BaseRNN
-from kospeech.models.acoustic.seq2seq.seq2seq import SpeechSeq2seq
-from kospeech.models.acoustic.seq2seq.encoder import SpeechEncoderRNN
-from kospeech.models.acoustic.seq2seq.decoder import SpeechDecoderRNN
-from kospeech.models.acoustic.transformer.transformer import SpeechTransformer
+from kospeech.models.las.las import ListenAttendSpell
+from kospeech.models.las.encoder import Listener
+from kospeech.models.las.decoder import Speller
+from kospeech.models.transformer.transformer import SpeechTransformer
 from kospeech.utils import char2id, EOS_token, SOS_token, PAD_token
 
 
@@ -26,7 +26,7 @@ def build_model(opt, device):
     else:
         input_size = opt.n_mels
 
-    if opt.architecture.lower() == 'seq2seq':
+    if opt.architecture.lower() == 'las':
         model = build_seq2seq(input_size, opt, device)
 
     elif opt.architecture.lower() == 'transformer':
@@ -74,19 +74,32 @@ def build_transformer(num_classes: int, pad_id: int, d_model: int, num_heads: in
 
 def build_seq2seq(input_size, opt, device):
     """ Various Listen, Attend and Spell dispatcher function. """
-    model = SpeechSeq2seq(
-        build_seq2seq_encoder(
-            input_size=input_size, hidden_dim=opt.hidden_dim, dropout_p=opt.dropout,
-            num_layers=opt.num_encoder_layers, bidirectional=opt.use_bidirectional,
-            extractor=opt.extractor, activation=opt.activation,
-            rnn_type=opt.rnn_type, device=device, mask_conv=opt.mask_conv
+    model = ListenAttendSpell(
+        build_listener(
+            input_size=input_size,
+            hidden_dim=opt.hidden_dim,
+            dropout_p=opt.dropout,
+            num_layers=opt.num_encoder_layers,
+            bidirectional=opt.use_bidirectional,
+            extractor=opt.extractor,
+            activation=opt.activation,
+            rnn_type=opt.rnn_type,
+            device=device,
+            mask_conv=opt.mask_conv
         ),
-        build_seq2seq_decoder(
-            num_classes=len(char2id), max_len=opt.max_len,
-            pad_id=PAD_token, sos_id=SOS_token, eos_id=EOS_token,
+        build_speller(
+            num_classes=len(char2id),
+            max_len=opt.max_len,
+            pad_id=PAD_token,
+            sos_id=SOS_token,
+            eos_id=EOS_token,
             hidden_dim=opt.hidden_dim << (1 if opt.use_bidirectional else 0),
-            num_layers=opt.num_decoder_layers, rnn_type=opt.rnn_type, dropout_p=opt.dropout,
-            num_heads=opt.num_heads, attn_mechanism=opt.attn_mechanism, device=device
+            num_layers=opt.num_decoder_layers,
+            rnn_type=opt.rnn_type,
+            dropout_p=opt.dropout,
+            num_heads=opt.num_heads,
+            attn_mechanism=opt.attn_mechanism,
+            device=device
         )
     )
     model.flatten_parameters()
@@ -94,10 +107,18 @@ def build_seq2seq(input_size, opt, device):
     return nn.DataParallel(model).to(device)
 
 
-def build_seq2seq_encoder(input_size: int, hidden_dim: int, dropout_p: float,
-                          num_layers: int, bidirectional: bool,
-                          rnn_type: str, extractor: str,
-                          activation: str, device: str, mask_conv: bool) -> SpeechEncoderRNN:
+def build_listener(
+        input_size: int = 80,
+        hidden_dim: int = 512,
+        dropout_p: float = 0.2,
+        num_layers: int = 3,
+        bidirectional: bool = True,
+        rnn_type: str = 'lstm',
+        extractor: str = 'vgg',
+        activation: str = 'hardtanh',
+        device: str = 'cuda',
+        mask_conv: bool = False
+) -> Listener:
     """ Various encoder dispatcher function. """
     if dropout_p < 0.0:
         raise ParameterError("dropout probability should be positive")
@@ -112,7 +133,7 @@ def build_seq2seq_encoder(input_size: int, hidden_dim: int, dropout_p: float,
     if rnn_type.lower() not in BaseRNN.supported_rnns.keys():
         raise ParameterError("Unsupported RNN Cell: {0}".format(rnn_type))
 
-    return SpeechEncoderRNN(
+    return Listener(
         input_size=input_size,
         hidden_dim=hidden_dim,
         dropout_p=dropout_p,
@@ -126,9 +147,20 @@ def build_seq2seq_encoder(input_size: int, hidden_dim: int, dropout_p: float,
     )
 
 
-def build_seq2seq_decoder(num_classes: int, max_len: int, hidden_dim: int,
-                          sos_id: int, eos_id: int, pad_id: int, attn_mechanism: str, num_layers: int,
-                          rnn_type: str, dropout_p: float, num_heads: int, device: str) -> SpeechDecoderRNN:
+def build_speller(
+        num_classes: int,
+        max_len: int,
+        hidden_dim: int,
+        sos_id: int,
+        eos_id: int,
+        pad_id: int,
+        attn_mechanism: str,
+        num_layers: int,
+        rnn_type: str,
+        dropout_p: float,
+        num_heads: int,
+        device: str
+) -> Speller:
     """ Various decoder dispatcher function. """
     if hidden_dim % num_heads != 0:
         raise ParameterError("{0} % {1} should be zero".format(hidden_dim, num_heads))
@@ -149,7 +181,7 @@ def build_seq2seq_decoder(num_classes: int, max_len: int, hidden_dim: int,
     if device is None:
         raise ParameterError("device is None")
 
-    return SpeechDecoderRNN(
+    return Speller(
         num_classes=num_classes,
         max_length=max_len,
         hidden_dim=hidden_dim,

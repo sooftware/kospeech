@@ -11,16 +11,9 @@ import torch.nn.functional as F
 import numpy as np
 from kospeech.models.modules import Linear
 from kospeech.models.modules import BaseRNN
-from kospeech.models.acoustic.transformer.sublayers import AddNorm
-from torch import (
-    Tensor,
-    LongTensor
-)
-from typing import (
-    Optional,
-    Any,
-    Tuple
-)
+from kospeech.models.transformer.sublayers import AddNorm
+from torch import Tensor, LongTensor
+from typing import Optional, Any, Tuple
 from kospeech.models.attention import (
     LocationAwareAttention,
     MultiHeadAttention,
@@ -29,7 +22,7 @@ from kospeech.models.attention import (
 )
 
 
-class SpeechDecoderRNN(BaseRNN):
+class Speller(BaseRNN):
     """
     Converts higher level features (from encoder) into output utterances
     by specifying a probability distribution over sequences of characters.
@@ -83,7 +76,7 @@ class SpeechDecoderRNN(BaseRNN):
             dropout_p: float = 0.3,                # dropout probability
             device: str = 'cuda'                   # device - 'cuda' or 'cpu'
     ) -> None:
-        super(SpeechDecoderRNN, self).__init__(hidden_dim, hidden_dim, num_layers, rnn_type, dropout_p, False, device)
+        super(Speller, self).__init__(hidden_dim, hidden_dim, num_layers, rnn_type, dropout_p, False, device)
         self.num_classes = num_classes
         self.num_heads = num_heads
         self.num_layers = num_layers
@@ -151,8 +144,8 @@ class SpeechDecoderRNN(BaseRNN):
         result, decode_dict = list(), dict()
 
         if not self.training:
-            decode_dict[SpeechDecoderRNN.KEY_ATTENTION_SCORE] = list()
-            decode_dict[SpeechDecoderRNN.KEY_SEQUENCE_SYMBOL] = list()
+            decode_dict[Speller.KEY_ATTENTION_SCORE] = list()
+            decode_dict[Speller.KEY_SEQUENCE_SYMBOL] = list()
 
         inputs, batch_size, max_length = self.validate_args(inputs, encoder_outputs, teacher_forcing_ratio)
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
@@ -183,17 +176,17 @@ class SpeechDecoderRNN(BaseRNN):
                 input_var = result[-1].topk(1)[1]
 
                 if not self.training:
-                    decode_dict[SpeechDecoderRNN.KEY_ATTENTION_SCORE].append(attn)
-                    decode_dict[SpeechDecoderRNN.KEY_SEQUENCE_SYMBOL].append(input_var)
+                    decode_dict[Speller.KEY_ATTENTION_SCORE].append(attn)
+                    decode_dict[Speller.KEY_SEQUENCE_SYMBOL].append(input_var)
                     eos_batches = input_var.data.eq(self.eos_id)
 
                     if eos_batches.dim() > 0:
                         eos_batches = eos_batches.cpu().view(-1).numpy()
                         update_idx = ((lengths > di) & eos_batches) != 0
-                        lengths[update_idx] = len(decode_dict[SpeechDecoderRNN.KEY_SEQUENCE_SYMBOL])
+                        lengths[update_idx] = len(decode_dict[Speller.KEY_SEQUENCE_SYMBOL])
 
         if return_decode_dict:
-            decode_dict[SpeechDecoderRNN.KEY_LENGTH] = lengths
+            decode_dict[Speller.KEY_LENGTH] = lengths
             result = (result, decode_dict)
         else:
             del decode_dict

@@ -13,24 +13,21 @@
 import math
 import torch.nn as nn
 from torch import Tensor
-from typing import (
-    Optional,
-    Any
-)
+from typing import Optional, Any
 from kospeech.models.modules import (
     Linear,
     LayerNorm
 )
-from kospeech.models.acoustic.transformer.mask import (
+from kospeech.models.transformer.mask import (
     get_pad_mask,
     get_attn_pad_mask,
     get_decoder_self_attn_mask
 )
-from kospeech.models.acoustic.transformer.embeddings import (
+from kospeech.models.transformer.embeddings import (
     Embedding,
     PositionalEncoding
 )
-from kospeech.models.acoustic.transformer.layers import (
+from kospeech.models.transformer.layers import (
     SpeechTransformerEncoderLayer,
     SpeechTransformerDecoderLayer
 )

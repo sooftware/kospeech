@@ -11,7 +11,7 @@ import torch
 import torch.nn as nn
 from kospeech.utils import logger
 from kospeech.data.data_loader import SpectrogramDataset
-from kospeech.models.acoustic.seq2seq.seq2seq import SpeechSeq2seq
+from kospeech.models.las.las import SpeechSeq2seq
 from kospeech.optim.optimizer import Optimizer
 
 

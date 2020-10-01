@@ -17,8 +17,8 @@ def build_model_opts(parser):
     # Seq2seq
 
     group.add_argument('--architecture', '-architecture',
-                       type=str, default='seq2seq',
-                       help='which architecture to use: [seq2seq, transformer] (default: seq2seq)')
+                       type=str, default='las',
+                       help='which architecture to use: [las, transformer] (default: las)')
     group.add_argument('--use_bidirectional', '-use_bidirectional',
                        action='store_true', default=False,
                        help='if True, becomes a bidirectional encoder (defulat: False)')

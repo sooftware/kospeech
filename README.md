@@ -204,7 +204,7 @@ This project provides processing in characters, subwords, and grapheme units.
 
 ### Step 2: Run `main.py`  
 ```
-$ ./run-seq2seq.sh
+$ ./run-las.sh
 ```
   
 You can train the model by above command.  

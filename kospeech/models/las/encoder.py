@@ -10,13 +10,13 @@ import torch.nn as nn
 from torch import Tensor
 from typing import Tuple
 from kospeech.models.modules import BaseRNN
-from kospeech.models.acoustic.seq2seq.sublayers import (
+from kospeech.models.las.sublayers import (
     VGGExtractor,
     DeepSpeech2Extractor
 )
 
 
-class SpeechEncoderRNN(BaseRNN):
+class Listener(BaseRNN):
     """
     Converts low level speech signals into higher level features
 
@@ -58,16 +58,14 @@ class SpeechEncoderRNN(BaseRNN):
         self.extractor = extractor.lower()
         if self.extractor == 'vgg':
             input_size = (input_size - 1) << 5 if input_size % 2 else input_size << 5
-            super(SpeechEncoderRNN, self).__init__(input_size, hidden_dim, num_layers,
-                                                   rnn_type, dropout_p, bidirectional, device)
+            super(Listener, self).__init__(input_size, hidden_dim, num_layers, rnn_type, dropout_p, bidirectional, device)
             self.conv = VGGExtractor(activation, mask_conv)
 
         elif self.extractor == 'ds2':
             input_size = int(math.floor(input_size + 2 * 20 - 41) / 2 + 1)
             input_size = int(math.floor(input_size + 2 * 10 - 21) / 2 + 1)
             input_size <<= 5
-            super(SpeechEncoderRNN, self).__init__(input_size, hidden_dim, num_layers,
-                                                   rnn_type, dropout_p, bidirectional, device)
+            super(Listener, self).__init__(input_size, hidden_dim, num_layers, rnn_type, dropout_p, bidirectional, device)
             self.conv = DeepSpeech2Extractor(activation, mask_conv)
 
         else:

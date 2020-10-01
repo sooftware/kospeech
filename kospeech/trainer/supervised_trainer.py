@@ -59,7 +59,7 @@ class SupervisedTrainer(object):
             checkpoint_every: int,                         # number of timesteps to checkpoint after
             teacher_forcing_step: float = 0.2,             # step of teacher forcing ratio decrease per epoch.
             min_teacher_forcing_ratio: float = 0.8,        # minimum value of teacher forcing ratio
-            architecture: str = 'seq2seq'                  # architecture to train - seq2seq, transformer
+            architecture: str = 'las'                  # architecture to train - las, transformer
     ) -> None:
         self.num_workers = num_workers
         self.optimizer = optimizer
@@ -217,7 +217,7 @@ class SupervisedTrainer(object):
             targets = targets.to(self.device)
             model = model.to(self.device)
 
-            if self.architecture == 'seq2seq':
+            if self.architecture == 'las':
                 if isinstance(model, nn.DataParallel):
                     model.module.flatten_parameters()
                 else:
@@ -306,7 +306,7 @@ class SupervisedTrainer(object):
                 targets = targets[:, 1:].to(self.device)
                 model.cuda()
 
-                if self.architecture == 'seq2seq':
+                if self.architecture == 'las':
                     model.module.flatten_parameters()
                     output = model(inputs=inputs, input_lengths=input_lengths,
                                    teacher_forcing_ratio=0.0, return_decode_dict=False)

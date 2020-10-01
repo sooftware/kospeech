@@ -17,7 +17,7 @@ def _inflate(tensor: Tensor, n_repeat: int, dim: int) -> Tensor:
     return tensor.repeat(*repeat_dims)
 
 
-class SpeechTopKDecoder(nn.Module):
+class TopKDecoder(nn.Module):
     """
     Applies beam search decoing (Top k decoding)
 
@@ -34,7 +34,7 @@ class SpeechTopKDecoder(nn.Module):
         - **hypothesis** : predicted y values (y_hat) by the model
     """
     def __init__(self, decoder: nn.Module, batch_size: int) -> None:
-        super(SpeechTopKDecoder, self).__init__()
+        super(TopKDecoder, self).__init__()
         self.batch_size = batch_size
         self.hidden_dim = decoder.hidden_dim
         self.pad_id = decoder.pad_id

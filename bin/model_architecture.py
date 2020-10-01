@@ -1,7 +1,7 @@
-from kospeech.models.acoustic.seq2seq.encoder import SpeechEncoderRNN
-from kospeech.models.acoustic.seq2seq.decoder import SpeechDecoderRNN
-from kospeech.models.acoustic.seq2seq.seq2seq import SpeechSeq2seq
-from kospeech.models.acoustic.transformer.transformer import SpeechTransformer
+from kospeech.models.las.encoder import SpeechEncoderRNN
+from kospeech.models.las.decoder import SpeechDecoderRNN
+from kospeech.models.las.las import SpeechSeq2seq
+from kospeech.models.transformer.transformer import SpeechTransformer
 
 
 encoder = SpeechEncoderRNN(80, 512, 'cpu')
