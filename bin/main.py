@@ -34,10 +34,6 @@ def train(opt):
 
     if not opt.resume:
         audio_paths, script_paths = load_data_list(opt.data_list_path, opt.dataset_path)
-
-        audio_paths = audio_paths[:100]
-        script_paths = script_paths[:100]
-
         epoch_time_step, trainset_list, validset = split_dataset(opt, audio_paths, script_paths)
         model = build_model(opt, device)
 
