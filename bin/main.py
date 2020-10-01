@@ -53,7 +53,7 @@ def train(opt):
             warmup_steps=opt.warmup_steps,
             total_steps=int(opt.num_epochs * epoch_time_step)
         )
-        optimizer = Optimizer(optimizer, lr_scheduler, opt.rampup_period, opt.max_grad_norm)
+        optimizer = Optimizer(optimizer, lr_scheduler, opt.warmup_steps, opt.max_grad_norm)
 
         criterion = LabelSmoothedCrossEntropyLoss(
             num_classes=len(char2id), ignore_index=PAD_token,
@@ -76,8 +76,6 @@ def train(opt):
     trainer = SupervisedTrainer(
         optimizer=optimizer, criterion=criterion, trainset_list=trainset_list,
         validset=validset, num_workers=opt.num_workers,
-        high_plateau_lr=opt.high_plateau_lr, low_plateau_lr=opt.low_plateau_lr,
-        decay_threshold=opt.decay_threshold, exp_decay_period=opt.exp_decay_period,
         device=device, teacher_forcing_step=opt.teacher_forcing_step,
         min_teacher_forcing_ratio=opt.min_teacher_forcing_ratio, print_every=opt.print_every,
         save_result_every=opt.save_result_every, checkpoint_every=opt.checkpoint_every,

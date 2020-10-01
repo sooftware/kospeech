@@ -5,7 +5,6 @@ import torch.nn as nn
 import queue
 import pandas as pd
 from typing import Tuple
-from torch.optim.lr_scheduler import ReduceLROnPlateau
 from kospeech.checkpoint.checkpoint import Checkpoint
 from kospeech.metrics import CharacterErrorRate
 from kospeech.optim.optimizer import Optimizer
@@ -26,11 +25,8 @@ class SupervisedTrainer(object):
         criterion (torch.nn.Module): loss function
         trainset_list (list): list of training datset
         validset (kospeech.data.data_loader.SpectrogramDataset): validation dataset
-        high_plateau_lr (float): high plateau learning rate
-        low_plateau_lr (float): low plateau learning rate
         num_workers (int): number of using cpu cores
         device (torch.device): device - 'cuda' or 'cpu'
-        decay_threshold (float): criteria by which exp learning ratedecay is started
         print_every (int): number of timesteps to print result after
         save_result_every (int): number of timesteps to save result after
         checkpoint_every (int): number of timesteps to checkpoint after
@@ -48,12 +44,8 @@ class SupervisedTrainer(object):
             criterion: nn.Module,                          # loss function
             trainset_list: list,                           # list of training dataset
             validset: SpectrogramDataset,                  # validation dataset
-            high_plateau_lr: float,                        # high plateau learning rate
-            low_plateau_lr: float,                         # low plateau learning rate
-            exp_decay_period: int,                         # exponential decay learning rate period
             num_workers: int,                              # number of threads
             device: str,                                   # device - cuda or cpu
-            decay_threshold: float,                        # criteria by which exp learning ratedecay is started
             print_every: int,                              # number of timesteps to save result after
             save_result_every: int,                        # nimber of timesteps to save result after
             checkpoint_every: int,                         # number of timesteps to checkpoint after
@@ -66,13 +58,9 @@ class SupervisedTrainer(object):
         self.criterion = criterion
         self.trainset_list = trainset_list
         self.validset = validset
-        self.high_plateau_lr = high_plateau_lr
-        self.low_plateau_lr = low_plateau_lr
-        self.exp_decay_period = exp_decay_period
         self.print_every = print_every
         self.save_result_every = save_result_every
         self.checkpoint_every = checkpoint_every
-        self.decay_threshold = decay_threshold
         self.device = device
         self.teacher_forcing_step = teacher_forcing_step
         self.min_teacher_forcing_ratio = min_teacher_forcing_ratio
@@ -154,9 +142,6 @@ class SupervisedTrainer(object):
 
             valid_loss, valid_cer = self.validate(model, valid_queue)
             valid_loader.join()
-
-            if isinstance(self.optimizer.scheduler, ReduceLROnPlateau):
-                self.optimizer.scheduler.step(valid_loss)
 
             logger.info('Epoch %d (Validate) Loss %0.4f CER %0.4f' % (epoch, valid_loss, valid_cer))
             self.__save_epoch_result(train_result=[self.train_dict, train_loss, train_cer],
