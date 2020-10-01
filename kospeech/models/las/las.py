@@ -7,7 +7,7 @@
 import torch
 import torch.nn as nn
 from torch import Tensor
-from kospeech.models.las.topk_decoder import SpeechTopKDecoder
+from kospeech.models.las.topk_decoder import TopKDecoder
 from typing import Optional, Any
 
 
@@ -48,7 +48,7 @@ class ListenAttendSpell(nn.Module):
     ):
         output, hidden = self.encoder(inputs, input_lengths)
 
-        if isinstance(self.decoder, SpeechTopKDecoder):
+        if isinstance(self.decoder, TopKDecoder):
             result = self.decoder(targets, output)
         else:
             result = self.decoder(targets, output, teacher_forcing_ratio, return_decode_dict)
