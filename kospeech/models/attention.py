@@ -139,38 +139,40 @@ class LocationAwareAttention(nn.Module):
     def __init__(self, d_model: int = 512, smoothing: bool = True) -> None:
         super(LocationAwareAttention, self).__init__()
         self.d_model = d_model
-        self.conv1d = nn.Conv1d(in_channels=1, out_channels=d_model, kernel_size=3, padding=1)
+        self.location_conv = nn.Conv1d(in_channels=1, out_channels=d_model, kernel_size=3, padding=1)
         self.query_proj = Linear(d_model, d_model, bias=False)
         self.value_proj = Linear(d_model, d_model, bias=False)
         self.bias = nn.Parameter(torch.rand(d_model).uniform_(-0.1, 0.1))
         self.score_proj = Linear(d_model, 1, bias=True)
         self.smoothing = smoothing
 
-    def forward(self, query: Tensor, value: Tensor, last_attn: Tensor) -> Tuple[Tensor, Tensor]:
+    def forward(self, query: Tensor, value: Tensor, last_alignment_energy: Tensor) -> Tuple[Tensor, Tensor]:
         batch_size, hidden_dim, seq_len = query.size(0), query.size(2), value.size(1)
 
-        if last_attn is None:
-            last_attn = value.new_zeros(batch_size, seq_len)
+        if last_alignment_energy is None:
+            last_alignment_energy = value.new_zeros(batch_size, seq_len)
 
-        conv_attn = torch.transpose(self.conv1d(last_attn.unsqueeze(1)), 1, 2)
-        score = self.score_proj(torch.tanh(
+        last_alignment_energy = self.location_conv(last_alignment_energy.unsqueeze(1))
+        last_alignment_energy = last_alignment_energy.transpose(1, 2)
+
+        alignmment_energy = self.score_proj(torch.tanh(
                 self.query_proj(query.reshape(-1, hidden_dim)).view(batch_size, -1, hidden_dim)
                 + self.value_proj(value.reshape(-1, hidden_dim)).view(batch_size, -1, hidden_dim)
-                + conv_attn
+                + last_alignment_energy
                 + self.bias
         )).squeeze(-1)
 
         if self.smoothing:
-            score = torch.sigmoid(score)
-            attn = torch.div(score, score.sum(-1).unsqueeze(-1))
+            alignmment_energy = torch.sigmoid(alignmment_energy)
+            alignmment_energy = torch.div(alignmment_energy, score.sum(-1).unsqueeze(-1))
 
         else:
-            attn = F.softmax(score, dim=-1)
+            alignmment_energy = F.softmax(alignmment_energy, dim=-1)
 
-        context = torch.bmm(attn.unsqueeze(1), value).squeeze(1)  # Bx1xT X BxTxD => Bx1xD => BxD
-        context += query
+        context_vector = torch.bmm(alignmment_energy.unsqueeze(1), value)
+        context_vector = context_vector.squeeze(1)
 
-        return context, attn
+        return context_vector, alignmment_energy
 
 
 class AdditiveAttention(nn.Module):

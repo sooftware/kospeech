@@ -89,7 +89,7 @@ class Speller(BaseRNN):
         self.input_dropout = nn.Dropout(dropout_p)
 
         if self.attn_mechanism == 'loc':
-            self.attention = LocationAwareAttention(hidden_dim, smoothing=True)
+            self.attention = AddNorm(LocationAwareAttention(hidden_dim, smoothing=True), hidden_dim)
         elif self.attn_mechanism == 'multi-head':
             self.attention = AddNorm(MultiHeadAttention(hidden_dim, num_heads), hidden_dim)
         elif self.attn_mechanism == 'additive':
