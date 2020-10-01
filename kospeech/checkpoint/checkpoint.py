@@ -11,7 +11,7 @@ import torch
 import torch.nn as nn
 from kospeech.utils import logger
 from kospeech.data.data_loader import SpectrogramDataset
-from kospeech.models.las.las import SpeechSeq2seq
+from kospeech.models.las.las import ListenAttendSpell
 from kospeech.optim.optimizer import Optimizer
 
 
@@ -101,7 +101,7 @@ class Checkpoint(object):
             resume_checkpoint = torch.load(os.path.join(path, self.TRAINER_STATE_NAME), map_location=lambda storage, loc: storage)
             model = torch.load(os.path.join(path, self.MODEL_NAME), map_location=lambda storage, loc: storage)
 
-        if isinstance(model, SpeechSeq2seq):
+        if isinstance(model, ListenAttendSpell):
             if isinstance(model, nn.DataParallel):
                 model.module.flatten_parameters()  # make RNN parameters contiguous
             else:
