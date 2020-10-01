@@ -27,7 +27,7 @@ def build_model(opt, device):
         input_size = opt.n_mels
 
     if opt.architecture.lower() == 'las':
-        model = build_seq2seq(input_size, opt, device)
+        model = build_las(input_size, opt, device)
 
     elif opt.architecture.lower() == 'transformer':
         model = build_transformer(
@@ -72,7 +72,7 @@ def build_transformer(num_classes: int, pad_id: int, d_model: int, num_heads: in
     ).to(device)
 
 
-def build_seq2seq(input_size, opt, device):
+def build_las(input_size, opt, device):
     """ Various Listen, Attend and Spell dispatcher function. """
     model = ListenAttendSpell(
         build_listener(

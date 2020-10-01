@@ -4,7 +4,7 @@
 # This source code is licensed under the Apache 2.0 License license found in the
 # LICENSE file in the root directory of this source tree.
 
-ARCHITECTURE='seq2seq'
+ARCHITECTURE='las'
 DATASET_PATH='your_dataset_path'
 DATA_LIST_PATH='../data/data_list/except_outlier_train_list.csv'
 BATCH_SIZE=32
