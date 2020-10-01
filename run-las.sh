@@ -26,9 +26,11 @@ VALID_RATIO=0.01
 MAX_LEN=150
 MAX_GRAD_NORM=400
 WEIGHT_DECAY=1e-05
-INIT_LR=1e-08
-HIGH_PLATEAU_LR=1e-04
-LOW_PLATEAU_LR=1e-06
+INIT_LR=1e-06
+PEAK_LR=1e-04
+FINAL_LR=1e-06
+INIT_LR_SCALE=0.01
+FINAL_LR_SCALE=0.05
 WARMUP_STEPS=2000
 FRAME_LENGTH=20
 FRAME_SHIFT=10
@@ -55,11 +57,12 @@ python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epoch
 --spec_augment --use_cuda --hidden_dim $HIDDEN_DIM --dropout $DROPOUT --num_heads $NUM_HEADS \
 --label_smoothing $LABEL_SMOOTHING --transform_method $TRANSFORM_METHOD --architecture $ARCHITECTURE \
 --num_encoder_layers $NUM_ENCODER_LAYERS --num_decoder_layers $NUM_DECODER_LAYERS --rnn_type $RNN_TYPE \
---high_plateau_lr $HIGH_PLATEAU_LR --teacher_forcing_ratio $TEACHER_FORCING_RATIO --valid_ratio $VALID_RATIO \
+--teacher_forcing_ratio $TEACHER_FORCING_RATIO --valid_ratio $VALID_RATIO \
 --sample_rate $SAMPLE_RATE --frame_length $FRAME_LENGTH --frame_shift $FRAME_SHIFT --n_mels $N_MELS --normalize --del_silence \
 --feature_extract_by $FEATURE_EXTRACT_BY --freq_mask_para $FREQ_MASK_PARA \
 --time_mask_num $TIME_MASK_NUM --freq_mask_num $FREQ_MASK_NUM --save_result_every $SAVE_RESULT_EVERY \
---checkpoint_every $CHECKPOINT_EVERY --print_every $PRINT_EVERY --init_lr $INIT_LR  \
+--checkpoint_every $CHECKPOINT_EVERY --print_every $PRINT_EVERY \
+--init_lr $INIT_LR --final_lr $FINAL_LR --peak_lr $PEAK_LR --init_lr_scale $INIT_LR_SCALE --final_lr_scale $FINAL_LR_SCALE \
 --mode $MODE --dataset_path $DATASET_PATH --data_list_path $DATA_LIST_PATH  \
 --max_grad_norm $MAX_GRAD_NORM --warmup_steps $WARMUP_STEPS --max_len $MAX_LEN \
 --noiseset_size $NOISESET_SIZE --weight_decay $WEIGHT_DECAY --reduction $REDUCTION \

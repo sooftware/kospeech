@@ -20,12 +20,12 @@ NUM_ENCODER_LAYERS=3
 NUM_DECODER_LAYERS=2
 DROPOUT=0.3
 FFNET_STYLE='ff'
-INIT_LR=1e-07
-HIGH_PLATEAU_LR=3e-04
-LOW_PLATEAU_LR=1e-05
-RAMPUP_PERIOD=400
-DECAY_THRESHOLD=0.02
-EXP_DECAY_PERIOD=120000
+INIT_LR=1e-06
+PEAK_LR=1e-04
+FINAL_LR=1e-06
+INIT_LR_SCALE=0.01
+FINAL_LR_SCALE=0.05
+WARMUP_STEPS=2000
 FRAME_LENGTH=20
 FRAME_SHIFT=10
 SAMPLE_RATE=16000
@@ -50,7 +50,7 @@ python ./main.py --architecture $ARCHITECTURE --num_classes $NUM_CLASSES --d_mod
 --num_heads $NUM_HEADS --num_encoder_layers $NUM_ENCODER_LAYERS --num_decoder_layers $NUM_DECODER_LAYERS \
 --dropout $DROPOUT --ffnet_style $FFNET_STYLE --dataset_path $DATASET_PATH --data_list_path $DATA_LIST_PATH \
 --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epochs $NUM_EPOCHS --label_smoothing $LABEL_SMOOTHING \
---init_lr $INIT_LR --high_plateau_lr $HIGH_PLATEAU_LR --low_plateau_lr $LOW_PLATEAU_LR --rampup_period $RAMPUP_PERIOD \
+--init_lr $INIT_LR --final_lr $FINAL_LR --peak_lr $PEAK_LR --init_lr_scale $INIT_LR_SCALE --final_lr_scale $FINAL_LR_SCALE \
 --frame_length $FRAME_LENGTH \
 --sample_rate $SAMPLE_RATE --frame_shift $FRAME_SHIFT --n_mels $N_MELS --feature_extract_by $FEATURE_EXTRACT_BY \
 --transform_method $TRANSFORM_METHOD \

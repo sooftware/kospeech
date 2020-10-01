@@ -3,7 +3,7 @@
 # @ArXiv : KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition
 # This source code is licensed under the Apache 2.0 License license found in the
 # LICENSE file in the root directory of this source tree.
-import numpy as np
+import math
 
 
 class LearningRateScheduler(object):
@@ -30,31 +30,61 @@ class LearningRateScheduler(object):
             return g['lr']
 
 
-class ThreeStateLRScheduler(LearningRateScheduler):
-    def __init__(self, optimizer, init_lr, high_plateau_lr, low_plateau_lr, warmup_steps, total_steps):
+class TriStageLRScheduler(LearningRateScheduler):
+    def __init__(self, optimizer, init_lr, peak_lr, final_lr, init_lr_scale, final_lr_scale, warmup_steps, total_steps):
         assert isinstance(warmup_steps, int), "warmup_steps should be inteager type"
         assert isinstance(total_steps, int), "total_steps should be inteager type"
 
-        super(ThreeStateLRScheduler, self).__init__(optimizer, init_lr)
-        self.low_plateau_lr = low_plateau_lr
-        self.high_plateau_lr = high_plateau_lr
+        super(TriStageLRScheduler, self).__init__(optimizer, init_lr)
+        self.init_lr *= init_lr_scale
+        self.final_lr = final_lr
+        self.peak_lr = peak_lr
         self.warmup_steps = warmup_steps
-        self.high_plateau_steps = int(warmup_steps + (total_steps * 0.4))
-        self.total_steps = total_steps
-        self.decay_steps = self.high_plateau_steps + self.warmup_steps
+        self.hold_steps = int(total_steps >> 1) - warmup_steps
+        self.decay_steps = int(total_steps >> 1)
 
-        self.exp_decay = -np.log10(0.01) / (self.total_steps - self.decay_steps)
+        self.warmup_rate = (self.peak_lr - self.init_lr) / self.warmup_steps if self.warmup_steps != 0 else 0
+        self.decay_factor = -math.log(final_lr_scale) / self.decay_steps
 
-        self.steps = 1
+        self.lr = self.init_lr
+        self.step = 0
+
+    def _decide_stage(self):
+        if self.step < self.warmup_steps:
+            return 0, self.step
+
+        offset = self.warmup_steps
+
+        if self.step < offset + self.hold_steps:
+            return 1, self.step - offset
+
+        offset += self.hold_steps
+
+        if self.step <= offset + self.decay_steps:
+            # decay stage
+            return 2, self.step - offset
+
+        offset += self.decay_steps
+
+        return 3, self.step - offset
 
     def step(self):
-        if self.steps < self.warmup_steps:
-            self.set_lr(self.optimizer, lr=self.high_plateau_lr * (self.steps / self.warmup_steps) ** 3)
-        elif self.steps > self.high_plateau_steps:
-            update_lr = self.high_plateau_lr * np.power(10, -self.exp_decay * (self.steps - self.decay_steps))
-            self.set_lr(self.optimizer, lr=update_lr)
+        stage, steps_in_stage = self._decide_stage()
 
-        self.steps += 1
+        if stage == 0:
+            self.lr = self.init_lr + self.warmup_rate * steps_in_stage
+        elif stage == 1:
+            self.lr = self.peak_lr
+        elif stage == 2:
+            self.lr = self.peak_lr * math.exp(-self.decay_factor * steps_in_stage)
+        elif stage == 3:
+            self.lr = self.final_lr
+        else:
+            raise ValueError("Undefined stage")
+
+        self.set_lr(self.optimizer, self.lr)
+
+        return self.lr
 
 
 class WarmUpLRScheduler(LearningRateScheduler):

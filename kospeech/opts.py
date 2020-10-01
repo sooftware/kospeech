@@ -106,14 +106,20 @@ def build_train_opts(parser):
                        type=int, default=20,
                        help='number of epochs in training (default: 20)')
     group.add_argument('--init_lr', '-init_lr',
-                       type=float, default=3e-4,
-                       help='initial learning rate => before ramp up lr (default: 1e-15)')
-    group.add_argument('--high_plateau_lr', '-high_plateau_lr',
-                       type=float, default=3e-04,
-                       help='high plateau learning rate => after warmup lr (default: 3e-04)')
-    group.add_argument('--low_plateau_lr', '-low_plateau_lr',
-                       type=float, default=3e-05,
-                       help='low plateau learning rate => after exponential decay (default: 1e-05)')
+                       type=float, default=1e-06,
+                       help='initial learning rate (default: 1e-4)')
+    group.add_argument('--peak_lr', '-peak_lr',
+                       type=float, default=1e-04,
+                       help='peak learning rate (default: 1e-4)')
+    group.add_argument('--final_lr', '-final_lr',
+                       type=float, default=1e-06,
+                       help='final learning rate (default: 1e-6)')
+    group.add_argument('--final_lr_scale', '-final_lr_scale',
+                       type=float, default=0.05,
+                       help='final learning rate scale (default: 0.05)')
+    group.add_argument('--init_lr_scale', '-init_lr_scale',
+                       type=float, default=0.01,
+                       help='init learning rate scale (default: 0.01)')
     group.add_argument('--valid_ratio', '-valid_ratio',
                        type=float, default=0.01,
                        help='validation dataset ratio in training dataset (default: 0.01)')
@@ -132,12 +138,6 @@ def build_train_opts(parser):
     group.add_argument('--warmup_steps', '-warmup_steps',
                        type=int, default=1000,
                        help='timestep of learning rate warmup (default: 4000)')
-    group.add_argument('--decay_threshold', '-decay_threshold',
-                       type=float, default=0.02,
-                       help='If the improvement of cer less than this, exponential decay lr start. (default: 0.02)')
-    group.add_argument('--exp_decay_period', '-exp_decay_period',
-                       type=int, default=160000,
-                       help='Timestep of learning rate decay (default: 160000)')
     group.add_argument('--teacher_forcing_step', '-teacher_forcing_step',
                        type=float, default=0.05,
                        help='The value at which teacher forcing ratio will be reducing')
@@ -285,11 +285,7 @@ def print_train_opts(opt):
     logger.info('--num_workers: %s' % str(opt.num_workers))
     logger.info('--num_epochs: %s' % str(opt.num_epochs))
     logger.info('--init_lr: %s' % str(opt.init_lr))
-    logger.info('--high_plateau_lr: %s' % str(opt.high_plateau_lr))
-    logger.info('--low_plateau_lr: %s' % str(opt.low_plateau_lr))
-    logger.info('--decay_threshold: %s' % str(opt.decay_threshold))
     logger.info('--warmup_steps: %s' % str(opt.warmup_steps))
-    logger.info('--exp_decay_period: %s' % str(opt.exp_decay_period))
     logger.info('--valid_ratio: %s' % str(opt.valid_ratio))
     logger.info('--max_len: %s' % str(opt.max_len))
     logger.info('--max_grad_norm: %s' % str(opt.max_grad_norm))

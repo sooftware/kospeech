@@ -13,7 +13,7 @@ from torch import optim
 sys.path.append('..')
 from kospeech.data.data_loader import split_dataset, load_data_list
 from kospeech.criterion.label_smoothed_cross_entropy import LabelSmoothedCrossEntropyLoss
-from kospeech.optim.lr_scheduler import ThreeStateLRScheduler
+from kospeech.optim.lr_scheduler import TriStageLRScheduler
 from kospeech.optim.optimizer import Optimizer
 from kospeech.trainer.supervised_trainer import SupervisedTrainer
 from kospeech.model_builder import build_model
@@ -43,12 +43,14 @@ def train(opt):
 
         optimizer = optim.Adam(model.module.parameters(), lr=opt.init_lr, weight_decay=opt.weight_decay)
 
-        lr_scheduler = ThreeStateLRScheduler(
+        lr_scheduler = TriStageLRScheduler(
             optimizer=optimizer,
             init_lr=opt.init_lr,
-            high_plateau_lr=opt.high_plateau_lr,
-            low_plateau_lr=opt.low_plateau_lr,
-            warmup_steps=opt.rampup_period,
+            peak_lr=opt.peak_lr,
+            final_lr=opt.final_lr,
+            init_lr_scale=opt.init_lr_scale,
+            final_lr_scale=opt.final_lr_scale,
+            warmup_steps=opt.warmup_steps,
             total_steps=int(opt.num_epochs * epoch_time_step)
         )
         optimizer = Optimizer(optimizer, lr_scheduler, opt.rampup_period, opt.max_grad_norm)
