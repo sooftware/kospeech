@@ -140,12 +140,12 @@ class SupervisedTrainer(object):
             valid_loader = AudioDataLoader(self.validset, valid_queue, batch_size, 0)
             valid_loader.start()
 
-            valid_loss, valid_cer = self.validate(model, valid_queue)
+            valid_cer = self.validate(model, valid_queue)
             valid_loader.join()
 
-            logger.info('Epoch %d (Validate) Loss %0.4f CER %0.4f' % (epoch, valid_loss, valid_cer))
+            logger.info('Epoch %d CER %0.4f' % (epoch, valid_cer))
             self.__save_epoch_result(train_result=[self.train_dict, train_loss, train_cer],
-                                     valid_result=[self.valid_dict, valid_loss, valid_cer])
+                                     valid_result=[self.valid_dict, valid_cer])
             logger.info('Epoch %d Training result saved as a csv file complete !!' % epoch)
             torch.cuda.empty_cache()
 
@@ -274,8 +274,6 @@ class SupervisedTrainer(object):
             - **cer** (float): character error rate of validation
         """
         cer = 1.0
-        total_loss = 0.
-        total_num = 0.
 
         model.eval()
         logger.info('validate() start')
@@ -289,12 +287,11 @@ class SupervisedTrainer(object):
 
                 inputs = inputs.to(self.device)
                 targets = targets[:, 1:].to(self.device)
-                model.cuda()
+                model.to(self.device)
 
                 if self.architecture == 'las':
                     model.module.flatten_parameters()
-                    output = model(inputs=inputs, input_lengths=input_lengths,
-                                   teacher_forcing_ratio=0.0, return_decode_dict=False)
+                    output = model(inputs, input_lengths, teacher_forcing_ratio=0.0, return_decode_dict=False)
                     logit = torch.stack(output, dim=1).to(self.device)
 
                 elif self.architecture == 'transformer':
@@ -306,14 +303,9 @@ class SupervisedTrainer(object):
                 hypothesis = logit.max(-1)[1]
                 cer = self.metric(targets, hypothesis)
 
-                logit = logit[:, :targets.size(1), :]
-                loss = self.criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
-
-                total_loss += loss.item()
-                total_num += sum(input_lengths)
-
         logger.info('validate() completed')
-        return total_loss / total_num, cer
+
+        return cer
 
     def __save_epoch_result(self, train_result: list, valid_result: list) -> None:
         """ Save result of epoch """
@@ -321,7 +313,6 @@ class SupervisedTrainer(object):
         valid_dict, valid_loss, valid_cer = valid_result
 
         train_dict["loss"].append(train_loss)
-        valid_dict["loss"].append(valid_loss)
 
         train_dict["cer"].append(train_cer)
         valid_dict["cer"].append(valid_cer)
