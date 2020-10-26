@@ -6,14 +6,8 @@
 
 import numpy as np
 from kospeech.data.audio.core import load_audio
-from torch import (
-    Tensor,
-    FloatTensor
-)
-from kospeech.data.audio.augment import (
-    NoiseInjector,
-    SpecAugment
-)
+from torch import Tensor, FloatTensor
+from kospeech.data.audio.augment import SpecAugment
 from kospeech.data.audio.feature import (
     MelSpectrogram,
     MFCC,
@@ -66,8 +60,6 @@ class SpectrogramParser(AudioParser):
     """
     VANILLA = 0           # Not apply augmentation
     SPEC_AUGMENT = 1      # SpecAugment
-    NOISE_INJECTION = 2   # Noise Injection
-    HYBRID_AUGMENT = 3    # Noise Injection & SpecAugment
 
     def __init__(
             self,

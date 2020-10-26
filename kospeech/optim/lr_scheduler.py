@@ -31,7 +31,10 @@ class LearningRateScheduler(object):
 
 
 class TriStageLRScheduler(LearningRateScheduler):
-    """ Tri-Stage Learning Rate Scheduler """
+    """
+    Tri-Stage Learning Rate Scheduler
+    Implement the learning rate scheduler in "SpecAugment"
+    """
     def __init__(self, optimizer, init_lr, peak_lr, final_lr, init_lr_scale, final_lr_scale, warmup_steps, total_steps):
         assert isinstance(warmup_steps, int), "warmup_steps should be inteager type"
         assert isinstance(total_steps, int), "total_steps should be inteager type"

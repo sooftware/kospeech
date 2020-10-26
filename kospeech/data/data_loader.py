@@ -26,9 +26,8 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
         sos_id (int): identification of <start of sequence>
         eos_id (int): identification of <end of sequence>
         spec_augment (bool): flag indication whether to use spec-augmentation or not (default: True)
-        noise_augment (bool): flag indication whether to use noise-augmentation or not (default: True)
         opt (ArgumentParser): set of arguments
-        dataset_path (str): noise dataset path
+        dataset_path (str): path of dataset
     """
     def __init__(
             self,
@@ -38,8 +37,7 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
             eos_id: int,                    # identification of end of sequence token
             opt: ArgumentParser,            # set of arguments
             spec_augment: bool = False,     # flag indication whether to use spec-augmentation of not
-            noise_augment: bool = False,    # flag indication whether to use noise-augmentation of not
-            dataset_path: str = None        # noise dataset path
+            dataset_path: str = None        # path of dataset
     ) -> None:
         super(SpectrogramDataset, self).__init__(
             feature_extract_by=opt.feature_extract_by, sample_rate=opt.sample_rate, n_mels=opt.n_mels,
@@ -53,7 +51,7 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
         self.transcripts = list(transcripts)
         self.augment_methods = [self.VANILLA] * len(self.audio_paths)
         self.dataset_size = len(self.audio_paths)
-        self.augmentation(spec_augment, noise_augment)
+        self.augment(spec_augment)
         self.shuffle()
 
     def get_item(self, idx):
@@ -75,8 +73,8 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
 
         return transcript
 
-    def augmentation(self, spec_augment, noise_augment):
-        """ Spec & Noise Augmentation """
+    def augment(self, spec_augment):
+        """ Spec Augmentation """
         if spec_augment:
             logger.info("Applying Spec Augmentation...")
 

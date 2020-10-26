@@ -32,8 +32,8 @@ def build_model_opts(parser):
                        type=float, default=0.3,
                        help='dropout ratio in training (default: 0.3)')
     group.add_argument('--num_heads', '-num_heads',
-                       type=int, default=8,
-                       help='number of head in attention (default: 8)')
+                       type=int, default=4,
+                       help='number of head in attention (default: 4)')
     group.add_argument('--label_smoothing', '-label_smoothing',
                        type=float, default=0.1,
                        help='ratio of label smoothing (default: 0.1)')
@@ -44,8 +44,8 @@ def build_model_opts(parser):
                        type=int, default=2,
                        help='layer size of decoder (default: 2)')
     group.add_argument('--rnn_type', '-rnn_type',
-                       type=str, default='gru',
-                       help='type of rnn cell: [gru, lstm, rnn] (default: gru)')
+                       type=str, default='lstm',
+                       help='type of rnn cell: [gru, lstm, rnn] (default: lstm)')
     group.add_argument('--extractor', '-extractor',
                        type=str, default='vgg',
                        help='extractor in listener: [vgg, ds2] (default: vgg)')
@@ -87,15 +87,6 @@ def build_train_opts(parser):
     group.add_argument('--spec_augment', '-spec_augment',
                        action='store_true', default=False,
                        help='flag indication whether to use spec augmentation or not')
-    group.add_argument('--noise_augment', '-noise_augment',
-                       action='store_true', default=False,
-                       help='flag indication whether to use noise augmentation or not')
-    group.add_argument('--noiseset_size', '-noiseset_size',
-                       type=int, default=1000,
-                       help='size of noise dataset for noise augmentation (default: 1000)')
-    group.add_argument('--noise_level', '-noise_level',
-                       type=float, default=0.7,
-                       help='set level of noise (default: 0.7)')
     group.add_argument('--use_cuda', '-use_cuda',
                        action='store_true', default=False,
                        help='flag indication whether to use cuda or not')
@@ -272,9 +263,6 @@ def print_model_opts(opt):
 def print_train_opts(opt):
     """ Print train options """
     logger.info('--spec_augment: %s' % str(opt.spec_augment))
-    logger.info('--noise_augment: %s' % str(opt.noise_augment))
-    logger.info('--noiseset_size: %s' % str(opt.noiseset_size))
-    logger.info('--noise_level: %s' % str(opt.noise_level))
     logger.info('--use_cuda: %s' % str(opt.use_cuda))
     logger.info('--batch_size: %s' % str(opt.batch_size))
     logger.info('--num_workers: %s' % str(opt.num_workers))
