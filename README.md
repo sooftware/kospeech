@@ -119,8 +119,43 @@ pip install -e .
 ```
   
 ## Get Started
+    
+### Preparing KsponSpeech Dataset
+  
+* Command   
+```
+$ cd ~KoSpeech/dataset
+$ python prepare-kspon.py --dataset_path $DATASET_PATH --vocab_dest $VOCAB_DEST --preprocess_mode $PREPROCESS_MODE
+```
+  
+$PREPROCESS_MODE : `phonetic` or `spelling`, $VOCAB_DEST : `../data/vocab/`  
+  
+* Results : transcripts.txt (default: `~KoSpeech/data/transcripts.txt)
+```
+KsponSpeech_01/KsponSpeech_0001/KsponSpeech_000001.pcm[TAB]아 모 몬 소리야[TAB]8 3 107 3 731 3 174 33 27
+...
+...
+KsponSpeech_05/KsponSpeech_0623/KsponSpeech_622545.pcm[TAB]너 뭐 강남 자주 가?[TAB]51 3 42 3 243 197 3 47 77 3 9 15
+```
+  
+### Training KsponSpeech Dataset
+```
+$ ./run-las.sh
+```
+  
+You can train the model by above command.  
+ If you want to train by default setting, you can train by `Defaulting setting` command.   
+ Or if you want to train by custom setting, you can designate hyperparameters by `Custom setting` command.
 
-### Step 0: Try quick speech recognition with a pre-trained model.
+### Evaluate for KsponSpeech
+```
+$ ./eval.sh
+```
+  
+Now you have a model which you can use to predict on new data. We do this by running `greedy search` or `beam search`.  
+Like training, you can choose between `Default setting` or `Custom setting`.  
+  
+### Inference One Audio with Pre-train Models
 
 * Command
 ```
@@ -131,62 +166,6 @@ $ ./infer-with-pretrain.sh
 아 뭔 소리야 그건 또
 ```  
 You can get a quick look of pre-trained model's inference, with a sample data.  
-  
-### Step 1: Preparing KsponSpeech Dataset
-  
-* Command   
-```
-$ cd ~KoSpeech/dataset
-$ python prepare-kspon.py --dataset_path $DATASET_PATH --vocab_dest $VOCAB_DEST --preprocess_mode $PREPROCESS_MODE
-```
-  
-* $PREPROCESS_MODE : `phonetic` or `spelling`, $VOCAB_DEST : `../data/vocab/`
-   
-#### Preprocess
-  
-You can choose between phonetic transcription and spelling transcription to preprocess.  
-  
-* Raw data
-```
-b/ (70%)/(칠 십 퍼센트) 확률이라니 아/ (뭐+ 뭔)/(모+ 몬) 소리야 진짜 (100%)(백 프로)가 왜 안돼? n/
-``` 
-  
-* Delete noise labels, such as b/, n/, / ..
-```
-(70%)/(칠 십 퍼센트) 확률이라니 아/ (뭐+ 뭔)/(모+ 몬) 소리야 진짜 (100%)(백 프로)가 왜 안돼?
-```
-  
-* Delete labels such as '/', '*', '+', etc. (used for gantour representation)
-```
-(70%)/(칠 십 퍼센트) 확률이라니 아 (뭐 뭔)/(모 몬) 소리야 진짜 (100%)(백 프로)가 왜 안돼?
-```
-  
-* Option1 : phonetic transcript
-```
-칠 십 퍼센트 확률이라니 아 모 몬 소리야 진짜 백 프로가 왜 안돼?
-```
-
-* Option2 : spelling transcript
-```
-70% 확률이라니 아 뭐 뭔 소리야 진짜 100%가 왜 안돼?
-```
-
-### Step 2: Run `main.py`  
-```
-$ ./run-las.sh
-```
-  
-You can train the model by above command.  
- If you want to train by default setting, you can train by `Defaulting setting` command.   
- Or if you want to train by custom setting, you can designate hyperparameters by `Custom setting` command.
-
-### Step 3: Run `eval.py`
-```
-$ ./eval.sh
-```
-  
-Now you have a model which you can use to predict on new data. We do this by running `greedy search` or `beam search`.  
-Like training, you can choose between `Default setting` or `Custom setting`.  
   
 ### Checkpoints   
 Checkpoints are organized by experiments and timestamps as shown in the following file structure.  
