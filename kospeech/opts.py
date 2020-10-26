@@ -208,9 +208,6 @@ def build_eval_opts(parser):
     group.add_argument('--dataset_path', '-dataset_path',
                        type=str, default='/data1/',
                        help='path of dataset')
-    group.add_argument('--data_list_path', '-data_list_path',
-                       type=str, default='./data/data_list/filter_train_list.csv',
-                       help='list of training / test set')
     group.add_argument('--label_path', '-label_path',
                        type=str, default='./data/label/aihub_labels.csv',
                        help='path of character labels')
@@ -274,8 +271,6 @@ def print_model_opts(opt):
 
 def print_train_opts(opt):
     """ Print train options """
-    logger.info('--dataset_path: %s' % str(opt.dataset_path))
-    logger.info('--data_list_path: %s' % str(opt.data_list_path))
     logger.info('--spec_augment: %s' % str(opt.spec_augment))
     logger.info('--noise_augment: %s' % str(opt.noise_augment))
     logger.info('--noiseset_size: %s' % str(opt.noiseset_size))
@@ -300,7 +295,6 @@ def print_train_opts(opt):
 def print_eval_opts(opt):
     """ Print evaltation options """
     logger.info('--dataset_path: %s' % str(opt.dataset_path))
-    logger.info('--data_list_path: %s' % str(opt.data_list_path))
     logger.info('--label_path: %s' % str(opt.label_path))
     logger.info('--num_workers: %s' % str(opt.num_workers))
     logger.info('--use_cuda: %s' % str(opt.use_cuda))

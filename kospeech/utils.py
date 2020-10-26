@@ -32,11 +32,11 @@ class Logger(object):
 
 
 logger = Logger()
-char2id, id2char = load_vocab('../data/label/aihub_labels.csv', encoding='utf-8')
+char2id, id2char = load_vocab('../data/vocab/aihub_vocabs.csv', encoding='utf-8')
 
-SOS_token = int(char2id['<s>'])
-EOS_token = int(char2id['</s>'])
-PAD_token = int(char2id['_'])
+SOS_token = int(char2id['<sos>'])
+EOS_token = int(char2id['<eos>'])
+PAD_token = int(char2id['<pad>'])
 
 
 def check_envirionment(use_cuda: bool):
