@@ -6,7 +6,7 @@
 
 ARCHITECTURE='las'
 DATASET_PATH='your_dataset_path'
-TRANSCRIPTS_PATH='your_transcripts_path'
+TRANSCRIPTS_PATH='../data/transcripts.txt'
 BATCH_SIZE=32
 NUM_WORKERS=4
 NUM_EPOCHS=20
