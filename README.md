@@ -143,9 +143,7 @@ KsponSpeech_05/KsponSpeech_0623/KsponSpeech_622545.pcm[TAB]너 뭐 강남 자주
 $ ./run-las.sh
 ```
   
-You can train the model by above command.  
- If you want to train by default setting, you can train by `Defaulting setting` command.   
- Or if you want to train by custom setting, you can designate hyperparameters by `Custom setting` command.
+After properly editing `run-las.sh`, You can train the model by above command. 
 
 ### Evaluate for KsponSpeech
 ```
@@ -153,7 +151,6 @@ $ ./eval.sh
 ```
   
 Now you have a model which you can use to predict on new data. We do this by running `greedy search` or `beam search`.  
-Like training, you can choose between `Default setting` or `Custom setting`.  
   
 ### Inference One Audio with Pre-train Models
 
