@@ -127,7 +127,7 @@ class SpectrogramParser(AudioParser):
         else:
             feature_vector = FloatTensor(feature_vector).transpose(0, 1)
 
-        if augment_method == SpectrogramParser.SPEC_AUGMENT or augment_method == SpectrogramParser.HYBRID_AUGMENT:
+        if augment_method == SpectrogramParser.SPEC_AUGMENT:
             feature_vector = self.spec_augment(feature_vector)
 
         return feature_vector
