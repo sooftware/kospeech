@@ -27,30 +27,19 @@ def sentence_to_target(sentence, char2id):
     return target[:-1]
 
 
-def generate_character_labels(dataset_path, labels_dest):
+def generate_character_labels(transcripts, labels_dest):
     print('create_char_labels started..')
 
     label_list = list()
     label_freq = list()
 
-    for folder in os.listdir(dataset_path):
-        if not folder.startswith('KsponSpeech'):
-            continue
-        # folder : {KsponSpeech_01, ..., KsponSpeech_05}
-        path = os.path.join(dataset_path, folder)
-        for subfolder in os.listdir(path):
-            path = os.path.join(dataset_path, folder, subfolder)
-            for file in os.listdir(path):
-                if file.endswith('txt'):
-                    with open(os.path.join(path, file), "r", encoding='cp949') as f:
-                        sentence = f.read()
-
-                        for ch in sentence:
-                            if ch not in label_list:
-                                label_list.append(ch)
-                                label_freq.append(1)
-                            else:
-                                label_freq[label_list.index(ch)] += 1
+    for transcript in transcripts:
+        for ch in transcript:
+            if ch not in label_list:
+                label_list.append(ch)
+                label_freq.append(1)
+            else:
+                label_freq[label_list.index(ch)] += 1
 
     # sort together Using zip
     label_freq, label_list = zip(*sorted(zip(label_freq, label_list), reverse=True))
@@ -63,25 +52,16 @@ def generate_character_labels(dataset_path, labels_dest):
 
     # save to csv
     label_df = pd.DataFrame(label)
-    label_df.to_csv(os.path.join(labels_dest, "aihub_labels.csv"), encoding="utf-8", index=False)
+    label_df.to_csv(os.path.join(labels_dest, "aihub_vocabs.csv"), encoding="utf-8", index=False)
 
 
-def generate_character_script(dataset_path, new_path, script_prefix, labels_dest):
+def generate_character_script(audio_paths, transcripts, labels_dest):
     print('create_script started..')
-    char2id, id2char = load_label(os.path.join(labels_dest, "aihub_labels.csv"))
+    char2id, id2char = load_label(os.path.join(labels_dest, "aihub_vocabs.csv"))
 
-    for folder in os.listdir(dataset_path):
-        if not folder.startswith('KsponSpeech'):
-            continue
-        # folder : {KsponSpeech_01, ..., KsponSpeech_05}
-        path = os.path.join(dataset_path, folder)
-        for subfolder in os.listdir(path):
-            path = os.path.join(dataset_path, folder, subfolder)
-            for file in os.listdir(path):
-                if file.endswith('.txt'):
-                    with open(os.path.join(path, file), "r", encoding='cp949') as f:
-                        sentence = f.read()
-
-                    with open(os.path.join(new_path, script_prefix + file[12:]), "w", encoding='cp949') as f:
-                        target = sentence_to_target(sentence, char2id)
-                        f.write(target)
+    with open(os.path.join("transcripts.txt"), "w") as trans_file:
+        for audio_path, transcript in zip(audio_paths, transcripts):
+            number_transcript = sentence_to_target(transcript, char2id)
+            audio_path = audio_path.replace('txt', 'pcm')
+            line = "%s\t%s\t%s\n" % (audio_path, transcript, number_transcript)
+            trans_file.write(line)

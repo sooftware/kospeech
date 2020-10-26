@@ -124,7 +124,7 @@ pip install -e .
 
 * Command
 ```
-$ ./infer.sh
+$ ./infer-with-pretrain.sh
 ```
 * Output
 ```
@@ -132,21 +132,15 @@ $ ./infer.sh
 ```  
 You can get a quick look of pre-trained model's inference, with a sample data.  
   
-### Step 1: Prepare Dataset  
-   
-You can preprocess `KsponSpeech Corpus` through [this repo](https://github.com/sooftware/KsponSpeech-preprocess).   
-We recommended that you read README of this repository.  
-
-
-1. Set options in [./datasets/prepare-ksponspeech.sh](https://github.com/sooftware/KoSpeech/blob/master/dataset/prepare-ksponspeech.sh)  
+### Step 1: Preparing KsponSpeech Dataset
   
-2. Run [run.sh](https://github.com/sooftware/KsponSpeech-preprocess/blob/master/run.sh)  
-```shell
-$ cd ~KsponSpeech-preprocess
-$ ./run.sh
+* Command   
+```
+$ cd ~KoSpeech/dataset
+$ python prepare-kspon.py --dataset_path $DATASET_PATH --vocab_dest $VOCAB_DEST --preprocess_mode $PREPROCESS_MODE
 ```
   
-3. Leave the computer for hours.  
+* $PREPROCESS_MODE : `phonetic` or `spelling`, $VOCAB_DEST : `../data/vocab/`
    
 #### Preprocess
   
@@ -175,29 +169,6 @@ b/ (70%)/(칠 십 퍼센트) 확률이라니 아/ (뭐+ 뭔)/(모+ 몬) 소리�
 * Option2 : spelling transcript
 ```
 70% 확률이라니 아 뭐 뭔 소리야 진짜 100%가 왜 안돼?
-```
-* Option3 : numeric_phonetic_otherwise_spelling
-```
-칠 십 퍼센트 확률이라니 아 뭐 뭔 소리야 진짜 백 프로가 왜 안돼?
-```
-  
-#### Output-Unit
-   
-This project provides processing in characters, subwords, and grapheme units.   
-  
-* Character-Unit
-```
-아 모 몬 소리야 칠 십 퍼센트 확률이라니
-```
-  
-* Subword-Unit
-```
-▁아 ▁모 ▁ 몬 ▁소리 야 ▁ 칠 ▁ 십 ▁퍼 센트 ▁확 률 이라 니
-```
-
-* Grapheme-Unit
-```
-ㅇㅏ ㅁㅗ ㅁㅗㄴ ㅅㅗㄹㅣㅇㅑ ㅊㅣㄹ ㅅㅣㅂ ㅍㅓㅅㅔㄴㅌㅡ ㅎㅘㄱㄹㅠㄹㅇㅣㄹㅏㄴㅣ
 ```
 
 ### Step 2: Run `main.py`  

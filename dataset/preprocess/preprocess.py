@@ -2,7 +2,7 @@ import os
 import re
 
 
-def bracket_filter(sentence, mode='numeric_phonetic_others_spelling'):
+def bracket_filter(sentence, mode='phonetic'):
     new_sentence = str()
 
     if mode == 'phonetic':
@@ -34,55 +34,8 @@ def bracket_filter(sentence, mode='numeric_phonetic_others_spelling'):
             if ch != ')' and flag is True:
                 new_sentence += ch
 
-    elif mode == 'numeric_phonetic_otherwise_spelling':
-        isfront = False
-        front_bracket = False
-        back_bracket = False
-        skip = False
-
-        for idx, ch in enumerate(sentence):
-            if ch == '(':
-                if isfront:
-                    isfront = False
-                else:
-                    isfront = True
-
-                if isfront:
-                    if sentence[idx + 1].isnumeric():
-                        front_bracket = False
-                        back_bracket = True
-                        skip = True
-                    else:
-                        front_bracket = True
-                        back_bracket = False
-
-                if front_bracket and isfront:
-                    skip = False
-
-                elif front_bracket and not isfront:
-                    skip = True
-
-                elif back_bracket and isfront:
-                    skip = True
-
-                elif back_bracket and not isfront:
-                    skip = False
-
-            elif ch == ')':
-                if front_bracket and isfront:
-                    skip = True
-
-                elif front_bracket and not isfront:
-                    skip = False
-
-                elif back_bracket and isfront:
-                    skip = True
-
-                elif back_bracket and not isfront:
-                    skip = False
-
-            elif not skip:
-                new_sentence += ch
+    else:
+        raise ValueError("Unsupported mode : {0}".format(mode))
 
     return new_sentence
 
@@ -119,8 +72,11 @@ def sentence_filter(raw_sentence, mode, replace=None):
     return special_filter(bracket_filter(raw_sentence, mode), mode, replace)
 
 
-def preprocess(dataset_path, new_path, mode='phonetic'):
+def preprocess(dataset_path, mode='phonetic'):
     print('preprocess started..')
+
+    audio_paths = list()
+    transcripts = list()
 
     percent_files = {
         '087797': '퍼센트',
@@ -139,16 +95,9 @@ def preprocess(dataset_path, new_path, mode='phonetic'):
             continue
         path = os.path.join(dataset_path, folder)
         for idx, subfolder in enumerate(os.listdir(path)):
-            if idx == 0:
-                if not (os.path.isdir(os.path.join(new_path, folder))):
-                    os.makedirs(os.path.join(new_path, folder))
             path = os.path.join(dataset_path, folder, subfolder)
 
             for jdx, file in enumerate(os.listdir(path)):
-                if jdx == 0:
-                    if not (os.path.isdir(os.path.join(new_path, folder, subfolder))):
-                        os.makedirs(os.path.join(new_path, folder, subfolder))
-
                 if file.endswith('.txt'):
                     with open(os.path.join(path, file), "r", encoding='cp949') as f:
                         raw_sentence = f.read()
@@ -157,8 +106,10 @@ def preprocess(dataset_path, new_path, mode='phonetic'):
                         else:
                             new_sentence = sentence_filter(raw_sentence, mode=mode)
 
-                    with open(os.path.join(new_path, folder, subfolder, file), "w", encoding='cp949') as f:
-                        f.write(new_sentence)
+                    audio_paths.append(os.path.join(folder, subfolder, file))
+                    transcripts.append(new_sentence)
 
                 else:
                     continue
+
+    return audio_paths, transcripts
