@@ -10,11 +10,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
 from kospeech.models.modules import Linear
-from typing import (
-    Tuple,
-    Optional,
-    Any
-)
+from typing import Tuple, Optional, Any
 
 
 class ScaledDotProductAttention(nn.Module):
@@ -164,7 +160,7 @@ class LocationAwareAttention(nn.Module):
 
         if self.smoothing:
             alignmment_energy = torch.sigmoid(alignmment_energy)
-            alignmment_energy = torch.div(alignmment_energy, score.sum(-1).unsqueeze(-1))
+            alignmment_energy = torch.div(alignmment_energy, alignmment_energy.sum(-1).unsqueeze(-1))
 
         else:
             alignmment_energy = F.softmax(alignmment_energy, dim=-1)

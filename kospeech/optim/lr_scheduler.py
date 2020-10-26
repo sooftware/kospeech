@@ -31,6 +31,7 @@ class LearningRateScheduler(object):
 
 
 class TriStageLRScheduler(LearningRateScheduler):
+    """ Tri-Stage Learning Rate Scheduler """
     def __init__(self, optimizer, init_lr, peak_lr, final_lr, init_lr_scale, final_lr_scale, warmup_steps, total_steps):
         assert isinstance(warmup_steps, int), "warmup_steps should be inteager type"
         assert isinstance(total_steps, int), "total_steps should be inteager type"
@@ -86,52 +87,3 @@ class TriStageLRScheduler(LearningRateScheduler):
         self.update_step += 1
 
         return self.lr
-
-
-class WarmUpLRScheduler(LearningRateScheduler):
-    """
-    Ramp up learning rate for the `period` from `init_lr` to `high_plateau_lr`.
-
-    Args:
-        optimizer (torch.optim.Optimizer): optimizer object, the parameters to be optimized
-            should be given when instantiating the object, e.g. torch.optim.Adam, torch.optim
-        init_lr (float): initial learning rate
-        high_plateau_lr (float): target learning rate
-        period (int): timestep for which the scheduler is applied
-
-    ATTRIBUTES:
-        POWER (int): power of ramp up. three means exponential.
-    """
-    POWER = 3
-
-    def __init__(self, optimizer, init_lr, high_plateau_lr, period):
-        super(WarmUpLRScheduler, self).__init__(optimizer, init_lr)
-        self.steps = 1
-        self.period = period
-        self.high_plateau_lr = high_plateau_lr
-
-    def step(self):
-        self.set_lr(self.optimizer, lr=self.high_plateau_lr * (self.steps / self.period) ** self.POWER)
-        self.steps += 1
-
-
-class ExponentialDecayLRScheduler(LearningRateScheduler):
-    """
-    Exponential decay learning rate for the `period` from `init_lr` to `low_plateau_lr`.
-
-    Args:
-        optimizer (torch.optim.Optimizer): optimizer object, the parameters to be optimized
-            should be given when instantiating the object, e.g. torch.optim.Adam, torch.optim
-        init_lr (float): initial learning rate
-        low_plateau_lr (float): target learning rate
-        period (int): timestep for which the scheduler is applied
-    """
-    def __init__(self, optimizer, init_lr, low_plateau_lr, period):
-        super(ExponentialDecayLRScheduler, self).__init__(optimizer, init_lr)
-        decay_rate = low_plateau_lr / init_lr
-        self.decay_speed = decay_rate ** (1 / period)
-
-    def step(self):
-        lr = self.get_lr()
-        self.set_lr(self.optimizer, lr * self.decay_speed)
-
