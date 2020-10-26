@@ -107,7 +107,7 @@ We recommend creating a new virtual environment for this project (using virtual 
 * Pytorch: Refer to [PyTorch website](http://pytorch.org/) to install the version w.r.t. your environment.   
 * Pandas: `pip install pandas` (Refer [here](https://github.com/pandas-dev/pandas) for problem installing Pandas)  
 * Matplotlib: `pip install matplotlib` (Refer [here](https://github.com/matplotlib/matplotlib) for problem installing Matplotlib)
-* librosa: `pip install librosa` (Refer [here](https://github.com/librosa/librosa) for problem installing librosa)
+* librosa: `conda install -c conda-forge librosa` (Refer [here](https://github.com/librosa/librosa) for problem installing librosa)
 * torchaudio: `pip install torchaudio` (Refer [here](https://github.com/pytorch/pytorch) for problem installing torchaudio)
 * tqdm: `pip install tqdm` (Refer [here](https://github.com/tqdm/tqdm) for problem installing tqdm)
   
@@ -135,20 +135,18 @@ You can get a quick look of pre-trained model's inference, with a sample data.
 ### Step 1: Prepare Dataset  
    
 You can preprocess `KsponSpeech Corpus` through [this repo](https://github.com/sooftware/KsponSpeech-preprocess).   
-We recommended that you read README of this repository.
+We recommended that you read README of this repository.  
+
 
 1. Set options in [./datasets/prepare-ksponspeech.sh](https://github.com/sooftware/KoSpeech/blob/master/dataset/prepare-ksponspeech.sh)  
   
-<img src="https://user-images.githubusercontent.com/42150335/90811422-8ae6c800-e35f-11ea-8768-5b9cd3417fab.png" width=700>
-  
-  
 2. Run [run.sh](https://github.com/sooftware/KsponSpeech-preprocess/blob/master/run.sh)  
 ```shell
-$ cd ~KoSpeech/dataset
-$ ./prepare-ksponspeech.sh
+$ cd ~KsponSpeech-preprocess
+$ ./run.sh
 ```
   
-3. Leave the computer for hours or days.  
+3. Leave the computer for hours.  
    
 #### Preprocess
   
