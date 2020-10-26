@@ -130,7 +130,7 @@ $ python prepare-kspon.py --dataset_path $DATASET_PATH --vocab_dest $VOCAB_DEST 
   
 $PREPROCESS_MODE : `phonetic` or `spelling`, $VOCAB_DEST : `../data/vocab/`  
   
-* Results : transcripts.txt (default: `~KoSpeech/data/transcripts.txt)
+* Results : transcripts.txt (default: `~KoSpeech/data/transcripts.txt`)
 ```
 KsponSpeech_01/KsponSpeech_0001/KsponSpeech_000001.pcm[TAB]아 모 몬 소리야[TAB]8 3 107 3 731 3 174 33 27
 ...
