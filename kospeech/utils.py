@@ -8,7 +8,7 @@ import sys
 import logging
 import torch
 import platform
-from kospeech.data.label_loader import load_label
+from kospeech.data.label_loader import load_vocab
 
 
 class Logger(object):
@@ -32,7 +32,7 @@ class Logger(object):
 
 
 logger = Logger()
-char2id, id2char = load_label('../data/label/aihub_labels.csv', encoding='utf-8')
+char2id, id2char = load_vocab('../data/label/aihub_labels.csv', encoding='utf-8')
 
 SOS_token = int(char2id['<s>'])
 EOS_token = int(char2id['</s>'])

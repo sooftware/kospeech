@@ -34,6 +34,7 @@ class AudioParser(object):
         - **parse_transcript()**: abstract method. you have to override this method.
     """
     def __init__(self, dataset_path, noiseset_size, sample_rate=16000, noise_level=0.7, noise_augment=False):
+        self.dataset_path = dataset_path
         if noise_augment:
             self.noise_injector = NoiseInjector(dataset_path, noiseset_size, sample_rate, noise_level)
 
@@ -58,13 +59,11 @@ class SpectrogramParser(AudioParser):
         del_silence (bool): flag indication whether to delete silence or not (default: True)
         input_reverse (bool): flag indication whether to reverse input or not (default: True)
         normalize (bool): flag indication whether to normalize spectrum or not (default:True)
-        time_mask_para (int): Hyper Parameter for Time Masking to limit time masking length
         freq_mask_para (int): Hyper Parameter for Freq Masking to limit freq masking length
         time_mask_num (int): how many time-masked area to make
         freq_mask_num (int): how many freq-masked area to make
         sos_id (int): start of sentence token`s identification
         eos_id (int): end of sentence token`s identification
-        target_dict (dict): dictionary of filename and labels
         noise_augment (bool): flag indication to use noise augment or not
         dataset_path (str): noise dataset path
         noiseset_size (int): noise dataset size
@@ -91,7 +90,6 @@ class SpectrogramParser(AudioParser):
             freq_mask_num: int = 2,                   # how many freq-masked area to make
             sos_id: int = 1,                          # start of sentence token`s identification
             eos_id: int = 2,                          # end of sentence token`s identification
-            target_dict: dict = None,                 # dictionary of filename and labels
             noise_augment: bool = False,              # flag indication to use noise augment or not
             dataset_path: str = None,                 # noise dataset path
             noiseset_size: int = 0,                   # noise dataset size
@@ -103,7 +101,6 @@ class SpectrogramParser(AudioParser):
         self.normalize = normalize
         self.sos_id = sos_id
         self.eos_id = eos_id
-        self.target_dict = target_dict
         self.spec_augment = SpecAugment(freq_mask_para, time_mask_num, freq_mask_num)
 
         if transform_method.lower() == 'mel':

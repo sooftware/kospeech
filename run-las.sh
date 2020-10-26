@@ -22,7 +22,6 @@ RNN_TYPE='lstm'
 TEACHER_FORCING_RATIO=1.0
 TEACHER_FORCING_STEP=0.01
 MIN_TEACHER_FORCING_RATIO=0.9
-VALID_RATIO=0.01
 MAX_LEN=150
 MAX_GRAD_NORM=400
 WEIGHT_DECAY=1e-05
@@ -57,7 +56,7 @@ python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epoch
 --spec_augment --use_cuda --hidden_dim $HIDDEN_DIM --dropout $DROPOUT --num_heads $NUM_HEADS \
 --label_smoothing $LABEL_SMOOTHING --transform_method $TRANSFORM_METHOD --architecture $ARCHITECTURE \
 --num_encoder_layers $NUM_ENCODER_LAYERS --num_decoder_layers $NUM_DECODER_LAYERS --rnn_type $RNN_TYPE \
---teacher_forcing_ratio $TEACHER_FORCING_RATIO --valid_ratio $VALID_RATIO \
+--teacher_forcing_ratio $TEACHER_FORCING_RATIO \
 --sample_rate $SAMPLE_RATE --frame_length $FRAME_LENGTH --frame_shift $FRAME_SHIFT --n_mels $N_MELS --normalize --del_silence \
 --feature_extract_by $FEATURE_EXTRACT_BY --freq_mask_para $FREQ_MASK_PARA \
 --time_mask_num $TIME_MASK_NUM --freq_mask_num $FREQ_MASK_NUM --save_result_every $SAVE_RESULT_EVERY \

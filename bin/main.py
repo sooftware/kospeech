@@ -11,7 +11,7 @@ import warnings
 import torch
 from torch import optim
 sys.path.append('..')
-from kospeech.data.data_loader import split_dataset, load_data_list
+from kospeech.data.data_loader import split_dataset
 from kospeech.criterion.label_smoothed_cross_entropy import LabelSmoothedCrossEntropyLoss
 from kospeech.optim.lr_scheduler import TriStageLRScheduler
 from kospeech.optim.optimizer import Optimizer
@@ -33,8 +33,7 @@ def train(opt):
     device = check_envirionment(opt.use_cuda)
 
     if not opt.resume:
-        audio_paths, script_paths = load_data_list(opt.data_list_path, opt.dataset_path)
-        epoch_time_step, trainset_list, validset = split_dataset(opt, audio_paths, script_paths)
+        epoch_time_step, trainset_list, validset = split_dataset(opt, opt.transcripts_path)
         model = build_model(opt, device)
 
         optimizer = optim.Adam(model.module.parameters(), lr=opt.init_lr, weight_decay=opt.weight_decay)

@@ -76,8 +76,11 @@ def build_train_opts(parser):
     """ Training and saving options """
     group = parser.add_argument_group('General')
     group.add_argument('--dataset_path', '-dataset_path',
-                       type=str, default='/data1/',
+                       type=str, default='',
                        help='path of dataset')
+    group.add_argument('--transcripts_path', '-transcripts_path',
+                       type=str, default='',
+                       help='path of transcripts refer to : https://github.com/sooftware/KsponSpeech-preprocess')
     group.add_argument('--data_list_path', '-data_list_path',
                        type=str, default='./data/data_list/filter_train_list.csv',
                        help='list of training / test set')
@@ -120,9 +123,6 @@ def build_train_opts(parser):
     group.add_argument('--init_lr_scale', '-init_lr_scale',
                        type=float, default=0.01,
                        help='init learning rate scale (default: 0.01)')
-    group.add_argument('--valid_ratio', '-valid_ratio',
-                       type=float, default=0.01,
-                       help='validation dataset ratio in training dataset (default: 0.01)')
     group.add_argument('--max_len', '-max_len',
                        type=int, default=120,
                        help='maximum characters of sentence (default: 120)')
@@ -286,7 +286,6 @@ def print_train_opts(opt):
     logger.info('--num_epochs: %s' % str(opt.num_epochs))
     logger.info('--init_lr: %s' % str(opt.init_lr))
     logger.info('--warmup_steps: %s' % str(opt.warmup_steps))
-    logger.info('--valid_ratio: %s' % str(opt.valid_ratio))
     logger.info('--max_len: %s' % str(opt.max_len))
     logger.info('--max_grad_norm: %s' % str(opt.max_grad_norm))
     logger.info('--teacher_forcing_step: %s' % str(opt.teacher_forcing_step))

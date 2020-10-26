@@ -8,7 +8,7 @@ import csv
 from tqdm import trange
 
 
-def load_label(label_path, encoding='utf-8'):
+def load_vocab(label_path, encoding='utf-8'):
     """
     Provides char2id, id2char
 
@@ -37,36 +37,28 @@ def load_label(label_path, encoding='utf-8'):
         raise IOError("Character label file (csv format) doesn`t exist : {0}".format(label_path))
 
 
-def load_targets(label_paths):
+def load_dataset(transcripts_path):
     """
     Provides dictionary of filename and labels
 
     Args:
-        label_paths (list): set of label paths
+        transcripts_path (str): path of transcripts
 
     Returns: target_dict
         - **target_dict** (dict): dictionary of filename and labels
     """
-    target_dict = dict()
+    audio_paths = list()
+    transcripts = list()
 
-    for idx in trange(len(label_paths)):
-        label_txt = label_paths[idx]
+    with open(transcripts_path) as f:
+        for idx, line in enumerate(f.readlines()):
+            if idx == 0:
+                continue
 
-        try:
-            with open(file=label_txt, mode="r") as f:
-                label = f.readline()
+            audio_path, _, transcript = line.split('\t')
+            transcript = transcript.replace('\n', '')
 
-                # AIHub Dataset(KsponSpeech)
-                if "Kspon" in label_txt:
-                    file_num = label_txt.split('/')[-1].split('.')[0].split('_')[-1]
-                    target_dict['KsponScript_%s' % file_num] = label
+            audio_paths.append(audio_path)
+            transcripts.append(transcript)
 
-                # LibriSpeech Dataset
-                elif "Libri" in label_txt:
-                    file_num = label_txt.split('/')[-1].split('.')[0]
-                    target_dict[file_num] = label
-
-        except IOError:
-            raise IOError("label paths file (csv format) doesn`t exist : {0}".format(label_paths))
-
-    return target_dict
+    return audio_paths, transcripts
