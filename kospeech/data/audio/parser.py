@@ -33,10 +33,8 @@ class AudioParser(object):
         - **parse_audio()**: abstract method. you have to override this method.
         - **parse_transcript()**: abstract method. you have to override this method.
     """
-    def __init__(self, dataset_path, noiseset_size, sample_rate=16000, noise_level=0.7, noise_augment=False):
+    def __init__(self, dataset_path):
         self.dataset_path = dataset_path
-        if noise_augment:
-            self.noise_injector = NoiseInjector(dataset_path, noiseset_size, sample_rate, noise_level)
 
     def parse_audio(self, *args, **kwargs):
         raise NotImplementedError
@@ -64,10 +62,7 @@ class SpectrogramParser(AudioParser):
         freq_mask_num (int): how many freq-masked area to make
         sos_id (int): start of sentence token`s identification
         eos_id (int): end of sentence token`s identification
-        noise_augment (bool): flag indication to use noise augment or not
         dataset_path (str): noise dataset path
-        noiseset_size (int): noise dataset size
-        noise_level (float): noise leve (to multifly)
     """
     VANILLA = 0           # Not apply augmentation
     SPEC_AUGMENT = 1      # SpecAugment
@@ -90,12 +85,9 @@ class SpectrogramParser(AudioParser):
             freq_mask_num: int = 2,                   # how many freq-masked area to make
             sos_id: int = 1,                          # start of sentence token`s identification
             eos_id: int = 2,                          # end of sentence token`s identification
-            noise_augment: bool = False,              # flag indication to use noise augment or not
-            dataset_path: str = None,                 # noise dataset path
-            noiseset_size: int = 0,                   # noise dataset size
-            noise_level: float = 0.7                  # noise level (to multifly)
+            dataset_path: str = None                  # noise dataset path
     ) -> None:
-        super(SpectrogramParser, self).__init__(dataset_path, noiseset_size, sample_rate, noise_level, noise_augment)
+        super(SpectrogramParser, self).__init__(dataset_path)
         self.del_silence = del_silence
         self.input_reverse = input_reverse
         self.normalize = normalize
@@ -130,10 +122,6 @@ class SpectrogramParser(AudioParser):
             - **feature_vector** (torch.FloatTensor): feature from audio file.
         """
         signal = load_audio(audio_path, self.del_silence)
-
-        if augment_method == SpectrogramParser.NOISE_INJECTION or augment_method == SpectrogramParser.HYBRID_AUGMENT:
-            signal = self.noise_injector(signal)
-
         feature_vector = self.transforms(signal)
 
         if self.normalize:

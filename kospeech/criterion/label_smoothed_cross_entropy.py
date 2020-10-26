@@ -36,7 +36,7 @@ class LabelSmoothedCrossEntropyLoss(nn.Module):
             smoothing: float = 0.1,     # ratio of smoothing (confidence = 1.0 - smoothing)
             dim: int = -1,              # dimension of caculation loss
             reduction='sum',            # reduction method [sum, mean]
-            architecture='las'      # speech model`s architecture [las, transformer]
+            architecture='las'          # speech model`s architecture [las, transformer]
     ) -> None:
         super(LabelSmoothedCrossEntropyLoss, self).__init__()
         self.confidence = 1.0 - smoothing

@@ -13,12 +13,7 @@ from argparse import ArgumentParser
 from torch.utils.data import Dataset
 from kospeech.data.label_loader import load_dataset
 from kospeech.data.audio.parser import SpectrogramParser
-from kospeech.utils import (
-    logger,
-    PAD_token,
-    SOS_token,
-    EOS_token
-)
+from kospeech.utils import logger, PAD_token, SOS_token, EOS_token
 
 
 class SpectrogramDataset(Dataset, SpectrogramParser):
@@ -34,8 +29,6 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
         noise_augment (bool): flag indication whether to use noise-augmentation or not (default: True)
         opt (ArgumentParser): set of arguments
         dataset_path (str): noise dataset path
-        noiseset_size (int): noise dataset size
-        noise_level (float): noise level (to multifly)
     """
     def __init__(
             self,
@@ -46,9 +39,7 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
             opt: ArgumentParser,            # set of arguments
             spec_augment: bool = False,     # flag indication whether to use spec-augmentation of not
             noise_augment: bool = False,    # flag indication whether to use noise-augmentation of not
-            dataset_path: str = None,       # noise dataset path
-            noiseset_size: int = 0,         # noise dataset size
-            noise_level: float = 0.7        # noise level (to multifly)
+            dataset_path: str = None        # noise dataset path
     ) -> None:
         super(SpectrogramDataset, self).__init__(
             feature_extract_by=opt.feature_extract_by, sample_rate=opt.sample_rate, n_mels=opt.n_mels,
@@ -56,8 +47,7 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
             input_reverse=opt.input_reverse, normalize=opt.normalize, freq_mask_para=opt.freq_mask_para,
             time_mask_num=opt.time_mask_num, freq_mask_num=opt.freq_mask_num,
             sos_id=sos_id, eos_id=eos_id,
-            dataset_path=dataset_path, noiseset_size=noiseset_size, noise_level=noise_level,
-            noise_augment=noise_augment, transform_method=opt.transform_method
+            dataset_path=dataset_path, transform_method=opt.transform_method
         )
         self.audio_paths = list(audio_paths)
         self.transcripts = list(transcripts)
@@ -92,14 +82,6 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
 
             for idx in range(self.dataset_size):
                 self.augment_methods.append(self.SPEC_AUGMENT)
-                self.audio_paths.append(self.audio_paths[idx])
-                self.transcripts.append(self.transcripts[idx])
-
-        if noise_augment:
-            logger.info("Applying Noise Augmentation...")
-
-            for idx in range(self.dataset_size):
-                self.augment_methods.append(self.NOISE_INJECTION)
                 self.audio_paths.append(self.audio_paths[idx])
                 self.transcripts.append(self.transcripts[idx])
 
@@ -255,7 +237,7 @@ def split_dataset(opt, transcripts_path):
 
     Args:
         opt (ArgumentParser): set of options
-        transcripts_path (list): path of  transcripts
+        transcripts_path (str): path of  transcripts
 
     Returns: train_batch_num, train_dataset_list, valid_dataset
         - **train_time_step** (int): number of time step for training
@@ -270,7 +252,6 @@ def split_dataset(opt, transcripts_path):
     total_time_step = math.ceil(len(audio_paths) / opt.batch_size)
     valid_time_step = math.ceil(2545 / opt.batch_size)
     train_time_step = total_time_step - valid_time_step
-    base_time_step = train_time_step
 
     train_audio_paths = audio_paths[:620001]
     train_transcripts = transcripts[:620001]
@@ -279,10 +260,7 @@ def split_dataset(opt, transcripts_path):
     valid_transcripts = transcripts[620001:]
 
     if opt.spec_augment:
-        train_time_step += base_time_step
-
-    if opt.noise_augment:
-        train_time_step += base_time_step
+        train_time_step <<= 1
 
     train_num_per_worker = math.ceil(train_num / opt.num_workers)
 
@@ -304,10 +282,7 @@ def split_dataset(opt, transcripts_path):
                 SOS_token, EOS_token,
                 opt=opt,
                 spec_augment=opt.spec_augment,
-                noise_augment=opt.noise_augment,
-                dataset_path=opt.dataset_path,
-                noiseset_size=opt.noiseset_size,
-                noise_level=opt.noise_level
+                dataset_path=opt.dataset_path
             )
         )
 
@@ -316,8 +291,7 @@ def split_dataset(opt, transcripts_path):
         transcripts=valid_transcripts,
         sos_id=SOS_token, eos_id=EOS_token,
         opt=opt,
-        spec_augment=False,
-        noise_augment=False
+        spec_augment=False
     )
 
     logger.info("split dataset complete !!")

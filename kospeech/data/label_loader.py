@@ -52,10 +52,7 @@ def load_dataset(transcripts_path):
 
     with open(transcripts_path) as f:
         for idx, line in enumerate(f.readlines()):
-            if idx == 0:
-                continue
-
-            audio_path, _, transcript = line.split('\t')
+            audio_path, korean_transcript, transcript = line.split('\t')
             transcript = transcript.replace('\n', '')
 
             audio_paths.append(audio_path)

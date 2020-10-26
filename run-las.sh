@@ -6,7 +6,7 @@
 
 ARCHITECTURE='las'
 DATASET_PATH='your_dataset_path'
-DATA_LIST_PATH='../data/data_list/except_outlier_train_list.csv'
+TRANSCRIPTS_PATH='your_transcripts_path'
 BATCH_SIZE=32
 NUM_WORKERS=4
 NUM_EPOCHS=20
@@ -22,7 +22,7 @@ RNN_TYPE='lstm'
 TEACHER_FORCING_RATIO=1.0
 TEACHER_FORCING_STEP=0.01
 MIN_TEACHER_FORCING_RATIO=0.9
-MAX_LEN=150
+MAX_LEN=250
 MAX_GRAD_NORM=400
 WEIGHT_DECAY=1e-05
 INIT_LR=1e-06
@@ -45,14 +45,13 @@ FREQ_MASK_NUM=2
 SAVE_RESULT_EVERY=1000
 CHECKPOINT_EVERY=5000
 PRINT_EVERY=10
-NOISE_LEVEL=0.7
-NOISESET_SIZE=1000
 MODE='train'
 
 # shellcheck disable=SC2164
 cd bin
 
 python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epochs $NUM_EPOCHS --use_bidirectional \
+--transcripts_path $TRANSCRIPTS_PATH \
 --spec_augment --use_cuda --hidden_dim $HIDDEN_DIM --dropout $DROPOUT --num_heads $NUM_HEADS \
 --label_smoothing $LABEL_SMOOTHING --transform_method $TRANSFORM_METHOD --architecture $ARCHITECTURE \
 --num_encoder_layers $NUM_ENCODER_LAYERS --num_decoder_layers $NUM_DECODER_LAYERS --rnn_type $RNN_TYPE \
@@ -62,8 +61,8 @@ python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epoch
 --time_mask_num $TIME_MASK_NUM --freq_mask_num $FREQ_MASK_NUM --save_result_every $SAVE_RESULT_EVERY \
 --checkpoint_every $CHECKPOINT_EVERY --print_every $PRINT_EVERY \
 --init_lr $INIT_LR --final_lr $FINAL_LR --peak_lr $PEAK_LR --init_lr_scale $INIT_LR_SCALE --final_lr_scale $FINAL_LR_SCALE \
---mode $MODE --dataset_path $DATASET_PATH --data_list_path $DATA_LIST_PATH  \
+--mode $MODE --dataset_path $DATASET_PATH \
 --max_grad_norm $MAX_GRAD_NORM --warmup_steps $WARMUP_STEPS --max_len $MAX_LEN \
---noiseset_size $NOISESET_SIZE --weight_decay $WEIGHT_DECAY --reduction $REDUCTION \
---noise_level $NOISE_LEVEL --attn_mechanism $ATTN_MECHANISM --teacher_forcing_step $TEACHER_FORCING_STEP \
+--weight_decay $WEIGHT_DECAY --reduction $REDUCTION \
+--attn_mechanism $ATTN_MECHANISM --teacher_forcing_step $TEACHER_FORCING_STEP \
 --min_teacher_forcing_ratio $MIN_TEACHER_FORCING_RATIO --extractor $EXTRACTOR --activation $ACTIVATION --input_reverse
