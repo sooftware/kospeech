@@ -310,7 +310,7 @@ class SupervisedTrainer(object):
     def __save_epoch_result(self, train_result: list, valid_result: list) -> None:
         """ Save result of epoch """
         train_dict, train_loss, train_cer = train_result
-        valid_dict, valid_loss, valid_cer = valid_result
+        valid_dict, valid_cer = valid_result
 
         train_dict["loss"].append(train_loss)
 
