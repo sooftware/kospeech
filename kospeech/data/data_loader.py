@@ -289,7 +289,8 @@ def split_dataset(opt, transcripts_path):
         transcripts=valid_transcripts,
         sos_id=SOS_token, eos_id=EOS_token,
         opt=opt,
-        spec_augment=False
+        spec_augment=False,
+        dataset_path=opt.dataset_path
     )
 
     logger.info("split dataset complete !!")
