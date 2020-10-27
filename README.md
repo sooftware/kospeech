@@ -124,7 +124,7 @@ pip install -e .
   
 * Command   
 ```
-$ cd ~KoSpeech/dataset
+$ cd ~KoSpeech/dataset/kspon
 $ python prepare-kspon.py --dataset_path $DATASET_PATH --vocab_dest $VOCAB_DEST --preprocess_mode $PREPROCESS_MODE
 ```
   
