@@ -1,16 +1,22 @@
+# -*- coding: utf-8 -*-
+# Soohwan Kim, Seyoung Bae, Cheolhwang Won.
+# @ArXiv : KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition
+# This source code is licensed under the Apache 2.0 License license found in the
+# LICENSE file in the root directory of this source tree.
+
 import argparse
-from preprocess.preprocess import preprocess
-from preprocess.character import generate_character_labels, generate_character_script
+from kspon.preprocess.preprocess import preprocess
+from kspon.preprocess.character import generate_character_labels, generate_character_script
 
 
 def _get_parser():
     """ Get arguments parser """
     parser = argparse.ArgumentParser(description='KsponSpeech Preprocess')
     parser.add_argument('--dataset_path', type=str,
-                        default='E:/KsponSpeech/original',
+                        default='your_dataset_path',
                         help='path of original dataset')
     parser.add_argument('--vocab_dest', type=str,
-                        default='E:/KsponSpeech',
+                        default='../../data/vocab/',
                         help='destination to save vocab file')
     parser.add_argument('--preprocess_mode', type=str,
                         default='numeric_phonetic_otherwise_spelling',

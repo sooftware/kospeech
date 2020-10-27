@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+# Soohwan Kim, Seyoung Bae, Cheolhwang Won.
+# @ArXiv : KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition
+# This source code is licensed under the Apache 2.0 License license found in the
+# LICENSE file in the root directory of this source tree.
+
 import os
 import pandas as pd
 
@@ -59,7 +65,7 @@ def generate_character_script(audio_paths, transcripts, labels_dest):
     print('create_script started..')
     char2id, id2char = load_label(os.path.join(labels_dest, "aihub_vocabs.csv"))
 
-    with open(os.path.join("../data/transcripts.txt"), "w") as trans_file:
+    with open(os.path.join("../../data/transcripts.txt"), "w") as trans_file:
         for audio_path, transcript in zip(audio_paths, transcripts):
             number_transcript = sentence_to_target(transcript, char2id)
             audio_path = audio_path.replace('txt', 'pcm')
