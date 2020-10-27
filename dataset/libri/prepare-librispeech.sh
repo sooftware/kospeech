@@ -5,18 +5,17 @@
 # LICENSE file in the root directory of this source tree.
 
 # $1 : DIR_TO_SAVE_RAW_DATA
-# $2 : DIR_FOR_PREPROCESSED_DATA
 
 base_url=www.openslr.org/resources/12
 train_dir=train_960
+vocab_size=5000
 
-if [ "$#" -ne 2 ]; then
-  echo "Usage: $0 <download_dir> <out_dir>"
+if [ "$#" -ne 1 ]; then
+  echo "Usage: $0 <download_dir>>"
   exit 1
 fi
 
 download_dir=${1%/}
-out_dir=${2%/}
 
 echo "Data Download"
 for part in dev-clean test-clean dev-other test-other train-clean-100 train-clean-360 train-other-500; do
@@ -36,3 +35,5 @@ mkdir -p ${download_dir}/LibriSpeech/${train_dir}/
 for part in train-clean-100 train-clean-360 train-other-500; do
     mv ${download_dir}/LibriSpeech/${part}/* $download_dir/LibriSpeech/${train_dir}/
 done
+
+python prepare-libri.py --dataset_path $1 --vocab_size $vocab_size
