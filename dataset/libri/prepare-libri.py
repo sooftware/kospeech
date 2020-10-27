@@ -16,9 +16,6 @@ def _get_parser():
     parser.add_argument('--dataset_path', type=str,
                         default='your_dataset_path',
                         help='path of original dataset')
-    parser.add_argument('--vocab_dest', type=str,
-                        default='../../data/vocab/',
-                        help='destination to save vocab file')
     parser.add_argument('--vocab_size', type=int,
                         default=5000,
                         help='size of vocab')
@@ -26,15 +23,9 @@ def _get_parser():
     return parser
 
 
-def log_info(opt):
-    print("Dataset Path : %s" % opt.dataset_path)
-    print("Labels Dest : %s" % opt.labels_dest)
-
-
 def main():
     parser = _get_parser()
     opt = parser.parse_args()
-    log_info(opt)
 
     transcripts_collection = collect_transcripts(opt.dataset_path)
     prepare_tokenizer(transcripts_collection[0], opt.vocab_size)
