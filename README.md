@@ -60,12 +60,12 @@ In addition to this, You can see a variety of options [here](https://sooftware.g
   
 * Options
 ```
+
 usage: main.py [-h] [--mode MODE] [--sample_rate SAMPLE_RATE]
                [--frame_length FRAME_LENGTH] [--frame_shift FRAME_SHIFT]
                [--n_mels N_MELS] [--normalize] [--del_silence]
                [--input_reverse] [--feature_extract_by FEATURE_EXTRACT_BY]
                [--transform_method TRANSFORM_METHOD]
-               [--time_mask_para TIME_MASK_PARA]
                [--freq_mask_para FREQ_MASK_PARA]
                [--time_mask_num TIME_MASK_NUM] [--freq_mask_num FREQ_MASK_NUM]
                [--architecture ARCHITECTURE] [--use_bidirectional]
@@ -78,23 +78,20 @@ usage: main.py [-h] [--mode MODE] [--sample_rate SAMPLE_RATE]
                [--teacher_forcing_ratio TEACHER_FORCING_RATIO]
                [--num_classes NUM_CLASSES] [--d_model D_MODEL]
                [--ffnet_style FFNET_STYLE] [--dataset_path DATASET_PATH]
-               [--data_list_path DATA_LIST_PATH] [--label_path LABEL_PATH]
-               [--spec_augment] [--noise_augment]
-               [--noiseset_size NOISESET_SIZE] [--noise_level NOISE_LEVEL]
-               [--use_cuda] [--batch_size BATCH_SIZE]
-               [--num_workers NUM_WORKERS] [--num_epochs NUM_EPOCHS]
-               [--init_lr INIT_LR] [--high_plateau_lr HIGH_PLATEAU_LR]
-               [--low_plateau_lr LOW_PLATEAU_LR] [--valid_ratio VALID_RATIO]
-               [--max_len MAX_LEN] [--max_grad_norm MAX_GRAD_NORM]
-               [--rampup_period RAMPUP_PERIOD]
-               [--decay_threshold DECAY_THRESHOLD]
-               [--exp_decay_period EXP_DECAY_PERIOD]
+               [--transcripts_path TRANSCRIPTS_PATH]
+               [--data_list_path DATA_LIST_PATH] [--spec_augment] [--use_cuda]
+               [--batch_size BATCH_SIZE] [--num_workers NUM_WORKERS]
+               [--num_epochs NUM_EPOCHS] [--init_lr INIT_LR]
+               [--peak_lr PEAK_LR] [--final_lr FINAL_LR]
+               [--final_lr_scale FINAL_LR_SCALE]
+               [--init_lr_scale INIT_LR_SCALE] [--max_len MAX_LEN]
+               [--max_grad_norm MAX_GRAD_NORM] [--weight_decay WEIGHT_DECAY]
+               [--reduction REDUCTION] [--warmup_steps WARMUP_STEPS]
                [--teacher_forcing_step TEACHER_FORCING_STEP]
                [--min_teacher_forcing_ratio MIN_TEACHER_FORCING_RATIO]
                [--seed SEED] [--save_result_every SAVE_RESULT_EVERY]
                [--checkpoint_every CHECKPOINT_EVERY]
                [--print_every PRINT_EVERY] [--resume]
-
 ```
   
 ## Installation
