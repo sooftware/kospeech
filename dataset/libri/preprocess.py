@@ -38,7 +38,7 @@ def prepare_tokenizer(train_transcripts, vocab_size):
 
     with open(input_file, 'w') as f:
         for transcript in train_transcripts:
-            f.write('{}\n'.format(transcript))
+            f.write('{}\n'.format(transcript.split('|')[-1]))
 
     input_args = '--input=%s --model_prefix=%s --vocab_size=%s --model_type=%s'
     cmd = input_args % (input_file, model_name, vocab_size, model_type)
@@ -49,7 +49,7 @@ def generate_transcript_file(dataset_name, transcripts):
     sp=spm.SentencePieceProcessor()
     sp.Load("tokenizer.model")
 
-    with open('../../data/libri-%s-transcript.txt' % dataset_name) as f:
+    with open('../../data/libri-%s-transcript.txt' % dataset_name, 'w') as f:
         for transcript in transcripts:
             audio, transcript = transcript.split('|')
             text = " ".join(sp.EncodeAsPieces(transcript))
