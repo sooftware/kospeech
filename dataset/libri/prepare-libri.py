@@ -1,5 +1,5 @@
 import argparse
-from libri.preprocess import(
+from preprocess import (
     collect_transcripts,
     prepare_tokenizer,
     generate_transcript_file
