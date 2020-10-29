@@ -36,4 +36,4 @@ for part in train-clean-100 train-clean-360 train-other-500; do
     mv ${download_dir}/LibriSpeech/${part}/* $download_dir/LibriSpeech/${train_dir}/
 done
 
-python prepare-libri.py --dataset_path $1 --vocab_size $vocab_size
+python prepare-libri.py --dataset_path LibriSpeech/$1 --vocab_size $vocab_size
