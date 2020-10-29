@@ -11,6 +11,7 @@ setup(
         'pandas',
         'tqdm',
         'matplotlib',
-        'astropy'
+        'astropy',
+        'sentencepiece'
     ]
 )

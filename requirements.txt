@@ -1,9 +1,0 @@
-seaborn
-matplotlib
-astropy
-torch
-numpy
-pandas
-tqdm
-librosa
-python-Levenshtein

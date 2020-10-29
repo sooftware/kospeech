@@ -6,8 +6,8 @@
 # It has not yet been fully implemented yet
 
 ARCHITECTURE='transformer'
-DATASET_PATH='E:/AIHub/'
-DATA_LIST_PATH='../data/data_list/except_outlier_train_list.csv'
+DATASET_PATH='your_dataset_path'
+TRANSCRIPTS_PATH='../data/transcripts.txt'
 BATCH_SIZE=32
 NUM_WORKERS=4
 NUM_EPOCHS=20
@@ -46,9 +46,11 @@ MODE='train'
 
 # shellcheck disable=SC2164
 cd bin
+echo "KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition =="
+
 python ./main.py --architecture $ARCHITECTURE --num_classes $NUM_CLASSES --d_model $D_MODEL --reduction $REDUCTION \
 --num_heads $NUM_HEADS --num_encoder_layers $NUM_ENCODER_LAYERS --num_decoder_layers $NUM_DECODER_LAYERS \
---dropout $DROPOUT --ffnet_style $FFNET_STYLE --dataset_path $DATASET_PATH --data_list_path $DATA_LIST_PATH \
+--dropout $DROPOUT --ffnet_style $FFNET_STYLE --dataset_path $DATASET_PATH --transcripts_path $TRANSCRIPTS_PATH \
 --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epochs $NUM_EPOCHS --label_smoothing $LABEL_SMOOTHING \
 --init_lr $INIT_LR --final_lr $FINAL_LR --peak_lr $PEAK_LR --init_lr_scale $INIT_LR_SCALE --final_lr_scale $FINAL_LR_SCALE \
 --frame_length $FRAME_LENGTH \
@@ -56,4 +58,4 @@ python ./main.py --architecture $ARCHITECTURE --num_classes $NUM_CLASSES --d_mod
 --transform_method $TRANSFORM_METHOD \
 --freq_mask_para $FREQ_MASK_PARA --time_mask_num $TIME_MASK_NUM --freq_mask_num $FREQ_MASK_NUM \
 --save_result_every $SAVE_RESULT_EVERY --checkpoint_every $CHECKPOINT_EVERY --print_every $PRINT_EVERY \
---noise_level $NOISE_LEVEL --noiseset_size $NOISESET_SIZE --mode $MODE  --del_silence --normalize #--use_cuda
+--noise_level $NOISE_LEVEL --noiseset_size $NOISESET_SIZE --mode $MODE  --del_silence --normalize --use_cuda

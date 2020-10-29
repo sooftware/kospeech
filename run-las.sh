@@ -49,6 +49,7 @@ MODE='train'
 
 # shellcheck disable=SC2164
 cd bin
+echo "KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition =="
 
 python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epochs $NUM_EPOCHS --use_bidirectional \
 --transcripts_path $TRANSCRIPTS_PATH \
