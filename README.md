@@ -121,7 +121,7 @@ pip install -e .
   
 ## Get Started
     
-### Preparing KsponSpeech Dataset
+### Preparing KsponSpeech Dataset (LibriSpeech also supports)
   
 * Command   
 ```
@@ -215,12 +215,16 @@ We follow [PEP-8](https://www.python.org/dev/peps/pep-0008/) for code style. Esp
     
 ### Github References
   
-* [IBM/Pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)  
-* [SeanNaren/deepspeech.pytorch](https://github.com/SeanNaren/deepspeech.pytorch)  
-* [kaituoxu/Speech-Transformer](https://github.com/kaituoxu/Speech-Transformer)  
-* [OpenNMT/OpenNMT-py](https://github.com/OpenNMT/OpenNMT-py)  
-* [clovaai/ClovaCall](https://github.com/clovaai/ClovaCall)
+*[IBM/Pytorch-seq2seq](https://github.com/IBM/pytorch-seq2seq)*  
   
+*[SeanNaren/deepspeech.pytorch](https://github.com/SeanNaren/deepspeech.pytorch)*  
+  
+*[kaituoxu/Speech-Transformer](https://github.com/kaituoxu/Speech-Transformer)*  
+  
+*[OpenNMT/OpenNMT-py](https://github.com/OpenNMT/OpenNMT-py)*  
+  
+*[clovaai/ClovaCall](https://github.com/clovaai/ClovaCall)*  
+   
 ### License
 This project is licensed under the Apache-2.0 LICENSE - see the [LICENSE.md](https://github.com/sooftware/KoSpeech/blob/master/LICENSE) file for details
   
