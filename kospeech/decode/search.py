@@ -9,8 +9,8 @@ import torch.nn as nn
 import pandas as pd
 from queue import Queue
 from kospeech.metrics import CharacterErrorRate, WordErrorRate
-from kospeech.models.las.topk_decoder import SpeechTopKDecoder
-from kospeech.models.las.las import SpeechSeq2seq
+from kospeech.models.las.topk_decoder import TopKDecoder
+from kospeech.models.las.las import ListenAttendSpell
 from kospeech.utils import id2char, EOS_token, logger, label_to_string
 
 
@@ -76,11 +76,11 @@ class BeamSearch(GreedySearch):
         super(BeamSearch, self).__init__()
         self.k = k
 
-    def search(self, model: SpeechSeq2seq, queue: Queue, device: str, print_every: int) -> float:
+    def search(self, model: ListenAttendSpell, queue: Queue, device: str, print_every: int) -> float:
         if isinstance(model, nn.DataParallel):
-            topk_decoder = SpeechTopKDecoder(model.module.decoder, self.k)
+            topk_decoder = TopKDecoder(model.module.decoder, self.k)
             model.module.set_decoder(topk_decoder)
         else:
-            topk_decoder = SpeechTopKDecoder(model.decoder, self.k)
+            topk_decoder = TopKDecoder(model.decoder, self.k)
             model.set_decoder(topk_decoder)
         return super(BeamSearch, self).search(model, queue, device, print_every)
