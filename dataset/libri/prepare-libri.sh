@@ -4,7 +4,7 @@
 # This source code is licensed under the Apache 2.0 License license found in the
 # LICENSE file in the root directory of this source tree.
 
-# $1 : DIR_TO_SAVE_RAW_DATA
+# $1 : DIR_TO_SAVE_DATA
 
 base_url=www.openslr.org/resources/12
 train_dir=train_960
@@ -37,3 +37,7 @@ for part in train-clean-100 train-clean-360 train-other-500; do
 done
 
 python prepare-libri.py --dataset_path $1/LibriSpeech --vocab_size $vocab_size
+
+for part in dev-clean test-clean dev-other test-other train-clean-100 train-clean-360 train-other-500; do
+    rm $part.tar.gz
+done
