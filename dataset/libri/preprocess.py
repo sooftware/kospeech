@@ -53,6 +53,6 @@ def generate_transcript_file(dataset_name, transcripts):
         for transcript in transcripts:
             audio, transcript = transcript.split('|')
             text = " ".join(sp.EncodeAsPieces(transcript))
-            label = " ".join([str(item) for item in text])
+            label = " ".join([str(item) for item in sp.EncodeAsIds(transcript)])
 
             f.write('%s\t%s\t%s\n' % (audio, text, label))
