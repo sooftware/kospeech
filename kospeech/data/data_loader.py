@@ -258,9 +258,8 @@ def split_dataset(opt, transcripts_path, vocab):
 
     audio_paths, transcripts = load_dataset(transcripts_path)
 
-    train_num = 620000
     total_time_step = math.ceil(len(audio_paths) / opt.batch_size)
-    valid_time_step = math.ceil(2545 / opt.batch_size)
+    valid_time_step = math.ceil(valid_num / opt.batch_size)
     train_time_step = total_time_step - valid_time_step
 
     train_audio_paths = audio_paths[:train_num + 1]
