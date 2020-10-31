@@ -59,12 +59,12 @@ def generate_transcript_file(dataset_name, transcripts):
 
 
 def merge_train_dev_transcript_file():
-    train_dev_list = ['train_960', 'dev-clean', 'dev-other']
+    merge_list = ['train_960', 'dev-clean', 'dev-other']
 
     lines = list()
 
-    for set in train_dev_list:
-        with open('../../data/%s-transcript.txt' % set) as f:
+    for dataset in merge_list:
+        with open('../../data/%s-transcript.txt' % dataset) as f:
             for line in f.readlines():
                 lines.append(line)
 
