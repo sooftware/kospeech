@@ -6,24 +6,30 @@
 
 import warnings
 import numpy as np
+import librosa
 from astropy.modeling import ParameterError
 from numpy.lib.stride_tricks import as_strided
 from kospeech.utils import logger
 
 
-def load_audio(audio_path: str, del_silence: bool = False):
+def load_audio(audio_path: str, del_silence: bool = False, extension: str = 'pcm'):
     """
     Load audio file (PCM) to sound. if del_silence is True, Eliminate all sounds below 30dB.
     If exception occurs in numpy.memmap(), return None.
     """
     try:
-        signal = np.memmap(audio_path, dtype='h', mode='r').astype('float32')
+        if extension == 'pcm':
+            signal = np.memmap(audio_path, dtype='h', mode='r').astype('float32')
 
-        if del_silence:
-            non_silence_indices = split(signal, top_db=30)
-            signal = np.concatenate([signal[start:end] for start, end in non_silence_indices])
+            if del_silence:
+                non_silence_indices = split(signal, top_db=30)
+                signal = np.concatenate([signal[start:end] for start, end in non_silence_indices])
 
-        return signal / 32767  # normalize audio
+            return signal / 32767  # normalize audio
+
+        elif extension == 'wav' or extension == 'flac':
+            signal, _ = librosa.load(audio_path, sr=16000)
+            return signal
 
     except ValueError:
         logger.debug('ValueError in {0}'.format(audio_path))

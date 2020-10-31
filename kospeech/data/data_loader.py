@@ -243,20 +243,30 @@ def split_dataset(opt, transcripts_path, vocab):
         - **trainset_list** (list): list of training dataset
         - **validset** (data_loader.MelSpectrogramDataset): validation dataset
     """
+    logger.info("split dataset start !!")
+    trainset_list=list()
+
+    if opt.dataset == 'kspon':
+        train_num = 620000
+        valid_num = 2545
+    elif opt.dataset == 'libri':
+        train_num = 281241
+        valid_num = 5567
+    else:
+        raise NotImplementedError("Unsupported Dataset : {0}".format(opt.dataset))
+
     audio_paths, transcripts = load_dataset(transcripts_path)
 
-    logger.info("split dataset start !!")
-    trainset_list = list()
     train_num = 620000
     total_time_step = math.ceil(len(audio_paths) / opt.batch_size)
     valid_time_step = math.ceil(2545 / opt.batch_size)
     train_time_step = total_time_step - valid_time_step
 
-    train_audio_paths = audio_paths[:620001]
-    train_transcripts = transcripts[:620001]
+    train_audio_paths = audio_paths[:train_num + 1]
+    train_transcripts = transcripts[:train_num + 1]
 
-    valid_audio_paths = audio_paths[620001:]
-    valid_transcripts = transcripts[620001:]
+    valid_audio_paths = audio_paths[train_num + 1:]
+    valid_transcripts = transcripts[train_num + 1:]
 
     if opt.spec_augment:
         train_time_step <<= 1

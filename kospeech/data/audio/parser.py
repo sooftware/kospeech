@@ -77,7 +77,8 @@ class SpectrogramParser(AudioParser):
             freq_mask_num: int = 2,                   # how many freq-masked area to make
             sos_id: int = 1,                          # start of sentence token`s identification
             eos_id: int = 2,                          # end of sentence token`s identification
-            dataset_path: str = None                  # noise dataset path
+            dataset_path: str = None,                 # noise dataset path
+            audio_extension: str = 'pcm'              # audio extension
     ) -> None:
         super(SpectrogramParser, self).__init__(dataset_path)
         self.del_silence = del_silence
@@ -86,6 +87,7 @@ class SpectrogramParser(AudioParser):
         self.sos_id = sos_id
         self.eos_id = eos_id
         self.spec_augment = SpecAugment(freq_mask_para, time_mask_num, freq_mask_num)
+        self.audio_extension = audio_extension
 
         if transform_method.lower() == 'mel':
             self.transforms = MelSpectrogram(sample_rate, n_mels, frame_length, frame_shift, feature_extract_by)
@@ -113,7 +115,7 @@ class SpectrogramParser(AudioParser):
         Returns: feature_vector
             - **feature_vector** (torch.FloatTensor): feature from audio file.
         """
-        signal = load_audio(audio_path, self.del_silence)
+        signal = load_audio(audio_path, self.del_silence, extension=self.audio_extension)
         feature_vector = self.transforms(signal)
 
         if self.normalize:

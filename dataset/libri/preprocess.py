@@ -49,10 +49,25 @@ def generate_transcript_file(dataset_name, transcripts):
     sp = spm.SentencePieceProcessor()
     sp.Load("tokenizer.model")
 
-    with open('../../data/libri-%s-transcript.txt' % dataset_name, 'w') as f:
+    with open('../../data/%s-transcript.txt' % dataset_name, 'w') as f:
         for transcript in transcripts:
             audio, transcript = transcript.split('|')
             text = " ".join(sp.EncodeAsPieces(transcript))
             label = " ".join([str(item) for item in sp.EncodeAsIds(transcript)])
 
             f.write('%s\t%s\t%s\n' % (audio, text, label))
+
+
+def merge_train_dev_transcript_file():
+    train_dev_list = ['train_960', 'dev-clean', 'dev-other']
+
+    lines = list()
+
+    for set in train_dev_list:
+        with open('../../data/%s-transcript.txt' % set) as f:
+            for line in f.readlines():
+                lines.append(line)
+
+    with open('../../data/train.txt', 'w') as f:
+        for line in lines:
+            f.write('%s' % line)
