@@ -60,7 +60,7 @@ def train(opt):
         optimizer = Optimizer(optimizer, lr_scheduler, opt.warmup_steps, opt.max_grad_norm)
 
         criterion = LabelSmoothedCrossEntropyLoss(
-            num_classes=vocab.vocab_size, ignore_index=vocab.pad_id,
+            num_classes=len(vocab), ignore_index=vocab.pad_id,
             smoothing=opt.label_smoothing, dim=-1,
             reduction=opt.reduction, architecture=opt.architecture
         ).to(device)
@@ -71,7 +71,7 @@ def train(opt):
         model = None
         optimizer = None
         criterion = LabelSmoothedCrossEntropyLoss(
-            num_classes=vocab.vocab_size, ignore_index=vocab.pad_id,
+            num_classes=len(vocab), ignore_index=vocab.pad_id,
             smoothing=opt.label_smoothing, dim=-1,
             reduction=opt.reduction, architecture=opt.architecture
         ).to(device)

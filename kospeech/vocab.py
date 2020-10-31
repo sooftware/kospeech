@@ -23,7 +23,9 @@ class KsponSpeechVocabulary(Vocabulary):
         self.sos_id = int(self.vocab_dict['<sos>'])
         self.eos_id = int(self.vocab_dict['<eos>'])
         self.pad_id = int(self.vocab_dict['<pad>'])
-        self.vocab_size = len(self.vocab_dict)
+
+    def __len__(self):
+        return len(self.vocab_dict)
 
     def label_to_string(self, labels):
         """
@@ -88,14 +90,18 @@ class LibriSpeechVocabulary(Vocabulary):
         self.sos_id = 1
         self.eos_id = 2
 
-        with open(vocab_path, encoding='utf-8') as f:
-            count = 0
-            for _ in f.readlines():
-                count += 1
-            self.vocab_size = count
+        self.vocab_path = vocab_path
 
         self.sp = spm.SentencePieceProcessor()
         self.sp.Load(model_path)
+
+    def __len__(self):
+        count = 0
+        with open(self.vocab_path, encoding='utf-8') as f:
+            for _ in f.readlines():
+                count += 1
+
+        return count
 
     def label_to_string(self, labels):
         if len(labels.shape) == 1:

@@ -87,7 +87,7 @@ def build_las(input_size, opt, vocab, device):
             mask_conv=opt.mask_conv
         ),
         build_speller(
-            num_classes=vocab.vocab_size,
+            num_classes=len(vocab),
             max_len=opt.max_len,
             pad_id=vocab.pad_id,
             sos_id=vocab.sos_id,
