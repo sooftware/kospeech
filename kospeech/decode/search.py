@@ -11,19 +11,20 @@ from queue import Queue
 from kospeech.metrics import CharacterErrorRate, WordErrorRate
 from kospeech.models.las.topk_decoder import TopKDecoder
 from kospeech.models.las.las import ListenAttendSpell
-from kospeech.utils import id2char, EOS_token, logger, label_to_string
+from kospeech.utils import logger
 
 
 class GreedySearch(object):
     """ Provides greedy search and save result to csv format """
-    def __init__(self, metric: str = 'char'):
+    def __init__(self, vocab, metric: str = 'char'):
         self.target_list = list()
         self.predict_list = list()
+        self.vocab = vocab
 
         if metric == 'char':
-            self.metric = CharacterErrorRate(id2char, EOS_token)
+            self.metric = CharacterErrorRate(vocab)
         elif metric == 'word':
-            self.metric = WordErrorRate(id2char, EOS_token)
+            self.metric = WordErrorRate(vocab)
         else:
             raise ValueError("Unsupported metric : {0}".format(metric))
 
@@ -48,8 +49,12 @@ class GreedySearch(object):
                 pred = logit.max(-1)[1]
 
                 for idx in range(targets.size(0)):
-                    self.target_list.append(label_to_string(targets[idx], id2char, EOS_token))
-                    self.predict_list.append(label_to_string(pred[idx].cpu().detach().numpy(), id2char, EOS_token))
+                    self.target_list.append(
+                        self.vocab.label_to_string(targets[idx], self.vocab.id_dict, self.vocab.eos_id)
+                    )
+                    self.predict_list.append(
+                        self.vocab.label_to_string(pred[idx].cpu().detach().numpy(), self.vocab.id_dict, self.vocab.eos_id)
+                    )
 
                 cer = self.metric(targets[:, 1:], pred)
                 total_sent_num += targets.size(0)
@@ -72,8 +77,8 @@ class GreedySearch(object):
 
 class BeamSearch(GreedySearch):
     """ Provides beam search decoding. """
-    def __init__(self, k):
-        super(BeamSearch, self).__init__()
+    def __init__(self, vocab, k):
+        super(BeamSearch, self).__init__(vocab)
         self.k = k
 
     def search(self, model: ListenAttendSpell, queue: Queue, device: str, print_every: int) -> float:

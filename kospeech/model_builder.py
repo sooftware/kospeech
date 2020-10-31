@@ -13,10 +13,9 @@ from kospeech.models.las.las import ListenAttendSpell
 from kospeech.models.las.encoder import Listener
 from kospeech.models.las.decoder import Speller
 from kospeech.models.transformer.transformer import SpeechTransformer
-from kospeech.utils import char2id, EOS_token, SOS_token, PAD_token
 
 
-def build_model(opt, device):
+def build_model(opt, vocab, device):
     """ Various model dispatcher function. """
     if opt.transform_method.lower() == 'spect':
         if opt.feature_extract_by == 'kaldi':
@@ -27,16 +26,16 @@ def build_model(opt, device):
         input_size = opt.n_mels
 
     if opt.architecture.lower() == 'las':
-        model = build_las(input_size, opt, device)
+        model = build_las(input_size, opt, vocab, device)
 
     elif opt.architecture.lower() == 'transformer':
         model = build_transformer(
             num_classes=opt.num_classes,
-            pad_id=PAD_token,
+            pad_id=vocab.pad_id,
             input_size=input_size,
             d_model=opt.d_model,
             num_heads=opt.num_heads,
-            eos_id=EOS_token,
+            eos_id=vocab.pad_id,
             num_encoder_layers=opt.num_encoder_layers,
             num_decoder_layers=opt.num_decoder_layers,
             dropout_p=opt.dropout,
@@ -72,7 +71,7 @@ def build_transformer(num_classes: int, pad_id: int, d_model: int, num_heads: in
     ).to(device)
 
 
-def build_las(input_size, opt, device):
+def build_las(input_size, opt, vocab, device):
     """ Various Listen, Attend and Spell dispatcher function. """
     model = ListenAttendSpell(
         build_listener(
@@ -88,11 +87,11 @@ def build_las(input_size, opt, device):
             mask_conv=opt.mask_conv
         ),
         build_speller(
-            num_classes=len(char2id),
+            num_classes=vocab.vocab_size,
             max_len=opt.max_len,
-            pad_id=PAD_token,
-            sos_id=SOS_token,
-            eos_id=EOS_token,
+            pad_id=vocab.pad_id,
+            sos_id=vocab.sos_id,
+            eos_id=vocab.eos_id,
             hidden_dim=opt.hidden_dim << (1 if opt.use_bidirectional else 0),
             num_layers=opt.num_decoder_layers,
             rnn_type=opt.rnn_type,

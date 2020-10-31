@@ -11,6 +11,7 @@ import warnings
 import torch
 from torch import optim
 sys.path.append('..')
+from kospeech.vocab import KsponSpeechVocabulary, LibriSpeechVocabulary
 from kospeech.data.data_loader import split_dataset
 from kospeech.criterion.label_smoothed_cross_entropy import LabelSmoothedCrossEntropyLoss
 from kospeech.optim.lr_scheduler import TriStageLRScheduler
@@ -23,7 +24,7 @@ from kospeech.opts import (
     build_model_opts,
     build_preprocess_opts
 )
-from kospeech.utils import PAD_token, char2id, check_envirionment
+from kospeech.utils import check_envirionment
 
 
 def train(opt):
@@ -32,9 +33,17 @@ def train(opt):
     torch.cuda.manual_seed_all(opt.seed)
     device = check_envirionment(opt.use_cuda)
 
+    if opt.dataset == 'kspon':
+        vocab = KsponSpeechVocabulary('../data/vocab/aihub_vocabs.csv')
+    elif opt.dataset == 'libri':
+        vocab = LibriSpeechVocabulary('../data/vocab/tokenizer.vocab',
+                                      '../data/vocab/tokenizer.model')
+    else:
+        raise ValueError("Unsupported Dataset : {0}".format(opt.dataset))
+
     if not opt.resume:
-        epoch_time_step, trainset_list, validset = split_dataset(opt, opt.transcripts_path)
-        model = build_model(opt, device)
+        epoch_time_step, trainset_list, validset = split_dataset(opt, opt.transcripts_path, vocab)
+        model = build_model(opt, vocab, device)
 
         optimizer = optim.Adam(model.module.parameters(), lr=opt.init_lr, weight_decay=opt.weight_decay)
 
@@ -51,7 +60,7 @@ def train(opt):
         optimizer = Optimizer(optimizer, lr_scheduler, opt.warmup_steps, opt.max_grad_norm)
 
         criterion = LabelSmoothedCrossEntropyLoss(
-            num_classes=len(char2id), ignore_index=PAD_token,
+            num_classes=vocab.vocab_size, ignore_index=vocab.pad_id,
             smoothing=opt.label_smoothing, dim=-1,
             reduction=opt.reduction, architecture=opt.architecture
         ).to(device)
@@ -62,7 +71,7 @@ def train(opt):
         model = None
         optimizer = None
         criterion = LabelSmoothedCrossEntropyLoss(
-            num_classes=len(char2id), ignore_index=PAD_token,
+            num_classes=vocab.vocab_size, ignore_index=vocab.pad_id,
             smoothing=opt.label_smoothing, dim=-1,
             reduction=opt.reduction, architecture=opt.architecture
         ).to(device)
@@ -74,7 +83,7 @@ def train(opt):
         device=device, teacher_forcing_step=opt.teacher_forcing_step,
         min_teacher_forcing_ratio=opt.min_teacher_forcing_ratio, print_every=opt.print_every,
         save_result_every=opt.save_result_every, checkpoint_every=opt.checkpoint_every,
-        architecture=opt.architecture
+        architecture=opt.architecture, vocab=vocab
     )
     model = trainer.train(
         model=model,

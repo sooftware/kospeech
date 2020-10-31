@@ -26,7 +26,8 @@ class Evaluator(object):
         print_every (int): to determine whether to store training progress every N timesteps (default: 10)
     """
 
-    def __init__(self, dataset, batch_size=1, device=None, num_workers=1, print_every=100, decode='greedy', beam_size=None):
+    def __init__(self, dataset, vocab, batch_size=1, device=None,
+                 num_workers=1, print_every=100, decode='greedy', beam_size=None):
         self.dataset = dataset
         self.batch_size = batch_size
         self.device = device
@@ -34,11 +35,11 @@ class Evaluator(object):
         self.print_every = print_every
 
         if decode == 'greedy':
-            self.decoder = GreedySearch()
+            self.decoder = GreedySearch(vocab)
 
         elif decode == 'beam':
             assert beam_size > 1, "beam_size should be greater than 1. You can choose `greedy` search"
-            self.decoder = BeamSearch(beam_size)
+            self.decoder = BeamSearch(vocab, beam_size)
 
         else:
             raise ValueError("Unsupported decode : {0}".format(decode))

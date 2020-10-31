@@ -13,7 +13,7 @@ from argparse import ArgumentParser
 from torch.utils.data import Dataset
 from kospeech.data.label_loader import load_dataset
 from kospeech.data.audio.parser import SpectrogramParser
-from kospeech.utils import logger, PAD_token, SOS_token, EOS_token
+from kospeech.utils import logger
 
 
 class SpectrogramDataset(Dataset, SpectrogramParser):
@@ -106,7 +106,7 @@ class AudioDataLoader(threading.Thread):
         batch_size (int): size of batch
         thread_id (int): identification of thread
     """
-    def __init__(self, dataset, queue, batch_size, thread_id):
+    def __init__(self, dataset, queue, batch_size, thread_id, pad_id):
         threading.Thread.__init__(self)
         self.collate_fn = _collate_fn
         self.dataset = dataset
@@ -115,6 +115,7 @@ class AudioDataLoader(threading.Thread):
         self.batch_size = batch_size
         self.dataset_count = dataset.count()
         self.thread_id = thread_id
+        self.pad_id = pad_id
 
     def create_empty_batch(self):
         seqs = torch.zeros(0, 0, 0)
@@ -148,7 +149,7 @@ class AudioDataLoader(threading.Thread):
                 self.queue.put(batch)
                 break
 
-            batch = self.collate_fn(items)
+            batch = self.collate_fn(items, self.pad_id)
             self.queue.put(batch)
 
         logger.debug('loader %d stop' % self.thread_id)
@@ -157,7 +158,7 @@ class AudioDataLoader(threading.Thread):
         return math.ceil(self.dataset_count / self.batch_size)
 
 
-def _collate_fn(batch):
+def _collate_fn(batch, pad_id):
     """ functions that pad to the maximum sequence length """
     def seq_length_(p):
         return len(p[0])
@@ -183,7 +184,7 @@ def _collate_fn(batch):
     seqs = torch.zeros(batch_size, max_seq_size, feat_size)
 
     targets = torch.zeros(batch_size, max_target_size).to(torch.long)
-    targets.fill_(PAD_token)
+    targets.fill_(pad_id)
 
     for x in range(batch_size):
         sample = batch[x]
@@ -208,7 +209,7 @@ class MultiDataLoader(object):
         batch_size (int): size of batch
         num_workers (int): the number of cpu cores used
     """
-    def __init__(self, dataset_list, queue, batch_size, num_workers):
+    def __init__(self, dataset_list, queue, batch_size, num_workers, pad_id):
         self.dataset_list = dataset_list
         self.queue = queue
         self.batch_size = batch_size
@@ -216,7 +217,7 @@ class MultiDataLoader(object):
         self.loader = list()
 
         for idx in range(self.num_workers):
-            self.loader.append(AudioDataLoader(self.dataset_list[idx], self.queue, self.batch_size, idx))
+            self.loader.append(AudioDataLoader(self.dataset_list[idx], self.queue, self.batch_size, idx, pad_id))
 
     def start(self):
         """ Run threads """
@@ -229,7 +230,7 @@ class MultiDataLoader(object):
             self.loader[idx].join()
 
 
-def split_dataset(opt, transcripts_path):
+def split_dataset(opt, transcripts_path, vocab):
     """
     split into training set and validation set.
 
@@ -277,7 +278,7 @@ def split_dataset(opt, transcripts_path):
             SpectrogramDataset(
                 train_audio_paths[train_begin_idx:train_end_idx],
                 train_transcripts[train_begin_idx:train_end_idx],
-                SOS_token, EOS_token,
+                vocab.sos_id, vocab.eos_id,
                 opt=opt,
                 spec_augment=opt.spec_augment,
                 dataset_path=opt.dataset_path
@@ -287,9 +288,8 @@ def split_dataset(opt, transcripts_path):
     validset = SpectrogramDataset(
         audio_paths=valid_audio_paths,
         transcripts=valid_transcripts,
-        sos_id=SOS_token, eos_id=EOS_token,
-        opt=opt,
-        spec_augment=False,
+        sos_id=vocab.sos_id, eos_id=vocab.eos_id,
+        opt=opt, spec_augment=False,
         dataset_path=opt.dataset_path
     )
 

@@ -46,7 +46,7 @@ def prepare_tokenizer(train_transcripts, vocab_size):
 
 
 def generate_transcript_file(dataset_name, transcripts):
-    sp=spm.SentencePieceProcessor()
+    sp = spm.SentencePieceProcessor()
     sp.Load("tokenizer.model")
 
     with open('../../data/libri-%s-transcript.txt' % dataset_name, 'w') as f:

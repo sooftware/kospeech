@@ -8,7 +8,6 @@ import sys
 import logging
 import torch
 import platform
-from kospeech.data.label_loader import load_vocab
 
 
 class Logger(object):
@@ -29,14 +28,6 @@ class Logger(object):
     def debug(self, message=''):
         """ Print log message for debugging """
         self.logger.debug(message)
-
-
-logger = Logger()
-char2id, id2char = load_vocab('../data/vocab/aihub_vocabs.csv', encoding='utf-8')
-
-SOS_token = int(char2id['<sos>'])
-EOS_token = int(char2id['<eos>'])
-PAD_token = int(char2id['<pad>'])
 
 
 def check_envirionment(use_cuda: bool):
@@ -64,32 +55,4 @@ def check_envirionment(use_cuda: bool):
     return device
 
 
-def label_to_string(labels, id2char: dict, eos_id: int):
-    """
-    Converts label to string (number => Hangeul)
-
-    Args:
-        labels (numpy.ndarray): number label
-        id2char (dict): id2char[id] = ch
-        eos_id (int): identification of <end of sequence>
-
-    Returns: sentence
-        - **sentence** (str or list): symbol of labels
-    """
-    if len(labels.shape) == 1:
-        sentence = str()
-        for label in labels:
-            if label.item() == eos_id:
-                break
-            sentence += id2char[label.item()]
-        return sentence
-
-    sentences = list()
-    for batch in labels:
-        sentence = str()
-        for label in batch:
-            if label.item() == eos_id:
-                break
-            sentence += id2char[label.item()]
-        sentences.append(sentence)
-    return sentences
+logger = Logger()

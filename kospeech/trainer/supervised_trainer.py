@@ -8,12 +8,17 @@ from typing import Tuple
 from kospeech.checkpoint.checkpoint import Checkpoint
 from kospeech.metrics import CharacterErrorRate
 from kospeech.optim.optimizer import Optimizer
-from kospeech.utils import EOS_token, logger, id2char
+from kospeech.utils import logger
 from kospeech.data.data_loader import (
     MultiDataLoader,
     AudioDataLoader,
     SpectrogramDataset
 )
+from kospeech.vocab import Vocabulary
+
+
+class KsponSpeechVocab(object):
+    pass
 
 
 class SupervisedTrainer(object):
@@ -51,7 +56,8 @@ class SupervisedTrainer(object):
             checkpoint_every: int,                         # number of timesteps to checkpoint after
             teacher_forcing_step: float = 0.2,             # step of teacher forcing ratio decrease per epoch.
             min_teacher_forcing_ratio: float = 0.8,        # minimum value of teacher forcing ratio
-            architecture: str = 'las'                      # architecture to train - las, transformer
+            architecture: str = 'las',                     # architecture to train - las, transformer
+            vocab: Vocabulary = None                       # vocabulary object
     ) -> None:
         self.num_workers = num_workers
         self.optimizer = optimizer
@@ -64,8 +70,9 @@ class SupervisedTrainer(object):
         self.device = device
         self.teacher_forcing_step = teacher_forcing_step
         self.min_teacher_forcing_ratio = min_teacher_forcing_ratio
-        self.metric = CharacterErrorRate(id2char, EOS_token)
+        self.metric = CharacterErrorRate(vocab)
         self.architecture = architecture.lower()
+        self.vocab = vocab
 
     def train(
         self,
@@ -116,7 +123,9 @@ class SupervisedTrainer(object):
                 trainset.shuffle()
 
             # Training
-            train_loader = MultiDataLoader(self.trainset_list, train_queue, batch_size, self.num_workers)
+            train_loader = MultiDataLoader(
+                self.trainset_list, train_queue, batch_size, self.num_workers, self.vocab.pad_id
+            )
             train_loader.start()
 
             train_loss, train_cer = self.__train_epoches(

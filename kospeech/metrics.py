@@ -5,7 +5,6 @@
 # LICENSE file in the root directory of this source tree.
 
 import Levenshtein as Lev
-from kospeech.utils import label_to_string
 
 
 class ErrorRate(object):
@@ -16,11 +15,10 @@ class ErrorRate(object):
         Do not use this class directly, use one of the sub classes.
     """
 
-    def __init__(self, id2char: dict, eos_id: int) -> None:
+    def __init__(self, vocab) -> None:
         self.total_dist = 0.0
         self.total_length = 0.0
-        self.id2char = id2char
-        self.eos_id = eos_id
+        self.vocab = vocab
 
     def __call__(self, targets, hypothesis):
         """ Calculating character error rate """
@@ -45,8 +43,8 @@ class ErrorRate(object):
         total_length = 0
 
         for (target, y_hat) in zip(targets, y_hats):
-            s1 = label_to_string(target, self.id2char, self.eos_id)
-            s2 = label_to_string(y_hat, self.id2char, self.eos_id)
+            s1 = self.vocab.label_to_string(target, self.vocab.id_dict, self.vocab.eos_id)
+            s2 = self.vocab.label_to_string(y_hat, self.vocab.id_dict, self.vocab.eos_id)
 
             dist, length = self.metric(s1, s2)
 
@@ -64,8 +62,8 @@ class CharacterErrorRate(ErrorRate):
     Computes the Character Error Rate, defined as the edit distance between the
     two provided sentences after tokenizing to characters.
     """
-    def __init__(self, id2char, eos_id):
-        super(CharacterErrorRate, self).__init__(id2char, eos_id)
+    def __init__(self, vocab):
+        super(CharacterErrorRate, self).__init__(vocab)
 
     def metric(self, s1, s2):
         """
@@ -97,8 +95,8 @@ class WordErrorRate(ErrorRate):
     Computes the Word Error Rate, defined as the edit distance between the
     two provided sentences after tokenizing to words.
     """
-    def __init__(self, id2char, eos_id):
-        super(WordErrorRate, self).__init__(id2char, eos_id)
+    def __init__(self, vocab):
+        super(WordErrorRate, self).__init__(vocab)
 
     def metric(self, s1, s2):
         """

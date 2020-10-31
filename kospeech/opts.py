@@ -75,6 +75,9 @@ def build_model_opts(parser):
 def build_train_opts(parser):
     """ Training and saving options """
     group = parser.add_argument_group('General')
+    group.add_argument('--dataset', '-dataset',
+                       type=str, default='dataset',
+                       help='dataset')
     group.add_argument('--dataset_path', '-dataset_path',
                        type=str, default='',
                        help='path of dataset')
