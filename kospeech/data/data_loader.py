@@ -37,7 +37,8 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
             eos_id: int,                    # identification of end of sequence token
             opt: ArgumentParser,            # set of arguments
             spec_augment: bool = False,     # flag indication whether to use spec-augmentation of not
-            dataset_path: str = None        # path of dataset
+            dataset_path: str = None,       # path of dataset,
+            audio_extension: str = 'pcm'    # audio extension
     ) -> None:
         super(SpectrogramDataset, self).__init__(
             feature_extract_by=opt.feature_extract_by, sample_rate=opt.sample_rate, n_mels=opt.n_mels,
@@ -45,7 +46,7 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
             input_reverse=opt.input_reverse, normalize=opt.normalize, freq_mask_para=opt.freq_mask_para,
             time_mask_num=opt.time_mask_num, freq_mask_num=opt.freq_mask_num,
             sos_id=sos_id, eos_id=eos_id,
-            dataset_path=dataset_path, transform_method=opt.transform_method
+            dataset_path=dataset_path, transform_method=opt.transform_method, audio_extension=audio_extension
         )
         self.audio_paths = list(audio_paths)
         self.transcripts = list(transcripts)
@@ -291,7 +292,8 @@ def split_dataset(opt, transcripts_path, vocab):
                 vocab.sos_id, vocab.eos_id,
                 opt=opt,
                 spec_augment=opt.spec_augment,
-                dataset_path=opt.dataset_path
+                dataset_path=opt.dataset_path,
+                audio_extension=opt.audio_extension
             )
         )
 
@@ -300,7 +302,8 @@ def split_dataset(opt, transcripts_path, vocab):
         transcripts=valid_transcripts,
         sos_id=vocab.sos_id, eos_id=vocab.eos_id,
         opt=opt, spec_augment=False,
-        dataset_path=opt.dataset_path
+        dataset_path=opt.dataset_path,
+        audio_extension=opt.audio_extension
     )
 
     logger.info("split dataset complete !!")

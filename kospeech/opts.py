@@ -84,9 +84,9 @@ def build_train_opts(parser):
     group.add_argument('--transcripts_path', '-transcripts_path',
                        type=str, default='',
                        help='path of transcripts refer to : https://github.com/sooftware/KsponSpeech-preprocess')
-    group.add_argument('--data_list_path', '-data_list_path',
-                       type=str, default='./data/data_list/filter_train_list.csv',
-                       help='list of training / test set')
+    group.add_argument('--audio_extension', '-audio_extension',
+                       type=str, default='pcm',
+                       help='audio extension')
     group.add_argument('--spec_augment', '-spec_augment',
                        action='store_true', default=False,
                        help='flag indication whether to use spec augmentation or not')

@@ -8,6 +8,7 @@ ARCHITECTURE='las'
 DATASET='kspon'
 DATASET_PATH='your_dataset_path'
 TRANSCRIPTS_PATH='../data/transcripts.txt'
+AUDIO_EXTENSION='pcm'
 BATCH_SIZE=32
 NUM_WORKERS=4
 NUM_EPOCHS=20
@@ -53,7 +54,7 @@ cd bin
 echo "KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition =="
 
 python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epochs $NUM_EPOCHS --use_bidirectional \
---transcripts_path $TRANSCRIPTS_PATH --dataset $DATASET \
+--transcripts_path $TRANSCRIPTS_PATH --dataset $DATASET --audio_extension $AUDIO_EXTENSION \
 --spec_augment --use_cuda --hidden_dim $HIDDEN_DIM --dropout $DROPOUT --num_heads $NUM_HEADS \
 --label_smoothing $LABEL_SMOOTHING --transform_method $TRANSFORM_METHOD --architecture $ARCHITECTURE \
 --num_encoder_layers $NUM_ENCODER_LAYERS --num_decoder_layers $NUM_DECODER_LAYERS --rnn_type $RNN_TYPE \
