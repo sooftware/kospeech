@@ -105,7 +105,7 @@ class LibriSpeechVocabulary(Vocabulary):
 
     def label_to_string(self, labels):
         if len(labels.shape) == 1:
-            return self.sp.DecodeIdx([l for l in labels])
+            return self.sp.DecodeIds([l for l in labels])
 
         sentences = list()
         for batch in labels:
