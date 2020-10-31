@@ -7,9 +7,17 @@
 ***KoSpeech***, an open-source software, is modular and extensible end-to-end Korean automatic speech recognition (ASR) toolkit based on the deep learning library PyTorch. Several automatic speech recognition open-source toolkits have been released, but all of them deal with non-Korean languages, such as English (e.g. ESPnet, Espresso). Although AI Hub opened 1,000 hours of Korean speech corpus known as KsponSpeech1, there is no established preprocessing method and baseline model to compare model performances. Therefore, we propose preprocessing methods for KsponSpeech corpus and a baseline model for benchmarks. Our baseline model is based on Listen, Attend and Spell (LAS) architecture and ables to customize various training hyperparameters conveniently. By KoSpeech, we hope this could be a guideline for those who research Korean speech recognition. Our baseline model achieved **10.31%** character error rate (CER) at KsponSpeech corpus only with the acoustic model.  
   
 |Description|Feature|Dataset|Model|  
-|-----------|-----|-------|-----|  
-|seq2seq_vgg_multihead|mfcc_40|[KsponSpeech](http://www.aihub.or.kr/aidata/105)|[download](https://drive.google.com/file/d/1Lr-WYpXSlhPIxSE_sBxUedBtcBJzWni2/view?usp=sharing)|  
+|-----------|:-----:|-------|-----|  
+|las_vgg_multihead|librosa_mfcc_40|[KsponSpeech](http://www.aihub.or.kr/aidata/105)|[download](https://drive.google.com/file/d/1Lr-WYpXSlhPIxSE_sBxUedBtcBJzWni2/view?usp=sharing)|  
+|las_vgg_multihead|torch_spectrogram|[KsponSpeech](http://www.aihub.or.kr/aidata/105)|*Release Soon*|  
+|las_vgg_multihead|kaldi_fbank_80|[LibriSpeech](http://www.aihub.or.kr/aidata/105)|*Release Soon*|  
   
+|Description|Authentication Required|Transcription|  
+|-----------|:-----:|-------|  
+|ksponspeech_transcript|O|[download](https://drive.google.com/file/d/1awhfTpqAaDs7K5R9npvFoqeMYWiUtGtq/view?usp=sharing)|  
+|librispeech_transcript|X|[download](https://drive.google.com/file/d/1RA29SLtNIo1zmnk0OgVeXNH553Ul_DhY/view?usp=sharing)|  
+  
+※ Authentication required : If you authenticate that you have access to that dataset, we will be sharing a link (@sh951011@gmail.com)
   
 ## Intro
   
