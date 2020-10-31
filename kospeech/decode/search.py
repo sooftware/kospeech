@@ -50,10 +50,10 @@ class GreedySearch(object):
 
                 for idx in range(targets.size(0)):
                     self.target_list.append(
-                        self.vocab.label_to_string(targets[idx], self.vocab.id_dict, self.vocab.eos_id)
+                        self.vocab.label_to_string(targets[idx])
                     )
                     self.predict_list.append(
-                        self.vocab.label_to_string(pred[idx].cpu().detach().numpy(), self.vocab.id_dict, self.vocab.eos_id)
+                        self.vocab.label_to_string(pred[idx].cpu().detach().numpy())
                     )
 
                 cer = self.metric(targets[:, 1:], pred)

@@ -43,8 +43,8 @@ class ErrorRate(object):
         total_length = 0
 
         for (target, y_hat) in zip(targets, y_hats):
-            s1 = self.vocab.label_to_string(target, self.vocab.id_dict, self.vocab.eos_id)
-            s2 = self.vocab.label_to_string(y_hat, self.vocab.id_dict, self.vocab.eos_id)
+            s1 = self.vocab.label_to_string(target)
+            s2 = self.vocab.label_to_string(y_hat)
 
             dist, length = self.metric(s1, s2)
 
