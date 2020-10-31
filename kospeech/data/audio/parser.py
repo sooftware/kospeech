@@ -14,6 +14,7 @@ from kospeech.data.audio.feature import (
     Spectrogram,
     FilterBank
 )
+from kospeech.utils import logger
 
 
 class AudioParser(object):
@@ -116,6 +117,10 @@ class SpectrogramParser(AudioParser):
             - **feature_vector** (torch.FloatTensor): feature from audio file.
         """
         signal = load_audio(audio_path, self.del_silence, extension=self.audio_extension)
+
+        if signal is None:
+            logger.info("Audio id None : {0}".format(audio_path))
+
         feature_vector = self.transforms(signal)
 
         if self.normalize:
