@@ -119,7 +119,8 @@ class SpectrogramParser(AudioParser):
         signal = load_audio(audio_path, self.del_silence, extension=self.audio_extension)
 
         if signal is None:
-            logger.info("Audio id None : {0}".format(audio_path))
+            logger.info("Audio is None : {0}".format(audio_path))
+            return None
 
         feature_vector = self.transforms(signal)
 
