@@ -199,6 +199,9 @@ def build_eval_opts(parser):
     group.add_argument('--dataset_path', '-dataset_path',
                        type=str, default='/data1/',
                        help='path of dataset')
+    group.add_argument('--transcripts_path', '-transcripts_path',
+                       type=str, default='',
+                       help='path of transcripts refer to : https://github.com/sooftware/KsponSpeech-preprocess')
     group.add_argument('--label_path', '-label_path',
                        type=str, default='./data/label/aihub_labels.csv',
                        help='path of character labels')
