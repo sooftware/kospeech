@@ -6,7 +6,6 @@ sys.path.append('..')
 from torch import Tensor
 from kospeech.data.audio.core import load_audio
 from kospeech.model_builder import load_test_model
-from kospeech.utils import label_to_string, id2char, EOS_token
 
 
 def parse_audio(audio_path: str, del_silence: bool = True) -> Tensor:
@@ -29,6 +28,7 @@ opt = parser.parse_args()
 
 feature_vector = parse_audio(opt.audio_path, del_silence=True)
 input_length = torch.IntTensor([len(feature_vector)])
+vocab = KsponSpeechVocabulary()
 
 model = load_test_model(opt, opt.device)
 model.eval()
@@ -38,5 +38,5 @@ output = model(inputs=feature_vector.unsqueeze(0), input_lengths=input_length,
 logit = torch.stack(output, dim=1).to(opt.device)
 pred = logit.max(-1)[1]
 
-sentence = label_to_string(pred.cpu().detach().numpy(), id2char, EOS_token)
+sentence = vocab.label_to_string(pred.cpu().detach().numpy())
 print(sentence)

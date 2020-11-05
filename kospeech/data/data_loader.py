@@ -245,7 +245,7 @@ def split_dataset(opt, transcripts_path, vocab):
         - **validset** (data_loader.MelSpectrogramDataset): validation dataset
     """
     logger.info("split dataset start !!")
-    trainset_list=list()
+    trainset_list = list()
 
     if opt.dataset == 'kspon':
         train_num = 620000
