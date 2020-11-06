@@ -17,10 +17,6 @@ from kospeech.data.data_loader import (
 from kospeech.vocab import Vocabulary
 
 
-class KsponSpeechVocab(object):
-    pass
-
-
 class SupervisedTrainer(object):
     """
     The SupervisedTrainer class helps in setting up training framework in a supervised setting.
@@ -146,7 +142,7 @@ class SupervisedTrainer(object):
 
             # Validation
             valid_queue = queue.Queue(self.num_workers << 1)
-            valid_loader = AudioDataLoader(self.validset, valid_queue, batch_size, 0)
+            valid_loader = AudioDataLoader(self.validset, valid_queue, batch_size, 0, self.vocab.pad_id)
             valid_loader.start()
 
             valid_cer = self.validate(model, valid_queue)
