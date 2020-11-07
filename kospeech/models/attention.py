@@ -132,7 +132,7 @@ class LocationAwareAttention(nn.Module):
         - **Attention-Based Models for Speech Recognition**: https://arxiv.org/abs/1506.07503
         - **ClovaCall**: https://github.com/clovaai/ClovaCall/blob/master/las.pytorch/models/attention.py
     """
-    def __init__(self, d_model: int = 512, smoothing: bool = True) -> None:
+    def __init__(self, d_model: int = 512, smoothing: bool = False) -> None:
         super(LocationAwareAttention, self).__init__()
         self.d_model = d_model
         self.location_conv = nn.Conv1d(in_channels=1, out_channels=d_model, kernel_size=3, padding=1)
@@ -165,10 +165,9 @@ class LocationAwareAttention(nn.Module):
         else:
             alignmment_energy = F.softmax(alignmment_energy, dim=-1)
 
-        context_vector = torch.bmm(alignmment_energy.unsqueeze(1), value)
-        context_vector = context_vector.squeeze(1)
+        context = torch.bmm(alignmment_energy.unsqueeze(1), value).squeeze(1)
 
-        return context_vector, alignmment_energy
+        return context, alignmment_energy
 
 
 class AdditiveAttention(nn.Module):
