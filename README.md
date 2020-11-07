@@ -13,6 +13,8 @@
 |las_vgg_multihead|librosa_mfcc_40|[KsponSpeech](http://www.aihub.or.kr/aidata/105)|[download](https://drive.google.com/file/d/1Lr-WYpXSlhPIxSE_sBxUedBtcBJzWni2/view?usp=sharing)|  
 |las_vgg_multihead|kaldi_fbank_80|[KsponSpeech](http://www.aihub.or.kr/aidata/105)|[download](https://drive.google.com/file/d/1qhmV1vV8viB5W-rotDez2NztsmAt3mx0/view?usp=sharing)|  
   
+※ Please share the results of the experiment. Contribution is always welcome.
+  
 ### Pre-processed Transcripts
   
 |Description|Authentication Required|Transcription|  
