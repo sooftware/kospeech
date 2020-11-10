@@ -16,6 +16,9 @@ def parse_audio(audio_path: str, del_silence: bool = True) -> Tensor:
     mfcc -= mfcc.mean()
     mfcc = Tensor(mfcc).transpose(0, 1)
 
+    mfcc = mfcc[:, ::-1]
+    mfcc = FloatTensor(np.ascontiguousarray(np.swapaxes(mfcc, 0, 1)))
+
     return mfcc
 
 
