@@ -2,6 +2,7 @@ import argparse
 import torch
 import librosa
 import sys
+import numpy as np
 sys.path.append('..')
 from kospeech.vocab import KsponSpeechVocabulary
 from torch import Tensor
@@ -17,7 +18,7 @@ def parse_audio(audio_path: str, del_silence: bool = True) -> Tensor:
     mfcc = Tensor(mfcc).transpose(0, 1)
 
     mfcc = mfcc[:, ::-1]
-    mfcc = FloatTensor(np.ascontiguousarray(np.swapaxes(mfcc, 0, 1)))
+    mfcc = torch.FloatTensor(np.ascontiguousarray(np.swapaxes(mfcc, 0, 1)))
 
     return mfcc
 
