@@ -19,9 +19,9 @@
   
 |Dataset|Authentication|Output-Unit|Transcription|  
 |-----------|:-----:|:---:|-------|  
-|KsponSpeech|O|Character|[download](https://drive.google.com/file/d/1awhfTpqAaDs7K5R9npvFoqeMYWiUtGtq/view?usp=sharing)|  
-|KsponSpeech|O|Subword|[download](https://drive.google.com/file/d/1awhfTpqAaDs7K5R9npvFoqeMYWiUtGtq/view?usp=sharing)|  
-|LibriSpeech|X|Subword|[download](https://drive.google.com/file/d/1RA29SLtNIo1zmnk0OgVeXNH553Ul_DhY/view?usp=sharing)|  
+|KsponSpeech|Required|Character|[download](https://drive.google.com/file/d/1awhfTpqAaDs7K5R9npvFoqeMYWiUtGtq/view?usp=sharing)|  
+|KsponSpeech|Required|Subword|[download](https://drive.google.com/file/d/1awhfTpqAaDs7K5R9npvFoqeMYWiUtGtq/view?usp=sharing)|  
+|LibriSpeech|nrequired |Subword|[download](https://drive.google.com/file/d/1RA29SLtNIo1zmnk0OgVeXNH553Ul_DhY/view?usp=sharing)|  
   
 ※ Authentication : Refer to [[Link]](https://github.com/sooftware/KoSpeech/issues/54)  
   
