@@ -21,7 +21,7 @@
 |-----------|:-----:|:---:|-------|  
 |KsponSpeech|Required|Character|[download](https://drive.google.com/file/d/1awhfTpqAaDs7K5R9npvFoqeMYWiUtGtq/view?usp=sharing)|  
 |KsponSpeech|Required|Subword|[download](https://drive.google.com/file/d/1awhfTpqAaDs7K5R9npvFoqeMYWiUtGtq/view?usp=sharing)|  
-|LibriSpeech|nrequired |Subword|[download](https://drive.google.com/file/d/1RA29SLtNIo1zmnk0OgVeXNH553Ul_DhY/view?usp=sharing)|  
+|LibriSpeech|Unrequired |Subword|[download](https://drive.google.com/file/d/1RA29SLtNIo1zmnk0OgVeXNH553Ul_DhY/view?usp=sharing)|  
   
 ※ Authentication : Refer to [[Link]](https://github.com/sooftware/KoSpeech/issues/54)  
   
