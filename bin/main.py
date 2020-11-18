@@ -34,10 +34,15 @@ def train(opt):
     device = check_envirionment(opt.use_cuda)
 
     if opt.dataset == 'kspon':
-        vocab = KsponSpeechVocabulary('../data/vocab/aihub_vocabs.csv')
+        if opt.output_unit == 'subword':
+            vocab = KsponSpeechVocabulary(vocab_path='../data/vocab/kspon_sentencepiece.vocab',
+                                          output_unit=opt.output_unit,
+                                          sp_model_path='../data/vocab/kspon_sentencepiece.model')
+        else:
+            vocab = KsponSpeechVocabulary('../data/vocab/aihub_vocabs.csv', output_unit=opt.output_unit)
+
     elif opt.dataset == 'libri':
-        vocab = LibriSpeechVocabulary('../data/vocab/tokenizer.vocab',
-                                      '../data/vocab/tokenizer.model')
+        vocab = LibriSpeechVocabulary('../data/vocab/tokenizer.vocab', '../data/vocab/tokenizer.model')
     else:
         raise ValueError("Unsupported Dataset : {0}".format(opt.dataset))
 

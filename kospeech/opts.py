@@ -84,6 +84,9 @@ def build_train_opts(parser):
     group.add_argument('--transcripts_path', '-transcripts_path',
                        type=str, default='',
                        help='path of transcripts refer to : https://github.com/sooftware/KsponSpeech-preprocess')
+    group.add_argument('--output_unit', '-output_unit',
+                       type=str, default='character',
+                       help='output unit : [character, subword, grapheme]')
     group.add_argument('--audio_extension', '-audio_extension',
                        type=str, default='pcm',
                        help='audio extension')
