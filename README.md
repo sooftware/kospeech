@@ -18,7 +18,7 @@
 ### Pre-processed Transcripts
   
 |Dataset|Authentication|Output-Unit|Transcript|  
-|-----------|:-----:|:---:|:-------:|  
+|-----------|-----|---|:-------:|  
 |KsponSpeech|Required|Character|[download](https://drive.google.com/file/d/1awhfTpqAaDs7K5R9npvFoqeMYWiUtGtq/view?usp=sharing)|  
 |KsponSpeech|Required|Subword|[download](https://drive.google.com/file/d/1awhfTpqAaDs7K5R9npvFoqeMYWiUtGtq/view?usp=sharing)|  
 |KsponSpeech|Required|Grapheme|[download](https://drive.google.com/file/d/1awhfTpqAaDs7K5R9npvFoqeMYWiUtGtq/view?usp=sharing)|   
