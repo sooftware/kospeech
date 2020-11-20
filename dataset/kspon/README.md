@@ -20,15 +20,20 @@ We will explain the details in the **Output-Unit** part below.
   
 1. Set options in [run.sh](https://github.com/sooftware/KsponSpeech-preprocess/blob/master/run.sh)  
   
-<img src="https://user-images.githubusercontent.com/42150335/90811422-8ae6c800-e35f-11ea-8768-5b9cd3417fab.png" width=700>
-  
-  
 2. Run [run.sh](https://github.com/sooftware/KsponSpeech-preprocess/blob/master/run.sh)  
 ```shell
 $ ./run.sh
 ```
   
-3. Leave the computer for hours or days.  
+3. Leave the computer for minutes or hours.  
+  
+* Results : transcripts.txt (default: `~KoSpeech/data/transcripts.txt`)
+```
+KsponSpeech_01/KsponSpeech_0001/KsponSpeech_000001.pcm[TAB]아 모 몬 소리야[TAB]8 3 107 3 731 3 174 33 27
+...
+...
+KsponSpeech_05/KsponSpeech_0623/KsponSpeech_622545.pcm[TAB]너 뭐 강남 자주 가?[TAB]51 3 42 3 243 197 3 47 77 3 9 15
+```
    
 ## Preprocess
   
