@@ -141,12 +141,19 @@ class VoiceActivityDetection(object):
 
     def __call__(self, audio_path: str = None, sample_rate: int = 16000):
         seguence_signal = list()
-
         self.sample_rate = sample_rate
+
         start_pointer = 0
         end_pointer = 1024
 
-        signal, _ = librosa.load(audio_path, sr=self.sample_rate)
+        if audio_path.endswith('.wav') or audio_path.endswith('.flac'):
+            signal, _ = librosa.load(audio_path, sr=self.sample_rate)
+
+        elif audio_path.endswith('.pcm'):
+            signal = np.memmap(audio_path, dtype='h', mode='r').astype('float32')
+
+        else:
+            raise ValueError(f"Unsupported Format : {audio_path}")
 
         while end_pointer < len(signal):
             seguence_signal.append(signal[start_pointer:end_pointer])
