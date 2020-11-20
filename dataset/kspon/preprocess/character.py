@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-# Soohwan Kim, Seyoung Bae, Cheolhwang Won.
-# @ArXiv : KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition
-# This source code is licensed under the Apache 2.0 License license found in the
-# LICENSE file in the root directory of this source tree.
-
 import os
 import pandas as pd
 
@@ -58,16 +52,15 @@ def generate_character_labels(transcripts, labels_dest):
 
     # save to csv
     label_df = pd.DataFrame(label)
-    label_df.to_csv(os.path.join(labels_dest, "aihub_character_vocabs.csv"), encoding="utf-8", index=False)
+    label_df.to_csv(os.path.join(labels_dest, "aihub_labels.csv"), encoding="utf-8", index=False)
 
 
 def generate_character_script(audio_paths, transcripts, labels_dest):
     print('create_script started..')
-    char2id, id2char = load_label(os.path.join(labels_dest, "aihub_character_vocabs.csv"))
+    char2id, id2char = load_label(os.path.join(labels_dest, "aihub_labels.csv"))
 
-    with open(os.path.join("../../data/transcripts.txt"), "w") as trans_file:
+    with open(os.path.join("transcripts.txt"), "w") as f:
         for audio_path, transcript in zip(audio_paths, transcripts):
-            number_transcript = sentence_to_target(transcript, char2id)
+            char_id_transcript = sentence_to_target(transcript, char2id)
             audio_path = audio_path.replace('txt', 'pcm')
-            line = "%s\t%s\t%s\n" % (audio_path, transcript, number_transcript)
-            trans_file.write(line)
+            f.write(f'{audio_path}\t{transcript}\t{char_id_transcript}\n')

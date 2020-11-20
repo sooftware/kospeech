@@ -24,14 +24,19 @@ class Vocabulary(object):
 
 class KsponSpeechVocabulary(Vocabulary):
     def __init__(self, vocab_path, output_unit: str = 'character', sp_model_path=None):
+        super(KsponSpeechVocabulary, self).__init__()
         if output_unit == 'subword':
             self.sp = spm.SentencePieceProcessor()
             self.sp.Load(sp_model_path)
+
+            self.pad_id = 0
+            self.sos_id = 1
+            self.eos_id = 2
         else:
             self.vocab_dict, self.id_dict = self.load_vocab(vocab_path, encoding='utf-8')
-        self.sos_id = int(self.vocab_dict['<sos>'])
-        self.eos_id = int(self.vocab_dict['<eos>'])
-        self.pad_id = int(self.vocab_dict['<pad>'])
+            self.sos_id = int(self.vocab_dict['<sos>'])
+            self.eos_id = int(self.vocab_dict['<eos>'])
+            self.pad_id = int(self.vocab_dict['<pad>'])
 
         self.vocab_path = vocab_path
         self.output_unit = output_unit
@@ -117,6 +122,7 @@ class KsponSpeechVocabulary(Vocabulary):
 
 class LibriSpeechVocabulary(Vocabulary):
     def __init__(self, vocab_path, model_path):
+        super(KsponSpeechVocabulary, self).__init__()
         self.pad_id = 0
         self.sos_id = 1
         self.eos_id = 2
