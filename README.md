@@ -135,21 +135,8 @@ pip install -e .
     
 ### Preparing KsponSpeech Dataset (LibriSpeech also supports)
   
-* Command   
-```
-$ cd ~KoSpeech/dataset/kspon
-$ python prepare-kspon.py --dataset_path $DATASET_PATH --vocab_dest $VOCAB_DEST --preprocess_mode $PREPROCESS_MODE
-```
-  
-$PREPROCESS_MODE : `phonetic` or `spelling`, $VOCAB_DEST : `../data/vocab/`  
-  
-* Results : transcripts.txt (default: `~KoSpeech/data/transcripts.txt`)
-```
-KsponSpeech_01/KsponSpeech_0001/KsponSpeech_000001.pcm[TAB]아 모 몬 소리야[TAB]8 3 107 3 731 3 174 33 27
-...
-...
-KsponSpeech_05/KsponSpeech_0623/KsponSpeech_622545.pcm[TAB]너 뭐 강남 자주 가?[TAB]51 3 42 3 243 197 3 47 77 3 9 15
-```
+- KsponSpeech : [Check this page](https://github.com/sooftware/KoSpeech/blob/master/dataset/kspon/README.md)
+- LibriSpeech : [Check this page](https://github.com/sooftware/KoSpeech/tree/master/dataset/libri)
   
 ### Training KsponSpeech Dataset
 ```
