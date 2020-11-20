@@ -39,10 +39,12 @@ def train(opt):
                                           output_unit=opt.output_unit,
                                           sp_model_path='../data/vocab/kspon_sentencepiece.model')
         else:
-            vocab = KsponSpeechVocabulary('../data/vocab/aihub_vocabs.csv', output_unit=opt.output_unit)
+            vocab = KsponSpeechVocabulary(f'../data/vocab/aihub_{opt.output_unit}_vocabs.csv',
+                                          output_unit=opt.output_unit)
 
     elif opt.dataset == 'libri':
         vocab = LibriSpeechVocabulary('../data/vocab/tokenizer.vocab', '../data/vocab/tokenizer.model')
+
     else:
         raise ValueError("Unsupported Dataset : {0}".format(opt.dataset))
 

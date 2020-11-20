@@ -58,12 +58,12 @@ def generate_character_labels(transcripts, labels_dest):
 
     # save to csv
     label_df = pd.DataFrame(label)
-    label_df.to_csv(os.path.join(labels_dest, "aihub_vocabs.csv"), encoding="utf-8", index=False)
+    label_df.to_csv(os.path.join(labels_dest, "aihub_character_vocabs.csv"), encoding="utf-8", index=False)
 
 
 def generate_character_script(audio_paths, transcripts, labels_dest):
     print('create_script started..')
-    char2id, id2char = load_label(os.path.join(labels_dest, "aihub_vocabs.csv"))
+    char2id, id2char = load_label(os.path.join(labels_dest, "aihub_character_vocabs.csv"))
 
     with open(os.path.join("../../data/transcripts.txt"), "w") as trans_file:
         for audio_path, transcript in zip(audio_paths, transcripts):

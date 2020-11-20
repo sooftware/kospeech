@@ -98,8 +98,8 @@ class KsponSpeechVocabulary(Vocabulary):
             - **char2id** (dict): char2id[ch] = id
             - **id2char** (dict): id2char[id] = ch
         """
-        char2id = dict()
-        id2char = dict()
+        unit2id = dict()
+        id2unit = dict()
 
         try:
             with open(label_path, 'r', encoding=encoding) as f:
@@ -107,10 +107,10 @@ class KsponSpeechVocabulary(Vocabulary):
                 next(labels)
 
                 for row in labels:
-                    char2id[row[1]] = row[0]
-                    id2char[int(row[0])] = row[1]
+                    unit2id[row[1]] = row[0]
+                    id2unit[int(row[0])] = row[1]
 
-            return char2id, id2char
+            return unit2id, id2unit
         except IOError:
             raise IOError("Character label file (csv format) doesn`t exist : {0}".format(label_path))
 
