@@ -135,7 +135,7 @@ pip install -e .
     
 ### Preparing KsponSpeech Dataset (LibriSpeech also supports)
   
-- KsponSpeech : [Check this page](https://github.com/sooftware/KoSpeech/blob/master/dataset/kspon/README.md)
+- KsponSpeech : [Check this page](https://github.com/sooftware/KoSpeech/tree/master/dataset/kspon)
 - LibriSpeech : [Check this page](https://github.com/sooftware/KoSpeech/tree/master/dataset/libri)
   
 ### Training KsponSpeech Dataset
