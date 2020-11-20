@@ -87,6 +87,9 @@ def build_train_opts(parser):
     group.add_argument('--output_unit', '-output_unit',
                        type=str, default='character',
                        help='output unit : [character, subword, grapheme]')
+    group.add_argument('--optimizer', '-optimizer',
+                       type=str, default='adam',
+                       help='optimizer: Adam, RAdam, Adadelta, Adagrad')
     group.add_argument('--audio_extension', '-audio_extension',
                        type=str, default='pcm',
                        help='audio extension')

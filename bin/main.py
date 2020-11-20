@@ -10,6 +10,7 @@ import random
 import warnings
 import torch
 from torch import optim
+from kospeech.optim.radam import RAdam
 sys.path.append('..')
 from kospeech.vocab import KsponSpeechVocabulary, LibriSpeechVocabulary
 from kospeech.data.data_loader import split_dataset
@@ -52,7 +53,16 @@ def train(opt):
         epoch_time_step, trainset_list, validset = split_dataset(opt, opt.transcripts_path, vocab)
         model = build_model(opt, vocab, device)
 
-        optimizer = optim.Adam(model.module.parameters(), lr=opt.init_lr, weight_decay=opt.weight_decay)
+        if opt.optimizer.lower() == 'adam':
+            optimizer = optim.Adam(model.module.parameters(), lr=opt.init_lr, weight_decay=opt.weight_decay)
+        elif opt.optimizer.lower() == 'radam':
+            optimizer = RAdam(model.module.parameters(), lr=opt.init_lr, weight_decay=opt.weight_decay)
+        elif opt.optimizer.lower() == 'adadelta':
+            optimizer = optim.Adadelta(model.module.parameters(), lr=opt.init_lr, weight_decay=opt.weight_decay)
+        elif opt.optimizer.lower() == 'adagrad':
+            optimizer = optim.Adagrad(model.module.parameters(), lr=opt.init_lr, weight_decay=opt.weight_decay)
+        else:
+            raise ValueError(f"Unsupported Optimizer, Supported Optimizer : Adam, RAdam, Adadelta, Adagrad")
 
         lr_scheduler = TriStageLRScheduler(
             optimizer=optimizer,
