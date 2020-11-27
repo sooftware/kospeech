@@ -9,13 +9,14 @@ import argparse
 import random
 import warnings
 import torch
+import torch.nn as nn
 from torch import optim
 from kospeech.optim.radam import RAdam
 sys.path.append('..')
 from kospeech.vocab import KsponSpeechVocabulary, LibriSpeechVocabulary
 from kospeech.data.data_loader import split_dataset
 from kospeech.criterion.label_smoothed_cross_entropy import LabelSmoothedCrossEntropyLoss
-from kospeech.optim.lr_scheduler import TriStageLRScheduler
+from kospeech.optim.lr_scheduler.tri_stage_lr_scheduler import TriStageLRScheduler
 from kospeech.optim.optimizer import Optimizer
 from kospeech.trainer.supervised_trainer import SupervisedTrainer
 from kospeech.model_builder import build_model
@@ -76,11 +77,14 @@ def train(opt):
         )
         optimizer = Optimizer(optimizer, lr_scheduler, opt.warmup_steps, opt.max_grad_norm)
 
-        criterion = LabelSmoothedCrossEntropyLoss(
-            num_classes=len(vocab), ignore_index=vocab.pad_id,
-            smoothing=opt.label_smoothing, dim=-1,
-            reduction=opt.reduction, architecture=opt.architecture
-        ).to(device)
+        if opt.architecture == 'deepspeech2':
+            criterion = nn.CTCLoss(blank=len(vocab))
+        else:
+            criterion = LabelSmoothedCrossEntropyLoss(
+                num_classes=len(vocab), ignore_index=vocab.pad_id,
+                smoothing=opt.label_smoothing, dim=-1,
+                reduction=opt.reduction, architecture=opt.architecture
+            ).to(device)
 
     else:
         trainset_list = None

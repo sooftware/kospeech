@@ -10,7 +10,7 @@ import pandas as pd
 from queue import Queue
 from kospeech.metrics import CharacterErrorRate, WordErrorRate
 from kospeech.models.las.topk_decoder import TopKDecoder
-from kospeech.models.las.las import ListenAttendSpell
+from kospeech.models.las.model import ListenAttendSpell
 from kospeech.utils import logger
 
 

@@ -8,11 +8,12 @@ import torch
 import torch.nn as nn
 from astropy.modeling import ParameterError
 from kospeech.decode.ensemble import BasicEnsemble, WeightedEnsemble
+from kospeech.models.deepspeech2.model import DeepSpeech2
 from kospeech.models.modules import BaseRNN
-from kospeech.models.las.las import ListenAttendSpell
+from kospeech.models.las.model import ListenAttendSpell
 from kospeech.models.las.encoder import Listener
 from kospeech.models.las.decoder import Speller
-from kospeech.models.transformer.transformer import SpeechTransformer
+from kospeech.models.transformer.model import SpeechTransformer
 
 
 def build_model(opt, vocab, device):
@@ -43,10 +44,52 @@ def build_model(opt, vocab, device):
             device=device
         )
 
+    elif opt.architecture.lower() == 'deepspeech2':
+        model = build_deepspeech2(
+            input_size=input_size,
+            num_classes=len(vocab),
+            rnn_type=opt.rnn_type,
+            num_rnn_layers=opt.num_encoder_layers,
+            rnn_hidden_dim=opt.hidden_dim,
+            dropout_p=opt.dropout,
+            bidirectional=opt.bidirectional,
+            activation=opt.activation,
+            device=device
+        )
+
     else:
         raise ValueError('Unsupported architecture: {0}'.format(opt.architecture))
 
     return model
+
+
+def build_deepspeech2(input_size: int, num_classes: int, rnn_type: str, num_rnn_layers: int,
+                      rnn_hidden_dim: int, dropout_p: float,
+                      bidirectional: bool, activation: str, device: str):
+    if dropout_p < 0.0:
+        raise ParameterError("dropout probability should be positive")
+    if input_size < 0:
+        raise ParameterError("input_size should be greater than 0")
+    if rnn_hidden_dim < 0:
+        raise ParameterError("hidden_dim should be greater than 0")
+    if num_rnn_layers < 0:
+        raise ParameterError("num_layers should be greater than 0")
+    if rnn_type.lower() not in BaseRNN.supported_rnns.keys():
+        raise ParameterError("Unsupported RNN Cell: {0}".format(rnn_type))
+
+    return nn.DataParallel(
+        DeepSpeech2(
+            input_size=input_size,
+            num_classes=num_classes,
+            rnn_type=rnn_type,
+            num_rnn_layers=num_rnn_layers,
+            rnn_hidden_dim=rnn_hidden_dim,
+            dropout_p=dropout_p,
+            bidirectional=bidirectional,
+            activation=activation,
+            device=device
+        )
+    )
 
 
 def build_transformer(num_classes: int, pad_id: int, d_model: int, num_heads: int, input_size: int,

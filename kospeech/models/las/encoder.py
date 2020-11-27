@@ -9,11 +9,8 @@ import torch
 import torch.nn as nn
 from torch import Tensor
 from typing import Tuple
+from kospeech.models.extractor import VGGExtractor, DeepSpeech2Extractor
 from kospeech.models.modules import BaseRNN
-from kospeech.models.las.sublayers import (
-    VGGExtractor,
-    DeepSpeech2Extractor
-)
 
 
 class Listener(BaseRNN):

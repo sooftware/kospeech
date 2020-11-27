@@ -9,12 +9,12 @@ from kospeech.checkpoint.checkpoint import Checkpoint
 from kospeech.metrics import CharacterErrorRate
 from kospeech.optim.optimizer import Optimizer
 from kospeech.utils import logger
+from kospeech.vocab import Vocabulary
 from kospeech.data.data_loader import (
     MultiDataLoader,
     AudioDataLoader,
     SpectrogramDataset
 )
-from kospeech.vocab import Vocabulary
 
 
 class SupervisedTrainer(object):
@@ -218,14 +218,22 @@ class SupervisedTrainer(object):
                 logit = torch.stack(logit, dim=1).to(self.device)
                 targets = targets[:, 1:]
 
+                hypothesis = logit.max(-1)[1]
+                loss = self.criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
+
             elif self.architecture == 'transformer':
                 logit = model(inputs, input_lengths, targets, return_attns=False)
+                hypothesis = logit.max(-1)[1]
+                loss = self.criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
+
+            elif self.architecture == 'deepspeech2':
+                logit = model(inputs, input_lengths)
+                logit = logit.transpose(0, 1)
+                loss = self.criterion(logit, targets, input_lengths, target_lengths)
 
             else:
                 raise ValueError("Unsupported architecture : {0}".format(self.architecture))
 
-            hypothesis = logit.max(-1)[1]
-            loss = self.criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
             epoch_loss_total += loss.item()
 
             cer = self.metric(targets, hypothesis)
