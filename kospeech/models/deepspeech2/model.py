@@ -5,6 +5,7 @@
 # LICENSE file in the root directory of this source tree.
 
 import math
+import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
@@ -13,24 +14,32 @@ from kospeech.models.modules import BaseRNN, Linear
 
 
 class BatchNormRNN(BaseRNN):
+    """
+    Recurrent neural network with batch normalization layer.
+
+    Args:
+        input_size (int): size of input
+        hidden_dim (int): the number of features in the hidden state `h`
+        rnn_type (str, optional): type of RNN cell (default: gru)
+        bidirectional (bool, optional): if True, becomes a bidirectional encoder (defulat: True)
+        dropout_p (float, optional): dropout probability (default: 0.1)
+        device (torch.device): device - 'cuda' or 'cpu'
+
+    Inputs: inputs, seq_lengths
+        - **inputs**: list of sequences, whose length is the batch size and within which each sequence is list of tokens
+        - **seq_lengths**: list of sequence lengths
+    """
     def __init__(
             self,
-            input_size: int,
-            hidden_dim: int = 512,
-            rnn_type: str = 'gru',
-            bidirectional: bool = True,
-            dropout_p: float = 0.1,
-            device: str = 'cuda'
+            input_size: int,                    # size of input
+            hidden_dim: int = 512,              # dimension of RNN`s hidden state
+            rnn_type: str = 'gru',              # type of RNN cell
+            bidirectional: bool = True,         # if True, becomes a bidirectional rnn
+            dropout_p: float = 0.1,             # dropout probability
+            device: str = 'cuda'                # device - 'cuda' or 'cpu'
     ):
-        super(BatchNormRNN, self).__init__(
-            input_size=input_size,
-            hidden_dim=hidden_dim,
-            num_layers=1,
-            rnn_type=rnn_type,
-            dropout_p=dropout_p,
-            bidirectional=bidirectional,
-            device=device
-        )
+        super(BatchNormRNN, self).__init__(input_size=input_size, hidden_dim=hidden_dim, num_layers=1, rnn_type=rnn_type,
+                                           dropout_p=dropout_p, bidirectional=bidirectional, device=device)
         self.batch_norm = nn.BatchNorm1d(input_size)
 
     def forward(self, inputs: Tensor, seq_lengths: Tensor):
@@ -48,18 +57,36 @@ class DeepSpeech2(nn.Module):
     """
     Deep Speech2 architecture with configurable encoder and decoder.
     Paper: https://arxiv.org/abs/1512.02595
+
+    Args:
+        input_size (int): size of input
+        num_classes (int): number of classfication
+        rnn_type (str, optional): type of RNN cell (default: gru)
+        num_rnn_layers (int, optional): number of recurrent layers (default: 5)
+        rnn_hidden_dim (int): the number of features in the hidden state `h`
+        dropout_p (float, optional): dropout probability (default: 0.1)
+        bidirectional (bool, optional): if True, becomes a bidirectional encoder (defulat: True)
+        activation (str): type of activation function (default: hardtanh)
+        device (torch.device): device - 'cuda' or 'cpu'
+
+    Inputs: inputs, input_lengths
+        - **inputs**: list of sequences, whose length is the batch size and within which each sequence is list of tokens
+        - **input_lengths**: list of sequence lengths
+
+    Returns: output
+        - **output**: tensor containing the encoded features of the input sequence
     """
     def __init__(
             self,
-            input_size: int,
-            num_classes: int,
-            rnn_type='gru',
-            num_rnn_layers: int = 5,
-            rnn_hidden_dim: int = 512,
-            dropout_p: float = 0.1,
-            bidirectional: bool = True,
-            activation: str = 'hardtanh',
-            device: str = 'cuda'
+            input_size: int,                        # size of input
+            num_classes: int,                       # number of classfication
+            rnn_type='gru',                         # type of RNN cell
+            num_rnn_layers: int = 5,                # number of RNN layers
+            rnn_hidden_dim: int = 512,              # dimension of RNN`s hidden state
+            dropout_p: float = 0.1,                 # dropout probability
+            bidirectional: bool = True,             # if True, becomes a bidirectional rnn
+            activation: str = 'hardtanh',           # type of activation function
+            device: str = 'cuda'                    # device - 'cuda' or 'cpu'
     ):
         super(DeepSpeech2, self).__init__()
 
@@ -99,3 +126,20 @@ class DeepSpeech2(nn.Module):
         output = F.log_softmax(self.fc(output), dim=-1)
 
         return output
+
+    def inference(self, inputs: Tensor, input_lengths: Tensor, blank_label: int):
+        hypothesis = list()
+
+        with torch.no_grad():
+            output = self.forward(inputs, input_lengths)
+            argmax_indices = torch.argmax(output, dim=-1)
+
+            for i, argmax_index in enumerate(argmax_indices):
+                decode_result = list()
+                for j, token_id in enumerate(argmax_index):
+                    if token_id != blank_label:
+                        if j != 0 and token_id == argmax_index[j - 1]:
+                            continue
+                        decode_result.append(token_id.item())
+                hypothesis.append(decode_result)
+        return hypothesis

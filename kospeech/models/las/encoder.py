@@ -22,7 +22,7 @@ class Listener(BaseRNN):
         hidden_dim (int): the number of features in the hidden state `h`
         num_layers (int, optional): number of recurrent layers (default: 1)
         bidirectional (bool, optional): if True, becomes a bidirectional encoder (defulat: False)
-        rnn_type (str, optional): type of RNN cell (default: gru)
+        rnn_type (str, optional): type of RNN cell (default: lstm)
         dropout_p (float, optional): dropout probability (default: 0.3)
         extractor (str): type of CNN extractor (default: vgg)
         device (torch.device): device - 'cuda' or 'cpu'

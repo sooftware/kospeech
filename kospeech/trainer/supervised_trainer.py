@@ -291,30 +291,29 @@ class SupervisedTrainer(object):
         model.eval()
         logger.info('validate() start')
 
-        with torch.no_grad():
-            while True:
-                inputs, targets, input_lengths, target_lengths = queue.get()
+        while True:
+            inputs, targets, input_lengths, target_lengths = queue.get()
 
-                if inputs.shape[0] == 0:
-                    break
+            if inputs.shape[0] == 0:
+                break
 
-                inputs = inputs.to(self.device)
-                targets = targets[:, 1:].to(self.device)
-                model.to(self.device)
+            inputs = inputs.to(self.device)
+            targets = targets[:, 1:].to(self.device)
+            model.to(self.device)
 
-                if self.architecture == 'las':
-                    model.module.flatten_parameters()
-                    output = model(inputs, input_lengths, teacher_forcing_ratio=0.0, return_decode_dict=False)
-                    logit = torch.stack(output, dim=1).to(self.device)
+            if self.architecture == 'las':
+                hypothesis = model.inference(inputs, input_lengths, self.device)
 
-                elif self.architecture == 'transformer':
-                    logit = model(inputs, input_lengths, return_decode_dict=False)
+            elif self.architecture == 'transformer':
+                hypothesis = model.inference(inputs, input_lengths)
 
-                else:
-                    raise ValueError("Unsupported architecture : {0}".format(self.architecture))
+            elif self.architecture == 'deepspeech2':
+                hypothesis = model.inference(inputs, input_lengths, blank_label=len(self.vocab))
 
-                hypothesis = logit.max(-1)[1]
-                cer = self.metric(targets, hypothesis)
+            else:
+                raise ValueError("Unsupported architecture : {0}".format(self.architecture))
+
+            cer = self.metric(targets, hypothesis)
 
         logger.info('validate() completed')
 

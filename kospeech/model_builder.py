@@ -47,7 +47,7 @@ def build_model(opt, vocab, device):
     elif opt.architecture.lower() == 'deepspeech2':
         model = build_deepspeech2(
             input_size=input_size,
-            num_classes=len(vocab),
+            num_classes=len(vocab) + 1,
             rnn_type=opt.rnn_type,
             num_rnn_layers=opt.num_encoder_layers,
             rnn_hidden_dim=opt.hidden_dim,

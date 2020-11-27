@@ -55,6 +55,14 @@ class ListenAttendSpell(nn.Module):
 
         return result
 
+    def inference(self, inputs: Tensor, input_lengths: Tensor, device: str):
+        with torch.no_grad():
+            self.flatten_parameters()
+            output = self.forward(inputs, input_lengths, teacher_forcing_ratio=0.0, return_decode_dict=False)
+            logit = torch.stack(output, dim=1).to(device)
+            return logit.max(-1)[1]
+
+
     def flatten_parameters(self):
         self.encoder.rnn.flatten_parameters()
         self.decoder.rnn.flatten_parameters()
