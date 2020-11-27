@@ -52,7 +52,7 @@ def build_model(opt, vocab, device):
             num_rnn_layers=opt.num_encoder_layers,
             rnn_hidden_dim=opt.hidden_dim,
             dropout_p=opt.dropout,
-            bidirectional=opt.bidirectional,
+            bidirectional=opt.use_bidirectional,
             activation=opt.activation,
             device=device
         )
@@ -89,7 +89,7 @@ def build_deepspeech2(input_size: int, num_classes: int, rnn_type: str, num_rnn_
             activation=activation,
             device=device
         )
-    )
+    ).to(device)
 
 
 def build_transformer(num_classes: int, pad_id: int, d_model: int, num_heads: int, input_size: int,

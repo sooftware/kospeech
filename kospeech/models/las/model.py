@@ -62,7 +62,6 @@ class ListenAttendSpell(nn.Module):
             logit = torch.stack(output, dim=1).to(device)
             return logit.max(-1)[1]
 
-
     def flatten_parameters(self):
         self.encoder.rnn.flatten_parameters()
         self.decoder.rnn.flatten_parameters()

@@ -74,7 +74,8 @@ class MaskConv(nn.Module):
         """
         if isinstance(module, nn.Conv2d):
             numerator = seq_lengths + 2 * module.padding[1] - module.dilation[1] * (module.kernel_size[1] - 1) - 1
-            seq_lengths = numerator / module.stride[1] + 1
+            seq_lengths = numerator.float() / float(module.stride[1])
+            seq_lengths = seq_lengths.int() + 1
 
         elif isinstance(module, nn.MaxPool2d):
             seq_lengths >>= 1

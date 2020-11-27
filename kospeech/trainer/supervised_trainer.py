@@ -213,23 +213,23 @@ class SupervisedTrainer(object):
                 else:
                     model.flatten_parameters()
 
-                logit = model(inputs=inputs, input_lengths=input_lengths,
-                              targets=targets, teacher_forcing_ratio=teacher_forcing_ratio)
-                logit = torch.stack(logit, dim=1).to(self.device)
+                output = model(inputs=inputs, input_lengths=input_lengths,
+                               targets=targets, teacher_forcing_ratio=teacher_forcing_ratio)
+                output = torch.stack(output, dim=1).to(self.device)
                 targets = targets[:, 1:]
 
-                hypothesis = logit.max(-1)[1]
-                loss = self.criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
+                hypothesis = output.max(-1)[1]
+                loss = self.criterion(output.contiguous().view(-1, output.size(-1)), targets.contiguous().view(-1))
 
             elif self.architecture == 'transformer':
-                logit = model(inputs, input_lengths, targets, return_attns=False)
-                hypothesis = logit.max(-1)[1]
-                loss = self.criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
+                output = model(inputs, input_lengths, targets, return_attns=False)
+                hypothesis = output.max(-1)[1]
+                loss = self.criterion(output.contiguous().view(-1, output.size(-1)), targets.contiguous().view(-1))
 
             elif self.architecture == 'deepspeech2':
-                logit = model(inputs, input_lengths)
-                logit = logit.transpose(0, 1)
-                loss = self.criterion(logit, targets, input_lengths, target_lengths)
+                output, output_lengths = model(inputs, input_lengths)
+                output = output.transpose(0, 1)  # TxBxC
+                loss = self.criterion(output, targets, output_lengths, torch.LongTensor(target_lengths))
 
             else:
                 raise ValueError("Unsupported architecture : {0}".format(self.architecture))

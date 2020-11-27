@@ -17,7 +17,7 @@ NUM_EPOCHS=20
 HIDDEN_DIM=512
 DROPOUT=0.15
 NUM_ENCODER_LAYERS=3
-RNN_TYPE='lstm'
+RNN_TYPE='gru'
 MAX_LEN=250
 MAX_GRAD_NORM=400
 WEIGHT_DECAY=1e-05
@@ -33,7 +33,6 @@ SAMPLE_RATE=16000
 N_MELS=80
 FEATURE_EXTRACT_BY='kaldi'        # You can set 'librosa', 'torchaudio'
 TRANSFORM_METHOD='fbank'          # Support feature : spect, mel, mfcc, fbank
-EXTRACTOR='vgg'                   # Support extractor : vgg, ds2 (DeepSpeech2)
 ACTIVATION='hardtanh'             # Support activation : ReLU, ELU, Hardtanh, GELU, LeakyReLU
 FREQ_MASK_PARA=18
 TIME_MASK_NUM=4
@@ -48,7 +47,7 @@ cd bin
 echo "KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition =="
 
 python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epochs $NUM_EPOCHS --use_bidirectional \
---transcripts_path $TRANSCRIPTS_PATH --dataset $DATASET --audio_extension $AUDIO_EXTENSION --output_unit $OUTPUT_UNIT\
+--transcripts_path $TRANSCRIPTS_PATH --dataset $DATASET --audio_extension $AUDIO_EXTENSION --output_unit $OUTPUT_UNIT \
 --optimizer $OPTIMIZER --spec_augment --use_cuda --hidden_dim $HIDDEN_DIM --dropout $DROPOUT \
 --transform_method $TRANSFORM_METHOD --architecture $ARCHITECTURE \
 --num_encoder_layers $NUM_ENCODER_LAYERS --rnn_type $RNN_TYPE \
@@ -59,4 +58,4 @@ python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epoch
 --init_lr $INIT_LR --final_lr $FINAL_LR --peak_lr $PEAK_LR --init_lr_scale $INIT_LR_SCALE --final_lr_scale $FINAL_LR_SCALE \
 --mode $MODE --dataset_path $DATASET_PATH \
 --max_grad_norm $MAX_GRAD_NORM --warmup_steps $WARMUP_STEPS --max_len $MAX_LEN \
---weight_decay $WEIGHT_DECAY --extractor $EXTRACTOR --activation $ACTIVATION
+--weight_decay $WEIGHT_DECAY --activation $ACTIVATION

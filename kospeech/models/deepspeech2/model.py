@@ -13,9 +13,9 @@ from kospeech.models.extractor import DeepSpeech2Extractor
 from kospeech.models.modules import BaseRNN, Linear
 
 
-class BatchNormRNN(BaseRNN):
+class BNReluRNN(BaseRNN):
     """
-    Recurrent neural network with batch normalization layer.
+    Recurrent neural network with batch normalization layer & ReLU activation function.
 
     Args:
         input_size (int): size of input
@@ -25,9 +25,8 @@ class BatchNormRNN(BaseRNN):
         dropout_p (float, optional): dropout probability (default: 0.1)
         device (torch.device): device - 'cuda' or 'cpu'
 
-    Inputs: inputs, seq_lengths
+    Inputs: inputs
         - **inputs**: list of sequences, whose length is the batch size and within which each sequence is list of tokens
-        - **seq_lengths**: list of sequence lengths
     """
     def __init__(
             self,
@@ -38,15 +37,16 @@ class BatchNormRNN(BaseRNN):
             dropout_p: float = 0.1,             # dropout probability
             device: str = 'cuda'                # device - 'cuda' or 'cpu'
     ):
-        super(BatchNormRNN, self).__init__(input_size=input_size, hidden_dim=hidden_dim, num_layers=1, rnn_type=rnn_type,
-                                           dropout_p=dropout_p, bidirectional=bidirectional, device=device)
+        super(BNReluRNN, self).__init__(input_size=input_size, hidden_dim=hidden_dim, num_layers=1, rnn_type=rnn_type,
+                                        dropout_p=dropout_p, bidirectional=bidirectional, device=device)
         self.batch_norm = nn.BatchNorm1d(input_size)
 
-    def forward(self, inputs: Tensor, seq_lengths: Tensor):
-        inputs = self.batch_norm(inputs)
-        inputs = nn.utils.rnn.pack_padded_sequence(inputs, seq_lengths)
+    def forward(self, inputs: Tensor, input_lengths):
+        inputs = F.relu(self.batch_norm(inputs.transpose(1, 2)))
+        inputs = inputs.transpose(1, 2)
 
-        output, hidden = self.rnn(inputs)
+        output = nn.utils.rnn.pack_padded_sequence(inputs, input_lengths)
+        output, hidden = self.rnn(output)
         output, _ = nn.utils.rnn.pad_packed_sequence(output)
         output = output.transpose(0, 1)
 
@@ -89,16 +89,19 @@ class DeepSpeech2(nn.Module):
             device: str = 'cuda'                    # device - 'cuda' or 'cpu'
     ):
         super(DeepSpeech2, self).__init__()
+        self.rnn_layers = list()
+        self.device = device
 
         input_size = int(math.floor(input_size + 2 * 20 - 41) / 2 + 1)
         input_size = int(math.floor(input_size + 2 * 10 - 21) / 2 + 1)
-        input_size <<= 5
+        input_size <<= 6
+        rnn_output_size = rnn_hidden_dim << 1 if bidirectional else rnn_hidden_dim
+
         self.conv = DeepSpeech2Extractor(activation, mask_conv=True)
-        self.rnn_layers = list()
 
         for idx in range(num_rnn_layers):
-            self.rnn_layers.append(BatchNormRNN(
-                input_size=input_size if idx == 0 else rnn_hidden_dim << 1,
+            self.rnn_layers.append(BNReluRNN(
+                input_size=input_size if idx == 0 else rnn_output_size,
                 hidden_dim=rnn_hidden_dim,
                 rnn_type=rnn_type,
                 bidirectional=bidirectional,
@@ -107,25 +110,26 @@ class DeepSpeech2(nn.Module):
             ))
 
         self.fc = nn.Sequential(
-            nn.BatchNorm1d(rnn_hidden_dim << 1),
-            Linear(rnn_hidden_dim << 1, rnn_hidden_dim, bias=False),
+            Linear(rnn_output_size, rnn_hidden_dim),
             nn.ReLU(),
-            Linear(rnn_hidden_dim, num_classes)
+            Linear(rnn_hidden_dim, num_classes, bias=False)
         )
 
     def forward(self, inputs: Tensor, input_lengths: Tensor):
         inputs = inputs.unsqueeze(1).permute(0, 1, 3, 2)
-        output, seq_lengths = self.conv(inputs, input_lengths)
+        output, output_lengths = self.conv(inputs, input_lengths).to(self.device)
 
-        batch_size, num_channels, hidden_dim, seq_length = output.size()
-        output = output.view(batch_size, num_channels * hidden_dim, seq_length).permute(2, 0, 1).contiguous()
+        batch_size, seq_length, num_channels, hidden_dim = output.size()
+        output = output.contiguous().view(batch_size, seq_length, num_channels * hidden_dim)
 
         for rnn_layer in self.rnn_layers:
-            output = rnn_layer(output, seq_lengths)
+            rnn_layer.to(self.device)
+            output = rnn_layer(output)
 
-        output = F.log_softmax(self.fc(output), dim=-1)
+        output = self.fc(output)
+        output = F.log_softmax(output, dim=-1)
 
-        return output
+        return output, output_lengths
 
     def inference(self, inputs: Tensor, input_lengths: Tensor, blank_label: int):
         hypothesis = list()
