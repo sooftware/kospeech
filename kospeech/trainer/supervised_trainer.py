@@ -304,13 +304,13 @@ class SupervisedTrainer(object):
             model.to(self.device)
 
             if self.architecture == 'las':
-                y_hats = model.inference(inputs, input_lengths, self.device)
+                y_hats = model.greedy_decode(inputs, input_lengths, self.device)
 
             elif self.architecture == 'transformer':
-                y_hats = model.inference(inputs, input_lengths)
+                y_hats = model.greedy_decode(inputs, input_lengths)
 
             elif self.architecture == 'deepspeech2':
-                y_hats = model.inference(inputs, input_lengths, self.device)
+                y_hats = model.greedy_decode(inputs, input_lengths, self.device)
 
             else:
                 raise ValueError("Unsupported architecture : {0}".format(self.architecture))

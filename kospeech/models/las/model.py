@@ -55,7 +55,7 @@ class ListenAttendSpell(nn.Module):
 
         return result
 
-    def inference(self, inputs: Tensor, input_lengths: Tensor, device: str):
+    def greedy_decode(self, inputs: Tensor, input_lengths: Tensor, device: str):
         with torch.no_grad():
             self.flatten_parameters()
             output = self.forward(inputs, input_lengths, teacher_forcing_ratio=0.0, return_decode_dict=False)

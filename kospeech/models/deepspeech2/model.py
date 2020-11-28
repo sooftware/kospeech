@@ -92,19 +92,7 @@ class DeepSpeech2(nn.Module):
 
         return output, output_lengths
 
-    def decode(self, output, blank_label: int) -> Tensor:
-        decode_results = list()
-        max_prob_indices = torch.argmax(output, dim=-1)
-
-        for i, max_prob_index in enumerate(max_prob_indices):
-            decode_result = list()
-            for j, label_index in enumerate(max_prob_index):
-                if label_index != blank_label:
-                    decode_result.append(label_index.item())
-            decode_results.append(decode_result)
-        return torch.as_tensor(decode_results)
-
-    def inference(self, inputs: Tensor, input_lengths: Tensor, device: str):
+    def greedy_decode(self, inputs: Tensor, input_lengths: Tensor, device: str):
         with torch.no_grad():
             output = self.forward(inputs, input_lengths)
             logit = torch.stack(output, dim=1).to(device)
