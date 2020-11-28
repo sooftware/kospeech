@@ -80,7 +80,7 @@ def train(opt):
         optimizer = Optimizer(optimizer, lr_scheduler, opt.warmup_steps, opt.max_grad_norm)
 
         if opt.architecture == 'deepspeech2':
-            criterion = nn.CTCLoss(blank=len(vocab))
+            criterion = nn.CTCLoss(blank=vocab.blank_id, reduction=opt.reduction).to(device)
         else:
             criterion = LabelSmoothedCrossEntropyLoss(
                 num_classes=len(vocab), ignore_index=vocab.pad_id,

@@ -203,8 +203,14 @@ class SupervisedTrainer(object):
                 else:
                     continue
 
+            self.optimizer.zero_grad()
+
             inputs = inputs.to(self.device)
             targets = targets.to(self.device)
+
+            input_lengths = input_lengths.to(self.device)
+            target_lengths = torch.as_tensor(target_lengths).to(self.device)
+
             model = model.to(self.device)
 
             if self.architecture == 'las':
@@ -227,10 +233,7 @@ class SupervisedTrainer(object):
 
             elif self.architecture == 'deepspeech2':
                 output, output_lengths = model(inputs, input_lengths)
-                output = torch.stack(output, dim=1).to(self.device)
-                loss = self.criterion(
-                    output.transpose(0, 1), targets[:, 1:], output_lengths, torch.as_tensor(target_lengths)
-                )
+                loss = self.criterion(output.transpose(0, 1), targets, output_lengths, target_lengths)
 
             else:
                 raise ValueError("Unsupported architecture : {0}".format(self.architecture))
@@ -241,7 +244,6 @@ class SupervisedTrainer(object):
             cer = self.metric(targets, y_hats)
             total_num += int(input_lengths.sum())
 
-            self.optimizer.zero_grad()
             loss.backward()
             self.optimizer.step(model)
 

@@ -9,6 +9,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
+from typing import Tuple
 from kospeech.models.extractor import DeepSpeech2Extractor
 from kospeech.models.modules import Linear, BNReluRNN
 
@@ -75,7 +76,7 @@ class DeepSpeech2(nn.Module):
             Linear(rnn_hidden_dim, num_classes, bias=False)
         )
 
-    def forward(self, inputs: Tensor, input_lengths: Tensor):
+    def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
         inputs = inputs.unsqueeze(1).permute(0, 1, 3, 2)
         output, output_lengths = self.conv(inputs, input_lengths)
 
