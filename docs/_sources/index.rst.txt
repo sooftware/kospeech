@@ -8,7 +8,7 @@ Welcome to KoSpeech's documentation!
 
 .. toctree::
    :maxdepth: 1
-   :caption: NOTES
+   :caption: GETTING STARTED
 
    notes/intro
    notes/Preparation
@@ -18,17 +18,22 @@ Welcome to KoSpeech's documentation!
    :maxdepth: 2
    :caption: ARCHITECTURE
 
-   Seq2seq
-   Transformer
+   Deep Speech 2
+   Listen, Attend and Spell
+   Speech Transformer
+   Common Modules
 
 .. toctree::
    :maxdepth: 2
-   :caption: PACKAGE REFERENCE
+   :caption: LIBRARY REFERENCE
 
    Checkpoint
    Data
    Decode
    Evaluator
    Optim
+   Learning Rate Schedulers
    Trainer
+   Vocabs
+   Voice Activity Detection
    Etc

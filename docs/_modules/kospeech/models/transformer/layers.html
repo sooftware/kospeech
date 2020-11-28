@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>kospeech.models.transformer.layers &mdash; KoSpeech 0.0 documentation</title>
+  <title>kospeech.models.transformer.layers &mdash; KoSpeech latest documentation</title>
   
 
   
@@ -57,7 +57,7 @@
             
             
               <div class="version">
-                0.0
+                latest
               </div>
             
           
@@ -81,7 +81,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">NOTES</span></p>
+              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../notes/intro.html">Intro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../notes/Preparation.html">Preparation before Training</a></li>
@@ -89,17 +89,22 @@
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../Seq2seq.html">Seq2seq</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../Transformer.html">Transformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Deep Speech 2.html">Deep Speech 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Listen, Attend and Spell.html">Listen, Attend and Spell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Speech Transformer.html">Speech Transformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Common Modules.html">Common Modules</a></li>
 </ul>
-<p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
+<p class="caption"><span class="caption-text">LIBRARY REFERENCE</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../Checkpoint.html">Checkpoint</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../Data.html">Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../Decode.html">Decode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../Optim.html">Optim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Learning Rate Schedulers.html">Learning Rate Scheduler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Vocabs.html">Vocabs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Voice Activity Detection.html">Voice Activity Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../Etc.html">Etc</a></li>
 </ul>
 
@@ -164,67 +169,101 @@
            <div itemprop="articleBody">
             
   <h1>Source code for kospeech.models.transformer.layers</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># Soohwan Kim, Seyoung Bae, Cheolhwang Won.</span>
+<span class="c1"># @ArXiv : KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition</span>
+<span class="c1"># This source code is licensed under the Apache 2.0 License license found in the</span>
+<span class="c1"># LICENSE file in the root directory of this source tree.</span>
+
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
 <span class="kn">from</span> <span class="nn">torch</span> <span class="k">import</span> <span class="n">Tensor</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span>
-<span class="kn">from</span> <span class="nn">kospeech.models.transformer.sublayers</span> <span class="k">import</span> <span class="n">PoswiseFeedForwardNet</span><span class="p">,</span> <span class="n">AddNorm</span><span class="p">,</span> <span class="n">MultiHeadAttention</span>
+<span class="kn">from</span> <span class="nn">kospeech.models.transformer.sublayers</span> <span class="k">import</span> <span class="n">AddNorm</span><span class="p">,</span> <span class="n">PositionWiseFeedForwardNet</span>
+<span class="kn">from</span> <span class="nn">kospeech.models.attention</span> <span class="k">import</span> <span class="n">MultiHeadAttention</span>
 
 
-<div class="viewcode-block" id="TransformerEncoderLayer"><a class="viewcode-back" href="../../../../Transformer.html#kospeech.models.transformer.layers.TransformerEncoderLayer">[docs]</a><span class="k">class</span> <span class="nc">TransformerEncoderLayer</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<div class="viewcode-block" id="SpeechTransformerEncoderLayer"><a class="viewcode-back" href="../../../../Speech Transformer.html#kospeech.models.transformer.layers.SpeechTransformerEncoderLayer">[docs]</a><span class="k">class</span> <span class="nc">SpeechTransformerEncoderLayer</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    EncoderLayer is made up of self-attention and feedforward network.</span>
 <span class="sd">    This standard encoder layer is based on the paper &quot;Attention Is All You Need&quot;.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        d_model: dimension of model (default: 512)</span>
+<span class="sd">        num_heads: number of attention heads (default: 8)</span>
+<span class="sd">        d_ff: dimension of feed forward network (default: 2048)</span>
+<span class="sd">        dropout_p: probability of dropout (default: 0.3)</span>
+<span class="sd">        ffnet_style: style of feed forward network [ff, conv] (default: ff)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d_model</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">512</span><span class="p">,</span> <span class="n">num_heads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span>
-                 <span class="n">d_ff</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2048</span><span class="p">,</span> <span class="n">dropout_p</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">ffnet_style</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;ff&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">TransformerEncoderLayer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">d_model</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">512</span><span class="p">,</span>             <span class="c1"># dimension of model</span>
+            <span class="n">num_heads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span>             <span class="c1"># number of attention heads</span>
+            <span class="n">d_ff</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2048</span><span class="p">,</span>               <span class="c1"># dimension of feed forward network</span>
+            <span class="n">dropout_p</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span>         <span class="c1"># probability of dropout</span>
+            <span class="n">ffnet_style</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;ff&#39;</span>         <span class="c1"># style of feed forward network</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SpeechTransformerEncoderLayer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">self_attention</span> <span class="o">=</span> <span class="n">AddNorm</span><span class="p">(</span><span class="n">MultiHeadAttention</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">num_heads</span><span class="p">),</span> <span class="n">d_model</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">feed_forward</span> <span class="o">=</span> <span class="n">AddNorm</span><span class="p">(</span><span class="n">PoswiseFeedForwardNet</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">d_ff</span><span class="p">,</span> <span class="n">dropout_p</span><span class="p">,</span> <span class="n">ffnet_style</span><span class="p">),</span> <span class="n">d_model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feed_forward</span> <span class="o">=</span> <span class="n">AddNorm</span><span class="p">(</span><span class="n">PositionWiseFeedForwardNet</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">d_ff</span><span class="p">,</span> <span class="n">dropout_p</span><span class="p">,</span> <span class="n">ffnet_style</span><span class="p">),</span> <span class="n">d_model</span><span class="p">)</span>
 
-<div class="viewcode-block" id="TransformerEncoderLayer.forward"><a class="viewcode-back" href="../../../../Transformer.html#kospeech.models.transformer.layers.TransformerEncoderLayer.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">non_pad_mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                <span class="n">self_attn_mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">]:</span>
+<div class="viewcode-block" id="SpeechTransformerEncoderLayer.forward"><a class="viewcode-back" href="../../../../Speech Transformer.html#kospeech.models.transformer.layers.SpeechTransformerEncoderLayer.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">inputs</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>                             <span class="c1"># B x T_input x D</span>
+            <span class="n">non_pad_mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>         <span class="c1"># B x T_input</span>
+            <span class="n">self_attn_mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>        <span class="c1"># B x T_input x T_output</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">]:</span>
         <span class="n">output</span><span class="p">,</span> <span class="n">attn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">self_attention</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">self_attn_mask</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">non_pad_mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">output</span> <span class="o">*=</span> <span class="n">non_pad_mask</span>
+        <span class="n">output</span> <span class="o">*=</span> <span class="n">non_pad_mask</span>
 
         <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">feed_forward</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">non_pad_mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">output</span> <span class="o">*=</span> <span class="n">non_pad_mask</span>
+        <span class="n">output</span> <span class="o">*=</span> <span class="n">non_pad_mask</span>
 
         <span class="k">return</span> <span class="n">output</span><span class="p">,</span> <span class="n">attn</span></div></div>
 
 
-<div class="viewcode-block" id="TransformerDecoderLayer"><a class="viewcode-back" href="../../../../Transformer.html#kospeech.models.transformer.layers.TransformerDecoderLayer">[docs]</a><span class="k">class</span> <span class="nc">TransformerDecoderLayer</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<div class="viewcode-block" id="SpeechTransformerDecoderLayer"><a class="viewcode-back" href="../../../../Speech Transformer.html#kospeech.models.transformer.layers.SpeechTransformerDecoderLayer">[docs]</a><span class="k">class</span> <span class="nc">SpeechTransformerDecoderLayer</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    DecoderLayer is made up of self-attention, multi-head attention and feedforward network.</span>
 <span class="sd">    This standard decoder layer is based on the paper &quot;Attention Is All You Need&quot;.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        d_model: dimension of model (default: 512)</span>
+<span class="sd">        num_heads: number of attention heads (default: 8)</span>
+<span class="sd">        d_ff: dimension of feed forward network (default: 2048)</span>
+<span class="sd">        dropout_p: probability of dropout (default: 0.3)</span>
+<span class="sd">        ffnet_style: style of feed forward network [ff, conv] (default: ff)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d_model</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">512</span><span class="p">,</span> <span class="n">num_heads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span> <span class="n">d_ff</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2048</span><span class="p">,</span>
-                 <span class="n">dropout_p</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">ffnet_style</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;ff&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">TransformerDecoderLayer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">d_model</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">512</span><span class="p">,</span>             <span class="c1"># dimension of model</span>
+            <span class="n">num_heads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span>             <span class="c1"># number of attention heads</span>
+            <span class="n">d_ff</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2048</span><span class="p">,</span>               <span class="c1"># dimension of feed forward network</span>
+            <span class="n">dropout_p</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span>         <span class="c1"># probability of dropout</span>
+            <span class="n">ffnet_style</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;ff&#39;</span>         <span class="c1"># style of feed forward network</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SpeechTransformerDecoderLayer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">self_attention</span> <span class="o">=</span> <span class="n">AddNorm</span><span class="p">(</span><span class="n">MultiHeadAttention</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">num_heads</span><span class="p">),</span> <span class="n">d_model</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">memory_attention</span> <span class="o">=</span> <span class="n">AddNorm</span><span class="p">(</span><span class="n">MultiHeadAttention</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">num_heads</span><span class="p">),</span> <span class="n">d_model</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">feed_forward</span> <span class="o">=</span> <span class="n">AddNorm</span><span class="p">(</span><span class="n">PoswiseFeedForwardNet</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">d_ff</span><span class="p">,</span> <span class="n">dropout_p</span><span class="p">,</span> <span class="n">ffnet_style</span><span class="p">),</span> <span class="n">d_model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feed_forward</span> <span class="o">=</span> <span class="n">AddNorm</span><span class="p">(</span><span class="n">PositionWiseFeedForwardNet</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">d_ff</span><span class="p">,</span> <span class="n">dropout_p</span><span class="p">,</span> <span class="n">ffnet_style</span><span class="p">),</span> <span class="n">d_model</span><span class="p">)</span>
 
-<div class="viewcode-block" id="TransformerDecoderLayer.forward"><a class="viewcode-back" href="../../../../Transformer.html#kospeech.models.transformer.layers.TransformerDecoderLayer.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">memory</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
-                <span class="n">non_pad_mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">self_attn_mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                <span class="n">memory_mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">]:</span>
+<div class="viewcode-block" id="SpeechTransformerDecoderLayer.forward"><a class="viewcode-back" href="../../../../Speech Transformer.html#kospeech.models.transformer.layers.SpeechTransformerDecoderLayer.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">inputs</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>                                 <span class="c1"># B x T_input</span>
+            <span class="n">memory</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>                                 <span class="c1"># B x T_input x D_model</span>
+            <span class="n">non_pad_mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>             <span class="c1"># B x T_input</span>
+            <span class="n">self_attn_mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>           <span class="c1"># B x T_input x T_input</span>
+            <span class="n">memory_mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>               <span class="c1"># B x T_input x T_output</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">]:</span>
         <span class="n">output</span><span class="p">,</span> <span class="n">self_attn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">self_attention</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">self_attn_mask</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">non_pad_mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">output</span> <span class="o">*=</span> <span class="n">non_pad_mask</span>
+        <span class="n">output</span> <span class="o">*=</span> <span class="n">non_pad_mask</span>
 
         <span class="n">output</span><span class="p">,</span> <span class="n">memory_attn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">memory_attention</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">memory</span><span class="p">,</span> <span class="n">memory</span><span class="p">,</span> <span class="n">memory_mask</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">non_pad_mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">output</span> <span class="o">*=</span> <span class="n">non_pad_mask</span>
+        <span class="n">output</span> <span class="o">*=</span> <span class="n">non_pad_mask</span>
 
         <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">feed_forward</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">non_pad_mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">output</span> <span class="o">*=</span> <span class="n">non_pad_mask</span>
+        <span class="n">output</span> <span class="o">*=</span> <span class="n">non_pad_mask</span>
 
         <span class="k">return</span> <span class="n">output</span><span class="p">,</span> <span class="n">self_attn</span><span class="p">,</span> <span class="n">memory_attn</span></div></div>
 </pre></div>

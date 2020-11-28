@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>kospeech.opts &mdash; KoSpeech 0.0 documentation</title>
+  <title>kospeech.opts &mdash; KoSpeech latest documentation</title>
   
 
   
@@ -57,7 +57,7 @@
             
             
               <div class="version">
-                0.0
+                latest
               </div>
             
           
@@ -81,7 +81,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">NOTES</span></p>
+              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../notes/intro.html">Intro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../notes/Preparation.html">Preparation before Training</a></li>
@@ -89,17 +89,22 @@
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../Seq2seq.html">Seq2seq</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../Transformer.html">Transformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Deep Speech 2.html">Deep Speech 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Listen, Attend and Spell.html">Listen, Attend and Spell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Speech Transformer.html">Speech Transformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Common Modules.html">Common Modules</a></li>
 </ul>
-<p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
+<p class="caption"><span class="caption-text">LIBRARY REFERENCE</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Checkpoint.html">Checkpoint</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Data.html">Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Decode.html">Decode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Optim.html">Optim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Learning Rate Schedulers.html">Learning Rate Scheduler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Vocabs.html">Vocabs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Voice Activity Detection.html">Voice Activity Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Etc.html">Etc</a></li>
 </ul>
 
@@ -164,7 +169,13 @@
            <div itemprop="articleBody">
             
   <h1>Source code for kospeech.opts</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">kospeech.utils</span> <span class="k">import</span> <span class="n">logger</span>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># Soohwan Kim, Seyoung Bae, Cheolhwang Won.</span>
+<span class="c1"># @ArXiv : KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition</span>
+<span class="c1"># This source code is licensed under the Apache 2.0 License license found in the</span>
+<span class="c1"># LICENSE file in the root directory of this source tree.</span>
+
+<span class="kn">from</span> <span class="nn">kospeech.utils</span> <span class="k">import</span> <span class="n">logger</span>
 
 
 <div class="viewcode-block" id="build_model_opts"><a class="viewcode-back" href="../../Etc.html#kospeech.opts.build_model_opts">[docs]</a><span class="k">def</span> <span class="nf">build_model_opts</span><span class="p">(</span><span class="n">parser</span><span class="p">):</span>
@@ -177,8 +188,8 @@
     <span class="c1"># Seq2seq</span>
 
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--architecture&#39;</span><span class="p">,</span> <span class="s1">&#39;-architecture&#39;</span><span class="p">,</span>
-                       <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;seq2seq&#39;</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;which architecture to use: [seq2seq, transformer] (default: seq2seq)&#39;</span><span class="p">)</span>
+                       <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;las&#39;</span><span class="p">,</span>
+                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;which architecture to use: [las, transformer] (default: las)&#39;</span><span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--use_bidirectional&#39;</span><span class="p">,</span> <span class="s1">&#39;-use_bidirectional&#39;</span><span class="p">,</span>
                        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;if True, becomes a bidirectional encoder (defulat: False)&#39;</span><span class="p">)</span>
@@ -192,8 +203,8 @@
                        <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;dropout ratio in training (default: 0.3)&#39;</span><span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--num_heads&#39;</span><span class="p">,</span> <span class="s1">&#39;-num_heads&#39;</span><span class="p">,</span>
-                       <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;number of head in attention (default: 8)&#39;</span><span class="p">)</span>
+                       <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;number of head in attention (default: 4)&#39;</span><span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--label_smoothing&#39;</span><span class="p">,</span> <span class="s1">&#39;-label_smoothing&#39;</span><span class="p">,</span>
                        <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;ratio of label smoothing (default: 0.1)&#39;</span><span class="p">)</span>
@@ -204,8 +215,8 @@
                        <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;layer size of decoder (default: 2)&#39;</span><span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--rnn_type&#39;</span><span class="p">,</span> <span class="s1">&#39;-rnn_type&#39;</span><span class="p">,</span>
-                       <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;gru&#39;</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;type of rnn cell: [gru, lstm, rnn] (default: gru)&#39;</span><span class="p">)</span>
+                       <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;lstm&#39;</span><span class="p">,</span>
+                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;type of rnn cell: [gru, lstm, rnn] (default: lstm)&#39;</span><span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--extractor&#39;</span><span class="p">,</span> <span class="s1">&#39;-extractor&#39;</span><span class="p">,</span>
                        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;vgg&#39;</span><span class="p">,</span>
                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;extractor in listener: [vgg, ds2] (default: vgg)&#39;</span><span class="p">)</span>
@@ -235,27 +246,27 @@
 <div class="viewcode-block" id="build_train_opts"><a class="viewcode-back" href="../../Etc.html#kospeech.opts.build_train_opts">[docs]</a><span class="k">def</span> <span class="nf">build_train_opts</span><span class="p">(</span><span class="n">parser</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Training and saving options &quot;&quot;&quot;</span>
     <span class="n">group</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">add_argument_group</span><span class="p">(</span><span class="s1">&#39;General&#39;</span><span class="p">)</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--dataset&#39;</span><span class="p">,</span> <span class="s1">&#39;-dataset&#39;</span><span class="p">,</span>
+                       <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;dataset&#39;</span><span class="p">,</span>
+                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;dataset&#39;</span><span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--dataset_path&#39;</span><span class="p">,</span> <span class="s1">&#39;-dataset_path&#39;</span><span class="p">,</span>
-                       <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;/data1/&#39;</span><span class="p">,</span>
+                       <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;path of dataset&#39;</span><span class="p">)</span>
-    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--data_list_path&#39;</span><span class="p">,</span> <span class="s1">&#39;-data_list_path&#39;</span><span class="p">,</span>
-                       <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;./data/data_list/filter_train_list.csv&#39;</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;list of training / test set&#39;</span><span class="p">)</span>
-    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--label_path&#39;</span><span class="p">,</span> <span class="s1">&#39;-label_path&#39;</span><span class="p">,</span>
-                       <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;./data/label/aihub_labels.csv&#39;</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;path of character labels&#39;</span><span class="p">)</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--transcripts_path&#39;</span><span class="p">,</span> <span class="s1">&#39;-transcripts_path&#39;</span><span class="p">,</span>
+                       <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;path of transcripts refer to : https://github.com/sooftware/KsponSpeech-preprocess&#39;</span><span class="p">)</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--output_unit&#39;</span><span class="p">,</span> <span class="s1">&#39;-output_unit&#39;</span><span class="p">,</span>
+                       <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;character&#39;</span><span class="p">,</span>
+                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;output unit : [character, subword, grapheme]&#39;</span><span class="p">)</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;-optimizer&#39;</span><span class="p">,</span>
+                       <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;adam&#39;</span><span class="p">,</span>
+                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;optimizer: Adam, RAdam, Adadelta, Adagrad&#39;</span><span class="p">)</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--audio_extension&#39;</span><span class="p">,</span> <span class="s1">&#39;-audio_extension&#39;</span><span class="p">,</span>
+                       <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;pcm&#39;</span><span class="p">,</span>
+                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;audio extension&#39;</span><span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--spec_augment&#39;</span><span class="p">,</span> <span class="s1">&#39;-spec_augment&#39;</span><span class="p">,</span>
                        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;flag indication whether to use spec augmentation or not&#39;</span><span class="p">)</span>
-    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--noise_augment&#39;</span><span class="p">,</span> <span class="s1">&#39;-noise_augment&#39;</span><span class="p">,</span>
-                       <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;flag indication whether to use noise augmentation or not&#39;</span><span class="p">)</span>
-    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--noiseset_size&#39;</span><span class="p">,</span> <span class="s1">&#39;-noiseset_size&#39;</span><span class="p">,</span>
-                       <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;size of noise dataset for noise augmentation (default: 1000)&#39;</span><span class="p">)</span>
-    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--noise_level&#39;</span><span class="p">,</span> <span class="s1">&#39;-noise_level&#39;</span><span class="p">,</span>
-                       <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;set level of noise (default: 0.7)&#39;</span><span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--use_cuda&#39;</span><span class="p">,</span> <span class="s1">&#39;-use_cuda&#39;</span><span class="p">,</span>
                        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;flag indication whether to use cuda or not&#39;</span><span class="p">)</span>
@@ -269,32 +280,35 @@
                        <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;number of epochs in training (default: 20)&#39;</span><span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--init_lr&#39;</span><span class="p">,</span> <span class="s1">&#39;-init_lr&#39;</span><span class="p">,</span>
-                       <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">3e-4</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;initial learning rate =&gt; before ramp up lr (default: 1e-15)&#39;</span><span class="p">)</span>
-    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--high_plateau_lr&#39;</span><span class="p">,</span> <span class="s1">&#39;-high_plateau_lr&#39;</span><span class="p">,</span>
-                       <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">3e-04</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;high plateau learning rate =&gt; after rampup lr (default: 3e-04)&#39;</span><span class="p">)</span>
-    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--low_plateau_lr&#39;</span><span class="p">,</span> <span class="s1">&#39;-low_plateau_lr&#39;</span><span class="p">,</span>
-                       <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">3e-05</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;low plateau learning rate =&gt; after exponential decay (default: 1e-05)&#39;</span><span class="p">)</span>
-    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--valid_ratio&#39;</span><span class="p">,</span> <span class="s1">&#39;-valid_ratio&#39;</span><span class="p">,</span>
+                       <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">1e-06</span><span class="p">,</span>
+                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;initial learning rate (default: 1e-4)&#39;</span><span class="p">)</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--peak_lr&#39;</span><span class="p">,</span> <span class="s1">&#39;-peak_lr&#39;</span><span class="p">,</span>
+                       <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">1e-04</span><span class="p">,</span>
+                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;peak learning rate (default: 1e-4)&#39;</span><span class="p">)</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--final_lr&#39;</span><span class="p">,</span> <span class="s1">&#39;-final_lr&#39;</span><span class="p">,</span>
+                       <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">1e-06</span><span class="p">,</span>
+                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;final learning rate (default: 1e-6)&#39;</span><span class="p">)</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--final_lr_scale&#39;</span><span class="p">,</span> <span class="s1">&#39;-final_lr_scale&#39;</span><span class="p">,</span>
+                       <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;final learning rate scale (default: 0.05)&#39;</span><span class="p">)</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--init_lr_scale&#39;</span><span class="p">,</span> <span class="s1">&#39;-init_lr_scale&#39;</span><span class="p">,</span>
                        <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;validation dataset ratio in training dataset (default: 0.01)&#39;</span><span class="p">)</span>
+                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;init learning rate scale (default: 0.01)&#39;</span><span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--max_len&#39;</span><span class="p">,</span> <span class="s1">&#39;-max_len&#39;</span><span class="p">,</span>
                        <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">120</span><span class="p">,</span>
                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;maximum characters of sentence (default: 120)&#39;</span><span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--max_grad_norm&#39;</span><span class="p">,</span> <span class="s1">&#39;-max_grad_norm&#39;</span><span class="p">,</span>
                        <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span>
                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;value used for gradient norm clipping (default: 400)&#39;</span><span class="p">)</span>
-    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--rampup_period&#39;</span><span class="p">,</span> <span class="s1">&#39;-rampup_period&#39;</span><span class="p">,</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--weight_decay&#39;</span><span class="p">,</span> <span class="s1">&#39;-weight_decay&#39;</span><span class="p">,</span>
+                       <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">1e-05</span><span class="p">,</span>
+                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;value used for weight decay (default: 1e-05)&#39;</span><span class="p">)</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--reduction&#39;</span><span class="p">,</span> <span class="s1">&#39;-reduction&#39;</span><span class="p">,</span>
+                       <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;sum&#39;</span><span class="p">,</span>
+                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;loss reduction method (default: sum)&#39;</span><span class="p">)</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--warmup_steps&#39;</span><span class="p">,</span> <span class="s1">&#39;-warmup_steps&#39;</span><span class="p">,</span>
                        <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;timestep of learning rate rampup (default: 1000)&#39;</span><span class="p">)</span>
-    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--decay_threshold&#39;</span><span class="p">,</span> <span class="s1">&#39;-decay_threshold&#39;</span><span class="p">,</span>
-                       <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;If the improvement of cer less than this, exponential decay lr start. (default: 0.02)&#39;</span><span class="p">)</span>
-    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--exp_decay_period&#39;</span><span class="p">,</span> <span class="s1">&#39;-exp_decay_period&#39;</span><span class="p">,</span>
-                       <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">160000</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Timestep of learning rate decay (default: 160000)&#39;</span><span class="p">)</span>
+                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;timestep of learning rate warmup (default: 4000)&#39;</span><span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--teacher_forcing_step&#39;</span><span class="p">,</span> <span class="s1">&#39;-teacher_forcing_step&#39;</span><span class="p">,</span>
                        <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The value at which teacher forcing ratio will be reducing&#39;</span><span class="p">)</span>
@@ -348,14 +362,11 @@
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--transform_method&#39;</span><span class="p">,</span> <span class="s1">&#39;-transform_method&#39;</span><span class="p">,</span>
                        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;mel&#39;</span><span class="p">,</span>
                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;which feature to use: [mel, mfcc, spect, fbank] (default: mel)&#39;</span><span class="p">)</span>
-    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--time_mask_para&#39;</span><span class="p">,</span> <span class="s1">&#39;-time_mask_para&#39;</span><span class="p">,</span>
-                       <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Hyper Parameter for Time Masking to limit time masking length (default: 50)&#39;</span><span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--freq_mask_para&#39;</span><span class="p">,</span> <span class="s1">&#39;-freq_mask_para&#39;</span><span class="p">,</span>
                        <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Hyper Parameter for Freq Masking to limit freq masking length (default: 12)&#39;</span><span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--time_mask_num&#39;</span><span class="p">,</span> <span class="s1">&#39;-time_mask_num&#39;</span><span class="p">,</span>
-                       <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                       <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;how many time-masked area to make (default: 2)&#39;</span><span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--freq_mask_num&#39;</span><span class="p">,</span> <span class="s1">&#39;-freq_mask_num&#39;</span><span class="p">,</span>
                        <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
@@ -368,9 +379,9 @@
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--dataset_path&#39;</span><span class="p">,</span> <span class="s1">&#39;-dataset_path&#39;</span><span class="p">,</span>
                        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;/data1/&#39;</span><span class="p">,</span>
                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;path of dataset&#39;</span><span class="p">)</span>
-    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--data_list_path&#39;</span><span class="p">,</span> <span class="s1">&#39;-data_list_path&#39;</span><span class="p">,</span>
-                       <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;./data/data_list/filter_train_list.csv&#39;</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;list of training / test set&#39;</span><span class="p">)</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--transcripts_path&#39;</span><span class="p">,</span> <span class="s1">&#39;-transcripts_path&#39;</span><span class="p">,</span>
+                       <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;path of transcripts refer to : https://github.com/sooftware/KsponSpeech-preprocess&#39;</span><span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--label_path&#39;</span><span class="p">,</span> <span class="s1">&#39;-label_path&#39;</span><span class="p">,</span>
                        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;./data/label/aihub_labels.csv&#39;</span><span class="p">,</span>
                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;path of character labels&#39;</span><span class="p">)</span>
@@ -409,7 +420,6 @@
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--del_silence: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">del_silence</span><span class="p">))</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--input_reverse: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">input_reverse</span><span class="p">))</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--feature_extract_by: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">feature_extract_by</span><span class="p">))</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--time_mask_para: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">time_mask_para</span><span class="p">))</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--freq_mask_para: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">freq_mask_para</span><span class="p">))</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--time_mask_num: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">time_mask_num</span><span class="p">))</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--freq_mask_num: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">freq_mask_num</span><span class="p">))</span></div>
@@ -435,24 +445,13 @@
 
 <div class="viewcode-block" id="print_train_opts"><a class="viewcode-back" href="../../Etc.html#kospeech.opts.print_train_opts">[docs]</a><span class="k">def</span> <span class="nf">print_train_opts</span><span class="p">(</span><span class="n">opt</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Print train options &quot;&quot;&quot;</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--dataset_path: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">dataset_path</span><span class="p">))</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--data_list_path: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">data_list_path</span><span class="p">))</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--label_path: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">label_path</span><span class="p">))</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--spec_augment: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">spec_augment</span><span class="p">))</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--noise_augment: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">noise_augment</span><span class="p">))</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--noiseset_size: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">noiseset_size</span><span class="p">))</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--noise_level: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">noise_level</span><span class="p">))</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--use_cuda: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">use_cuda</span><span class="p">))</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--batch_size: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">batch_size</span><span class="p">))</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--num_workers: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">num_workers</span><span class="p">))</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--num_epochs: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">num_epochs</span><span class="p">))</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--init_lr: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">init_lr</span><span class="p">))</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--high_plateau_lr: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">high_plateau_lr</span><span class="p">))</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--low_plateau_lr: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">low_plateau_lr</span><span class="p">))</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--decay_threshold: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">decay_threshold</span><span class="p">))</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--rampup_period: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">rampup_period</span><span class="p">))</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--exp_decay_period: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">exp_decay_period</span><span class="p">))</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--valid_ratio: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">valid_ratio</span><span class="p">))</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--warmup_steps: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">warmup_steps</span><span class="p">))</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--max_len: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">max_len</span><span class="p">))</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--max_grad_norm: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">max_grad_norm</span><span class="p">))</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--teacher_forcing_step: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">teacher_forcing_step</span><span class="p">))</span>
@@ -467,7 +466,6 @@
 <div class="viewcode-block" id="print_eval_opts"><a class="viewcode-back" href="../../Etc.html#kospeech.opts.print_eval_opts">[docs]</a><span class="k">def</span> <span class="nf">print_eval_opts</span><span class="p">(</span><span class="n">opt</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Print evaltation options &quot;&quot;&quot;</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--dataset_path: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">dataset_path</span><span class="p">))</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--data_list_path: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">data_list_path</span><span class="p">))</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--label_path: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">label_path</span><span class="p">))</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--num_workers: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">num_workers</span><span class="p">))</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;--use_cuda: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">use_cuda</span><span class="p">))</span>

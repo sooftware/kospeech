@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>kospeech.data.audio.parser &mdash; KoSpeech 0.0 documentation</title>
+  <title>kospeech.data.audio.parser &mdash; KoSpeech latest documentation</title>
   
 
   
@@ -57,7 +57,7 @@
             
             
               <div class="version">
-                0.0
+                latest
               </div>
             
           
@@ -81,7 +81,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">NOTES</span></p>
+              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../notes/intro.html">Intro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../notes/Preparation.html">Preparation before Training</a></li>
@@ -89,17 +89,22 @@
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../Seq2seq.html">Seq2seq</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../Transformer.html">Transformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Deep Speech 2.html">Deep Speech 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Listen, Attend and Spell.html">Listen, Attend and Spell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Speech Transformer.html">Speech Transformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Common Modules.html">Common Modules</a></li>
 </ul>
-<p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
+<p class="caption"><span class="caption-text">LIBRARY REFERENCE</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../Checkpoint.html">Checkpoint</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../Data.html">Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../Decode.html">Decode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../Optim.html">Optim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Learning Rate Schedulers.html">Learning Rate Scheduler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Vocabs.html">Vocabs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Voice Activity Detection.html">Voice Activity Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../Etc.html">Etc</a></li>
 </ul>
 
@@ -164,11 +169,23 @@
            <div itemprop="articleBody">
             
   <h1>Source code for kospeech.data.audio.parser</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">torch</span> <span class="k">import</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">FloatTensor</span>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># Soohwan Kim, Seyoung Bae, Cheolhwang Won.</span>
+<span class="c1"># @ArXiv : KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition</span>
+<span class="c1"># This source code is licensed under the Apache 2.0 License license found in the</span>
+<span class="c1"># LICENSE file in the root directory of this source tree.</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">kospeech.data.audio.core</span> <span class="k">import</span> <span class="n">load_audio</span>
-<span class="kn">from</span> <span class="nn">kospeech.data.audio.augment</span> <span class="k">import</span> <span class="n">NoiseInjector</span><span class="p">,</span> <span class="n">SpecAugment</span>
-<span class="kn">from</span> <span class="nn">kospeech.data.audio.feature</span> <span class="k">import</span> <span class="n">MelSpectrogram</span><span class="p">,</span> <span class="n">MFCC</span><span class="p">,</span> <span class="n">Spectrogram</span><span class="p">,</span> <span class="n">FilterBank</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="k">import</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">FloatTensor</span>
+<span class="kn">from</span> <span class="nn">kospeech.data.audio.augment</span> <span class="k">import</span> <span class="n">SpecAugment</span>
+<span class="kn">from</span> <span class="nn">kospeech.data.audio.feature</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">MelSpectrogram</span><span class="p">,</span>
+    <span class="n">MFCC</span><span class="p">,</span>
+    <span class="n">Spectrogram</span><span class="p">,</span>
+    <span class="n">FilterBank</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">kospeech.utils</span> <span class="k">import</span> <span class="n">logger</span>
 
 
 <div class="viewcode-block" id="AudioParser"><a class="viewcode-back" href="../../../../Data.html#kospeech.data.audio.parser.AudioParser">[docs]</a><span class="k">class</span> <span class="nc">AudioParser</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -182,9 +199,8 @@
 <span class="sd">        - **parse_audio()**: abstract method. you have to override this method.</span>
 <span class="sd">        - **parse_transcript()**: abstract method. you have to override this method.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_path</span><span class="p">,</span> <span class="n">noiseset_size</span><span class="p">,</span> <span class="n">sample_rate</span><span class="o">=</span><span class="mi">16000</span><span class="p">,</span> <span class="n">noise_level</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">noise_augment</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">noise_augment</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">noise_injector</span> <span class="o">=</span> <span class="n">NoiseInjector</span><span class="p">(</span><span class="n">dataset_path</span><span class="p">,</span> <span class="n">noiseset_size</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">,</span> <span class="n">noise_level</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_path</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_path</span> <span class="o">=</span> <span class="n">dataset_path</span>
 
     <span class="k">def</span> <span class="nf">parse_audio</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
@@ -203,38 +219,47 @@
 <span class="sd">        n_mels (int):  Number of mfc coefficients to retain. (Default: 40)</span>
 <span class="sd">        frame_length (int): frame length for spectrogram (ms) (Default : 20)</span>
 <span class="sd">        frame_shift (int): Length of hop between STFT windows. (ms) (Default: 10)</span>
-<span class="sd">        feature_extract_by (str): which library to use for feature extraction(default: librosa)</span>
+<span class="sd">        feature_extract_by (str): which library to use for feature extraction (default: librosa)</span>
 <span class="sd">        del_silence (bool): flag indication whether to delete silence or not (default: True)</span>
 <span class="sd">        input_reverse (bool): flag indication whether to reverse input or not (default: True)</span>
 <span class="sd">        normalize (bool): flag indication whether to normalize spectrum or not (default:True)</span>
-<span class="sd">        time_mask_para (int): Hyper Parameter for Time Masking to limit time masking length</span>
 <span class="sd">        freq_mask_para (int): Hyper Parameter for Freq Masking to limit freq masking length</span>
 <span class="sd">        time_mask_num (int): how many time-masked area to make</span>
 <span class="sd">        freq_mask_num (int): how many freq-masked area to make</span>
 <span class="sd">        sos_id (int): start of sentence token`s identification</span>
 <span class="sd">        eos_id (int): end of sentence token`s identification</span>
-<span class="sd">        target_dict (dict): dictionary of filename and labels</span>
+<span class="sd">        dataset_path (str): noise dataset path</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">VANILLA</span> <span class="o">=</span> <span class="mi">0</span>           <span class="c1"># Not apply augmentation</span>
     <span class="n">SPEC_AUGMENT</span> <span class="o">=</span> <span class="mi">1</span>      <span class="c1"># SpecAugment</span>
-    <span class="n">NOISE_INJECTION</span> <span class="o">=</span> <span class="mi">2</span>   <span class="c1"># Noise Injection</span>
-    <span class="n">HYBRID_AUGMENT</span> <span class="o">=</span> <span class="mi">3</span>    <span class="c1"># Noise Injection &amp; SpecAugment</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_extract_by</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;librosa&#39;</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">16000</span><span class="p">,</span>
-                 <span class="n">n_mels</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">80</span><span class="p">,</span> <span class="n">frame_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span> <span class="n">frame_shift</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
-                 <span class="n">del_silence</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">input_reverse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-                 <span class="n">normalize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>  <span class="n">transform_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;mel&#39;</span><span class="p">,</span>
-                 <span class="n">time_mask_para</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">70</span><span class="p">,</span> <span class="n">freq_mask_para</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">12</span><span class="p">,</span> <span class="n">time_mask_num</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">freq_mask_num</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
-                 <span class="n">sos_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">eos_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">target_dict</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">noise_augment</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-                 <span class="n">dataset_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">noiseset_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">noise_level</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">SpectrogramParser</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dataset_path</span><span class="p">,</span> <span class="n">noiseset_size</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">,</span> <span class="n">noise_level</span><span class="p">,</span> <span class="n">noise_augment</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">feature_extract_by</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;librosa&#39;</span><span class="p">,</span>      <span class="c1"># which library to use for feature extraction</span>
+            <span class="n">sample_rate</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">16000</span><span class="p">,</span>                 <span class="c1"># sample rate of audio signal.</span>
+            <span class="n">n_mels</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">80</span><span class="p">,</span>                         <span class="c1"># Number of mfc coefficients to retain.</span>
+            <span class="n">frame_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>                   <span class="c1"># frame length for spectrogram</span>
+            <span class="n">frame_shift</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>                    <span class="c1"># Length of hop between STFT windows.</span>
+            <span class="n">del_silence</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>                <span class="c1"># flag indication whether to delete silence or not</span>
+            <span class="n">input_reverse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>               <span class="c1"># flag indication whether to reverse input or not</span>
+            <span class="n">normalize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>                  <span class="c1"># flag indication whether to normalize spectrum or not</span>
+            <span class="n">transform_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;mel&#39;</span><span class="p">,</span>            <span class="c1"># which feature to use [mel, fbank, spect, mfcc]</span>
+            <span class="n">freq_mask_para</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">12</span><span class="p">,</span>                 <span class="c1"># hyper Parameter for Freq Masking to limit freq masking length</span>
+            <span class="n">time_mask_num</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>                   <span class="c1"># how many time-masked area to make</span>
+            <span class="n">freq_mask_num</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>                   <span class="c1"># how many freq-masked area to make</span>
+            <span class="n">sos_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>                          <span class="c1"># start of sentence token`s identification</span>
+            <span class="n">eos_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>                          <span class="c1"># end of sentence token`s identification</span>
+            <span class="n">dataset_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>                 <span class="c1"># noise dataset path</span>
+            <span class="n">audio_extension</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;pcm&#39;</span>              <span class="c1"># audio extension</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SpectrogramParser</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dataset_path</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">del_silence</span> <span class="o">=</span> <span class="n">del_silence</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_reverse</span> <span class="o">=</span> <span class="n">input_reverse</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">normalize</span> <span class="o">=</span> <span class="n">normalize</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sos_id</span> <span class="o">=</span> <span class="n">sos_id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">eos_id</span> <span class="o">=</span> <span class="n">eos_id</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">target_dict</span> <span class="o">=</span> <span class="n">target_dict</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">spec_augment</span> <span class="o">=</span> <span class="n">SpecAugment</span><span class="p">(</span><span class="n">time_mask_para</span><span class="p">,</span> <span class="n">freq_mask_para</span><span class="p">,</span> <span class="n">time_mask_num</span><span class="p">,</span> <span class="n">freq_mask_num</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spec_augment</span> <span class="o">=</span> <span class="n">SpecAugment</span><span class="p">(</span><span class="n">freq_mask_para</span><span class="p">,</span> <span class="n">time_mask_num</span><span class="p">,</span> <span class="n">freq_mask_num</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">audio_extension</span> <span class="o">=</span> <span class="n">audio_extension</span>
 
         <span class="k">if</span> <span class="n">transform_method</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;mel&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span> <span class="o">=</span> <span class="n">MelSpectrogram</span><span class="p">(</span><span class="n">sample_rate</span><span class="p">,</span> <span class="n">n_mels</span><span class="p">,</span> <span class="n">frame_length</span><span class="p">,</span> <span class="n">frame_shift</span><span class="p">,</span> <span class="n">feature_extract_by</span><span class="p">)</span>
@@ -262,18 +287,17 @@
 <span class="sd">        Returns: feature_vector</span>
 <span class="sd">            - **feature_vector** (torch.FloatTensor): feature from audio file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">signal</span> <span class="o">=</span> <span class="n">load_audio</span><span class="p">(</span><span class="n">audio_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">del_silence</span><span class="p">)</span>
+        <span class="n">signal</span> <span class="o">=</span> <span class="n">load_audio</span><span class="p">(</span><span class="n">audio_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">del_silence</span><span class="p">,</span> <span class="n">extension</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">audio_extension</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">signal</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Audio is None : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">audio_path</span><span class="p">))</span>
             <span class="k">return</span> <span class="kc">None</span>
-
-        <span class="k">if</span> <span class="n">augment_method</span> <span class="o">==</span> <span class="n">SpectrogramParser</span><span class="o">.</span><span class="n">NOISE_INJECTION</span> <span class="ow">or</span> <span class="n">augment_method</span> <span class="o">==</span> <span class="n">SpectrogramParser</span><span class="o">.</span><span class="n">HYBRID_AUGMENT</span><span class="p">:</span>
-            <span class="n">signal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">noise_injector</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
 
         <span class="n">feature_vector</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalize</span><span class="p">:</span>
             <span class="n">feature_vector</span> <span class="o">-=</span> <span class="n">feature_vector</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+            <span class="n">feature_vector</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">feature_vector</span><span class="p">)</span>
 
         <span class="c1"># Refer to &quot;Sequence to Sequence Learning with Neural Network&quot; paper</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_reverse</span><span class="p">:</span>
@@ -282,7 +306,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">feature_vector</span> <span class="o">=</span> <span class="n">FloatTensor</span><span class="p">(</span><span class="n">feature_vector</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">augment_method</span> <span class="o">==</span> <span class="n">SpectrogramParser</span><span class="o">.</span><span class="n">SPEC_AUGMENT</span> <span class="ow">or</span> <span class="n">augment_method</span> <span class="o">==</span> <span class="n">SpectrogramParser</span><span class="o">.</span><span class="n">HYBRID_AUGMENT</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">augment_method</span> <span class="o">==</span> <span class="n">SpectrogramParser</span><span class="o">.</span><span class="n">SPEC_AUGMENT</span><span class="p">:</span>
             <span class="n">feature_vector</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spec_augment</span><span class="p">(</span><span class="n">feature_vector</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">feature_vector</span></div>

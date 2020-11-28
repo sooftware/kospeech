@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Python Module Index &mdash; KoSpeech 0.0 documentation</title>
+  <title>Python Module Index &mdash; KoSpeech latest documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                0.0
+                latest
               </div>
             
           
@@ -84,7 +84,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">NOTES</span></p>
+              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Intro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">Preparation before Training</a></li>
@@ -92,17 +92,22 @@
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Seq2seq.html">Seq2seq</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Transformer.html">Transformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Deep Speech 2.html">Deep Speech 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Listen, Attend and Spell.html">Listen, Attend and Spell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Speech Transformer.html">Speech Transformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Common Modules.html">Common Modules</a></li>
 </ul>
-<p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
+<p class="caption"><span class="caption-text">LIBRARY REFERENCE</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Checkpoint.html">Checkpoint</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Data.html">Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Decode.html">Decode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Optim.html">Optim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Learning Rate Schedulers.html">Learning Rate Scheduler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Vocabs.html">Vocabs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Voice Activity Detection.html">Voice Activity Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Etc.html">Etc</a></li>
 </ul>
 
@@ -168,7 +173,8 @@
    <h1>Python Module Index</h1>
 
    <div class="modindex-jumpbox">
-   <a href="#cap-k"><strong>k</strong></a>
+   <a href="#cap-k"><strong>k</strong></a> | 
+   <a href="#cap-v"><strong>v</strong></a>
    </div>
 
    <table class="indextable modindextable">
@@ -244,67 +250,87 @@
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="Seq2seq.html#module-kospeech.models.seq2seq.attention"><code class="xref">kospeech.models.seq2seq.attention</code></a></td><td>
+       <a href="Common Modules.html#module-kospeech.models.attention"><code class="xref">kospeech.models.attention</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="Seq2seq.html#module-kospeech.models.seq2seq.decoder"><code class="xref">kospeech.models.seq2seq.decoder</code></a></td><td>
+       <a href="Deep Speech 2.html#module-kospeech.models.deepspeech2.model"><code class="xref">kospeech.models.deepspeech2.model</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="Seq2seq.html#module-kospeech.models.seq2seq.encoder"><code class="xref">kospeech.models.seq2seq.encoder</code></a></td><td>
+       <a href="Common Modules.html#module-kospeech.models.extractor"><code class="xref">kospeech.models.extractor</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="Seq2seq.html#module-kospeech.models.seq2seq.seq2seq"><code class="xref">kospeech.models.seq2seq.seq2seq</code></a></td><td>
+       <a href="Listen, Attend and Spell.html#module-kospeech.models.las.decoder"><code class="xref">kospeech.models.las.decoder</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="Seq2seq.html#module-kospeech.models.seq2seq.sublayers"><code class="xref">kospeech.models.seq2seq.sublayers</code></a></td><td>
+       <a href="Listen, Attend and Spell.html#module-kospeech.models.las.encoder"><code class="xref">kospeech.models.las.encoder</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="Transformer.html#module-kospeech.models.transformer.embeddings"><code class="xref">kospeech.models.transformer.embeddings</code></a></td><td>
+       <a href="Listen, Attend and Spell.html#module-kospeech.models.las.model"><code class="xref">kospeech.models.las.model</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="Transformer.html#module-kospeech.models.transformer.layers"><code class="xref">kospeech.models.transformer.layers</code></a></td><td>
+       <a href="Listen, Attend and Spell.html#module-kospeech.models.las.topk_decoder"><code class="xref">kospeech.models.las.topk_decoder</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="Transformer.html#module-kospeech.models.transformer.mask"><code class="xref">kospeech.models.transformer.mask</code></a></td><td>
+       <a href="Common Modules.html#module-kospeech.models.modules"><code class="xref">kospeech.models.modules</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="Transformer.html#module-kospeech.models.transformer.sublayers"><code class="xref">kospeech.models.transformer.sublayers</code></a></td><td>
+       <a href="Speech Transformer.html#module-kospeech.models.transformer.embeddings"><code class="xref">kospeech.models.transformer.embeddings</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="Transformer.html#module-kospeech.models.transformer.transformer"><code class="xref">kospeech.models.transformer.transformer</code></a></td><td>
+       <a href="Speech Transformer.html#module-kospeech.models.transformer.layers"><code class="xref">kospeech.models.transformer.layers</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="Optim.html#module-kospeech.optim.loss"><code class="xref">kospeech.optim.loss</code></a></td><td>
+       <a href="Speech Transformer.html#module-kospeech.models.transformer.mask"><code class="xref">kospeech.models.transformer.mask</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="Optim.html#module-kospeech.optim.lr_scheduler"><code class="xref">kospeech.optim.lr_scheduler</code></a></td><td>
+       <a href="Speech Transformer.html#module-kospeech.models.transformer.model"><code class="xref">kospeech.models.transformer.model</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="Optim.html#module-kospeech.optim.optimizer"><code class="xref">kospeech.optim.optimizer</code></a></td><td>
+       <a href="Speech Transformer.html#module-kospeech.models.transformer.sublayers"><code class="xref">kospeech.models.transformer.sublayers</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="Optim.html#module-kospeech.optim.__init__"><code class="xref">kospeech.optim.__init__</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="Learning Rate Schedulers.html#module-kospeech.optim.lr_scheduler.lr_scheduler"><code class="xref">kospeech.optim.lr_scheduler.lr_scheduler</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="Learning Rate Schedulers.html#module-kospeech.optim.lr_scheduler.tri_stage_lr_scheduler"><code class="xref">kospeech.optim.lr_scheduler.tri_stage_lr_scheduler</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="Optim.html#module-kospeech.optim.radam"><code class="xref">kospeech.optim.radam</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
@@ -320,6 +346,40 @@
        <td></td>
        <td>&#160;&#160;&#160;
        <a href="Etc.html#module-kospeech.utils"><code class="xref">kospeech.utils</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="Vocabs.html#module-kospeech.vocabs.__init__"><code class="xref">kospeech.vocabs.__init__</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="Vocabs.html#module-kospeech.vocabs.ksponspeech"><code class="xref">kospeech.vocabs.ksponspeech</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="Vocabs.html#module-kospeech.vocabs.librispeech"><code class="xref">kospeech.vocabs.librispeech</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-v"><td></td><td>
+       <strong>v</strong></td><td></td></tr>
+     <tr>
+       <td><img src="_static/minus.png" class="toggler"
+              id="toggle-2" style="display: none" alt="-" /></td>
+       <td>
+       <code class="xref">vad</code></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="Voice Activity Detection.html#module-vad.model"><code class="xref">vad.model</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-2">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="Voice Activity Detection.html#module-vad.vad"><code class="xref">vad.vad</code></a></td><td>
        <em></em></td></tr>
    </table>
 

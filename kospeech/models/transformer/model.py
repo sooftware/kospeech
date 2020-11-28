@@ -82,7 +82,7 @@ class SpeechTransformer(nn.Module):
 
         if extractor.lower() == 'vgg':
             input_dim = (input_dim - 1) << 5 if input_dim % 2 else input_dim << 5
-            self.conv = self.conv = nn.Sequential(
+            self.conv = nn.Sequential(
                 nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1, bias=False),
                 nn.BatchNorm2d(num_features=64),
                 nn.Hardtanh(0, 20, inplace=True),

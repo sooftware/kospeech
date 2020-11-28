@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Data &mdash; KoSpeech 0.0 documentation</title>
+  <title>Data &mdash; KoSpeech latest documentation</title>
   
 
   
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                0.0
+                latest
               </div>
             
           
@@ -83,7 +83,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">NOTES</span></p>
+              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Intro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">Preparation before Training</a></li>
@@ -91,10 +91,12 @@
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Seq2seq.html">Seq2seq</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Transformer.html">Transformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Deep Speech 2.html">Deep Speech 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Listen, Attend and Spell.html">Listen, Attend and Spell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Speech Transformer.html">Speech Transformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Common Modules.html">Common Modules</a></li>
 </ul>
-<p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
+<p class="caption"><span class="caption-text">LIBRARY REFERENCE</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Checkpoint.html">Checkpoint</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Data</a><ul>
@@ -109,7 +111,10 @@
 <li class="toctree-l1"><a class="reference internal" href="Decode.html">Decode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Optim.html">Optim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Learning Rate Schedulers.html">Learning Rate Scheduler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Vocabs.html">Vocabs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Voice Activity Detection.html">Voice Activity Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Etc.html">Etc</a></li>
 </ul>
 
@@ -192,10 +197,10 @@ Step 3: Add noise to sound</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dataset_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – path of dataset</li>
-<li><strong>noiseset_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – size of noise dataset</li>
-<li><strong>sample_rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – sampling rate</li>
-<li><strong>noise_level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – level of noise</li>
+<li><strong>dataset_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – path of dataset</li>
+<li><strong>noiseset_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – size of noise dataset</li>
+<li><strong>sample_rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – sampling rate</li>
+<li><strong>noise_level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – level of noise</li>
 </ul>
 </td>
 </tr>
@@ -217,7 +222,7 @@ Step 3: Add noise to sound</p>
 
 <dl class="class">
 <dt id="kospeech.data.audio.augment.SpecAugment">
-<em class="property">class </em><code class="descclassname">kospeech.data.audio.augment.</code><code class="descname">SpecAugment</code><span class="sig-paren">(</span><em>time_mask_para: int</em>, <em>freq_mask_para: int</em>, <em>time_mask_num: int</em>, <em>freq_mask_num: int</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/audio/augment.html#SpecAugment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.audio.augment.SpecAugment" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">kospeech.data.audio.augment.</code><code class="descname">SpecAugment</code><span class="sig-paren">(</span><em>freq_mask_para: int = 18</em>, <em>time_mask_num: int = 10</em>, <em>freq_mask_num: int = 2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/audio/augment.html#SpecAugment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.audio.augment.SpecAugment" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provides Spec Augment. A simple data augmentation method for speech recognition.
 This concept proposed in <a class="reference external" href="https://arxiv.org/abs/1904.08779">https://arxiv.org/abs/1904.08779</a></p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -225,24 +230,23 @@ This concept proposed in <a class="reference external" href="https://arxiv.org/a
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>time_mask_para</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – maximum time masking length</li>
-<li><strong>freq_mask_para</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – maximum frequency masking length</li>
-<li><strong>time_mask_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – how many times to apply time masking</li>
-<li><strong>freq_mask_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – how many times to apply frequency masking</li>
+<li><strong>freq_mask_para</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – maximum frequency masking length</li>
+<li><strong>time_mask_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – how many times to apply time masking</li>
+<li><strong>freq_mask_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – how many times to apply frequency masking</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
 <dl class="docutils">
-<dt>Inputs: spectrogram</dt>
+<dt>Inputs: feature_vector</dt>
 <dd><ul class="first last simple">
-<li><strong>spectrogram</strong> (torch.FloatTensor): spectrogram feature from audio file.</li>
+<li><strong>feature_vector</strong> (torch.FloatTensor): feature vector from audio file.</li>
 </ul>
 </dd>
-<dt>Returns: spectrogram:</dt>
+<dt>Returns: feature_vector:</dt>
 <dd><ul class="first last simple">
-<li><strong>spectrogram</strong>: masked spectrogram feature.</li>
+<li><strong>feature_vector</strong>: masked feature vector.</li>
 </ul>
 </dd>
 </dl>
@@ -253,7 +257,7 @@ This concept proposed in <a class="reference external" href="https://arxiv.org/a
 <span id="core"></span><h2>Core<a class="headerlink" href="#module-kospeech.data.audio.core" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="kospeech.data.audio.core.load_audio">
-<code class="descclassname">kospeech.data.audio.core.</code><code class="descname">load_audio</code><span class="sig-paren">(</span><em>audio_path: str</em>, <em>del_silence: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/audio/core.html#load_audio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.audio.core.load_audio" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">kospeech.data.audio.core.</code><code class="descname">load_audio</code><span class="sig-paren">(</span><em>audio_path: str</em>, <em>del_silence: bool = False</em>, <em>extension: str = 'pcm'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/audio/core.html#load_audio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.audio.core.load_audio" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load audio file (PCM) to sound. if del_silence is True, Eliminate all sounds below 30dB.
 If exception occurs in numpy.memmap(), return None.</p>
 </dd></dl>
@@ -273,53 +277,81 @@ because of our server has a problem with importing librosa.</p>
 <dt id="kospeech.data.audio.feature.FilterBank">
 <em class="property">class </em><code class="descclassname">kospeech.data.audio.feature.</code><code class="descname">FilterBank</code><span class="sig-paren">(</span><em>sample_rate=16000</em>, <em>n_mels=80</em>, <em>frame_length=20</em>, <em>frame_shift=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/audio/feature.html#FilterBank"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.audio.feature.FilterBank" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a fbank from a raw audio signal. This matches the input/output of Kaldi’s compute-fbank-feats</p>
-<dl class="docutils">
-<dt>Args: sample_rate, n_mels, frame_length, frame_shift, feature_extract_by</dt>
-<dd>sample_rate (int): Sample rate of audio signal. (Default: 16000)
-n_mels (int):  Number of mfc coefficients to retain. (Default: 80)
-frame_length (int): frame length for spectrogram (ms) (Default : 20)
-frame_shift (int): Length of hop between STFT windows. (ms) (Default: 10)</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>sample_rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Sample rate of audio signal. (Default: 16000)</li>
+<li><strong>n_mels</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Number of mfc coefficients to retain. (Default: 80)</li>
+<li><strong>frame_length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – frame length for spectrogram (ms) (Default : 20)</li>
+<li><strong>frame_shift</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Length of hop between STFT windows. (ms) (Default: 10)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="class">
 <dt id="kospeech.data.audio.feature.MFCC">
 <em class="property">class </em><code class="descclassname">kospeech.data.audio.feature.</code><code class="descname">MFCC</code><span class="sig-paren">(</span><em>sample_rate=16000</em>, <em>n_mfcc=40</em>, <em>frame_length=20</em>, <em>frame_shift=10</em>, <em>feature_extract_by='librosa'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/audio/feature.html#MFCC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.audio.feature.MFCC" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the Mel-frequency cepstrum coefficients (MFCCs) from an audio signal.</p>
-<dl class="docutils">
-<dt>Args: sample_rate, n_mfcc, frame_length, frame_shift, feature_extract_by</dt>
-<dd>sample_rate (int): Sample rate of audio signal. (Default: 16000)
-n_mfcc (int):  Number of mfc coefficients to retain. (Default: 40)
-frame_length (int): frame length for spectrogram (ms) (Default : 20)
-frame_shift (int): Length of hop between STFT windows. (ms) (Default: 10)
-feature_extract_by (str): which library to use for feature extraction(default: librosa)</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>sample_rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Sample rate of audio signal. (Default: 16000)</li>
+<li><strong>n_mfcc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Number of mfc coefficients to retain. (Default: 40)</li>
+<li><strong>frame_length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – frame length for spectrogram (ms) (Default : 20)</li>
+<li><strong>frame_shift</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Length of hop between STFT windows. (ms) (Default: 10)</li>
+<li><strong>feature_extract_by</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – which library to use for feature extraction(default: librosa)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="class">
 <dt id="kospeech.data.audio.feature.MelSpectrogram">
 <em class="property">class </em><code class="descclassname">kospeech.data.audio.feature.</code><code class="descname">MelSpectrogram</code><span class="sig-paren">(</span><em>sample_rate=16000</em>, <em>n_mels=80</em>, <em>frame_length=20</em>, <em>frame_shift=10</em>, <em>feature_extract_by='librosa'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/audio/feature.html#MelSpectrogram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.audio.feature.MelSpectrogram" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create MelSpectrogram for a raw audio signal. This is a composition of Spectrogram and MelScale.</p>
-<dl class="docutils">
-<dt>Args: sample_rate, n_mels, frame_length, frame_shift, feature_extract_by</dt>
-<dd>sample_rate (int): Sample rate of audio signal. (Default: 16000)
-n_mels (int):  Number of mfc coefficients to retain. (Default: 80)
-frame_length (int): frame length for spectrogram (ms) (Default : 20)
-frame_shift (int): Length of hop between STFT windows. (ms) (Default: 10)
-feature_extract_by (str): which library to use for feature extraction(default: librosa)</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>sample_rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Sample rate of audio signal. (Default: 16000)</li>
+<li><strong>n_mels</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Number of mfc coefficients to retain. (Default: 80)</li>
+<li><strong>frame_length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – frame length for spectrogram (ms) (Default : 20)</li>
+<li><strong>frame_shift</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Length of hop between STFT windows. (ms) (Default: 10)</li>
+<li><strong>feature_extract_by</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – which library to use for feature extraction(default: librosa)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="class">
 <dt id="kospeech.data.audio.feature.Spectrogram">
 <em class="property">class </em><code class="descclassname">kospeech.data.audio.feature.</code><code class="descname">Spectrogram</code><span class="sig-paren">(</span><em>sample_rate: int = 16000</em>, <em>frame_length: int = 20</em>, <em>frame_shift: int = 10</em>, <em>feature_extract_by: str = 'torch'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/audio/feature.html#Spectrogram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.audio.feature.Spectrogram" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a spectrogram from a audio signal.</p>
-<dl class="docutils">
-<dt>Args: sample_rate, window_size, frame_shift, feature_extract_by</dt>
-<dd>sample_rate (int): Sample rate of audio signal. (Default: 16000)
-frame_length (int): frame length for spectrogram (ms) (Default : 20)
-frame_shift (int): Length of hop between STFT windows. (ms) (Default: 10)</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>sample_rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Sample rate of audio signal. (Default: 16000)</li>
+<li><strong>frame_length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – frame length for spectrogram (ms) (Default : 20)</li>
+<li><strong>frame_shift</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Length of hop between STFT windows. (ms) (Default: 10)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -327,7 +359,7 @@ frame_shift (int): Length of hop between STFT windows. (ms) (Default: 10)</dd>
 <span id="parser"></span><h2>Parser<a class="headerlink" href="#module-kospeech.data.audio.parser" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="kospeech.data.audio.parser.AudioParser">
-<em class="property">class </em><code class="descclassname">kospeech.data.audio.parser.</code><code class="descname">AudioParser</code><span class="sig-paren">(</span><em>dataset_path</em>, <em>noiseset_size</em>, <em>sample_rate=16000</em>, <em>noise_level=0.7</em>, <em>noise_augment=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/audio/parser.html#AudioParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.audio.parser.AudioParser" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">kospeech.data.audio.parser.</code><code class="descname">AudioParser</code><span class="sig-paren">(</span><em>dataset_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/audio/parser.html#AudioParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.audio.parser.AudioParser" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provides inteface of audio parser.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -345,29 +377,28 @@ frame_shift (int): Length of hop between STFT windows. (ms) (Default: 10)</dd>
 
 <dl class="class">
 <dt id="kospeech.data.audio.parser.SpectrogramParser">
-<em class="property">class </em><code class="descclassname">kospeech.data.audio.parser.</code><code class="descname">SpectrogramParser</code><span class="sig-paren">(</span><em>feature_extract_by: str = 'librosa'</em>, <em>sample_rate: int = 16000</em>, <em>n_mels: int = 80</em>, <em>frame_length: int = 20</em>, <em>frame_shift: int = 10</em>, <em>del_silence: bool = False</em>, <em>input_reverse: bool = True</em>, <em>normalize: bool = False</em>, <em>transform_method: str = 'mel'</em>, <em>time_mask_para: int = 70</em>, <em>freq_mask_para: int = 12</em>, <em>time_mask_num: int = 2</em>, <em>freq_mask_num: int = 2</em>, <em>sos_id: int = 1</em>, <em>eos_id: int = 2</em>, <em>target_dict: dict = None</em>, <em>noise_augment: bool = False</em>, <em>dataset_path: str = None</em>, <em>noiseset_size: int = 0</em>, <em>noise_level: float = 0.7</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/audio/parser.html#SpectrogramParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.audio.parser.SpectrogramParser" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">kospeech.data.audio.parser.</code><code class="descname">SpectrogramParser</code><span class="sig-paren">(</span><em>feature_extract_by: str = 'librosa'</em>, <em>sample_rate: int = 16000</em>, <em>n_mels: int = 80</em>, <em>frame_length: int = 20</em>, <em>frame_shift: int = 10</em>, <em>del_silence: bool = False</em>, <em>input_reverse: bool = True</em>, <em>normalize: bool = False</em>, <em>transform_method: str = 'mel'</em>, <em>freq_mask_para: int = 12</em>, <em>time_mask_num: int = 2</em>, <em>freq_mask_num: int = 2</em>, <em>sos_id: int = 1</em>, <em>eos_id: int = 2</em>, <em>dataset_path: str = None</em>, <em>audio_extension: str = 'pcm'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/audio/parser.html#SpectrogramParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.audio.parser.SpectrogramParser" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parses audio file into (spectrogram / mel spectrogram / mfcc) with various options.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>transform_method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – which feature to use (default: mel)</li>
-<li><strong>sample_rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Sample rate of audio signal. (Default: 16000)</li>
-<li><strong>n_mels</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Number of mfc coefficients to retain. (Default: 40)</li>
-<li><strong>frame_length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – frame length for spectrogram (ms) (Default : 20)</li>
-<li><strong>frame_shift</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Length of hop between STFT windows. (ms) (Default: 10)</li>
-<li><strong>feature_extract_by</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – which library to use for feature extraction(default: librosa)</li>
-<li><strong>del_silence</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – flag indication whether to delete silence or not (default: True)</li>
-<li><strong>input_reverse</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – flag indication whether to reverse input or not (default: True)</li>
-<li><strong>normalize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – flag indication whether to normalize spectrum or not (default:True)</li>
-<li><strong>time_mask_para</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Hyper Parameter for Time Masking to limit time masking length</li>
-<li><strong>freq_mask_para</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Hyper Parameter for Freq Masking to limit freq masking length</li>
-<li><strong>time_mask_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – how many time-masked area to make</li>
-<li><strong>freq_mask_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – how many freq-masked area to make</li>
-<li><strong>sos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – start of sentence token`s identification</li>
-<li><strong>eos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – end of sentence token`s identification</li>
-<li><strong>target_dict</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – dictionary of filename and labels</li>
+<li><strong>transform_method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – which feature to use (default: mel)</li>
+<li><strong>sample_rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Sample rate of audio signal. (Default: 16000)</li>
+<li><strong>n_mels</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Number of mfc coefficients to retain. (Default: 40)</li>
+<li><strong>frame_length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – frame length for spectrogram (ms) (Default : 20)</li>
+<li><strong>frame_shift</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Length of hop between STFT windows. (ms) (Default: 10)</li>
+<li><strong>feature_extract_by</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – which library to use for feature extraction (default: librosa)</li>
+<li><strong>del_silence</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – flag indication whether to delete silence or not (default: True)</li>
+<li><strong>input_reverse</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – flag indication whether to reverse input or not (default: True)</li>
+<li><strong>normalize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – flag indication whether to normalize spectrum or not (default:True)</li>
+<li><strong>freq_mask_para</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Hyper Parameter for Freq Masking to limit freq masking length</li>
+<li><strong>time_mask_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – how many time-masked area to make</li>
+<li><strong>freq_mask_num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – how many freq-masked area to make</li>
+<li><strong>sos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – start of sentence token`s identification</li>
+<li><strong>eos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – end of sentence token`s identification</li>
+<li><strong>dataset_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – noise dataset path</li>
 </ul>
 </td>
 </tr>
@@ -382,8 +413,8 @@ frame_shift (int): Length of hop between STFT windows. (ms) (Default: 10)</dd>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>audio_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – path of audio file</li>
-<li><strong>augment_method</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – flag indication which augmentation method to use.</li>
+<li><strong>audio_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – path of audio file</li>
+<li><strong>augment_method</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – flag indication which augmentation method to use.</li>
 </ul>
 </td>
 </tr>
@@ -405,7 +436,7 @@ frame_shift (int): Length of hop between STFT windows. (ms) (Default: 10)</dd>
 <span id="dataloader"></span><h2>DataLoader<a class="headerlink" href="#module-kospeech.data.data_loader" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="kospeech.data.data_loader.AudioDataLoader">
-<em class="property">class </em><code class="descclassname">kospeech.data.data_loader.</code><code class="descname">AudioDataLoader</code><span class="sig-paren">(</span><em>dataset</em>, <em>queue</em>, <em>batch_size</em>, <em>thread_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/data_loader.html#AudioDataLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.data_loader.AudioDataLoader" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">kospeech.data.data_loader.</code><code class="descname">AudioDataLoader</code><span class="sig-paren">(</span><em>dataset</em>, <em>queue</em>, <em>batch_size</em>, <em>thread_id</em>, <em>pad_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/data_loader.html#AudioDataLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.data_loader.AudioDataLoader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Audio Data Loader</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -414,8 +445,8 @@ frame_shift (int): Length of hop between STFT windows. (ms) (Default: 10)</dd>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>dataset</strong> (<em>kodpeech.data.data_loader.SpectrogramDataset</em>) – dataset for feature &amp; transcript matching</li>
 <li><strong>queue</strong> (<em>Queue.queue</em>) – queue for threading</li>
-<li><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – size of batch</li>
-<li><strong>thread_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of thread</li>
+<li><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – size of batch</li>
+<li><strong>thread_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – identification of thread</li>
 </ul>
 </td>
 </tr>
@@ -431,17 +462,17 @@ frame_shift (int): Length of hop between STFT windows. (ms) (Default: 10)</dd>
 
 <dl class="class">
 <dt id="kospeech.data.data_loader.MultiDataLoader">
-<em class="property">class </em><code class="descclassname">kospeech.data.data_loader.</code><code class="descname">MultiDataLoader</code><span class="sig-paren">(</span><em>dataset_list</em>, <em>queue</em>, <em>batch_size</em>, <em>num_workers</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/data_loader.html#MultiDataLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.data_loader.MultiDataLoader" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">kospeech.data.data_loader.</code><code class="descname">MultiDataLoader</code><span class="sig-paren">(</span><em>dataset_list</em>, <em>queue</em>, <em>batch_size</em>, <em>num_workers</em>, <em>pad_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/data_loader.html#MultiDataLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.data_loader.MultiDataLoader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Multi Data Loader using Threads.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dataset_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – list of MelSpectrogramDataset</li>
+<li><strong>dataset_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a>) – list of MelSpectrogramDataset</li>
 <li><strong>queue</strong> (<em>Queue.queue</em>) – queue for threading</li>
-<li><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – size of batch</li>
-<li><strong>num_workers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – the number of cpu cores used</li>
+<li><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – size of batch</li>
+<li><strong>num_workers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – the number of cpu cores used</li>
 </ul>
 </td>
 </tr>
@@ -463,42 +494,41 @@ frame_shift (int): Length of hop between STFT windows. (ms) (Default: 10)</dd>
 
 <dl class="class">
 <dt id="kospeech.data.data_loader.SpectrogramDataset">
-<em class="property">class </em><code class="descclassname">kospeech.data.data_loader.</code><code class="descname">SpectrogramDataset</code><span class="sig-paren">(</span><em>audio_paths</em>, <em>script_paths</em>, <em>sos_id</em>, <em>eos_id</em>, <em>target_dict</em>, <em>opt</em>, <em>spec_augment=False</em>, <em>noise_augment=False</em>, <em>dataset_path=None</em>, <em>noiseset_size=0</em>, <em>noise_level=0.7</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/data_loader.html#SpectrogramDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.data_loader.SpectrogramDataset" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">kospeech.data.data_loader.</code><code class="descname">SpectrogramDataset</code><span class="sig-paren">(</span><em>audio_paths: list</em>, <em>transcripts: list</em>, <em>sos_id: int</em>, <em>eos_id: int</em>, <em>opt: argparse.ArgumentParser</em>, <em>spec_augment: bool = False</em>, <em>dataset_path: str = None</em>, <em>audio_extension: str = 'pcm'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/data_loader.html#SpectrogramDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.data_loader.SpectrogramDataset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dataset for feature &amp; transcript matching</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>audio_paths</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – set of audio path</li>
-<li><strong>script_paths</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – set of script paths</li>
-<li><strong>sos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of &lt;start of sequence&gt;</li>
-<li><strong>eos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of &lt;end of sequence&gt;</li>
-<li><strong>target_dict</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – dictionary of filename and labels</li>
-<li><strong>spec_augment</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – flag indication whether to use spec-augmentation or not (default: True)</li>
-<li><strong>noise_augment</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – flag indication whether to use noise-augmentation or not (default: True)</li>
+<li><strong>audio_paths</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a>) – list of audio path</li>
+<li><strong>transcripts</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a>) – list of transcript</li>
+<li><strong>sos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – identification of &lt;start of sequence&gt;</li>
+<li><strong>eos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – identification of &lt;end of sequence&gt;</li>
+<li><strong>spec_augment</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – flag indication whether to use spec-augmentation or not (default: True)</li>
 <li><strong>opt</strong> (<em>ArgumentParser</em>) – set of arguments</li>
+<li><strong>dataset_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – path of dataset</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
 <dl class="method">
-<dt id="kospeech.data.data_loader.SpectrogramDataset.augmentation">
-<code class="descname">augmentation</code><span class="sig-paren">(</span><em>spec_augment</em>, <em>noise_augment</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/data_loader.html#SpectrogramDataset.augmentation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.data_loader.SpectrogramDataset.augmentation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Spec &amp; Noise Augmentation</p>
+<dt id="kospeech.data.data_loader.SpectrogramDataset.augment">
+<code class="descname">augment</code><span class="sig-paren">(</span><em>spec_augment</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/data_loader.html#SpectrogramDataset.augment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.data_loader.SpectrogramDataset.augment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Spec Augmentation</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="kospeech.data.data_loader.SpectrogramDataset.get_item">
 <code class="descname">get_item</code><span class="sig-paren">(</span><em>idx</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/data_loader.html#SpectrogramDataset.get_item"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.data_loader.SpectrogramDataset.get_item" title="Permalink to this definition">¶</a></dt>
-<dd><p>get feature &amp; transcript</p>
+<dd><p>get feature vector &amp; transcript</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="kospeech.data.data_loader.SpectrogramDataset.parse_transcript">
-<code class="descname">parse_transcript</code><span class="sig-paren">(</span><em>script_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/data_loader.html#SpectrogramDataset.parse_transcript"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.data_loader.SpectrogramDataset.parse_transcript" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parses scripts &#64;Override</p>
+<code class="descname">parse_transcript</code><span class="sig-paren">(</span><em>transcript</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/data_loader.html#SpectrogramDataset.parse_transcript"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.data_loader.SpectrogramDataset.parse_transcript" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses transcript</p>
 </dd></dl>
 
 <dl class="method">
@@ -510,34 +540,8 @@ frame_shift (int): Length of hop between STFT windows. (ms) (Default: 10)</dd>
 </dd></dl>
 
 <dl class="function">
-<dt id="kospeech.data.data_loader.load_data_list">
-<code class="descclassname">kospeech.data.data_loader.</code><code class="descname">load_data_list</code><span class="sig-paren">(</span><em>data_list_path</em>, <em>dataset_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/data_loader.html#load_data_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.data_loader.load_data_list" title="Permalink to this definition">¶</a></dt>
-<dd><p>Provides set of audio path &amp; label path</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>data_list_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – csv file with training or test data list path.</li>
-<li><strong>dataset_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – dataset path.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Returns: audio_paths, script_paths</dt>
-<dd><ul class="first last simple">
-<li><strong>audio_paths</strong> (list): set of audio path</li>
-<li><strong>script_paths</strong> (list): set of label path</li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
 <dt id="kospeech.data.data_loader.split_dataset">
-<code class="descclassname">kospeech.data.data_loader.</code><code class="descname">split_dataset</code><span class="sig-paren">(</span><em>opt</em>, <em>audio_paths</em>, <em>script_paths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/data_loader.html#split_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.data_loader.split_dataset" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">kospeech.data.data_loader.</code><code class="descname">split_dataset</code><span class="sig-paren">(</span><em>opt</em>, <em>transcripts_path</em>, <em>vocab</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/data_loader.html#split_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.data_loader.split_dataset" title="Permalink to this definition">¶</a></dt>
 <dd><p>split into training set and validation set.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -545,8 +549,7 @@ frame_shift (int): Length of hop between STFT windows. (ms) (Default: 10)</dd>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>opt</strong> (<em>ArgumentParser</em>) – set of options</li>
-<li><strong>audio_paths</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – set of audio path</li>
-<li><strong>script_paths</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – set of script path</li>
+<li><strong>transcripts_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – path of  transcripts</li>
 </ul>
 </td>
 </tr>
@@ -567,40 +570,14 @@ frame_shift (int): Length of hop between STFT windows. (ms) (Default: 10)</dd>
 <div class="section" id="module-kospeech.data.label_loader">
 <span id="labelloader"></span><h2>LabelLoader<a class="headerlink" href="#module-kospeech.data.label_loader" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="kospeech.data.label_loader.load_label">
-<code class="descclassname">kospeech.data.label_loader.</code><code class="descname">load_label</code><span class="sig-paren">(</span><em>label_path</em>, <em>encoding='utf-8'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/label_loader.html#load_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.label_loader.load_label" title="Permalink to this definition">¶</a></dt>
-<dd><p>Provides char2id, id2char</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>label_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – csv file with character labels</li>
-<li><strong>encoding</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – encoding method</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Returns: char2id, id2char</dt>
-<dd><ul class="first last simple">
-<li><strong>char2id</strong> (dict): char2id[ch] = id</li>
-<li><strong>id2char</strong> (dict): id2char[id] = ch</li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="kospeech.data.label_loader.load_targets">
-<code class="descclassname">kospeech.data.label_loader.</code><code class="descname">load_targets</code><span class="sig-paren">(</span><em>label_paths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/label_loader.html#load_targets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.label_loader.load_targets" title="Permalink to this definition">¶</a></dt>
+<dt id="kospeech.data.label_loader.load_dataset">
+<code class="descclassname">kospeech.data.label_loader.</code><code class="descname">load_dataset</code><span class="sig-paren">(</span><em>transcripts_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/data/label_loader.html#load_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.data.label_loader.load_dataset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provides dictionary of filename and labels</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>label_paths</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – set of label paths</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>transcripts_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – path of transcripts</td>
 </tr>
 </tbody>
 </table>

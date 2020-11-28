@@ -31,9 +31,9 @@ copyright = '2020, Soohwan Kim'
 author = 'Soohwan Kim'
 
 # The short X.Y version
-version = '0.0'
+version = 'latest'
 # The full version, including alpha/beta/rc tags
-release = '0.0'
+release = 'latest'
 
 
 # -- General configuration ---------------------------------------------------

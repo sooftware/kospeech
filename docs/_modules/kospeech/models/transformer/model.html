@@ -1,0 +1,507 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>kospeech.models.transformer.model &mdash; KoSpeech latest documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> KoSpeech
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                latest
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notes/intro.html">Intro</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notes/Preparation.html">Preparation before Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notes/opts.html">Options</a></li>
+</ul>
+<p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Deep Speech 2.html">Deep Speech 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Listen, Attend and Spell.html">Listen, Attend and Spell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Speech Transformer.html">Speech Transformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Common Modules.html">Common Modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">LIBRARY REFERENCE</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Checkpoint.html">Checkpoint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Decode.html">Decode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Evaluator.html">Evaluator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Optim.html">Optim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Learning Rate Schedulers.html">Learning Rate Scheduler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Vocabs.html">Vocabs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Voice Activity Detection.html">Voice Activity Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Etc.html">Etc</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">KoSpeech</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>kospeech.models.transformer.model</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for kospeech.models.transformer.model</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># Soohwan Kim, Seyoung Bae, Cheolhwang Won.</span>
+<span class="c1"># @ArXiv : KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition</span>
+<span class="c1"># This source code is licensed under the Apache 2.0 License license found in the</span>
+<span class="c1"># LICENSE file in the root directory of this source tree.</span>
+
+<span class="c1">#  Reference :</span>
+<span class="c1">#    - **https://github.com/graykode/nlp-tutorial**</span>
+<span class="c1">#    - **https://github.com/dreamgonfly/transformer-pytorch**</span>
+<span class="c1">#    - **https://github.com/jadore801120/attention-is-all-you-need-pytorch**</span>
+<span class="c1">#    - **https://github.com/JayParks/transformer**</span>
+
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="k">import</span> <span class="n">Tensor</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">from</span> <span class="nn">kospeech.models.modules</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">Linear</span><span class="p">,</span>
+    <span class="n">LayerNorm</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">kospeech.models.transformer.mask</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">get_pad_mask</span><span class="p">,</span>
+    <span class="n">get_attn_pad_mask</span><span class="p">,</span>
+    <span class="n">get_decoder_self_attn_mask</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">kospeech.models.transformer.embeddings</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">Embedding</span><span class="p">,</span>
+    <span class="n">PositionalEncoding</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">kospeech.models.transformer.layers</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">SpeechTransformerEncoderLayer</span><span class="p">,</span>
+    <span class="n">SpeechTransformerDecoderLayer</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="SpeechTransformer"><a class="viewcode-back" href="../../../../Speech Transformer.html#kospeech.models.transformer.model.SpeechTransformer">[docs]</a><span class="k">class</span> <span class="nc">SpeechTransformer</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A Speech Transformer model. User is able to modify the attributes as needed.</span>
+<span class="sd">    The architecture is based on the paper &quot;Attention Is All You Need&quot;.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        num_classes (int): the number of classfication</span>
+<span class="sd">        d_model (int): dimension of model (default: 512)</span>
+<span class="sd">        input_dim (int): dimension of input</span>
+<span class="sd">        pad_id (int): identification of &lt;PAD_token&gt;</span>
+<span class="sd">        eos_id (int): identification of &lt;EOS_token&gt;</span>
+<span class="sd">        d_ff (int): dimension of feed forward network (default: 2048)</span>
+<span class="sd">        num_encoder_layers (int): number of encoder layers (default: 6)</span>
+<span class="sd">        num_decoder_layers (int): number of decoder layers (default: 6)</span>
+<span class="sd">        num_heads (int): number of attention heads (default: 8)</span>
+<span class="sd">        dropout_p (float): dropout probability (default: 0.3)</span>
+<span class="sd">        ffnet_style (str): if poswise_ffnet is &#39;ff&#39;, position-wise feed forware network to be a feed forward,</span>
+<span class="sd">            otherwise, position-wise feed forward network to be a convolution layer. (default: ff)</span>
+
+<span class="sd">    Inputs: inputs, targets</span>
+<span class="sd">        - **inputs** (batch, input_length): tensor containing input sequences</span>
+<span class="sd">        - **targets** (batch, target_length): tensor contatining target sequences</span>
+
+<span class="sd">    Returns: output</span>
+<span class="sd">        - **output**: tensor containing the outputs</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">num_classes</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>               <span class="c1"># the number of classfication</span>
+            <span class="n">d_model</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">512</span><span class="p">,</span>             <span class="c1"># dimension of model</span>
+            <span class="n">input_dim</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">80</span><span class="p">,</span>            <span class="c1"># dimension of input</span>
+            <span class="n">pad_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>                <span class="c1"># identification of &lt;PAD_token&gt;</span>
+            <span class="n">eos_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>                <span class="c1"># identification of &lt;EOS_token&gt;</span>
+            <span class="n">d_ff</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2048</span><span class="p">,</span>               <span class="c1"># dimension of feed forward network</span>
+            <span class="n">num_heads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span>             <span class="c1"># number of attention heads</span>
+            <span class="n">num_encoder_layers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span>    <span class="c1"># number of encoder layers</span>
+            <span class="n">num_decoder_layers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span>    <span class="c1"># number of decoder layers</span>
+            <span class="n">dropout_p</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span>         <span class="c1"># dropout probability</span>
+            <span class="n">ffnet_style</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;ff&#39;</span><span class="p">,</span>        <span class="c1"># feed forward network style &#39;ff&#39; or &#39;conv&#39;</span>
+            <span class="n">extractor</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;vgg&#39;</span>          <span class="c1"># CNN extractor [vgg, ds2]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SpeechTransformer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="k">assert</span> <span class="n">d_model</span> <span class="o">%</span> <span class="n">num_heads</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;d_model % num_heads should be zero.&quot;</span>
+
+        <span class="k">if</span> <span class="n">extractor</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;vgg&#39;</span><span class="p">:</span>
+            <span class="n">input_dim</span> <span class="o">=</span> <span class="p">(</span><span class="n">input_dim</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">5</span> <span class="k">if</span> <span class="n">input_dim</span> <span class="o">%</span> <span class="mi">2</span> <span class="k">else</span> <span class="n">input_dim</span> <span class="o">&lt;&lt;</span> <span class="mi">5</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conv</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm2d</span><span class="p">(</span><span class="n">num_features</span><span class="o">=</span><span class="mi">64</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">Hardtanh</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm2d</span><span class="p">(</span><span class="n">num_features</span><span class="o">=</span><span class="mi">64</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">Hardtanh</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">MaxPool2d</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm2d</span><span class="p">(</span><span class="n">num_features</span><span class="o">=</span><span class="mi">128</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">Hardtanh</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm2d</span><span class="p">(</span><span class="n">num_features</span><span class="o">=</span><span class="mi">128</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">Hardtanh</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">MaxPool2d</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">extractor</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;ds2&#39;</span><span class="p">:</span>
+            <span class="n">input_dim</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">input_dim</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="mi">20</span> <span class="o">-</span> <span class="mi">41</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">input_dim</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">input_dim</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">-</span> <span class="mi">21</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">input_dim</span> <span class="o">&lt;&lt;=</span> <span class="mi">5</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conv</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">41</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span> <span class="n">stride</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">padding</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm2d</span><span class="p">(</span><span class="mi">32</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">Hardtanh</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">21</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span> <span class="n">stride</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">padding</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm2d</span><span class="p">(</span><span class="mi">32</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">Hardtanh</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+            <span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unsupported Extractor : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">extractor</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span> <span class="o">=</span> <span class="n">SpeechTransformerEncoder</span><span class="p">(</span>
+            <span class="n">d_model</span><span class="o">=</span><span class="n">d_model</span><span class="p">,</span>
+            <span class="n">input_dim</span><span class="o">=</span><span class="n">input_dim</span><span class="p">,</span>
+            <span class="n">d_ff</span><span class="o">=</span><span class="n">d_ff</span><span class="p">,</span>
+            <span class="n">num_layers</span><span class="o">=</span><span class="n">num_encoder_layers</span><span class="p">,</span>
+            <span class="n">num_heads</span><span class="o">=</span><span class="n">num_heads</span><span class="p">,</span>
+            <span class="n">ffnet_style</span><span class="o">=</span><span class="n">ffnet_style</span><span class="p">,</span>
+            <span class="n">dropout_p</span><span class="o">=</span><span class="n">dropout_p</span><span class="p">,</span>
+            <span class="n">pad_id</span><span class="o">=</span><span class="n">pad_id</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span> <span class="o">=</span> <span class="n">SpeechTransformerDecoder</span><span class="p">(</span>
+            <span class="n">num_classes</span><span class="o">=</span><span class="n">num_classes</span><span class="p">,</span>
+            <span class="n">d_model</span><span class="o">=</span><span class="n">d_model</span><span class="p">,</span>
+            <span class="n">d_ff</span><span class="o">=</span><span class="n">d_ff</span><span class="p">,</span>
+            <span class="n">num_layers</span><span class="o">=</span><span class="n">num_decoder_layers</span><span class="p">,</span>
+            <span class="n">num_heads</span><span class="o">=</span><span class="n">num_heads</span><span class="p">,</span>
+            <span class="n">ffnet_style</span><span class="o">=</span><span class="n">ffnet_style</span><span class="p">,</span>
+            <span class="n">dropout_p</span><span class="o">=</span><span class="n">dropout_p</span><span class="p">,</span>
+            <span class="n">pad_id</span><span class="o">=</span><span class="n">pad_id</span><span class="p">,</span>
+            <span class="n">eos_id</span><span class="o">=</span><span class="n">eos_id</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">eos_id</span> <span class="o">=</span> <span class="n">eos_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pad_id</span> <span class="o">=</span> <span class="n">pad_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generator</span> <span class="o">=</span> <span class="n">Linear</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SpeechTransformer.forward"><a class="viewcode-back" href="../../../../Speech Transformer.html#kospeech.models.transformer.model.SpeechTransformer.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">inputs</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>                     <span class="c1"># B x T_input x D_Feature</span>
+            <span class="n">input_lengths</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>              <span class="c1"># B</span>
+            <span class="n">targets</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>   <span class="c1"># B x T_output =&gt; &lt;sos&gt; a b c d e . . . &lt;eos&gt; &lt;pad&gt; &lt;pad&gt; &lt;pad&gt;</span>
+            <span class="n">return_attns</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>          <span class="c1"># bool</span>
+    <span class="p">):</span>
+        <span class="n">conv_feat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">conv_feat</span> <span class="o">=</span> <span class="n">conv_feat</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_length</span><span class="p">,</span> <span class="n">num_channels</span><span class="p">,</span> <span class="n">hidden_dim</span> <span class="o">=</span> <span class="n">conv_feat</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
+        <span class="n">conv_feat</span> <span class="o">=</span> <span class="n">conv_feat</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_length</span><span class="p">,</span> <span class="n">num_channels</span> <span class="o">*</span> <span class="n">hidden_dim</span><span class="p">)</span>
+        <span class="n">input_lengths</span> <span class="o">=</span> <span class="p">(</span><span class="n">input_lengths</span> <span class="o">&gt;&gt;</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">int</span><span class="p">()</span>
+
+        <span class="n">memory</span><span class="p">,</span> <span class="n">encoder_self_attns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="p">(</span><span class="n">conv_feat</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">)</span>
+        <span class="n">output</span><span class="p">,</span> <span class="n">decoder_self_attns</span><span class="p">,</span> <span class="n">memory_attns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">,</span> <span class="n">memory</span><span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generator</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">return_attns</span><span class="p">:</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">encoder_self_attns</span><span class="p">,</span> <span class="n">decoder_self_attns</span><span class="p">,</span> <span class="n">memory_attns</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">encoder_self_attns</span><span class="p">,</span> <span class="n">decoder_self_attns</span><span class="p">,</span> <span class="n">memory_attns</span>
+
+        <span class="k">return</span> <span class="n">output</span></div>
+
+    <span class="k">def</span> <span class="nf">greedy_decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="n">logit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">,</span> <span class="n">return_attns</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">logit</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="SpeechTransformerEncoder"><a class="viewcode-back" href="../../../../Speech Transformer.html#kospeech.models.transformer.model.SpeechTransformerEncoder">[docs]</a><span class="k">class</span> <span class="nc">SpeechTransformerEncoder</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The TransformerEncoder is composed of a stack of N identical layers.</span>
+<span class="sd">    Each layer has two sub-layers. The first is a multi-head self-attention mechanism,</span>
+<span class="sd">    and the second is a simple, position-wise fully connected feed-forward network.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        d_model: dimension of model (default: 512)</span>
+<span class="sd">        input_dim: dimension of feature vector (default: 80)</span>
+<span class="sd">        d_ff: dimension of feed forward network (default: 2048)</span>
+<span class="sd">        num_layers: number of encoder layers (default: 6)</span>
+<span class="sd">        num_heads: number of attention heads (default: 8)</span>
+<span class="sd">        ffnet_style: style of feed forward network [ff, conv] (default: ff)</span>
+<span class="sd">        dropout_p:  probability of dropout (default: 0.3)</span>
+<span class="sd">        pad_id: identification of pad token (default: 0)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">d_model</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">512</span><span class="p">,</span>         <span class="c1"># dimension of model</span>
+            <span class="n">input_dim</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">80</span><span class="p">,</span>        <span class="c1"># dimension of feature vector</span>
+            <span class="n">d_ff</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2048</span><span class="p">,</span>           <span class="c1"># dimension of feed forward network</span>
+            <span class="n">num_layers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span>        <span class="c1"># number of encoder layers</span>
+            <span class="n">num_heads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span>         <span class="c1"># number of attention heads</span>
+            <span class="n">ffnet_style</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;ff&#39;</span><span class="p">,</span>    <span class="c1"># style of feed forward network [ff, conv]</span>
+            <span class="n">dropout_p</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span>     <span class="c1"># probability of dropout</span>
+            <span class="n">pad_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>            <span class="c1"># identification of pad token</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SpeechTransformerEncoder</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">d_model</span> <span class="o">=</span> <span class="n">d_model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span> <span class="o">=</span> <span class="n">num_layers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_heads</span> <span class="o">=</span> <span class="n">num_heads</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pad_id</span> <span class="o">=</span> <span class="n">pad_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_proj</span> <span class="o">=</span> <span class="n">Linear</span><span class="p">(</span><span class="n">input_dim</span><span class="p">,</span> <span class="n">d_model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_norm</span> <span class="o">=</span> <span class="n">LayerNorm</span><span class="p">(</span><span class="n">d_model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_dropout</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="n">dropout_p</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">positional_encoding</span> <span class="o">=</span> <span class="n">PositionalEncoding</span><span class="p">(</span><span class="n">d_model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">SpeechTransformerEncoderLayer</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">num_heads</span><span class="p">,</span> <span class="n">d_ff</span><span class="p">,</span> <span class="n">dropout_p</span><span class="p">,</span> <span class="n">ffnet_style</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_layers</span><span class="p">)]</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="SpeechTransformerEncoder.forward"><a class="viewcode-back" href="../../../../Speech Transformer.html#kospeech.models.transformer.model.SpeechTransformerEncoder.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">:</span> <span class="n">Tensor</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            inputs: BxT_inputxD</span>
+<span class="sd">            input_lengths: Bx1</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">self_attns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+        <span class="n">non_pad_mask</span> <span class="o">=</span> <span class="n">get_pad_mask</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="o">=</span><span class="n">input_lengths</span><span class="p">)</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">self_attn_mask</span> <span class="o">=</span> <span class="n">get_attn_pad_mask</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_dropout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_proj</span><span class="p">(</span><span class="n">inputs</span><span class="p">))</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">positional_encoding</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">)))</span>
+
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
+            <span class="n">output</span><span class="p">,</span> <span class="n">attn</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">non_pad_mask</span><span class="p">,</span> <span class="n">self_attn_mask</span><span class="p">)</span>
+            <span class="n">self_attns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attn</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">output</span><span class="p">,</span> <span class="n">self_attns</span></div></div>
+
+
+<div class="viewcode-block" id="SpeechTransformerDecoder"><a class="viewcode-back" href="../../../../Speech Transformer.html#kospeech.models.transformer.model.SpeechTransformerDecoder">[docs]</a><span class="k">class</span> <span class="nc">SpeechTransformerDecoder</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The TransformerDecoder is composed of a stack of N identical layers.</span>
+<span class="sd">    Each layer has three sub-layers. The first is a multi-head self-attention mechanism,</span>
+<span class="sd">    and the second is a multi-head attention mechanism, third is a feed-forward network.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        num_classes: umber of classes</span>
+<span class="sd">        d_model: dimension of model</span>
+<span class="sd">        d_ff: dimension of feed forward network</span>
+<span class="sd">        num_layers: number of decoder layers</span>
+<span class="sd">        num_heads: number of attention heads</span>
+<span class="sd">        ffnet_style: style of feed forward network</span>
+<span class="sd">        dropout_p: probability of dropout</span>
+<span class="sd">        pad_id: identification of pad token</span>
+<span class="sd">        eos_id: identification of end of sentence token</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">num_classes</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>           <span class="c1"># number of classes</span>
+            <span class="n">d_model</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">512</span><span class="p">,</span>         <span class="c1"># dimension of model</span>
+            <span class="n">d_ff</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">512</span><span class="p">,</span>            <span class="c1"># dimension of feed forward network</span>
+            <span class="n">num_layers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span>        <span class="c1"># number of decoder layers</span>
+            <span class="n">num_heads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span>         <span class="c1"># number of attention heads</span>
+            <span class="n">ffnet_style</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;ff&#39;</span><span class="p">,</span>    <span class="c1"># style of feed forward network</span>
+            <span class="n">dropout_p</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span>     <span class="c1"># probability of dropout</span>
+            <span class="n">pad_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>            <span class="c1"># identification of pad token</span>
+            <span class="n">eos_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span>             <span class="c1"># identification of end of sentence token</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SpeechTransformerDecoder</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">d_model</span> <span class="o">=</span> <span class="n">d_model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span> <span class="o">=</span> <span class="n">num_layers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_heads</span> <span class="o">=</span> <span class="n">num_heads</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">Embedding</span><span class="p">(</span><span class="n">num_classes</span><span class="p">,</span> <span class="n">pad_id</span><span class="p">,</span> <span class="n">d_model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">positional_encoding</span> <span class="o">=</span> <span class="n">PositionalEncoding</span><span class="p">(</span><span class="n">d_model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_dropout</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="n">dropout_p</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">([</span>
+            <span class="n">SpeechTransformerDecoderLayer</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">num_heads</span><span class="p">,</span> <span class="n">d_ff</span><span class="p">,</span> <span class="n">dropout_p</span><span class="p">,</span> <span class="n">ffnet_style</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_layers</span><span class="p">)</span>
+        <span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pad_id</span> <span class="o">=</span> <span class="n">pad_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eos_id</span> <span class="o">=</span> <span class="n">eos_id</span>
+
+<div class="viewcode-block" id="SpeechTransformerDecoder.forward"><a class="viewcode-back" href="../../../../Speech Transformer.html#kospeech.models.transformer.model.SpeechTransformerDecoder.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">memory</span><span class="p">:</span> <span class="n">Tensor</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="n">self_attns</span><span class="p">,</span> <span class="n">memory_attns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(),</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">batch_size</span><span class="p">,</span> <span class="n">output_length</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">inputs</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">non_pad_mask</span> <span class="o">=</span> <span class="n">get_pad_mask</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">pad_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pad_id</span><span class="p">)</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">self_attn_mask</span> <span class="o">=</span> <span class="n">get_decoder_self_attn_mask</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_id</span><span class="p">)</span>
+        <span class="n">memory_mask</span> <span class="o">=</span> <span class="n">get_attn_pad_mask</span><span class="p">(</span><span class="n">memory</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">,</span> <span class="n">output_length</span><span class="p">)</span>
+
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_dropout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">positional_encoding</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">)))</span>
+
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
+            <span class="n">output</span><span class="p">,</span> <span class="n">self_attn</span><span class="p">,</span> <span class="n">memory_attn</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">memory</span><span class="p">,</span> <span class="n">non_pad_mask</span><span class="p">,</span> <span class="n">self_attn_mask</span><span class="p">,</span> <span class="n">memory_mask</span><span class="p">)</span>
+            <span class="n">self_attns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">self_attn</span><span class="p">)</span>
+            <span class="n">memory_attns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">memory_attn</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">output</span><span class="p">,</span> <span class="n">self_attns</span><span class="p">,</span> <span class="n">memory_attns</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Soohwan Kim
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

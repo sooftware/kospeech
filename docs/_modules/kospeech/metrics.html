@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>kospeech.metrics &mdash; KoSpeech 0.0 documentation</title>
+  <title>kospeech.metrics &mdash; KoSpeech latest documentation</title>
   
 
   
@@ -57,7 +57,7 @@
             
             
               <div class="version">
-                0.0
+                latest
               </div>
             
           
@@ -81,7 +81,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">NOTES</span></p>
+              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../notes/intro.html">Intro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../notes/Preparation.html">Preparation before Training</a></li>
@@ -89,17 +89,22 @@
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../Seq2seq.html">Seq2seq</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../Transformer.html">Transformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Deep Speech 2.html">Deep Speech 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Listen, Attend and Spell.html">Listen, Attend and Spell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Speech Transformer.html">Speech Transformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Common Modules.html">Common Modules</a></li>
 </ul>
-<p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
+<p class="caption"><span class="caption-text">LIBRARY REFERENCE</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Checkpoint.html">Checkpoint</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Data.html">Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Decode.html">Decode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Optim.html">Optim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Learning Rate Schedulers.html">Learning Rate Scheduler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Vocabs.html">Vocabs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Voice Activity Detection.html">Voice Activity Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Etc.html">Etc</a></li>
 </ul>
 
@@ -164,8 +169,13 @@
            <div itemprop="articleBody">
             
   <h1>Source code for kospeech.metrics</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">Levenshtein</span> <span class="k">as</span> <span class="nn">Lev</span>
-<span class="kn">from</span> <span class="nn">kospeech.utils</span> <span class="k">import</span> <span class="n">label_to_string</span>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># Soohwan Kim, Seyoung Bae, Cheolhwang Won.</span>
+<span class="c1"># @ArXiv : KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition</span>
+<span class="c1"># This source code is licensed under the Apache 2.0 License license found in the</span>
+<span class="c1"># LICENSE file in the root directory of this source tree.</span>
+
+<span class="kn">import</span> <span class="nn">Levenshtein</span> <span class="k">as</span> <span class="nn">Lev</span>
 
 
 <div class="viewcode-block" id="ErrorRate"><a class="viewcode-back" href="../../Etc.html#kospeech.metrics.ErrorRate">[docs]</a><span class="k">class</span> <span class="nc">ErrorRate</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -176,15 +186,14 @@
 <span class="sd">        Do not use this class directly, use one of the sub classes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">id2char</span><span class="p">,</span> <span class="n">eos_id</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vocab</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">total_dist</span> <span class="o">=</span> <span class="mf">0.0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">total_length</span> <span class="o">=</span> <span class="mf">0.0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">id2char</span> <span class="o">=</span> <span class="n">id2char</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">eos_id</span> <span class="o">=</span> <span class="n">eos_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vocab</span> <span class="o">=</span> <span class="n">vocab</span>
 
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">hypothesis</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">y_hats</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Calculating character error rate &quot;&quot;&quot;</span>
-        <span class="n">dist</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_distance</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">hypothesis</span><span class="p">)</span>
+        <span class="n">dist</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_distance</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">y_hats</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">total_dist</span> <span class="o">+=</span> <span class="n">dist</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">total_length</span> <span class="o">+=</span> <span class="n">length</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_dist</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_length</span>
@@ -205,8 +214,8 @@
         <span class="n">total_length</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="k">for</span> <span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">y_hat</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">y_hats</span><span class="p">):</span>
-            <span class="n">s1</span> <span class="o">=</span> <span class="n">label_to_string</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id2char</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">eos_id</span><span class="p">)</span>
-            <span class="n">s2</span> <span class="o">=</span> <span class="n">label_to_string</span><span class="p">(</span><span class="n">y_hat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id2char</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">eos_id</span><span class="p">)</span>
+            <span class="n">s1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocab</span><span class="o">.</span><span class="n">label_to_string</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+            <span class="n">s2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocab</span><span class="o">.</span><span class="n">label_to_string</span><span class="p">(</span><span class="n">y_hat</span><span class="p">)</span>
 
             <span class="n">dist</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">)</span>
 
@@ -224,8 +233,8 @@
 <span class="sd">    Computes the Character Error Rate, defined as the edit distance between the</span>
 <span class="sd">    two provided sentences after tokenizing to characters.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">id2char</span><span class="p">,</span> <span class="n">eos_id</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">CharacterErrorRate</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">id2char</span><span class="p">,</span> <span class="n">eos_id</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vocab</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">CharacterErrorRate</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">vocab</span><span class="p">)</span>
 
 <div class="viewcode-block" id="CharacterErrorRate.metric"><a class="viewcode-back" href="../../Etc.html#kospeech.metrics.CharacterErrorRate.metric">[docs]</a>    <span class="k">def</span> <span class="nf">metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -239,6 +248,13 @@
         <span class="n">s1</span> <span class="o">=</span> <span class="n">s1</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
         <span class="n">s2</span> <span class="o">=</span> <span class="n">s2</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
 
+        <span class="c1"># if &#39;_&#39; in sentence, means subword-unit, delete &#39;_&#39;</span>
+        <span class="k">if</span> <span class="s1">&#39;_&#39;</span> <span class="ow">in</span> <span class="n">s1</span><span class="p">:</span>
+            <span class="n">s1</span> <span class="o">=</span> <span class="n">s1</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;_&#39;</span> <span class="ow">in</span> <span class="n">s2</span><span class="p">:</span>
+            <span class="n">s2</span> <span class="o">=</span> <span class="n">s2</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+
         <span class="n">dist</span> <span class="o">=</span> <span class="n">Lev</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">s2</span><span class="p">,</span> <span class="n">s1</span><span class="p">)</span>
         <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">s1</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
 
@@ -250,8 +266,8 @@
 <span class="sd">    Computes the Word Error Rate, defined as the edit distance between the</span>
 <span class="sd">    two provided sentences after tokenizing to words.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">id2char</span><span class="p">,</span> <span class="n">eos_id</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">WordErrorRate</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">id2char</span><span class="p">,</span> <span class="n">eos_id</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vocab</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">WordErrorRate</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">vocab</span><span class="p">)</span>
 
 <div class="viewcode-block" id="WordErrorRate.metric"><a class="viewcode-back" href="../../Etc.html#kospeech.metrics.WordErrorRate.metric">[docs]</a>    <span class="k">def</span> <span class="nf">metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

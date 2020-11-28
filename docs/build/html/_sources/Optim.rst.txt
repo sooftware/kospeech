@@ -2,17 +2,12 @@
 Optim
 =====================================================
 
-Loss
+Optimizer
 --------------------------------------------
-.. automodule:: kospeech.optim.loss
+.. automodule:: kospeech.optim.__init__
     :members:
 
-LrScheduler
+RAdam
 --------------------------------------------
-.. automodule:: kospeech.optim.lr_scheduler
-    :members:
-
-Optim
---------------------------------------------
-.. automodule:: kospeech.optim.optimizer
+.. automodule:: kospeech.optim.radam
     :members:

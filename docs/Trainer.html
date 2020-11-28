@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Trainer &mdash; KoSpeech 0.0 documentation</title>
+  <title>Trainer &mdash; KoSpeech latest documentation</title>
   
 
   
@@ -34,8 +34,8 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Etc" href="Etc.html" />
-    <link rel="prev" title="Optim" href="Optim.html" /> 
+    <link rel="next" title="Vocabs" href="Vocabs.html" />
+    <link rel="prev" title="Learning Rate Scheduler" href="Learning Rate Schedulers.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                0.0
+                latest
               </div>
             
           
@@ -83,7 +83,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">NOTES</span></p>
+              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Intro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">Preparation before Training</a></li>
@@ -91,20 +91,25 @@
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Seq2seq.html">Seq2seq</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Transformer.html">Transformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Deep Speech 2.html">Deep Speech 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Listen, Attend and Spell.html">Listen, Attend and Spell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Speech Transformer.html">Speech Transformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Common Modules.html">Common Modules</a></li>
 </ul>
-<p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
+<p class="caption"><span class="caption-text">LIBRARY REFERENCE</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Checkpoint.html">Checkpoint</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Data.html">Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Decode.html">Decode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Optim.html">Optim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Learning Rate Schedulers.html">Learning Rate Scheduler</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Trainer</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#module-kospeech.trainer.supervised_trainer">SupervisedTrainer</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="Vocabs.html">Vocabs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Voice Activity Detection.html">Voice Activity Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Etc.html">Etc</a></li>
 </ul>
 
@@ -176,25 +181,22 @@
 <span id="supervisedtrainer"></span><h2>SupervisedTrainer<a class="headerlink" href="#module-kospeech.trainer.supervised_trainer" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="kospeech.trainer.supervised_trainer.SupervisedTrainer">
-<em class="property">class </em><code class="descclassname">kospeech.trainer.supervised_trainer.</code><code class="descname">SupervisedTrainer</code><span class="sig-paren">(</span><em>optimizer: kospeech.optim.optimizer.Optimizer</em>, <em>criterion: torch.nn.modules.module.Module</em>, <em>trainset_list: list</em>, <em>validset: kospeech.data.data_loader.SpectrogramDataset</em>, <em>high_plateau_lr: float</em>, <em>low_plateau_lr: float</em>, <em>exp_decay_period: int</em>, <em>num_workers: int</em>, <em>device: str</em>, <em>decay_threshold: float</em>, <em>print_every: int</em>, <em>save_result_every: int</em>, <em>checkpoint_every: int</em>, <em>teacher_forcing_step: float = 0.2</em>, <em>min_teacher_forcing_ratio: float = 0.8</em>, <em>architecture: str = 'seq2seq'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/trainer/supervised_trainer.html#SupervisedTrainer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.trainer.supervised_trainer.SupervisedTrainer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">kospeech.trainer.supervised_trainer.</code><code class="descname">SupervisedTrainer</code><span class="sig-paren">(</span><em>optimizer: kospeech.optim.Optimizer</em>, <em>criterion: torch.nn.modules.module.Module</em>, <em>trainset_list: list</em>, <em>validset: kospeech.data.data_loader.SpectrogramDataset</em>, <em>num_workers: int</em>, <em>device: str</em>, <em>print_every: int</em>, <em>save_result_every: int</em>, <em>checkpoint_every: int</em>, <em>teacher_forcing_step: float = 0.2</em>, <em>min_teacher_forcing_ratio: float = 0.8</em>, <em>architecture: str = 'las'</em>, <em>vocab: kospeech.vocabs.Vocabulary = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/trainer/supervised_trainer.html#SupervisedTrainer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.trainer.supervised_trainer.SupervisedTrainer" title="Permalink to this definition">¶</a></dt>
 <dd><p>The SupervisedTrainer class helps in setting up training framework in a supervised setting.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>optimizer</strong> (<a class="reference internal" href="Optim.html#kospeech.optim.optimizer.Optimizer" title="kospeech.optim.optimizer.Optimizer"><em>kospeech.optim.optimizer.Optimizer</em></a>) – optimizer for training</li>
-<li><strong>criterion</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.7.0a0+b87f0e5 ))"><em>torch.nn.Module</em></a>) – loss function</li>
-<li><strong>trainset_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – list of training datset</li>
+<li><strong>optimizer</strong> (<a class="reference internal" href="Optim.html#kospeech.optim.__init__.Optimizer" title="kospeech.optim.__init__.Optimizer"><em>kospeech.optim.__init__.Optimizer</em></a>) – optimizer for training</li>
+<li><strong>criterion</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.8.0a0+2221ff5 ))"><em>torch.nn.Module</em></a>) – loss function</li>
+<li><strong>trainset_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a>) – list of training datset</li>
 <li><strong>validset</strong> (<a class="reference internal" href="Data.html#kospeech.data.data_loader.SpectrogramDataset" title="kospeech.data.data_loader.SpectrogramDataset"><em>kospeech.data.data_loader.SpectrogramDataset</em></a>) – validation dataset</li>
-<li><strong>high_plateau_lr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – high plateau learning rate</li>
-<li><strong>low_plateau_lr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – low plateau learning rate</li>
-<li><strong>num_workers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of using cpu cores</li>
+<li><strong>num_workers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of using cpu cores</li>
 <li><strong>device</strong> (<em>torch.device</em>) – device - ‘cuda’ or ‘cpu’</li>
-<li><strong>decay_threshold</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – criteria by which exp learning ratedecay is started</li>
-<li><strong>print_every</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of timesteps to print result after</li>
-<li><strong>save_result_every</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of timesteps to save result after</li>
-<li><strong>checkpoint_every</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of timesteps to checkpoint after</li>
+<li><strong>print_every</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of timesteps to print result after</li>
+<li><strong>save_result_every</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of timesteps to save result after</li>
+<li><strong>checkpoint_every</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of timesteps to checkpoint after</li>
 </ul>
 </td>
 </tr>
@@ -209,12 +211,12 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>model</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.7.0a0+b87f0e5 ))"><em>torch.nn.Module</em></a>) – model to train</li>
-<li><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – batch size for experiment</li>
-<li><strong>epoch_time_step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of time step for training</li>
-<li><strong>num_epochs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of epochs for training</li>
-<li><strong>teacher_forcing_ratio</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – teaching forcing ratio (default 0.99)</li>
-<li><strong>resume</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – resume training with the latest checkpoint, (default False)</li>
+<li><strong>model</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.8.0a0+2221ff5 ))"><em>torch.nn.Module</em></a>) – model to train</li>
+<li><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – batch size for experiment</li>
+<li><strong>epoch_time_step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of time step for training</li>
+<li><strong>num_epochs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of epochs for training</li>
+<li><strong>teacher_forcing_ratio</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – teacher forcing ratio (default 0.99)</li>
+<li><strong>resume</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – resume training with the latest checkpoint, (default False)</li>
 </ul>
 </td>
 </tr>
@@ -231,8 +233,8 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>model</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.7.0a0+b87f0e5 ))"><em>torch.nn.Module</em></a>) – model to train</li>
-<li><strong>queue</strong> (<a class="reference external" href="https://docs.python.org/3/library/queue.html#queue.Queue" title="(in Python v3.8)"><em>queue.Queue</em></a>) – validation queue, containing input, targets, input_lengths, target_lengths</li>
+<li><strong>model</strong> (<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.8.0a0+2221ff5 ))"><em>torch.nn.Module</em></a>) – model to train</li>
+<li><strong>queue</strong> (<a class="reference external" href="https://docs.python.org/3/library/queue.html#queue.Queue" title="(in Python v3.9)"><em>queue.Queue</em></a>) – validation queue, containing input, targets, input_lengths, target_lengths</li>
 </ul>
 </td>
 </tr>
@@ -261,10 +263,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="Etc.html" class="btn btn-neutral float-right" title="Etc" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="Vocabs.html" class="btn btn-neutral float-right" title="Vocabs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="Optim.html" class="btn btn-neutral float-left" title="Optim" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="Learning Rate Schedulers.html" class="btn btn-neutral float-left" title="Learning Rate Scheduler" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

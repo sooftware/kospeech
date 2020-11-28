@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>kospeech.data.audio.augment &mdash; KoSpeech 0.0 documentation</title>
+  <title>kospeech.data.audio.augment &mdash; KoSpeech latest documentation</title>
   
 
   
@@ -57,7 +57,7 @@
             
             
               <div class="version">
-                0.0
+                latest
               </div>
             
           
@@ -81,7 +81,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">NOTES</span></p>
+              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../notes/intro.html">Intro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../notes/Preparation.html">Preparation before Training</a></li>
@@ -89,17 +89,22 @@
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../Seq2seq.html">Seq2seq</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../Transformer.html">Transformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Deep Speech 2.html">Deep Speech 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Listen, Attend and Spell.html">Listen, Attend and Spell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Speech Transformer.html">Speech Transformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Common Modules.html">Common Modules</a></li>
 </ul>
-<p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
+<p class="caption"><span class="caption-text">LIBRARY REFERENCE</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../Checkpoint.html">Checkpoint</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../Data.html">Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../Decode.html">Decode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../Optim.html">Optim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Learning Rate Schedulers.html">Learning Rate Scheduler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Vocabs.html">Vocabs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Voice Activity Detection.html">Voice Activity Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../Etc.html">Etc</a></li>
 </ul>
 
@@ -164,7 +169,13 @@
            <div itemprop="articleBody">
             
   <h1>Source code for kospeech.data.audio.augment</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># Soohwan Kim, Seyoung Bae, Cheolhwang Won.</span>
+<span class="c1"># @ArXiv : KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition</span>
+<span class="c1"># This source code is licensed under the Apache 2.0 License license found in the</span>
+<span class="c1"># LICENSE file in the root directory of this source tree.</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">torch</span> <span class="k">import</span> <span class="n">Tensor</span>
@@ -178,19 +189,17 @@
 <span class="sd">    This concept proposed in https://arxiv.org/abs/1904.08779</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        time_mask_para (int): maximum time masking length</span>
 <span class="sd">        freq_mask_para (int): maximum frequency masking length</span>
 <span class="sd">        time_mask_num (int): how many times to apply time masking</span>
 <span class="sd">        freq_mask_num (int): how many times to apply frequency masking</span>
 
-<span class="sd">    Inputs: spectrogram</span>
-<span class="sd">        - **spectrogram** (torch.FloatTensor): spectrogram feature from audio file.</span>
+<span class="sd">    Inputs: feature_vector</span>
+<span class="sd">        - **feature_vector** (torch.FloatTensor): feature vector from audio file.</span>
 
-<span class="sd">    Returns: spectrogram:</span>
-<span class="sd">        - **spectrogram**: masked spectrogram feature.</span>
+<span class="sd">    Returns: feature_vector:</span>
+<span class="sd">        - **feature_vector**: masked feature vector.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_mask_para</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">freq_mask_para</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">time_mask_num</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">freq_mask_num</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">time_mask_para</span> <span class="o">=</span> <span class="n">time_mask_para</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">freq_mask_para</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">18</span><span class="p">,</span> <span class="n">time_mask_num</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">freq_mask_num</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">freq_mask_para</span> <span class="o">=</span> <span class="n">freq_mask_para</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">time_mask_num</span> <span class="o">=</span> <span class="n">time_mask_num</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">freq_mask_num</span> <span class="o">=</span> <span class="n">freq_mask_num</span>
@@ -199,14 +208,13 @@
         <span class="sd">&quot;&quot;&quot; Provides SpecAugmentation for audio &quot;&quot;&quot;</span>
         <span class="n">time_axis_length</span> <span class="o">=</span> <span class="n">feature_vector</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">freq_axis_length</span> <span class="o">=</span> <span class="n">feature_vector</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">time_mask_para</span> <span class="o">=</span> <span class="n">time_axis_length</span> <span class="o">/</span> <span class="mi">20</span>      <span class="c1"># Refer to &quot;Specaugment on large scale dataset&quot; paper</span>
 
         <span class="c1"># time mask</span>
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_mask_num</span><span class="p">):</span>
-            <span class="n">t</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">time_mask_para</span><span class="p">))</span>
-
-            <span class="k">if</span> <span class="n">time_axis_length</span> <span class="o">-</span> <span class="n">t</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">t0</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">time_axis_length</span> <span class="o">-</span> <span class="n">t</span><span class="p">)</span>
-                <span class="n">feature_vector</span><span class="p">[</span><span class="n">t0</span><span class="p">:</span> <span class="n">t0</span> <span class="o">+</span> <span class="n">t</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="n">time_mask_para</span><span class="p">))</span>
+            <span class="n">t0</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">time_axis_length</span> <span class="o">-</span> <span class="n">t</span><span class="p">)</span>
+            <span class="n">feature_vector</span><span class="p">[</span><span class="n">t0</span><span class="p">:</span> <span class="n">t0</span> <span class="o">+</span> <span class="n">t</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="c1"># freq mask</span>
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">freq_mask_num</span><span class="p">):</span>

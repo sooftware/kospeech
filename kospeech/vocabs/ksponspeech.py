@@ -19,6 +19,7 @@ class KsponSpeechVocabulary(Vocabulary):
             self.pad_id = 0
             self.sos_id = 1
             self.eos_id = 2
+            self.blank_id = len(self)
         else:
             self.vocab_dict, self.id_dict = self.load_vocab(vocab_path, encoding='utf-8')
             self.sos_id = int(self.vocab_dict['<sos>'])
@@ -66,9 +67,8 @@ class KsponSpeechVocabulary(Vocabulary):
             for label in labels:
                 if label.item() == self.eos_id:
                     break
-                elif label.item() is not None:
-                    if label.item() == self.blank_id:
-                      continue
+                elif label.item() == self.blank_id:
+                  continue
                 sentence += self.id_dict[label.item()]
             return sentence
 
@@ -78,9 +78,8 @@ class KsponSpeechVocabulary(Vocabulary):
             for label in batch:
                 if label.item() == self.eos_id:
                     break
-                elif label.item() is not None:
-                    if label.item() == self.blank_id:
-                      continue
+                elif label.item() == self.blank_id:
+                  continue
                 sentence += self.id_dict[label.item()]
             sentences.append(sentence)
         return sentences

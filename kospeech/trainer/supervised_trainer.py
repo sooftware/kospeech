@@ -72,12 +72,12 @@ class SupervisedTrainer(object):
 
     def train(
         self,
-        model: nn.Module,
-        batch_size: int,
-        epoch_time_step: int,
-        num_epochs: int,
-        teacher_forcing_ratio: float = 0.99,
-        resume: bool = False
+        model: nn.Module,                           # model to train
+        batch_size: int,                            # batch size for experiment
+        epoch_time_step: int,                       # number of time step for training
+        num_epochs: int,                            # number of epochs (iteration) for training
+        teacher_forcing_ratio: float = 0.99,        # teacher forcing ratio
+        resume: bool = False                        # resume training with the latest checkpoint
     ) -> nn.Module:
         """
         Run training for a given model.
@@ -87,7 +87,7 @@ class SupervisedTrainer(object):
             batch_size (int): batch size for experiment
             epoch_time_step (int): number of time step for training
             num_epochs (int): number of epochs for training
-            teacher_forcing_ratio (float): teaching forcing ratio (default 0.99)
+            teacher_forcing_ratio (float): teacher forcing ratio (default 0.99)
             resume(bool, optional): resume training with the latest checkpoint, (default False)
         """
         start_epoch = 0

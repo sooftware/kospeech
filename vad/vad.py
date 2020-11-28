@@ -9,6 +9,9 @@ class VoiceActivityDetection(object):
     Voice activity detection (VAD), also known as speech activity detection or speech detection, 
     is the detection of the presence or absence of human speech, used in speech processing.
 
+    Please use our pre-train model.
+    Refer to : https://github.com/sooftware/KoSpeech
+
     Args: model_path, device
         model_path: path of vad model 
         device: 'cuda' or 'cpu'

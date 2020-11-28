@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Optim &mdash; KoSpeech 0.0 documentation</title>
+  <title>Optim &mdash; KoSpeech latest documentation</title>
   
 
   
@@ -34,7 +34,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Trainer" href="Trainer.html" />
+    <link rel="next" title="Learning Rate Scheduler" href="Learning Rate Schedulers.html" />
     <link rel="prev" title="Evaluator" href="Evaluator.html" /> 
 </head>
 
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                0.0
+                latest
               </div>
             
           
@@ -83,7 +83,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">NOTES</span></p>
+              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Intro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">Preparation before Training</a></li>
@@ -91,22 +91,26 @@
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Seq2seq.html">Seq2seq</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Transformer.html">Transformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Deep Speech 2.html">Deep Speech 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Listen, Attend and Spell.html">Listen, Attend and Spell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Speech Transformer.html">Speech Transformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Common Modules.html">Common Modules</a></li>
 </ul>
-<p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
+<p class="caption"><span class="caption-text">LIBRARY REFERENCE</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Checkpoint.html">Checkpoint</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Data.html">Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Decode.html">Decode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Optim</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.optim.loss">Loss</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.optim.lr_scheduler">LrScheduler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id1">Optim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.optim.__init__">Optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.optim.radam">RAdam</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="Learning Rate Schedulers.html">Learning Rate Scheduler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Vocabs.html">Vocabs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Voice Activity Detection.html">Voice Activity Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Etc.html">Etc</a></li>
 </ul>
 
@@ -174,117 +178,11 @@
             
   <div class="section" id="optim">
 <h1>Optim<a class="headerlink" href="#optim" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-kospeech.optim.loss">
-<span id="loss"></span><h2>Loss<a class="headerlink" href="#module-kospeech.optim.loss" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-kospeech.optim.__init__">
+<span id="optimizer"></span><h2>Optimizer<a class="headerlink" href="#module-kospeech.optim.__init__" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="kospeech.optim.loss.LabelSmoothingLoss">
-<em class="property">class </em><code class="descclassname">kospeech.optim.loss.</code><code class="descname">LabelSmoothingLoss</code><span class="sig-paren">(</span><em>num_classes: int</em>, <em>ignore_index: int</em>, <em>smoothing: float = 0.1</em>, <em>dim: int = -1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/loss.html#LabelSmoothingLoss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.loss.LabelSmoothingLoss" title="Permalink to this definition">¶</a></dt>
-<dd><p>Provides Label-Smoothing loss.
-Copied from <a class="reference external" href="https://github.com/pytorch/pytorch/issues/7455">https://github.com/pytorch/pytorch/issues/7455</a></p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>num_classes</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – the number of classfication</li>
-<li><strong>ignore_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Indexes that are ignored when calculating loss</li>
-<li><strong>smoothing</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – ratio of smoothing (confidence = 1.0 - smoothing)</li>
-<li><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – dimention of calculation loss</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Inputs: logit, target</dt>
-<dd>logit (torch.Tensor): probability distribution value from model and it has a logarithm shape
-target (torch.Tensor): ground-thruth encoded to integers which directly point a word in label</dd>
-<dt>Returns: label_smoothed</dt>
-<dd><ul class="first last simple">
-<li><strong>label_smoothed</strong> (float): sum of loss</li>
-</ul>
-</dd>
-</dl>
-<dl class="method">
-<dt id="kospeech.optim.loss.LabelSmoothingLoss.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>logit: torch.Tensor</em>, <em>target: torch.Tensor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/loss.html#LabelSmoothingLoss.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.loss.LabelSmoothingLoss.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Although the recipe for forward pass needs to be defined within
-this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
-instead of this since the former takes care of running the
-registered hooks while the latter silently ignores them.</p>
-</div>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-kospeech.optim.lr_scheduler">
-<span id="lrscheduler"></span><h2>LrScheduler<a class="headerlink" href="#module-kospeech.optim.lr_scheduler" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="kospeech.optim.lr_scheduler.ExponentialDecayLR">
-<em class="property">class </em><code class="descclassname">kospeech.optim.lr_scheduler.</code><code class="descname">ExponentialDecayLR</code><span class="sig-paren">(</span><em>optimizer</em>, <em>init_lr</em>, <em>low_plateau_lr</em>, <em>period</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/lr_scheduler.html#ExponentialDecayLR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.lr_scheduler.ExponentialDecayLR" title="Permalink to this definition">¶</a></dt>
-<dd><p>Exponential decay learning rate for the <cite>period</cite> from <cite>init_lr</cite> to <cite>low_plateau_lr</cite>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>optimizer</strong> (<a class="reference external" href="https://pytorch.org/docs/master/optim.html#torch.optim.Optimizer" title="(in PyTorch vmaster (1.7.0a0+b87f0e5 ))"><em>torch.optim.Optimizer</em></a>) – optimizer object, the parameters to be optimized
-should be given when instantiating the object, e.g. torch.optim.Adam, torch.optim</li>
-<li><strong>init_lr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – initial learning rate</li>
-<li><strong>low_plateau_lr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – target learning rate</li>
-<li><strong>period</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – timestep for which the scheduler is applied</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="class">
-<dt id="kospeech.optim.lr_scheduler.LearningRateScheduler">
-<em class="property">class </em><code class="descclassname">kospeech.optim.lr_scheduler.</code><code class="descname">LearningRateScheduler</code><span class="sig-paren">(</span><em>optimizer</em>, <em>init_lr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/lr_scheduler.html#LearningRateScheduler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.lr_scheduler.LearningRateScheduler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Provides inteface of learning rate scheduler.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Do not use this class directly, use one of the sub classes.</p>
-</div>
-</dd></dl>
-
-<dl class="class">
-<dt id="kospeech.optim.lr_scheduler.RampUpLR">
-<em class="property">class </em><code class="descclassname">kospeech.optim.lr_scheduler.</code><code class="descname">RampUpLR</code><span class="sig-paren">(</span><em>optimizer</em>, <em>init_lr</em>, <em>high_plateau_lr</em>, <em>period</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/lr_scheduler.html#RampUpLR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.lr_scheduler.RampUpLR" title="Permalink to this definition">¶</a></dt>
-<dd><p>Ramp up learning rate for the <cite>period</cite> from <cite>init_lr</cite> to <cite>high_plateau_lr</cite>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>optimizer</strong> (<a class="reference external" href="https://pytorch.org/docs/master/optim.html#torch.optim.Optimizer" title="(in PyTorch vmaster (1.7.0a0+b87f0e5 ))"><em>torch.optim.Optimizer</em></a>) – optimizer object, the parameters to be optimized
-should be given when instantiating the object, e.g. torch.optim.Adam, torch.optim</li>
-<li><strong>init_lr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – initial learning rate</li>
-<li><strong>high_plateau_lr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – target learning rate</li>
-<li><strong>period</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – timestep for which the scheduler is applied</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><p class="first last"><strong>POWER</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – power of ramp up. three means exponential.</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
-<div class="section" id="id1">
-<h2>Optim<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
-<span class="target" id="module-kospeech.optim.optimizer"></span><dl class="class">
-<dt id="kospeech.optim.optimizer.Optimizer">
-<em class="property">class </em><code class="descclassname">kospeech.optim.optimizer.</code><code class="descname">Optimizer</code><span class="sig-paren">(</span><em>optim</em>, <em>scheduler=None</em>, <em>scheduler_period=None</em>, <em>max_grad_norm=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/optimizer.html#Optimizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.optimizer.Optimizer" title="Permalink to this definition">¶</a></dt>
+<dt id="kospeech.optim.__init__.Optimizer">
+<em class="property">class </em><code class="descclassname">kospeech.optim.__init__.</code><code class="descname">Optimizer</code><span class="sig-paren">(</span><em>optim</em>, <em>scheduler=None</em>, <em>scheduler_period=None</em>, <em>max_grad_norm=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/__init__.html#Optimizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.__init__.Optimizer" title="Permalink to this definition">¶</a></dt>
 <dd><p>This is wrapper classs of torch.optim.Optimizer.
 This class provides functionalities for learning rate scheduling and gradient norm clipping.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -292,16 +190,47 @@ This class provides functionalities for learning rate scheduling and gradient no
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>optim</strong> (<a class="reference external" href="https://pytorch.org/docs/master/optim.html#torch.optim.Optimizer" title="(in PyTorch vmaster (1.7.0a0+b87f0e5 ))"><em>torch.optim.Optimizer</em></a>) – optimizer object, the parameters to be optimized
+<li><strong>optim</strong> (<a class="reference external" href="https://pytorch.org/docs/master/optim.html#torch.optim.Optimizer" title="(in PyTorch vmaster (1.8.0a0+2221ff5 ))"><em>torch.optim.Optimizer</em></a>) – optimizer object, the parameters to be optimized
 should be given when instantiating the object, e.g. torch.optim.Adam, torch.optim.SGD</li>
 <li><strong>scheduler</strong> (<em>kospeech.optim.lr_scheduler</em><em>, </em><em>optional</em>) – learning rate scheduler</li>
-<li><strong>scheduler_period</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – timestep with learning rate scheduler</li>
-<li><strong>max_grad_norm</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – value used for gradient norm clipping</li>
+<li><strong>scheduler_period</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – timestep with learning rate scheduler</li>
+<li><strong>max_grad_norm</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – value used for gradient norm clipping</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-kospeech.optim.radam">
+<span id="radam"></span><h2>RAdam<a class="headerlink" href="#module-kospeech.optim.radam" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kospeech.optim.radam.RAdam">
+<em class="property">class </em><code class="descclassname">kospeech.optim.radam.</code><code class="descname">RAdam</code><span class="sig-paren">(</span><em>params</em>, <em>lr=0.001</em>, <em>betas=(0.9</em>, <em>0.999)</em>, <em>eps=1e-08</em>, <em>weight_decay=0</em>, <em>degenerated_to_sgd=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/radam.html#RAdam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.radam.RAdam" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copyright (c) LiyuanLucasLiu</p>
+<p>Copied from <a class="reference external" href="https://github.com/LiyuanLucasLiu/RAdam">https://github.com/LiyuanLucasLiu/RAdam</a>
+- Apache 2.0 License</p>
+<dl class="method">
+<dt id="kospeech.optim.radam.RAdam.step">
+<code class="descname">step</code><span class="sig-paren">(</span><em>closure=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/radam.html#RAdam.step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.radam.RAdam.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs a single optimization step (parameter update).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>closure</strong> (<em>callable</em>) – A closure that reevaluates the model and
+returns the loss. Optional for most optimizers.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Unless otherwise specified, this function should not modify the
+<code class="docutils literal notranslate"><span class="pre">.grad</span></code> field of the parameters.</p>
+</div>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -315,7 +244,7 @@ should be given when instantiating the object, e.g. torch.optim.Adam, torch.opti
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="Trainer.html" class="btn btn-neutral float-right" title="Trainer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="Learning Rate Schedulers.html" class="btn btn-neutral float-right" title="Learning Rate Scheduler" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="Evaluator.html" class="btn btn-neutral float-left" title="Evaluator" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

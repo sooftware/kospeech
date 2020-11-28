@@ -15,7 +15,11 @@ from kospeech.data.data_loader import SpectrogramDataset
 from kospeech.evaluator.evaluator import Evaluator
 from kospeech.utils import check_envirionment
 from kospeech.model_builder import load_test_model
-from kospeech.opts import build_eval_opts, build_preprocess_opts, print_opts
+from kospeech.opts import (
+    build_eval_opts,
+    build_preprocess_opts,
+    print_opts
+)
 
 
 def inference(opt):

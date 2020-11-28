@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>kospeech.data.audio.feature &mdash; KoSpeech 0.0 documentation</title>
+  <title>kospeech.data.audio.feature &mdash; KoSpeech latest documentation</title>
   
 
   
@@ -57,7 +57,7 @@
             
             
               <div class="version">
-                0.0
+                latest
               </div>
             
           
@@ -81,7 +81,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">NOTES</span></p>
+              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../notes/intro.html">Intro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../notes/Preparation.html">Preparation before Training</a></li>
@@ -89,17 +89,22 @@
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../Seq2seq.html">Seq2seq</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../Transformer.html">Transformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Deep Speech 2.html">Deep Speech 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Listen, Attend and Spell.html">Listen, Attend and Spell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Speech Transformer.html">Speech Transformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Common Modules.html">Common Modules</a></li>
 </ul>
-<p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
+<p class="caption"><span class="caption-text">LIBRARY REFERENCE</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../Checkpoint.html">Checkpoint</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../Data.html">Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../Decode.html">Decode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../Optim.html">Optim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Learning Rate Schedulers.html">Learning Rate Scheduler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Vocabs.html">Vocabs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Voice Activity Detection.html">Voice Activity Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../Etc.html">Etc</a></li>
 </ul>
 
@@ -164,25 +169,26 @@
            <div itemprop="articleBody">
             
   <h1>Source code for kospeech.data.audio.feature</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">import</span> <span class="nn">librosa</span>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># Soohwan Kim, Seyoung Bae, Cheolhwang Won.</span>
+<span class="c1"># @ArXiv : KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition</span>
+<span class="c1"># This source code is licensed under the Apache 2.0 License license found in the</span>
+<span class="c1"># LICENSE file in the root directory of this source tree.</span>
+
+<span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">platform</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">torch</span> <span class="k">import</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">FloatTensor</span>
-
-<span class="c1"># torchaudio is only supported on Linux (Linux, Mac)</span>
-<span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;linux&#39;</span><span class="p">:</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="kn">import</span> <span class="nn">torchaudio</span>
-    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;SpectrogramPaser requires torchaudio package.&quot;</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">Tensor</span><span class="p">,</span>
+    <span class="n">FloatTensor</span>
+<span class="p">)</span>
 
 
 <div class="viewcode-block" id="Spectrogram"><a class="viewcode-back" href="../../../../Data.html#kospeech.data.audio.feature.Spectrogram">[docs]</a><span class="k">class</span> <span class="nc">Spectrogram</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a spectrogram from a audio signal.</span>
 
-<span class="sd">    Args: sample_rate, window_size, frame_shift, feature_extract_by</span>
+<span class="sd">    Args:</span>
 <span class="sd">        sample_rate (int): Sample rate of audio signal. (Default: 16000)</span>
 <span class="sd">        frame_length (int): frame length for spectrogram (ms) (Default : 20)</span>
 <span class="sd">        frame_shift (int): Length of hop between STFT windows. (ms) (Default: 10)</span>
@@ -196,6 +202,9 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_extract_by</span> <span class="o">==</span> <span class="s1">&#39;kaldi&#39;</span><span class="p">:</span>
             <span class="c1"># torchaudio is only supported on Linux (Linux, Mac)</span>
             <span class="k">assert</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;linux&#39;</span> <span class="ow">or</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;darwin&#39;</span>
+            <span class="kn">import</span> <span class="nn">torchaudio</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span> <span class="o">=</span> <span class="n">torchaudio</span><span class="o">.</span><span class="n">compliance</span><span class="o">.</span><span class="n">kaldi</span><span class="o">.</span><span class="n">spectrogram</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">frame_length</span> <span class="o">=</span> <span class="n">frame_length</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">frame_shift</span> <span class="o">=</span> <span class="n">frame_shift</span>
 
@@ -205,14 +214,19 @@
 
     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_extract_by</span> <span class="o">==</span> <span class="s1">&#39;kaldi&#39;</span><span class="p">:</span>
-            <span class="n">spectrogram</span> <span class="o">=</span> <span class="n">torchaudio</span><span class="o">.</span><span class="n">compliance</span><span class="o">.</span><span class="n">kaldi</span><span class="o">.</span><span class="n">spectrogram</span><span class="p">(</span><span class="n">Tensor</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
-                                                                  <span class="n">frame_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">frame_length</span><span class="p">,</span>
-                                                                  <span class="n">frame_shift</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">frame_shift</span><span class="p">,</span>
-                                                                  <span class="n">sample_frequency</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">spectrogram</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span><span class="p">(</span>
+                <span class="n">Tensor</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+                <span class="n">frame_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">frame_length</span><span class="p">,</span>
+                <span class="n">frame_shift</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">frame_shift</span><span class="p">,</span>
+                <span class="n">sample_frequency</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">spectrogram</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stft</span><span class="p">(</span><span class="n">Tensor</span><span class="p">(</span><span class="n">signal</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_fft</span><span class="p">,</span> <span class="n">hop_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hop_length</span><span class="p">,</span>
-                                     <span class="n">win_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_fft</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">hamming_window</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_fft</span><span class="p">),</span>
-                                     <span class="n">center</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">normalized</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">onesided</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">spectrogram</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stft</span><span class="p">(</span>
+                <span class="n">Tensor</span><span class="p">(</span><span class="n">signal</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_fft</span><span class="p">,</span> <span class="n">hop_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hop_length</span><span class="p">,</span>
+                <span class="n">win_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_fft</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">hamming_window</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_fft</span><span class="p">),</span>
+                <span class="n">center</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">normalized</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">onesided</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
             <span class="n">spectrogram</span> <span class="o">=</span> <span class="p">(</span><span class="n">spectrogram</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">spectrogram</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
             <span class="n">spectrogram</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="n">spectrogram</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
 
@@ -223,7 +237,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create MelSpectrogram for a raw audio signal. This is a composition of Spectrogram and MelScale.</span>
 
-<span class="sd">    Args: sample_rate, n_mels, frame_length, frame_shift, feature_extract_by</span>
+<span class="sd">    Args:</span>
 <span class="sd">        sample_rate (int): Sample rate of audio signal. (Default: 16000)</span>
 <span class="sd">        n_mels (int):  Number of mfc coefficients to retain. (Default: 80)</span>
 <span class="sd">        frame_length (int): frame length for spectrogram (ms) (Default : 20)</span>
@@ -240,11 +254,18 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_extract_by</span> <span class="o">==</span> <span class="s1">&#39;torchaudio&#39;</span><span class="p">:</span>
             <span class="c1"># torchaudio is only supported on Linux (Linux, Mac)</span>
             <span class="k">assert</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;linux&#39;</span> <span class="ow">or</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;darwin&#39;</span>
+            <span class="kn">import</span> <span class="nn">torchaudio</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span> <span class="o">=</span> <span class="n">torchaudio</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">MelSpectrogram</span><span class="p">(</span><span class="n">sample_rate</span><span class="o">=</span><span class="n">sample_rate</span><span class="p">,</span> <span class="n">win_length</span><span class="o">=</span><span class="n">frame_length</span><span class="p">,</span>
-                                                                   <span class="n">hop_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hop_length</span><span class="p">,</span> <span class="n">n_fft</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_fft</span><span class="p">,</span>
-                                                                   <span class="n">n_mels</span><span class="o">=</span><span class="n">n_mels</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">amplitude_to_db</span> <span class="o">=</span> <span class="n">torchaudio</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">AmplitudeToDB</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span> <span class="o">=</span> <span class="n">torchaudio</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">MelSpectrogram</span><span class="p">(</span>
+                <span class="n">sample_rate</span><span class="o">=</span><span class="n">sample_rate</span><span class="p">,</span> <span class="n">win_length</span><span class="o">=</span><span class="n">frame_length</span><span class="p">,</span>
+                <span class="n">hop_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hop_length</span><span class="p">,</span> <span class="n">n_fft</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_fft</span><span class="p">,</span>
+                <span class="n">n_mels</span><span class="o">=</span><span class="n">n_mels</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">librosa</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">melspectrogram</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">amplitude_to_db</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">amplitude_to_db</span>
 
     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_extract_by</span> <span class="o">==</span> <span class="s1">&#39;torchaudio&#39;</span><span class="p">:</span>
@@ -253,9 +274,14 @@
             <span class="n">melspectrogram</span> <span class="o">=</span> <span class="n">melspectrogram</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
 
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_extract_by</span> <span class="o">==</span> <span class="s1">&#39;librosa&#39;</span><span class="p">:</span>
-            <span class="n">melspectrogram</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">melspectrogram</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span><span class="p">,</span> <span class="n">n_mels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_mels</span><span class="p">,</span>
-                                                            <span class="n">n_fft</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_fft</span><span class="p">,</span> <span class="n">hop_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hop_length</span><span class="p">)</span>
-            <span class="n">melspectrogram</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">amplitude_to_db</span><span class="p">(</span><span class="n">melspectrogram</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">)</span>
+            <span class="n">melspectrogram</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span><span class="p">(</span>
+                <span class="n">signal</span><span class="p">,</span>
+                <span class="n">sr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span><span class="p">,</span>
+                <span class="n">n_mels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_mels</span><span class="p">,</span>
+                <span class="n">n_fft</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_fft</span><span class="p">,</span>
+                <span class="n">hop_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hop_length</span>
+            <span class="p">)</span>
+            <span class="n">melspectrogram</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">amplitude_to_db</span><span class="p">(</span><span class="n">melspectrogram</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unsupported library : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_extract_by</span><span class="p">))</span>
@@ -267,7 +293,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create the Mel-frequency cepstrum coefficients (MFCCs) from an audio signal.</span>
 
-<span class="sd">    Args: sample_rate, n_mfcc, frame_length, frame_shift, feature_extract_by</span>
+<span class="sd">    Args:</span>
 <span class="sd">        sample_rate (int): Sample rate of audio signal. (Default: 16000)</span>
 <span class="sd">        n_mfcc (int):  Number of mfc coefficients to retain. (Default: 40)</span>
 <span class="sd">        frame_length (int): frame length for spectrogram (ms) (Default : 20)</span>
@@ -284,10 +310,16 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_extract_by</span> <span class="o">==</span> <span class="s1">&#39;torchaudio&#39;</span><span class="p">:</span>
             <span class="c1"># torchaudio is only supported on Linux (Linux, Mac)</span>
             <span class="k">assert</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;linux&#39;</span> <span class="ow">or</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;darwin&#39;</span>
+            <span class="kn">import</span> <span class="nn">torchaudio</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span> <span class="o">=</span> <span class="n">torchaudio</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">MFCC</span><span class="p">(</span><span class="n">sample_rate</span><span class="o">=</span><span class="n">sample_rate</span><span class="p">,</span> <span class="n">n_mfcc</span><span class="o">=</span><span class="n">n_mfcc</span><span class="p">,</span>
-                                                         <span class="n">log_mels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">win_length</span><span class="o">=</span><span class="n">frame_length</span><span class="p">,</span>
-                                                         <span class="n">hop_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hop_length</span><span class="p">,</span> <span class="n">n_fft</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_fft</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span> <span class="o">=</span> <span class="n">torchaudio</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">MFCC</span><span class="p">(</span>
+                <span class="n">sample_rate</span><span class="o">=</span><span class="n">sample_rate</span><span class="p">,</span> <span class="n">n_mfcc</span><span class="o">=</span><span class="n">n_mfcc</span><span class="p">,</span>
+                <span class="n">log_mels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">win_length</span><span class="o">=</span><span class="n">frame_length</span><span class="p">,</span>
+                <span class="n">hop_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hop_length</span><span class="p">,</span> <span class="n">n_fft</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_fft</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">librosa</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">mfcc</span>
 
     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_extract_by</span> <span class="o">==</span> <span class="s1">&#39;torchaudio&#39;</span><span class="p">:</span>
@@ -295,8 +327,10 @@
             <span class="n">mfcc</span> <span class="o">=</span> <span class="n">mfcc</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
 
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_extract_by</span> <span class="o">==</span> <span class="s1">&#39;librosa&#39;</span><span class="p">:</span>
-            <span class="n">mfcc</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">mfcc</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">signal</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span><span class="p">,</span> <span class="n">n_mfcc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_mfcc</span><span class="p">,</span>
-                                        <span class="n">n_fft</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_fft</span><span class="p">,</span> <span class="n">hop_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hop_length</span><span class="p">)</span>
+            <span class="n">mfcc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span><span class="p">(</span>
+                <span class="n">y</span><span class="o">=</span><span class="n">signal</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span><span class="p">,</span> <span class="n">n_mfcc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_mfcc</span><span class="p">,</span>
+                <span class="n">n_fft</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_fft</span><span class="p">,</span> <span class="n">hop_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hop_length</span>
+            <span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unsupported library : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_extract_by</span><span class="p">))</span>
@@ -308,25 +342,26 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a fbank from a raw audio signal. This matches the input/output of Kaldi’s compute-fbank-feats</span>
 
-<span class="sd">    Args: sample_rate, n_mels, frame_length, frame_shift, feature_extract_by</span>
+<span class="sd">    Args:</span>
 <span class="sd">        sample_rate (int): Sample rate of audio signal. (Default: 16000)</span>
 <span class="sd">        n_mels (int):  Number of mfc coefficients to retain. (Default: 80)</span>
 <span class="sd">        frame_length (int): frame length for spectrogram (ms) (Default : 20)</span>
 <span class="sd">        frame_shift (int): Length of hop between STFT windows. (ms) (Default: 10)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_rate</span><span class="o">=</span><span class="mi">16000</span><span class="p">,</span> <span class="n">n_mels</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">frame_length</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">frame_shift</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
-        <span class="c1"># torchaudio is only supported on Linux (Linux, Mac)</span>
-        <span class="k">assert</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;linux&#39;</span> <span class="ow">or</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;darwin&#39;</span>
-
+        <span class="kn">import</span> <span class="nn">torchaudio</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span> <span class="o">=</span> <span class="n">torchaudio</span><span class="o">.</span><span class="n">compliance</span><span class="o">.</span><span class="n">kaldi</span><span class="o">.</span><span class="n">fbank</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sample_rate</span> <span class="o">=</span> <span class="n">sample_rate</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_mels</span> <span class="o">=</span> <span class="n">n_mels</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">frame_length</span> <span class="o">=</span> <span class="n">frame_length</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">frame_shift</span> <span class="o">=</span> <span class="n">frame_shift</span>
 
     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">torchaudio</span><span class="o">.</span><span class="n">compliance</span><span class="o">.</span><span class="n">kaldi</span><span class="o">.</span><span class="n">fbank</span><span class="p">(</span><span class="n">Tensor</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">num_mel_bins</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_mels</span><span class="p">,</span>
-                                                 <span class="n">frame_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">frame_length</span><span class="p">,</span> <span class="n">frame_shift</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">frame_shift</span><span class="p">,</span>
-                                                 <span class="n">window_type</span><span class="o">=</span><span class="s1">&#39;povey&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span><span class="p">(</span>
+            <span class="n">Tensor</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">num_mel_bins</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_mels</span><span class="p">,</span>
+            <span class="n">frame_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">frame_length</span><span class="p">,</span> <span class="n">frame_shift</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">frame_shift</span><span class="p">,</span>
+            <span class="n">window_type</span><span class="o">=</span><span class="s1">&#39;hamming&#39;</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span></div>
 </pre></div>
 
            </div>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>kospeech.checkpoint.checkpoint &mdash; KoSpeech 0.0 documentation</title>
+  <title>kospeech.checkpoint.checkpoint &mdash; KoSpeech latest documentation</title>
   
 
   
@@ -57,7 +57,7 @@
             
             
               <div class="version">
-                0.0
+                latest
               </div>
             
           
@@ -81,7 +81,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">NOTES</span></p>
+              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/intro.html">Intro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notes/Preparation.html">Preparation before Training</a></li>
@@ -89,17 +89,22 @@
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../Seq2seq.html">Seq2seq</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../Transformer.html">Transformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Deep Speech 2.html">Deep Speech 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Listen, Attend and Spell.html">Listen, Attend and Spell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Speech Transformer.html">Speech Transformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Common Modules.html">Common Modules</a></li>
 </ul>
-<p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
+<p class="caption"><span class="caption-text">LIBRARY REFERENCE</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../Checkpoint.html">Checkpoint</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Data.html">Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Decode.html">Decode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Optim.html">Optim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Learning Rate Schedulers.html">Learning Rate Scheduler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Vocabs.html">Vocabs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Voice Activity Detection.html">Voice Activity Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Etc.html">Etc</a></li>
 </ul>
 
@@ -164,15 +169,21 @@
            <div itemprop="articleBody">
             
   <h1>Source code for kospeech.checkpoint.checkpoint</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># Soohwan Kim, Seyoung Bae, Cheolhwang Won.</span>
+<span class="c1"># @ArXiv : KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition</span>
+<span class="c1"># This source code is licensed under the Apache 2.0 License license found in the</span>
+<span class="c1"># LICENSE file in the root directory of this source tree.</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
 <span class="kn">from</span> <span class="nn">kospeech.utils</span> <span class="k">import</span> <span class="n">logger</span>
 <span class="kn">from</span> <span class="nn">kospeech.data.data_loader</span> <span class="k">import</span> <span class="n">SpectrogramDataset</span>
-<span class="kn">from</span> <span class="nn">kospeech.models.seq2seq.seq2seq</span> <span class="k">import</span> <span class="n">Seq2seq</span>
-<span class="kn">from</span> <span class="nn">kospeech.optim.optimizer</span> <span class="k">import</span> <span class="n">Optimizer</span>
+<span class="kn">from</span> <span class="nn">kospeech.models.las.model</span> <span class="k">import</span> <span class="n">ListenAttendSpell</span>
+<span class="kn">from</span> <span class="nn">kospeech.optim</span> <span class="k">import</span> <span class="n">Optimizer</span>
 
 
 <div class="viewcode-block" id="Checkpoint"><a class="viewcode-back" href="../../../Checkpoint.html#kospeech.checkpoint.checkpoint.Checkpoint">[docs]</a><span class="k">class</span> <span class="nc">Checkpoint</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -185,7 +196,6 @@
 <span class="sd">    Args:</span>
 <span class="sd">        model (nn.Module): model being trained</span>
 <span class="sd">        optimizer (torch.optim): stores the state of the optimizer</span>
-<span class="sd">        criterion (nn.Module): loss function</span>
 <span class="sd">        trainset_list (list): list of trainset</span>
 <span class="sd">        validset (kospeech.data.data_loader.SpectrogramDataset): validation dataset</span>
 <span class="sd">        epoch (int): current epoch (an epoch is a loop through the full training data)</span>
@@ -202,16 +212,16 @@
     <span class="n">SAVE_PATH</span> <span class="o">=</span> <span class="s1">&#39;../data/checkpoint&#39;</span>
     <span class="n">MODEL_NAME</span> <span class="o">=</span> <span class="s1">&#39;model.pt&#39;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                 <span class="n">model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>                   <span class="c1"># model being trained</span>
-                 <span class="n">optimizer</span><span class="p">:</span> <span class="n">Optimizer</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>               <span class="c1"># stores the state of the optimizer</span>
-                 <span class="n">criterion</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>               <span class="c1"># loss function</span>
-                 <span class="n">trainset_list</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>                <span class="c1"># list of trainset</span>
-                 <span class="n">validset</span><span class="p">:</span> <span class="n">SpectrogramDataset</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>       <span class="c1"># validation dataset</span>
-                 <span class="n">epoch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>                <span class="c1"># current epoch is a loop through the full training datav</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>                   <span class="c1"># model being trained</span>
+            <span class="n">optimizer</span><span class="p">:</span> <span class="n">Optimizer</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>               <span class="c1"># stores the state of the optimizer</span>
+            <span class="n">trainset_list</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>                <span class="c1"># list of trainset</span>
+            <span class="n">validset</span><span class="p">:</span> <span class="n">SpectrogramDataset</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>       <span class="c1"># validation dataset</span>
+            <span class="n">epoch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>                          <span class="c1"># current epoch is a loop through the full training data</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">optimizer</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span> <span class="o">=</span> <span class="n">criterion</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">trainset_list</span> <span class="o">=</span> <span class="n">trainset_list</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">validset</span> <span class="o">=</span> <span class="n">validset</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">epoch</span> <span class="o">=</span> <span class="n">epoch</span>
@@ -230,7 +240,6 @@
 
         <span class="n">trainer_states</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;optimizer&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span>
-            <span class="s1">&#39;criterion&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">,</span>
             <span class="s1">&#39;trainset_list&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainset_list</span><span class="p">,</span>
             <span class="s1">&#39;validset&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">validset</span><span class="p">,</span>
             <span class="s1">&#39;epoch&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">epoch</span>
@@ -263,15 +272,17 @@
             <span class="n">resume_checkpoint</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">TRAINER_STATE_NAME</span><span class="p">),</span> <span class="n">map_location</span><span class="o">=</span><span class="k">lambda</span> <span class="n">storage</span><span class="p">,</span> <span class="n">loc</span><span class="p">:</span> <span class="n">storage</span><span class="p">)</span>
             <span class="n">model</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">MODEL_NAME</span><span class="p">),</span> <span class="n">map_location</span><span class="o">=</span><span class="k">lambda</span> <span class="n">storage</span><span class="p">,</span> <span class="n">loc</span><span class="p">:</span> <span class="n">storage</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">Seq2seq</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">ListenAttendSpell</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">DataParallel</span><span class="p">):</span>
                 <span class="n">model</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">flatten_parameters</span><span class="p">()</span>  <span class="c1"># make RNN parameters contiguous</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">model</span><span class="o">.</span><span class="n">flatten_parameters</span><span class="p">()</span>
 
-        <span class="k">return</span> <span class="n">Checkpoint</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">resume_checkpoint</span><span class="p">[</span><span class="s1">&#39;optimizer&#39;</span><span class="p">],</span> <span class="n">epoch</span><span class="o">=</span><span class="n">resume_checkpoint</span><span class="p">[</span><span class="s1">&#39;epoch&#39;</span><span class="p">],</span>
-                          <span class="n">criterion</span><span class="o">=</span><span class="n">resume_checkpoint</span><span class="p">[</span><span class="s1">&#39;criterion&#39;</span><span class="p">],</span> <span class="n">trainset_list</span><span class="o">=</span><span class="n">resume_checkpoint</span><span class="p">[</span><span class="s1">&#39;trainset_list&#39;</span><span class="p">],</span>
-                          <span class="n">validset</span><span class="o">=</span><span class="n">resume_checkpoint</span><span class="p">[</span><span class="s1">&#39;validset&#39;</span><span class="p">])</span></div>
+        <span class="k">return</span> <span class="n">Checkpoint</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">resume_checkpoint</span><span class="p">[</span><span class="s1">&#39;optimizer&#39;</span><span class="p">],</span> <span class="n">epoch</span><span class="o">=</span><span class="n">resume_checkpoint</span><span class="p">[</span><span class="s1">&#39;epoch&#39;</span><span class="p">],</span>
+            <span class="n">trainset_list</span><span class="o">=</span><span class="n">resume_checkpoint</span><span class="p">[</span><span class="s1">&#39;trainset_list&#39;</span><span class="p">],</span>
+            <span class="n">validset</span><span class="o">=</span><span class="n">resume_checkpoint</span><span class="p">[</span><span class="s1">&#39;validset&#39;</span><span class="p">]</span>
+        <span class="p">)</span></div>
 
 <div class="viewcode-block" id="Checkpoint.get_latest_checkpoint"><a class="viewcode-back" href="../../../Checkpoint.html#kospeech.checkpoint.checkpoint.Checkpoint.get_latest_checkpoint">[docs]</a>    <span class="k">def</span> <span class="nf">get_latest_checkpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

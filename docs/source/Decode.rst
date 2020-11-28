@@ -2,12 +2,13 @@
 Decode
 =====================================================
 
-Ensemble
---------------------------------------------
-.. automodule:: kospeech.decode.ensemble
-    :members:
-
 Search
 --------------------------------------------
 .. automodule:: kospeech.decode.search
+    :members:
+
+
+Ensemble
+--------------------------------------------
+.. automodule:: kospeech.decode.ensemble
     :members:

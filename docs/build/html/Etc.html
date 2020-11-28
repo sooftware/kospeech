@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Etc &mdash; KoSpeech 0.0 documentation</title>
+  <title>Etc &mdash; KoSpeech latest documentation</title>
   
 
   
@@ -34,7 +34,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Trainer" href="Trainer.html" /> 
+    <link rel="prev" title="Voice Activity Detection" href="Voice Activity Detection.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                0.0
+                latest
               </div>
             
           
@@ -82,7 +82,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">NOTES</span></p>
+              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Intro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">Preparation before Training</a></li>
@@ -90,17 +90,22 @@
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Seq2seq.html">Seq2seq</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Transformer.html">Transformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Deep Speech 2.html">Deep Speech 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Listen, Attend and Spell.html">Listen, Attend and Spell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Speech Transformer.html">Speech Transformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Common Modules.html">Common Modules</a></li>
 </ul>
-<p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
+<p class="caption"><span class="caption-text">LIBRARY REFERENCE</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Checkpoint.html">Checkpoint</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Data.html">Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Decode.html">Decode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Optim.html">Optim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Learning Rate Schedulers.html">Learning Rate Scheduler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Vocabs.html">Vocabs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Voice Activity Detection.html">Voice Activity Detection</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Etc</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#module-kospeech.metrics">Metrics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-kospeech.model_builder">ModelBuilder</a></li>
@@ -178,7 +183,7 @@
 <span id="metrics"></span><h2>Metrics<a class="headerlink" href="#module-kospeech.metrics" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="kospeech.metrics.CharacterErrorRate">
-<em class="property">class </em><code class="descclassname">kospeech.metrics.</code><code class="descname">CharacterErrorRate</code><span class="sig-paren">(</span><em>id2char</em>, <em>eos_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/metrics.html#CharacterErrorRate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.metrics.CharacterErrorRate" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">kospeech.metrics.</code><code class="descname">CharacterErrorRate</code><span class="sig-paren">(</span><em>vocab</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/metrics.html#CharacterErrorRate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.metrics.CharacterErrorRate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the Character Error Rate, defined as the edit distance between the
 two provided sentences after tokenizing to characters.</p>
 <dl class="method">
@@ -204,7 +209,7 @@ two provided sentences after tokenizing to characters.</p>
 
 <dl class="class">
 <dt id="kospeech.metrics.ErrorRate">
-<em class="property">class </em><code class="descclassname">kospeech.metrics.</code><code class="descname">ErrorRate</code><span class="sig-paren">(</span><em>id2char</em>, <em>eos_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/metrics.html#ErrorRate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.metrics.ErrorRate" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">kospeech.metrics.</code><code class="descname">ErrorRate</code><span class="sig-paren">(</span><em>vocab</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/metrics.html#ErrorRate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.metrics.ErrorRate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provides inteface of error rate calcuation.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -214,7 +219,7 @@ two provided sentences after tokenizing to characters.</p>
 
 <dl class="class">
 <dt id="kospeech.metrics.WordErrorRate">
-<em class="property">class </em><code class="descclassname">kospeech.metrics.</code><code class="descname">WordErrorRate</code><span class="sig-paren">(</span><em>id2char</em>, <em>eos_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/metrics.html#WordErrorRate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.metrics.WordErrorRate" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">kospeech.metrics.</code><code class="descname">WordErrorRate</code><span class="sig-paren">(</span><em>vocab</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/metrics.html#WordErrorRate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.metrics.WordErrorRate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the Word Error Rate, defined as the edit distance between the
 two provided sentences after tokenizing to words.</p>
 <dl class="method">
@@ -242,27 +247,27 @@ two provided sentences after tokenizing to words.</p>
 <div class="section" id="module-kospeech.model_builder">
 <span id="modelbuilder"></span><h2>ModelBuilder<a class="headerlink" href="#module-kospeech.model_builder" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="kospeech.model_builder.build_model">
-<code class="descclassname">kospeech.model_builder.</code><code class="descname">build_model</code><span class="sig-paren">(</span><em>opt</em>, <em>device</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model_builder.html#build_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model_builder.build_model" title="Permalink to this definition">¶</a></dt>
-<dd><p>Various model dispatcher function.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="kospeech.model_builder.build_seq2seq">
-<code class="descclassname">kospeech.model_builder.</code><code class="descname">build_seq2seq</code><span class="sig-paren">(</span><em>input_size</em>, <em>opt</em>, <em>device</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model_builder.html#build_seq2seq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model_builder.build_seq2seq" title="Permalink to this definition">¶</a></dt>
+<dt id="kospeech.model_builder.build_las">
+<code class="descclassname">kospeech.model_builder.</code><code class="descname">build_las</code><span class="sig-paren">(</span><em>input_size</em>, <em>opt</em>, <em>vocab</em>, <em>device</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model_builder.html#build_las"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model_builder.build_las" title="Permalink to this definition">¶</a></dt>
 <dd><p>Various Listen, Attend and Spell dispatcher function.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="kospeech.model_builder.build_seq2seq_decoder">
-<code class="descclassname">kospeech.model_builder.</code><code class="descname">build_seq2seq_decoder</code><span class="sig-paren">(</span><em>num_classes: int</em>, <em>max_len: int</em>, <em>hidden_dim: int</em>, <em>sos_id: int</em>, <em>eos_id: int</em>, <em>attn_mechanism: str</em>, <em>num_layers: int</em>, <em>rnn_type: str</em>, <em>dropout_p: float</em>, <em>num_heads: int</em>, <em>device: str</em><span class="sig-paren">)</span> &#x2192; kospeech.models.seq2seq.decoder.Seq2seqDecoder<a class="reference internal" href="_modules/kospeech/model_builder.html#build_seq2seq_decoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model_builder.build_seq2seq_decoder" title="Permalink to this definition">¶</a></dt>
-<dd><p>Various decoder dispatcher function.</p>
+<dt id="kospeech.model_builder.build_listener">
+<code class="descclassname">kospeech.model_builder.</code><code class="descname">build_listener</code><span class="sig-paren">(</span><em>input_size: int = 80</em>, <em>hidden_dim: int = 512</em>, <em>dropout_p: float = 0.2</em>, <em>num_layers: int = 3</em>, <em>bidirectional: bool = True</em>, <em>rnn_type: str = 'lstm'</em>, <em>extractor: str = 'vgg'</em>, <em>activation: str = 'hardtanh'</em>, <em>device: str = 'cuda'</em>, <em>mask_conv: bool = False</em><span class="sig-paren">)</span> &#x2192; kospeech.models.las.encoder.Listener<a class="reference internal" href="_modules/kospeech/model_builder.html#build_listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model_builder.build_listener" title="Permalink to this definition">¶</a></dt>
+<dd><p>Various encoder dispatcher function.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="kospeech.model_builder.build_seq2seq_encoder">
-<code class="descclassname">kospeech.model_builder.</code><code class="descname">build_seq2seq_encoder</code><span class="sig-paren">(</span><em>input_size: int</em>, <em>hidden_dim: int</em>, <em>dropout_p: float</em>, <em>num_layers: int</em>, <em>bidirectional: bool</em>, <em>rnn_type: str</em>, <em>extractor: str</em>, <em>activation: str</em>, <em>device: str</em>, <em>mask_conv: bool</em><span class="sig-paren">)</span> &#x2192; kospeech.models.seq2seq.encoder.Seq2seqEncoder<a class="reference internal" href="_modules/kospeech/model_builder.html#build_seq2seq_encoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model_builder.build_seq2seq_encoder" title="Permalink to this definition">¶</a></dt>
-<dd><p>Various encoder dispatcher function.</p>
+<dt id="kospeech.model_builder.build_model">
+<code class="descclassname">kospeech.model_builder.</code><code class="descname">build_model</code><span class="sig-paren">(</span><em>opt</em>, <em>vocab</em>, <em>device</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/model_builder.html#build_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model_builder.build_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Various model dispatcher function.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kospeech.model_builder.build_speller">
+<code class="descclassname">kospeech.model_builder.</code><code class="descname">build_speller</code><span class="sig-paren">(</span><em>num_classes: int</em>, <em>max_len: int</em>, <em>hidden_dim: int</em>, <em>sos_id: int</em>, <em>eos_id: int</em>, <em>pad_id: int</em>, <em>attn_mechanism: str</em>, <em>num_layers: int</em>, <em>rnn_type: str</em>, <em>dropout_p: float</em>, <em>num_heads: int</em>, <em>device: str</em><span class="sig-paren">)</span> &#x2192; kospeech.models.las.decoder.Speller<a class="reference internal" href="_modules/kospeech/model_builder.html#build_speller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.model_builder.build_speller" title="Permalink to this definition">¶</a></dt>
+<dd><p>Various decoder dispatcher function.</p>
 </dd></dl>
 
 </div>
@@ -347,35 +352,9 @@ FORMAT: [%(asctime)s %(filename)s:%(lineno)s - %(funcName)s()] %(message)s</p>
 
 <dl class="function">
 <dt id="kospeech.utils.check_envirionment">
-<code class="descclassname">kospeech.utils.</code><code class="descname">check_envirionment</code><span class="sig-paren">(</span><em>use_cuda</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/utils.html#check_envirionment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.utils.check_envirionment" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">kospeech.utils.</code><code class="descname">check_envirionment</code><span class="sig-paren">(</span><em>use_cuda: bool</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/utils.html#check_envirionment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.utils.check_envirionment" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check execution envirionment.
 OS, Processor, CUDA version, Pytorch version, … etc.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="kospeech.utils.label_to_string">
-<code class="descclassname">kospeech.utils.</code><code class="descname">label_to_string</code><span class="sig-paren">(</span><em>labels</em>, <em>id2char</em>, <em>eos_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/utils.html#label_to_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.utils.label_to_string" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts label to string (number =&gt; Hangeul)</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>labels</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – number label</li>
-<li><strong>id2char</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – id2char[id] = ch</li>
-<li><strong>eos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – identification of &lt;end of sequence&gt;</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>Returns: sentence</dt>
-<dd><ul class="first last simple">
-<li><strong>sentence</strong> (str or list): symbol of labels</li>
-</ul>
-</dd>
-</dl>
 </dd></dl>
 
 </div>
@@ -390,7 +369,7 @@ OS, Processor, CUDA version, Pytorch version, … etc.</p>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
       
-        <a href="Trainer.html" class="btn btn-neutral float-left" title="Trainer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="Voice Activity Detection.html" class="btn btn-neutral float-left" title="Voice Activity Detection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

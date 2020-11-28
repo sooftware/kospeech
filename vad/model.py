@@ -59,6 +59,11 @@ class ResnetBlock(nn.Module):
 
 
 class ResnetVADModel(nn.Module):
+    """
+    Resnet VAD Model. This Model just for inference.
+    Please use our pre-train model.
+    Refer to : https://github.com/sooftware/KoSpeech
+    """
     def __init__(self):
         super(ResnetVADModel, self).__init__()
 

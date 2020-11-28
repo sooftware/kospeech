@@ -1,0 +1,255 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Learning Rate Scheduler &mdash; KoSpeech latest documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Trainer" href="Trainer.html" />
+    <link rel="prev" title="Optim" href="Optim.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> KoSpeech
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                latest
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Intro</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">Preparation before Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/opts.html">Options</a></li>
+</ul>
+<p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Deep Speech 2.html">Deep Speech 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Listen, Attend and Spell.html">Listen, Attend and Spell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Speech Transformer.html">Speech Transformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Common Modules.html">Common Modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">LIBRARY REFERENCE</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Checkpoint.html">Checkpoint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Decode.html">Decode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Optim.html">Optim</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Learning Rate Scheduler</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">Learning Rate Scheduler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.optim.lr_scheduler.tri_stage_lr_scheduler">Tri Stage LR Scheduler</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Vocabs.html">Vocabs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Voice Activity Detection.html">Voice Activity Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Etc.html">Etc</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">KoSpeech</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Learning Rate Scheduler</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Learning Rate Schedulers.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="learning-rate-scheduler">
+<h1>Learning Rate Scheduler<a class="headerlink" href="#learning-rate-scheduler" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="id1">
+<h2>Learning Rate Scheduler<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-kospeech.optim.lr_scheduler.lr_scheduler"></span><dl class="class">
+<dt id="kospeech.optim.lr_scheduler.lr_scheduler.LearningRateScheduler">
+<em class="property">class </em><code class="descclassname">kospeech.optim.lr_scheduler.lr_scheduler.</code><code class="descname">LearningRateScheduler</code><span class="sig-paren">(</span><em>optimizer</em>, <em>init_lr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/lr_scheduler/lr_scheduler.html#LearningRateScheduler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.lr_scheduler.lr_scheduler.LearningRateScheduler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides inteface of learning rate scheduler.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Do not use this class directly, use one of the sub classes.</p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="module-kospeech.optim.lr_scheduler.tri_stage_lr_scheduler">
+<span id="tri-stage-lr-scheduler"></span><h2>Tri Stage LR Scheduler<a class="headerlink" href="#module-kospeech.optim.lr_scheduler.tri_stage_lr_scheduler" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kospeech.optim.lr_scheduler.tri_stage_lr_scheduler.TriStageLRScheduler">
+<em class="property">class </em><code class="descclassname">kospeech.optim.lr_scheduler.tri_stage_lr_scheduler.</code><code class="descname">TriStageLRScheduler</code><span class="sig-paren">(</span><em>optimizer</em>, <em>init_lr</em>, <em>peak_lr</em>, <em>final_lr</em>, <em>init_lr_scale</em>, <em>final_lr_scale</em>, <em>warmup_steps</em>, <em>total_steps</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/lr_scheduler/tri_stage_lr_scheduler.html#TriStageLRScheduler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.lr_scheduler.tri_stage_lr_scheduler.TriStageLRScheduler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tri-Stage Learning Rate Scheduler
+Implement the learning rate scheduler in “SpecAugment”</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Trainer.html" class="btn btn-neutral float-right" title="Trainer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Optim.html" class="btn btn-neutral float-left" title="Optim" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Soohwan Kim
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

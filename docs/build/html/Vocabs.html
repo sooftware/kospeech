@@ -1,0 +1,308 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Vocabs &mdash; KoSpeech latest documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Voice Activity Detection" href="Voice Activity Detection.html" />
+    <link rel="prev" title="Trainer" href="Trainer.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> KoSpeech
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                latest
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Intro</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">Preparation before Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/opts.html">Options</a></li>
+</ul>
+<p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Deep Speech 2.html">Deep Speech 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Listen, Attend and Spell.html">Listen, Attend and Spell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Speech Transformer.html">Speech Transformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Common Modules.html">Common Modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">LIBRARY REFERENCE</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Checkpoint.html">Checkpoint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Decode.html">Decode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Optim.html">Optim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Learning Rate Schedulers.html">Learning Rate Scheduler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Vocabs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.vocabs.__init__">Vocabulary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.vocabs.ksponspeech">KsponSpeechVocabulary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.vocabs.librispeech">LibriSpeechVocabulary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Voice Activity Detection.html">Voice Activity Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Etc.html">Etc</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">KoSpeech</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Vocabs</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Vocabs.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="vocabs">
+<h1>Vocabs<a class="headerlink" href="#vocabs" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-kospeech.vocabs.__init__">
+<span id="vocabulary"></span><h2>Vocabulary<a class="headerlink" href="#module-kospeech.vocabs.__init__" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kospeech.vocabs.__init__.Vocabulary">
+<em class="property">class </em><code class="descclassname">kospeech.vocabs.__init__.</code><code class="descname">Vocabulary</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/vocabs/__init__.html#Vocabulary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.vocabs.__init__.Vocabulary" title="Permalink to this definition">¶</a></dt>
+<dd><div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Do not use this class directly, use one of the sub classes.</p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="module-kospeech.vocabs.ksponspeech">
+<span id="ksponspeechvocabulary"></span><h2>KsponSpeechVocabulary<a class="headerlink" href="#module-kospeech.vocabs.ksponspeech" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kospeech.vocabs.ksponspeech.KsponSpeechVocabulary">
+<em class="property">class </em><code class="descclassname">kospeech.vocabs.ksponspeech.</code><code class="descname">KsponSpeechVocabulary</code><span class="sig-paren">(</span><em>vocab_path</em>, <em>output_unit: str = 'character'</em>, <em>sp_model_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/vocabs/ksponspeech.html#KsponSpeechVocabulary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.vocabs.ksponspeech.KsponSpeechVocabulary" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="kospeech.vocabs.ksponspeech.KsponSpeechVocabulary.label_to_string">
+<code class="descname">label_to_string</code><span class="sig-paren">(</span><em>labels</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/vocabs/ksponspeech.html#KsponSpeechVocabulary.label_to_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.vocabs.ksponspeech.KsponSpeechVocabulary.label_to_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts label to string (number =&gt; Hangeul)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>labels</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – number label</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Returns: sentence</dt>
+<dd><ul class="first last simple">
+<li><strong>sentence</strong> (str or list): symbol of labels</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="kospeech.vocabs.ksponspeech.KsponSpeechVocabulary.load_vocab">
+<code class="descname">load_vocab</code><span class="sig-paren">(</span><em>label_path</em>, <em>encoding='utf-8'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/vocabs/ksponspeech.html#KsponSpeechVocabulary.load_vocab"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.vocabs.ksponspeech.KsponSpeechVocabulary.load_vocab" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides char2id, id2char</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>label_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – csv file with character labels</li>
+<li><strong>encoding</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – encoding method</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Returns: unit2id, id2unit</dt>
+<dd><ul class="first last simple">
+<li><strong>unit2id</strong> (dict): unit2id[unit] = id</li>
+<li><strong>id2unit</strong> (dict): id2unit[id] = unit</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kospeech.vocabs.librispeech">
+<span id="librispeechvocabulary"></span><h2>LibriSpeechVocabulary<a class="headerlink" href="#module-kospeech.vocabs.librispeech" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="kospeech.vocabs.librispeech.LibriSpeechVocabulary">
+<em class="property">class </em><code class="descclassname">kospeech.vocabs.librispeech.</code><code class="descname">LibriSpeechVocabulary</code><span class="sig-paren">(</span><em>vocab_path</em>, <em>model_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/vocabs/librispeech.html#LibriSpeechVocabulary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.vocabs.librispeech.LibriSpeechVocabulary" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Voice Activity Detection.html" class="btn btn-neutral float-right" title="Voice Activity Detection" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Trainer.html" class="btn btn-neutral float-left" title="Trainer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Soohwan Kim
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>kospeech.model_builder &mdash; KoSpeech 0.0 documentation</title>
+  <title>kospeech.model_builder &mdash; KoSpeech latest documentation</title>
   
 
   
@@ -57,7 +57,7 @@
             
             
               <div class="version">
-                0.0
+                latest
               </div>
             
           
@@ -81,7 +81,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">NOTES</span></p>
+              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../notes/intro.html">Intro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../notes/Preparation.html">Preparation before Training</a></li>
@@ -89,17 +89,22 @@
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../Seq2seq.html">Seq2seq</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../Transformer.html">Transformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Deep Speech 2.html">Deep Speech 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Listen, Attend and Spell.html">Listen, Attend and Spell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Speech Transformer.html">Speech Transformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Common Modules.html">Common Modules</a></li>
 </ul>
-<p class="caption"><span class="caption-text">PACKAGE REFERENCE</span></p>
+<p class="caption"><span class="caption-text">LIBRARY REFERENCE</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Checkpoint.html">Checkpoint</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Data.html">Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Decode.html">Decode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Optim.html">Optim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Learning Rate Schedulers.html">Learning Rate Scheduler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Vocabs.html">Vocabs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Voice Activity Detection.html">Voice Activity Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Etc.html">Etc</a></li>
 </ul>
 
@@ -164,19 +169,25 @@
            <div itemprop="articleBody">
             
   <h1>Source code for kospeech.model_builder</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># Soohwan Kim, Seyoung Bae, Cheolhwang Won.</span>
+<span class="c1"># @ArXiv : KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition</span>
+<span class="c1"># This source code is licensed under the Apache 2.0 License license found in the</span>
+<span class="c1"># LICENSE file in the root directory of this source tree.</span>
+
+<span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
 <span class="kn">from</span> <span class="nn">astropy.modeling</span> <span class="k">import</span> <span class="n">ParameterError</span>
 <span class="kn">from</span> <span class="nn">kospeech.decode.ensemble</span> <span class="k">import</span> <span class="n">BasicEnsemble</span><span class="p">,</span> <span class="n">WeightedEnsemble</span>
-<span class="kn">from</span> <span class="nn">kospeech.models.seq2seq.sublayers</span> <span class="k">import</span> <span class="n">BaseRNN</span>
-<span class="kn">from</span> <span class="nn">kospeech.models.seq2seq.seq2seq</span> <span class="k">import</span> <span class="n">Seq2seq</span>
-<span class="kn">from</span> <span class="nn">kospeech.models.seq2seq.encoder</span> <span class="k">import</span> <span class="n">Seq2seqEncoder</span>
-<span class="kn">from</span> <span class="nn">kospeech.models.seq2seq.decoder</span> <span class="k">import</span> <span class="n">Seq2seqDecoder</span>
-<span class="kn">from</span> <span class="nn">kospeech.models.transformer.transformer</span> <span class="k">import</span> <span class="n">Transformer</span>
-<span class="kn">from</span> <span class="nn">kospeech.utils</span> <span class="k">import</span> <span class="n">char2id</span><span class="p">,</span> <span class="n">EOS_token</span><span class="p">,</span> <span class="n">SOS_token</span><span class="p">,</span> <span class="n">PAD_token</span>
+<span class="kn">from</span> <span class="nn">kospeech.models.deepspeech2.model</span> <span class="k">import</span> <span class="n">DeepSpeech2</span>
+<span class="kn">from</span> <span class="nn">kospeech.models.modules</span> <span class="k">import</span> <span class="n">BaseRNN</span>
+<span class="kn">from</span> <span class="nn">kospeech.models.las.model</span> <span class="k">import</span> <span class="n">ListenAttendSpell</span>
+<span class="kn">from</span> <span class="nn">kospeech.models.las.encoder</span> <span class="k">import</span> <span class="n">Listener</span>
+<span class="kn">from</span> <span class="nn">kospeech.models.las.decoder</span> <span class="k">import</span> <span class="n">Speller</span>
+<span class="kn">from</span> <span class="nn">kospeech.models.transformer.model</span> <span class="k">import</span> <span class="n">SpeechTransformer</span>
 
 
-<div class="viewcode-block" id="build_model"><a class="viewcode-back" href="../../Etc.html#kospeech.model_builder.build_model">[docs]</a><span class="k">def</span> <span class="nf">build_model</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
+<div class="viewcode-block" id="build_model"><a class="viewcode-back" href="../../Etc.html#kospeech.model_builder.build_model">[docs]</a><span class="k">def</span> <span class="nf">build_model</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="n">vocab</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Various model dispatcher function. &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">transform_method</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;spect&#39;</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">feature_extract_by</span> <span class="o">==</span> <span class="s1">&#39;kaldi&#39;</span><span class="p">:</span>
@@ -186,56 +197,141 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">input_size</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">n_mels</span>
 
-    <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">architecture</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;seq2seq&#39;</span><span class="p">:</span>
-        <span class="n">model</span> <span class="o">=</span> <span class="n">build_seq2seq</span><span class="p">(</span><span class="n">input_size</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">architecture</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;las&#39;</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">build_las</span><span class="p">(</span><span class="n">input_size</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">vocab</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
 
     <span class="k">elif</span> <span class="n">opt</span><span class="o">.</span><span class="n">architecture</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;transformer&#39;</span><span class="p">:</span>
-        <span class="n">model</span> <span class="o">=</span> <span class="n">build_transformer</span><span class="p">(</span><span class="n">num_classes</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">num_classes</span><span class="p">,</span> <span class="n">pad_id</span><span class="o">=</span><span class="n">PAD_token</span><span class="p">,</span> <span class="n">input_size</span><span class="o">=</span><span class="n">input_size</span><span class="p">,</span>
-                                  <span class="n">d_model</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">d_model</span><span class="p">,</span> <span class="n">num_heads</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">num_heads</span><span class="p">,</span> <span class="n">eos_id</span><span class="o">=</span><span class="n">EOS_token</span><span class="p">,</span>
-                                  <span class="n">num_encoder_layers</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">num_encoder_layers</span><span class="p">,</span> <span class="n">num_decoder_layers</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">num_decoder_layers</span><span class="p">,</span>
-                                  <span class="n">dropout_p</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">dropout</span><span class="p">,</span> <span class="n">ffnet_style</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">ffnet_style</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">build_transformer</span><span class="p">(</span>
+            <span class="n">num_classes</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">num_classes</span><span class="p">,</span>
+            <span class="n">pad_id</span><span class="o">=</span><span class="n">vocab</span><span class="o">.</span><span class="n">pad_id</span><span class="p">,</span>
+            <span class="n">input_size</span><span class="o">=</span><span class="n">input_size</span><span class="p">,</span>
+            <span class="n">d_model</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">d_model</span><span class="p">,</span>
+            <span class="n">num_heads</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">num_heads</span><span class="p">,</span>
+            <span class="n">eos_id</span><span class="o">=</span><span class="n">vocab</span><span class="o">.</span><span class="n">pad_id</span><span class="p">,</span>
+            <span class="n">num_encoder_layers</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">num_encoder_layers</span><span class="p">,</span>
+            <span class="n">num_decoder_layers</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">num_decoder_layers</span><span class="p">,</span>
+            <span class="n">dropout_p</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">dropout</span><span class="p">,</span>
+            <span class="n">ffnet_style</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">ffnet_style</span><span class="p">,</span>
+            <span class="n">device</span><span class="o">=</span><span class="n">device</span>
+        <span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">opt</span><span class="o">.</span><span class="n">architecture</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;deepspeech2&#39;</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">build_deepspeech2</span><span class="p">(</span>
+            <span class="n">input_size</span><span class="o">=</span><span class="n">input_size</span><span class="p">,</span>
+            <span class="n">num_classes</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">vocab</span><span class="p">),</span>
+            <span class="n">rnn_type</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">rnn_type</span><span class="p">,</span>
+            <span class="n">num_rnn_layers</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">num_encoder_layers</span><span class="p">,</span>
+            <span class="n">rnn_hidden_dim</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">,</span>
+            <span class="n">dropout_p</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">dropout</span><span class="p">,</span>
+            <span class="n">bidirectional</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">use_bidirectional</span><span class="p">,</span>
+            <span class="n">activation</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">activation</span><span class="p">,</span>
+            <span class="n">device</span><span class="o">=</span><span class="n">device</span>
+        <span class="p">)</span>
+
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unsupported architecture: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">architecture</span><span class="p">))</span>
 
     <span class="k">return</span> <span class="n">model</span></div>
 
 
+<span class="k">def</span> <span class="nf">build_deepspeech2</span><span class="p">(</span><span class="n">input_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">rnn_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">num_rnn_layers</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                      <span class="n">rnn_hidden_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">dropout_p</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                      <span class="n">bidirectional</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">activation</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">dropout_p</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ParameterError</span><span class="p">(</span><span class="s2">&quot;dropout probability should be positive&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">input_size</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ParameterError</span><span class="p">(</span><span class="s2">&quot;input_size should be greater than 0&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">rnn_hidden_dim</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ParameterError</span><span class="p">(</span><span class="s2">&quot;hidden_dim should be greater than 0&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">num_rnn_layers</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ParameterError</span><span class="p">(</span><span class="s2">&quot;num_layers should be greater than 0&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">rnn_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">BaseRNN</span><span class="o">.</span><span class="n">supported_rnns</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="n">ParameterError</span><span class="p">(</span><span class="s2">&quot;Unsupported RNN Cell: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rnn_type</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">nn</span><span class="o">.</span><span class="n">DataParallel</span><span class="p">(</span>
+        <span class="n">DeepSpeech2</span><span class="p">(</span>
+            <span class="n">input_size</span><span class="o">=</span><span class="n">input_size</span><span class="p">,</span>
+            <span class="n">num_classes</span><span class="o">=</span><span class="n">num_classes</span><span class="p">,</span>
+            <span class="n">rnn_type</span><span class="o">=</span><span class="n">rnn_type</span><span class="p">,</span>
+            <span class="n">num_rnn_layers</span><span class="o">=</span><span class="n">num_rnn_layers</span><span class="p">,</span>
+            <span class="n">rnn_hidden_dim</span><span class="o">=</span><span class="n">rnn_hidden_dim</span><span class="p">,</span>
+            <span class="n">dropout_p</span><span class="o">=</span><span class="n">dropout_p</span><span class="p">,</span>
+            <span class="n">bidirectional</span><span class="o">=</span><span class="n">bidirectional</span><span class="p">,</span>
+            <span class="n">activation</span><span class="o">=</span><span class="n">activation</span><span class="p">,</span>
+            <span class="n">device</span><span class="o">=</span><span class="n">device</span>
+        <span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+
 <span class="k">def</span> <span class="nf">build_transformer</span><span class="p">(</span><span class="n">num_classes</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">pad_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">d_model</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">num_heads</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">input_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                       <span class="n">num_encoder_layers</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">num_decoder_layers</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-                      <span class="n">dropout_p</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">ffnet_style</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">eos_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Transformer</span><span class="p">:</span>
+                      <span class="n">dropout_p</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">ffnet_style</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">eos_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">nn</span><span class="o">.</span><span class="n">DataParallel</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">ffnet_style</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;ff&#39;</span><span class="p">,</span> <span class="s1">&#39;conv&#39;</span><span class="p">}:</span>
         <span class="k">raise</span> <span class="n">ParameterError</span><span class="p">(</span><span class="s2">&quot;Unsupported ffnet_style: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ffnet_style</span><span class="p">))</span>
 
-    <span class="n">model</span> <span class="o">=</span> <span class="n">Transformer</span><span class="p">(</span><span class="n">num_classes</span><span class="o">=</span><span class="n">num_classes</span><span class="p">,</span> <span class="n">pad_id</span><span class="o">=</span><span class="n">pad_id</span><span class="p">,</span> <span class="n">d_model</span><span class="o">=</span><span class="n">d_model</span><span class="p">,</span> <span class="n">num_heads</span><span class="o">=</span><span class="n">num_heads</span><span class="p">,</span>
-                        <span class="n">num_encoder_layers</span><span class="o">=</span><span class="n">num_encoder_layers</span><span class="p">,</span> <span class="n">num_decoder_layers</span><span class="o">=</span><span class="n">num_decoder_layers</span><span class="p">,</span>
-                        <span class="n">dropout_p</span><span class="o">=</span><span class="n">dropout_p</span><span class="p">,</span> <span class="n">ffnet_style</span><span class="o">=</span><span class="n">ffnet_style</span><span class="p">,</span> <span class="n">input_dim</span><span class="o">=</span><span class="n">input_size</span><span class="p">,</span> <span class="n">eos_id</span><span class="o">=</span><span class="n">eos_id</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">nn</span><span class="o">.</span><span class="n">DataParallel</span><span class="p">(</span>
+        <span class="n">SpeechTransformer</span><span class="p">(</span>
+            <span class="n">num_classes</span><span class="o">=</span><span class="n">num_classes</span><span class="p">,</span>
+            <span class="n">pad_id</span><span class="o">=</span><span class="n">pad_id</span><span class="p">,</span>
+            <span class="n">d_model</span><span class="o">=</span><span class="n">d_model</span><span class="p">,</span>
+            <span class="n">num_heads</span><span class="o">=</span><span class="n">num_heads</span><span class="p">,</span>
+            <span class="n">num_encoder_layers</span><span class="o">=</span><span class="n">num_encoder_layers</span><span class="p">,</span>
+            <span class="n">num_decoder_layers</span><span class="o">=</span><span class="n">num_decoder_layers</span><span class="p">,</span>
+            <span class="n">dropout_p</span><span class="o">=</span><span class="n">dropout_p</span><span class="p">,</span>
+            <span class="n">ffnet_style</span><span class="o">=</span><span class="n">ffnet_style</span><span class="p">,</span>
+            <span class="n">input_dim</span><span class="o">=</span><span class="n">input_size</span><span class="p">,</span>
+            <span class="n">eos_id</span><span class="o">=</span><span class="n">eos_id</span>
+        <span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">nn</span><span class="o">.</span><span class="n">DataParallel</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="build_seq2seq"><a class="viewcode-back" href="../../Etc.html#kospeech.model_builder.build_seq2seq">[docs]</a><span class="k">def</span> <span class="nf">build_seq2seq</span><span class="p">(</span><span class="n">input_size</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
+<div class="viewcode-block" id="build_las"><a class="viewcode-back" href="../../Etc.html#kospeech.model_builder.build_las">[docs]</a><span class="k">def</span> <span class="nf">build_las</span><span class="p">(</span><span class="n">input_size</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">vocab</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Various Listen, Attend and Spell dispatcher function. &quot;&quot;&quot;</span>
-    <span class="n">encoder</span> <span class="o">=</span> <span class="n">build_seq2seq_encoder</span><span class="p">(</span><span class="n">input_size</span><span class="o">=</span><span class="n">input_size</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">dropout_p</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">dropout</span><span class="p">,</span>
-                                    <span class="n">num_layers</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">num_encoder_layers</span><span class="p">,</span> <span class="n">bidirectional</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">use_bidirectional</span><span class="p">,</span>
-                                    <span class="n">extractor</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">extractor</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">activation</span><span class="p">,</span>
-                                    <span class="n">rnn_type</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">rnn_type</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">mask_conv</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">mask_conv</span><span class="p">)</span>
-    <span class="n">decoder</span> <span class="o">=</span> <span class="n">build_seq2seq_decoder</span><span class="p">(</span><span class="n">num_classes</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">char2id</span><span class="p">),</span> <span class="n">max_len</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">max_len</span><span class="p">,</span>
-                                    <span class="n">sos_id</span><span class="o">=</span><span class="n">SOS_token</span><span class="p">,</span> <span class="n">eos_id</span><span class="o">=</span><span class="n">EOS_token</span><span class="p">,</span>
-                                    <span class="n">hidden_dim</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">hidden_dim</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">use_bidirectional</span> <span class="k">else</span> <span class="mi">0</span><span class="p">),</span>
-                                    <span class="n">num_layers</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">num_decoder_layers</span><span class="p">,</span> <span class="n">rnn_type</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">rnn_type</span><span class="p">,</span> <span class="n">dropout_p</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">dropout</span><span class="p">,</span>
-                                    <span class="n">num_heads</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">num_heads</span><span class="p">,</span> <span class="n">attn_mechanism</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">attn_mechanism</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
-
-    <span class="n">model</span> <span class="o">=</span> <span class="n">Seq2seq</span><span class="p">(</span><span class="n">encoder</span><span class="p">,</span> <span class="n">decoder</span><span class="p">)</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">ListenAttendSpell</span><span class="p">(</span>
+        <span class="n">build_listener</span><span class="p">(</span>
+            <span class="n">input_size</span><span class="o">=</span><span class="n">input_size</span><span class="p">,</span>
+            <span class="n">hidden_dim</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">,</span>
+            <span class="n">dropout_p</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">dropout</span><span class="p">,</span>
+            <span class="n">num_layers</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">num_encoder_layers</span><span class="p">,</span>
+            <span class="n">bidirectional</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">use_bidirectional</span><span class="p">,</span>
+            <span class="n">extractor</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">extractor</span><span class="p">,</span>
+            <span class="n">activation</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">activation</span><span class="p">,</span>
+            <span class="n">rnn_type</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">rnn_type</span><span class="p">,</span>
+            <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
+            <span class="n">mask_conv</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">mask_conv</span>
+        <span class="p">),</span>
+        <span class="n">build_speller</span><span class="p">(</span>
+            <span class="n">num_classes</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">vocab</span><span class="p">),</span>
+            <span class="n">max_len</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">max_len</span><span class="p">,</span>
+            <span class="n">pad_id</span><span class="o">=</span><span class="n">vocab</span><span class="o">.</span><span class="n">pad_id</span><span class="p">,</span>
+            <span class="n">sos_id</span><span class="o">=</span><span class="n">vocab</span><span class="o">.</span><span class="n">sos_id</span><span class="p">,</span>
+            <span class="n">eos_id</span><span class="o">=</span><span class="n">vocab</span><span class="o">.</span><span class="n">eos_id</span><span class="p">,</span>
+            <span class="n">hidden_dim</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">hidden_dim</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">use_bidirectional</span> <span class="k">else</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="n">num_layers</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">num_decoder_layers</span><span class="p">,</span>
+            <span class="n">rnn_type</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">rnn_type</span><span class="p">,</span>
+            <span class="n">dropout_p</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">dropout</span><span class="p">,</span>
+            <span class="n">num_heads</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">num_heads</span><span class="p">,</span>
+            <span class="n">attn_mechanism</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">attn_mechanism</span><span class="p">,</span>
+            <span class="n">device</span><span class="o">=</span><span class="n">device</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
     <span class="n">model</span><span class="o">.</span><span class="n">flatten_parameters</span><span class="p">()</span>
-    <span class="n">model</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">DataParallel</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">model</span></div>
+    <span class="k">return</span> <span class="n">nn</span><span class="o">.</span><span class="n">DataParallel</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="build_seq2seq_encoder"><a class="viewcode-back" href="../../Etc.html#kospeech.model_builder.build_seq2seq_encoder">[docs]</a><span class="k">def</span> <span class="nf">build_seq2seq_encoder</span><span class="p">(</span><span class="n">input_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">dropout_p</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-                          <span class="n">num_layers</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">bidirectional</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
-                          <span class="n">rnn_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">extractor</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                          <span class="n">activation</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mask_conv</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Seq2seqEncoder</span><span class="p">:</span>
+<div class="viewcode-block" id="build_listener"><a class="viewcode-back" href="../../Etc.html#kospeech.model_builder.build_listener">[docs]</a><span class="k">def</span> <span class="nf">build_listener</span><span class="p">(</span>
+        <span class="n">input_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">80</span><span class="p">,</span>
+        <span class="n">hidden_dim</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">512</span><span class="p">,</span>
+        <span class="n">dropout_p</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span>
+        <span class="n">num_layers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="n">bidirectional</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">rnn_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;lstm&#39;</span><span class="p">,</span>
+        <span class="n">extractor</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;vgg&#39;</span><span class="p">,</span>
+        <span class="n">activation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;hardtanh&#39;</span><span class="p">,</span>
+        <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;cuda&#39;</span><span class="p">,</span>
+        <span class="n">mask_conv</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Listener</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot; Various encoder dispatcher function. &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">dropout_p</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">ParameterError</span><span class="p">(</span><span class="s2">&quot;dropout probability should be positive&quot;</span><span class="p">)</span>
@@ -250,15 +346,34 @@
     <span class="k">if</span> <span class="n">rnn_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">BaseRNN</span><span class="o">.</span><span class="n">supported_rnns</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
         <span class="k">raise</span> <span class="n">ParameterError</span><span class="p">(</span><span class="s2">&quot;Unsupported RNN Cell: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rnn_type</span><span class="p">))</span>
 
-    <span class="k">return</span> <span class="n">Seq2seqEncoder</span><span class="p">(</span><span class="n">input_size</span><span class="o">=</span><span class="n">input_size</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="o">=</span><span class="n">hidden_dim</span><span class="p">,</span>
-                          <span class="n">dropout_p</span><span class="o">=</span><span class="n">dropout_p</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="n">num_layers</span><span class="p">,</span> <span class="n">mask_conv</span><span class="o">=</span><span class="n">mask_conv</span><span class="p">,</span>
-                          <span class="n">bidirectional</span><span class="o">=</span><span class="n">bidirectional</span><span class="p">,</span> <span class="n">rnn_type</span><span class="o">=</span><span class="n">rnn_type</span><span class="p">,</span>
-                          <span class="n">extractor</span><span class="o">=</span><span class="n">extractor</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="n">activation</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">Listener</span><span class="p">(</span>
+        <span class="n">input_size</span><span class="o">=</span><span class="n">input_size</span><span class="p">,</span>
+        <span class="n">hidden_dim</span><span class="o">=</span><span class="n">hidden_dim</span><span class="p">,</span>
+        <span class="n">dropout_p</span><span class="o">=</span><span class="n">dropout_p</span><span class="p">,</span>
+        <span class="n">num_layers</span><span class="o">=</span><span class="n">num_layers</span><span class="p">,</span>
+        <span class="n">mask_conv</span><span class="o">=</span><span class="n">mask_conv</span><span class="p">,</span>
+        <span class="n">bidirectional</span><span class="o">=</span><span class="n">bidirectional</span><span class="p">,</span>
+        <span class="n">rnn_type</span><span class="o">=</span><span class="n">rnn_type</span><span class="p">,</span>
+        <span class="n">extractor</span><span class="o">=</span><span class="n">extractor</span><span class="p">,</span>
+        <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
+        <span class="n">activation</span><span class="o">=</span><span class="n">activation</span>
+    <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="build_seq2seq_decoder"><a class="viewcode-back" href="../../Etc.html#kospeech.model_builder.build_seq2seq_decoder">[docs]</a><span class="k">def</span> <span class="nf">build_seq2seq_decoder</span><span class="p">(</span><span class="n">num_classes</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">max_len</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-                          <span class="n">sos_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">eos_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">attn_mechanism</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">num_layers</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-                          <span class="n">rnn_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dropout_p</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">num_heads</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Seq2seqDecoder</span><span class="p">:</span>
+<div class="viewcode-block" id="build_speller"><a class="viewcode-back" href="../../Etc.html#kospeech.model_builder.build_speller">[docs]</a><span class="k">def</span> <span class="nf">build_speller</span><span class="p">(</span>
+        <span class="n">num_classes</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">max_len</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">hidden_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">sos_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">eos_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">pad_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">attn_mechanism</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">num_layers</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">rnn_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">dropout_p</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">num_heads</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">device</span><span class="p">:</span> <span class="nb">str</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Speller</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot; Various decoder dispatcher function. &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">hidden_dim</span> <span class="o">%</span> <span class="n">num_heads</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">ParameterError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> % </span><span class="si">{1}</span><span class="s2"> should be zero&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">num_heads</span><span class="p">))</span>
@@ -279,11 +394,20 @@
     <span class="k">if</span> <span class="n">device</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">ParameterError</span><span class="p">(</span><span class="s2">&quot;device is None&quot;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">Seq2seqDecoder</span><span class="p">(</span><span class="n">num_classes</span><span class="o">=</span><span class="n">num_classes</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="n">max_len</span><span class="p">,</span>
-                          <span class="n">hidden_dim</span><span class="o">=</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">sos_id</span><span class="o">=</span><span class="n">sos_id</span><span class="p">,</span> <span class="n">eos_id</span><span class="o">=</span><span class="n">eos_id</span><span class="p">,</span>
-                          <span class="n">attn_mechanism</span><span class="o">=</span><span class="n">attn_mechanism</span><span class="p">,</span> <span class="n">num_heads</span><span class="o">=</span><span class="n">num_heads</span><span class="p">,</span>
-                          <span class="n">num_layers</span><span class="o">=</span><span class="n">num_layers</span><span class="p">,</span> <span class="n">rnn_type</span><span class="o">=</span><span class="n">rnn_type</span><span class="p">,</span>
-                          <span class="n">dropout_p</span><span class="o">=</span><span class="n">dropout_p</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">Speller</span><span class="p">(</span>
+        <span class="n">num_classes</span><span class="o">=</span><span class="n">num_classes</span><span class="p">,</span>
+        <span class="n">max_length</span><span class="o">=</span><span class="n">max_len</span><span class="p">,</span>
+        <span class="n">hidden_dim</span><span class="o">=</span><span class="n">hidden_dim</span><span class="p">,</span>
+        <span class="n">pad_id</span><span class="o">=</span><span class="n">pad_id</span><span class="p">,</span>
+        <span class="n">sos_id</span><span class="o">=</span><span class="n">sos_id</span><span class="p">,</span>
+        <span class="n">eos_id</span><span class="o">=</span><span class="n">eos_id</span><span class="p">,</span>
+        <span class="n">attn_mechanism</span><span class="o">=</span><span class="n">attn_mechanism</span><span class="p">,</span>
+        <span class="n">num_heads</span><span class="o">=</span><span class="n">num_heads</span><span class="p">,</span>
+        <span class="n">num_layers</span><span class="o">=</span><span class="n">num_layers</span><span class="p">,</span>
+        <span class="n">rnn_type</span><span class="o">=</span><span class="n">rnn_type</span><span class="p">,</span>
+        <span class="n">dropout_p</span><span class="o">=</span><span class="n">dropout_p</span><span class="p">,</span>
+        <span class="n">device</span><span class="o">=</span><span class="n">device</span>
+    <span class="p">)</span></div>
 
 
 <span class="k">def</span> <span class="nf">load_test_model</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
