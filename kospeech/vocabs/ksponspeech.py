@@ -6,21 +6,7 @@
 
 import csv
 import sentencepiece as spm
-
-
-class Vocabulary(object):
-    """
-    Note:
-        Do not use this class directly, use one of the sub classes.
-    """
-    def __init__(self, *args, **kwargs):
-        self.sos_id = None
-        self.eos_id = None
-        self.pad_id = None
-        self.blank_id = None
-
-    def label_to_string(self, labels):
-        raise NotImplementedError
+from kospeech.vocabs import Vocabulary
 
 
 class KsponSpeechVocabulary(Vocabulary):
@@ -129,36 +115,3 @@ class KsponSpeechVocabulary(Vocabulary):
             return unit2id, id2unit
         except IOError:
             raise IOError("Character label file (csv format) doesn`t exist : {0}".format(label_path))
-
-
-class LibriSpeechVocabulary(Vocabulary):
-    def __init__(self, vocab_path, model_path):
-        super(LibriSpeechVocabulary, self).__init__()
-        self.pad_id = 0
-        self.sos_id = 1
-        self.eos_id = 2
-
-        self.vocab_path = vocab_path
-
-        self.sp = spm.SentencePieceProcessor()
-        self.sp.Load(model_path)
-
-    def __len__(self):
-        count = 0
-        with open(self.vocab_path, encoding='utf-8') as f:
-            for _ in f.readlines():
-                count += 1
-
-        return count
-
-    def label_to_string(self, labels):
-        if len(labels.shape) == 1:
-            return self.sp.DecodeIds([l for l in labels])
-
-        sentences = list()
-        for batch in labels:
-            sentence = str()
-            for label in batch:
-                sentence = self.sp.DecodeIds([l for l in label])
-            sentences.append(sentence)
-        return sentences

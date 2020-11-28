@@ -7,10 +7,9 @@
 import sys
 import argparse
 import warnings
-
-from kospeech.vocab import KsponSpeechVocabulary, LibriSpeechVocabulary
-
 sys.path.append('..')
+from kospeech.vocabs.ksponspeech import KsponSpeechVocabulary
+from kospeech.vocabs.librispeech import LibriSpeechVocabulary
 from kospeech.data.label_loader import load_dataset
 from kospeech.data.data_loader import SpectrogramDataset
 from kospeech.evaluator.evaluator import Evaluator
@@ -24,9 +23,9 @@ def inference(opt):
     model = load_test_model(opt, device)
 
     if opt.dataset == 'kspon':
-        vocab = KsponSpeechVocabulary()
+        vocab = KsponSpeechVocabulary(f'../data/vocab/aihub_{opt.output_unit}_vocabs.csv', output_unit=opt.output_unit)
     elif opt.dataset == 'libri':
-        vocab = LibriSpeechVocabulary()
+        vocab = LibriSpeechVocabulary('../data/vocab/tokenizer.vocab', '../data/vocab/tokenizer.model')
     else:
         raise ValueError("Unsupported Dataset : {0}".format(opt.dataset))
 

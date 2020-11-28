@@ -4,7 +4,7 @@ import librosa
 import sys
 import numpy as np
 sys.path.append('..')
-from kospeech.vocab import KsponSpeechVocabulary
+from kospeech.vocabs.ksponspeech import KsponSpeechVocabulary
 from torch import Tensor
 from kospeech.data.audio.core import load_audio
 from kospeech.model_builder import load_test_model

@@ -7,9 +7,9 @@ import pandas as pd
 from typing import Tuple
 from kospeech.checkpoint.checkpoint import Checkpoint
 from kospeech.metrics import CharacterErrorRate
-from kospeech.optim.optimizer import Optimizer
+from kospeech.optim import Optimizer
 from kospeech.utils import logger
-from kospeech.vocab import Vocabulary
+from kospeech.vocabs import Vocabulary
 from kospeech.data.data_loader import (
     MultiDataLoader,
     AudioDataLoader,
@@ -22,7 +22,7 @@ class SupervisedTrainer(object):
     The SupervisedTrainer class helps in setting up training framework in a supervised setting.
 
     Args:
-        optimizer (kospeech.optim.optimizer.Optimizer): optimizer for training
+        optimizer (kospeech.optim.__init__.Optimizer): optimizer for training
         criterion (torch.nn.Module): loss function
         trainset_list (list): list of training datset
         validset (kospeech.data.data_loader.SpectrogramDataset): validation dataset

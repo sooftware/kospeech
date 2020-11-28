@@ -13,11 +13,12 @@ import torch.nn as nn
 from torch import optim
 from kospeech.optim.radam import RAdam
 sys.path.append('..')
-from kospeech.vocab import KsponSpeechVocabulary, LibriSpeechVocabulary
+from kospeech.vocabs.ksponspeech import KsponSpeechVocabulary
+from kospeech.vocabs.librispeech import LibriSpeechVocabulary
 from kospeech.data.data_loader import split_dataset
 from kospeech.criterion.label_smoothed_cross_entropy import LabelSmoothedCrossEntropyLoss
 from kospeech.optim.lr_scheduler.tri_stage_lr_scheduler import TriStageLRScheduler
-from kospeech.optim.optimizer import Optimizer
+from kospeech.optim import Optimizer
 from kospeech.trainer.supervised_trainer import SupervisedTrainer
 from kospeech.model_builder import build_model
 from kospeech.opts import (
@@ -41,8 +42,9 @@ def train(opt):
                                           output_unit=opt.output_unit,
                                           sp_model_path='../data/vocab/kspon_sentencepiece.model')
         else:
-            vocab = KsponSpeechVocabulary(f'../data/vocab/aihub_{opt.output_unit}_vocabs.csv',
-                                          output_unit=opt.output_unit)
+            vocab = KsponSpeechVocabulary(
+                f'../data/vocab/aihub_{opt.output_unit}_vocabs.csv', output_unit=opt.output_unit
+            )
 
     elif opt.dataset == 'libri':
         vocab = LibriSpeechVocabulary('../data/vocab/tokenizer.vocab', '../data/vocab/tokenizer.model')
