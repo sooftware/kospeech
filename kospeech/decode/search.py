@@ -4,13 +4,14 @@
 # This source code is licensed under the Apache 2.0 License license found in the
 # LICENSE file in the root directory of this source tree.
 
-import torch
-import torch.nn as nn
 import pandas as pd
+import torch.nn as nn
 from queue import Queue
 from kospeech.metrics import CharacterErrorRate, WordErrorRate
+from kospeech.models.deepspeech2.model import DeepSpeech2
 from kospeech.models.las.topk_decoder import TopKDecoder
-from kospeech.models.las.las import ListenAttendSpell
+from kospeech.models.las.model import ListenAttendSpell
+from kospeech.models.transformer.model import SpeechTransformer
 from kospeech.utils import logger
 
 
@@ -33,36 +34,60 @@ class GreedySearch(object):
         total_sent_num = 0
         timestep = 0
 
+        if isinstance(model, nn.DataParallel):
+            if isinstance(model.module, ListenAttendSpell):
+                architecture = 'las'
+            elif isinstance(model.module, SpeechTransformer):
+                architecture = 'transformer'
+            elif isinstance(model.module, DeepSpeech2):
+                architecture = 'deepspeech2'
+            else:
+                raise ValueError("Unsupported architecture : {0}".format(type(model.module)))
+        else:
+            if isinstance(model, ListenAttendSpell):
+                architecture = 'las'
+            elif isinstance(model, SpeechTransformer):
+                architecture = 'transformer'
+            elif isinstance(model, DeepSpeech2):
+                architecture = 'deepspeech2'
+            else:
+                raise ValueError("Unsupported architecture : {0}".format(type(model)))
+
         model.eval()
+        model.to(device)
 
-        with torch.no_grad():
-            while True:
-                inputs, targets, input_lengths, target_lengths = queue.get()
-                if inputs.shape[0] == 0:
-                    break
+        while True:
+            inputs, targets, input_lengths, target_lengths = queue.get()
+            if inputs.shape[0] == 0:
+                break
 
-                inputs = inputs.to(device)
-                targets = targets.to(device)
+            inputs = inputs.to(device)
+            targets = targets.to(device)
 
-                output = model(inputs, input_lengths, teacher_forcing_ratio=0.0, return_decode_dict=False)
-                logit = torch.stack(output, dim=1).to(device)
-                pred = logit.max(-1)[1]
+            if architecture == 'las':
+                y_hats = model.greedy_decode(inputs, input_lengths, device)
+            elif architecture == 'transformer':
+                y_hats = model.greedy_decode(inputs, input_lengths)
+            elif architecture == 'deepspeech2':
+                y_hats = model.greedy_decode(inputs, input_lengths, device)
+            else:
+                raise ValueError("Unsupported architecture : {0}".format(architecture))
 
-                for idx in range(targets.size(0)):
-                    self.target_list.append(
-                        self.vocab.label_to_string(targets[idx])
-                    )
-                    self.predict_list.append(
-                        self.vocab.label_to_string(pred[idx].cpu().detach().numpy())
-                    )
+            for idx in range(targets.size(0)):
+                self.target_list.append(
+                    self.vocab.label_to_string(targets[idx])
+                )
+                self.predict_list.append(
+                    self.vocab.label_to_string(y_hats[idx].cpu().detach().numpy())
+                )
 
-                cer = self.metric(targets[:, 1:], pred)
-                total_sent_num += targets.size(0)
+            cer = self.metric(targets[:, 1:], y_hats)
+            total_sent_num += targets.size(0)
 
-                if timestep % print_every == 0:
-                    logger.info('cer: {:.2f}'.format(cer))
+            if timestep % print_every == 0:
+                logger.info('cer: {:.2f}'.format(cer))
 
-                timestep += 1
+            timestep += 1
 
         return cer
 

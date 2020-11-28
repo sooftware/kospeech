@@ -7,14 +7,14 @@ import pandas as pd
 from typing import Tuple
 from kospeech.checkpoint.checkpoint import Checkpoint
 from kospeech.metrics import CharacterErrorRate
-from kospeech.optim.optimizer import Optimizer
+from kospeech.optim import Optimizer
 from kospeech.utils import logger
+from kospeech.vocabs import Vocabulary
 from kospeech.data.data_loader import (
     MultiDataLoader,
     AudioDataLoader,
     SpectrogramDataset
 )
-from kospeech.vocab import Vocabulary
 
 
 class SupervisedTrainer(object):
@@ -22,7 +22,7 @@ class SupervisedTrainer(object):
     The SupervisedTrainer class helps in setting up training framework in a supervised setting.
 
     Args:
-        optimizer (kospeech.optim.optimizer.Optimizer): optimizer for training
+        optimizer (kospeech.optim.__init__.Optimizer): optimizer for training
         criterion (torch.nn.Module): loss function
         trainset_list (list): list of training datset
         validset (kospeech.data.data_loader.SpectrogramDataset): validation dataset
@@ -213,22 +213,32 @@ class SupervisedTrainer(object):
                 else:
                     model.flatten_parameters()
 
-                logit = model(inputs=inputs, input_lengths=input_lengths,
-                              targets=targets, teacher_forcing_ratio=teacher_forcing_ratio)
-                logit = torch.stack(logit, dim=1).to(self.device)
-                targets = targets[:, 1:]
+                output = model(inputs=inputs, input_lengths=input_lengths,
+                               targets=targets, teacher_forcing_ratio=teacher_forcing_ratio)
+
+                output = torch.stack(output, dim=1).to(self.device)
+                loss = self.criterion(
+                    output.contiguous().view(-1, output.size(-1)), targets[:, 1:].contiguous().view(-1)
+                )
 
             elif self.architecture == 'transformer':
-                logit = model(inputs, input_lengths, targets, return_attns=False)
+                output = model(inputs, input_lengths, targets, return_attns=False)
+                loss = self.criterion(output.contiguous().view(-1, output.size(-1)), targets.contiguous().view(-1))
+
+            elif self.architecture == 'deepspeech2':
+                output, output_lengths = model(inputs, input_lengths)
+                output = torch.stack(output, dim=1).to(self.device)
+                loss = self.criterion(
+                    output.transpose(0, 1), targets[:, 1:], output_lengths, torch.as_tensor(target_lengths)
+                )
 
             else:
                 raise ValueError("Unsupported architecture : {0}".format(self.architecture))
 
-            hypothesis = logit.max(-1)[1]
-            loss = self.criterion(logit.contiguous().view(-1, logit.size(-1)), targets.contiguous().view(-1))
+            y_hats = output.max(-1)[1]
             epoch_loss_total += loss.item()
 
-            cer = self.metric(targets, hypothesis)
+            cer = self.metric(targets, y_hats)
             total_num += int(input_lengths.sum())
 
             self.optimizer.zero_grad()
@@ -259,7 +269,7 @@ class SupervisedTrainer(object):
             if timestep % self.checkpoint_every == 0:
                 Checkpoint(model, self.optimizer,  self.trainset_list, self.validset, epoch).save()
 
-            del inputs, input_lengths, targets, logit, loss, hypothesis
+            del inputs, input_lengths, targets, output, loss, y_hats
 
         Checkpoint(model, self.optimizer, self.trainset_list, self.validset, epoch).save()
 
@@ -283,30 +293,29 @@ class SupervisedTrainer(object):
         model.eval()
         logger.info('validate() start')
 
-        with torch.no_grad():
-            while True:
-                inputs, targets, input_lengths, target_lengths = queue.get()
+        while True:
+            inputs, targets, input_lengths, target_lengths = queue.get()
 
-                if inputs.shape[0] == 0:
-                    break
+            if inputs.shape[0] == 0:
+                break
 
-                inputs = inputs.to(self.device)
-                targets = targets[:, 1:].to(self.device)
-                model.to(self.device)
+            inputs = inputs.to(self.device)
+            targets = targets[:, 1:].to(self.device)
+            model.to(self.device)
 
-                if self.architecture == 'las':
-                    model.module.flatten_parameters()
-                    output = model(inputs, input_lengths, teacher_forcing_ratio=0.0, return_decode_dict=False)
-                    logit = torch.stack(output, dim=1).to(self.device)
+            if self.architecture == 'las':
+                y_hats = model.greedy_decode(inputs, input_lengths, self.device)
 
-                elif self.architecture == 'transformer':
-                    logit = model(inputs, input_lengths, return_decode_dict=False)
+            elif self.architecture == 'transformer':
+                y_hats = model.greedy_decode(inputs, input_lengths)
 
-                else:
-                    raise ValueError("Unsupported architecture : {0}".format(self.architecture))
+            elif self.architecture == 'deepspeech2':
+                y_hats = model.greedy_decode(inputs, input_lengths, self.device)
 
-                hypothesis = logit.max(-1)[1]
-                cer = self.metric(targets, hypothesis)
+            else:
+                raise ValueError("Unsupported architecture : {0}".format(self.architecture))
+
+            cer = self.metric(targets, y_hats)
 
         logger.info('validate() completed')
 

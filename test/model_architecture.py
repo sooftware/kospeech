@@ -1,7 +1,7 @@
 from kospeech.models.las.encoder import Listener
 from kospeech.models.las.decoder import Speller
-from kospeech.models.las.las import ListenAttendSpell
-from kospeech.models.transformer.transformer import SpeechTransformer
+from kospeech.models.las.model import ListenAttendSpell
+from kospeech.models.transformer.model import SpeechTransformer
 
 
 encoder = Listener(80, 512, 'cpu')

@@ -6,6 +6,7 @@ from torch.optim.optimizer import Optimizer
 class RAdam(Optimizer):
     """
     Copyright (c) LiyuanLucasLiu
+
     Copied from https://github.com/LiyuanLucasLiu/RAdam
     - Apache 2.0 License
     """

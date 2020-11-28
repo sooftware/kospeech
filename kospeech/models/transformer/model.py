@@ -11,6 +11,7 @@
 #    - **https://github.com/JayParks/transformer**
 
 import math
+import torch
 import torch.nn as nn
 from torch import Tensor
 from typing import Optional, Any
@@ -164,6 +165,11 @@ class SpeechTransformer(nn.Module):
             del encoder_self_attns, decoder_self_attns, memory_attns
 
         return output
+
+    def greedy_decode(self, inputs, input_lengths):
+        with torch.no_grad():
+            logit = self.forward(inputs, input_lengths, return_attns=False)
+            return logit.max(-1)[1]
 
 
 class SpeechTransformerEncoder(nn.Module):

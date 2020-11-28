@@ -6,20 +6,7 @@
 
 import csv
 import sentencepiece as spm
-
-
-class Vocabulary(object):
-    """
-    Note:
-        Do not use this class directly, use one of the sub classes.
-    """
-    def __init__(self, *args, **kwargs):
-        self.sos_id = None
-        self.eos_id = None
-        self.pad_id = None
-
-    def label_to_string(self, labels):
-        raise NotImplementedError
+from kospeech.vocabs import Vocabulary
 
 
 class KsponSpeechVocabulary(Vocabulary):
@@ -37,6 +24,7 @@ class KsponSpeechVocabulary(Vocabulary):
             self.sos_id = int(self.vocab_dict['<sos>'])
             self.eos_id = int(self.vocab_dict['<eos>'])
             self.pad_id = int(self.vocab_dict['<pad>'])
+            self.blank_id = int(self.vocab_dict['<blank>'])
 
         self.vocab_path = vocab_path
         self.output_unit = output_unit
@@ -78,6 +66,9 @@ class KsponSpeechVocabulary(Vocabulary):
             for label in labels:
                 if label.item() == self.eos_id:
                     break
+                elif label.item() is not None:
+                    if label.item() == self.blank_id:
+                      continue
                 sentence += self.id_dict[label.item()]
             return sentence
 
@@ -87,6 +78,9 @@ class KsponSpeechVocabulary(Vocabulary):
             for label in batch:
                 if label.item() == self.eos_id:
                     break
+                elif label.item() is not None:
+                    if label.item() == self.blank_id:
+                      continue
                 sentence += self.id_dict[label.item()]
             sentences.append(sentence)
         return sentences
@@ -99,9 +93,9 @@ class KsponSpeechVocabulary(Vocabulary):
             label_path (str): csv file with character labels
             encoding (str): encoding method
 
-        Returns: char2id, id2char
-            - **char2id** (dict): char2id[ch] = id
-            - **id2char** (dict): id2char[id] = ch
+        Returns: unit2id, id2unit
+            - **unit2id** (dict): unit2id[unit] = id
+            - **id2unit** (dict): id2unit[id] = unit
         """
         unit2id = dict()
         id2unit = dict()
@@ -115,39 +109,9 @@ class KsponSpeechVocabulary(Vocabulary):
                     unit2id[row[1]] = row[0]
                     id2unit[int(row[0])] = row[1]
 
+                unit2id['<blank>'] = len(unit2id)
+                id2unit[len(unit2id)] = '<blank>'
+
             return unit2id, id2unit
         except IOError:
             raise IOError("Character label file (csv format) doesn`t exist : {0}".format(label_path))
-
-
-class LibriSpeechVocabulary(Vocabulary):
-    def __init__(self, vocab_path, model_path):
-        super(KsponSpeechVocabulary, self).__init__()
-        self.pad_id = 0
-        self.sos_id = 1
-        self.eos_id = 2
-
-        self.vocab_path = vocab_path
-
-        self.sp = spm.SentencePieceProcessor()
-        self.sp.Load(model_path)
-
-    def __len__(self):
-        count = 0
-        with open(self.vocab_path, encoding='utf-8') as f:
-            for _ in f.readlines():
-                count += 1
-
-        return count
-
-    def label_to_string(self, labels):
-        if len(labels.shape) == 1:
-            return self.sp.DecodeIds([l for l in labels])
-
-        sentences = list()
-        for batch in labels:
-            sentence = str()
-            for label in batch:
-                sentence = self.sp.DecodeIds([l for l in label])
-            sentences.append(sentence)
-        return sentences
