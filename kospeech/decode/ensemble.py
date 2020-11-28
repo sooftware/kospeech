@@ -4,6 +4,8 @@
 # This source code is licensed under the Apache 2.0 License license found in the
 # LICENSE file in the root directory of this source tree.
 
+# Note! This code is not available !!
+
 import torch
 import torch.nn as nn
 
@@ -37,16 +39,16 @@ class BasicEnsemble(Ensemble):
         super(BasicEnsemble, self).__init__(models)
 
     def forward(self, inputs, input_lengths):
-        hypothesis = None
+        y_hats = None
 
         with torch.no_grad():
             for model in self.models:
-                if hypothesis is None:
-                    hypothesis = model(inputs, input_lengths, teacher_forcing_ratio=0.0)
+                if y_hats is None:
+                    y_hats = model(inputs, input_lengths, teacher_forcing_ratio=0.0)
                 else:
-                    hypothesis += model(inputs, input_lengths, teacher_forcing_ratio=0.0)
+                    y_hats += model(inputs, input_lengths, teacher_forcing_ratio=0.0)
 
-        return hypothesis
+        return y_hats
 
 
 class WeightedEnsemble(Ensemble):
@@ -66,7 +68,7 @@ class WeightedEnsemble(Ensemble):
         )
 
     def forward(self, inputs, input_lengths):
-        hypothesis, outputs = None, list()
+        y_hats, outputs = None, list()
         weights = torch.FloatTensor([1.] * self.num_models)
 
         # model`s parameters are fixed
@@ -77,9 +79,9 @@ class WeightedEnsemble(Ensemble):
         weights = self.meta_classifier(weights)
 
         for (output, weight) in zip(outputs, weights):
-            if hypothesis is None:
-                hypothesis = output * weight
+            if y_hats is None:
+                y_hats = output * weight
             else:
-                hypothesis += output * weight
+                y_hats += output * weight
 
-        return hypothesis
+        return y_hats

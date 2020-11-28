@@ -215,28 +215,30 @@ class SupervisedTrainer(object):
 
                 output = model(inputs=inputs, input_lengths=input_lengths,
                                targets=targets, teacher_forcing_ratio=teacher_forcing_ratio)
-                output = torch.stack(output, dim=1).to(self.device)
-                targets = targets[:, 1:]
 
-                hypothesis = output.max(-1)[1]
-                loss = self.criterion(output.contiguous().view(-1, output.size(-1)), targets.contiguous().view(-1))
+                output = torch.stack(output, dim=1).to(self.device)
+                loss = self.criterion(
+                    output.contiguous().view(-1, output.size(-1)), targets[:, 1:].contiguous().view(-1)
+                )
 
             elif self.architecture == 'transformer':
                 output = model(inputs, input_lengths, targets, return_attns=False)
-                hypothesis = output.max(-1)[1]
                 loss = self.criterion(output.contiguous().view(-1, output.size(-1)), targets.contiguous().view(-1))
 
             elif self.architecture == 'deepspeech2':
                 output, output_lengths = model(inputs, input_lengths)
-                output = output.transpose(0, 1)  # TxBxC
-                loss = self.criterion(output, targets, output_lengths, torch.LongTensor(target_lengths))
+                output = torch.stack(output, dim=1).to(self.device)
+                loss = self.criterion(
+                    output.transpose(0, 1), targets[:, 1:], output_lengths, torch.as_tensor(target_lengths)
+                )
 
             else:
                 raise ValueError("Unsupported architecture : {0}".format(self.architecture))
 
+            y_hats = output.max(-1)[1]
             epoch_loss_total += loss.item()
 
-            cer = self.metric(targets, hypothesis)
+            cer = self.metric(targets, y_hats)
             total_num += int(input_lengths.sum())
 
             self.optimizer.zero_grad()
@@ -267,7 +269,7 @@ class SupervisedTrainer(object):
             if timestep % self.checkpoint_every == 0:
                 Checkpoint(model, self.optimizer,  self.trainset_list, self.validset, epoch).save()
 
-            del inputs, input_lengths, targets, logit, loss, hypothesis
+            del inputs, input_lengths, targets, output, loss, y_hats
 
         Checkpoint(model, self.optimizer, self.trainset_list, self.validset, epoch).save()
 
@@ -302,18 +304,18 @@ class SupervisedTrainer(object):
             model.to(self.device)
 
             if self.architecture == 'las':
-                hypothesis = model.inference(inputs, input_lengths, self.device)
+                y_hats = model.inference(inputs, input_lengths, self.device)
 
             elif self.architecture == 'transformer':
-                hypothesis = model.inference(inputs, input_lengths)
+                y_hats = model.inference(inputs, input_lengths)
 
             elif self.architecture == 'deepspeech2':
-                hypothesis = model.inference(inputs, input_lengths, blank_label=len(self.vocab))
+                y_hats = model.inference(inputs, input_lengths, self.device)
 
             else:
                 raise ValueError("Unsupported architecture : {0}".format(self.architecture))
 
-            cer = self.metric(targets, hypothesis)
+            cer = self.metric(targets, y_hats)
 
         logger.info('validate() completed')
 

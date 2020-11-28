@@ -65,11 +65,11 @@ class GreedySearch(object):
             targets = targets.to(device)
 
             if architecture == 'las':
-                hypothesis = model.inference(inputs, input_lengths, device)
+                y_hats = model.inference(inputs, input_lengths, device)
             elif architecture == 'transformer':
-                hypothesis = model.inference(inputs, input_lengths)
+                y_hats = model.inference(inputs, input_lengths)
             elif architecture == 'deepspeech2':
-                hypothesis = model.inference(inputs, input_lengths, blank_label=len(self.vocab))
+                y_hats = model.inference(inputs, input_lengths, blank_label=len(self.vocab))
             else:
                 raise ValueError("Unsupported architecture : {0}".format(architecture))
 
@@ -78,10 +78,10 @@ class GreedySearch(object):
                     self.vocab.label_to_string(targets[idx])
                 )
                 self.predict_list.append(
-                    self.vocab.label_to_string(hypothesis[idx].cpu().detach().numpy())
+                    self.vocab.label_to_string(y_hats[idx].cpu().detach().numpy())
                 )
 
-            cer = self.metric(targets[:, 1:], hypothesis)
+            cer = self.metric(targets[:, 1:], y_hats)
             total_sent_num += targets.size(0)
 
             if timestep % print_every == 0:

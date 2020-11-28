@@ -10,47 +10,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
 from kospeech.models.extractor import DeepSpeech2Extractor
-from kospeech.models.modules import BaseRNN, Linear
-
-
-class BNReluRNN(BaseRNN):
-    """
-    Recurrent neural network with batch normalization layer & ReLU activation function.
-
-    Args:
-        input_size (int): size of input
-        hidden_dim (int): the number of features in the hidden state `h`
-        rnn_type (str, optional): type of RNN cell (default: gru)
-        bidirectional (bool, optional): if True, becomes a bidirectional encoder (defulat: True)
-        dropout_p (float, optional): dropout probability (default: 0.1)
-        device (torch.device): device - 'cuda' or 'cpu'
-
-    Inputs: inputs
-        - **inputs**: list of sequences, whose length is the batch size and within which each sequence is list of tokens
-    """
-    def __init__(
-            self,
-            input_size: int,                    # size of input
-            hidden_dim: int = 512,              # dimension of RNN`s hidden state
-            rnn_type: str = 'gru',              # type of RNN cell
-            bidirectional: bool = True,         # if True, becomes a bidirectional rnn
-            dropout_p: float = 0.1,             # dropout probability
-            device: str = 'cuda'                # device - 'cuda' or 'cpu'
-    ):
-        super(BNReluRNN, self).__init__(input_size=input_size, hidden_dim=hidden_dim, num_layers=1, rnn_type=rnn_type,
-                                        dropout_p=dropout_p, bidirectional=bidirectional, device=device)
-        self.batch_norm = nn.BatchNorm1d(input_size)
-
-    def forward(self, inputs: Tensor, input_lengths):
-        inputs = F.relu(self.batch_norm(inputs.transpose(1, 2)))
-        inputs = inputs.transpose(1, 2)
-
-        output = nn.utils.rnn.pack_padded_sequence(inputs, input_lengths)
-        output, hidden = self.rnn(output)
-        output, _ = nn.utils.rnn.pad_packed_sequence(output)
-        output = output.transpose(0, 1)
-
-        return output
+from kospeech.models.modules import Linear, BNReluRNN
 
 
 class DeepSpeech2(nn.Module):
@@ -94,7 +54,7 @@ class DeepSpeech2(nn.Module):
 
         input_size = int(math.floor(input_size + 2 * 20 - 41) / 2 + 1)
         input_size = int(math.floor(input_size + 2 * 10 - 21) / 2 + 1)
-        input_size <<= 6
+        input_size <<= 5
         rnn_output_size = rnn_hidden_dim << 1 if bidirectional else rnn_hidden_dim
 
         self.conv = DeepSpeech2Extractor(activation, mask_conv=True)
@@ -117,33 +77,35 @@ class DeepSpeech2(nn.Module):
 
     def forward(self, inputs: Tensor, input_lengths: Tensor):
         inputs = inputs.unsqueeze(1).permute(0, 1, 3, 2)
-        output, output_lengths = self.conv(inputs, input_lengths).to(self.device)
+        output, output_lengths = self.conv(inputs, input_lengths)
 
-        batch_size, seq_length, num_channels, hidden_dim = output.size()
-        output = output.contiguous().view(batch_size, seq_length, num_channels * hidden_dim)
+        batch_size, num_channels, hidden_dim, seq_length = output.size()
+        output = output.view(batch_size, num_channels * hidden_dim, seq_length).permute(2, 0, 1).contiguous()
 
         for rnn_layer in self.rnn_layers:
             rnn_layer.to(self.device)
-            output = rnn_layer(output)
+            output = rnn_layer(output, output_lengths)
 
+        output = output.transpose(0, 1)
         output = self.fc(output)
         output = F.log_softmax(output, dim=-1)
 
         return output, output_lengths
 
-    def inference(self, inputs: Tensor, input_lengths: Tensor, blank_label: int):
-        hypothesis = list()
+    def decode(self, output, blank_label: int) -> Tensor:
+        decode_results = list()
+        max_prob_indices = torch.argmax(output, dim=-1)
 
+        for i, max_prob_index in enumerate(max_prob_indices):
+            decode_result = list()
+            for j, label_index in enumerate(max_prob_index):
+                if label_index != blank_label:
+                    decode_result.append(label_index.item())
+            decode_results.append(decode_result)
+        return torch.as_tensor(decode_results)
+
+    def inference(self, inputs: Tensor, input_lengths: Tensor, device: str):
         with torch.no_grad():
             output = self.forward(inputs, input_lengths)
-            argmax_indices = torch.argmax(output, dim=-1)
-
-            for i, argmax_index in enumerate(argmax_indices):
-                decode_result = list()
-                for j, token_id in enumerate(argmax_index):
-                    if token_id != blank_label:
-                        if j != 0 and token_id == argmax_index[j - 1]:
-                            continue
-                        decode_result.append(token_id.item())
-                hypothesis.append(decode_result)
-        return hypothesis
+            logit = torch.stack(output, dim=1).to(device)
+            return logit.max(-1)[1]

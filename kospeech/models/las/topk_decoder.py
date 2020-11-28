@@ -30,8 +30,8 @@ class TopKDecoder(nn.Module):
         - **encoder_outputs** : tensor containing the encoded features of the input sequence
         - **k** : size of beam
 
-    Returns: hypothesis
-        - **hypothesis** : predicted y values (y_hat) by the model
+    Returns: y_hats
+        - **y_hats** : predicted y values (y_hat) by the model
     """
     def __init__(self, decoder: nn.Module, batch_size: int) -> None:
         super(TopKDecoder, self).__init__()
@@ -152,7 +152,7 @@ class TopKDecoder(nn.Module):
         return eos_cnt
 
     def get_hypothesis(self):
-        hypothesis = list()
+        y_hats = list()
 
         for batch_idx, batch in enumerate(self.finished):
             for idx, beam in enumerate(batch):
@@ -163,15 +163,15 @@ class TopKDecoder(nn.Module):
             if len(batch) == 0:
                 prob_batch = self.cumulative_ps[batch_idx].to(self.device)
                 top_beam_idx = int(prob_batch.topk(1)[1])
-                hypothesis.append(self.ongoing_beams[batch_idx, top_beam_idx])
+                y_hats.append(self.ongoing_beams[batch_idx, top_beam_idx])
 
             # bring highest probability sentence
             else:
                 top_beam_idx = int(torch.FloatTensor(self.finished_ps[batch_idx]).topk(1)[1])
-                hypothesis.append(self.finished[batch_idx][top_beam_idx])
+                y_hats.append(self.finished[batch_idx][top_beam_idx])
 
-        hypothesis = self.fill_sequence(hypothesis).to(self.device)
-        return hypothesis
+        y_hats = self.fill_sequence(y_hats).to(self.device)
+        return y_hats
 
     def is_all_finished(self, k):
         for done in self.finished:
@@ -180,17 +180,17 @@ class TopKDecoder(nn.Module):
 
         return True
 
-    def fill_sequence(self, hypothesis):
-        batch_size = len(hypothesis)
+    def fill_sequence(self, y_hats):
+        batch_size = len(y_hats)
         max_length = -1
 
-        for y_hat in hypothesis:
+        for y_hat in y_hats:
             if len(y_hat) > max_length:
                 max_length = len(y_hat)
 
         matched = torch.zeros((batch_size, max_length), dtype=torch.long).to(self.device)
 
-        for batch_idx, y_hat in enumerate(hypothesis):
+        for batch_idx, y_hat in enumerate(y_hats):
             matched[batch_idx, :len(y_hat)] = y_hat
             matched[batch_idx, len(y_hat):] = int(self.pad_id)
 

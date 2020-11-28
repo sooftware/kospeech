@@ -20,9 +20,9 @@ class ErrorRate(object):
         self.total_length = 0.0
         self.vocab = vocab
 
-    def __call__(self, targets, hypothesis):
+    def __call__(self, targets, y_hats):
         """ Calculating character error rate """
-        dist, length = self._get_distance(targets, hypothesis)
+        dist, length = self._get_distance(targets, y_hats)
         self.total_dist += dist
         self.total_length += length
         return self.total_dist / self.total_length
