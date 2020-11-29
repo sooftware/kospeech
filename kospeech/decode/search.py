@@ -7,10 +7,10 @@
 import pandas as pd
 import torch.nn as nn
 from queue import Queue
-from kospeech import (
+from kospeech.utils import logger
+from kospeech.metrics import (
     CharacterErrorRate,
-    WordErrorRate,
-    logger
+    WordErrorRate
 )
 from kospeech.models import (
     DeepSpeech2,

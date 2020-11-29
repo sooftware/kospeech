@@ -19,12 +19,16 @@ from kospeech.models import (
     Linear,
     LayerNorm
 )
-from kospeech.models.transformer import (
+from kospeech.models.transformer.mask import (
     get_pad_mask,
     get_attn_pad_mask,
-    get_decoder_self_attn_mask,
+    get_decoder_self_attn_mask
+)
+from kospeech.models.transformer.embeddings import (
     Embedding,
-    PositionalEncoding,
+    PositionalEncoding
+)
+from kospeech.models.transformer.layers import (
     SpeechTransformerEncoderLayer,
     SpeechTransformerDecoderLayer
 )

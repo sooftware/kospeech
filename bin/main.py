@@ -16,6 +16,8 @@ from kospeech.data.data_loader import split_dataset
 from kospeech.criterion import LabelSmoothedCrossEntropyLoss
 from kospeech.optim.lr_scheduler import TriStageLRScheduler
 from kospeech.trainer import SupervisedTrainer
+from kospeech.utils import check_envirionment
+from kospeech.model_builder import build_model
 from kospeech.vocabs import (
     KsponSpeechVocabulary,
     LibriSpeechVocabulary
@@ -25,13 +27,11 @@ from kospeech.optim import (
     RAdam,
     AdamP
 )
-from kospeech import (
+from kospeech.opts import (
     print_opts,
     build_train_opts,
     build_model_opts,
-    build_preprocess_opts,
-    check_envirionment,
-    build_model
+    build_preprocess_opts
 )
 
 

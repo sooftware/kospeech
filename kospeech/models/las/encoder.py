@@ -9,10 +9,10 @@ import torch
 import torch.nn as nn
 from torch import Tensor
 from typing import Tuple
-from kospeech.models import (
+from kospeech.models.modules import BaseRNN
+from kospeech.models.extractor import (
     VGGExtractor,
-    DeepSpeech2Extractor,
-    BaseRNN
+    DeepSpeech2Extractor
 )
 
 

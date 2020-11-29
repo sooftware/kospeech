@@ -6,7 +6,7 @@
 
 import torch.nn as nn
 from torch import Tensor
-from kospeech.models import (
+from kospeech.models.modules import (
     Linear,
     LayerNorm
 )

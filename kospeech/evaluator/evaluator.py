@@ -6,10 +6,8 @@
 
 import queue
 import torch
-from kospeech import (
-    AudioDataLoader,
-    logger
-)
+from kospeech.utils import logger
+from kospeech.data import AudioDataLoader
 from kospeech.decode.search import (
     GreedySearch,
     BeamSearch

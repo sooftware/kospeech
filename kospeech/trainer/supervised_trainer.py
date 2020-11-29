@@ -7,10 +7,10 @@ import pandas as pd
 from typing import Tuple
 from kospeech.optim import Optimizer
 from kospeech.vocabs import Vocabulary
-from kospeech import (
-    Checkpoint,
-    CharacterErrorRate,
-    logger,
+from kospeech.checkpoint import Checkpoint
+from kospeech.metrics import CharacterErrorRate
+from kospeech.utils import logger
+from kospeech.data import (
     MultiDataLoader,
     AudioDataLoader,
     SpectrogramDataset

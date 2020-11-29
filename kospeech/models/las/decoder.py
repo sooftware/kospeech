@@ -11,15 +11,15 @@ import torch.nn.functional as F
 import numpy as np
 from torch import Tensor, LongTensor
 from typing import Optional, Any, Tuple
-from kospeech.models import (
+from kospeech.models.transformer.sublayers import AddNorm
+from kospeech.models.modules import Linear, BaseRNN
+from kospeech.models.attention import (
     LocationAwareAttention,
     MultiHeadAttention,
     AdditiveAttention,
-    ScaledDotProductAttention,
-    Linear,
-    BaseRNN,
-    AddNorm
+    ScaledDotProductAttention
 )
+
 
 
 class Speller(BaseRNN):

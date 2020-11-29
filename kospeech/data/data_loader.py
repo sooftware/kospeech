@@ -11,11 +11,9 @@ import torch
 import random
 from argparse import ArgumentParser
 from torch.utils.data import Dataset
-from kospeech import (
-    load_dataset,
-    logger,
-    SpectrogramParser
-)
+from kospeech.data import load_dataset
+from kospeech.utils import logger
+from kospeech.data import SpectrogramParser
 
 
 class SpectrogramDataset(Dataset, SpectrogramParser):

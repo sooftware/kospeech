@@ -4,9 +4,6 @@
 # This source code is licensed under the Apache 2.0 License license found in the
 # LICENSE file in the root directory of this source tree.
 
-from kospeech.vocabs.ksponspeech import KsponSpeechVocabulary
-from kospeech.vocabs.librispeech import LibriSpeechVocabulary
-
 
 class Vocabulary(object):
     """
@@ -21,3 +18,7 @@ class Vocabulary(object):
 
     def label_to_string(self, labels):
         raise NotImplementedError
+
+
+from kospeech.vocabs.ksponspeech import KsponSpeechVocabulary
+from kospeech.vocabs.librispeech import LibriSpeechVocabulary
