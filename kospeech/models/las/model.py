@@ -7,7 +7,7 @@
 import torch
 import torch.nn as nn
 from torch import Tensor
-from kospeech.models.las.topk_decoder import TopKDecoder
+from kospeech.models import TopKDecoder
 from typing import Optional, Any
 
 

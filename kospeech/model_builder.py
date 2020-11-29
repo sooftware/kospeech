@@ -8,12 +8,14 @@ import torch
 import torch.nn as nn
 from astropy.modeling import ParameterError
 from kospeech.decode.ensemble import BasicEnsemble, WeightedEnsemble
-from kospeech.models.deepspeech2.model import DeepSpeech2
 from kospeech.models.modules import BaseRNN
-from kospeech.models.las.model import ListenAttendSpell
-from kospeech.models.las.encoder import Listener
-from kospeech.models.las.decoder import Speller
-from kospeech.models.transformer.model import SpeechTransformer
+from kospeech.models import (
+    ListenAttendSpell,
+    Listener,
+    Speller,
+    DeepSpeech2,
+    SpeechTransformer
+)
 
 
 def build_model(opt, vocab, device):

@@ -7,12 +7,17 @@
 import pandas as pd
 import torch.nn as nn
 from queue import Queue
-from kospeech.metrics import CharacterErrorRate, WordErrorRate
-from kospeech.models.deepspeech2.model import DeepSpeech2
-from kospeech.models.las.topk_decoder import TopKDecoder
-from kospeech.models.las.model import ListenAttendSpell
-from kospeech.models.transformer.model import SpeechTransformer
-from kospeech.utils import logger
+from kospeech import (
+    CharacterErrorRate,
+    WordErrorRate,
+    logger
+)
+from kospeech.models import (
+    DeepSpeech2,
+    ListenAttendSpell,
+    TopKDecoder,
+    SpeechTransformer
+)
 
 
 class GreedySearch(object):

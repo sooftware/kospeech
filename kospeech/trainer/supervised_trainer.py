@@ -5,12 +5,12 @@ import torch.nn as nn
 import queue
 import pandas as pd
 from typing import Tuple
-from kospeech.checkpoint.checkpoint import Checkpoint
-from kospeech.metrics import CharacterErrorRate
 from kospeech.optim import Optimizer
-from kospeech.utils import logger
 from kospeech.vocabs import Vocabulary
-from kospeech.data.data_loader import (
+from kospeech import (
+    Checkpoint,
+    CharacterErrorRate,
+    logger,
     MultiDataLoader,
     AudioDataLoader,
     SpectrogramDataset

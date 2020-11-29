@@ -44,7 +44,7 @@ class BaseRNN(nn.Module):
             rnn_type: str = 'lstm',                # number of RNN layers
             dropout_p: float = 0.3,                # dropout probability
             bidirectional: bool = True,            # if True, becomes a bidirectional rnn
-            device: str = 'cuda'                   # device - 'cuda' or 'cpu'
+            device: torch.device = 'cuda'          # device - 'cuda' or 'cpu'
     ) -> None:
         super(BaseRNN, self).__init__()
         rnn_cell = self.supported_rnns[rnn_type]
@@ -78,7 +78,7 @@ class BNReluRNN(BaseRNN):
             rnn_type: str = 'gru',              # type of RNN cell
             bidirectional: bool = True,         # if True, becomes a bidirectional rnn
             dropout_p: float = 0.1,             # dropout probability
-            device: str = 'cuda'                # device - 'cuda' or 'cpu'
+            device: torch.device = 'cuda'       # device - 'cuda' or 'cpu'
     ):
         super(BNReluRNN, self).__init__(input_size=input_size, hidden_dim=hidden_dim, num_layers=1, rnn_type=rnn_type,
                                         dropout_p=dropout_p, bidirectional=bidirectional, device=device)

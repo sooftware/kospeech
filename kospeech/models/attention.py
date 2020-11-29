@@ -9,7 +9,7 @@ import numpy as np
 import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
-from kospeech.models.modules import Linear
+from kospeech.models import Linear
 from typing import Tuple, Optional, Any
 
 

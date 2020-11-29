@@ -5,6 +5,8 @@
 # LICENSE file in the root directory of this source tree.
 
 import torch
+from kospeech.optim.adamp import AdamP
+from kospeech.optim.radam import RAdam
 
 
 class Optimizer(object):

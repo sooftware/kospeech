@@ -11,23 +11,28 @@ import warnings
 import torch
 import torch.nn as nn
 from torch import optim
-from kospeech.optim.radam import RAdam
 sys.path.append('..')
-from kospeech.vocabs.ksponspeech import KsponSpeechVocabulary
-from kospeech.vocabs.librispeech import LibriSpeechVocabulary
 from kospeech.data.data_loader import split_dataset
-from kospeech.criterion.label_smoothed_cross_entropy import LabelSmoothedCrossEntropyLoss
-from kospeech.optim.lr_scheduler.tri_stage_lr_scheduler import TriStageLRScheduler
-from kospeech.optim import Optimizer
-from kospeech.trainer.supervised_trainer import SupervisedTrainer
-from kospeech.model_builder import build_model
-from kospeech.opts import (
+from kospeech.criterion import LabelSmoothedCrossEntropyLoss
+from kospeech.optim.lr_scheduler import TriStageLRScheduler
+from kospeech.trainer import SupervisedTrainer
+from kospeech.vocabs import (
+    KsponSpeechVocabulary,
+    LibriSpeechVocabulary
+)
+from kospeech.optim import (
+    Optimizer,
+    RAdam,
+    AdamP
+)
+from kospeech import (
     print_opts,
     build_train_opts,
     build_model_opts,
-    build_preprocess_opts
+    build_preprocess_opts,
+    check_envirionment,
+    build_model
 )
-from kospeech.utils import check_envirionment
 
 
 def train(opt):
@@ -60,6 +65,8 @@ def train(opt):
             optimizer = optim.Adam(model.module.parameters(), lr=opt.init_lr, weight_decay=opt.weight_decay)
         elif opt.optimizer.lower() == 'radam':
             optimizer = RAdam(model.module.parameters(), lr=opt.init_lr, weight_decay=opt.weight_decay)
+        elif opt.optimizer.lower() == 'adamp':
+            optimizer = AdamP(model.module.parameters(), lr=opt.init_lr, weight_decay=opt.weight_decay)
         elif opt.optimizer.lower() == 'adadelta':
             optimizer = optim.Adadelta(model.module.parameters(), lr=opt.init_lr, weight_decay=opt.weight_decay)
         elif opt.optimizer.lower() == 'adagrad':

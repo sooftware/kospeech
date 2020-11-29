@@ -4,9 +4,6 @@
 # This source code is licensed under the Apache 2.0 License license found in the
 # LICENSE file in the root directory of this source tree.
 
-import csv
-from tqdm import trange
-
 
 def load_dataset(transcripts_path):
     """

@@ -5,10 +5,11 @@ from torch.optim.optimizer import Optimizer
 
 class RAdam(Optimizer):
     """
-    Copyright (c) LiyuanLucasLiu
+    Paper: "On the Variance of the Adaptive Learning Rate and Beyond"
 
-    Copied from https://github.com/LiyuanLucasLiu/RAdam
-    - Apache 2.0 License
+    Refer to https://github.com/LiyuanLucasLiu/RAdam
+    Copyright (c) LiyuanLucasLiu
+    Apache 2.0 License
     """
     def __init__(self, params, lr=1e-3, betas=(0.9, 0.999), eps=1e-8, weight_decay=0, degenerated_to_sgd=True):
         if lr < 0.0:

@@ -10,8 +10,11 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
 from typing import Tuple
-from kospeech.models.extractor import DeepSpeech2Extractor
-from kospeech.models.modules import Linear, BNReluRNN
+from kospeech.models import (
+    DeepSpeech2Extractor,
+    Linear,
+    BNReluRNN
+)
 
 
 class DeepSpeech2(nn.Module):
@@ -47,7 +50,7 @@ class DeepSpeech2(nn.Module):
             dropout_p: float = 0.1,                 # dropout probability
             bidirectional: bool = True,             # if True, becomes a bidirectional rnn
             activation: str = 'hardtanh',           # type of activation function
-            device: str = 'cuda'                    # device - 'cuda' or 'cpu'
+            device: torch.device = 'cuda'           # device - 'cuda' or 'cpu'
     ):
         super(DeepSpeech2, self).__init__()
         self.rnn_layers = list()

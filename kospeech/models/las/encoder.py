@@ -9,8 +9,11 @@ import torch
 import torch.nn as nn
 from torch import Tensor
 from typing import Tuple
-from kospeech.models.extractor import VGGExtractor, DeepSpeech2Extractor
-from kospeech.models.modules import BaseRNN
+from kospeech.models import (
+    VGGExtractor,
+    DeepSpeech2Extractor,
+    BaseRNN
+)
 
 
 class Listener(BaseRNN):
@@ -42,7 +45,7 @@ class Listener(BaseRNN):
             self,
             input_size: int,                       # size of input
             hidden_dim: int = 512,                 # dimension of RNN`s hidden state
-            device: str = 'cuda',                  # device - 'cuda' or 'cpu'
+            device: torch.device = 'cuda',         # device - 'cuda' or 'cpu'
             dropout_p: float = 0.3,                # dropout probability
             num_layers: int = 3,                   # number of RNN layers
             bidirectional: bool = True,            # if True, becomes a bidirectional encoder
@@ -55,14 +58,18 @@ class Listener(BaseRNN):
         self.extractor = extractor.lower()
         if self.extractor == 'vgg':
             input_size = (input_size - 1) << 5 if input_size % 2 else input_size << 5
-            super(Listener, self).__init__(input_size, hidden_dim, num_layers, rnn_type, dropout_p, bidirectional, device)
+            super(Listener, self).__init__(
+                input_size, hidden_dim, num_layers, rnn_type, dropout_p, bidirectional, device
+            )
             self.conv = VGGExtractor(activation, mask_conv)
 
         elif self.extractor == 'ds2':
             input_size = int(math.floor(input_size + 2 * 20 - 41) / 2 + 1)
             input_size = int(math.floor(input_size + 2 * 10 - 21) / 2 + 1)
             input_size <<= 5
-            super(Listener, self).__init__(input_size, hidden_dim, num_layers, rnn_type, dropout_p, bidirectional, device)
+            super(Listener, self).__init__(
+                input_size, hidden_dim, num_layers, rnn_type, dropout_p, bidirectional, device
+            )
             self.conv = DeepSpeech2Extractor(activation, mask_conv)
 
         else:

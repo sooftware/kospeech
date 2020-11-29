@@ -9,16 +9,16 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
-from kospeech.models.modules import Linear
-from kospeech.models.modules import BaseRNN
-from kospeech.models.transformer.sublayers import AddNorm
 from torch import Tensor, LongTensor
 from typing import Optional, Any, Tuple
-from kospeech.models.attention import (
+from kospeech.models import (
     LocationAwareAttention,
     MultiHeadAttention,
     AdditiveAttention,
-    ScaledDotProductAttention
+    ScaledDotProductAttention,
+    Linear,
+    BaseRNN,
+    AddNorm
 )
 
 

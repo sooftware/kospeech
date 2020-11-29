@@ -1,0 +1,1 @@
+from kospeech.criterion.label_smoothed_cross_entropy import LabelSmoothedCrossEntropyLoss

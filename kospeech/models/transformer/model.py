@@ -15,20 +15,16 @@ import torch
 import torch.nn as nn
 from torch import Tensor
 from typing import Optional, Any
-from kospeech.models.modules import (
+from kospeech.models import (
     Linear,
     LayerNorm
 )
-from kospeech.models.transformer.mask import (
+from kospeech.models.transformer import (
     get_pad_mask,
     get_attn_pad_mask,
-    get_decoder_self_attn_mask
-)
-from kospeech.models.transformer.embeddings import (
+    get_decoder_self_attn_mask,
     Embedding,
-    PositionalEncoding
-)
-from kospeech.models.transformer.layers import (
+    PositionalEncoding,
     SpeechTransformerEncoderLayer,
     SpeechTransformerDecoderLayer
 )
