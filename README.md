@@ -70,6 +70,11 @@ You can choose attention mechanism from (`location-aware`, `multi-head`, `additi
 The Transformer model is currently implemented, but There is a bug, so I can't learn at the moment.    
 We will fix as soon as possible.   
   
+### Deep Speech 2  
+  
+The Deep Speech 2 model can be trained with several options. Depending on the conditions, the loss may explode in the middle.  
+We don't recommend too big a vocab size.  
+  
 ### Various Options   
   
 We support various options for training. More details please check [here](https://sooftware.github.io/KoSpeech/notes/opts.html).  
