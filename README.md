@@ -72,7 +72,8 @@ We will fix as soon as possible.
   
 ### Deep Speech 2  
   
-The Deep Speech 2 model can be trained with several options. Depending on the conditions, the loss may explode in the middle.  
+The Deep Speech 2 model can be trained with several options.   
+Depending on the conditions, the loss may explode in the middle.  
 We don't recommend too big a vocab size.  
   
 ### Various Options   
