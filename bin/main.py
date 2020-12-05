@@ -121,7 +121,8 @@ def train(opt):
         device=device, teacher_forcing_step=opt.teacher_forcing_step,
         min_teacher_forcing_ratio=opt.min_teacher_forcing_ratio, print_every=opt.print_every,
         save_result_every=opt.save_result_every, checkpoint_every=opt.checkpoint_every,
-        architecture=opt.architecture, vocab=vocab
+        architecture=opt.architecture, vocab=vocab,
+        cross_entropy_weight=opt.cross_entropy_weight, ctc_weight=opt.ctc_weight
     )
     model = trainer.train(
         model=model,

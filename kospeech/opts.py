@@ -96,7 +96,7 @@ def build_train_opts(parser):
     group.add_argument('--cross_entropy_weight', '-cross_entropy_weight',
                        type=float, default=0.5,
                        help='weight of cross entropy loss')
-    group.add_argument('--ctc_weight', '-cross_entropy_weight',
+    group.add_argument('--ctc_weight', '-ctc_weight',
                        type=float, default=0.5,
                        help='weight of ctc loss')
     group.add_argument('--audio_extension', '-audio_extension',
