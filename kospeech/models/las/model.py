@@ -56,7 +56,7 @@ class ListenAttendSpell(nn.Module):
             targets: Optional[Tensor] = None,            # tensor of sequences whose contains target variables
             target_lengths: Optional[Tensor] = None,     # tensor of sequences whose contains lengths of targets
             teacher_forcing_ratio: float = 1.0           # the probability that teacher forcing will be used
-    ) -> Tuple[Tensor, float]:
+    ) -> Tuple[dict, float]:
         ctc_loss = None
         encoder_outputs, ctc_logits = self.encoder(inputs, input_lengths)
 
