@@ -91,7 +91,7 @@ def build_train_opts(parser):
                        type=str, default='adam',
                        help='optimizer: Adam, RAdam, Adadelta, Adagrad, AdamP')
     group.add_argument('--joint_learning', '-joint_learning',
-                       type=bool, default=False,
+                       action='store_true', default=False,
                        help='flag indication whether to use joint learning or not')
     group.add_argument('--cross_entropy_weight', '-cross_entropy_weight',
                        type=float, default=0.5,
