@@ -130,7 +130,8 @@ def build_las(input_size, opt, vocab, device):
             activation=opt.activation,
             rnn_type=opt.rnn_type,
             device=device,
-            mask_conv=opt.mask_conv
+            mask_conv=opt.mask_conv,
+            joint_learning=opt.joint_learning
         ),
         build_speller(
             num_classes=len(vocab),
@@ -165,7 +166,8 @@ def build_listener(
         extractor: str = 'vgg',
         activation: str = 'hardtanh',
         device: str = 'cuda',
-        mask_conv: bool = False
+        mask_conv: bool = False,
+        joint_learning: bool = False
 ) -> Listener:
     """ Various encoder dispatcher function. """
     if dropout_p < 0.0:
@@ -192,7 +194,8 @@ def build_listener(
         rnn_type=rnn_type,
         extractor=extractor,
         device=device,
-        activation=activation
+        activation=activation,
+        joint_learning=joint_learning
     )
 
 

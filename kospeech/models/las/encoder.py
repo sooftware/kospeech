@@ -82,10 +82,10 @@ class Listener(BaseRNN):
             raise ValueError("Unsupported Extractor : {0}".format(extractor))
 
         if self.joint_learning:
+            self.joint_batchnorm1d = nn.BatchNorm1d(self.hidden_dim << 1)
             self.generator = nn.Sequential(
-                nn.BatchNorm1d(self.hidden_size),
                 nn.Dropout(dropout_p),
-                Linear(self.hidden_size, self.num_classes, bias=False)
+                Linear(self.hidden_dim << 1, num_classes, bias=False)
             )
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
@@ -116,6 +116,7 @@ class Listener(BaseRNN):
             output, hidden = self.rnn(conv_feat)
 
         if self.joint_learning:
-            ctc_logits = self.generator(output) if self.joint_learning else None
+            ctc_logits = self.joint_batchnorm1d(output.transpose(1, 2))
+            ctc_logits = self.generator(ctc_logits.transpose(1, 2))
 
         return output, ctc_logits

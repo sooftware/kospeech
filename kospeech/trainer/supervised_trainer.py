@@ -184,6 +184,8 @@ class SupervisedTrainer(object):
             - **loss** (float): loss of current epoch
             - **cer** (float): character error rate of current epoch
         """
+        ctc_loss = None
+        cross_entropy_loss = None
         cer = 1.0
         epoch_loss_total = 0.
         total_num = 0
@@ -236,6 +238,7 @@ class SupervisedTrainer(object):
                     output.contiguous().view(-1, output.size(-1)), targets[:, 1:].contiguous().view(-1)
                 )
                 if ctc_loss is not None:
+                    ctc_loss = ctc_loss.sum()
                     loss = cross_entropy_loss * self.cross_entropy_weight + ctc_loss * self.ctc_weight
                 else:
                     loss = cross_entropy_loss
@@ -252,13 +255,17 @@ class SupervisedTrainer(object):
                 raise ValueError("Unsupported architecture : {0}".format(self.architecture))
 
             y_hats = output.max(-1)[1]
-            epoch_loss_total += loss.item()
-
             cer = self.metric(targets, y_hats)
             total_num += int(input_lengths.sum())
 
             loss.backward()
             self.optimizer.step(model)
+
+            if ctc_loss is not None:
+                epoch_loss_total += cross_entropy_loss.item()
+                epoch_loss_total += ctc_loss.sum().item()
+            else:
+                epoch_loss_total += loss.item()
 
             timestep += 1
             torch.cuda.empty_cache()

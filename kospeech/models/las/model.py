@@ -60,12 +60,12 @@ class ListenAttendSpell(nn.Module):
         ctc_loss = None
         encoder_outputs, ctc_logits = self.encoder(inputs, input_lengths)
 
-        if self.use_ctc_loss and targets is not None and target_lengths is not None:
+        if self.joint_learning and targets is not None and target_lengths is not None:
             ctc_loss = self.calculate_ctc_loss(ctc_logits, targets, target_lengths)
 
         if isinstance(self.decoder, TopKDecoder):
-            return self.decoder(targets, encoder_outputs['encoder_outputs'])
-        decoder_outputs = self.decoder(targets, encoder_outputs['encoder_outputs'], teacher_forcing_ratio)
+            return self.decoder(targets, encoder_outputs)
+        decoder_outputs = self.decoder(targets, encoder_outputs, teacher_forcing_ratio)
 
         return decoder_outputs, ctc_loss
 
