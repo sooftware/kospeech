@@ -231,6 +231,8 @@ We follow [PEP-8](https://www.python.org/dev/peps/pep-0008/) for code style. Esp
 *[clovaai/ClovaCall](https://github.com/clovaai/ClovaCall)*  
   
 *[LiyuanLucasLiu/RAdam](https://github.com/LiyuanLucasLiu/RAdam)*
+  
+*[AppleHolic/2020 AI Challenge - SpeechRecognition](https://github.com/AppleHolic/2020AIChallengeSpeechRecognition)*
    
 ### License
 This project is licensed under the Apache-2.0 LICENSE - see the [LICENSE.md](https://github.com/sooftware/KoSpeech/blob/master/LICENSE) file for details
