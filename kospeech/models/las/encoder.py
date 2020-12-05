@@ -40,22 +40,28 @@ class Listener(BaseRNN):
         - **output**: tensor containing the encoded features of the input sequence
         - **hidden**: variable containing the features in the hidden state h
     """
+    KEY_ENCODER_OUTPUTS = 'encoder_outputs'
+    KEY_CTC_LOGIT = 'ctc_logit'
 
     def __init__(
             self,
             input_size: int,                       # size of input
+            num_classes: int,                      # number of class
             hidden_dim: int = 512,                 # dimension of RNN`s hidden state
-            device: torch.device = 'cuda',         # device - 'cuda' or 'cpu'
+            device: str = 'cuda',                  # device - 'cuda' or 'cpu'
             dropout_p: float = 0.3,                # dropout probability
             num_layers: int = 3,                   # number of RNN layers
             bidirectional: bool = True,            # if True, becomes a bidirectional encoder
             rnn_type: str = 'lstm',                # type of RNN cell
             extractor: str = 'vgg',                # type of CNN extractor
             activation: str = 'hardtanh',          # type of activation function
-            mask_conv: bool = False                # flag indication whether apply mask convolution or not
+            mask_conv: bool = False,               # flag indication whether apply mask convolution or not
+            joint_learning: bool = False           # Use CTC Loss & Cross Entropy Joint Learning
     ) -> None:
         self.mask_conv = mask_conv
         self.extractor = extractor.lower()
+        self.joint_learning = joint_learning
+
         if self.extractor == 'vgg':
             input_size = (input_size - 1) << 5 if input_size % 2 else input_size << 5
             super(Listener, self).__init__(
@@ -75,7 +81,16 @@ class Listener(BaseRNN):
         else:
             raise ValueError("Unsupported Extractor : {0}".format(extractor))
 
+        if self.joint_learning:
+            self.generator = nn.Sequential(
+                nn.BatchNorm1d(self.hidden_size),
+                nn.Dropout(dropout_p),
+                nn.Linear(self.hidden_size, self.num_classes, bias=False)
+            )
+
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
+        ctc_logits = None
+
         if self.mask_conv:
             inputs = inputs.unsqueeze(1).permute(0, 1, 3, 2)
             conv_feat, seq_lengths = self.conv(inputs, input_lengths)
@@ -100,4 +115,7 @@ class Listener(BaseRNN):
 
             output, hidden = self.rnn(conv_feat)
 
-        return output, hidden
+        if self.joint_learning:
+            ctc_logits = self.generator(output) if self.joint_learning else None
+
+        return output, ctc_logits

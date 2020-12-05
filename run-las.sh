@@ -49,6 +49,8 @@ FREQ_MASK_NUM=2
 SAVE_RESULT_EVERY=1000
 CHECKPOINT_EVERY=5000
 PRINT_EVERY=10
+CROSS_ENTROPY_WEIGHT=0.5
+CTC_WEIGHT=0.5
 MODE='train'
 
 # shellcheck disable=SC2164
@@ -70,4 +72,5 @@ python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epoch
 --max_grad_norm $MAX_GRAD_NORM --warmup_steps $WARMUP_STEPS --max_len $MAX_LEN \
 --weight_decay $WEIGHT_DECAY --reduction $REDUCTION \
 --attn_mechanism $ATTN_MECHANISM --teacher_forcing_step $TEACHER_FORCING_STEP \
---min_teacher_forcing_ratio $MIN_TEACHER_FORCING_RATIO --extractor $EXTRACTOR --activation $ACTIVATION
+--min_teacher_forcing_ratio $MIN_TEACHER_FORCING_RATIO --extractor $EXTRACTOR --activation $ACTIVATION \
+--cross_entropy_weight $CROSS_ENTROPY_WEIGHT --ctc_loss $CTC_WEIGHT

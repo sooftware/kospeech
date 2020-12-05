@@ -121,6 +121,7 @@ def build_las(input_size, opt, vocab, device):
     model = ListenAttendSpell(
         build_listener(
             input_size=input_size,
+            num_classes=len(vocab),
             hidden_dim=opt.hidden_dim,
             dropout_p=opt.dropout,
             num_layers=opt.num_encoder_layers,
@@ -144,7 +145,9 @@ def build_las(input_size, opt, vocab, device):
             num_heads=opt.num_heads,
             attn_mechanism=opt.attn_mechanism,
             device=device
-        )
+        ),
+        opt.joint_learning,
+        vocab.blank_id
     )
     model.flatten_parameters()
 
@@ -153,6 +156,7 @@ def build_las(input_size, opt, vocab, device):
 
 def build_listener(
         input_size: int = 80,
+        num_classes: int = None,
         hidden_dim: int = 512,
         dropout_p: float = 0.2,
         num_layers: int = 3,
@@ -179,6 +183,7 @@ def build_listener(
 
     return Listener(
         input_size=input_size,
+        num_classes=num_classes,
         hidden_dim=hidden_dim,
         dropout_p=dropout_p,
         num_layers=num_layers,

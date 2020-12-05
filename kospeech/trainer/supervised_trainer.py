@@ -53,7 +53,9 @@ class SupervisedTrainer(object):
             teacher_forcing_step: float = 0.2,             # step of teacher forcing ratio decrease per epoch.
             min_teacher_forcing_ratio: float = 0.8,        # minimum value of teacher forcing ratio
             architecture: str = 'las',                     # architecture to train - las, transformer
-            vocab: Vocabulary = None                       # vocabulary object
+            vocab: Vocabulary = None,                      # vocabulary object
+            cross_entropy_weight: float = 0.5,             # weight of cross entropy loss
+            ctc_weight: float = 0.5                        # weight of ctc loss
     ) -> None:
         self.num_workers = num_workers
         self.optimizer = optimizer
@@ -69,6 +71,8 @@ class SupervisedTrainer(object):
         self.metric = CharacterErrorRate(vocab)
         self.architecture = architecture.lower()
         self.vocab = vocab
+        self.cross_entropy_weight = cross_entropy_weight
+        self.ctc_weight = ctc_weight
 
     def train(
         self,
@@ -219,13 +223,22 @@ class SupervisedTrainer(object):
                 else:
                     model.flatten_parameters()
 
-                output = model(inputs=inputs, input_lengths=input_lengths,
-                               targets=targets, teacher_forcing_ratio=teacher_forcing_ratio)
+                output, ctc_loss = model(
+                    inputs=inputs,
+                    input_lengths=input_lengths,
+                    targets=targets,
+                    target_lengths=target_lengths,
+                    teacher_forcing_ratio=teacher_forcing_ratio
+                )
 
-                output = torch.stack(output, dim=1).to(self.device)
-                loss = self.criterion(
+                output = torch.stack(output['decoder_outputs'], dim=1).to(self.device)
+                cross_entropy_loss = self.criterion(
                     output.contiguous().view(-1, output.size(-1)), targets[:, 1:].contiguous().view(-1)
                 )
+                if ctc_loss is not None:
+                    loss = cross_entropy_loss * self.cross_entropy_weight + ctc_loss * self.ctc_weight
+                else:
+                    loss = cross_entropy_loss
 
             elif self.architecture == 'transformer':
                 output = model(inputs, input_lengths, targets, return_attns=False)

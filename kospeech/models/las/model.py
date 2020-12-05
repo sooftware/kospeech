@@ -8,7 +8,7 @@ import torch
 import torch.nn as nn
 from torch import Tensor
 from kospeech.models import TopKDecoder
-from typing import Optional, Any
+from typing import Optional, Tuple
 
 
 class ListenAttendSpell(nn.Module):
@@ -33,34 +33,55 @@ class ListenAttendSpell(nn.Module):
         - **output** (seq_len, batch_size, num_classes): list of tensors containing
           the outputs of the decoding function.
     """
-    def __init__(self, encoder: nn.Module, decoder: nn.Module) -> None:
+    def __init__(
+            self,
+            encoder: nn.Module,
+            decoder: nn.Module,
+            joint_learning: bool = False,
+            blank_id: int = None
+    ) -> None:
         super(ListenAttendSpell, self).__init__()
         self.encoder = encoder
         self.decoder = decoder
 
+        self.joint_learning = joint_learning
+        if self.joint_learning:
+            assert blank_id is not None, "If use joint learning, blank_id should not be None"
+            self.ctc_loss = nn.CTCLoss(blank=blank_id)
+
     def forward(
             self,
-            inputs: Tensor,                         # tensor of sequences whose contains input variables
-            input_lengths: Tensor,                  # tensor of sequences whose contains lengths of inputs
-            targets: Optional[Any] = None,          # tensor of sequences whose contains target variables
-            teacher_forcing_ratio: float = 1.0,     # the probability that teacher forcing will be used
-            return_decode_dict: bool = False        # flag indication whether return decode_dict or not
-    ):
-        output, hidden = self.encoder(inputs, input_lengths)
+            inputs: Tensor,                              # tensor of sequences whose contains input variables
+            input_lengths: Tensor,                       # tensor of sequences whose contains lengths of inputs
+            targets: Optional[Tensor] = None,            # tensor of sequences whose contains target variables
+            target_lengths: Optional[Tensor] = None,     # tensor of sequences whose contains lengths of targets
+            teacher_forcing_ratio: float = 1.0           # the probability that teacher forcing will be used
+    ) -> Tuple[Tensor, float]:
+        ctc_loss = None
+        encoder_outputs, ctc_logits = self.encoder(inputs, input_lengths)
+
+        if self.use_ctc_loss and targets is not None and target_lengths is not None:
+            ctc_loss = self.calculate_ctc_loss(ctc_logits, targets, target_lengths)
 
         if isinstance(self.decoder, TopKDecoder):
-            result = self.decoder(targets, output)
-        else:
-            result = self.decoder(targets, output, teacher_forcing_ratio, return_decode_dict)
+            return self.decoder(targets, encoder_outputs['encoder_outputs'])
+        decoder_outputs = self.decoder(targets, encoder_outputs['encoder_outputs'], teacher_forcing_ratio)
 
-        return result
+        return decoder_outputs, ctc_loss
 
     def greedy_decode(self, inputs: Tensor, input_lengths: Tensor, device: str):
         with torch.no_grad():
             self.flatten_parameters()
-            output = self.forward(inputs, input_lengths, teacher_forcing_ratio=0.0, return_decode_dict=False)
-            logit = torch.stack(output, dim=1).to(device)
+            output = self.forward(inputs, input_lengths, teacher_forcing_ratio=0.0)
+            logit = torch.stack(output['decoder_outputs'], dim=1).to(device)
             return logit.max(-1)[1]
+
+    def calculate_ctc_loss(self, ctc_logits: Tensor, targets: Tensor, target_lengths: Tensor):
+        ctc_logits = ctc_logits.transpose(0, 1)  # B x T x D => T x B x D
+        seq_lengths, batch_size, num_classes = ctc_logits.size()
+        input_lengths = torch.LongTensor([seq_lengths] * batch_size)
+        ctc_loss = self.ctc_loss(ctc_logits.log_softmax(dim=2), targets, input_lengths, target_lengths)
+        return ctc_loss
 
     def flatten_parameters(self):
         self.encoder.rnn.flatten_parameters()

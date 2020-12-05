@@ -74,16 +74,24 @@ def train(opt):
         else:
             raise ValueError(f"Unsupported Optimizer, Supported Optimizer : Adam, RAdam, Adadelta, Adagrad")
 
-        lr_scheduler = TriStageLRScheduler(
-            optimizer=optimizer,
-            init_lr=opt.init_lr,
-            peak_lr=opt.peak_lr,
-            final_lr=opt.final_lr,
-            init_lr_scale=opt.init_lr_scale,
-            final_lr_scale=opt.final_lr_scale,
-            warmup_steps=opt.warmup_steps,
-            total_steps=int(opt.num_epochs * epoch_time_step)
-        )
+        if opt.lr_scheduler.lower() == 'tri_stage':
+            lr_scheduler = TriStageLRScheduler(
+                optimizer=optimizer,
+                init_lr=opt.init_lr,
+                peak_lr=opt.peak_lr,
+                final_lr=opt.final_lr,
+                init_lr_scale=opt.init_lr_scale,
+                final_lr_scale=opt.final_lr_scale,
+                warmup_steps=opt.warmup_steps,
+                total_steps=int(opt.num_epochs * epoch_time_step)
+            )
+        elif opt.lr_scheduler.lower() == 'reduce_lr_on_plateau':
+            lr_scheduler = optim.lr_scheduler.ReduceLROnPlateau(
+                optimizer=optimizer,
+                min_lr=opt.init_lr,
+                patience=opt.lr_patience,
+                mode=''
+            )
         optimizer = Optimizer(optimizer, lr_scheduler, opt.warmup_steps, opt.max_grad_norm)
 
         if opt.architecture == 'deepspeech2':

@@ -89,7 +89,16 @@ def build_train_opts(parser):
                        help='output unit : [character, subword, grapheme]')
     group.add_argument('--optimizer', '-optimizer',
                        type=str, default='adam',
-                       help='optimizer: Adam, RAdam, Adadelta, Adagrad')
+                       help='optimizer: Adam, RAdam, Adadelta, Adagrad, AdamP')
+    group.add_argument('--joint_learning', '-joint_learning',
+                       type=bool, default=False,
+                       help='flag indication whether to use joint learning or not')
+    group.add_argument('--cross_entropy_weight', '-cross_entropy_weight',
+                       type=float, default=0.5,
+                       help='weight of cross entropy loss')
+    group.add_argument('--ctc_weight', '-cross_entropy_weight',
+                       type=float, default=0.5,
+                       help='weight of ctc loss')
     group.add_argument('--audio_extension', '-audio_extension',
                        type=str, default='pcm',
                        help='audio extension')

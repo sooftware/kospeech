@@ -21,7 +21,6 @@ from kospeech.models.attention import (
 )
 
 
-
 class Speller(BaseRNN):
     """
     Converts higher level features (from encoder) into output utterances
@@ -50,16 +49,9 @@ class Speller(BaseRNN):
           teacher forcing would be used (default is 0).
         - **return_decode_dict** (dict): dictionary which contains decode informations.
 
-    Returns: decoder_outputs, decode_dict
-        - **decoder_outputs** (seq_len, batch, num_classes): list of tensors containing
-          the outputs of the decoding function.
-        - **decode_dict**: dictionary containing additional information as follows {*KEY_ATTENTION_SCORE* : list of scores
-          representing encoder outputs, *KEY_SEQUENCE_SYMBOL* : list of sequences, where each sequence is a list of
-          predicted token IDs }.
+    Returns: decoder_outputs
+        - **decoder_outputs**: dictionary contains decoder outputs and metadata the outputs of the decoding function.
     """
-    KEY_ATTENTION_SCORE = 'attention_score'
-    KEY_LENGTH = 'length'
-    KEY_SEQUENCE_SYMBOL = 'sequence_symbol'
 
     def __init__(
             self,
@@ -134,18 +126,17 @@ class Speller(BaseRNN):
 
     def forward(
             self,
-            inputs: Tensor,                         # tensor of sequences whose contains target variables
-            encoder_outputs: Tensor,                # tensor with containing the outputs of the encoder
-            teacher_forcing_ratio: float = 1.0,     # the probability that teacher forcing will be used
-            return_decode_dict: bool = False        # flag indication whether return decode_dict or not
-    ) -> Tuple[Tensor, dict]:
+            inputs: Tensor,
+            encoder_outputs: Tensor,
+            teacher_forcing_ratio: float = 1.0
+    ) -> dict:
 
         hidden, attn = None, None
-        result, decode_dict = list(), dict()
-
-        if not self.training:
-            decode_dict[Speller.KEY_ATTENTION_SCORE] = list()
-            decode_dict[Speller.KEY_SEQUENCE_SYMBOL] = list()
+        decoder_outputs = {
+            "decoder_outputs": list(),
+            "attention_score": list(),
+            "sequence_symbol": list()
+        }
 
         inputs, batch_size, max_length = self.validate_args(inputs, encoder_outputs, teacher_forcing_ratio)
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
@@ -158,40 +149,34 @@ class Speller(BaseRNN):
                 for di in range(inputs.size(1)):
                     input_var = inputs[:, di].unsqueeze(1)
                     step_output, hidden, attn = self.forward_step(input_var, hidden, encoder_outputs, attn)
-                    result.append(step_output)
+                    decoder_outputs["decoder_outputs"].append(step_output)
 
             else:
                 step_outputs, hidden, attn = self.forward_step(inputs, hidden, encoder_outputs, attn)
 
                 for di in range(step_outputs.size(1)):
                     step_output = step_outputs[:, di, :]
-                    result.append(step_output)
+                    decoder_outputs["decoder_outputs"].append(step_output)
 
         else:
             input_var = inputs[:, 0].unsqueeze(1)
 
             for di in range(max_length):
                 step_output, hidden, attn = self.forward_step(input_var, hidden, encoder_outputs, attn)
-                result.append(step_output)
-                input_var = result[-1].topk(1)[1]
+                decoder_outputs["decoder_outputs"].append(step_output)
+                input_var = decoder_outputs["decoder_outputs"][-1].topk(1)[1]
 
                 if not self.training:
-                    decode_dict[Speller.KEY_ATTENTION_SCORE].append(attn)
-                    decode_dict[Speller.KEY_SEQUENCE_SYMBOL].append(input_var)
+                    decoder_outputs["attention_score"].append(attn)
+                    decoder_outputs["sequence_symbol"].append(input_var)
                     eos_batches = input_var.data.eq(self.eos_id)
 
                     if eos_batches.dim() > 0:
                         eos_batches = eos_batches.cpu().view(-1).numpy()
                         update_idx = ((lengths > di) & eos_batches) != 0
-                        lengths[update_idx] = len(decode_dict[Speller.KEY_SEQUENCE_SYMBOL])
+                        lengths[update_idx] = len(decoder_outputs["sequence_symbol"])
 
-        if return_decode_dict:
-            decode_dict[Speller.KEY_LENGTH] = lengths
-            result = (result, decode_dict)
-        else:
-            del decode_dict
-
-        return result
+        return decoder_outputs
 
     def validate_args(
             self,
