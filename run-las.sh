@@ -58,7 +58,7 @@ cd bin
 echo "KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition =="
 
 python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epochs $NUM_EPOCHS --use_bidirectional \
---transcripts_path $TRANSCRIPTS_PATH --dataset $DATASET --audio_extension $AUDIO_EXTENSION --output_unit $OUTPUT_UNIT\
+--transcripts_path $TRANSCRIPTS_PATH --dataset $DATASET --audio_extension $AUDIO_EXTENSION --output_unit $OUTPUT_UNIT \
 --optimizer $OPTIMIZER --spec_augment --use_cuda --hidden_dim $HIDDEN_DIM --dropout $DROPOUT --num_heads $NUM_HEADS \
 --label_smoothing $LABEL_SMOOTHING --transform_method $TRANSFORM_METHOD --architecture $ARCHITECTURE \
 --num_encoder_layers $NUM_ENCODER_LAYERS --num_decoder_layers $NUM_DECODER_LAYERS --rnn_type $RNN_TYPE \
@@ -73,4 +73,4 @@ python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epoch
 --weight_decay $WEIGHT_DECAY --reduction $REDUCTION \
 --attn_mechanism $ATTN_MECHANISM --teacher_forcing_step $TEACHER_FORCING_STEP \
 --min_teacher_forcing_ratio $MIN_TEACHER_FORCING_RATIO --extractor $EXTRACTOR --activation $ACTIVATION \
---cross_entropy_weight $CROSS_ENTROPY_WEIGHT --ctc_loss $CTC_WEIGHT
+--cross_entropy_weight $CROSS_ENTROPY_WEIGHT --ctc_weight $CTC_WEIGHT
