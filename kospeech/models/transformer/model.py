@@ -15,7 +15,7 @@ import torch
 import torch.nn as nn
 from torch import Tensor
 from typing import Optional, Any
-from kospeech.models import (
+from kospeech.models.modules import (
     Linear,
     LayerNorm
 )

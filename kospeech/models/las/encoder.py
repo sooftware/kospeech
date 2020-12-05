@@ -9,7 +9,7 @@ import torch
 import torch.nn as nn
 from torch import Tensor
 from typing import Tuple
-from kospeech.models.modules import BaseRNN
+from kospeech.models.modules import BaseRNN, Linear
 from kospeech.models.extractor import (
     VGGExtractor,
     DeepSpeech2Extractor
@@ -85,7 +85,7 @@ class Listener(BaseRNN):
             self.generator = nn.Sequential(
                 nn.BatchNorm1d(self.hidden_size),
                 nn.Dropout(dropout_p),
-                nn.Linear(self.hidden_size, self.num_classes, bias=False)
+                Linear(self.hidden_size, self.num_classes, bias=False)
             )
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
