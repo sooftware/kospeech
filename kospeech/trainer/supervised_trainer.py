@@ -238,7 +238,7 @@ class SupervisedTrainer(object):
                     output.contiguous().view(-1, output.size(-1)), targets[:, 1:].contiguous().view(-1)
                 )
                 if ctc_loss is not None:
-                    ctc_loss = ctc_loss.sum()
+                    ctc_loss = ctc_loss.mean()
                     loss = cross_entropy_loss * self.cross_entropy_weight + ctc_loss * self.ctc_weight
                 else:
                     loss = cross_entropy_loss

@@ -5,7 +5,6 @@
 # LICENSE file in the root directory of this source tree.
 
 import csv
-import sentencepiece as spm
 from kospeech.vocabs import Vocabulary
 
 
@@ -13,6 +12,7 @@ class KsponSpeechVocabulary(Vocabulary):
     def __init__(self, vocab_path, output_unit: str = 'character', sp_model_path=None):
         super(KsponSpeechVocabulary, self).__init__()
         if output_unit == 'subword':
+            import sentencepiece as spm
             self.sp = spm.SentencePieceProcessor()
             self.sp.Load(sp_model_path)
 
