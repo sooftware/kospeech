@@ -5,7 +5,7 @@
 # LICENSE file in the root directory of this source tree.
 
 import math
-from kospeech.optim.lr_scheduler.__init__ import LearningRateScheduler
+from kospeech.optim.lr_scheduler.lr_scheduler import LearningRateScheduler
 
 
 class TriStageLRScheduler(LearningRateScheduler):
