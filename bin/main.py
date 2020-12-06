@@ -95,7 +95,6 @@ def train(opt):
             criterion = JointCTCAttentionLoss(
                 num_classes=len(vocab),
                 ignore_index=vocab.pad_id,
-                smoothing=opt.label_smoothing,
                 reduction=opt.reduction,
                 ctc_weight=opt.ctc_weight,
                 cross_entropy_weight=opt.cross_entropy_weight,
@@ -125,7 +124,6 @@ def train(opt):
             criterion = JointCTCAttentionLoss(
                 num_classes=len(vocab),
                 ignore_index=vocab.pad_id,
-                smoothing=opt.label_smoothing,
                 reduction=opt.reduction,
                 ctc_weight=opt.ctc_weight,
                 cross_entropy_weight=opt.cross_entropy_weight,
