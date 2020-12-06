@@ -133,7 +133,7 @@ class Speller(BaseRNN):
 
         hidden, attn = None, None
         decoder_outputs = {
-            "decoder_outputs": list(),
+            "decoder_log_probs": list(),
             "attention_score": list(),
             "sequence_symbol": list()
         }
@@ -149,22 +149,22 @@ class Speller(BaseRNN):
                 for di in range(inputs.size(1)):
                     input_var = inputs[:, di].unsqueeze(1)
                     step_output, hidden, attn = self.forward_step(input_var, hidden, encoder_outputs, attn)
-                    decoder_outputs["decoder_outputs"].append(step_output)
+                    decoder_outputs["decoder_log_probs"].append(step_output)
 
             else:
                 step_outputs, hidden, attn = self.forward_step(inputs, hidden, encoder_outputs, attn)
 
                 for di in range(step_outputs.size(1)):
                     step_output = step_outputs[:, di, :]
-                    decoder_outputs["decoder_outputs"].append(step_output)
+                    decoder_outputs["decoder_log_probs"].append(step_output)
 
         else:
             input_var = inputs[:, 0].unsqueeze(1)
 
             for di in range(max_length):
                 step_output, hidden, attn = self.forward_step(input_var, hidden, encoder_outputs, attn)
-                decoder_outputs["decoder_outputs"].append(step_output)
-                input_var = decoder_outputs["decoder_outputs"][-1].topk(1)[1]
+                decoder_outputs["decoder_log_probs"].append(step_output)
+                input_var = decoder_outputs["decoder_log_probs"][-1].topk(1)[1]
 
                 if not self.training:
                     decoder_outputs["attention_score"].append(attn)

@@ -18,14 +18,13 @@ HIDDEN_DIM=512
 DROPOUT=0.15
 NUM_HEADS=4
 ATTN_MECHANISM='multi-head'   # multi-head, loc, additive, scaled-dot
-LABEL_SMOOTHING=0.1
 REDUCTION='mean'
 NUM_ENCODER_LAYERS=3
 NUM_DECODER_LAYERS=2
 RNN_TYPE='lstm'
 TEACHER_FORCING_RATIO=1.0
-TEACHER_FORCING_STEP=0.01
-MIN_TEACHER_FORCING_RATIO=0.9
+TEACHER_FORCING_STEP=0.0
+MIN_TEACHER_FORCING_RATIO=1.0
 MAX_LEN=250
 MAX_GRAD_NORM=200
 WEIGHT_DECAY=1e-05
@@ -59,7 +58,7 @@ echo "KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition =="
 
 python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epochs $NUM_EPOCHS --use_bidirectional \
 --transcripts_path $TRANSCRIPTS_PATH --dataset $DATASET --audio_extension $AUDIO_EXTENSION --output_unit $OUTPUT_UNIT \
---optimizer $OPTIMIZER --spec_augment --use_cuda --hidden_dim $HIDDEN_DIM --dropout $DROPOUT --num_heads $NUM_HEADS \
+--optimizer $OPTIMIZER --use_cuda --hidden_dim $HIDDEN_DIM --dropout $DROPOUT --num_heads $NUM_HEADS \
 --label_smoothing $LABEL_SMOOTHING --transform_method $TRANSFORM_METHOD --architecture $ARCHITECTURE \
 --num_encoder_layers $NUM_ENCODER_LAYERS --num_decoder_layers $NUM_DECODER_LAYERS --rnn_type $RNN_TYPE \
 --teacher_forcing_ratio $TEACHER_FORCING_RATIO \

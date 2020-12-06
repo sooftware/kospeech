@@ -40,9 +40,9 @@ class Listener(BaseRNN):
         - **inputs**: list of sequences, whose length is the batch size and within which each sequence is list of tokens
         - **input_lengths**: list of sequence lengths
 
-    Returns: output, hidden
-        - **output**: tensor containing the encoded features of the input sequence
-        - **hidden**: variable containing the features in the hidden state h
+    Returns: encoder_outputs, hidden
+        - **encoder_outputs**: tensor containing the encoded features of the input sequence
+        - **encoder_log__probs**: tensor containing log probability for ctc loss
     """
     KEY_ENCODER_OUTPUTS = 'encoder_outputs'
     KEY_CTC_LOGIT = 'ctc_logit'
@@ -95,20 +95,20 @@ class Listener(BaseRNN):
             )
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor, Optional[Tensor]]:
-        ctc_logits = None
-        seq_lengths = None
+        encoder_log_probs = None
+        encoder_output_lengths = None
 
         if self.mask_conv:
             inputs = inputs.unsqueeze(1).permute(0, 1, 3, 2)
-            conv_feat, seq_lengths = self.conv(inputs, input_lengths)
+            conv_feat, encoder_output_lengths = self.conv(inputs, input_lengths)
 
             batch_size, num_channels, hidden_dim, seq_length = conv_feat.size()
             conv_feat = conv_feat.view(batch_size, num_channels * hidden_dim, seq_length).permute(2, 0, 1).contiguous()
 
-            conv_feat = nn.utils.rnn.pack_padded_sequence(conv_feat, seq_lengths.cpu())
-            output, hidden = self.rnn(conv_feat)
-            output, _ = nn.utils.rnn.pad_packed_sequence(output)
-            output = output.transpose(0, 1)
+            conv_feat = nn.utils.rnn.pack_padded_sequence(conv_feat, encoder_output_lengths.cpu())
+            encoder_outputs, hidden = self.rnn(conv_feat)
+            encoder_outputs, _ = nn.utils.rnn.pad_packed_sequence(encoder_outputs)
+            encoder_outputs = encoder_outputs.transpose(0, 1)
 
         else:
             conv_feat = self.conv(inputs.unsqueeze(1), input_lengths).to(self.device)
@@ -120,10 +120,10 @@ class Listener(BaseRNN):
             if self.training:
                 self.rnn.flatten_parameters()
 
-            output, hidden = self.rnn(conv_feat)
+            encoder_outputs, hidden = self.rnn(conv_feat)
 
         if self.joint_ctc_attention:
-            ctc_logits = self.generator(output.transpose(1, 2))
+            encoder_log_probs = self.generator(encoder_outputs.transpose(1, 2)).log_softmax(dim=2)
 
-        return output, ctc_logits, seq_lengths
+        return encoder_outputs, encoder_log_probs, encoder_output_lengths
 

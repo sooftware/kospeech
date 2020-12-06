@@ -45,13 +45,13 @@ class ListenAttendSpell(nn.Module):
             targets: Optional[Tensor] = None,
             teacher_forcing_ratio: float = 1.0
     ) -> Tuple[dict, Tensor, Tensor]:
-        encoder_outputs, ctc_logits, seq_lengths = self.encoder(inputs, input_lengths)
+        encoder_outputs, encoder_log_probs, encoder_output_lengths = self.encoder(inputs, input_lengths)
 
         if isinstance(self.decoder, TopKDecoder):
             return self.decoder(targets, encoder_outputs)
         decoder_outputs = self.decoder(targets, encoder_outputs, teacher_forcing_ratio)
 
-        return decoder_outputs, ctc_logits, seq_lengths
+        return decoder_outputs, encoder_log_probs, encoder_output_lengths
 
     def greedy_decode(self, inputs: Tensor, input_lengths: Tensor, device: str):
         with torch.no_grad():

@@ -6,7 +6,7 @@
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
+from typing import Tuple
 from torch import Tensor
 
 
@@ -34,7 +34,6 @@ class JointCTCAttentionLoss(nn.Module):
             self,
             num_classes: int,                     # the number of classfication
             ignore_index: int,                    # indexes that are ignored when calcuating loss
-            smoothing: float = 0.1,               # ratio of smoothing (confidence = 1.0 - smoothing)
             dim: int = -1,                        # dimension of caculation loss
             reduction='mean',                     # reduction method [sum, mean]
             ctc_weight: float = 0.5,              # weight of ctc loss
@@ -42,8 +41,6 @@ class JointCTCAttentionLoss(nn.Module):
             blank_id: int = None
     ) -> None:
         super(JointCTCAttentionLoss, self).__init__()
-        self.confidence = 1.0 - smoothing
-        self.smoothing = smoothing
         self.num_classes = num_classes
         self.dim = dim
         self.ignore_index = ignore_index
@@ -59,30 +56,17 @@ class JointCTCAttentionLoss(nn.Module):
             raise ValueError("Unsupported reduction method {0}".format(reduction))
 
         self.ctc_loss = nn.CTCLoss(blank=blank_id, reduction=self.reduction)
-
-    def get_ctc_loss(self, logits: Tensor, input_lengths: Tensor, targets: Tensor, target_lengths: Tensor) -> float:
-        return self.ctc_loss(logits.log_softmax(dim=2), targets, input_lengths, target_lengths)
-
-    def get_cross_entropy_loss(self, logits: Tensor, targets: Tensor):
-        if self.smoothing > 0.0:
-            with torch.no_grad():
-                label_smoothed = torch.zeros_like(logits)
-                label_smoothed.fill_(self.smoothing / (self.num_classes - 1))
-                label_smoothed.scatter_(1, targets.data.unsqueeze(1), self.confidence)
-                label_smoothed[targets == self.ignore_index, :] = 0
-            return self.reduction_method(-label_smoothed * logits)
-
-        return F.cross_entropy(logits, targets, ignore_index=self.ignore_index, reduction=self.reduction)
+        self.cross_entropy_loss = nn.CrossEntropyLoss(reduction=self.reduction, ignore_index=self.ignore_index)
 
     def forward(
             self,
-            cross_entropy_logits: Tensor,
-            ctc_logits: Tensor,
-            input_lengths: Tensor,
+            encoder_log_probs: Tensor,
+            decoder_log_probs: Tensor,
+            output_lengths: Tensor,
             targets: Tensor,
             target_lengths: Tensor
-    ) -> Tensor:
-        ctc_loss = self.get_ctc_loss(ctc_logits, input_lengths, targets, target_lengths)
-        cross_entropy_loss = self.get_cross_entropy_loss(cross_entropy_logits, targets[:, 1:].contiguous().view(-1))
+    ) -> Tuple[Tensor, Tensor, Tensor]:
+        ctc_loss = self.ctc_loss(encoder_log_probs, targets, output_lengths, target_lengths)
+        cross_entropy_loss = self.cross_entropy_loss(decoder_log_probs, targets[:, 1:].contiguous().view(-1))
         loss = cross_entropy_loss * self.cross_entropy_weight + ctc_loss * self.ctc_weight
-        return loss
+        return loss, ctc_loss, cross_entropy_loss

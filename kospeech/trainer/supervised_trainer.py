@@ -76,7 +76,13 @@ class SupervisedTrainer(object):
         self.architecture = architecture.lower()
         self.vocab = vocab
         self.joint_ctc_attention = joint_ctc_attention
-        self.log_format = "step: {:4d}/{:4d}, loss: {:.6f}, cer: {:.2f}, elapsed: {:.2f}s {:.2f}m {:.2f}h, lr: {:.6f}"
+
+        if self.joint_ctc_attention:
+            self.log_format = "step: {:4d}/{:4d}, loss: {:.6f}, ctc_loss: {:.6f}, ce_loss: {:.6f}, " \
+                              "cer: {:.2f}, elapsed: {:.2f}s {:.2f}m {:.2f}h, lr: {:.6f}"
+        else:
+            self.log_format = "step: {:4d}/{:4d}, loss: {:.6f}, " \
+                              "cer: {:.2f}, elapsed: {:.2f}s {:.2f}m {:.2f}h, lr: {:.6f}"
 
     def train(
         self,
@@ -219,8 +225,13 @@ class SupervisedTrainer(object):
             target_lengths = torch.as_tensor(target_lengths).to(self.device)
 
             model = model.to(self.device)
-            output, loss = self.model_forward(
-                model, inputs, input_lengths, targets, target_lengths, teacher_forcing_ratio
+            output, loss, ctc_loss, cross_entropy_loss = self.model_forward(
+                teacher_forcing_ratio=teacher_forcing_ratio,
+                inputs=inputs,
+                input_lengths=input_lengths,
+                targets=targets,
+                target_lengths=target_lengths,
+                model=model
             )
 
             y_hats = output.max(-1)[1]
@@ -240,13 +251,23 @@ class SupervisedTrainer(object):
                 epoch_elapsed = (current_time - epoch_begin_time) / 60.0
                 train_elapsed = (current_time - train_begin_time) / 3600.0
 
-                logger.info(self.log_format.format(
-                    timestep, epoch_time_step,
-                    epoch_loss_total / total_num,
-                    cer,
-                    elapsed, epoch_elapsed, train_elapsed,
-                    self.optimizer.get_lr()
-                ))
+                if self.joint_ctc_attention:
+                    logger.info(self.log_format.format(
+                        timestep, epoch_time_step,
+                        epoch_loss_total,
+                        ctc_loss, cross_entropy_loss,
+                        cer,
+                        elapsed, epoch_elapsed, train_elapsed,
+                        self.optimizer.get_lr()
+                    ))
+                else:
+                    logger.info(self.log_format.format(
+                        timestep, epoch_time_step,
+                        epoch_loss_total / total_num,
+                        cer,
+                        elapsed, epoch_elapsed, train_elapsed,
+                        self.optimizer.get_lr()
+                    ))
                 begin_time = time.time()
 
             if timestep % self.save_result_every == 0:
@@ -289,18 +310,7 @@ class SupervisedTrainer(object):
             targets = targets[:, 1:].to(self.device)
             model.to(self.device)
 
-            if self.architecture == 'las':
-                y_hats = model.greedy_decode(inputs, input_lengths, self.device)
-
-            elif self.architecture == 'transformer':
-                y_hats = model.greedy_decode(inputs, input_lengths)
-
-            elif self.architecture == 'deepspeech2':
-                y_hats = model.greedy_decode(inputs, input_lengths, self.device)
-
-            else:
-                raise ValueError("Unsupported architecture : {0}".format(self.architecture))
-
+            y_hats = model.greedy_decode(inputs, input_lengths, self.device)
             cer = self.metric(targets, y_hats)
 
         logger.info('validate() completed')
@@ -315,31 +325,34 @@ class SupervisedTrainer(object):
             targets: Tensor,
             target_lengths: Tensor,
             teacher_forcing_ratio: float
-    ) -> Tuple[Tensor, Tensor]:
+    ) -> Tuple[Tensor, Tensor, Tensor, Tensor]:
+        ctc_loss = None
+        cross_entropy_loss = None
+
         if self.architecture == 'las':
             if isinstance(model, nn.DataParallel):
                 model.module.flatten_parameters()
             else:
                 model.flatten_parameters()
 
-            output, ctc_logits, seq_lengths = model(
+            decoder_outputs, encoder_log_probs, encoder_output_lengths = model(
                 inputs=inputs,
                 input_lengths=input_lengths,
                 targets=targets,
                 teacher_forcing_ratio=teacher_forcing_ratio
             )
 
-            output = torch.stack(output['decoder_outputs'], dim=1).to(self.device)
+            output = torch.stack(decoder_outputs['decoder_log_probs'], dim=1).to(self.device)
 
             if isinstance(self.criterion, LabelSmoothedCrossEntropyLoss):
                 loss = self.criterion(
                     output.contiguous().view(-1, output.size(-1)), targets[:, 1:].contiguous().view(-1)
                 )
             elif isinstance(self.criterion, JointCTCAttentionLoss):
-                loss = self.criterion(
-                    cross_entropy_logits=output.contiguous().view(-1, output.size(-1)),
-                    ctc_logits=ctc_logits.transpose(0, 1),
-                    input_lengths=seq_lengths,
+                loss, ctc_loss, cross_entropy_loss = self.criterion(
+                    encoder_log_probs=encoder_log_probs.transpose(0, 1),
+                    decoder_log_probs=output.contiguous().view(-1, output.size(-1)),
+                    output_lengths=encoder_output_lengths,
                     targets=targets,
                     target_lengths=target_lengths
                 )
@@ -357,7 +370,7 @@ class SupervisedTrainer(object):
         else:
             raise ValueError("Unsupported architecture : {0}".format(self.architecture))
 
-        return output, loss
+        return output, loss, ctc_loss, cross_entropy_loss
 
     def __save_epoch_result(self, train_result: list, valid_result: list) -> None:
         """ Save result of epoch """
