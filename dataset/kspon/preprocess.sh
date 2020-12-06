@@ -7,8 +7,7 @@ OUTPUT_UNIT='character'                                          # you can set c
 PREPROCESS_MODE='phonetic'                                       # phonetic : 칠 십 퍼센트,  spelling : 70%
 VOCAB_SIZE=5000                                                  # if you use subword output unit, set vocab size
 
-# if you want to use pretrain kober tokenizer refer https://github.com/SKTBrain/KoBERT
-# And release the bottom annotation.
+echo "Pre-process KsponSpeech Dataset.."
 
 python main.py \
 --dataset_path $DATASET_PATH \

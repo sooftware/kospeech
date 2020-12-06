@@ -131,7 +131,7 @@ def build_las(input_size, opt, vocab, device):
             rnn_type=opt.rnn_type,
             device=device,
             mask_conv=opt.mask_conv,
-            joint_ctc=opt.joint_ctc
+            joint_ctc_attention=opt.joint_ctc_attention
         ),
         build_speller(
             num_classes=len(vocab),
@@ -147,7 +147,7 @@ def build_las(input_size, opt, vocab, device):
             attn_mechanism=opt.attn_mechanism,
             device=device
         ),
-        opt.joint_ctc,
+        opt.joint_ctc_attention,
         vocab.blank_id
     )
     model.flatten_parameters()
@@ -167,7 +167,7 @@ def build_listener(
         activation: str = 'hardtanh',
         device: str = 'cuda',
         mask_conv: bool = False,
-        joint_ctc: bool = False
+        joint_ctc_attention: bool = False
 ) -> Listener:
     """ Various encoder dispatcher function. """
     if dropout_p < 0.0:
@@ -195,7 +195,7 @@ def build_listener(
         extractor=extractor,
         device=device,
         activation=activation,
-        joint_ctc=joint_ctc
+        joint_ctc_attention=joint_ctc_attention
     )
 
 

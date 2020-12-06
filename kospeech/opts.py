@@ -90,7 +90,7 @@ def build_train_opts(parser):
     group.add_argument('--optimizer', '-optimizer',
                        type=str, default='adam',
                        help='optimizer: Adam, RAdam, Adadelta, Adagrad, AdamP')
-    group.add_argument('--joint_ctc', '-joint_ctc',
+    group.add_argument('--joint_ctc_attention', '-joint_ctc_attention',
                        action='store_true', default=False,
                        help='flag indication whether to use joint ctc-attention or not')
     group.add_argument('--cross_entropy_weight', '-cross_entropy_weight',

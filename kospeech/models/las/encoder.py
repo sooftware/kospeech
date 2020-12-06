@@ -49,22 +49,22 @@ class Listener(BaseRNN):
 
     def __init__(
             self,
-            input_size: int,                       # size of input
-            num_classes: int,                      # number of class
-            hidden_dim: int = 512,                 # dimension of RNN`s hidden state
-            device: str = 'cuda',                  # device - 'cuda' or 'cpu'
-            dropout_p: float = 0.3,                # dropout probability
-            num_layers: int = 3,                   # number of RNN layers
-            bidirectional: bool = True,            # if True, becomes a bidirectional encoder
-            rnn_type: str = 'lstm',                # type of RNN cell
-            extractor: str = 'vgg',                # type of CNN extractor
-            activation: str = 'hardtanh',          # type of activation function
-            mask_conv: bool = False,               # flag indication whether apply mask convolution or not
-            joint_ctc: bool = False                # Use CTC Loss & Cross Entropy Joint Learning
+            input_size: int,                         # size of input
+            num_classes: int,                        # number of class
+            hidden_dim: int = 512,                   # dimension of RNN`s hidden state
+            device: str = 'cuda',                    # device - 'cuda' or 'cpu'
+            dropout_p: float = 0.3,                  # dropout probability
+            num_layers: int = 3,                     # number of RNN layers
+            bidirectional: bool = True,              # if True, becomes a bidirectional encoder
+            rnn_type: str = 'lstm',                  # type of RNN cell
+            extractor: str = 'vgg',                  # type of CNN extractor
+            activation: str = 'hardtanh',            # type of activation function
+            mask_conv: bool = False,                 # flag indication whether apply mask convolution or not
+            joint_ctc_attention: bool = False        # Use CTC Loss & Cross Entropy Joint Learning
     ) -> None:
         self.mask_conv = mask_conv
         self.extractor = extractor.lower()
-        self.joint_ctc = joint_ctc
+        self.joint_ctc_attention = joint_ctc_attention
 
         if self.extractor == 'vgg':
             input_size = (input_size - 1) << 5 if input_size % 2 else input_size << 5
@@ -85,7 +85,8 @@ class Listener(BaseRNN):
         else:
             raise ValueError("Unsupported Extractor : {0}".format(extractor))
 
-        if self.joint_ctc:
+        if self.joint_ctc_attention:
+            assert self.mask_conv, "if joint_ctc_attention training, mask_conv should be True"
             self.generator = nn.Sequential(
                 nn.BatchNorm1d(self.hidden_dim << 1),
                 Transpose(shape=(1, 2)),
@@ -94,7 +95,7 @@ class Listener(BaseRNN):
             )
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor, Optional[Tensor]]:
-        ctc_output = None
+        ctc_logits = None
         seq_lengths = None
 
         if self.mask_conv:
@@ -121,8 +122,8 @@ class Listener(BaseRNN):
 
             output, hidden = self.rnn(conv_feat)
 
-        if self.joint_ctc:
-            ctc_output = self.generator(output.transpose(1, 2))
+        if self.joint_ctc_attention:
+            ctc_logits = self.generator(output.transpose(1, 2))
 
-        return output, ctc_output, seq_lengths
+        return output, ctc_logits, seq_lengths
 

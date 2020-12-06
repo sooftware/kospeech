@@ -22,7 +22,10 @@ def sentence_to_target(sentence, char2id):
     target = str()
 
     for ch in sentence:
-        target += (str(char2id[ch]) + ' ')
+        try:
+            target += (str(char2id[ch]) + ' ')
+        except KeyError:
+            continue
 
     return target[:-1]
 
