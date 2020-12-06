@@ -326,7 +326,6 @@ class SupervisedTrainer(object):
                 inputs=inputs,
                 input_lengths=input_lengths,
                 targets=targets,
-                target_lengths=target_lengths,
                 teacher_forcing_ratio=teacher_forcing_ratio
             )
 

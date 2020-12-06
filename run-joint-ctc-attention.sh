@@ -9,7 +9,7 @@ DATASET='kspon'
 DATASET_PATH='your_dataset_path'
 TRANSCRIPTS_PATH='../data/transcripts.txt'
 OUTPUT_UNIT='character'
-OPTIMIZER='adam'
+OPTIMIZER='adamp'
 AUDIO_EXTENSION='pcm'
 BATCH_SIZE=32
 NUM_WORKERS=4
@@ -27,7 +27,7 @@ TEACHER_FORCING_RATIO=1.0
 TEACHER_FORCING_STEP=0.01
 MIN_TEACHER_FORCING_RATIO=0.9
 MAX_LEN=250
-MAX_GRAD_NORM=400
+MAX_GRAD_NORM=200
 WEIGHT_DECAY=1e-05
 INIT_LR=1e-06
 PEAK_LR=1e-04
@@ -72,4 +72,5 @@ python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epoch
 --max_grad_norm $MAX_GRAD_NORM --warmup_steps $WARMUP_STEPS --max_len $MAX_LEN \
 --weight_decay $WEIGHT_DECAY --reduction $REDUCTION \
 --attn_mechanism $ATTN_MECHANISM --teacher_forcing_step $TEACHER_FORCING_STEP \
---min_teacher_forcing_ratio $MIN_TEACHER_FORCING_RATIO --extractor $EXTRACTOR --activation $ACTIVATION
+--min_teacher_forcing_ratio $MIN_TEACHER_FORCING_RATIO --extractor $EXTRACTOR --activation $ACTIVATION \
+--cross_entropy_weight $CROSS_ENTROPY_WEIGHT --ctc_weight $CTC_WEIGHT --mask_conv --joint_ctc_attention
