@@ -69,23 +69,24 @@ We will response as soon as possible.
 
 ## Roadmap
   
-<img src="https://user-images.githubusercontent.com/42150335/92522886-62653600-f25a-11ea-886a-cb5add6c8114.png"> 
+![image](https://user-images.githubusercontent.com/42150335/101286627-df3e8680-382e-11eb-8d48-0536b4714ba0.png)
   
-### Listen, Attend and Spell
-  
-Listen, Attend and Spell can be trained with serveral options. You can choose the CNN extractor from (`ds2` /`vgg`),   
-You can choose attention mechanism from (`location-aware`, `multi-head`, `additive`, `scaled-dot`) attention.
-  
-### Transformer  
-  
-The Transformer model is currently implemented, but There is a bug, so I can't learn at the moment.    
-We will fix as soon as possible.   
-  
-### Deep Speech 2  
+### (a) Deep Speech 2  
   
 The Deep Speech 2 model can be trained with several options.   
 Depending on the conditions, the loss may explode in the middle.  
 We don't recommend too big a vocab size.  
+  
+### (b) Listen, Attend and Spell
+  
+Listen, Attend and Spell can be trained with serveral options. You can choose the CNN extractor from (`ds2` /`vgg`),   
+You can choose attention mechanism from (`location-aware`, `multi-head`, `additive`, `scaled-dot`) attention.  
+Also, you can train with joint CTC-Attention training.  
+  
+### (c) Transformer  
+  
+The Transformer model is currently implemented, but There is a bug, so I can't learn at the moment.    
+We will fix as soon as possible.   
   
 ### Various Options   
   
