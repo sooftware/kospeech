@@ -11,6 +11,7 @@
 - December 2020: Joint CTC-Attention Updated
 - November 2020: Deep Speech 2 Architecture Updated
 - November 2020: KsponSpeech Subword & Grapheme Unit Updated (*Not Tested*)
+- November 2020: RAdam & AdamP Optimizer Updated
   
 ### ***[KoSpeech:  Open-Source Toolkit for End-to-End Korean Speech Recognition \[Technical Report\]](https://arxiv.org/abs/2009.03092)***
   
