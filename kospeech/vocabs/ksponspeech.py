@@ -52,13 +52,13 @@ class KsponSpeechVocabulary(Vocabulary):
         """
         if self.output_unit == 'subword':
             if len(labels.shape) == 1:
-                return self.sp.DecodeIds([l for l in labels])
+                return self.sp.DecodeIds([int(l) for l in labels])
 
             sentences = list()
             for batch in labels:
                 sentence = str()
                 for label in batch:
-                    sentence = self.sp.DecodeIds([l for l in label])
+                    sentence = self.sp.DecodeIds([int(l) for l in label])
                 sentences.append(sentence)
             return sentences
 
