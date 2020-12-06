@@ -1,6 +1,16 @@
 # [UPDATED] KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition
 
-[![CodeFactor](https://www.codefactor.io/repository/github/sooftware/kospeech/badge)](https://www.codefactor.io/repository/github/sooftware/kospeech) [<img src="http://img.shields.io/badge/docs-passing-success">](https://sooftware.github.io/KoSpeech/) [<img src="http://img.shields.io/badge/help wanted-issue 37-ff">](https://github.com/sooftware/KoSpeech/issues/37) <img src="https://img.shields.io/github/stars/sooftware/KoSpeech"> <img src="https://img.shields.io/github/forks/sooftware/KoSpeech">
+[![CodeFactor](https://www.codefactor.io/repository/github/sooftware/kospeech/badge)](https://www.codefactor.io/repository/github/sooftware/kospeech) 
+[<img src="http://img.shields.io/badge/docs-passing-success">](https://sooftware.github.io/KoSpeech/) 
+[<img src="http://img.shields.io/badge/help wanted-issue 37-ff">](https://github.com/sooftware/KoSpeech/issues/37) 
+<img src="https://img.shields.io/github/stars/sooftware/KoSpeech"> 
+<img src="https://img.shields.io/github/forks/sooftware/KoSpeech">  
+  
+### What's New
+  
+- December 2020: Joint CTC-Attention Updated
+- November 2020: Deep Speech 2 Architecture Updated
+- November 2020: KsponSpeech Subword & Grapheme Unit Updated (*Not Tested*)
   
 ### ***[KoSpeech:  Open-Source Toolkit for End-to-End Korean Speech Recognition \[Technical Report\]](https://arxiv.org/abs/2009.03092)***
   
@@ -20,7 +30,7 @@
   
 |Dataset|Authentication|Output-Unit|Transcript|  
 |-----------|-----|---|:-------:|  
-|KsponSpeech|*Required*|Character|[download](https://drive.google.com/file/d/1awhfTpqAaDs7K5R9npvFoqeMYWiUtGtq/view?usp=sharing)|  
+|KsponSpeech|*Required*|Character|[download](https://drive.google.com/file/d/12IAJSTRqkPALx9AX_SKyC4KkFVQN6Lge/view?usp=sharing)|  
 |KsponSpeech|*Required*|Subword|[download](https://drive.google.com/file/d/1awhfTpqAaDs7K5R9npvFoqeMYWiUtGtq/view?usp=sharing)|  
 |KsponSpeech|*Required*|Grapheme|[download](https://drive.google.com/file/d/1awhfTpqAaDs7K5R9npvFoqeMYWiUtGtq/view?usp=sharing)|   
 |LibriSpeech|*Unrequired* |Subword|[download](https://drive.google.com/file/d/1RA29SLtNIo1zmnk0OgVeXNH553Ul_DhY/view?usp=sharing)|  
