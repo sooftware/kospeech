@@ -50,7 +50,10 @@ def generate_character_labels(transcripts, labels_dest):
         label['char'].append(ch)
         label['freq'].append(freq)
 
-    # save to csv
+    label['id'] = label['id'][:2000]
+    label['char'] = label['char'][:2000]
+    label['freq'] = label['freq'][:2000]
+
     label_df = pd.DataFrame(label)
     label_df.to_csv(os.path.join(labels_dest, "aihub_labels.csv"), encoding="utf-8", index=False)
 

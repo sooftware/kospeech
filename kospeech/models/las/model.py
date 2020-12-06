@@ -37,17 +37,17 @@ class ListenAttendSpell(nn.Module):
             self,
             encoder: nn.Module,
             decoder: nn.Module,
-            joint_learning: bool = False,
+            joint_ctc: bool = False,
             blank_id: int = None
     ) -> None:
         super(ListenAttendSpell, self).__init__()
         self.encoder = encoder
         self.decoder = decoder
 
-        self.joint_learning = joint_learning
-        if self.joint_learning:
+        self.joint_ctc = joint_ctc
+        if self.joint_ctc:
             assert blank_id is not None, "If use joint learning, blank_id should not be None"
-            self.ctc_loss = nn.CTCLoss(blank=blank_id)
+            self.ctc_loss = nn.CTCLoss(blank=blank_id, reduction='mean')
 
     def forward(
             self,
@@ -58,10 +58,11 @@ class ListenAttendSpell(nn.Module):
             teacher_forcing_ratio: float = 1.0           # the probability that teacher forcing will be used
     ) -> Tuple[dict, float]:
         ctc_loss = None
-        encoder_outputs, ctc_logits = self.encoder(inputs, input_lengths)
+        encoder_outputs, ctc_output, seq_lengths = self.encoder(inputs, input_lengths)
 
-        if self.joint_learning and targets is not None and target_lengths is not None:
-            ctc_loss = self.calculate_ctc_loss(ctc_logits, targets, target_lengths)
+        if self.joint_ctc:
+            assert targets is not None and target_lengths is not None, "targets, target_lengths is None (Joint-CTC)"
+            ctc_loss = self.get_ctc_loss(ctc_output, seq_lengths, targets, target_lengths)
 
         if isinstance(self.decoder, TopKDecoder):
             return self.decoder(targets, encoder_outputs)
@@ -76,11 +77,9 @@ class ListenAttendSpell(nn.Module):
             logit = torch.stack(output['decoder_outputs'], dim=1).to(device)
             return logit.max(-1)[1]
 
-    def calculate_ctc_loss(self, ctc_logits: Tensor, targets: Tensor, target_lengths: Tensor):
-        ctc_logits = ctc_logits.transpose(0, 1)  # B x T x D => T x B x D
-        seq_lengths, batch_size, num_classes = ctc_logits.size()
-        input_lengths = torch.LongTensor([seq_lengths] * batch_size)
-        ctc_loss = self.ctc_loss(ctc_logits.log_softmax(dim=2), targets, input_lengths, target_lengths)
+    def get_ctc_loss(self, ctc_output: Tensor, input_lengths: Tensor, targets: Tensor, target_lengths: Tensor):
+        ctc_output = ctc_output.transpose(0, 1)  # B x T x D => T x B x D
+        ctc_loss = self.ctc_loss(ctc_output.log_softmax(dim=2), targets, input_lengths, target_lengths)
         return ctc_loss
 
     def flatten_parameters(self):

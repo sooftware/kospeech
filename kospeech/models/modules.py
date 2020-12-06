@@ -142,3 +142,13 @@ class View(nn.Module):
             inputs = inputs.contiguous()
 
         return inputs.view(*self.shape)
+
+
+class Transpose(nn.Module):
+    """ Wrapper class of torch.transpose() for Sequential module. """
+    def __init__(self, shape: tuple):
+        super(Transpose, self).__init__()
+        self.shape = shape
+
+    def forward(self, inputs: Tensor):
+        return inputs.transpose(*self.shape)

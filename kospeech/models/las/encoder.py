@@ -8,8 +8,12 @@ import math
 import torch
 import torch.nn as nn
 from torch import Tensor
-from typing import Tuple
-from kospeech.models.modules import BaseRNN, Linear
+from typing import Tuple, Optional
+from kospeech.models.modules import (
+    BaseRNN,
+    Linear,
+    Transpose
+)
 from kospeech.models.extractor import (
     VGGExtractor,
     DeepSpeech2Extractor
@@ -56,11 +60,11 @@ class Listener(BaseRNN):
             extractor: str = 'vgg',                # type of CNN extractor
             activation: str = 'hardtanh',          # type of activation function
             mask_conv: bool = False,               # flag indication whether apply mask convolution or not
-            joint_learning: bool = False           # Use CTC Loss & Cross Entropy Joint Learning
+            joint_ctc: bool = False                # Use CTC Loss & Cross Entropy Joint Learning
     ) -> None:
         self.mask_conv = mask_conv
         self.extractor = extractor.lower()
-        self.joint_learning = joint_learning
+        self.joint_ctc = joint_ctc
 
         if self.extractor == 'vgg':
             input_size = (input_size - 1) << 5 if input_size % 2 else input_size << 5
@@ -81,15 +85,17 @@ class Listener(BaseRNN):
         else:
             raise ValueError("Unsupported Extractor : {0}".format(extractor))
 
-        if self.joint_learning:
-            self.joint_batchnorm1d = nn.BatchNorm1d(self.hidden_dim << 1)
+        if self.joint_ctc:
             self.generator = nn.Sequential(
+                nn.BatchNorm1d(self.hidden_dim << 1),
+                Transpose(shape=(1, 2)),
                 nn.Dropout(dropout_p),
                 Linear(self.hidden_dim << 1, num_classes, bias=False)
             )
 
-    def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
-        ctc_logits = None
+    def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor, Optional[Tensor]]:
+        ctc_output = None
+        seq_lengths = None
 
         if self.mask_conv:
             inputs = inputs.unsqueeze(1).permute(0, 1, 3, 2)
@@ -115,8 +121,8 @@ class Listener(BaseRNN):
 
             output, hidden = self.rnn(conv_feat)
 
-        if self.joint_learning:
-            ctc_logits = self.joint_batchnorm1d(output.transpose(1, 2))
-            ctc_logits = self.generator(ctc_logits.transpose(1, 2))
+        if self.joint_ctc:
+            ctc_output = self.generator(output.transpose(1, 2))
 
-        return output, ctc_logits
+        return output, ctc_output, seq_lengths
+
