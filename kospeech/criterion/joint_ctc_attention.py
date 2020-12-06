@@ -83,6 +83,6 @@ class JointCTCAttentionLoss(nn.Module):
             target_lengths: Tensor
     ) -> Tensor:
         ctc_loss = self.get_ctc_loss(ctc_logits, input_lengths, targets, target_lengths)
-        cross_entropy_loss = self.get_cross_entropy_loss(cross_entropy_logits, targets)
+        cross_entropy_loss = self.get_cross_entropy_loss(cross_entropy_logits, targets[:, 1:].contiguous().view(-1))
         loss = cross_entropy_loss * self.cross_entropy_weight + ctc_loss * self.ctc_weight
         return loss

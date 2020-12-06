@@ -38,11 +38,6 @@ class ListenAttendSpell(nn.Module):
         self.encoder = encoder
         self.decoder = decoder
 
-        self.joint_ctc_attention = joint_ctc_attention
-        if self.joint_ctc_attention:
-            assert blank_id is not None, "If use joint learning, blank_id should not be None"
-            self.ctc_loss = nn.CTCLoss(blank=blank_id, reduction='mean')
-
     def forward(
             self,
             inputs: Tensor,

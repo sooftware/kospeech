@@ -76,7 +76,7 @@ class SupervisedTrainer(object):
         self.architecture = architecture.lower()
         self.vocab = vocab
         self.joint_ctc_attention = joint_ctc_attention
-        self.log_format = "step: {:4d}/{:4d}, loss: {:.4f}, cer: {:.2f}, elapsed: {:.2f}s {:.2f}m {:.2f}h, lr: {:.6f}"
+        self.log_format = "step: {:4d}/{:4d}, loss: {:.6f}, cer: {:.2f}, elapsed: {:.2f}s {:.2f}m {:.2f}h, lr: {:.6f}"
 
     def train(
         self,

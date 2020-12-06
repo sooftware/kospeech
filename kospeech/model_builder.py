@@ -79,8 +79,7 @@ def build_deepspeech2(input_size: int, num_classes: int, rnn_type: str, num_rnn_
     if rnn_type.lower() not in BaseRNN.supported_rnns.keys():
         raise ParameterError("Unsupported RNN Cell: {0}".format(rnn_type))
 
-    return nn.DataParallel(
-        DeepSpeech2(
+    return nn.DataParallel(DeepSpeech2(
             input_size=input_size,
             num_classes=num_classes,
             rnn_type=rnn_type,
@@ -90,8 +89,7 @@ def build_deepspeech2(input_size: int, num_classes: int, rnn_type: str, num_rnn_
             bidirectional=bidirectional,
             activation=activation,
             device=device
-        )
-    ).to(device)
+    )).to(device)
 
 
 def build_transformer(num_classes: int, pad_id: int, d_model: int, num_heads: int, input_size: int,
@@ -100,8 +98,7 @@ def build_transformer(num_classes: int, pad_id: int, d_model: int, num_heads: in
     if ffnet_style not in {'ff', 'conv'}:
         raise ParameterError("Unsupported ffnet_style: {0}".format(ffnet_style))
 
-    return nn.DataParallel(
-        SpeechTransformer(
+    return nn.DataParallel(SpeechTransformer(
             num_classes=num_classes,
             pad_id=pad_id,
             d_model=d_model,
@@ -112,8 +109,7 @@ def build_transformer(num_classes: int, pad_id: int, d_model: int, num_heads: in
             ffnet_style=ffnet_style,
             input_dim=input_size,
             eos_id=eos_id
-        )
-    ).to(device)
+    )).to(device)
 
 
 def build_las(input_size, opt, vocab, device):
