@@ -38,7 +38,8 @@ class JointCTCAttentionLoss(nn.Module):
             dim: int = -1,                        # dimension of caculation loss
             reduction='mean',                     # reduction method [sum, mean]
             ctc_weight: float = 0.5,              # weight of ctc loss
-            cross_entropy_weight: float = 0.5     # weight of cross entropy loss
+            cross_entropy_weight: float = 0.5,    # weight of cross entropy loss
+            blank_id: int = None
     ) -> None:
         super(JointCTCAttentionLoss, self).__init__()
         self.confidence = 1.0 - smoothing
@@ -56,6 +57,8 @@ class JointCTCAttentionLoss(nn.Module):
             self.reduction_method = torch.mean
         else:
             raise ValueError("Unsupported reduction method {0}".format(reduction))
+
+        self.ctc_loss = nn.CTCLoss(blank=blank_id, reduction=self.reduction)
 
     def get_ctc_loss(self, logits: Tensor, input_lengths: Tensor, targets: Tensor, target_lengths: Tensor) -> float:
         return self.ctc_loss(logits.log_softmax(dim=2), targets, input_lengths, target_lengths)

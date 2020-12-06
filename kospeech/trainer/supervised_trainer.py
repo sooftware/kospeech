@@ -337,7 +337,7 @@ class SupervisedTrainer(object):
                 )
             elif isinstance(self.criterion, JointCTCAttentionLoss):
                 loss = self.criterion(
-                    cross_entropy_logit=output.contiguous().view(-1, output.size(-1)),
+                    cross_entropy_logits=output.contiguous().view(-1, output.size(-1)),
                     ctc_logits=ctc_logits.transpose(0, 1),
                     input_lengths=seq_lengths,
                     targets=targets,

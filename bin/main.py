@@ -99,6 +99,7 @@ def train(opt):
                 reduction=opt.reduction,
                 ctc_weight=opt.ctc_weight,
                 cross_entropy_weight=opt.cross_entropy_weight,
+                blank_id=vocab.blank_id,
                 dim=-1,
             ).to(device)
         else:

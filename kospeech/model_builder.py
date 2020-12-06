@@ -118,8 +118,7 @@ def build_transformer(num_classes: int, pad_id: int, d_model: int, num_heads: in
 
 def build_las(input_size, opt, vocab, device):
     """ Various Listen, Attend and Spell dispatcher function. """
-    model = ListenAttendSpell(
-        build_listener(
+    listenr = build_listener(
             input_size=input_size,
             num_classes=len(vocab),
             hidden_dim=opt.hidden_dim,
@@ -132,8 +131,8 @@ def build_las(input_size, opt, vocab, device):
             device=device,
             mask_conv=opt.mask_conv,
             joint_ctc_attention=opt.joint_ctc_attention
-        ),
-        build_speller(
+    )
+    speller = build_speller(
             num_classes=len(vocab),
             max_len=opt.max_len,
             pad_id=vocab.pad_id,
@@ -146,10 +145,9 @@ def build_las(input_size, opt, vocab, device):
             num_heads=opt.num_heads,
             attn_mechanism=opt.attn_mechanism,
             device=device
-        ),
-        opt.joint_ctc_attention,
-        vocab.blank_id
     )
+
+    model = ListenAttendSpell(listenr, speller)
     model.flatten_parameters()
 
     return nn.DataParallel(model).to(device)

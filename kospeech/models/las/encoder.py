@@ -105,7 +105,7 @@ class Listener(BaseRNN):
             batch_size, num_channels, hidden_dim, seq_length = conv_feat.size()
             conv_feat = conv_feat.view(batch_size, num_channels * hidden_dim, seq_length).permute(2, 0, 1).contiguous()
 
-            conv_feat = nn.utils.rnn.pack_padded_sequence(conv_feat, seq_lengths)
+            conv_feat = nn.utils.rnn.pack_padded_sequence(conv_feat, seq_lengths.cpu())
             output, hidden = self.rnn(conv_feat)
             output, _ = nn.utils.rnn.pad_packed_sequence(output)
             output = output.transpose(0, 1)

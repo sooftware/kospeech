@@ -33,13 +33,7 @@ class ListenAttendSpell(nn.Module):
         - **output** (seq_len, batch_size, num_classes): list of tensors containing
           the outputs of the decoding function.
     """
-    def __init__(
-            self,
-            encoder: nn.Module,
-            decoder: nn.Module,
-            joint_ctc_attention: bool = False,
-            blank_id: int = None
-    ) -> None:
+    def __init__(self, encoder: nn.Module, decoder: nn.Module) -> None:
         super(ListenAttendSpell, self).__init__()
         self.encoder = encoder
         self.decoder = decoder
