@@ -44,9 +44,6 @@ class Listener(BaseRNN):
         - **encoder_outputs**: tensor containing the encoded features of the input sequence
         - **encoder_log__probs**: tensor containing log probability for ctc loss
     """
-    KEY_ENCODER_OUTPUTS = 'encoder_outputs'
-    KEY_CTC_LOGIT = 'ctc_logit'
-
     def __init__(
             self,
             input_size: int,                         # size of input
