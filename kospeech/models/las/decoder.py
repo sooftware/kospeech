@@ -12,7 +12,7 @@ import numpy as np
 from torch import Tensor, LongTensor
 from typing import Optional, Any, Tuple
 from kospeech.models.transformer.sublayers import AddNorm
-from kospeech.models.modules import Linear, BaseRNN
+from kospeech.models.modules import Linear, BaseRNN, View
 from kospeech.models.attention import (
     LocationAwareAttention,
     MultiHeadAttention,
@@ -91,8 +91,8 @@ class Speller(BaseRNN):
         else:
             raise ValueError("Unsupported attention: %s".format(attn_mechanism))
 
-        self.projection = AddNorm(Linear(hidden_dim, hidden_dim, bias=True), hidden_dim)
-        self.generator = Linear(hidden_dim, num_classes, bias=False)
+        self.fc1 = AddNorm(Linear(hidden_dim, hidden_dim, bias=True), hidden_dim)
+        self.fc2 = Linear(hidden_dim, num_classes, bias=False)
 
     def forward_step(
             self,
@@ -100,7 +100,7 @@ class Speller(BaseRNN):
             hidden: Optional[Any],              # tensor containing hidden state vector of RNN
             encoder_outputs: Tensor,            # tensor with containing the outputs of the encoder
             attn: Optional[Any] = None          # tensor containing attention distribution
-    ) -> Tuple[Tensor, Optional[Any], Tensor]:
+    ) -> Tuple[Tensor, Tensor, Tensor]:
         batch_size, output_lengths = input_var.size(0), input_var.size(1)
 
         embedded = self.embedding(input_var).to(self.device)
@@ -116,8 +116,8 @@ class Speller(BaseRNN):
         else:
             context, attn = self.attention(output, encoder_outputs, encoder_outputs)
 
-        output = self.projection(context.view(-1, self.hidden_dim)).view(batch_size, -1, self.hidden_dim)
-        output = self.generator(torch.tanh(output).contiguous().view(-1, self.hidden_dim))
+        output = self.fc1(context.view(-1, self.hidden_dim)).view(batch_size, -1, self.hidden_dim)
+        output = self.fc2(torch.tanh(output).contiguous().view(-1, self.hidden_dim))
 
         step_output = F.log_softmax(output, dim=1)
         step_output = step_output.view(batch_size, output_lengths, -1).squeeze(1)
@@ -126,17 +126,16 @@ class Speller(BaseRNN):
 
     def forward(
             self,
-            inputs: Tensor,
-            encoder_outputs: Tensor,
-            teacher_forcing_ratio: float = 1.0
+            inputs: Tensor,                         # tensor of sequences whose contains target variables
+            encoder_outputs: Tensor,                # tensor with containing the outputs of the encoder
+            teacher_forcing_ratio: float = 1.0      # probability that teacher forcing will be used.
     ) -> dict:
 
         hidden, attn = None, None
-        decoder_outputs = {
-            "decoder_log_probs": list(),
-            "attention_score": list(),
-            "sequence_symbol": list()
-        }
+        decoder_outputs = dict()
+        decoder_outputs["decoder_log_probs"] = list()
+        decoder_outputs["attention_score"] = list()
+        decoder_outputs["sequence_symbol"] = list()
 
         inputs, batch_size, max_length = self.validate_args(inputs, encoder_outputs, teacher_forcing_ratio)
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False

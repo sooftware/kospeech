@@ -5,4 +5,4 @@ from kospeech.models.las.topk_decoder import TopKDecoder
 from kospeech.models.las.model import ListenAttendSpell
 from kospeech.models.transformer.model import SpeechTransformer
 from kospeech.models.transformer.sublayers import AddNorm
-from kospeech.models.resnet1d_vad.model import ResnetVADModel
+from kospeech.models.resnet1d.model import ResnetVADModel

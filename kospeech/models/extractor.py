@@ -120,13 +120,8 @@ class DeepSpeech2Extractor(CNNExtractor):
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Optional[Any]:
         if self.mask_conv:
-            conv_feat, seq_lengths = self.conv(inputs, input_lengths)
-            output = conv_feat, seq_lengths
-        else:
-            conv_feat = self.conv(inputs)
-            output = conv_feat
-
-        return output
+            return self.conv(inputs, input_lengths)
+        return self.conv(inputs)
 
 
 class VGGExtractor(CNNExtractor):
@@ -159,10 +154,5 @@ class VGGExtractor(CNNExtractor):
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Optional[Any]:
         if self.mask_conv:
-            conv_feat, seq_lengths = self.conv(inputs, input_lengths)
-            output = conv_feat, seq_lengths
-        else:
-            conv_feat = self.conv(inputs)
-            output = conv_feat
-
-        return output
+            return self.conv(inputs, input_lengths)
+        return self.conv(inputs)
