@@ -84,7 +84,7 @@ class Listener(BaseRNN):
 
         if self.joint_ctc_attention:
             assert self.mask_conv, "if joint_ctc_attention training, mask_conv should be True"
-            self.generator = nn.Sequential(
+            self.fc = nn.Sequential(
                 nn.BatchNorm1d(self.hidden_dim << 1),
                 Transpose(shape=(1, 2)),
                 nn.Dropout(dropout_p),
@@ -120,7 +120,7 @@ class Listener(BaseRNN):
             encoder_outputs, hidden = self.rnn(conv_feat)
 
         if self.joint_ctc_attention:
-            encoder_log_probs = self.generator(encoder_outputs.transpose(1, 2)).log_softmax(dim=2)
+            encoder_log_probs = self.fc(encoder_outputs.transpose(1, 2)).log_softmax(dim=2)
 
         return encoder_outputs, encoder_log_probs, encoder_output_lengths
 

@@ -17,7 +17,6 @@ class JointCTCAttentionLoss(nn.Module):
     Args:
         num_classes (int): the number of classfication
         ignore_index (int): Indexes that are ignored when calculating loss
-        smoothing (float): ratio of smoothing (confidence = 1.0 - smoothing)
         dim (int): dimension of calculation loss
         reduction (str): reduction method [sum, mean] (default: sum)
         ctc_weight (float): weight of ctc loss
@@ -55,7 +54,7 @@ class JointCTCAttentionLoss(nn.Module):
         else:
             raise ValueError("Unsupported reduction method {0}".format(reduction))
 
-        self.ctc_loss = nn.CTCLoss(blank=blank_id, reduction=self.reduction)
+        self.ctc_loss = nn.CTCLoss(blank=blank_id, reduction=self.reduction, zero_infinity=True)
         self.cross_entropy_loss = nn.CrossEntropyLoss(reduction=self.reduction, ignore_index=self.ignore_index)
 
     def forward(
