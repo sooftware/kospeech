@@ -15,12 +15,12 @@ BATCH_SIZE=32
 NUM_WORKERS=4
 NUM_EPOCHS=20
 HIDDEN_DIM=512
-DROPOUT=0.15
+DROPOUT=0.3
 NUM_HEADS=4
 ATTN_MECHANISM='multi-head'   # multi-head, loc, additive, scaled-dot
 REDUCTION='mean'
 NUM_ENCODER_LAYERS=3
-NUM_DECODER_LAYERS=1
+NUM_DECODER_LAYERS=2
 RNN_TYPE='lstm'
 TEACHER_FORCING_RATIO=1.0
 TEACHER_FORCING_STEP=0.0
@@ -33,7 +33,7 @@ PEAK_LR=1e-04
 FINAL_LR=1e-06
 INIT_LR_SCALE=0.01
 FINAL_LR_SCALE=0.05
-WARMUP_STEPS=2000
+WARMUP_STEPS=400
 FRAME_LENGTH=20
 FRAME_SHIFT=10
 SAMPLE_RATE=16000
@@ -59,7 +59,7 @@ echo "KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition =="
 python ./main.py --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epochs $NUM_EPOCHS --use_bidirectional \
 --transcripts_path $TRANSCRIPTS_PATH --dataset $DATASET --audio_extension $AUDIO_EXTENSION --output_unit $OUTPUT_UNIT \
 --optimizer $OPTIMIZER --use_cuda --hidden_dim $HIDDEN_DIM --dropout $DROPOUT --num_heads $NUM_HEADS \
---label_smoothing $LABEL_SMOOTHING --transform_method $TRANSFORM_METHOD --architecture $ARCHITECTURE \
+--transform_method $TRANSFORM_METHOD --architecture $ARCHITECTURE \
 --num_encoder_layers $NUM_ENCODER_LAYERS --num_decoder_layers $NUM_DECODER_LAYERS --rnn_type $RNN_TYPE \
 --teacher_forcing_ratio $TEACHER_FORCING_RATIO \
 --sample_rate $SAMPLE_RATE --frame_length $FRAME_LENGTH --frame_shift $FRAME_SHIFT --n_mels $N_MELS --normalize --del_silence \
