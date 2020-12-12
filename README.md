@@ -18,6 +18,7 @@
 - Currently, beam search may not work properly.  
 - The pre-train model is currently not working properly, but will be uploaded as soon as the current learning is complete.  
 - Currently, CUDA OOM error is occurring at the end of 1 epoch. We will fix it as soon as I know the cause.
+- Transformer model is currently not working properly.
   
 ### ***[KoSpeech:  Open-Source Toolkit for End-to-End Korean Speech Recognition \[Technical Report\]](https://arxiv.org/abs/2009.03092)***
   
@@ -75,24 +76,26 @@ We will response as soon as possible.
 
 ## Roadmap
   
-![image](https://user-images.githubusercontent.com/42150335/101286627-df3e8680-382e-11eb-8d48-0536b4714ba0.png)
+![image](https://user-images.githubusercontent.com/42150335/101985614-8b1f2080-3ccc-11eb-9645-e5217a2dfa53.png)
   
-### (a) Deep Speech 2  
+So far, four models are implemented: *Deep Speech 2, Listen Attend and Spell (LAS), Speech Transformer, and Joint CTC-Attention LAS*. To check details of these model architectures, check figures attached to each section.
   
-The Deep Speech 2 model can be trained with several options.   
-Depending on the conditions, the loss may explode in the middle.  
-We don't recommend too big a vocab size.  
+### Deep Speech 2  
   
-### (b) Listen, Attend and Spell
+Deep Speech 2 showed faster and more accurate performance on ASR tasks with Connectionist Temporal Classification (CTC) loss. This model has been highlighted for significantly increasing performance compared to the previous end- to-end models.
+
   
-Listen, Attend and Spell can be trained with serveral options. You can choose the CNN extractor from (`ds2` /`vgg`),   
-You can choose attention mechanism from (`location-aware`, `multi-head`, `additive`, `scaled-dot`) attention.  
-Also, you can train with joint CTC-Attention training.  
+### Listen, Attend and Spell
+   
+We follow the architecture previously proposed in the "Listen, Attend and Spell", but some modifications were added to improve performance. We provide four different attention mechanisms, `scaled dot-product attention`, `additive attention`, `location aware attention`, `multi-head attention`. Attention mechanisms much affect the performance of models. 
   
-### (c) Transformer  
+### Speech Transformer  
   
-The Transformer model is currently implemented, but There is a bug, so I can't learn at the moment.    
-We will fix as soon as possible.   
+Transformer is a powerful architecture in the Natural Language Processing (NLP) field. This architecture also showed good performance at ASR tasks. In addition, as the research of this model continues in the natural language processing field, this model has high potential for further development.
+  
+### Joint CTC Attention
+  
+With the proposed architecture to take advantage of both the CTC-based model and the attention-based model. It is a structure that makes it robust by adding CTC to the encoder.
   
 ### Various Options   
   
