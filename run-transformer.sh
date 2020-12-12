@@ -45,7 +45,7 @@ MODE='train'
 cd bin
 echo "KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition =="
 
-python ./main.py --architecture $ARCHITECTURE --d_model $D_MODEL --reduction $REDUCTION \
+python ./main.py --architecture $ARCHITECTURE --d_model $D_MODEL --reduction $REDUCTION --dataset $DATASET \
 --num_heads $NUM_HEADS --num_encoder_layers $NUM_ENCODER_LAYERS --num_decoder_layers $NUM_DECODER_LAYERS \
 --dropout $DROPOUT --ffnet_style $FFNET_STYLE --dataset_path $DATASET_PATH --transcripts_path $TRANSCRIPTS_PATH \
 --batch_size $BATCH_SIZE --num_workers $NUM_WORKERS --num_epochs $NUM_EPOCHS \
