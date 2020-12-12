@@ -9,7 +9,6 @@ import argparse
 import random
 import warnings
 import torch
-import torch.nn as nn
 sys.path.append('..')
 from kospeech.data.data_loader import split_dataset
 from kospeech.optim import Optimizer
