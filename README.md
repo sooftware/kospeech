@@ -78,7 +78,7 @@ We will response as soon as possible.
   
 ![image](https://user-images.githubusercontent.com/42150335/101985614-8b1f2080-3ccc-11eb-9645-e5217a2dfa53.png)
   
-So far, four models are implemented: *Deep Speech 2, Listen Attend and Spell (LAS), Speech Transformer, and Joint CTC-Attention Listen, Attend and Spell*. To check details of these model architectures, check figures attached to each section.
+So far, four models are implemented: *Deep Speech 2, Listen Attend and Spell (LAS), Speech Transformer, and Joint CTC-Attention LAS*. To check details of these model architectures, check figures attached to each section.
   
 ### Deep Speech 2  
   
