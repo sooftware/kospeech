@@ -33,7 +33,7 @@ def build_model(opt, vocab, device):
 
     elif opt.architecture.lower() == 'transformer':
         model = build_transformer(
-            num_classes=opt.num_classes,
+            num_classes=len(vocab),
             pad_id=vocab.pad_id,
             input_size=input_size,
             d_model=opt.d_model,

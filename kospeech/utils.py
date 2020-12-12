@@ -40,6 +40,9 @@ class Logger(object):
         self.logger.debug(message)
 
 
+logger = Logger()
+
+
 def check_envirionment(use_cuda: bool):
     """
     Check execution envirionment.
@@ -111,6 +114,3 @@ def get_criterion(opt, vocab):
         )
 
     return criterion
-
-
-logger = Logger()

@@ -61,9 +61,6 @@ def build_model_opts(parser):
 
     # Transformer
 
-    group.add_argument('--num_classes', '-num_classes',
-                       type=int, default=2038,
-                       help='vocabolary size (default: 2038)')
     group.add_argument('--d_model', '-d_model',
                        type=int, default=512,
                        help='dimension of model (default: 512)')
