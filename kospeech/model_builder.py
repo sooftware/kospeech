@@ -38,7 +38,7 @@ def build_model(opt, vocab, device):
             input_size=input_size,
             d_model=opt.d_model,
             num_heads=opt.num_heads,
-            eos_id=vocab.pad_id,
+            eos_id=vocab.eos_id,
             num_encoder_layers=opt.num_encoder_layers,
             num_decoder_layers=opt.num_decoder_layers,
             dropout_p=opt.dropout,

@@ -40,10 +40,10 @@ class ListenAttendSpell(nn.Module):
 
     def forward(
             self,
-            inputs: Tensor,
-            input_lengths: Tensor,
-            targets: Optional[Tensor] = None,
-            teacher_forcing_ratio: float = 1.0
+            inputs: Tensor,                             # tensor contains audio's features
+            input_lengths: Tensor,                      # tensor contains feature's lengths
+            targets: Optional[Tensor] = None,           # tensor contains target sentences
+            teacher_forcing_ratio: float = 1.0          # ratio of teacher forcing
     ) -> Tuple[dict, Tensor, Tensor]:
         encoder_outputs, encoder_log_probs, encoder_output_lengths = self.encoder(inputs, input_lengths)
 
@@ -53,16 +53,16 @@ class ListenAttendSpell(nn.Module):
 
         return decoder_outputs, encoder_log_probs, encoder_output_lengths
 
-    def greedy_decode(self, inputs: Tensor, input_lengths: Tensor, device: str):
+    def greedy_decode(self, inputs: Tensor, input_lengths: Tensor, device: str) -> Tensor:
         with torch.no_grad():
             self.flatten_parameters()
-            output = self.forward(inputs, input_lengths, teacher_forcing_ratio=0.0)
-            logit = torch.stack(output['decoder_outputs'], dim=1).to(device)
-            return logit.max(-1)[1]
+            decoder_outputs, _, _ = self.forward(inputs, input_lengths, teacher_forcing_ratio=0.0)
+            output = torch.stack(decoder_outputs['decoder_log_probs'], dim=1).to(device)
+            return output.max(-1)[1]
 
-    def flatten_parameters(self):
+    def flatten_parameters(self) -> None:
         self.encoder.rnn.flatten_parameters()
         self.decoder.rnn.flatten_parameters()
 
-    def set_decoder(self, decoder: nn.Module):
+    def set_decoder(self, decoder: nn.Module) -> None:
         self.decoder = decoder
