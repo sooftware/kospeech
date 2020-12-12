@@ -19,7 +19,7 @@ from kospeech.utils import check_envirionment
 from kospeech.model_builder import build_model
 from kospeech.criterion import (
     LabelSmoothedCrossEntropyLoss,
-    JointCTCAttentionLoss
+    JointCTCCrossEntropyLoss
 )
 from kospeech.vocabs import (
     KsponSpeechVocabulary,
@@ -92,7 +92,7 @@ def train(opt):
         if opt.architecture == 'deepspeech2':
             criterion = nn.CTCLoss(blank=vocab.blank_id, reduction=opt.reduction).to(device)
         elif opt.architecture == 'las' and opt.joint_ctc_attention:
-            criterion = JointCTCAttentionLoss(
+            criterion = JointCTCCrossEntropyLoss(
                 num_classes=len(vocab),
                 ignore_index=vocab.pad_id,
                 reduction=opt.reduction,
@@ -121,12 +121,13 @@ def train(opt):
         if opt.architecture == 'deepspeech2':
             criterion = nn.CTCLoss(blank=vocab.blank_id, reduction=opt.reduction).to(device)
         elif opt.architecture == 'las' and opt.joint_ctc_attention:
-            criterion = JointCTCAttentionLoss(
+            criterion = JointCTCCrossEntropyLoss(
                 num_classes=len(vocab),
                 ignore_index=vocab.pad_id,
                 reduction=opt.reduction,
                 ctc_weight=opt.ctc_weight,
                 cross_entropy_weight=opt.cross_entropy_weight,
+                blank_id=vocab.blank_id,
                 dim=-1,
             ).to(device)
         else:

@@ -13,7 +13,7 @@ from kospeech.metrics import CharacterErrorRate
 from kospeech.utils import logger
 from kospeech.criterion import (
     LabelSmoothedCrossEntropyLoss,
-    JointCTCAttentionLoss
+    JointCTCCrossEntropyLoss
 )
 from kospeech.data import (
     MultiDataLoader,
@@ -310,7 +310,10 @@ class SupervisedTrainer(object):
             targets = targets[:, 1:].to(self.device)
             model.to(self.device)
 
-            y_hats = model.greedy_decode(inputs, input_lengths, self.device)
+            if isinstance(model, nn.DataParallel):
+                y_hats = model.module.greedy_decode(inputs, input_lengths, self.device)
+            else:
+                y_hats = model.greedy_decode(inputs, input_lengths, self.device)
             cer = self.metric(targets, y_hats)
 
         logger.info('validate() completed')
@@ -348,7 +351,7 @@ class SupervisedTrainer(object):
                 loss = self.criterion(
                     output.contiguous().view(-1, output.size(-1)), targets[:, 1:].contiguous().view(-1)
                 )
-            elif isinstance(self.criterion, JointCTCAttentionLoss):
+            elif isinstance(self.criterion, JointCTCCrossEntropyLoss):
                 loss, ctc_loss, cross_entropy_loss = self.criterion(
                     encoder_log_probs=encoder_log_probs.transpose(0, 1),
                     decoder_log_probs=output.contiguous().view(-1, output.size(-1)),

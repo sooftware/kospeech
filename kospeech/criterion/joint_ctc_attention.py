@@ -10,7 +10,7 @@ from typing import Tuple
 from torch import Tensor
 
 
-class JointCTCAttentionLoss(nn.Module):
+class JointCTCCrossEntropyLoss(nn.Module):
     """
     Label smoothed cross entropy loss function.
 
@@ -35,11 +35,11 @@ class JointCTCAttentionLoss(nn.Module):
             ignore_index: int,                    # indexes that are ignored when calcuating loss
             dim: int = -1,                        # dimension of caculation loss
             reduction='mean',                     # reduction method [sum, mean]
-            ctc_weight: float = 0.5,              # weight of ctc loss
-            cross_entropy_weight: float = 0.5,    # weight of cross entropy loss
+            ctc_weight: float = 0.3,              # weight of ctc loss
+            cross_entropy_weight: float = 0.7,    # weight of cross entropy loss
             blank_id: int = None
     ) -> None:
-        super(JointCTCAttentionLoss, self).__init__()
+        super(JointCTCCrossEntropyLoss, self).__init__()
         self.num_classes = num_classes
         self.dim = dim
         self.ignore_index = ignore_index
