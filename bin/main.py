@@ -10,25 +10,20 @@ import random
 import warnings
 import torch
 import torch.nn as nn
-from torch import optim
 sys.path.append('..')
 from kospeech.data.data_loader import split_dataset
+from kospeech.optim import Optimizer
 from kospeech.optim.lr_scheduler import TriStageLRScheduler
 from kospeech.trainer import SupervisedTrainer
-from kospeech.utils import check_envirionment
 from kospeech.model_builder import build_model
-from kospeech.criterion import (
-    LabelSmoothedCrossEntropyLoss,
-    JointCTCCrossEntropyLoss
+from kospeech.utils import (
+    check_envirionment,
+    get_optimizer,
+    get_criterion
 )
 from kospeech.vocabs import (
     KsponSpeechVocabulary,
     LibriSpeechVocabulary
-)
-from kospeech.optim import (
-    Optimizer,
-    RAdam,
-    AdamP
 )
 from kospeech.opts import (
     print_opts,
@@ -64,18 +59,7 @@ def train(opt):
         epoch_time_step, trainset_list, validset = split_dataset(opt, opt.transcripts_path, vocab)
         model = build_model(opt, vocab, device)
 
-        if opt.optimizer.lower() == 'adam':
-            optimizer = optim.Adam(model.module.parameters(), lr=opt.init_lr, weight_decay=opt.weight_decay)
-        elif opt.optimizer.lower() == 'radam':
-            optimizer = RAdam(model.module.parameters(), lr=opt.init_lr, weight_decay=opt.weight_decay)
-        elif opt.optimizer.lower() == 'adamp':
-            optimizer = AdamP(model.module.parameters(), lr=opt.init_lr, weight_decay=opt.weight_decay)
-        elif opt.optimizer.lower() == 'adadelta':
-            optimizer = optim.Adadelta(model.module.parameters(), lr=opt.init_lr, weight_decay=opt.weight_decay)
-        elif opt.optimizer.lower() == 'adagrad':
-            optimizer = optim.Adagrad(model.module.parameters(), lr=opt.init_lr, weight_decay=opt.weight_decay)
-        else:
-            raise ValueError(f"Unsupported Optimizer, Supported Optimizer : Adam, RAdam, Adadelta, Adagrad")
+        optimizer = get_optimizer(model, opt)
 
         lr_scheduler = TriStageLRScheduler(
             optimizer=optimizer,
@@ -88,28 +72,7 @@ def train(opt):
             total_steps=int(opt.num_epochs * epoch_time_step)
         )
         optimizer = Optimizer(optimizer, lr_scheduler, opt.warmup_steps, opt.max_grad_norm)
-
-        if opt.architecture == 'deepspeech2':
-            criterion = nn.CTCLoss(blank=vocab.blank_id, reduction=opt.reduction).to(device)
-        elif opt.architecture == 'las' and opt.joint_ctc_attention:
-            criterion = JointCTCCrossEntropyLoss(
-                num_classes=len(vocab),
-                ignore_index=vocab.pad_id,
-                reduction=opt.reduction,
-                ctc_weight=opt.ctc_weight,
-                cross_entropy_weight=opt.cross_entropy_weight,
-                blank_id=vocab.blank_id,
-                dim=-1,
-            ).to(device)
-        else:
-            criterion = LabelSmoothedCrossEntropyLoss(
-                num_classes=len(vocab),
-                ignore_index=vocab.pad_id,
-                smoothing=opt.label_smoothing,
-                reduction=opt.reduction,
-                architecture=opt.architecture,
-                dim=-1
-            ).to(device)
+        criterion = get_criterion(opt, vocab)
 
     else:
         trainset_list = None
@@ -117,28 +80,7 @@ def train(opt):
         model = None
         optimizer = None
         epoch_time_step = None
-
-        if opt.architecture == 'deepspeech2':
-            criterion = nn.CTCLoss(blank=vocab.blank_id, reduction=opt.reduction).to(device)
-        elif opt.architecture == 'las' and opt.joint_ctc_attention:
-            criterion = JointCTCCrossEntropyLoss(
-                num_classes=len(vocab),
-                ignore_index=vocab.pad_id,
-                reduction=opt.reduction,
-                ctc_weight=opt.ctc_weight,
-                cross_entropy_weight=opt.cross_entropy_weight,
-                blank_id=vocab.blank_id,
-                dim=-1,
-            ).to(device)
-        else:
-            criterion = LabelSmoothedCrossEntropyLoss(
-                num_classes=len(vocab),
-                ignore_index=vocab.pad_id,
-                smoothing=opt.label_smoothing,
-                reduction=opt.reduction,
-                architecture=opt.architecture,
-                dim=-1
-            ).to(device)
+        criterion = get_criterion(opt, vocab)
 
     trainer = SupervisedTrainer(
         optimizer=optimizer,
