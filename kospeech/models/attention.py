@@ -167,7 +167,7 @@ class LocationAwareAttention(nn.Module):
         else:
             alignmment_energy = F.softmax(alignmment_energy, dim=-1)
 
-        context = torch.bmm(alignmment_energy.unsqueeze(dim=1), value).squeeze(1)
+        context = torch.bmm(alignmment_energy.unsqueeze(dim=1), value)
 
         return context, alignmment_energy
 
