@@ -123,7 +123,7 @@ class LocationAwareAttention(nn.Module):
     Inputs: query, value, last_attn
         - **query** (batch, q_len, hidden_dim): tensor containing the output features from the decoder.
         - **value** (batch, v_len, hidden_dim): tensor containing features of the encoded input sequence.
-        - **last_attn** (batch_size * num_heads, v_len): tensor containing previous timestep`s attention (alignment)
+        - **last_attn** (batch_size, v_len): tensor containing previous timestep`s attention (alignment)
 
     Returns: output, attn
         - **output** (batch, output_len, dimensions): tensor containing the feature from encoder outputs
@@ -150,24 +150,24 @@ class LocationAwareAttention(nn.Module):
         if last_alignment_energy is None:
             last_alignment_energy = value.new_zeros(batch_size, seq_length)
 
-        last_alignment_energy = self.location_conv(last_alignment_energy.unsqueeze(1))
+        last_alignment_energy = self.location_conv(last_alignment_energy.unsqueeze(dim=1))
         last_alignment_energy = last_alignment_energy.transpose(1, 2)
 
         alignmment_energy = self.fc(torch.tanh(
-                self.query_proj(query.reshape(-1, hidden_dim)).view(batch_size, -1, self.attn_dim)
-                + self.value_proj(value.reshape(-1, hidden_dim)).view(batch_size, -1, self.attn_dim)
+                self.query_proj(query)
+                + self.value_proj(value)
                 + last_alignment_energy
                 + self.bias
-        )).squeeze(-1)
+        )).squeeze(dim=-1)
 
         if self.smoothing:
             alignmment_energy = torch.sigmoid(alignmment_energy)
-            alignmment_energy = torch.div(alignmment_energy, alignmment_energy.sum(-1).unsqueeze(-1))
+            alignmment_energy = torch.div(alignmment_energy, alignmment_energy.sum(dim=-1).unsqueeze(dim=-1))
 
         else:
             alignmment_energy = F.softmax(alignmment_energy, dim=-1)
 
-        context = torch.bmm(alignmment_energy.unsqueeze(1), value).squeeze(1)
+        context = torch.bmm(alignmment_energy.unsqueeze(dim=1), value).squeeze(1)
 
         return context, alignmment_energy
 

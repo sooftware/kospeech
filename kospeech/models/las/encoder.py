@@ -73,7 +73,7 @@ class Listener(BaseRNN):
         elif self.extractor == 'ds2':
             input_size = int(math.floor(input_size + 2 * 20 - 41) / 2 + 1)
             input_size = int(math.floor(input_size + 2 * 10 - 21) / 2 + 1)
-            input_size <<= 5
+            input_size <<= 6
             super(Listener, self).__init__(
                 input_size, hidden_dim, num_layers, rnn_type, dropout_p, bidirectional, device
             )
