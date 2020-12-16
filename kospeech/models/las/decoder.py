@@ -81,29 +81,17 @@ class Speller(BaseRNN):
         self.input_dropout = nn.Dropout(dropout_p)
 
         if self.attn_mechanism == 'loc':
-            self.attention = AddNorm(LocationAwareAttention(
-                decoder_dim=hidden_dim,
-                attn_dim=hidden_dim,
-                smoothing=False),
-                d_model=hidden_dim
-            )
+            self.attention = LocationAwareAttention(decoder_dim=hidden_dim, attn_dim=hidden_dim, smoothing=False)
         elif self.attn_mechanism == 'multi-head':
-            self.attention = AddNorm(MultiHeadAttention(
-                d_model=hidden_dim,
-                num_heads=num_heads),
-                d_model=hidden_dim
-            )
+            self.attention = MultiHeadAttention(d_model=hidden_dim, num_heads=num_heads)
         elif self.attn_mechanism == 'additive':
             self.attention = AdditiveAttention(hidden_dim)
         elif self.attn_mechanism == 'scaled-dot':
-            self.attention = AddNorm(ScaledDotProductAttention(
-                dim=hidden_dim),
-                d_model=hidden_dim
-            )
+            self.attention = ScaledDotProductAttention(dim=hidden_dim)
         else:
             raise ValueError("Unsupported attention: %s".format(attn_mechanism))
 
-        self.fc1 = AddNorm(Linear(hidden_dim, hidden_dim, bias=True), hidden_dim)
+        self.fc1 = AddNorm(Linear(hidden_dim << 1, hidden_dim, bias=True), hidden_dim)
         self.fc2 = Linear(hidden_dim, num_classes, bias=False)
 
     def forward_step(
@@ -128,7 +116,9 @@ class Speller(BaseRNN):
         else:
             context, attn = self.attention(output, encoder_outputs, encoder_outputs)
 
-        output = self.fc1(context.view(-1, self.hidden_dim)).view(batch_size, -1, self.hidden_dim)
+        context = torch.cat((output, context), dim=1)
+
+        output = self.fc1(context.view(-1, self.hidden_dim << 1)).view(batch_size, -1, self.hidden_dim)
         output = self.fc2(torch.tanh(output).contiguous().view(-1, self.hidden_dim))
 
         step_output = F.log_softmax(output, dim=1)
