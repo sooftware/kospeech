@@ -91,8 +91,8 @@ class Speller(BaseRNN):
         else:
             raise ValueError("Unsupported attention: %s".format(attn_mechanism))
 
-        self.fc1 = AddNorm(Linear(hidden_dim << 1, hidden_dim, bias=True), hidden_dim)
-        self.fc2 = Linear(hidden_dim, num_classes, bias=False)
+        self.fc1 = Linear(hidden_dim << 1, hidden_dim)
+        self.fc2 = Linear(hidden_dim, num_classes)
 
     def forward_step(
             self,
@@ -116,7 +116,7 @@ class Speller(BaseRNN):
         else:
             context, attn = self.attention(output, encoder_outputs, encoder_outputs)
 
-        context = torch.cat((output, context), dim=1)
+        context = torch.cat((output, context), dim=2)
 
         output = self.fc1(context.view(-1, self.hidden_dim << 1)).view(batch_size, -1, self.hidden_dim)
         output = self.fc2(torch.tanh(output).contiguous().view(-1, self.hidden_dim))
