@@ -55,18 +55,18 @@ class Speller(BaseRNN):
 
     def __init__(
             self,
-            num_classes: int,                      # number of classfication
-            max_length: int = 150,                 # a maximum allowed length for the sequence to be processed
-            hidden_dim: int = 1024,                # dimension of RNN`s hidden state vector
-            pad_id: int = 0,                       # pad token`s id
-            sos_id: int = 1,                       # start of sentence token`s id
-            eos_id: int = 2,                       # end of sentence token`s id
-            attn_mechanism: str = 'multi-head',    # type of attention mechanism
-            num_heads: int = 4,                    # number of attention heads
-            num_layers: int = 2,                   # number of RNN layers
-            rnn_type: str = 'lstm',                # type of RNN cell
-            dropout_p: float = 0.3,                # dropout probability
-            device: str = 'cuda'                   # device - 'cuda' or 'cpu'
+            num_classes: int,                        # number of classfication
+            max_length: int = 150,                   # a maximum allowed length for the sequence to be processed
+            hidden_dim: int = 1024,                  # dimension of RNN`s hidden state vector
+            pad_id: int = 0,                         # pad token`s id
+            sos_id: int = 1,                         # start of sentence token`s id
+            eos_id: int = 2,                         # end of sentence token`s id
+            attn_mechanism: str = 'multi-head',      # type of attention mechanism
+            num_heads: int = 4,                      # number of attention heads
+            num_layers: int = 2,                     # number of RNN layers
+            rnn_type: str = 'lstm',                  # type of RNN cell
+            dropout_p: float = 0.3,                  # dropout probability
+            device: str = 'cuda'                     # device - 'cuda' or 'cpu'
     ) -> None:
         super(Speller, self).__init__(hidden_dim, hidden_dim, num_layers, rnn_type, dropout_p, False, device)
         self.num_classes = num_classes
@@ -81,13 +81,25 @@ class Speller(BaseRNN):
         self.input_dropout = nn.Dropout(dropout_p)
 
         if self.attn_mechanism == 'loc':
-            self.attention = AddNorm(LocationAwareAttention(hidden_dim, smoothing=True), hidden_dim)
+            self.attention = AddNorm(LocationAwareAttention(
+                decoder_dim=hidden_dim,
+                attn_dim=hidden_dim,
+                smoothing=False),
+                d_model=hidden_dim
+            )
         elif self.attn_mechanism == 'multi-head':
-            self.attention = AddNorm(MultiHeadAttention(hidden_dim, num_heads), hidden_dim)
+            self.attention = AddNorm(MultiHeadAttention(
+                d_model=hidden_dim,
+                num_heads=num_heads),
+                d_model=hidden_dim
+            )
         elif self.attn_mechanism == 'additive':
             self.attention = AdditiveAttention(hidden_dim)
         elif self.attn_mechanism == 'scaled-dot':
-            self.attention = AddNorm(ScaledDotProductAttention(hidden_dim), hidden_dim)
+            self.attention = AddNorm(ScaledDotProductAttention(
+                dim=hidden_dim),
+                d_model=hidden_dim
+            )
         else:
             raise ValueError("Unsupported attention: %s".format(attn_mechanism))
 
@@ -137,7 +149,7 @@ class Speller(BaseRNN):
         decoder_outputs["attention_score"] = list()
         decoder_outputs["sequence_symbol"] = list()
 
-        inputs, batch_size, max_length = self.validate_args(inputs, encoder_outputs, teacher_forcing_ratio)
+        inputs, batch_size, max_length = self._validate_args(inputs, encoder_outputs, teacher_forcing_ratio)
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
         lengths = np.array([max_length] * batch_size)
 
@@ -177,7 +189,7 @@ class Speller(BaseRNN):
 
         return decoder_outputs
 
-    def validate_args(
+    def _validate_args(
             self,
             inputs: Optional[Any] = None,           # tensor of sequences whose contains target variables
             encoder_outputs: Tensor = None,         # tensor with containing the outputs of the encoder
