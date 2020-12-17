@@ -87,7 +87,7 @@ def get_optimizer(model: nn.Module, opt):
 
 def get_criterion(opt, vocab):
     if opt.architecture == 'deepspeech2':
-        criterion = nn.CTCLoss(blank=vocab.blank_id, reduction=opt.reduction)
+        criterion = nn.CTCLoss(blank=vocab.blank_id, reduction=opt.reduction, zero_infinity=True)
     elif opt.architecture == 'las' and opt.joint_ctc_attention:
         criterion = JointCTCCrossEntropyLoss(
             num_classes=len(vocab),
