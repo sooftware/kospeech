@@ -27,7 +27,7 @@
 ### [UPDATED] Pre-train Models
   
 |Description|Feature|Dataset|Epochs|CER|Model|  
-|-----------|:-----:|-------|------|:-:|-----|    
+|-----------|:-----:|-------|:----:|:-:|-----|    
 |Deep Speech 2|Kaldi-style fbank 80|[KsponSpeech](http://www.aihub.or.kr/aidata/105)|1|42.3|[download](https://drive.google.com/file/d/1MMqZMjEuc5wvFNIxfhCkhn1kG3Z0HaEx/view?usp=sharing)|  
 |Listen, Attend and Spell|Kaldi-style fbank 80|[KsponSpeech](http://www.aihub.or.kr/aidata/105)|1|19.2|[download](https://drive.google.com/file/d/17q2qg23ud-Kebsa0Fy4DEpA2Uy6rlT90/view?usp=sharing)|  
 |Joint CTC-Attention|Kaldi-style fbank 80|[KsponSpeech](http://www.aihub.or.kr/aidata/105)|1|25.6|[download](https://drive.google.com/file/d/1IOGBTVGDc3WuZ3pCerHU2plDURkB41vY/view?usp=sharing)|  
@@ -184,13 +184,13 @@ Now you have a model which you can use to predict on new data. We do this by run
 
 * Command
 ```
-$ ./infer-with-pretrain.sh
+$ python3 inference.py
 ```
 * Output
 ```
-아 뭔 소리야 그건 또
+음성인식 결과 문장이 나옵니다
 ```  
-You can get a quick look of pre-trained model's inference, with a sample data.  
+You can get a quick look of pre-trained model's inference, with a audio.  
   
 ### Checkpoints   
 Checkpoints are organized by experiments and timestamps as shown in the following file structure.  
