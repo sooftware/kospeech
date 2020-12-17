@@ -24,25 +24,26 @@
   
 ***KoSpeech***, an open-source software, is modular and extensible end-to-end Korean automatic speech recognition (ASR) toolkit based on the deep learning library PyTorch. Several automatic speech recognition open-source toolkits have been released, but all of them deal with non-Korean languages, such as English (e.g. ESPnet, Espresso). Although AI Hub opened 1,000 hours of Korean speech corpus known as KsponSpeech, there is no established preprocessing method and baseline model to compare model performances. Therefore, we propose preprocessing methods for KsponSpeech corpus and a baseline model for benchmarks. Our baseline model is based on Listen, Attend and Spell (LAS) architecture and ables to customize various training hyperparameters conveniently. By KoSpeech, we hope this could be a guideline for those who research Korean speech recognition. Our baseline model achieved **10.31%** character error rate (CER) at KsponSpeech corpus only with the acoustic model.  
   
-### Pre-train Models
+### [UPDATED] Pre-train Models
   
-|Description|Feature|Dataset|Model|  
-|-----------|:-----:|-------|-----|  
-|las_vgg_multihead|librosa_mfcc_40|[KsponSpeech](http://www.aihub.or.kr/aidata/105)|[download](https://drive.google.com/file/d/1Lr-WYpXSlhPIxSE_sBxUedBtcBJzWni2/view?usp=sharing)|  
-|las_vgg_multihead|kaldi_fbank_80|[KsponSpeech](http://www.aihub.or.kr/aidata/105)|[download](https://drive.google.com/file/d/1qhmV1vV8viB5W-rotDez2NztsmAt3mx0/view?usp=sharing)|  
-|vad_model|-|-|[download](https://drive.google.com/file/d/14lLxfCiFgXqnb1a8dZ_AYhlKQeaMz7Jd/view?usp=sharing)|  
+|Description|Feature|Dataset|Epochs|CER|Model|  
+|-----------|:-----:|-------|------|---|-----|    
+|Deep Speech 2|Kaldi-style fbank 80|[KsponSpeech](http://www.aihub.or.kr/aidata/105)|1|42.3|[download](https://drive.google.com/file/d/1MMqZMjEuc5wvFNIxfhCkhn1kG3Z0HaEx/view?usp=sharing)|  
+|Listen, Attend and Spell|Kaldi-style fbank 80|[KsponSpeech](http://www.aihub.or.kr/aidata/105)|1|19.2|[download](https://drive.google.com/file/d/17q2qg23ud-Kebsa0Fy4DEpA2Uy6rlT90/view?usp=sharing)|  
+|Joint CTC-Attention|Kaldi-style fbank 80|[KsponSpeech](http://www.aihub.or.kr/aidata/105)|1|25.6|[download](https://drive.google.com/file/d/1IOGBTVGDc3WuZ3pCerHU2plDURkB41vY/view?usp=sharing)|  
+|vad_model|-|-|1|-|[download](https://drive.google.com/file/d/14lLxfCiFgXqnb1a8dZ_AYhlKQeaMz7Jd/view?usp=sharing)|  
   
-※ Please share the results of the experiment. Contribution is always welcome.
+※ Training is in progress. As the training progresses, the pre-trained model will be updated.
   
 ### Pre-processed Transcripts
   
-|Dataset|Authentication|Output-Unit|Transcript|  
-|-----------|-----|---|:-------:|  
-|KsponSpeech|*Required*|Character|[download](https://drive.google.com/file/d/12IAJSTRqkPALx9AX_SKyC4KkFVQN6Lge/view?usp=sharing)|  
-|KsponSpeech|*Required*|Subword|[download](https://drive.google.com/file/d/1awhfTpqAaDs7K5R9npvFoqeMYWiUtGtq/view?usp=sharing)|  
-|KsponSpeech|*Required*|Grapheme|[download](https://drive.google.com/file/d/1awhfTpqAaDs7K5R9npvFoqeMYWiUtGtq/view?usp=sharing)|   
-|LibriSpeech|*Unrequired* |Subword|[download](https://drive.google.com/file/d/1RA29SLtNIo1zmnk0OgVeXNH553Ul_DhY/view?usp=sharing)|  
-  
+|Dataset    |Authentication|Output-Unit|Transcript|  
+|-----------|--------------|-----------|:--------:|  
+|KsponSpeech|*Required*    |Character  |[download](https://drive.google.com/file/d/12IAJSTRqkPALx9AX_SKyC4KkFVQN6Lge/view?usp=sharing)|  
+|KsponSpeech|*Required*    |Subword    |[download](https://drive.google.com/file/d/1awhfTpqAaDs7K5R9npvFoqeMYWiUtGtq/view?usp=sharing)|  
+|KsponSpeech|*Required*    |Grapheme   |[download](https://drive.google.com/file/d/1awhfTpqAaDs7K5R9npvFoqeMYWiUtGtq/view?usp=sharing)|   
+|LibriSpeech|*Unrequired*  |Subword    |[download](https://drive.google.com/file/d/1RA29SLtNIo1zmnk0OgVeXNH553Ul_DhY/view?usp=sharing)|  
+   
 ※ Authentication : Refer to [[Link]](https://github.com/sooftware/KoSpeech/issues/54)  
   
 ## Intro
