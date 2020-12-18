@@ -28,7 +28,7 @@ def parse_audio(audio_path: str, del_silence: bool = False, audio_extension: str
     return torch.FloatTensor(feature_vector).transpose(0, 1)
 
 
-model_path = 'MODEL_PATH}'
+model_path = 'MODEL_PATH'
 audio_path = 'AUDIO_PATH'
 device = 'cpu'
 
