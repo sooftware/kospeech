@@ -96,7 +96,7 @@ We follow the architecture previously proposed in the "Listen, Attend and Spell"
   
 Transformer is a powerful architecture in the Natural Language Processing (NLP) field. This architecture also showed good performance at ASR tasks. In addition, as the research of this model continues in the natural language processing field, this model has high potential for further development.
   
-- Joint CTC Attention
+- Joint CTC-Attention
   
 With the proposed architecture to take advantage of both the CTC-based model and the attention-based model. It is a structure that makes it robust by adding CTC to the encoder.
   
@@ -165,7 +165,7 @@ pip install -e .
     
 ### Preparing KsponSpeech Dataset (LibriSpeech also supports)
   
-Download from [here](https://github.com/sooftware/KoSpeech#pre-processed-transcripts) or ㄱefer to the following to preprocess.
+Download from [here](https://github.com/sooftware/KoSpeech#pre-processed-transcripts) or refer to the following to preprocess.
   
 - KsponSpeech : [Check this page](https://github.com/sooftware/KoSpeech/tree/master/dataset/kspon)
 - LibriSpeech : [Check this page](https://github.com/sooftware/KoSpeech/tree/master/dataset/libri)
