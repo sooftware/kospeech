@@ -8,6 +8,7 @@
   
 ### What's New
   
+- December 2020: Update pre-train models
 - December 2020: Joint CTC-Attention Updated (*Currently, Not Supports Multi-GPU*)
 - November 2020: Deep Speech 2 Architecture Updated
 - November 2020: KsponSpeech Subword & Grapheme Unit Updated (*Not Tested*)
