@@ -81,20 +81,20 @@ We will response as soon as possible.
   
 So far, four models are implemented: *Deep Speech 2, Listen Attend and Spell (LAS), Speech Transformer, and Joint CTC-Attention LAS*. To check details of these model architectures, check figures attached to each section.
   
-### Deep Speech 2  
+- Deep Speech 2  
   
 Deep Speech 2 showed faster and more accurate performance on ASR tasks with Connectionist Temporal Classification (CTC) loss. This model has been highlighted for significantly increasing performance compared to the previous end- to-end models.
 
   
-### Listen, Attend and Spell
+- Listen, Attend and Spell
    
 We follow the architecture previously proposed in the "Listen, Attend and Spell", but some modifications were added to improve performance. We provide four different attention mechanisms, `scaled dot-product attention`, `additive attention`, `location aware attention`, `multi-head attention`. Attention mechanisms much affect the performance of models. 
   
-### Speech Transformer  
+- Speech Transformer  
   
 Transformer is a powerful architecture in the Natural Language Processing (NLP) field. This architecture also showed good performance at ASR tasks. In addition, as the research of this model continues in the natural language processing field, this model has high potential for further development.
   
-### Joint CTC Attention
+- Joint CTC Attention
   
 With the proposed architecture to take advantage of both the CTC-based model and the attention-based model. It is a structure that makes it robust by adding CTC to the encoder.
   
@@ -163,6 +163,8 @@ pip install -e .
     
 ### Preparing KsponSpeech Dataset (LibriSpeech also supports)
   
+Download from [here](https://github.com/sooftware/KoSpeech#pre-processed-transcripts) or ㄱefer to the following to preprocess.
+  
 - KsponSpeech : [Check this page](https://github.com/sooftware/KoSpeech/tree/master/dataset/kspon)
 - LibriSpeech : [Check this page](https://github.com/sooftware/KoSpeech/tree/master/dataset/libri)
   
@@ -192,7 +194,7 @@ python ./bin/main.py --dataset $DATASET --transcripts_path $TRANSCRIPTS_PATH --a
   
 ### Evaluate for KsponSpeech
 ```
-$ ./eval.sh
+python ./eval.py --dataset_path $DATASET_PATH --transcripts_path $TRANSCRIPTS_PATH --model_path $MODEL_PATH --sample_rate 16000 --frame_length 20 --frame_shift 10 --n_mels 80 --normalize --del_silence --feature_extract_by kaldi --num_workers 4 --use_cuda --batch_size 32 --k 3  --decode greedy --print_every 10 --mode eval --transform_method fbank
 ```
   
 Now you have a model which you can use to predict on new data. We do this by running `greedy search` or `beam search`.  
@@ -201,7 +203,7 @@ Now you have a model which you can use to predict on new data. We do this by run
 
 * Command
 ```
-$ python3 inference.py
+$ python3 inference.py --model_path $MODEL_PATH --audio_path $AUDIO_PATH --device $DEVICE
 ```
 * Output
 ```
