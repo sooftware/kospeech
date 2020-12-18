@@ -167,12 +167,29 @@ pip install -e .
 - LibriSpeech : [Check this page](https://github.com/sooftware/KoSpeech/tree/master/dataset/libri)
   
 ### Training KsponSpeech Dataset
+  
+You can choose from four models and training this. There are many other training options, so look carefully and execute the following command.  
+  
+- **Deep Speech 2** Training
 ```
-$ ./run-las.sh
+python ./bin/main.py --dataset $DATASET --transcripts_path $TRANSCRIPTS_PATH --output_unit $OUTPUT_UNIT --architecture deepspeech2 --batch_size 32 --num_workers 4 --num_epochs 70 --use_bidirectional --audio_extension pcm --optimizer adam --spec_augment --use_cuda --hidden_dim 1024 --dropout 0.3 --transform_method fbank --num_encoder_layers 3 --rnn_type lstm --sample_rate 16000 --frame_length 20 --frame_shift 10 --n_mels 80 --normalize --del_silence --feature_extract_by kaldi --freq_mask_para 18 --time_mask_num 4 --freq_mask_num 2 --save_result_every 1000 --checkpoint_every 5000 --print_every 10 --init_lr 1e-06 --final_lr 1e-06 --peak_lr 1e-04 --init_lr_scale 0.01 --final_lr_scale 0.05 --mode train --max_grad_norm 400 --warmup_steps 2000 --max_len 400 --weight_decay 1e-05 --activation hardtanh
 ```
   
-After properly editing `run-las.sh`, You can train the model by above command. 
-
+- **Listen, Attend and Spell** Training
+```
+python ./bin/main.py --dataset $DATASET --transcripts_path $TRANSCRIPTS_PATH --output_unit $OUTPUT_UNIT --architecture las --batch_size 32 --num_workers 4 --num_epochs 20 --use_bidirectional --audio_extension pcm --optimizer adam --spec_augment --use_cuda --hidden_dim 512 --dropout 0.3 --num_heads 4 --label_smoothing 0.1 --transform_method fbank --num_encoder_layers 3 --num_decoder_layers 2 --rnn_type lstm --teacher_forcing_ratio 1.0 --sample_rate 16000 --frame_length 20 --frame_shift 10 --n_mels 80 --normalize --del_silence --feature_extract_by kaldi --freq_mask_para 18 --time_mask_num 4 --freq_mask_num 2 --save_result_every 1000 --checkpoint_every 5000 --print_every 10 --init_lr 3e-04 --final_lr 1e-06 --peak_lr 3e-04 --init_lr_scale 0.01 --final_lr_scale 0.05 --mode train --max_grad_norm 400 --warmup_steps 0 --max_len 400 --weight_decay 1e-05 --reduction sum --attn_mechanism multi-head --teacher_forcing_step 0.0 --min_teacher_forcing_ratio 1.0 --extractor vgg --activation hardtanh
+```
+  
+- **Joint CTC-Attention** Training
+```
+python ./bin/main.py --dataset $DATASET --transcripts_path $TRANSCRIPTS_PATH --output_unit $OUTPUT_UNIT --architecture las --batch_size 32 --num_workers 4 --num_epochs 20 --use_bidirectional --audio_extension pcm --optimizer adam --use_cuda --hidden_dim 768 --dropout 0.3 --num_heads 4 --transform_method fbank --num_encoder_layers 3 --num_decoder_layers 1 --rnn_type lstm --teacher_forcing_ratio 1.0 --sample_rate 16000 --frame_length 20 --frame_shift 10 --n_mels 80 --normalize --del_silence --feature_extract_by kaldi --freq_mask_para 18 --time_mask_num 4 --freq_mask_num 2 --save_result_every 1000 --checkpoint_every 5000 --print_every 10 --init_lr 1e-06 --final_lr 1e-06 --peak_lr 3e-04 --init_lr_scale 0.01 --final_lr_scale 0.05 --mode train --max_grad_norm 400 --warmup_steps 2000 --max_len 400 --weight_decay 1e-05 --reduction mean --attn_mechanism multi-head --teacher_forcing_step 0.1 --min_teacher_forcing_ratio 0.9 --extractor vgg --activation hardtanh --cross_entropy_weight 0.7 --ctc_weight 0.3 --mask_conv --joint_ctc_attention
+```
+  
+- **Speech Transformer** Training
+```
+python ./bin/main.py --dataset $DATASET --transcripts_path $TRANSCRIPTS_PATH --architecture transformer --batch_size 32 --d_model 512 --reduction mean --num_heads 8 --num_encoder_layers 12 --num_decoder_layers 6 --dropout 0.3 --ffnet_style ff --num_workers 4 --num_epochs 70 --init_lr 1e-06 --final_lr 1e-06 --peak_lr 1e-04 --init_lr_scale 0.01 --final_lr_scale 0.05 --sample_rate 16000 --frame_length 20 --frame_shift 10 --n_mels 80 --feature_extract_by kaldi --transform_method fbank --freq_mask_para 18 --time_mask_num 4 --freq_mask_num 2 --save_result_every 1000 --checkpoint_every 5000 --print_every 10 --mode train  --del_silence --normalize --use_cuda
+```
+  
 ### Evaluate for KsponSpeech
 ```
 $ ./eval.sh
