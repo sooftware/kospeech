@@ -191,7 +191,7 @@ python ./bin/main.py --dataset $DATASET --transcripts_path $TRANSCRIPTS_PATH --o
   
 - **Speech Transformer** Training
 ```
-python ./bin/main.py --dataset $DATASET --transcripts_path $TRANSCRIPTS_PATH --architecture transformer --batch_size 32 --d_model 512 --reduction mean --num_heads 8 --num_encoder_layers 12 --num_decoder_layers 6 --dropout 0.3 --ffnet_style ff --num_workers 4 --num_epochs 70 --init_lr 1e-06 --final_lr 1e-06 --peak_lr 1e-04 --init_lr_scale 0.01 --final_lr_scale 0.05 --sample_rate 16000 --frame_length 20 --frame_shift 10 --n_mels 80 --feature_extract_by kaldi --transform_method fbank --freq_mask_para 18 --time_mask_num 4 --freq_mask_num 2 --save_result_every 1000 --checkpoint_every 5000 --print_every 10 --mode train  --del_silence --normalize --use_cuda
+python ./bin/main.py --dataset $DATASET --transcripts_path $TRANSCRIPTS_PATH --output_unit $OUTPUT_UNIT --architecture transformer --batch_size 32 --d_model 512 --reduction mean --num_heads 8 --num_encoder_layers 12 --num_decoder_layers 6 --dropout 0.3 --ffnet_style ff --num_workers 4 --num_epochs 70 --init_lr 1e-06 --final_lr 1e-06 --peak_lr 1e-04 --init_lr_scale 0.01 --final_lr_scale 0.05 --sample_rate 16000 --frame_length 20 --frame_shift 10 --n_mels 80 --feature_extract_by kaldi --transform_method fbank --freq_mask_para 18 --time_mask_num 4 --freq_mask_num 2 --save_result_every 1000 --checkpoint_every 5000 --print_every 10 --mode train  --del_silence --normalize --use_cuda
 ```
   
 ### Evaluate for KsponSpeech
