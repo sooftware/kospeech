@@ -83,20 +83,20 @@ We will response as soon as possible.
   
 So far, four models are implemented: *Deep Speech 2, Listen Attend and Spell (LAS), Speech Transformer, and Joint CTC-Attention LAS*. To check details of these model architectures, check figures attached to each section.
   
-- Deep Speech 2  
+- *Deep Speech 2*  
   
 Deep Speech 2 showed faster and more accurate performance on ASR tasks with Connectionist Temporal Classification (CTC) loss. This model has been highlighted for significantly increasing performance compared to the previous end- to-end models.
 
   
-- Listen, Attend and Spell
+- *Listen, Attend and Spell*
    
 We follow the architecture previously proposed in the "Listen, Attend and Spell", but some modifications were added to improve performance. We provide four different attention mechanisms, `scaled dot-product attention`, `additive attention`, `location aware attention`, `multi-head attention`. Attention mechanisms much affect the performance of models. 
   
-- Speech Transformer  
+- *Speech Transformer*  
   
 Transformer is a powerful architecture in the Natural Language Processing (NLP) field. This architecture also showed good performance at ASR tasks. In addition, as the research of this model continues in the natural language processing field, this model has high potential for further development.
   
-- Joint CTC-Attention
+- *Joint CTC-Attention*
   
 With the proposed architecture to take advantage of both the CTC-based model and the attention-based model. It is a structure that makes it robust by adding CTC to the encoder.
   
@@ -172,7 +172,7 @@ Download from [here](https://github.com/sooftware/KoSpeech#pre-processed-transcr
   
 ### Training KsponSpeech Dataset
   
-You can choose from four models and training this. There are many other training options, so look carefully and execute the following command.  
+You can choose from four models and training this. There are many other training options, so look carefully and execute the following command:  
   
 - **Deep Speech 2** Training
 ```
