@@ -32,7 +32,7 @@
 |-----------|:-----:|-------|:----:|:-:|-----|    
 |Deep Speech 2|Kaldi-style fbank 80|[KsponSpeech](http://www.aihub.or.kr/aidata/105)|1|42.3|[download](https://drive.google.com/file/d/1MMqZMjEuc5wvFNIxfhCkhn1kG3Z0HaEx/view?usp=sharing)|  
 |Listen, Attend and Spell|Kaldi-style fbank 80|[KsponSpeech](http://www.aihub.or.kr/aidata/105)|1|19.2|[download](https://drive.google.com/file/d/17q2qg23ud-Kebsa0Fy4DEpA2Uy6rlT90/view?usp=sharing)|  
-|Joint CTC-Attention|Kaldi-style fbank 80|[KsponSpeech](http://www.aihub.or.kr/aidata/105)|1|12.5|[download](https://drive.google.com/file/d/1DDclNR4BInOXvWOJphajkG4jDf8KCa_W/view?usp=sharing)|  
+|Joint CTC-Attention|Kaldi-style fbank 80|[KsponSpeech](http://www.aihub.or.kr/aidata/105)|10|12.5|[download](https://drive.google.com/file/d/1DDclNR4BInOXvWOJphajkG4jDf8KCa_W/view?usp=sharing)|  
 |VAD Model|-|-|-|-|[download](https://drive.google.com/file/d/14lLxfCiFgXqnb1a8dZ_AYhlKQeaMz7Jd/view?usp=sharing)|  
   
 ※ Training is in progress. As the training progresses, the pre-trained model will be updated.
