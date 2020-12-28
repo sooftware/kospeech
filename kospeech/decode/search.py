@@ -70,11 +70,11 @@ class GreedySearch(object):
             targets = targets.to(device)
 
             if architecture == 'las':
-                y_hats = model.greedy_decode(inputs, input_lengths, device)
+                y_hats = model.greedy_search(inputs, input_lengths, device)
             elif architecture == 'transformer':
-                y_hats = model.greedy_decode(inputs, input_lengths)
+                y_hats = model.greedy_search(inputs, input_lengths)
             elif architecture == 'deepspeech2':
-                y_hats = model.greedy_decode(inputs, input_lengths, device)
+                y_hats = model.greedy_search(inputs, input_lengths, device)
             else:
                 raise ValueError("Unsupported architecture : {0}".format(architecture))
 

@@ -166,7 +166,7 @@ class SpeechTransformer(nn.Module):
 
         return output
 
-    def greedy_decode(self, inputs: Tensor, input_lengths: Tensor, device: str):
+    def greedy_search(self, inputs: Tensor, input_lengths: Tensor, device: str):
         with torch.no_grad():
             logit = self.forward(inputs, input_lengths, return_attns=False)
             return logit.max(-1)[1]
