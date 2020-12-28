@@ -53,7 +53,7 @@ class ListenAttendSpell(nn.Module):
 
         return decoder_outputs, encoder_log_probs, encoder_output_lengths
 
-    def greedy_decode(self, inputs: Tensor, input_lengths: Tensor, device: str) -> Tensor:
+    def greedy_search(self, inputs: Tensor, input_lengths: Tensor, device: str) -> Tensor:
         with torch.no_grad():
             self.flatten_parameters()
             decoder_outputs, _, _ = self.forward(inputs, input_lengths, teacher_forcing_ratio=0.0)

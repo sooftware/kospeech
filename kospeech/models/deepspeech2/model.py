@@ -93,7 +93,7 @@ class DeepSpeech2(nn.Module):
 
         return output, output_lengths
 
-    def greedy_decode(self, inputs: Tensor, input_lengths: Tensor, device: str):
+    def greedy_search(self, inputs: Tensor, input_lengths: Tensor, device: str):
         with torch.no_grad():
             output, output_lengths = self.forward(inputs, input_lengths)
             return output.max(-1)[1]

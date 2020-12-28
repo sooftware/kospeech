@@ -311,9 +311,9 @@ class SupervisedTrainer(object):
             model.to(self.device)
 
             if isinstance(model, nn.DataParallel):
-                y_hats = model.module.greedy_decode(inputs, input_lengths, self.device)
+                y_hats = model.module.greedy_search(inputs, input_lengths, self.device)
             else:
-                y_hats = model.greedy_decode(inputs, input_lengths, self.device)
+                y_hats = model.greedy_search(inputs, input_lengths, self.device)
             cer = self.metric(targets, y_hats)
 
         logger.info('validate() completed')
