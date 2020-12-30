@@ -49,7 +49,7 @@ if isinstance(model, ListenAttendSpell):
 
     y_hats = model.greedy_search(feature_vector.unsqueeze(0), input_length, opt.device)
 elif isinstance(model, DeepSpeech2):
-    model.device = dopt.evice
+    model.device = opt.device
     y_hats = model.greedy_search(feature_vector.unsqueeze(0), input_length, opt.device)
 
 sentence = vocab.label_to_string(y_hats.cpu().detach().numpy())
