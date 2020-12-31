@@ -18,8 +18,7 @@
 ### Note
   
 - Currently, beam search may not work properly.  
-- The pre-train model is currently not working properly, but will be uploaded as soon as the current learning is complete.  
-- Currently, CUDA OOM error is occurring at the end of 1 epoch. We will fix it as soon as I know the cause.
+- The model's inference is currently not working properly, but will be updated as soon as possible.  
 - Transformer model is currently not working properly.
   
 ### ***[KoSpeech:  Open-Source Toolkit for End-to-End Korean Speech Recognition \[Technical Report\]](https://arxiv.org/abs/2009.03092)***
