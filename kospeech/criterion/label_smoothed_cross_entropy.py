@@ -20,7 +20,7 @@ class LabelSmoothedCrossEntropyLoss(nn.Module):
         smoothing (float): ratio of smoothing (confidence = 1.0 - smoothing)
         dim (int): dimension of calculation loss
         reduction (str): reduction method [sum, mean] (default: sum)
-        architecture (str): speech model`s architecture [las, transformer] (default: las)
+        architecture (str): speech model`s model [las, transformer] (default: las)
 
     Inputs: logit, target
         logit (torch.Tensor): probability distribution value from model and it has a logarithm shape
@@ -36,7 +36,7 @@ class LabelSmoothedCrossEntropyLoss(nn.Module):
             smoothing: float = 0.1,     # ratio of smoothing (confidence = 1.0 - smoothing)
             dim: int = -1,              # dimension of caculation loss
             reduction='sum',            # reduction method [sum, mean]
-            architecture='las'          # speech model`s architecture [las, transformer]
+            architecture='las'          # speech model`s model [las, transformer]
     ) -> None:
         super(LabelSmoothedCrossEntropyLoss, self).__init__()
         self.confidence = 1.0 - smoothing

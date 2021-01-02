@@ -16,7 +16,7 @@ from kospeech.models.modules import Linear, BNReluRNN
 
 class DeepSpeech2(nn.Module):
     """
-    Deep Speech2 architecture with configurable encoder and decoder.
+    Deep Speech2 model with configurable encoder and decoder.
     Paper: https://arxiv.org/abs/1512.02595
 
     Args:

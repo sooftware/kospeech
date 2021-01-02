@@ -4,12 +4,15 @@
 # This source code is licensed under the Apache 2.0 License license found in the
 # LICENSE file in the root directory of this source tree.
 
+import os
 import sys
-import argparse
 import random
 import warnings
 import torch
+import hydra
 sys.path.append('..')
+from hydra.core.config_store import ConfigStore
+from omegaconf import OmegaConf
 from kospeech.data.data_loader import split_dataset
 from kospeech.optim import Optimizer
 from kospeech.optim.lr_scheduler import TriStageLRScheduler
@@ -18,17 +21,18 @@ from kospeech.model_builder import build_model
 from kospeech.utils import (
     check_envirionment,
     get_optimizer,
-    get_criterion
+    get_criterion,
 )
 from kospeech.vocabs import (
     KsponSpeechVocabulary,
-    LibriSpeechVocabulary
+    LibriSpeechVocabulary,
 )
-from kospeech.opts import (
-    print_opts,
-    build_train_opts,
-    build_model_opts,
-    build_preprocess_opts
+from bin.dataclass import (
+    DeepSpeech2Config,
+    JointCTCAttentionConfig,
+    ListenAttendSpellConfig,
+    TransformerConfig,
+    Config,
 )
 
 
@@ -108,24 +112,21 @@ def train(opt):
     return model
 
 
-def _get_parser():
-    """ Get arguments parser """
-    parser = argparse.ArgumentParser(description='KoSpeech')
-    parser.add_argument('--mode', type=str, default='train')
+cs = ConfigStore.instance()
+cs.store(group="model", name="ds2", node=DeepSpeech2Config, package="model")
+cs.store(group="model", name="joint-ctc-attention", node=JointCTCAttentionConfig, package="model")
+cs.store(group="model", name="las", node=ListenAttendSpellConfig, package="model")
+cs.store(group="model", name="transformer", node=TransformerConfig, package="model")
+cs.store(name="config", node=Config)
 
-    build_preprocess_opts(parser)
-    build_model_opts(parser)
-    build_train_opts(parser)
-
-    return parser
-
-
-def main():
+@hydra.main(config_path=os.path.join('..', "config"), config_name="default")
+def main(config: OmegaConf):
     warnings.filterwarnings('ignore')
-    parser = _get_parser()
-    opt = parser.parse_args()
-    print_opts(opt, opt.mode)
-    train(opt)
+
+    config = OmegaConf.to_yaml(config)
+    print(config)
+
+    #train(opt)
 
 
 if __name__ == '__main__':

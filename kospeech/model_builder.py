@@ -60,7 +60,7 @@ def build_model(opt, vocab, device):
         )
 
     else:
-        raise ValueError('Unsupported architecture: {0}'.format(opt.architecture))
+        raise ValueError('Unsupported model: {0}'.format(opt.architecture))
 
     return model
 

@@ -37,7 +37,7 @@ from kospeech.models.transformer.layers import (
 class SpeechTransformer(nn.Module):
     """
     A Speech Transformer model. User is able to modify the attributes as needed.
-    The architecture is based on the paper "Attention Is All You Need".
+    The model is based on the paper "Attention Is All You Need".
 
     Args:
         num_classes (int): the number of classfication

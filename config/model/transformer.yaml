@@ -1,0 +1,7 @@
+architecture: transformer
+d_model: 512
+num_heads: 8
+num_encoder_layers: 12
+num_decoder_layers: 6
+dropout: 0.3
+ffnet_style: ff

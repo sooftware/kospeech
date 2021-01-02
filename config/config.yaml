@@ -1,0 +1,4 @@
+defaults:
+  - audio: default
+  - model: joint-ctc-attention
+  - train: default
