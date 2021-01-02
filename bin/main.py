@@ -28,6 +28,8 @@ from kospeech.vocabs import (
     LibriSpeechVocabulary,
 )
 from bin.dataclass import (
+    AudioConfig,
+    TrainConfig,
     DeepSpeech2Config,
     JointCTCAttentionConfig,
     ListenAttendSpellConfig,
@@ -113,11 +115,14 @@ def train(opt):
 
 
 cs = ConfigStore.instance()
+cs.store(group="audio", name="default", node=AudioConfig, package="audio")
+cs.store(group="train", name="default", node=TrainConfig, package="train")
 cs.store(group="model", name="ds2", node=DeepSpeech2Config, package="model")
 cs.store(group="model", name="joint-ctc-attention", node=JointCTCAttentionConfig, package="model")
 cs.store(group="model", name="las", node=ListenAttendSpellConfig, package="model")
 cs.store(group="model", name="transformer", node=TransformerConfig, package="model")
 cs.store(name="config", node=Config)
+
 
 @hydra.main(config_path=os.path.join('..', "config"), config_name="default")
 def main(config: OmegaConf):
