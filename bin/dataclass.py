@@ -3,107 +3,109 @@ from dataclasses import dataclass, MISSING
 
 @dataclass
 class AudioConfig:
-    audio_extension: str = MISSING
-    transform_method: str = MISSING
-    sample_rate: int = MISSING
-    frame_length: int = MISSING
-    frame_shift: int = MISSING
-    n_mels: int = MISSING
-    normalize: bool = MISSING
-    del_silence: bool = MISSING
-    feature_extract_by: str = MISSING
-    freq_mask_para: int = MISSING
-    time_mask_num: int = MISSING
-    freq_mask_num: int = MISSING
-    spec_augment: bool = MISSING
+    audio_extension: str
+    transform_method: str
+    sample_rate: int
+    frame_length: int
+    frame_shift: int
+    n_mels: int
+    normalize: bool
+    del_silence: bool
+    feature_extract_by: str
+    freq_mask_para: int
+    time_mask_num: int
+    freq_mask_num: int
+    spec_augment: bool
 
 
 @dataclass
 class TrainConfig:
-    dataset: str = MISSING
-    transcript_path: str = MISSING
-    output_unit: str = MISSING
+    dataset: str
+    transcript_path: str
+    output_unit: str
 
-    num_epochs: int = MISSING
-    batch_size: int = MISSING
-    save_result_every: int = MISSING
-    save_checkpoint_every: int = MISSING
-    print_every: int = MISSING
-    mode: str = MISSING
+    num_epochs: int
+    batch_size: int
+    save_result_every: int
+    save_checkpoint_every: int
+    print_every: int
+    mode: str
 
-    num_workers: int = MISSING
-    use_cuda: bool = MISSING
+    num_workers: int
+    use_cuda: bool
 
-    optimizer: str = MISSING
-    init_lr: float = MISSING
-    final_lr: float = MISSING
-    peak_lr: float = MISSING
-    init_lr_scale: float = MISSING
-    final_lr_scale: float = MISSING
-    max_grad_norm: int = MISSING
-    warmup_steps: int = MISSING
-    weight_decay: float = MISSING
-    reduction: str = MISSING
+    optimizer: str
+    init_lr: float
+    final_lr: float
+    peak_lr: float
+    init_lr_scale: float
+    final_lr_scale: float
+    max_grad_norm: int
+    warmup_steps: int
+    weight_decay: float
+    reduction: str
 
 
 @dataclass
 class ModelConfig:
-    architecture: str = MISSING
-    use_bidirectional: bool = MISSING
-    hidden_dim: int = MISSING
-    dropout: float = MISSING
-    num_encoder_layers: int = MISSING
+    architecture: str
+    use_bidirectional: bool
+    hidden_dim: int
+    dropout: float
+    num_encoder_layers: int
 
 
 @dataclass
 class DeepSpeech2Config(ModelConfig):
-    rnn_type: str = MISSING
-    max_len: int = MISSING
-    activation: str = MISSING
+    rnn_type: str
+    max_len: int
+    activation: str
 
 
 @dataclass
 class ListenAttendSpellConfig(ModelConfig):
-    num_heads: int = MISSING
-    label_smoothing: float = MISSING
-    num_decoder_layers: int = MISSING
-    rnn_type: str = MISSING
-    teacher_forcing_ratio: float = MISSING
-    attn_mechanism: str = MISSING
-    teacher_forcing_step: float = MISSING
-    min_teacher_forcing_ratio: float = MISSING
-    extractor: str = MISSING
-    activation: str = MISSING
-    mask_conv: bool = MISSING
-    joint_ctc_attention: bool = MISSING
+    num_heads: int
+    label_smoothing: float
+    num_decoder_layers: int
+    rnn_type: str
+    teacher_forcing_ratio: float
+    attn_mechanism: str
+    teacher_forcing_step: float
+    min_teacher_forcing_ratio: float
+    extractor: str
+    activation: str
+    mask_conv: bool
+    joint_ctc_attention: bool
 
 
 @dataclass
 class JointCTCAttentionConfig(ModelConfig):
-    num_heads: int = MISSING
-    label_smoothing: float = MISSING
-    num_decoder_layers: int = MISSING
-    rnn_type: str = MISSING
-    teacher_forcing_ratio: float = MISSING
-    attn_mechanism: str = MISSING
-    teacher_forcing_step: float = MISSING
-    min_teacher_forcing_ratio: float = MISSING
-    extractor: str = MISSING
-    activation: str = MISSING
-    cross_entropy_weight: float = MISSING
-    ctc_weight: float = MISSING
-    mask_conv: bool = MISSING
-    joint_ctc_attention: bool = MISSING
+    num_heads: int
+    label_smoothing: float
+    num_decoder_layers: int
+    rnn_type: str
+    teacher_forcing_ratio: float
+    attn_mechanism: str
+    teacher_forcing_step: float
+    min_teacher_forcing_ratio: float
+    extractor: str
+    activation: str
+    cross_entropy_weight: float
+    ctc_weight: float
+    mask_conv: bool
+    joint_ctc_attention: bool
 
 
 @dataclass
 class TransformerConfig(ModelConfig):
-    d_model: int = MISSING
-    num_heads: int = MISSING
-    num_decoder_layers: int = MISSING
-    ffnet_style: str = MISSING
+    d_model: int
+    num_heads: int
+    num_decoder_layers: int
+    ffnet_style: str
 
 
 @dataclass
 class Config:
-    model: ModelConfig = MISSING
+    audio: AudioConfig
+    train: TrainConfig
+    model: ModelConfig
