@@ -4,5 +4,5 @@ from kospeech.data.data_loader import (
     SpectrogramDataset,
     AudioDataLoader,
     MultiDataLoader,
-    split_dataset
+    split_dataset,
 )
