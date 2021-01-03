@@ -1,111 +1,105 @@
-from dataclasses import dataclass, MISSING
+from dataclasses import dataclass
 
 
 @dataclass
 class AudioConfig:
-    audio_extension: str
-    transform_method: str
-    sample_rate: int
-    frame_length: int
-    frame_shift: int
-    n_mels: int
-    normalize: bool
-    del_silence: bool
-    feature_extract_by: str
-    freq_mask_para: int
-    time_mask_num: int
-    freq_mask_num: int
-    spec_augment: bool
+    audio_extension: str = "pcm"
+    transform_method: str = "fbank"
+    sample_rate: int = 16000
+    frame_length: int = 20
+    frame_shift: int = 10
+    n_mels: int = 80
+    normalize: bool = True
+    del_silence: bool = True
+    feature_extract_by: str = "kaldi"
+    freq_mask_para: int = 18
+    time_mask_num: int = 4
+    freq_mask_num: int = 2
+    spec_augment: bool = True
 
 
 @dataclass
 class TrainConfig:
-    dataset: str
-    transcript_path: str
-    output_unit: str
+    dataset: str = "???"
+    transcript_path: str = "../data/transcript.txt"
+    output_unit: str = "character"
 
-    num_epochs: int
-    batch_size: int
-    save_result_every: int
-    save_checkpoint_every: int
-    print_every: int
-    mode: str
+    num_epochs: int = 20
+    batch_size: int = 32
+    save_result_every: int = 1000
+    save_checkpoint_every: int = 5000
+    print_every: int = 10
+    mode: str = "train"
 
-    num_workers: int
-    use_cuda: bool
+    num_workers: int = 4
+    use_cuda: bool = True
 
-    optimizer: str
-    init_lr: float
-    final_lr: float
-    peak_lr: float
-    init_lr_scale: float
-    final_lr_scale: float
-    max_grad_norm: int
-    warmup_steps: int
-    weight_decay: float
-    reduction: str
+    optimizer: str = "adam"
+    init_lr: float = 1e-06
+    final_lr: float = 1e-06
+    peak_lr: float = 1e-04
+    init_lr_scale: float = 0.01
+    final_lr_scale: float = 0.05
+    max_grad_norm: int = 400
+    warmup_steps: int = 400
+    weight_decay: float = 1e-05
+    reduction: str = "mean"
 
 
 @dataclass
 class ModelConfig:
-    architecture: str
-    use_bidirectional: bool
-    hidden_dim: int
-    dropout: float
-    num_encoder_layers: int
+    architecture: str = "???"
+    use_bidirectional: bool = True
+    dropout: float = 0.3
 
 
 @dataclass
 class DeepSpeech2Config(ModelConfig):
-    rnn_type: str
-    max_len: int
-    activation: str
+    rnn_type: str = "gru"
+    max_len: int = 400
+    hidden_dim: int = 1024
+    activation: str = "hardtanh"
+    num_encoder_layers: int = 3
 
 
 @dataclass
 class ListenAttendSpellConfig(ModelConfig):
-    num_heads: int
-    label_smoothing: float
-    num_decoder_layers: int
-    rnn_type: str
-    teacher_forcing_ratio: float
-    attn_mechanism: str
-    teacher_forcing_step: float
-    min_teacher_forcing_ratio: float
-    extractor: str
-    activation: str
-    mask_conv: bool
-    joint_ctc_attention: bool
+    num_heads: int = 4
+    label_smoothing: float = 0.1
+    num_encoder_layers: int = 3
+    num_decoder_layers: int = 2
+    rnn_type: str = "lstm"
+    hidden_dim: int = 512
+    teacher_forcing_ratio: float = 1.0
+    attn_mechanism: str = "multi-head"
+    teacher_forcing_step: float = 0.01
+    min_teacher_forcing_ratio: float = 0.9
+    extractor: str = "vgg"
+    activation: str = "hardtanh"
+    mask_conv: bool = False
+    joint_ctc_attention: bool = False
 
 
 @dataclass
-class JointCTCAttentionConfig(ModelConfig):
-    num_heads: int
-    label_smoothing: float
-    num_decoder_layers: int
-    rnn_type: str
-    teacher_forcing_ratio: float
-    attn_mechanism: str
-    teacher_forcing_step: float
-    min_teacher_forcing_ratio: float
-    extractor: str
-    activation: str
-    cross_entropy_weight: float
-    ctc_weight: float
-    mask_conv: bool
-    joint_ctc_attention: bool
+class JointCTCAttentionConfig(ListenAttendSpellConfig):
+    hidden_dim: int = 768
+    cross_entropy_weight: float = 0.7
+    ctc_weight: float = 0.3
+    mask_conv: bool = True
+    joint_ctc_attention: bool = True
 
 
 @dataclass
 class TransformerConfig(ModelConfig):
-    d_model: int
-    num_heads: int
-    num_decoder_layers: int
-    ffnet_style: str
+    d_model: int = 512
+    num_heads: int = 8
+    num_encoder_layers: int = 12
+    num_decoder_layers: int = 6
+    ffnet_style: str = "ff"
 
 
 @dataclass
 class Config:
-    audio: AudioConfig
-    train: TrainConfig
-    model: ModelConfig
+    audio: AudioConfig = AudioConfig
+    train: TrainConfig = TrainConfig
+    model: ModelConfig = JointCTCAttentionConfig
