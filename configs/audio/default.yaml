@@ -11,3 +11,4 @@ freq_mask_para: 18
 time_mask_num: 4
 freq_mask_num: 2
 spec_augment: True
+input_reverse: false

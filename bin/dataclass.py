@@ -16,6 +16,7 @@ class AudioConfig:
     time_mask_num: int = 4
     freq_mask_num: int = 2
     spec_augment: bool = True
+    input_reverse: bool = False
 
 
 @dataclass
@@ -45,18 +46,27 @@ class TrainConfig:
     weight_decay: float = 1e-05
     reduction: str = "mean"
 
+    seed: int = 777
+    resume: bool = False
+
 
 @dataclass
 class ModelConfig:
     architecture: str = "???"
-    use_bidirectional: bool = True
+    teacher_forcing_ratio: float = 1.0
+    teacher_forcing_step: float = 0.01
+    min_teacher_forcing_ratio: float = 0.9
     dropout: float = 0.3
+    bidirectional: bool = False
+    joint_ctc_attention: bool = False
+    max_len: int = 400
 
 
 @dataclass
 class DeepSpeech2Config(ModelConfig):
+    architecture: str = "deepspeech2"
+    use_bidirectional: bool = True
     rnn_type: str = "gru"
-    max_len: int = 400
     hidden_dim: int = 1024
     activation: str = "hardtanh"
     num_encoder_layers: int = 3
@@ -64,6 +74,9 @@ class DeepSpeech2Config(ModelConfig):
 
 @dataclass
 class ListenAttendSpellConfig(ModelConfig):
+    architecture: str = "las"
+    use_bidirectional: bool = True
+    dropout: float = 0.3
     num_heads: int = 4
     label_smoothing: float = 0.1
     num_encoder_layers: int = 3
@@ -91,6 +104,9 @@ class JointCTCAttentionConfig(ListenAttendSpellConfig):
 
 @dataclass
 class TransformerConfig(ModelConfig):
+    architecture: str = "transformer"
+    use_bidirectional: bool = True
+    dropout: float = 0.3
     d_model: int = 512
     num_heads: int = 8
     num_encoder_layers: int = 12
@@ -99,7 +115,15 @@ class TransformerConfig(ModelConfig):
 
 
 @dataclass
-class Config:
-    audio: AudioConfig = AudioConfig
-    train: TrainConfig = TrainConfig
-    model: ModelConfig = JointCTCAttentionConfig
+class EvalConfig:
+    dataset: str = 'kspon'
+    dataset_path: str = ''
+    transcript_path: str = '../data/eval_transcript.txt'
+    model_path: str = ''
+    output_unit: str = 'character'
+    batch_size: int = 32
+    num_workers: int = 4
+    print_every: int = 20
+    decode: str = 'greedy'
+    k: int = 3
+    use_cuda: bool = True

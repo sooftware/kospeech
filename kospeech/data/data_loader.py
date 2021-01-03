@@ -9,6 +9,7 @@ import math
 import threading
 import torch
 import random
+from omegaconf import DictConfig
 from argparse import ArgumentParser
 from torch.utils.data import Dataset
 from kospeech.data import load_dataset
@@ -26,7 +27,7 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
         sos_id (int): identification of <start of sequence>
         eos_id (int): identification of <end of sequence>
         spec_augment (bool): flag indication whether to use spec-augmentation or not (default: True)
-        opt (ArgumentParser): set of arguments
+        config (DictConfig): set of configurations
         dataset_path (str): path of dataset
     """
     def __init__(
@@ -35,18 +36,19 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
             transcripts: list,              # list of transcript paths
             sos_id: int,                    # identification of start of sequence token
             eos_id: int,                    # identification of end of sequence token
-            opt: ArgumentParser,            # set of arguments
+            config: DictConfig,             # set of arguments
             spec_augment: bool = False,     # flag indication whether to use spec-augmentation of not
             dataset_path: str = None,       # path of dataset,
             audio_extension: str = 'pcm'    # audio extension
     ) -> None:
         super(SpectrogramDataset, self).__init__(
-            feature_extract_by=opt.feature_extract_by, sample_rate=opt.sample_rate, n_mels=opt.n_mels,
-            frame_length=opt.frame_length, frame_shift=opt.frame_shift, del_silence=opt.del_silence,
-            input_reverse=opt.input_reverse, normalize=opt.normalize, freq_mask_para=opt.freq_mask_para,
-            time_mask_num=opt.time_mask_num, freq_mask_num=opt.freq_mask_num,
-            sos_id=sos_id, eos_id=eos_id,
-            dataset_path=dataset_path, transform_method=opt.transform_method, audio_extension=audio_extension
+            feature_extract_by=config.audio.feature_extract_by, sample_rate=config.audio.sample_rate,
+            n_mels=config.audio.n_mels, frame_length=config.audio.frame_length, frame_shift=config.audio.frame_shift,
+            del_silence=config.audio.del_silence, input_reverse=config.audio.input_reverse,
+            normalize=config.audio.normalize, freq_mask_para=config.audio.freq_mask_para,
+            time_mask_num=config.audio.time_mask_num, freq_mask_num=config.audio.freq_mask_num,
+            sos_id=sos_id, eos_id=eos_id, dataset_path=dataset_path, transform_method=config.audio.transform_method,
+            audio_extension=audio_extension
         )
         self.audio_paths = list(audio_paths)
         self.transcripts = list(transcripts)

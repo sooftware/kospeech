@@ -9,6 +9,9 @@ import torch.nn as nn
 import sys
 import logging
 import platform
+
+from omegaconf import DictConfig
+from kospeech.vocabs import Vocabulary
 from torch import optim
 from kospeech.criterion import (
     LabelSmoothedCrossEntropyLoss,
@@ -68,48 +71,58 @@ def check_envirionment(use_cuda: bool):
     return device
 
 
-def get_optimizer(model: nn.Module, opt):
-    if opt.optimizer.lower() == 'adam':
-        optimizer = optim.Adam(model.module.parameters(), lr=opt.init_lr, weight_decay=opt.weight_decay)
-    elif opt.optimizer.lower() == 'radam':
-        optimizer = RAdam(model.module.parameters(), lr=opt.init_lr, weight_decay=opt.weight_decay)
-    elif opt.optimizer.lower() == 'adamp':
-        optimizer = AdamP(model.module.parameters(), lr=opt.init_lr, weight_decay=opt.weight_decay)
-    elif opt.optimizer.lower() == 'adadelta':
-        optimizer = optim.Adadelta(model.module.parameters(), lr=opt.init_lr, weight_decay=opt.weight_decay)
-    elif opt.optimizer.lower() == 'adagrad':
-        optimizer = optim.Adagrad(model.module.parameters(), lr=opt.init_lr, weight_decay=opt.weight_decay)
+def get_optimizer(model: nn.Module, config: DictConfig):
+    if config.train.optimizer.lower() == 'adam':
+        optimizer = optim.Adam(
+            model.module.parameters(), lr=config.train.init_lr, weight_decay=config.train.weight_decay
+        )
+    elif config.train.optimizer.lower() == 'radam':
+        optimizer = RAdam(
+            model.module.parameters(), lr=config.train.init_lr, weight_decay=config.train.weight_decay
+        )
+    elif config.train.optimizer.lower() == 'adamp':
+        optimizer = AdamP(
+            model.module.parameters(), lr=config.train.init_lr, weight_decay=config.train.weight_decay
+        )
+    elif config.train.optimizer.lower() == 'adadelta':
+        optimizer = optim.Adadelta(
+            model.module.parameters(), lr=config.train.init_lr, weight_decay=config.train.weight_decay
+        )
+    elif config.train.optimizer.lower() == 'adagrad':
+        optimizer = optim.Adagrad(
+            model.module.parameters(), lr=config.train.init_lr, weight_decay=config.train.weight_decay
+        )
     else:
         raise ValueError(f"Unsupported Optimizer, Supported Optimizer : Adam, RAdam, Adadelta, Adagrad")
 
     return optimizer
 
 
-def get_criterion(opt, vocab):
-    if opt.architecture == 'deepspeech2':
-        criterion = nn.CTCLoss(blank=vocab.blank_id, reduction=opt.reduction, zero_infinity=True)
-    elif opt.architecture == 'las' and opt.joint_ctc_attention:
+def get_criterion(config: DictConfig, vocab: Vocabulary):
+    if config.model.architecture == 'deepspeech2':
+        criterion = nn.CTCLoss(blank=vocab.blank_id, reduction=config.train.reduction, zero_infinity=True)
+    elif config.model.architecture == 'las' and config.model.joint_ctc_attention:
         criterion = JointCTCCrossEntropyLoss(
             num_classes=len(vocab),
             ignore_index=vocab.pad_id,
-            reduction=opt.reduction,
-            ctc_weight=opt.ctc_weight,
-            cross_entropy_weight=opt.cross_entropy_weight,
+            reduction=config.train.reduction,
+            ctc_weight=config.model.ctc_weight,
+            cross_entropy_weight=config.model.cross_entropy_weight,
             blank_id=vocab.blank_id,
             dim=-1,
         )
-    elif opt.architecture == 'transformer':
+    elif config.model.architecture == 'transformer':
         criterion = nn.CrossEntropyLoss(
             ignore_index=vocab.pad_id,
-            reduction=opt.reduction
+            reduction=config.train.reduction
         )
     else:
         criterion = LabelSmoothedCrossEntropyLoss(
             num_classes=len(vocab),
             ignore_index=vocab.pad_id,
-            smoothing=opt.label_smoothing,
-            reduction=opt.reduction,
-            architecture=opt.architecture,
+            smoothing=config.model.label_smoothing,
+            reduction=config.train.reduction,
+            architecture=config.model.architecture,
             dim=-1
         )
 

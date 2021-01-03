@@ -10,6 +10,8 @@ save_result_every: 1000
 save_checkpoint_every: 5000
 print_every: 10
 mode: train
+seed: 777
+resume: false
 
 # device
 num_workers: 4

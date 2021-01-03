@@ -4,63 +4,58 @@
 # This source code is licensed under the Apache 2.0 License license found in the
 # LICENSE file in the root directory of this source tree.
 
+import os
 import sys
-import argparse
+import hydra
 import warnings
+
 sys.path.append('..')
+from hydra.core.config_store import ConfigStore
+from omegaconf import OmegaConf, DictConfig
+from bin.dataclass import EvalConfig
 from kospeech.vocabs.ksponspeech import KsponSpeechVocabulary
 from kospeech.vocabs.librispeech import LibriSpeechVocabulary
 from kospeech.data.label_loader import load_dataset
 from kospeech.data.data_loader import SpectrogramDataset
 from kospeech.evaluator.evaluator import Evaluator
-from kospeech.utils import check_envirionment
+from kospeech.utils import check_envirionment, logger
 from kospeech.model_builder import load_test_model
-from kospeech.opts import (
-    build_eval_opts,
-    build_preprocess_opts,
-    print_opts
-)
 
 
-def inference(opt):
-    device = check_envirionment(opt.use_cuda)
-    model = load_test_model(opt, device)
+def inference(config: DictConfig):
+    device = check_envirionment(config.use_cuda)
+    model = load_test_model(config, device)
 
-    if opt.dataset == 'kspon':
-        vocab = KsponSpeechVocabulary(f'../data/vocab/aihub_{opt.output_unit}_vocabs.csv', output_unit=opt.output_unit)
-    elif opt.dataset == 'libri':
+    if config.dataset == 'kspon':
+        vocab = KsponSpeechVocabulary(
+            f'../data/vocab/aihub_{config.output_unit}_vocabs.csv', output_unit=config.output_unit
+        )
+    elif config.dataset == 'libri':
         vocab = LibriSpeechVocabulary('../data/vocab/tokenizer.vocab', '../data/vocab/tokenizer.model')
     else:
-        raise ValueError("Unsupported Dataset : {0}".format(opt.dataset))
+        raise ValueError("Unsupported Dataset : {0}".format(config.dataset))
 
-    audio_paths, transcripts = load_dataset(opt.transcripts_path)
+    audio_paths, transcripts = load_dataset(config.transcripts_path)
 
     testset = SpectrogramDataset(audio_paths=audio_paths, transcripts=transcripts,
                                  sos_id=vocab.sos_id, eos_id=vocab.eos_id,
-                                 dataset_path=opt.dataset_path,  opt=opt, spec_augment=False)
+                                 dataset_path=config.dataset_path,  config=config, spec_augment=False)
 
-    evaluator = Evaluator(testset, vocab, opt.batch_size, device, opt.num_workers, opt.print_every, opt.decode, opt.k)
+    evaluator = Evaluator(
+        testset, vocab, config.batch_size, device, config.num_workers, config.print_every, config.decode, config.k
+    )
     evaluator.evaluate(model)
 
 
-def _get_parser():
-    """ Get arguments parser """
-    parser = argparse.ArgumentParser(description='KoSpeech')
-    parser.add_argument('--mode', type=str, default='eval')
-
-    build_preprocess_opts(parser)
-    build_eval_opts(parser)
-
-    return parser
+cs = ConfigStore.instance()
+cs.store(name="eval", node=EvalConfig)
 
 
-def main():
+@hydra.main(config_path=os.path.join('..', "configs"), config_name="eval")
+def main(config: OmegaConf):
     warnings.filterwarnings('ignore')
-    parser = _get_parser()
-    opt = parser.parse_args()
-    print_opts(opt, opt.mode)
-
-    inference(opt)
+    logger.info(OmegaConf.to_yaml(config))
+    inference(config)
 
 
 if __name__ == '__main__':

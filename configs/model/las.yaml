@@ -15,3 +15,4 @@ extractor: vgg
 activation: hardtanh
 mask_conv: false
 joint_ctc_attention: false
+max_len: 400

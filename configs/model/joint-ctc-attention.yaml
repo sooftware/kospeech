@@ -17,3 +17,4 @@ cross_entropy_weight: 0.7
 ctc_weight: 0.3
 mask_conv: True
 joint_ctc_attention: True
+max_len: 400
