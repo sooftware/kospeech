@@ -217,9 +217,9 @@ You can get a quick look of pre-trained model's inference, with a audio.
 ### Checkpoints   
 Checkpoints are organized by experiments and timestamps as shown in the following file structure.  
 ```
-save_dir
-+-- checkpoints
-|  +-- YYYY_mm_dd_HH_MM_SS
+outputs
++-- YYYY_mm_dd
+|  +-- HH_MM_SS
    |  +-- trainer_states.pt
    |  +-- model.pt
 ```
