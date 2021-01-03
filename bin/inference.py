@@ -36,7 +36,7 @@ opt = parser.parse_args()
 
 feature_vector = parse_audio(opt.audio_path, del_silence=True)
 input_length = torch.IntTensor([len(feature_vector)])
-vocab = KsponSpeechVocabulary('../data/vocab/aihub_character_vocabs.csv')
+vocab = KsponSpeechVocabulary('data/vocab/aihub_character_vocabs.csv')
 
 model = torch.load(opt.model_path, map_location=lambda storage, loc: storage).to(opt.device)
 if isinstance(model, nn.DataParallel):

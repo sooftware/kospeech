@@ -21,14 +21,15 @@ class AudioConfig:
 
 @dataclass
 class TrainConfig:
-    dataset: str = "???"
-    transcript_path: str = "../data/transcript.txt"
+    dataset: str = "kspon"
+    dataset_path: str = "???"
+    transcripts_path: str = "../../../data/transcripts.txt"
     output_unit: str = "character"
 
     num_epochs: int = 20
     batch_size: int = 32
     save_result_every: int = 1000
-    save_checkpoint_every: int = 5000
+    checkpoint_every: int = 5000
     print_every: int = 10
     mode: str = "train"
 
@@ -118,7 +119,7 @@ class TransformerConfig(ModelConfig):
 class EvalConfig:
     dataset: str = 'kspon'
     dataset_path: str = ''
-    transcript_path: str = '../data/eval_transcript.txt'
+    transcript_path: str = '../../../data/eval_transcript.txt'
     model_path: str = ''
     output_unit: str = 'character'
     batch_size: int = 32

@@ -1,7 +1,7 @@
 use_cuda: True
 dataset: 'kspon'
 dataset_path: ''
-transcript_path: '../data/eval_transcript.txt'
+transcript_path: 'data/eval_transcript.txt'
 model_path: ''
 output_unit: 'character'
 batch_size: 32

@@ -13,7 +13,7 @@ import hydra
 sys.path.append('..')
 
 from hydra.core.config_store import ConfigStore
-from omegaconf import OmegaConf
+from omegaconf import OmegaConf, DictConfig
 from kospeech.data.data_loader import split_dataset
 from kospeech.optim import Optimizer
 from kospeech.optim.lr_scheduler import TriStageLRScheduler
@@ -39,7 +39,7 @@ from bin.dataclass import (
 )
 
 
-def train(config):
+def train(config: DictConfig):
     random.seed(config.train.seed)
     torch.manual_seed(config.train.seed)
     torch.cuda.manual_seed_all(config.train.seed)
@@ -47,16 +47,18 @@ def train(config):
 
     if config.train.dataset == 'kspon':
         if config.train.output_unit == 'subword':
-            vocab = KsponSpeechVocabulary(vocab_path='../data/vocab/kspon_sentencepiece.vocab',
+            vocab = KsponSpeechVocabulary(vocab_path='../../../data/vocab/kspon_sentencepiece.vocab',
                                           output_unit=config.train.output_unit,
-                                          sp_model_path='../data/vocab/kspon_sentencepiece.model')
+                                          sp_model_path='../../../data/vocab/kspon_sentencepiece.model')
         else:
             vocab = KsponSpeechVocabulary(
-                f'../data/vocab/aihub_{config.train.output_unit}_vocabs.csv', output_unit=config.train.output_unit
+                f'../../../data/vocab/aihub_{config.train.output_unit}_vocabs.csv', output_unit=config.train.output_unit
             )
 
     elif config.train.dataset == 'libri':
-        vocab = LibriSpeechVocabulary('../data/vocab/tokenizer.vocab', '../data/vocab/tokenizer.model')
+        vocab = LibriSpeechVocabulary(
+            '../../../data/vocab/tokenizer.vocab', '../../../data/vocab/tokenizer.model'
+        )
 
     else:
         raise ValueError("Unsupported Dataset : {0}".format(config.train.dataset))
@@ -125,7 +127,7 @@ cs.store(group="model", name="transformer", node=TransformerConfig, package="mod
 
 
 @hydra.main(config_path=os.path.join('..', "configs"), config_name="train")
-def main(config: OmegaConf):
+def main(config: DictConfig):
     warnings.filterwarnings('ignore')
     logger.info(OmegaConf.to_yaml(config))
     train(config)

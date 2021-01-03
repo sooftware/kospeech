@@ -28,10 +28,10 @@ def inference(config: DictConfig):
 
     if config.dataset == 'kspon':
         vocab = KsponSpeechVocabulary(
-            f'../data/vocab/aihub_{config.output_unit}_vocabs.csv', output_unit=config.output_unit
+            f'../../../data/vocab/aihub_{config.output_unit}_vocabs.csv', output_unit=config.output_unit
         )
     elif config.dataset == 'libri':
-        vocab = LibriSpeechVocabulary('../data/vocab/tokenizer.vocab', '../data/vocab/tokenizer.model')
+        vocab = LibriSpeechVocabulary('../../../data/vocab/tokenizer.vocab', 'data/vocab/tokenizer.model')
     else:
         raise ValueError("Unsupported Dataset : {0}".format(config.dataset))
 

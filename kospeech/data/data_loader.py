@@ -9,12 +9,13 @@ import math
 import threading
 import torch
 import random
+
 from omegaconf import DictConfig
-from argparse import ArgumentParser
 from torch.utils.data import Dataset
 from kospeech.data import load_dataset
 from kospeech.utils import logger
 from kospeech.data import SpectrogramParser
+from kospeech.vocabs import Vocabulary
 
 
 class SpectrogramDataset(Dataset, SpectrogramParser):
@@ -233,7 +234,7 @@ class MultiDataLoader(object):
             self.loader[idx].join()
 
 
-def split_dataset(opt, transcripts_path, vocab):
+def split_dataset(config: DictConfig, transcripts_path: str, vocab: Vocabulary):
     """
     split into training set and validation set.
 
@@ -249,19 +250,19 @@ def split_dataset(opt, transcripts_path, vocab):
     logger.info("split dataset start !!")
     trainset_list = list()
 
-    if opt.dataset == 'kspon':
+    if config.train.dataset == 'kspon':
         train_num = 620000
         valid_num = 2545
-    elif opt.dataset == 'libri':
+    elif config.train.dataset == 'libri':
         train_num = 281241
         valid_num = 5567
     else:
-        raise NotImplementedError("Unsupported Dataset : {0}".format(opt.dataset))
+        raise NotImplementedError("Unsupported Dataset : {0}".format(config.train.dataset))
 
     audio_paths, transcripts = load_dataset(transcripts_path)
 
-    total_time_step = math.ceil(len(audio_paths) / opt.batch_size)
-    valid_time_step = math.ceil(valid_num / opt.batch_size)
+    total_time_step = math.ceil(len(audio_paths) / config.train.batch_size)
+    valid_time_step = math.ceil(valid_num / config.train.batch_size)
     train_time_step = total_time_step - valid_time_step
 
     train_audio_paths = audio_paths[:train_num + 1]
@@ -270,10 +271,10 @@ def split_dataset(opt, transcripts_path, vocab):
     valid_audio_paths = audio_paths[train_num + 1:]
     valid_transcripts = transcripts[train_num + 1:]
 
-    if opt.spec_augment:
+    if config.audio.spec_augment:
         train_time_step <<= 1
 
-    train_num_per_worker = math.ceil(train_num / opt.num_workers)
+    train_num_per_worker = math.ceil(train_num / config.train.num_workers)
 
     # audio_paths & script_paths shuffled in the same order
     # for seperating train & validation
@@ -282,7 +283,7 @@ def split_dataset(opt, transcripts_path, vocab):
     train_audio_paths, train_transcripts = zip(*tmp)
 
     # seperating the train dataset by the number of workers
-    for idx in range(opt.num_workers):
+    for idx in range(config.train.num_workers):
         train_begin_idx = train_num_per_worker * idx
         train_end_idx = min(train_num_per_worker * (idx + 1), train_num)
 
@@ -291,10 +292,10 @@ def split_dataset(opt, transcripts_path, vocab):
                 train_audio_paths[train_begin_idx:train_end_idx],
                 train_transcripts[train_begin_idx:train_end_idx],
                 vocab.sos_id, vocab.eos_id,
-                opt=opt,
-                spec_augment=opt.spec_augment,
-                dataset_path=opt.dataset_path,
-                audio_extension=opt.audio_extension
+                config=config,
+                spec_augment=config.audio.spec_augment,
+                dataset_path=config.train.dataset_path,
+                audio_extension=config.audio.audio_extension
             )
         )
 
@@ -302,9 +303,9 @@ def split_dataset(opt, transcripts_path, vocab):
         audio_paths=valid_audio_paths,
         transcripts=valid_transcripts,
         sos_id=vocab.sos_id, eos_id=vocab.eos_id,
-        opt=opt, spec_augment=False,
-        dataset_path=opt.dataset_path,
-        audio_extension=opt.audio_extension
+        config=config, spec_augment=False,
+        dataset_path=config.train.dataset_path,
+        audio_extension=config.audio.audio_extension
     )
 
     logger.info("split dataset complete !!")

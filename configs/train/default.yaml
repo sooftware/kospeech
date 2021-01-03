@@ -1,15 +1,16 @@
 # data
-dataset: ''
-transcript_path: ../data/transcript.txt
-output_unit: character
+dataset: 'kspon'
+dataset_path: ''
+transcripts_path: 'data/transcripts.txt'
+output_unit: 'character'
 
 # trainer
 num_epochs: 20
 batch_size: 32
 save_result_every: 1000
-save_checkpoint_every: 5000
+checkpoint_every: 5000
 print_every: 10
-mode: train
+mode: 'train'
 seed: 777
 resume: false
 
@@ -18,7 +19,7 @@ num_workers: 4
 use_cuda: True
 
 # optim
-optimizer: adam
+optimizer: 'adam'
 init_lr: 1e-06
 final_lr: 1e-06
 peak_lr: 1e-04
@@ -27,4 +28,4 @@ final_lr_scale: 0.05
 max_grad_norm: 400
 warmup_steps: 400
 weight_decay: 1e-05
-reduction: mean
+reduction: 'mean'
