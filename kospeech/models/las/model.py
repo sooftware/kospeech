@@ -13,7 +13,7 @@ from typing import Optional, Tuple
 
 class ListenAttendSpell(nn.Module):
     """
-    Listen, Attend and Spell architecture with configurable encoder and decoder.
+    Listen, Attend and Spell model with configurable encoder and decoder.
 
     Args:
         encoder (torch.nn.Module): encoder of las

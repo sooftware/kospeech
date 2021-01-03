@@ -57,7 +57,7 @@ class SupervisedTrainer(object):
             checkpoint_every: int,                         # number of timesteps to checkpoint after
             teacher_forcing_step: float = 0.2,             # step of teacher forcing ratio decrease per epoch.
             min_teacher_forcing_ratio: float = 0.8,        # minimum value of teacher forcing ratio
-            architecture: str = 'las',                     # architecture to train - las, transformer
+            architecture: str = 'las',                     # model to train - las, transformer
             vocab: Vocabulary = None,                      # vocabulary object
             joint_ctc_attention: bool = False              # flag indication whether joint CTC-Attention or not
     ) -> None:
@@ -371,7 +371,7 @@ class SupervisedTrainer(object):
             loss = self.criterion(output.transpose(0, 1), targets, output_lengths, target_lengths)
 
         else:
-            raise ValueError("Unsupported architecture : {0}".format(self.architecture))
+            raise ValueError("Unsupported model : {0}".format(self.architecture))
 
         return output, loss, ctc_loss, cross_entropy_loss
 

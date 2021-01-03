@@ -47,7 +47,7 @@ class GreedySearch(object):
             elif isinstance(model.module, DeepSpeech2):
                 architecture = 'deepspeech2'
             else:
-                raise ValueError("Unsupported architecture : {0}".format(type(model.module)))
+                raise ValueError("Unsupported model : {0}".format(type(model.module)))
         else:
             if isinstance(model, ListenAttendSpell):
                 architecture = 'las'
@@ -56,7 +56,7 @@ class GreedySearch(object):
             elif isinstance(model, DeepSpeech2):
                 architecture = 'deepspeech2'
             else:
-                raise ValueError("Unsupported architecture : {0}".format(type(model)))
+                raise ValueError("Unsupported model : {0}".format(type(model)))
 
         model.eval()
         model.to(device)
@@ -76,7 +76,7 @@ class GreedySearch(object):
             elif architecture == 'deepspeech2':
                 y_hats = model.greedy_search(inputs, input_lengths, device)
             else:
-                raise ValueError("Unsupported architecture : {0}".format(architecture))
+                raise ValueError("Unsupported model : {0}".format(architecture))
 
             for idx in range(targets.size(0)):
                 self.target_list.append(

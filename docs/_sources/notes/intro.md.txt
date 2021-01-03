@@ -1,4 +1,4 @@
-﻿# Intro
+# Intro
   
 [KoSpeech: Open Source Project for Korean End-to-End Automatic Speech Recognition in PyTorch](https://sooftware.github.io/KoSpeech/)     
   

@@ -16,7 +16,8 @@ setup(
         'tqdm',
         'matplotlib',
         'astropy',
-        'sentencepiece'
+        'sentencepiece',
+        'hydra-core',
     ],
     keywords=['asr', 'speech_recognition', 'korean'],
     python_requires='>=3'

@@ -9,11 +9,13 @@ import math
 import threading
 import torch
 import random
-from argparse import ArgumentParser
+
+from omegaconf import DictConfig
 from torch.utils.data import Dataset
 from kospeech.data import load_dataset
 from kospeech.utils import logger
 from kospeech.data import SpectrogramParser
+from kospeech.vocabs import Vocabulary
 
 
 class SpectrogramDataset(Dataset, SpectrogramParser):
@@ -26,7 +28,7 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
         sos_id (int): identification of <start of sequence>
         eos_id (int): identification of <end of sequence>
         spec_augment (bool): flag indication whether to use spec-augmentation or not (default: True)
-        opt (ArgumentParser): set of arguments
+        config (DictConfig): set of configurations
         dataset_path (str): path of dataset
     """
     def __init__(
@@ -35,18 +37,19 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
             transcripts: list,              # list of transcript paths
             sos_id: int,                    # identification of start of sequence token
             eos_id: int,                    # identification of end of sequence token
-            opt: ArgumentParser,            # set of arguments
+            config: DictConfig,             # set of arguments
             spec_augment: bool = False,     # flag indication whether to use spec-augmentation of not
             dataset_path: str = None,       # path of dataset,
             audio_extension: str = 'pcm'    # audio extension
     ) -> None:
         super(SpectrogramDataset, self).__init__(
-            feature_extract_by=opt.feature_extract_by, sample_rate=opt.sample_rate, n_mels=opt.n_mels,
-            frame_length=opt.frame_length, frame_shift=opt.frame_shift, del_silence=opt.del_silence,
-            input_reverse=opt.input_reverse, normalize=opt.normalize, freq_mask_para=opt.freq_mask_para,
-            time_mask_num=opt.time_mask_num, freq_mask_num=opt.freq_mask_num,
-            sos_id=sos_id, eos_id=eos_id,
-            dataset_path=dataset_path, transform_method=opt.transform_method, audio_extension=audio_extension
+            feature_extract_by=config.audio.feature_extract_by, sample_rate=config.audio.sample_rate,
+            n_mels=config.audio.n_mels, frame_length=config.audio.frame_length, frame_shift=config.audio.frame_shift,
+            del_silence=config.audio.del_silence, input_reverse=config.audio.input_reverse,
+            normalize=config.audio.normalize, freq_mask_para=config.audio.freq_mask_para,
+            time_mask_num=config.audio.time_mask_num, freq_mask_num=config.audio.freq_mask_num,
+            sos_id=sos_id, eos_id=eos_id, dataset_path=dataset_path, transform_method=config.audio.transform_method,
+            audio_extension=audio_extension
         )
         self.audio_paths = list(audio_paths)
         self.transcripts = list(transcripts)
@@ -231,7 +234,7 @@ class MultiDataLoader(object):
             self.loader[idx].join()
 
 
-def split_dataset(opt, transcripts_path, vocab):
+def split_dataset(config: DictConfig, transcripts_path: str, vocab: Vocabulary):
     """
     split into training set and validation set.
 
@@ -247,19 +250,19 @@ def split_dataset(opt, transcripts_path, vocab):
     logger.info("split dataset start !!")
     trainset_list = list()
 
-    if opt.dataset == 'kspon':
+    if config.train.dataset == 'kspon':
         train_num = 620000
         valid_num = 2545
-    elif opt.dataset == 'libri':
+    elif config.train.dataset == 'libri':
         train_num = 281241
         valid_num = 5567
     else:
-        raise NotImplementedError("Unsupported Dataset : {0}".format(opt.dataset))
+        raise NotImplementedError("Unsupported Dataset : {0}".format(config.train.dataset))
 
     audio_paths, transcripts = load_dataset(transcripts_path)
 
-    total_time_step = math.ceil(len(audio_paths) / opt.batch_size)
-    valid_time_step = math.ceil(valid_num / opt.batch_size)
+    total_time_step = math.ceil(len(audio_paths) / config.train.batch_size)
+    valid_time_step = math.ceil(valid_num / config.train.batch_size)
     train_time_step = total_time_step - valid_time_step
 
     train_audio_paths = audio_paths[:train_num + 1]
@@ -268,10 +271,10 @@ def split_dataset(opt, transcripts_path, vocab):
     valid_audio_paths = audio_paths[train_num + 1:]
     valid_transcripts = transcripts[train_num + 1:]
 
-    if opt.spec_augment:
+    if config.audio.spec_augment:
         train_time_step <<= 1
 
-    train_num_per_worker = math.ceil(train_num / opt.num_workers)
+    train_num_per_worker = math.ceil(train_num / config.train.num_workers)
 
     # audio_paths & script_paths shuffled in the same order
     # for seperating train & validation
@@ -280,7 +283,7 @@ def split_dataset(opt, transcripts_path, vocab):
     train_audio_paths, train_transcripts = zip(*tmp)
 
     # seperating the train dataset by the number of workers
-    for idx in range(opt.num_workers):
+    for idx in range(config.train.num_workers):
         train_begin_idx = train_num_per_worker * idx
         train_end_idx = min(train_num_per_worker * (idx + 1), train_num)
 
@@ -289,10 +292,10 @@ def split_dataset(opt, transcripts_path, vocab):
                 train_audio_paths[train_begin_idx:train_end_idx],
                 train_transcripts[train_begin_idx:train_end_idx],
                 vocab.sos_id, vocab.eos_id,
-                opt=opt,
-                spec_augment=opt.spec_augment,
-                dataset_path=opt.dataset_path,
-                audio_extension=opt.audio_extension
+                config=config,
+                spec_augment=config.audio.spec_augment,
+                dataset_path=config.train.dataset_path,
+                audio_extension=config.audio.audio_extension
             )
         )
 
@@ -300,9 +303,9 @@ def split_dataset(opt, transcripts_path, vocab):
         audio_paths=valid_audio_paths,
         transcripts=valid_transcripts,
         sos_id=vocab.sos_id, eos_id=vocab.eos_id,
-        opt=opt, spec_augment=False,
-        dataset_path=opt.dataset_path,
-        audio_extension=opt.audio_extension
+        config=config, spec_augment=False,
+        dataset_path=config.train.dataset_path,
+        audio_extension=config.audio.audio_extension
     )
 
     logger.info("split dataset complete !!")

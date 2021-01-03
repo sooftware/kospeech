@@ -6,61 +6,67 @@
 
 import torch
 import torch.nn as nn
+
+from omegaconf import DictConfig
 from astropy.modeling import ParameterError
-from kospeech.decode.ensemble import BasicEnsemble, WeightedEnsemble
 from kospeech.models.modules import BaseRNN
+from kospeech.vocabs import Vocabulary
+from kospeech.decode.ensemble import (
+    BasicEnsemble,
+    WeightedEnsemble,
+)
 from kospeech.models import (
     ListenAttendSpell,
     Listener,
     Speller,
     DeepSpeech2,
-    SpeechTransformer
+    SpeechTransformer,
 )
 
 
-def build_model(opt, vocab, device):
+def build_model(config: DictConfig, vocab: Vocabulary, device: torch.device):
     """ Various model dispatcher function. """
-    if opt.transform_method.lower() == 'spect':
-        if opt.feature_extract_by == 'kaldi':
+    if config.audio.transform_method.lower() == 'spect':
+        if config.audio.feature_extract_by == 'kaldi':
             input_size = 257
         else:
-            input_size = (opt.frame_length << 3) + 1
+            input_size = (config.audio.frame_length << 3) + 1
     else:
-        input_size = opt.n_mels
+        input_size = config.audio.n_mels
 
-    if opt.architecture.lower() == 'las':
-        model = build_las(input_size, opt, vocab, device)
+    if config.model.architecture.lower() == 'las':
+        model = build_las(input_size, config, vocab, device)
 
-    elif opt.architecture.lower() == 'transformer':
+    elif config.model.architecture.lower() == 'transformer':
         model = build_transformer(
             num_classes=len(vocab),
             pad_id=vocab.pad_id,
             input_size=input_size,
-            d_model=opt.d_model,
-            num_heads=opt.num_heads,
+            d_model=config.model.d_model,
+            num_heads=config.model.num_heads,
             eos_id=vocab.eos_id,
-            num_encoder_layers=opt.num_encoder_layers,
-            num_decoder_layers=opt.num_decoder_layers,
-            dropout_p=opt.dropout,
-            ffnet_style=opt.ffnet_style,
+            num_encoder_layers=config.model.num_encoder_layers,
+            num_decoder_layers=config.model.num_decoder_layers,
+            dropout_p=config.model.dropout,
+            ffnet_style=config.model.ffnet_style,
             device=device
         )
 
-    elif opt.architecture.lower() == 'deepspeech2':
+    elif config.model.architecture.lower() == 'deepspeech2':
         model = build_deepspeech2(
             input_size=input_size,
             num_classes=len(vocab),
-            rnn_type=opt.rnn_type,
-            num_rnn_layers=opt.num_encoder_layers,
-            rnn_hidden_dim=opt.hidden_dim,
-            dropout_p=opt.dropout,
-            bidirectional=opt.use_bidirectional,
-            activation=opt.activation,
+            rnn_type=config.model.rnn_type,
+            num_rnn_layers=config.model.num_encoder_layers,
+            rnn_hidden_dim=config.model.hidden_dim,
+            dropout_p=config.model.dropout,
+            bidirectional=config.model.use_bidirectional,
+            activation=config.model.activation,
             device=device
         )
 
     else:
-        raise ValueError('Unsupported architecture: {0}'.format(opt.architecture))
+        raise ValueError('Unsupported model: {0}'.format(config.model.architecture))
 
     return model
 
@@ -112,34 +118,34 @@ def build_transformer(num_classes: int, pad_id: int, d_model: int, num_heads: in
     )).to(device)
 
 
-def build_las(input_size, opt, vocab, device):
+def build_las(input_size: int, config: DictConfig, vocab: Vocabulary, device: torch.device):
     """ Various Listen, Attend and Spell dispatcher function. """
     listenr = build_listener(
             input_size=input_size,
             num_classes=len(vocab),
-            hidden_dim=opt.hidden_dim,
-            dropout_p=opt.dropout,
-            num_layers=opt.num_encoder_layers,
-            bidirectional=opt.use_bidirectional,
-            extractor=opt.extractor,
-            activation=opt.activation,
-            rnn_type=opt.rnn_type,
+            hidden_dim=config.model.hidden_dim,
+            dropout_p=config.model.dropout,
+            num_layers=config.model.num_encoder_layers,
+            bidirectional=config.model.use_bidirectional,
+            extractor=config.model.extractor,
+            activation=config.model.activation,
+            rnn_type=config.model.rnn_type,
             device=device,
-            mask_conv=opt.mask_conv,
-            joint_ctc_attention=opt.joint_ctc_attention
+            mask_conv=config.model.mask_conv,
+            joint_ctc_attention=config.model.joint_ctc_attention
     )
     speller = build_speller(
             num_classes=len(vocab),
-            max_len=opt.max_len,
+            max_len=config.model.max_len,
             pad_id=vocab.pad_id,
             sos_id=vocab.sos_id,
             eos_id=vocab.eos_id,
-            hidden_dim=opt.hidden_dim << (1 if opt.use_bidirectional else 0),
-            num_layers=opt.num_decoder_layers,
-            rnn_type=opt.rnn_type,
-            dropout_p=opt.dropout,
-            num_heads=opt.num_heads,
-            attn_mechanism=opt.attn_mechanism,
+            hidden_dim=config.model.hidden_dim << (1 if config.model.use_bidirectional else 0),
+            num_layers=config.model.num_decoder_layers,
+            rnn_type=config.model.rnn_type,
+            dropout_p=config.model.dropout,
+            num_heads=config.model.num_heads,
+            attn_mechanism=config.model.attn_mechanism,
             device=device
     )
 
@@ -243,8 +249,8 @@ def build_speller(
     )
 
 
-def load_test_model(opt, device):
-    model = torch.load(opt.model_path, map_location=lambda storage, loc: storage).to(device)
+def load_test_model(config: DictConfig, device: torch.device):
+    model = torch.load(config.model_path, map_location=lambda storage, loc: storage).to(device)
 
     if isinstance(model, nn.DataParallel):
         model.module.decoder.device = device
@@ -257,7 +263,7 @@ def load_test_model(opt, device):
     return model
 
 
-def load_language_model(path, device):
+def load_language_model(path: str, device: torch.device):
     model = torch.load(path, map_location=lambda storage, loc: storage).to(device)
 
     if isinstance(model, nn.DataParallel):
@@ -268,7 +274,7 @@ def load_language_model(path, device):
     return model
 
 
-def build_ensemble(model_paths, method, device):
+def build_ensemble(model_paths: list, method: str, device: torch.device):
     models = list()
 
     for model_path in model_paths:

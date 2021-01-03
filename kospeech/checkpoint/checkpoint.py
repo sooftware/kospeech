@@ -31,14 +31,14 @@ class Checkpoint(object):
 
     Attributes:
         CHECKPOINT_DIR_NAME (str): name of the checkpoint directory
+        SAVE_PATH (str): path of file to save
         TRAINER_STATE_NAME (str): name of the file storing trainer states
-        SAVE_PATH (str): path of save directory
         MODEL_NAME (str): name of the file storing model
     """
 
     CHECKPOINT_DIR_NAME = 'checkpoints'
+    SAVE_PATH = 'outputs'
     TRAINER_STATE_NAME = 'trainer_states.pt'
-    SAVE_PATH = '../data/checkpoint'
     MODEL_NAME = 'model.pt'
 
     def __init__(
@@ -61,11 +61,6 @@ class Checkpoint(object):
         The name of the subdirectory is the current local time in Y_M_D_H_M_S format.
         """
         date_time = time.strftime('%Y_%m_%d_%H_%M_%S', time.localtime())
-        path = os.path.join(self.SAVE_PATH, self.CHECKPOINT_DIR_NAME, date_time)
-
-        if os.path.exists(path):
-            shutil.rmtree(path)  # delete path dir & sub-files
-        os.makedirs(path)
 
         trainer_states = {
             'optimizer': self.optimizer,
@@ -73,11 +68,11 @@ class Checkpoint(object):
             'validset': self.validset,
             'epoch': self.epoch
         }
-        torch.save(trainer_states, os.path.join(path, self.TRAINER_STATE_NAME))
-        torch.save(self.model, os.path.join(path, self.MODEL_NAME))
+        torch.save(trainer_states, os.path.join(os.getcwd(), self.TRAINER_STATE_NAME))
+        torch.save(self.model, os.path.join(os.getcwd(), self.MODEL_NAME))
         logger.info('save checkpoints\n%s\n%s'
-                    % (os.path.join(path, self.TRAINER_STATE_NAME),
-                       os.path.join(path, self.MODEL_NAME)))
+                    % (os.path.join(os.getcwd(), self.TRAINER_STATE_NAME),
+                       os.path.join(os.getcwd(), self.MODEL_NAME)))
 
     def load(self, path):
         """
@@ -118,6 +113,6 @@ class Checkpoint(object):
         returns the path to the last saved checkpoint's subdirectory.
         Precondition: at least one checkpoint has been made (i.e., latest checkpoint subdirectory exists).
         """
-        checkpoints_path = os.path.join(self.SAVE_PATH, self.CHECKPOINT_DIR_NAME)
+        checkpoints_path = sorted(os.listdir(self.SAVE_PATH), reverse=True)[0]
         sorted_listdir = sorted(os.listdir(checkpoints_path), reverse=True)
         return os.path.join(checkpoints_path, sorted_listdir[0])
