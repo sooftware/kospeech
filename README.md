@@ -8,6 +8,7 @@
   
 ### What's New
   
+- January 2021: Apply [Hydra](https://github.com/facebookresearch/hydra) (configuration tool)
 - December 2020: Release v1.1
 - December 2020: Update pre-train models
 - December 2020: Joint CTC-Attention Updated (*Currently, Not Supports Multi-GPU*)
@@ -152,6 +153,7 @@ We recommend creating a new virtual environment for this project (using virtual 
 * torchaudio: `pip install torchaudio` (Refer [here](https://github.com/pytorch/pytorch) for problem installing torchaudio)
 * tqdm: `pip install tqdm` (Refer [here](https://github.com/tqdm/tqdm) for problem installing tqdm)
 * sentencepiece: `pip install sentencepiece` (Refer [here](https://github.com/google/sentencepiece) for problem installing sentencepiece)
+* hydra: `pip install hydra-core --upgrade` (Refer [here](https://github.com/facebookresearch/hydra) for problem installing hydra)
   
 ### Install from source
 Currently we only support installation from source code using setuptools. Checkout the source code and run the   
@@ -175,27 +177,27 @@ You can choose from four models and training this. There are many other training
   
 - **Deep Speech 2** Training
 ```
-python ./bin/main.py --dataset $DATASET --transcripts_path $TRANSCRIPTS_PATH --output_unit $OUTPUT_UNIT --architecture deepspeech2 --batch_size 32 --num_workers 4 --num_epochs 70 --use_bidirectional --audio_extension pcm --optimizer adam --spec_augment --use_cuda --hidden_dim 1024 --dropout 0.3 --transform_method fbank --num_encoder_layers 3 --rnn_type lstm --sample_rate 16000 --frame_length 20 --frame_shift 10 --n_mels 80 --normalize --del_silence --feature_extract_by kaldi --freq_mask_para 18 --time_mask_num 4 --freq_mask_num 2 --save_result_every 1000 --checkpoint_every 5000 --print_every 10 --init_lr 1e-06 --final_lr 1e-06 --peak_lr 1e-04 --init_lr_scale 0.01 --final_lr_scale 0.05 --mode train --max_grad_norm 400 --warmup_steps 2000 --max_len 400 --weight_decay 1e-05 --activation hardtanh
+python ./bin/main.py train.dataset_path=$DATASET_PATH model=ds2
 ```
   
 - **Listen, Attend and Spell** Training
 ```
-python ./bin/main.py --dataset $DATASET --transcripts_path $TRANSCRIPTS_PATH --output_unit $OUTPUT_UNIT --architecture las --batch_size 32 --num_workers 4 --num_epochs 20 --use_bidirectional --audio_extension pcm --optimizer adam --spec_augment --use_cuda --hidden_dim 512 --dropout 0.3 --num_heads 4 --label_smoothing 0.1 --transform_method fbank --num_encoder_layers 3 --num_decoder_layers 2 --rnn_type lstm --teacher_forcing_ratio 1.0 --sample_rate 16000 --frame_length 20 --frame_shift 10 --n_mels 80 --normalize --del_silence --feature_extract_by kaldi --freq_mask_para 18 --time_mask_num 4 --freq_mask_num 2 --save_result_every 1000 --checkpoint_every 5000 --print_every 10 --init_lr 3e-04 --final_lr 1e-06 --peak_lr 3e-04 --init_lr_scale 0.01 --final_lr_scale 0.05 --mode train --max_grad_norm 400 --warmup_steps 0 --max_len 400 --weight_decay 1e-05 --reduction sum --attn_mechanism multi-head --teacher_forcing_step 0.0 --min_teacher_forcing_ratio 1.0 --extractor vgg --activation hardtanh
+python ./bin/main.py train.dataset_path=$DATASET_PATH model=las
 ```
   
 - **Joint CTC-Attention** Training
 ```
-python ./bin/main.py --dataset $DATASET --transcripts_path $TRANSCRIPTS_PATH --output_unit $OUTPUT_UNIT --architecture las --batch_size 32 --num_workers 4 --num_epochs 20 --use_bidirectional --audio_extension pcm --optimizer adam --use_cuda --hidden_dim 768 --dropout 0.3 --num_heads 4 --transform_method fbank --num_encoder_layers 3 --num_decoder_layers 1 --rnn_type lstm --teacher_forcing_ratio 1.0 --sample_rate 16000 --frame_length 20 --frame_shift 10 --n_mels 80 --normalize --del_silence --feature_extract_by kaldi --freq_mask_para 18 --time_mask_num 4 --freq_mask_num 2 --save_result_every 1000 --checkpoint_every 5000 --print_every 10 --init_lr 1e-06 --final_lr 1e-06 --peak_lr 3e-04 --init_lr_scale 0.01 --final_lr_scale 0.05 --mode train --max_grad_norm 400 --warmup_steps 2000 --max_len 400 --weight_decay 1e-05 --reduction mean --attn_mechanism multi-head --teacher_forcing_step 0.1 --min_teacher_forcing_ratio 0.9 --extractor vgg --activation hardtanh --cross_entropy_weight 0.7 --ctc_weight 0.3 --mask_conv --joint_ctc_attention
+python ./bin/main.py train.dataset_path=$DATASET_PATH model=joint-ctc-attention
 ```
   
 - **Speech Transformer** Training
 ```
-python ./bin/main.py --dataset $DATASET --transcripts_path $TRANSCRIPTS_PATH --output_unit $OUTPUT_UNIT --architecture transformer --batch_size 32 --d_model 512 --reduction mean --num_heads 8 --num_encoder_layers 12 --num_decoder_layers 6 --dropout 0.3 --ffnet_style ff --num_workers 4 --num_epochs 70 --init_lr 1e-06 --final_lr 1e-06 --peak_lr 1e-04 --init_lr_scale 0.01 --final_lr_scale 0.05 --sample_rate 16000 --frame_length 20 --frame_shift 10 --n_mels 80 --feature_extract_by kaldi --transform_method fbank --freq_mask_para 18 --time_mask_num 4 --freq_mask_num 2 --save_result_every 1000 --checkpoint_every 5000 --print_every 10 --mode train  --del_silence --normalize --use_cuda
+python ./bin/main.py train.dataset_path=$DATASET_PATH model=transformer
 ```
   
 ### Evaluate for KsponSpeech
 ```
-python ./eval.py --dataset_path $DATASET_PATH --transcripts_path $TRANSCRIPTS_PATH --model_path $MODEL_PATH --sample_rate 16000 --frame_length 20 --frame_shift 10 --n_mels 80 --normalize --del_silence --feature_extract_by kaldi --num_workers 4 --use_cuda --batch_size 32 --k 3  --decode greedy --print_every 10 --mode eval --transform_method fbank
+python .bin/eval.py dataset_path=$DATASET_PATH transcripts_path=$TRANSCRIPTS_PATH model_path=$MODEL_PATH
 ```
   
 Now you have a model which you can use to predict on new data. We do this by running `greedy search` or `beam search`.  
