@@ -7,10 +7,8 @@
 import torch
 import platform
 import numpy as np
-from torch import (
-    Tensor,
-    FloatTensor
-)
+
+from torch import Tensor, FloatTensor
 
 
 class Spectrogram(object):
@@ -21,10 +19,15 @@ class Spectrogram(object):
         sample_rate (int): Sample rate of audio signal. (Default: 16000)
         frame_length (int): frame length for spectrogram (ms) (Default : 20)
         frame_shift (int): Length of hop between STFT windows. (ms) (Default: 10)
+        feature_extract_by (str): which library to use for feature extraction (default: torch)
     """
-    def __init__(self, sample_rate: int = 16000,
-                 frame_length: int = 20, frame_shift: int = 10,
-                 feature_extract_by: str = 'torch') -> None:
+    def __init__(
+            self,
+            sample_rate: int = 16000,
+            frame_length: int = 20,
+            frame_shift: int = 10,
+            feature_extract_by: str = 'torch'
+    ) -> None:
         self.sample_rate = sample_rate
         self.feature_extract_by = feature_extract_by.lower()
 
@@ -71,9 +74,16 @@ class MelSpectrogram(object):
         n_mels (int):  Number of mfc coefficients to retain. (Default: 80)
         frame_length (int): frame length for spectrogram (ms) (Default : 20)
         frame_shift (int): Length of hop between STFT windows. (ms) (Default: 10)
-        feature_extract_by (str): which library to use for feature extraction(default: librosa)
+        feature_extract_by (str): which library to use for feature extraction (default: librosa)
     """
-    def __init__(self, sample_rate=16000, n_mels=80, frame_length=20, frame_shift=10, feature_extract_by='librosa'):
+    def __init__(
+            self,
+            sample_rate: int = 16000,
+            n_mels: int = 80,
+            frame_length: int = 20,
+            frame_shift: int = 10,
+            feature_extract_by: str = 'librosa'
+    ) -> None:
         self.sample_rate = sample_rate
         self.n_mels = n_mels
         self.n_fft = int(round(sample_rate * 0.001 * frame_length))
@@ -129,7 +139,14 @@ class MFCC(object):
         frame_shift (int): Length of hop between STFT windows. (ms) (Default: 10)
         feature_extract_by (str): which library to use for feature extraction(default: librosa)
     """
-    def __init__(self, sample_rate=16000, n_mfcc=40, frame_length=20, frame_shift=10, feature_extract_by='librosa'):
+    def __init__(
+            self,
+            sample_rate: int = 16000,
+            n_mfcc: int = 40,
+            frame_length: int = 20,
+            frame_shift: int = 10,
+            feature_extract_by: str = 'librosa'
+    ) -> None:
         self.sample_rate = sample_rate
         self.n_mfcc = n_mfcc
         self.n_fft = int(round(sample_rate * 0.001 * frame_length))
@@ -177,7 +194,13 @@ class FilterBank(object):
         frame_length (int): frame length for spectrogram (ms) (Default : 20)
         frame_shift (int): Length of hop between STFT windows. (ms) (Default: 10)
     """
-    def __init__(self, sample_rate=16000, n_mels=80, frame_length=20, frame_shift=10):
+    def __init__(
+            self,
+            sample_rate: int = 16000,
+            n_mels: int = 80,
+            frame_length: int = 20,
+            frame_shift: int = 10
+    ) -> None:
         import torchaudio
         self.transforms = torchaudio.compliance.kaldi.fbank
         self.sample_rate = sample_rate

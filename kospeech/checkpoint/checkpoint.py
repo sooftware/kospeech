@@ -6,7 +6,6 @@
 
 import os
 import time
-import shutil
 import torch
 import torch.nn as nn
 from kospeech.utils import logger

@@ -5,6 +5,8 @@
 # LICENSE file in the root directory of this source tree.
 
 import numpy as np
+
+from kospeech.utils import logger
 from kospeech.data.audio.core import load_audio
 from torch import Tensor, FloatTensor
 from kospeech.data.audio.augment import SpecAugment
@@ -12,9 +14,8 @@ from kospeech.data.audio.feature import (
     MelSpectrogram,
     MFCC,
     Spectrogram,
-    FilterBank
+    FilterBank,
 )
-from kospeech.utils import logger
 
 
 class AudioParser(object):
@@ -122,23 +123,23 @@ class SpectrogramParser(AudioParser):
             logger.info("Audio is None : {0}".format(audio_path))
             return None
 
-        feature_vector = self.transforms(signal)
+        feature = self.transforms(signal)
 
         if self.normalize:
-            feature_vector -= feature_vector.mean()
-            feature_vector /= np.std(feature_vector)
+            feature -= feature.mean()
+            feature /= np.std(feature)
 
         # Refer to "Sequence to Sequence Learning with Neural Network" paper
         if self.input_reverse:
-            feature_vector = feature_vector[:, ::-1]
-            feature_vector = FloatTensor(np.ascontiguousarray(np.swapaxes(feature_vector, 0, 1)))
+            feature = feature[:, ::-1]
+            feature = FloatTensor(np.ascontiguousarray(np.swapaxes(feature, 0, 1)))
         else:
-            feature_vector = FloatTensor(feature_vector).transpose(0, 1)
+            feature = FloatTensor(feature).transpose(0, 1)
 
         if augment_method == SpectrogramParser.SPEC_AUGMENT:
-            feature_vector = self.spec_augment(feature_vector)
+            feature = self.spec_augment(feature)
 
-        return feature_vector
+        return feature
 
     def parse_transcript(self, *args, **kwargs):
         raise NotImplementedError
