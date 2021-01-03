@@ -8,7 +8,7 @@
   
 ### What's New
   
-- January 2021: Apply [Hydra](https://github.com/facebookresearch/hydra) (configuration tool)
+- January 2021: Apply [Hydra: framework for elegantly configuring complex applications](https://github.com/facebookresearch/hydra)
 - December 2020: Release v1.1
 - December 2020: Update pre-train models
 - December 2020: Joint CTC-Attention Updated (*Currently, Not Supports Multi-GPU*)
