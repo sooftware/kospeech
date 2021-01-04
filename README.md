@@ -194,7 +194,7 @@ python ./bin/main.py train.dataset_path=$DATASET_PATH model=joint-ctc-attention
   
 - **Speech Transformer** Training
 ```
-python ./bin/main.py train.dataset_path=$DATASET_PATH model=transformer
+python ./bin/main.py train.dataset_path=$DATASET_PATH model=transformer train.warmup_steps=18000 train.num_epochs=40
 ```
   
 ### Evaluate for KsponSpeech
