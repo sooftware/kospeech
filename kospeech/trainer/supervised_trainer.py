@@ -51,7 +51,7 @@ class SupervisedTrainer(object):
             trainset_list: list,                           # list of training dataset
             validset: SpectrogramDataset,                  # validation dataset
             num_workers: int,                              # number of threads
-            device: str,                                   # device - cuda or cpu
+            device: torch.device,                          # device - cuda or cpu
             print_every: int,                              # number of timesteps to save result after
             save_result_every: int,                        # nimber of timesteps to save result after
             checkpoint_every: int,                         # number of timesteps to checkpoint after
@@ -363,8 +363,26 @@ class SupervisedTrainer(object):
                 raise ValueError(f"Unsupported Criterion: {self.criterion}")
 
         elif self.architecture == 'transformer':
-            output = model(inputs, input_lengths, targets, return_attns=False)
-            loss = self.criterion(output.contiguous().view(-1, output.size(-1)), targets.contiguous().view(-1))
+            output, encoder_log_probs, encoder_output_lengths = model(inputs, input_lengths, targets)
+
+            if isinstance(self.criterion, LabelSmoothedCrossEntropyLoss):
+                loss = self.criterion(
+                    output.contiguous().view(-1, output.size(-1)), targets[:, 1:].contiguous().view(-1)
+                )
+            elif isinstance(self.criterion, JointCTCCrossEntropyLoss):
+                loss, ctc_loss, cross_entropy_loss = self.criterion(
+                    encoder_log_probs=encoder_log_probs.transpose(0, 1),
+                    decoder_log_probs=output.contiguous().view(-1, output.size(-1)),
+                    output_lengths=encoder_output_lengths,
+                    targets=targets,
+                    target_lengths=target_lengths
+                )
+            elif isinstance(self.criterion, nn.CrossEntropyLoss):
+                loss = self.criterion(
+                    output.contiguous().view(-1, output.size(-1)), targets.contiguous().view(-1)
+                )
+            else:
+                raise ValueError(f"Unsupported Criterion: {self.criterion}")
 
         elif self.architecture == 'deepspeech2':
             output, output_lengths = model(inputs, input_lengths)
