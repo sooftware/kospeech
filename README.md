@@ -179,22 +179,27 @@ You can choose from four models and training this. There are many other training
   
 - **Deep Speech 2** Training
 ```
-python ./bin/main.py train.dataset_path=$DATASET_PATH model=ds2
+python ./bin/main.py model=ds2 train=ds2_train train.dataset_path=$DATASET_PATH
 ```
   
 - **Listen, Attend and Spell** Training
 ```
-python ./bin/main.py train.dataset_path=$DATASET_PATH model=las
+python ./bin/main.py model=las train=las_train train.dataset_path=$DATASET_PATH
 ```
   
-- **Joint CTC-Attention** Training
+- **Joint CTC-Attention Listen, Attend and Spell** Training
 ```
-python ./bin/main.py train.dataset_path=$DATASET_PATH model=joint-ctc-attention
+python ./bin/main.py model=joint-ctc-attention-las train=las_train train.dataset_path=$DATASET_PATH
 ```
   
 - **Speech Transformer** Training
 ```
-python ./bin/main.py train.dataset_path=$DATASET_PATH model=transformer
+python ./bin/main.py model=transformer train=transformer_train train.dataset_path=$DATASET_PATH
+```
+  
+- **Joint CTC-Attention Speech Transformer** Training
+```
+python ./bin/main.py model=joint-ctc-attention-transformer train=transformer_train train.dataset_path=$DATASET_PATH
 ```
   
 ### Evaluate for KsponSpeech
