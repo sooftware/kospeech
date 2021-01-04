@@ -2,11 +2,14 @@
 
 [![CodeFactor](https://www.codefactor.io/repository/github/sooftware/kospeech/badge)](https://www.codefactor.io/repository/github/sooftware/kospeech) 
 [<img src="http://img.shields.io/badge/docs-passing-success">](https://sooftware.github.io/KoSpeech/) 
-<img src="https://img.shields.io/github/stars/sooftware/KoSpeech"> 
-<img src="https://img.shields.io/github/forks/sooftware/KoSpeech">  
+[<img src="http://img.shields.io/badge/DeepSpeech2-passing-success">](https://sooftware.github.io/KoSpeech/) 
+[<img src="http://img.shields.io/badge/ListenAttendSpell-passing-success">](https://sooftware.github.io/KoSpeech/) 
+[<img src="http://img.shields.io/badge/SpeechTransformer-passing-success">](https://sooftware.github.io/KoSpeech/) 
+[<img src="http://img.shields.io/badge/JointCTCAttention-passing-success">](https://sooftware.github.io/KoSpeech/)  
   
 ### What's New
   
+- January 2021: Speech Transformer model learnable
 - January 2021: Apply [Hydra: framework for elegantly configuring complex applications](https://github.com/facebookresearch/hydra)
 - December 2020: Release v1.1
 - December 2020: Update pre-train models
