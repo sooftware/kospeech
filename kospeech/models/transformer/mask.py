@@ -9,34 +9,26 @@ from torch import Tensor
 from typing import Any, Optional
 
 
-def get_pad_mask(inputs: Tensor, input_lengths: Optional[Any] = None, pad_id: int = None) -> Tensor:
-    """
-    Padding position is set to True, either use input_lengths or pad_id
-
-    Examples::
-        >>> get_pad_mask(inputs, input_lengths)
-        tensor([[[False], [False], [False], [False], [False], [ True], [ True], [ True], [ True]],
-                [[False], [False], [False], [False], [False], [False], [ True], [ True], [ True]],
-                [[False], [False], [False], [False], [False], [False], [False], [False], [ True]]])
-    """
+def get_non_pad_mask(inputs: Tensor, input_lengths: Optional[Any] = None, pad_id: int = None) -> Tensor:
+    """ Padding position is set to 0, either use input_lengths or pad_id """
     assert (input_lengths is None and pad_id is not None) or (input_lengths is not None and pad_id is None)
 
     if input_lengths is not None:
         batch_size = inputs.size(0)
 
         if len(inputs.size()) == 2:
-            pad_mask = inputs.new_zeros(inputs.size())  # B x T
+            non_pad_mask = inputs.new_ones(inputs.size())  # B x T
         else:
-            pad_mask = inputs.new_zeros(inputs.size()[:-1])  # B x T
+            non_pad_mask = inputs.new_ones(inputs.size()[:-1])  # B x T
 
         for i in range(batch_size):
-            pad_mask[i, input_lengths[i]:] = 1
+            non_pad_mask[i, input_lengths[i]:] = 0
 
     if pad_id is not None:
         assert inputs.dim() == 2
-        pad_mask = inputs.eq(pad_id)
+        non_pad_mask = inputs.ne(pad_id).float()
 
-    return pad_mask.unsqueeze(-1).bool()
+    return non_pad_mask.unsqueeze(-1)
 
 
 def get_decoder_self_attn_mask(seq_k: Tensor, seq_q: Tensor, pad_id):
@@ -139,8 +131,8 @@ def get_attn_pad_mask(inputs, input_lengths, expand_length):
 
     """
     # N x Ti x 1
-    non_pad_mask = get_pad_mask(inputs, input_lengths=input_lengths).eq(False)
+    non_pad_mask = get_non_pad_mask(inputs, input_lengths=input_lengths)
     # N x Ti, lt(1) like not operation
-    pad_mask = non_pad_mask.squeeze(-1).eq(False)
+    pad_mask = non_pad_mask.squeeze(-1).lt(1)
     attn_mask = pad_mask.unsqueeze(1).expand(-1, expand_length, -1)
     return attn_mask

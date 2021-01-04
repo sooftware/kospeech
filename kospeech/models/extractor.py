@@ -130,7 +130,7 @@ class VGGExtractor(CNNExtractor):
     "Advances in Joint CTC-Attention based End-to-End Speech Recognition with a Deep CNN Encoder and RNN-LM" paper
     - https://arxiv.org/pdf/1706.02737.pdf
     """
-    def __init__(self, activation: str, mask_conv: bool):
+    def __init__(self, activation: str = 'hardtanh', mask_conv: bool = False):
         super(VGGExtractor, self).__init__(activation)
         self.mask_conv = mask_conv
         self.conv = nn.Sequential(
