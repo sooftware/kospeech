@@ -27,7 +27,7 @@ from kospeech.models.extractor import (
 )
 from kospeech.models.modules import (
     Linear,
-    LayerNorm,
+    LayerNorm, Transpose,
 )
 from kospeech.models.transformer.mask import (
     get_attn_pad_mask,
@@ -68,7 +68,6 @@ class SpeechTransformer(nn.Module):
         - **input_lengths** (torch.Tensor): tensor of sequences, whose contains length of inputs.
         - **targets** (torch.Tensor): tensor of sequences, whose length is the batch size and within which
           each sequence is a list of token IDs. This information is forwarded to the decoder.
-        - **return_attns (bool): flag indication whether to return attention lists
 
     Returns: output
         - **output**: tensor containing the outputs
@@ -76,24 +75,28 @@ class SpeechTransformer(nn.Module):
 
     def __init__(
             self,
-            num_classes: int,               # the number of classfication
-            d_model: int = 512,             # dimension of model
-            input_dim: int = 80,            # dimension of input
-            pad_id: int = 0,                # identification of <PAD_token>
-            eos_id: int = 2,                # identification of <EOS_token>
-            d_ff: int = 2048,               # dimension of feed forward network
-            num_heads: int = 8,             # number of attention heads
-            num_encoder_layers: int = 6,    # number of encoder layers
-            num_decoder_layers: int = 6,    # number of decoder layers
-            dropout_p: float = 0.3,         # dropout probability
-            ffnet_style: str = 'ff',        # feed forward network style 'ff' or 'conv'
-            extractor: str = 'vgg'          # CNN extractor [vgg, ds2]
+            num_classes: int,                       # the number of classfication
+            d_model: int = 512,                     # dimension of model
+            input_dim: int = 80,                    # dimension of input
+            pad_id: int = 0,                        # identification of <PAD_token>
+            eos_id: int = 2,                        # identification of <EOS_token>
+            d_ff: int = 2048,                       # dimension of feed forward network
+            num_heads: int = 8,                     # number of attention heads
+            num_encoder_layers: int = 6,            # number of encoder layers
+            num_decoder_layers: int = 6,            # number of decoder layers
+            dropout_p: float = 0.3,                 # dropout probability
+            ffnet_style: str = 'ff',                # feed forward network style 'ff' or 'conv'
+            extractor: str = 'vgg',                 # CNN extractor [vgg, ds2]
+            joint_ctc_attention: bool = False       # flag indication whether to apply joint ctc attention
     ) -> None:
         super(SpeechTransformer, self).__init__()
 
         assert d_model % num_heads == 0, "d_model % num_heads should be zero."
 
         self.extractor = extractor
+        self.joint_ctc_attention = joint_ctc_attention
+        self.eos_id = eos_id
+        self.pad_id = pad_id
 
         if self.extractor == 'vgg':
             input_dim = (input_dim - 1) << 5 if input_dim % 2 else input_dim << 5
@@ -116,8 +119,17 @@ class SpeechTransformer(nn.Module):
             num_heads=num_heads,
             ffnet_style=ffnet_style,
             dropout_p=dropout_p,
-            pad_id=pad_id
+            pad_id=pad_id,
         )
+
+        if self.joint_ctc_attention:
+            self.encoder_fc = nn.Sequential(
+                nn.BatchNorm1d(d_model),
+                Transpose(shape=(1, 2)),
+                nn.Dropout(dropout_p),
+                Linear(d_model, num_classes, bias=False)
+            )
+
         self.decoder = SpeechTransformerDecoder(
             num_classes=num_classes,
             d_model=d_model,
@@ -129,18 +141,16 @@ class SpeechTransformer(nn.Module):
             pad_id=pad_id,
             eos_id=eos_id
         )
-
-        self.eos_id = eos_id
-        self.pad_id = pad_id
-        self.generator = Linear(d_model, num_classes)
+        self.decoder_fc = Linear(d_model, num_classes)
 
     def forward(
             self,
             inputs: Tensor,                         # tensor of input sequences
             input_lengths: Tensor,                  # tensor of input sequence lengths
             targets: Optional[Tensor] = None,       # tensor of target sequences
-            return_attns: bool = False              # flag indication whether to return attention lists
     ) -> Union[Tensor, tuple]:
+        encoder_log_probs = None
+
         conv_feat = self.conv(inputs.unsqueeze(1), input_lengths)
         conv_feat = conv_feat.transpose(1, 2)
 
@@ -150,20 +160,18 @@ class SpeechTransformer(nn.Module):
         if self.extractor == 'vgg':
             input_lengths = (input_lengths >> 2).int()
 
-        memory, encoder_self_attns = self.encoder(conv_feat, input_lengths)
-        output, decoder_self_attns, memory_attns = self.decoder(targets, input_lengths, memory)
-        output = self.generator(output)
+        memory = self.encoder(conv_feat, input_lengths)
+        if self.joint_ctc_attention:
+            encoder_log_probs = self.encoder_fc(memory.transpose(1, 2)).log_softmax(dim=2)
 
-        if return_attns:
-            output = (output, encoder_self_attns, decoder_self_attns, memory_attns)
-        else:
-            del encoder_self_attns, decoder_self_attns, memory_attns
+        output = self.decoder(targets, input_lengths, memory)
+        output = self.decoder_fc(output)
 
-        return output
+        return output, encoder_log_probs, input_lengths
 
     def greedy_search(self, inputs: Tensor, input_lengths: Tensor, device: str):
         with torch.no_grad():
-            logit = self.forward(inputs, input_lengths, return_attns=False)
+            logit = self.forward(inputs, input_lengths)[0]
             return logit.max(-1)[1]
 
 
@@ -190,14 +198,14 @@ class SpeechTransformerEncoder(nn.Module):
 
     def __init__(
             self,
-            d_model: int = 512,         # dimension of model
-            input_dim: int = 80,        # dimension of feature vector
-            d_ff: int = 2048,           # dimension of feed forward network
-            num_layers: int = 6,        # number of encoder layers
-            num_heads: int = 8,         # number of attention heads
-            ffnet_style: str = 'ff',    # style of feed forward network [ff, conv]
-            dropout_p: float = 0.3,     # probability of dropout
-            pad_id: int = 0,            # identification of pad token
+            d_model: int = 512,             # dimension of model
+            input_dim: int = 80,            # dimension of feature vector
+            d_ff: int = 2048,               # dimension of feed forward network
+            num_layers: int = 6,            # number of encoder layers
+            num_heads: int = 8,             # number of attention heads
+            ffnet_style: str = 'ff',        # style of feed forward network [ff, conv]
+            dropout_p: float = 0.3,         # probability of dropout
+            pad_id: int = 0,                # identification of pad token
     ) -> None:
         super(SpeechTransformerEncoder, self).__init__()
         self.d_model = d_model
@@ -213,16 +221,14 @@ class SpeechTransformerEncoder(nn.Module):
         )
 
     def forward(self, inputs: Tensor, input_lengths: Tensor = None) -> Tuple[Tensor, list]:
-        self_attns = list()
         self_attn_mask = get_attn_pad_mask(inputs, input_lengths, inputs.size(1))
 
         output = self.input_dropout(self.input_norm(self.input_proj(inputs)) + self.positional_encoding(inputs.size(1)))
 
         for layer in self.layers:
             output, attn = layer(output, self_attn_mask)
-            self_attns.append(attn)
 
-        return output, self_attns
+        return output
 
 
 class SpeechTransformerDecoder(nn.Module):
@@ -269,7 +275,6 @@ class SpeechTransformerDecoder(nn.Module):
         self.eos_id = eos_id
 
     def forward(self, inputs: Tensor, input_lengths: Optional[Any] = None, memory: Tensor = None):
-        self_attns, memory_attns = list(), list()
         batch_size, output_length = inputs.size(0), inputs.size(1)
 
         self_attn_mask = get_decoder_self_attn_mask(inputs, inputs, self.pad_id)
@@ -279,7 +284,5 @@ class SpeechTransformerDecoder(nn.Module):
 
         for layer in self.layers:
             output, self_attn, memory_attn = layer(output, memory, self_attn_mask, memory_mask)
-            self_attns.append(self_attn)
-            memory_attns.append(memory_attn)
 
-        return output, self_attns, memory_attns
+        return output

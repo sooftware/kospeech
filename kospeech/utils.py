@@ -101,7 +101,7 @@ def get_optimizer(model: nn.Module, config: DictConfig):
 def get_criterion(config: DictConfig, vocab: Vocabulary):
     if config.model.architecture == 'deepspeech2':
         criterion = nn.CTCLoss(blank=vocab.blank_id, reduction=config.train.reduction, zero_infinity=True)
-    elif config.model.architecture == 'las' and config.model.joint_ctc_attention:
+    elif config.model.architecture in ('las', 'transformer') and config.model.joint_ctc_attention:
         criterion = JointCTCCrossEntropyLoss(
             num_classes=len(vocab),
             ignore_index=vocab.pad_id,
@@ -110,6 +110,7 @@ def get_criterion(config: DictConfig, vocab: Vocabulary):
             cross_entropy_weight=config.model.cross_entropy_weight,
             blank_id=vocab.blank_id,
             dim=-1,
+            architecture=config.model.architecture,
         )
     elif config.model.architecture == 'transformer':
         criterion = nn.CrossEntropyLoss(

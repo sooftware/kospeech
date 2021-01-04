@@ -9,14 +9,14 @@
   
 ### What's New
   
-- January 2021: Speech Transformer model learnable
+- January 2021: Speech Transformer model passing
 - January 2021: Apply [Hydra: framework for elegantly configuring complex applications](https://github.com/facebookresearch/hydra)
 - December 2020: Release v1.1
 - December 2020: Update pre-train models
-- December 2020: Joint CTC-Attention Updated (*Currently, Not Supports Multi-GPU*)
-- November 2020: Deep Speech 2 Architecture Updated
-- November 2020: KsponSpeech Subword & Grapheme Unit Updated (*Not Tested*)
-- November 2020: RAdam & AdamP Optimizer Updated
+- December 2020: Joint CTC-Attention LAS passing (*Currently, Not Supports Multi-GPU*)
+- November 2020: Deep Speech 2 passing
+- November 2020: KsponSpeech Subword & Grapheme Unit passing (*Not Tested*)
+- November 2020: RAdam & AdamP Optimizer passing
   
 ### Note
   
@@ -194,7 +194,7 @@ python ./bin/main.py train.dataset_path=$DATASET_PATH model=joint-ctc-attention
   
 - **Speech Transformer** Training
 ```
-python ./bin/main.py train.dataset_path=$DATASET_PATH model=transformer train.warmup_steps=18000 train.num_epochs=40
+python ./bin/main.py train.dataset_path=$DATASET_PATH model=transformer
 ```
   
 ### Evaluate for KsponSpeech

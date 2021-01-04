@@ -95,7 +95,7 @@ class ListenAttendSpellConfig(ModelConfig):
 
 
 @dataclass
-class JointCTCAttentionConfig(ListenAttendSpellConfig):
+class JointCTCAttentionLASConfig(ListenAttendSpellConfig):
     hidden_dim: int = 768
     cross_entropy_weight: float = 0.7
     ctc_weight: float = 0.3
@@ -113,6 +113,14 @@ class TransformerConfig(ModelConfig):
     num_encoder_layers: int = 12
     num_decoder_layers: int = 6
     ffnet_style: str = "ff"
+
+
+@dataclass
+class JointCTCAttentionTransformerConfig(TransformerConfig):
+    cross_entropy_weight: float = 0.7
+    ctc_weight: float = 0.3
+    mask_conv: bool = True
+    joint_ctc_attention: bool = True
 
 
 @dataclass

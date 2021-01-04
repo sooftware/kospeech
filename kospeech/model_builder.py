@@ -24,7 +24,11 @@ from kospeech.models import (
 )
 
 
-def build_model(config: DictConfig, vocab: Vocabulary, device: torch.device):
+def build_model(
+        config: DictConfig,
+        vocab: Vocabulary,
+        device: torch.device
+) -> nn.DataParallel:
     """ Various model dispatcher function. """
     if config.audio.transform_method.lower() == 'spect':
         if config.audio.feature_extract_by == 'kaldi':
@@ -49,7 +53,8 @@ def build_model(config: DictConfig, vocab: Vocabulary, device: torch.device):
             num_decoder_layers=config.model.num_decoder_layers,
             dropout_p=config.model.dropout,
             ffnet_style=config.model.ffnet_style,
-            device=device
+            device=device,
+            joint_ctc_attention=config.model.joint_ctc_attention,
         )
 
     elif config.model.architecture.lower() == 'deepspeech2':
@@ -73,7 +78,7 @@ def build_model(config: DictConfig, vocab: Vocabulary, device: torch.device):
 
 def build_deepspeech2(input_size: int, num_classes: int, rnn_type: str, num_rnn_layers: int,
                       rnn_hidden_dim: int, dropout_p: float,
-                      bidirectional: bool, activation: str, device: str):
+                      bidirectional: bool, activation: str, device: torch.device) -> nn.DataParallel:
     if dropout_p < 0.0:
         raise ParameterError("dropout probability should be positive")
     if input_size < 0:
@@ -100,7 +105,8 @@ def build_deepspeech2(input_size: int, num_classes: int, rnn_type: str, num_rnn_
 
 def build_transformer(num_classes: int, pad_id: int, d_model: int, num_heads: int, input_size: int,
                       num_encoder_layers: int, num_decoder_layers: int,
-                      dropout_p: float, ffnet_style: str, device: str, eos_id: int) -> nn.DataParallel:
+                      dropout_p: float, ffnet_style: str, device: torch.device, eos_id: int,
+                      joint_ctc_attention: bool) -> nn.DataParallel:
     if ffnet_style not in {'ff', 'conv'}:
         raise ParameterError("Unsupported ffnet_style: {0}".format(ffnet_style))
 
@@ -114,11 +120,17 @@ def build_transformer(num_classes: int, pad_id: int, d_model: int, num_heads: in
             dropout_p=dropout_p,
             ffnet_style=ffnet_style,
             input_dim=input_size,
-            eos_id=eos_id
+            eos_id=eos_id,
+            joint_ctc_attention=joint_ctc_attention
     )).to(device)
 
 
-def build_las(input_size: int, config: DictConfig, vocab: Vocabulary, device: torch.device):
+def build_las(
+        input_size: int,
+        config: DictConfig,
+        vocab: Vocabulary,
+        device: torch.device
+) -> nn.DataParallel:
     """ Various Listen, Attend and Spell dispatcher function. """
     listenr = build_listener(
             input_size=input_size,
@@ -165,7 +177,7 @@ def build_listener(
         rnn_type: str = 'lstm',
         extractor: str = 'vgg',
         activation: str = 'hardtanh',
-        device: str = 'cuda',
+        device: torch.device = 'cuda',
         mask_conv: bool = False,
         joint_ctc_attention: bool = False
 ) -> Listener:
@@ -211,7 +223,7 @@ def build_speller(
         rnn_type: str,
         dropout_p: float,
         num_heads: int,
-        device: str
+        device: torch.device
 ) -> Speller:
     """ Various decoder dispatcher function. """
     if hidden_dim % num_heads != 0:

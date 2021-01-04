@@ -37,7 +37,8 @@ class JointCTCCrossEntropyLoss(nn.Module):
             reduction='mean',                     # reduction method [sum, mean]
             ctc_weight: float = 0.3,              # weight of ctc loss
             cross_entropy_weight: float = 0.7,    # weight of cross entropy loss
-            blank_id: int = None
+            blank_id: int = None,                 # identification of blank token
+            architecture: str = 'las',            # architecture of model to train
     ) -> None:
         super(JointCTCCrossEntropyLoss, self).__init__()
         self.num_classes = num_classes
@@ -46,6 +47,7 @@ class JointCTCCrossEntropyLoss(nn.Module):
         self.reduction = reduction.lower()
         self.ctc_weight = ctc_weight
         self.cross_entropy_weight = cross_entropy_weight
+        self.architecture = architecture
 
         if self.reduction == 'sum':
             self.reduction_method = torch.sum
@@ -66,6 +68,11 @@ class JointCTCCrossEntropyLoss(nn.Module):
             target_lengths: Tensor
     ) -> Tuple[Tensor, Tensor, Tensor]:
         ctc_loss = self.ctc_loss(encoder_log_probs, targets, output_lengths, target_lengths)
-        cross_entropy_loss = self.cross_entropy_loss(decoder_log_probs, targets[:, 1:].contiguous().view(-1))
+        if self.architecture == 'las':
+            cross_entropy_loss = self.cross_entropy_loss(decoder_log_probs, targets[:, 1:].contiguous().view(-1))
+        elif self.architecture == 'transformer':
+            cross_entropy_loss = self.cross_entropy_loss(decoder_log_probs, targets.contiguous().view(-1))
+        else:
+            raise ValueError("Unsupported architecture: {}".format(self.architecture))
         loss = cross_entropy_loss * self.cross_entropy_weight + ctc_loss * self.ctc_weight
         return loss, ctc_loss, cross_entropy_loss

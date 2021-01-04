@@ -12,7 +12,7 @@ sys.path.append('..')
 
 from hydra.core.config_store import ConfigStore
 from omegaconf import OmegaConf, DictConfig
-from kospeech.dataclass import EvalConfig
+from kospeech.dataclasses import EvalConfig
 from kospeech.vocabs.ksponspeech import KsponSpeechVocabulary
 from kospeech.vocabs.librispeech import LibriSpeechVocabulary
 from kospeech.data.label_loader import load_dataset
