@@ -119,7 +119,10 @@ def train(config: DictConfig):
 
 
 cs = ConfigStore.instance()
-cs.store(group="audio", name="default", node=AudioConfig, package="audio")
+cs.store(group="audio", name="fbank", node=AudioConfig, package="audio")
+cs.store(group="audio", name="melspectrogram", node=AudioConfig, package="audio")
+cs.store(group="audio", name="mfcc", node=AudioConfig, package="audio")
+cs.store(group="audio", name="spectrogram", node=AudioConfig, package="audio")
 cs.store(group="train", name="ds2_train", node=TrainConfig, package="train")
 cs.store(group="train", name="las_train", node=TrainConfig, package="train")
 cs.store(group="train", name="transformer_train", node=TrainConfig, package="train")
