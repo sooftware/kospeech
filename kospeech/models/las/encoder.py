@@ -57,7 +57,7 @@ class Listener(BaseRNN):
             extractor: str = 'vgg',                  # type of CNN extractor
             activation: str = 'hardtanh',            # type of activation function
             mask_conv: bool = False,                 # flag indication whether apply mask convolution or not
-            joint_ctc_attention: bool = False        # Use CTC Loss & Cross Entropy Joint Learning
+            joint_ctc_attention: bool = False,       # Use CTC Loss & Cross Entropy Joint Learning
     ) -> None:
         self.mask_conv = mask_conv
         self.extractor = extractor.lower()
