@@ -87,7 +87,7 @@ class SpeechTransformer(nn.Module):
             dropout_p: float = 0.3,                 # dropout probability
             ffnet_style: str = 'ff',                # feed forward network style 'ff' or 'conv'
             extractor: str = 'vgg',                 # CNN extractor [vgg, ds2]
-            joint_ctc_attention: bool = False       # flag indication whether to apply joint ctc attention
+            joint_ctc_attention: bool = False,      # flag indication whether to apply joint ctc attention
     ) -> None:
         super(SpeechTransformer, self).__init__()
 
@@ -127,7 +127,7 @@ class SpeechTransformer(nn.Module):
                 nn.BatchNorm1d(d_model),
                 Transpose(shape=(1, 2)),
                 nn.Dropout(dropout_p),
-                Linear(d_model, num_classes, bias=False)
+                Linear(d_model, num_classes, bias=False),
             )
 
         self.decoder = SpeechTransformerDecoder(
@@ -139,7 +139,7 @@ class SpeechTransformer(nn.Module):
             ffnet_style=ffnet_style,
             dropout_p=dropout_p,
             pad_id=pad_id,
-            eos_id=eos_id
+            eos_id=eos_id,
         )
         self.decoder_fc = Linear(d_model, num_classes)
 
@@ -213,7 +213,7 @@ class SpeechTransformerEncoder(nn.Module):
         self.num_heads = num_heads
         self.pad_id = pad_id
         self.input_proj = Linear(input_dim, d_model)
-        self.input_norm = LayerNorm(d_model)
+        self.input_layer_norm = LayerNorm(d_model)
         self.input_dropout = nn.Dropout(p=dropout_p)
         self.positional_encoding = PositionalEncoding(d_model)
         self.layers = nn.ModuleList(
@@ -223,7 +223,8 @@ class SpeechTransformerEncoder(nn.Module):
     def forward(self, inputs: Tensor, input_lengths: Tensor = None) -> Tuple[Tensor, list]:
         self_attn_mask = get_attn_pad_mask(inputs, input_lengths, inputs.size(1))
 
-        output = self.input_dropout(self.input_norm(self.input_proj(inputs)) + self.positional_encoding(inputs.size(1)))
+        output = self.input_layer_norm(self.input_proj(inputs)) + self.positional_encoding(inputs.size(1))
+        output = self.input_dropout(output)
 
         for layer in self.layers:
             output, attn = layer(output, self_attn_mask)
@@ -259,7 +260,7 @@ class SpeechTransformerDecoder(nn.Module):
             ffnet_style: str = 'ff',        # style of feed forward network
             dropout_p: float = 0.3,         # probability of dropout
             pad_id: int = 0,                # identification of pad token
-            eos_id: int = 2                 # identification of end of sentence token
+            eos_id: int = 2,                # identification of end of sentence token
     ) -> None:
         super(SpeechTransformerDecoder, self).__init__()
         self.d_model = d_model
@@ -280,7 +281,8 @@ class SpeechTransformerDecoder(nn.Module):
         self_attn_mask = get_decoder_self_attn_mask(inputs, inputs, self.pad_id)
         memory_mask = get_attn_pad_mask(memory, input_lengths, output_length)
 
-        output = self.input_dropout(self.embedding(inputs) + self.positional_encoding(inputs.size(1)))
+        output = self.embedding(inputs) + self.positional_encoding(output_length)
+        output = self.input_dropout(output)
 
         for layer in self.layers:
             output, self_attn, memory_attn = layer(output, memory, self_attn_mask, memory_mask)

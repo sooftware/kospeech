@@ -9,15 +9,15 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
+
 from torch import Tensor, LongTensor
 from typing import Optional, Any, Tuple
-from kospeech.models.transformer.sublayers import AddNorm
-from kospeech.models.modules import Linear, BaseRNN, View
+from kospeech.models.modules import Linear, BaseRNN
 from kospeech.models.attention import (
     LocationAwareAttention,
     MultiHeadAttention,
     AdditiveAttention,
-    ScaledDotProductAttention
+    ScaledDotProductAttention,
 )
 
 
@@ -66,7 +66,7 @@ class Speller(BaseRNN):
             num_layers: int = 2,                     # number of RNN layers
             rnn_type: str = 'lstm',                  # type of RNN cell
             dropout_p: float = 0.3,                  # dropout probability
-            device: str = 'cuda'                     # device - 'cuda' or 'cpu'
+            device: str = 'cuda',                    # device - 'cuda' or 'cpu'
     ) -> None:
         super(Speller, self).__init__(hidden_dim, hidden_dim, num_layers, rnn_type, dropout_p, False, device)
         self.num_classes = num_classes
@@ -99,7 +99,7 @@ class Speller(BaseRNN):
             input_var: Tensor,                  # tensor of sequences whose contains target variables
             hidden: Optional[Any],              # tensor containing hidden state vector of RNN
             encoder_outputs: Tensor,            # tensor with containing the outputs of the encoder
-            attn: Optional[Any] = None          # tensor containing attention distribution
+            attn: Optional[Any] = None,         # tensor containing attention distribution
     ) -> Tuple[Tensor, Tensor, Tensor]:
         batch_size, output_lengths = input_var.size(0), input_var.size(1)
 
@@ -130,7 +130,7 @@ class Speller(BaseRNN):
             self,
             inputs: Tensor,                         # tensor of sequences whose contains target variables
             encoder_outputs: Tensor,                # tensor with containing the outputs of the encoder
-            teacher_forcing_ratio: float = 1.0      # probability that teacher forcing will be used.
+            teacher_forcing_ratio: float = 1.0,     # probability that teacher forcing will be used.
     ) -> dict:
 
         hidden, attn = None, None
@@ -183,7 +183,7 @@ class Speller(BaseRNN):
             self,
             inputs: Optional[Any] = None,           # tensor of sequences whose contains target variables
             encoder_outputs: Tensor = None,         # tensor with containing the outputs of the encoder
-            teacher_forcing_ratio: float = 1.0      # the probability that teacher forcing will be used
+            teacher_forcing_ratio: float = 1.0,     # the probability that teacher forcing will be used
     ) -> Tuple[Tensor, int, int]:
         """ Validate arguments """
         assert encoder_outputs is not None

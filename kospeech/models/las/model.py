@@ -43,7 +43,7 @@ class ListenAttendSpell(nn.Module):
             inputs: Tensor,                             # tensor contains audio's features
             input_lengths: Tensor,                      # tensor contains feature's lengths
             targets: Optional[Tensor] = None,           # tensor contains target sentences
-            teacher_forcing_ratio: float = 1.0          # ratio of teacher forcing
+            teacher_forcing_ratio: float = 1.0,         # ratio of teacher forcing
     ) -> Tuple[dict, Tensor, Tensor]:
         encoder_outputs, encoder_log_probs, encoder_output_lengths = self.encoder(inputs, input_lengths)
 
