@@ -24,7 +24,6 @@
   
 - Currently, beam search may not work properly.  
 - The model's inference is currently not working properly, but will be updated as soon as possible.  
-- Transformer model is currently not working properly.
   
 ### ***[KoSpeech:  Open-Source Toolkit for End-to-End Korean Speech Recognition \[Paper\]](https://arxiv.org/abs/2009.03092)***
   
