@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Soohwan Kim, Seyoung Bae, Cheolhwang Won.
 # @ArXiv : KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition
 # This source code is licensed under the Apache 2.0 License license found in the
