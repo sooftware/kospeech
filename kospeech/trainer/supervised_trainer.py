@@ -40,9 +40,9 @@ class SupervisedTrainer(object):
     train_dict = {'loss': [], 'cer': []}
     valid_dict = {'loss': [], 'cer': []}
     train_step_result = {'loss': [], 'cer': []}
-    TRAIN_RESULT_PATH = "../data/train_result/train_result.csv"
-    VALID_RESULT_PATH = "../data/train_result/eval_result.csv"
-    TRAIN_STEP_RESULT_PATH = "../data/train_result/train_step_result.csv"
+    TRAIN_RESULT_PATH = "train_result.csv"
+    VALID_RESULT_PATH = "eval_result.csv"
+    TRAIN_STEP_RESULT_PATH = "train_step_result.csv"
 
     def __init__(
             self,
