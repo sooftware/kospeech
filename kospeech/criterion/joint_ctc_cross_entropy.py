@@ -4,8 +4,8 @@
 # This source code is licensed under the Apache 2.0 License license found in the
 # LICENSE file in the root directory of this source tree.
 
-import torch
 import torch.nn as nn
+
 from typing import Tuple
 from torch import Tensor
 
@@ -48,14 +48,6 @@ class JointCTCCrossEntropyLoss(nn.Module):
         self.ctc_weight = ctc_weight
         self.cross_entropy_weight = cross_entropy_weight
         self.architecture = architecture
-
-        if self.reduction == 'sum':
-            self.reduction_method = torch.sum
-        elif self.reduction == 'mean':
-            self.reduction_method = torch.mean
-        else:
-            raise ValueError("Unsupported reduction method {0}".format(reduction))
-
         self.ctc_loss = nn.CTCLoss(blank=blank_id, reduction=self.reduction, zero_infinity=True)
         self.cross_entropy_loss = nn.CrossEntropyLoss(reduction=self.reduction, ignore_index=self.ignore_index)
 
@@ -69,10 +61,7 @@ class JointCTCCrossEntropyLoss(nn.Module):
     ) -> Tuple[Tensor, Tensor, Tensor]:
         ctc_loss = self.ctc_loss(encoder_log_probs, targets, output_lengths, target_lengths)
         if self.architecture == 'las':
-            cross_entropy_loss = self.cross_entropy_loss(decoder_log_probs, targets[:, 1:].contiguous().view(-1))
-        elif self.architecture == 'transformer':
-            cross_entropy_loss = self.cross_entropy_loss(decoder_log_probs, targets.contiguous().view(-1))
-        else:
-            raise ValueError("Unsupported architecture: {}".format(self.architecture))
+            targets = targets[:, 1:]
+        cross_entropy_loss = self.cross_entropy_loss(decoder_log_probs, targets.contiguous().view(-1))
         loss = cross_entropy_loss * self.cross_entropy_weight + ctc_loss * self.ctc_weight
         return loss, ctc_loss, cross_entropy_loss

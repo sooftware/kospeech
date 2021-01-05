@@ -11,20 +11,17 @@ import platform
 from omegaconf import DictConfig
 from kospeech.vocabs import Vocabulary
 from torch import optim
+from kospeech.optim import RAdam, AdamP
 from kospeech.criterion import (
     LabelSmoothedCrossEntropyLoss,
-    JointCTCCrossEntropyLoss
-)
-from kospeech.optim import (
-    RAdam,
-    AdamP
+    JointCTCCrossEntropyLoss,
 )
 
 
 logger = logging.getLogger(__name__)
 
 
-def check_envirionment(use_cuda: bool):
+def check_envirionment(use_cuda: bool) -> torch.device:
     """
     Check execution envirionment.
     OS, Processor, CUDA version, Pytorch version, ... etc.
@@ -32,19 +29,19 @@ def check_envirionment(use_cuda: bool):
     cuda = use_cuda and torch.cuda.is_available()
     device = torch.device('cuda' if cuda else 'cpu')
 
-    logger.info("Operating System : %s %s" % (platform.system(), platform.release()))
-    logger.info("Processor : %s" % platform.processor())
+    logger.info(f"Operating System : {platform.system()} {platform.release()}")
+    logger.info(f"Processor : {platform.processor()}")
 
     if str(device) == 'cuda':
         for idx in range(torch.cuda.device_count()):
-            logger.info("device : %s" % torch.cuda.get_device_name(idx))
-        logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
-        logger.info("CUDA version : %s" % torch.version.cuda)
-        logger.info("PyTorch version : %s" % torch.__version__)
+            logger.info(f"device : {torch.cuda.get_device_name(idx)}")
+        logger.info(f"CUDA is available : {torch.cuda.is_available()}")
+        logger.info(f"CUDA version : {torch.version.cuda}")
+        logger.info(f"PyTorch version : {torch.__version__}")
 
     else:
-        logger.info("CUDA is available : %s" % (torch.cuda.is_available()))
-        logger.info("PyTorch version : %s" % torch.__version__)
+        logger.info(f"CUDA is available : {torch.cuda.is_available()}")
+        logger.info(f"PyTorch version : {torch.__version__}")
 
     return device
 
@@ -71,12 +68,12 @@ def get_optimizer(model: nn.Module, config: DictConfig):
             model.module.parameters(), lr=config.train.init_lr, weight_decay=config.train.weight_decay
         )
     else:
-        raise ValueError(f"Unsupported Optimizer, Supported Optimizer : Adam, RAdam, Adadelta, Adagrad")
+        raise ValueError(f"Unsupported Optimizer: {config.train.optimizer}")
 
     return optimizer
 
 
-def get_criterion(config: DictConfig, vocab: Vocabulary):
+def get_criterion(config: DictConfig, vocab: Vocabulary) -> nn.Module:
     if config.model.architecture == 'deepspeech2':
         criterion = nn.CTCLoss(blank=vocab.blank_id, reduction=config.train.reduction, zero_infinity=True)
     elif config.model.architecture in ('las', 'transformer') and config.model.joint_ctc_attention:

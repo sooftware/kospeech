@@ -1,2 +1,2 @@
 from kospeech.criterion.label_smoothed_cross_entropy import LabelSmoothedCrossEntropyLoss
-from kospeech.criterion.joint_ctc_attention import JointCTCCrossEntropyLoss
+from kospeech.criterion.joint_ctc_cross_entropy import JointCTCCrossEntropyLoss
