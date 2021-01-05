@@ -1,4 +1,4 @@
 defaults:
   - audio: fbank
-  - model: joint-ctc-attention-las
-  - train: las_train
+  - model: joint-ctc-attention-transformer
+  - train: transformer_train

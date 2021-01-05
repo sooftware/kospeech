@@ -29,13 +29,11 @@ class Checkpoint(object):
         epoch (int): current epoch (an epoch is a loop through the full training data)
 
     Attributes:
-        CHECKPOINT_DIR_NAME (str): name of the checkpoint directory
         SAVE_PATH (str): path of file to save
         TRAINER_STATE_NAME (str): name of the file storing trainer states
         MODEL_NAME (str): name of the file storing model
     """
 
-    CHECKPOINT_DIR_NAME = 'checkpoints'
     SAVE_PATH = 'outputs'
     TRAINER_STATE_NAME = 'trainer_states.pt'
     MODEL_NAME = 'model.pt'

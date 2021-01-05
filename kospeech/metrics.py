@@ -65,7 +65,7 @@ class CharacterErrorRate(ErrorRate):
     def __init__(self, vocab):
         super(CharacterErrorRate, self).__init__(vocab)
 
-    def metric(self, s1, s2):
+    def metric(self, s1: str, s2: str):
         """
         Computes the Character Error Rate, defined as the edit distance between the
         two provided sentences after tokenizing to characters.
