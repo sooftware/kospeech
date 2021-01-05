@@ -30,11 +30,13 @@ from kospeech.vocabs import (
     LibriSpeechVocabulary,
 )
 from kospeech.dataclasses import (
-    FBankConfig,
+    FilterBankConfig,
     MelSpectrogramConfig,
-    MFCCConfig,
+    MfccConfig,
     SpectrogramConfig,
-    TrainConfig,
+    DeepSpeech2TrainConfig,
+    ListenAttendSpellTrainConfig,
+    TransformerTrainConfig,
     DeepSpeech2Config,
     JointCTCAttentionLASConfig,
     ListenAttendSpellConfig,
@@ -51,9 +53,11 @@ def train(config: DictConfig):
 
     if config.train.dataset == 'kspon':
         if config.train.output_unit == 'subword':
-            vocab = KsponSpeechVocabulary(vocab_path='../../../data/vocab/kspon_sentencepiece.vocab',
-                                          output_unit=config.train.output_unit,
-                                          sp_model_path='../../../data/vocab/kspon_sentencepiece.model')
+            vocab = KsponSpeechVocabulary(
+                vocab_path='../../../data/vocab/kspon_sentencepiece.vocab',
+                output_unit=config.train.output_unit,
+                sp_model_path='../../../data/vocab/kspon_sentencepiece.model',
+            )
         else:
             vocab = KsponSpeechVocabulary(
                 f'../../../data/vocab/aihub_{config.train.output_unit}_vocabs.csv', output_unit=config.train.output_unit
@@ -122,13 +126,13 @@ def train(config: DictConfig):
 
 
 cs = ConfigStore.instance()
-cs.store(group="audio", name="fbank", node=FBankConfig, package="audio")
+cs.store(group="audio", name="fbank", node=FilterBankConfig, package="audio")
 cs.store(group="audio", name="melspectrogram", node=MelSpectrogramConfig, package="audio")
-cs.store(group="audio", name="mfcc", node=MFCCConfig, package="audio")
+cs.store(group="audio", name="mfcc", node=MfccConfig, package="audio")
 cs.store(group="audio", name="spectrogram", node=SpectrogramConfig, package="audio")
-cs.store(group="train", name="ds2_train", node=TrainConfig, package="train")
-cs.store(group="train", name="las_train", node=TrainConfig, package="train")
-cs.store(group="train", name="transformer_train", node=TrainConfig, package="train")
+cs.store(group="train", name="ds2_train", node=DeepSpeech2TrainConfig, package="train")
+cs.store(group="train", name="las_train", node=ListenAttendSpellTrainConfig, package="train")
+cs.store(group="train", name="transformer_train", node=TransformerTrainConfig, package="train")
 cs.store(group="model", name="ds2", node=DeepSpeech2Config, package="model")
 cs.store(group="model", name="las", node=ListenAttendSpellConfig, package="model")
 cs.store(group="model", name="transformer", node=TransformerConfig, package="model")

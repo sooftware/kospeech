@@ -6,7 +6,6 @@
 
 import torch
 import torch.nn as nn
-import sys
 import logging
 import platform
 
@@ -23,27 +22,7 @@ from kospeech.optim import (
 )
 
 
-class Logger(object):
-    """
-    Print log message in format.
-    FORMAT: [%(asctime)s %(filename)s:%(lineno)s - %(funcName)s()] %(message)s
-    """
-    def __init__(self):
-        self.logger = logging.getLogger('root')
-        FORMAT = "[%(asctime)s %(filename)s:%(lineno)s - %(funcName)s()] %(message)s"
-        logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format=FORMAT)
-        self.logger.setLevel(logging.INFO)
-
-    def info(self, message=''):
-        """ Print log message for information """
-        self.logger.info(message)
-
-    def debug(self, message=''):
-        """ Print log message for debugging """
-        self.logger.debug(message)
-
-
-logger = Logger()
+logger = logging.getLogger(__name__)
 
 
 def check_envirionment(use_cuda: bool):
@@ -112,7 +91,7 @@ def get_criterion(config: DictConfig, vocab: Vocabulary):
             dim=-1,
             architecture=config.model.architecture,
         )
-    elif config.model.architecture == 'transformer':
+    elif config.model.architecture == 'transformer' and config.model.label_smoothing <= 0.0:
         criterion = nn.CrossEntropyLoss(
             ignore_index=vocab.pad_id,
             reduction=config.train.reduction
@@ -124,7 +103,7 @@ def get_criterion(config: DictConfig, vocab: Vocabulary):
             smoothing=config.model.label_smoothing,
             reduction=config.train.reduction,
             architecture=config.model.architecture,
-            dim=-1
+            dim=-1,
         )
 
     return criterion

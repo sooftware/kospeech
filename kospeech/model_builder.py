@@ -27,7 +27,7 @@ from kospeech.models import (
 def build_model(
         config: DictConfig,
         vocab: Vocabulary,
-        device: torch.device
+        device: torch.device,
 ) -> nn.DataParallel:
     """ Various model dispatcher function. """
     if config.audio.transform_method.lower() == 'spect':
@@ -67,7 +67,7 @@ def build_model(
             dropout_p=config.model.dropout,
             bidirectional=config.model.use_bidirectional,
             activation=config.model.activation,
-            device=device
+            device=device,
         )
 
     else:
@@ -99,7 +99,7 @@ def build_deepspeech2(input_size: int, num_classes: int, rnn_type: str, num_rnn_
             dropout_p=dropout_p,
             bidirectional=bidirectional,
             activation=activation,
-            device=device
+            device=device,
     )).to(device)
 
 
@@ -121,7 +121,7 @@ def build_transformer(num_classes: int, pad_id: int, d_model: int, num_heads: in
             ffnet_style=ffnet_style,
             input_dim=input_size,
             eos_id=eos_id,
-            joint_ctc_attention=joint_ctc_attention
+            joint_ctc_attention=joint_ctc_attention,
     )).to(device)
 
 
@@ -144,7 +144,7 @@ def build_las(
             rnn_type=config.model.rnn_type,
             device=device,
             mask_conv=config.model.mask_conv,
-            joint_ctc_attention=config.model.joint_ctc_attention
+            joint_ctc_attention=config.model.joint_ctc_attention,
     )
     speller = build_speller(
             num_classes=len(vocab),
@@ -158,7 +158,7 @@ def build_las(
             dropout_p=config.model.dropout,
             num_heads=config.model.num_heads,
             attn_mechanism=config.model.attn_mechanism,
-            device=device
+            device=device,
     )
 
     model = ListenAttendSpell(listenr, speller)
@@ -179,7 +179,7 @@ def build_listener(
         activation: str = 'hardtanh',
         device: torch.device = 'cuda',
         mask_conv: bool = False,
-        joint_ctc_attention: bool = False
+        joint_ctc_attention: bool = False,
 ) -> Listener:
     """ Various encoder dispatcher function. """
     if dropout_p < 0.0:
@@ -207,7 +207,7 @@ def build_listener(
         extractor=extractor,
         device=device,
         activation=activation,
-        joint_ctc_attention=joint_ctc_attention
+        joint_ctc_attention=joint_ctc_attention,
     )
 
 
@@ -223,7 +223,7 @@ def build_speller(
         rnn_type: str,
         dropout_p: float,
         num_heads: int,
-        device: torch.device
+        device: torch.device,
 ) -> Speller:
     """ Various decoder dispatcher function. """
     if hidden_dim % num_heads != 0:
@@ -257,7 +257,7 @@ def build_speller(
         num_layers=num_layers,
         rnn_type=rnn_type,
         dropout_p=dropout_p,
-        device=device
+        device=device,
     )
 
 
