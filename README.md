@@ -8,7 +8,8 @@
 [<img src="http://img.shields.io/badge/JointCTCAttention-passing-success">](https://sooftware.github.io/KoSpeech/)  
   
 ### What's New
-  
+
+- January 2021: Release v1.2
 - January 2021: Joint CTC-Attention Transformer model passing
 - January 2021: Speech Transformer model passing
 - January 2021: Apply [Hydra: framework for elegantly configuring complex applications](https://github.com/facebookresearch/hydra)
