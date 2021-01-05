@@ -29,7 +29,7 @@ from kospeech.vocabs import (
     KsponSpeechVocabulary,
     LibriSpeechVocabulary,
 )
-from kospeech.dataclasses import (
+from kospeech.dataclass import (
     FilterBankConfig,
     MelSpectrogramConfig,
     MfccConfig,
