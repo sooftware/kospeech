@@ -79,6 +79,7 @@ class SpeechTransformer(nn.Module):
             d_model: int = 512,                     # dimension of model
             input_dim: int = 80,                    # dimension of input
             pad_id: int = 0,                        # identification of <PAD_token>
+            sos_id: int = 1,                        # identification of <SOS_token>
             eos_id: int = 2,                        # identification of <EOS_token>
             d_ff: int = 2048,                       # dimension of feed forward network
             num_heads: int = 8,                     # number of attention heads
@@ -88,15 +89,19 @@ class SpeechTransformer(nn.Module):
             ffnet_style: str = 'ff',                # feed forward network style 'ff' or 'conv'
             extractor: str = 'vgg',                 # CNN extractor [vgg, ds2]
             joint_ctc_attention: bool = False,      # flag indication whether to apply joint ctc attention
+            max_length: int = 400                   # a maximum allowed length for the sequence to be processed
     ) -> None:
         super(SpeechTransformer, self).__init__()
 
         assert d_model % num_heads == 0, "d_model % num_heads should be zero."
 
+        self.num_classes = num_classes
         self.extractor = extractor
         self.joint_ctc_attention = joint_ctc_attention
+        self.sos_id = sos_id
         self.eos_id = eos_id
         self.pad_id = pad_id
+        self.max_length = max_length
 
         if self.extractor == 'vgg':
             input_dim = (input_dim - 1) << 5 if input_dim % 2 else input_dim << 5
@@ -170,9 +175,31 @@ class SpeechTransformer(nn.Module):
         return output, encoder_log_probs, input_lengths
 
     def greedy_search(self, inputs: Tensor, input_lengths: Tensor, device: str):
+        output = list()
+
         with torch.no_grad():
-            logit = self.forward(inputs, input_lengths)[0]
-            return logit.max(-1)[1]
+            conv_feat = self.conv(inputs.unsqueeze(1), input_lengths)
+            conv_feat = conv_feat.transpose(1, 2)
+
+            batch_size, seq_length, num_channels, hidden_dim = conv_feat.size()
+            conv_feat = conv_feat.contiguous().view(batch_size, seq_length, num_channels * hidden_dim)
+
+            if self.extractor == 'vgg':
+                input_lengths = (input_lengths >> 2).int()
+
+            memory = self.encoder(conv_feat, input_lengths)
+            decoder_inputs = memory.new_zeros(batch_size, self.max_length)
+            decoder_inputs[:, 0] = self.sos_id
+
+            for di in range(self.max_length):
+                step_output = self.decoder(decoder_inputs, input_lengths, memory)
+                step_output = self.decoder_fc(step_output)
+                step_output = step_output[:, di, :].topk(1)[1]
+                decoder_inputs[:, di] = step_output[: 0]
+                output.append(step_output)
+
+        output = torch.stack(output, dim=1).to(device).squeeze(2).squeeze(2)
+        return output
 
 
 class SpeechTransformerEncoder(nn.Module):
