@@ -73,7 +73,7 @@ class Listener(BaseRNN):
         elif self.extractor == 'ds2':
             input_size = int(math.floor(input_size + 2 * 20 - 41) / 2 + 1)
             input_size = int(math.floor(input_size + 2 * 10 - 21) / 2 + 1)
-            input_size <<= 6
+            input_size <<= 5
             super(Listener, self).__init__(
                 input_size, hidden_dim, num_layers, rnn_type, dropout_p, bidirectional, device
             )
@@ -96,7 +96,7 @@ class Listener(BaseRNN):
         encoder_output_lengths = None
 
         if self.mask_conv:
-            inputs = inputs.unsqueeze(1).permute(0, 1, 3, 2)
+            inputs = inputs.unsqueeze(1)
             conv_feat, encoder_output_lengths = self.conv(inputs, input_lengths)
 
             batch_size, num_channels, hidden_dim, seq_length = conv_feat.size()
@@ -111,7 +111,7 @@ class Listener(BaseRNN):
             conv_feat = self.conv(inputs.unsqueeze(1), input_lengths).to(self.device)
             conv_feat = conv_feat.transpose(1, 2)
 
-            batch_size, seq_length, num_channels, hidden_dim = conv_feat.size()
+            batch_size, hidden_dim, num_channels, seq_length = conv_feat.size()
             conv_feat = conv_feat.contiguous().view(batch_size, seq_length, num_channels * hidden_dim)
 
             if self.training:
