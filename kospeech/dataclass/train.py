@@ -56,5 +56,5 @@ class TransformerTrainConfig(TrainConfig):
     optimizer: str = "adam"
     init_lr: float = 1e-06
     final_lr: float = 1e-06
-    peak_lr: float = 1e-07
+    peak_lr: float = 1e-04
     warmup_steps: int = 4000
