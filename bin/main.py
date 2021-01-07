@@ -5,12 +5,10 @@
 # LICENSE file in the root directory of this source tree.
 
 import os
-import sys
 import random
 import warnings
 import torch
 import hydra
-sys.path.append('..')
 
 from hydra.core.config_store import ConfigStore
 from omegaconf import OmegaConf, DictConfig
@@ -29,19 +27,23 @@ from kospeech.vocabs import (
     KsponSpeechVocabulary,
     LibriSpeechVocabulary,
 )
-from kospeech.dataclass import (
+from kospeech.data.audio import (
     FilterBankConfig,
     MelSpectrogramConfig,
     MfccConfig,
     SpectrogramConfig,
-    DeepSpeech2TrainConfig,
-    ListenAttendSpellTrainConfig,
-    TransformerTrainConfig,
+)
+from kospeech.models import (
     DeepSpeech2Config,
     JointCTCAttentionLASConfig,
     ListenAttendSpellConfig,
     TransformerConfig,
     JointCTCAttentionTransformerConfig,
+)
+from kospeech.trainer import (
+    DeepSpeech2TrainConfig,
+    ListenAttendSpellTrainConfig,
+    TransformerTrainConfig,
 )
 
 
@@ -141,7 +143,7 @@ cs.store(group="model", name="joint-ctc-attention-transformer", node=JointCTCAtt
 
 
 @hydra.main(config_path=os.path.join('..', "configs"), config_name="train")
-def main(config: DictConfig):
+def main(config: DictConfig) -> None:
     warnings.filterwarnings('ignore')
     logger.info(OmegaConf.to_yaml(config))
     train(config)

@@ -11,6 +11,7 @@ setup(
         'torch>=1.4.0',
         'python-Levenshtein',
         'librosa >= 0.7.0',
+        'torchaudio >= 0.5.0'
         'numpy',
         'pandas',
         'tqdm',
