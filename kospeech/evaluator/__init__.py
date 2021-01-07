@@ -10,7 +10,7 @@ from dataclasses import dataclass
 class EvalConfig:
     dataset: str = 'kspon'
     dataset_path: str = ''
-    transcript_path: str = '../../../data/eval_transcript.txt'
+    transcripts_path: str = '../../../data/eval_transcript.txt'
     model_path: str = ''
     output_unit: str = 'character'
     batch_size: int = 32

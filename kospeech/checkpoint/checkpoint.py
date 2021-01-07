@@ -68,8 +68,8 @@ class Checkpoint(object):
         torch.save(trainer_states, os.path.join(os.getcwd(), self.TRAINER_STATE_NAME))
         torch.save(self.model, os.path.join(os.getcwd(), self.MODEL_NAME))
         logger.info('save checkpoints\n%s\n%s'
-                    % (os.path.join(os.getcwd(), self.TRAINER_STATE_NAME),
-                       os.path.join(os.getcwd(), self.MODEL_NAME)))
+                    % (os.path.join(os.getcwd(), f'{date_time}-{self.TRAINER_STATE_NAME}'),
+                       os.path.join(os.getcwd(), f'{date_time}-{self.MODEL_NAME}')))
 
     def load(self, path):
         """

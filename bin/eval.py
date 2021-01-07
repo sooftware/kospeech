@@ -12,7 +12,7 @@ sys.path.append('..')
 
 from hydra.core.config_store import ConfigStore
 from omegaconf import OmegaConf, DictConfig
-from kospeech.dataclass import EvalConfig
+from kospeech.dataclass import EvalConfig, FilterBankConfig
 from kospeech.vocabs.ksponspeech import KsponSpeechVocabulary
 from kospeech.vocabs.librispeech import LibriSpeechVocabulary
 from kospeech.data.label_loader import load_dataset
@@ -23,36 +23,44 @@ from kospeech.model_builder import load_test_model
 
 
 def inference(config: DictConfig):
-    device = check_envirionment(config.use_cuda)
-    model = load_test_model(config, device)
+    device = check_envirionment(config.eval.use_cuda)
+    model = load_test_model(config.eval, device)
 
-    if config.dataset == 'kspon':
+    if config.eval.dataset == 'kspon':
         vocab = KsponSpeechVocabulary(
-            f'../../../data/vocab/aihub_{config.output_unit}_vocabs.csv', output_unit=config.output_unit
+            f'../../../data/vocab/aihub_{config.eval.output_unit}_vocabs.csv', output_unit=config.eval.output_unit
         )
-    elif config.dataset == 'libri':
+    elif config.eval.dataset == 'libri':
         vocab = LibriSpeechVocabulary('../../../data/vocab/tokenizer.vocab', 'data/vocab/tokenizer.model')
     else:
-        raise ValueError("Unsupported Dataset : {0}".format(config.dataset))
+        raise ValueError("Unsupported Dataset : {0}".format(config.eval.dataset))
 
-    audio_paths, transcripts = load_dataset(config.transcripts_path)
+    audio_paths, transcripts = load_dataset(config.eval.transcripts_path)
 
     testset = SpectrogramDataset(audio_paths=audio_paths, transcripts=transcripts,
                                  sos_id=vocab.sos_id, eos_id=vocab.eos_id,
-                                 dataset_path=config.dataset_path,  config=config, spec_augment=False)
+                                 dataset_path=config.eval.dataset_path,  config=config, spec_augment=False)
 
     evaluator = Evaluator(
-        testset, vocab, config.batch_size, device, config.num_workers, config.print_every, config.decode, config.k
+        dataset=testset,
+        vocab=vocab,
+        batch_size=config.eval.batch_size,
+        device=device,
+        num_workers=config.eval.num_workers,
+        print_every=config.eval.print_every,
+        decode=config.eval.decode,
+        beam_size=config.eval.k
     )
     evaluator.evaluate(model)
 
 
 cs = ConfigStore.instance()
-cs.store(name="eval", node=EvalConfig)
+cs.store(group="eval", name="default", node=EvalConfig, package="eval")
+cs.store(group="audio", name="fbank", node=FilterBankConfig, package="audio")
 
 
 @hydra.main(config_path=os.path.join('..', "configs"), config_name="eval")
-def main(config: OmegaConf):
+def main(config: DictConfig) -> None:
     warnings.filterwarnings('ignore')
     logger.info(OmegaConf.to_yaml(config))
     inference(config)

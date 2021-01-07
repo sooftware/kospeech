@@ -175,8 +175,6 @@ class SpeechTransformer(nn.Module):
         return output, encoder_log_probs, input_lengths
 
     def greedy_search(self, inputs: Tensor, input_lengths: Tensor, device: str):
-        output = list()
-
         with torch.no_grad():
             conv_feat = self.conv(inputs.unsqueeze(1), input_lengths)
             conv_feat = conv_feat.transpose(1, 2)
@@ -188,18 +186,16 @@ class SpeechTransformer(nn.Module):
                 input_lengths = (input_lengths >> 2).int()
 
             memory = self.encoder(conv_feat, input_lengths)
-            decoder_inputs = memory.new_zeros(batch_size, self.max_length)
-            decoder_inputs[:, 0] = self.sos_id
+            y_hats = memory.new_zeros(batch_size, self.max_length).long()
+            y_hats[:, 0] = self.sos_id
 
-            for di in range(self.max_length):
-                step_output = self.decoder(decoder_inputs, input_lengths, memory)
+            for di in range(1, self.max_length):
+                step_output = self.decoder(y_hats, input_lengths, memory)
                 step_output = self.decoder_fc(step_output)
-                step_output = step_output[:, di, :].topk(1)[1]
-                decoder_inputs[:, di] = step_output[: 0]
-                output.append(step_output)
+                step_output = step_output.max(dim=-1, keepdim=False)[1]
+                y_hats[:, di] = step_output[:, di]
 
-        output = torch.stack(output, dim=1).to(device).squeeze(2).squeeze(2)
-        return output
+        return y_hats
 
 
 class SpeechTransformerEncoder(nn.Module):

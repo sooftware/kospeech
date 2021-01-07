@@ -49,7 +49,7 @@ class Evaluator(object):
         logger.info('evaluate() start')
 
         eval_queue = queue.Queue(self.num_workers << 1)
-        eval_loader = AudioDataLoader(self.dataset, eval_queue, self.batch_size, 0)
+        eval_loader = AudioDataLoader(self.dataset, eval_queue, self.batch_size, thread_id=0, pad_id=0)
         eval_loader.start()
 
         cer = self.decoder.search(model, eval_queue, self.device, self.print_every)

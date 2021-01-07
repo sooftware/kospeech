@@ -40,14 +40,15 @@ class GreedySearch(object):
         timestep = 0
 
         if isinstance(model, nn.DataParallel):
-            if isinstance(model.module, ListenAttendSpell):
+            model = model.module
+            if isinstance(model, ListenAttendSpell):
                 architecture = 'las'
-            elif isinstance(model.module, SpeechTransformer):
+            elif isinstance(model, SpeechTransformer):
                 architecture = 'transformer'
-            elif isinstance(model.module, DeepSpeech2):
+            elif isinstance(model, DeepSpeech2):
                 architecture = 'deepspeech2'
             else:
-                raise ValueError("Unsupported model : {0}".format(type(model.module)))
+                raise ValueError("Unsupported model : {0}".format(type(model)))
         else:
             if isinstance(model, ListenAttendSpell):
                 architecture = 'las'
@@ -72,7 +73,7 @@ class GreedySearch(object):
             if architecture == 'las':
                 y_hats = model.greedy_search(inputs, input_lengths, device)
             elif architecture == 'transformer':
-                y_hats = model.greedy_search(inputs, input_lengths)
+                y_hats = model.greedy_search(inputs, input_lengths, device)
             elif architecture == 'deepspeech2':
                 y_hats = model.greedy_search(inputs, input_lengths, device)
             else:
@@ -111,7 +112,7 @@ class BeamSearch(GreedySearch):
         super(BeamSearch, self).__init__(vocab)
         self.k = k
 
-    def search(self, model: ListenAttendSpell, queue: Queue, device: str, print_every: int) -> float:
+    def search(self, model: nn.Module, queue: Queue, device: str, print_every: int) -> float:
         if isinstance(model, nn.DataParallel):
             topk_decoder = TopKDecoder(model.module.decoder, self.k)
             model.module.set_decoder(topk_decoder)
