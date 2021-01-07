@@ -205,7 +205,7 @@ python ./bin/main.py model=joint-ctc-attention-transformer train=transformer_tra
   
 ### Evaluate for KsponSpeech
 ```
-python ./bin/eval.py dataset_path=$DATASET_PATH transcripts_path=$TRANSCRIPTS_PATH model_path=$MODEL_PATH
+python ./bin/eval.py eval.dataset_path=$DATASET_PATH eval.transcripts_path=$TRANSCRIPTS_PATH eval.model_path=$MODEL_PATH
 ```
   
 Now you have a model which you can use to predict on new data. We do this by running `greedy search` or `beam search`.  
