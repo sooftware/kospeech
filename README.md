@@ -3,7 +3,7 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/sooftware/kospeech/badge)](https://www.codefactor.io/repository/github/sooftware/kospeech) 
 [<img src="http://img.shields.io/badge/docs-passing-success">](https://sooftware.github.io/KoSpeech/) 
 [<img src="http://img.shields.io/badge/DeepSpeech2-passing-success">](https://sooftware.github.io/KoSpeech/) 
-[<img src="http://img.shields.io/badge/ListenAttendSpell-passing-success">](https://sooftware.github.io/KoSpeech/) 
+[<img src="http://img.shields.io/badge/ListenAttendSpell-Fail-red">](https://sooftware.github.io/KoSpeech/) 
 [<img src="http://img.shields.io/badge/SpeechTransformer-passing-success">](https://sooftware.github.io/KoSpeech/) 
 [<img src="http://img.shields.io/badge/JointCTCAttention-passing-success">](https://sooftware.github.io/KoSpeech/)  
   
