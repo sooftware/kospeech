@@ -95,10 +95,10 @@ class Listener(BaseRNN):
         encoder_log_probs = None
         encoder_output_lengths = None
 
-        if self.mask_conv:
-            inputs = inputs.unsqueeze(1)
-            conv_feat, encoder_output_lengths = self.conv(inputs, input_lengths)
+        inputs = inputs.unsqueeze(1).transpose(2, 3)
 
+        if self.mask_conv:
+            conv_feat, encoder_output_lengths = self.conv(inputs, input_lengths)
             batch_size, num_channels, hidden_dim, seq_length = conv_feat.size()
             conv_feat = conv_feat.view(batch_size, num_channels * hidden_dim, seq_length).permute(2, 0, 1).contiguous()
 
@@ -108,7 +108,7 @@ class Listener(BaseRNN):
             encoder_outputs = encoder_outputs.transpose(0, 1)
 
         else:
-            conv_feat = self.conv(inputs.unsqueeze(1), input_lengths).to(self.device)
+            conv_feat = self.conv(inputs, input_lengths)
             conv_feat = conv_feat.permute(0, 3, 1, 2)
 
             batch_size, seq_length, num_channels, hidden_dim = conv_feat.size()
