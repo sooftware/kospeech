@@ -20,6 +20,29 @@ from kospeech.models.modules import MaskConv1d
 
 
 class JasperBlock(nn.Module):
+    """
+    Jasper Block: The Jasper Block consists of R Jasper sub-block.
+
+    Args:
+        num_sub_blocks (int): number of sub block
+        in_channels (int): number of channels in the input feature
+        out_channels (int): number of channels produced by the convolution
+        kernel_size (int): size of the convolving kernel
+        stride (int): stride of the convolution. (default: 1)
+        dilation (int): spacing between kernel elements. (default: 1)
+        bias (bool): if True, adds a learnable bias to the output. (default: True)
+        dropout_p (float): probability of dropout
+        activation (str): activation function
+
+    Inputs: inputs, input_lengths, residual
+        - **inputs**: tensor contains input sequence vector
+        - **input_lengths**: tensor contains sequence lengths
+        - **residual**: tensor contains residual vector
+
+    Returns: output, output_lengths
+        - **output**: tensor contains output sequence vector
+        - **output**: tensor contains output sequence lengths
+    """
     def __init__(
             self,
             num_sub_blocks: int,
@@ -30,6 +53,7 @@ class JasperBlock(nn.Module):
             dilation: int = 1,
             bias: bool = True,
             dropout_p: float = 0.2,
+            activation: str = 'relu',
     ) -> None:
         super(JasperBlock, self).__init__()
         self.layers = [
@@ -40,7 +64,8 @@ class JasperBlock(nn.Module):
                 stride=stride,
                 dilation=dilation,
                 bias=bias,
-                dropout_p=dropout_p
+                dropout_p=dropout_p,
+                activation=activation,
             ) for _ in range(num_sub_blocks)
         ]
 
@@ -54,6 +79,28 @@ class JasperBlock(nn.Module):
 
 
 class JasperSubBlock(nn.Module):
+    """
+    Jasper sub-block applies the following operations: a 1D-convolution, batch norm, ReLU, and dropout.
+
+    Args:
+        in_channels (int): number of channels in the input feature
+        out_channels (int): number of channels produced by the convolution
+        kernel_size (int): size of the convolving kernel
+        stride (int): stride of the convolution. (default: 1)
+        dilation (int): spacing between kernel elements. (default: 1)
+        bias (bool): if True, adds a learnable bias to the output. (default: True)
+        dropout_p (float): probability of dropout
+        activation (str): activation function
+
+    Inputs: inputs, input_lengths, residual
+        - **inputs**: tensor contains input sequence vector
+        - **input_lengths**: tensor contains sequence lengths
+        - **residual**: tensor contains residual vector
+
+    Returns: output, output_lengths
+        - **output**: tensor contains output sequence vector
+        - **output**: tensor contains output sequence lengths
+    """
     supported_activations = {
         'hardtanh': nn.Hardtanh(0, 20, inplace=True),
         'relu': nn.ReLU(inplace=True),
@@ -95,6 +142,6 @@ class JasperSubBlock(nn.Module):
             output += residual
 
         output = self.dropout(self.activation(output))
-        del input_lengths
+        del inputs, input_lengths, residual
 
         return output, output_lengths

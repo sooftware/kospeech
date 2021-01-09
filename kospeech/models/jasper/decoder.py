@@ -31,6 +31,21 @@ class Jasper10x5DecoderConfig:
 
 
 class JasperDecoder(nn.Module):
+    """
+    Jasper Encoder consists of three post-processing blocks.
+
+    Args:
+        num_classes (int): number of classification
+        version (str): version of jasper. Marked as BxR: B - number of blocks, R - number of sub-blocks
+
+    Inputs: inputs, input_lengths, residual
+        - **inputs**: tensor contains input sequence vector
+        - **input_lengths**: tensor contains sequence lengths
+
+    Returns: output, output_lengths
+        - **output**: tensor contains output sequence vector
+        - **output**: tensor contains output sequence lengths
+    """
     def __init__(self, num_classes: int, version: str):
         super(JasperDecoder, self).__init__()
         assert version.lower() in ['10x5'], "Unsupported Version: {}".format(version)

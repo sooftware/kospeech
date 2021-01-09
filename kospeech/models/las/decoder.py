@@ -35,7 +35,7 @@ class Speller(BaseRNN):
     by specifying a probability distribution over sequences of characters.
 
     Args:
-        num_classes (int): number of classfication
+        num_classes (int): number of classification
         max_length (int): a maximum allowed length for the sequence to be processed
         hidden_dim (int): dimension of RNN`s hidden state vector
         sos_id (int): index of the start of sentence symbol

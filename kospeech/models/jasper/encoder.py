@@ -42,6 +42,20 @@ class Jasper10x5EncoderConfig:
 
 
 class JasperEncoder(nn.Module):
+    """
+    Jasper Encoder consists of one pre-processing blocks and B Jasper blocks.
+
+    Args:
+        version (str): version of jasper. Marked as BxR: B - number of blocks, R - number of sub-blocks
+
+    Inputs: inputs, input_lengths, residual
+        - **inputs**: tensor contains input sequence vector
+        - **input_lengths**: tensor contains sequence lengths
+
+    Returns: output, output_lengths
+        - **output**: tensor contains output sequence vector
+        - **output**: tensor contains output sequence lengths
+    """
     supported_versions = {
         '10x5': {
             'num_blocks': 10,

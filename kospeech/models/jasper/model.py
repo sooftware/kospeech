@@ -25,6 +25,20 @@ class Jasper(nn.Module):
     Jasper: An End-to-End Convolutional Neural Acoustic Model
     Jasper (Just Another Speech Recognizer), an ASR model comprised of 54 layers proposed by NVIDIA.
     Jasper achieved sub 3 percent word error rate (WER) on the LibriSpeech dataset.
+    More details: https://arxiv.org/pdf/1904.03288.pdf
+
+    Args:
+        num_classes (int): number of classification
+        version (str): version of jasper. Marked as BxR: B - number of blocks, R - number of sub-blocks
+
+    Inputs: inputs, input_lengths, residual
+        - **inputs**: tensor contains input sequence vector
+        - **input_lengths**: tensor contains sequence lengths
+        - **residual**: tensor contains residual vector
+
+    Returns: output, output_lengths
+        - **output**: tensor contains output sequence vector
+        - **output**: tensor contains output sequence lengths
     """
     def __init__(self, num_classes: int, version: str = '10x5') -> None:
         super(Jasper, self).__init__()
