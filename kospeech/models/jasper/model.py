@@ -49,7 +49,7 @@ class Jasper(nn.Module):
         super(Jasper, self).__init__()
         supported_versions = {
             '10x5': {
-                'enooder_config': Jasper10x5EncoderConfig(num_blocks=10, num_sub_blocks=5),
+                'encoder_config': Jasper10x5EncoderConfig(num_blocks=10, num_sub_blocks=5),
                 'decoder_config': Jasper10x5DecoderConfig(num_classes),
             }
         }

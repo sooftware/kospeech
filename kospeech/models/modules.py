@@ -120,7 +120,7 @@ class MaskConv1d(nn.Conv1d):
             groups: int = 1,
             bias: bool = False,
     ) -> None:
-        super(MaskConv1d, self).__init__(in_channels, out_channels, kernel_size,
+        super(MaskConv1d, self).__init__(in_channels=in_channels, out_channels=out_channels, kernel_size=kernel_size,
                                          stride=stride, padding=padding, dilation=dilation,
                                          groups=groups, bias=bias)
 
@@ -130,6 +130,10 @@ class MaskConv1d(nn.Conv1d):
         )
 
     def forward(self, inputs: Tensor, input_lengths: Tensor):
+        """
+        inputs: BxDxT
+        input_lengths: B
+        """
         max_length = inputs.size(2)
 
         indices = torch.arange(max_length).to(input_lengths.dtype).to(input_lengths.device)
@@ -273,12 +277,3 @@ class Transpose(nn.Module):
 
     def forward(self, inputs: Tensor):
         return inputs.transpose(*self.shape)
-
-
-class BatchNorm1d(nn.Module):
-    def __init__(self, num_features: int, eps: float = 1e-3, momentum: float = 0.1):
-        super(BatchNorm1d, self).__init__()
-        self.layer = nn.BatchNorm1d(num_features, eps=eps, momentum=momentum)
-
-    def forward(self, inputs: Tensor, input_lengths: Tensor):
-        return self.layer(inputs), input_lengths

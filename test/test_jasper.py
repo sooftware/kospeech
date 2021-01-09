@@ -15,10 +15,11 @@
 import torch
 from kospeech.models.jasper.model import Jasper
 
-inputs = torch.rand(3, 80, 100)  # BxDxT
-input_lengths = [100, 90, 80]
+inputs = torch.rand(3, 14321, 80)  # BxTxD
+input_lengths = torch.LongTensor([100, 90, 80])
 
 model = Jasper(num_classes=10, version='10x5')
+# print(model)
 output, output_lengths = model(inputs, input_lengths)
 
 print(output)

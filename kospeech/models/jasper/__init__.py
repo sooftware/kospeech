@@ -14,18 +14,20 @@
 
 
 class JasperEncoderConfig:
-    def _init__(self, num_blocks: int, num_sub_blocks: int) -> None:
-        self.num_blocks = num_blocks
-        self.num_sub_blocks = num_sub_blocks
+    def _init__(self) -> None:
+        self.num_blocks = None
+        self.num_sub_blocks = None
         self.preprocess_block = None
         self.block = None
 
 
 class Jasper10x5EncoderConfig(JasperEncoderConfig):
     def __init__(self, num_blocks: int, num_sub_blocks: int) -> None:
-        super(Jasper10x5EncoderConfig, self).__init__(num_blocks, num_sub_blocks)
+        super(JasperEncoderConfig, self).__init__()
+        self.num_blocks = num_blocks
+        self.num_sub_blocks = num_sub_blocks
         self.preprocess_block = {
-            'in_channels': 1,
+            'in_channels': 80,
             'out_channels': 256,
             'kernel_size': 11,
             'stride': 2,
@@ -42,14 +44,15 @@ class Jasper10x5EncoderConfig(JasperEncoderConfig):
 
 
 class JasperDecoderConfig:
-    def __init__(self, num_classes: int) -> None:
-        self.num_classes = num_classes
+    def __init__(self) -> None:
+        self.num_classes = None
         self.block = None
 
 
 class Jasper10x5DecoderConfig(JasperDecoderConfig):
     def __init__(self, num_classes) -> None:
-        super(Jasper10x5DecoderConfig, self).__init__(num_classes)
+        super(Jasper10x5DecoderConfig, self).__init__()
+        self.num_classes = num_classes
         self.block = {
             'in_channels': (768, 896, 1024),
             'out_channels': (896, 1024, num_classes),
