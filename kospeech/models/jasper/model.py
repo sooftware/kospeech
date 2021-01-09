@@ -18,6 +18,10 @@ from torch import Tensor
 from typing import Tuple
 from kospeech.models.jasper.decoder import JasperDecoder
 from kospeech.models.jasper.encoder import JasperEncoder
+from kospeech.models.jasper import (
+    Jasper10x5EncoderConfig,
+    Jasper10x5DecoderConfig,
+)
 
 
 class Jasper(nn.Module):
@@ -40,12 +44,19 @@ class Jasper(nn.Module):
         - **output**: tensor contains output sequence vector
         - **output**: tensor contains output sequence lengths
     """
+
     def __init__(self, num_classes: int, version: str = '10x5') -> None:
         super(Jasper, self).__init__()
-        assert version.lower() in ['10x5'], "Unsupported Version: {}".format(version)
+        supported_versions = {
+            '10x5': {
+                'enooder_config': Jasper10x5EncoderConfig(num_blocks=10, num_sub_blocks=5),
+                'decoder_config': Jasper10x5DecoderConfig(num_classes),
+            }
+        }
+        assert version.lower() in supported_versions.keys(), "Unsupported Version: {}".format(version)
 
-        self.encoder = JasperEncoder(version)
-        self.decoder = JasperDecoder(num_classes, version)
+        self.encoder = JasperEncoder(config=supported_versions[version]['encoder_config'])
+        self.decoder = JasperDecoder(config=supported_versions[version]['decoder_config'])
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
         """

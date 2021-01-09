@@ -273,3 +273,12 @@ class Transpose(nn.Module):
 
     def forward(self, inputs: Tensor):
         return inputs.transpose(*self.shape)
+
+
+class BatchNorm1d(nn.Module):
+    def __init__(self, num_features: int, eps: float = 1e-3, momentum: float = 0.1):
+        super(BatchNorm1d, self).__init__()
+        self.layer = nn.BatchNorm1d(num_features, eps=eps, momentum=momentum)
+
+    def forward(self, inputs: Tensor, input_lengths: Tensor):
+        return self.layer(inputs), input_lengths

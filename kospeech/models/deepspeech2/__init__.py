@@ -12,18 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pandas as pd
-import matplotlib.pyplot as plt
+from dataclasses import dataclass
+from kospeech.models import ModelConfig
 
-RGB = (0.4157, 0.2784, 0.3333)
-TRAIN_RESULT_PATH = '../data/train_result/train_step_result.csv'
 
-train_result = pd.read_csv(TRAIN_RESULT_PATH, delimiter=',', encoding='cp949')
-losses = train_result['loss']
-cers = train_result['cer']
-
-plt.title('Visualization of training (cer)')
-plt.plot(cers, color=RGB, label='cers')
-plt.xlabel('step (unit : 1000)', fontsize='x-large')
-plt.ylabel('cer', fontsize='x-large')
-plt.show()
+@dataclass
+class DeepSpeech2Config(ModelConfig):
+    architecture: str = "deepspeech2"
+    use_bidirectional: bool = True
+    rnn_type: str = "gru"
+    hidden_dim: int = 1024
+    activation: str = "hardtanh"
+    num_encoder_layers: int = 3

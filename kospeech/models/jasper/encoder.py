@@ -16,29 +16,12 @@ import torch.nn as nn
 
 from torch import Tensor
 from typing import Tuple
+from kospeech.models.jasper import JasperEncoderConfig
+from kospeech.models.modules import MaskConv1d, BatchNorm1d
 from kospeech.models.jasper.sublayers import (
     JasperSubBlock, 
     JasperBlock,
 )
-from kospeech.models.modules import MaskConv1d
-
-
-class Jasper10x5EncoderConfig:
-    preprocess_block = {
-        'in_channels': 1,
-        'out_channels': 256,
-        'kernel_size': 11,
-        'stride': 2,
-        'dilation': 1,
-        'dropout_p': 0.2,
-    }
-    block = {
-        'in_channels': (256, 256, 256, 384, 384, 512, 512, 640, 640, 768),
-        'out_channels': (256, 256, 384, 384, 512, 512, 640, 640, 768, 768),
-        'kernel_size': (11, 11, 13, 13, 17, 17, 21, 21, 25, 25),
-        'dilation': [1] * 10,
-        'dropout_p': (0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.3, 0.3, 0.3, 0.3),
-    }
 
 
 class JasperEncoder(nn.Module):
@@ -46,7 +29,7 @@ class JasperEncoder(nn.Module):
     Jasper Encoder consists of one pre-processing blocks and B Jasper blocks.
 
     Args:
-        version (str): version of jasper. Marked as BxR: B - number of blocks, R - number of sub-blocks
+        config (JasperEncoderConfig): configurations of Jasper Encoder
 
     Inputs: inputs, input_lengths, residual
         - **inputs**: tensor contains input sequence vector
@@ -56,22 +39,9 @@ class JasperEncoder(nn.Module):
         - **output**: tensor contains output sequence vector
         - **output**: tensor contains output sequence lengths
     """
-    supported_versions = {
-        '10x5': {
-            'num_blocks': 10,
-            'num_sub_blocks': 5,
-            'config': Jasper10x5EncoderConfig()
-        }
-    }
 
-    def __init__(self, version: str = '10x5'):
+    def __init__(self, config: JasperEncoderConfig) -> None:
         super(JasperEncoder, self).__init__()
-        assert version.lower() in ['10x5'], "Unsupported Version: {}".format(version)
-        
-        num_blocks = self.supported_versions[version]['num_blocks']
-        num_sub_blocks = self.supported_versions[version]['num_sub_blocks']
-        config = self.supported_versions[version]['config']
-
         layers = list()
         layers.append(JasperSubBlock(
             in_channels=config.preprocess_block['in_channels'],
@@ -80,46 +50,63 @@ class JasperEncoder(nn.Module):
             stride=config.preprocess_block['stride'],
             dilation=config.preprocess_block['dilation'],
             dropout_p=config.preprocess_block['dropout_p'],
-            bias=True,
+            activation='relu',
+            bias=False,
         ))
-        for i in range(num_blocks):
+        for i in range(config.num_blocks):
             layers.append(JasperBlock(
-                num_sub_blocks=num_sub_blocks,
+                num_sub_blocks=config.num_sub_blocks,
                 in_channels=config.block['in_channels'][i],
                 out_channels=config.block['out_channels'][i],
                 kernel_size=config.block['kernel_size'][i],
                 dilation=config.block['dilation'][i],
                 dropout_p=config.block['dropout_p'][i],
-                bias=True
+                activation='relu',
+                bias=False,
             ))
         self.layers = nn.ModuleList(layers)
-
-        self.residual_conv_layers = [
-            MaskConv1d(
-                in_channels=self.config.block['in_channels'][i],
-                out_channels=self.config.block['out_channels'][i],
-                kernel_size=1,
-                bias=True,
-            ) for i in range(num_blocks)
-        ]
-        self.residual_bn_layers = [
-            nn.BatchNorm1d(self.config.block['out_channels'][i]) for i in range(num_blocks)
-        ]
+        self.total_residual_layers = self._get_residual_layers(config.num_blocks)
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
-        # TODO: Residual DenseNet
-        # 구조 다시 생각해봐야 할듯
-        # 누적애서 Residual 하려면 어떻게 해야할지?
-        # 어떻게 해야 깔끔할지?
-        residuals, residual_lengths = list(), list()
-        residuals.append(inputs)
-        residual_lengths.append(input_lengths)
+        prev_outputs, prev_output_lengths = list(), list()
+        residual = None
+        output, output_lengths = inputs, input_lengths
 
-        for layer, conv, bn in zip(self.layers, self.residual_conv_layers, self.residual_bn_layers):
-            residual = bn(conv(residual, input_lengths)[0])
-            output, output_lengths = layer(residuals[-1], input_lengths, residual)
+        for layer in self.layerss:
+            output, output_lengths = layer(output, output_lengths, residual)
+            prev_outputs.append(output)
+            prev_output_lengths.append(output_lengths)
 
-            outputs.append(output)
-            output_lengths.append(output_lengths)
+            for item in zip(prev_outputs, prev_output_lengths, self.total_residual_layers):
+                prev_output, prev_output_length, residual_layers = item
+                for residual_layer in residual_layers:
+                    residual, _ = residual_layer(prev_output, prev_output_length)
 
         return inputs, input_lengths
+
+    def _get_residual(self, prev_outputs: list, prev_output_lengths: list):
+        residual = None
+
+        for item in zip(prev_outputs, prev_output_lengths, self.total_residual_layers):
+            prev_output, prev_output_length, residual_layers = item
+            for residual_layer in residual_layers:
+                if residual is None:
+                    residual = residual_layer(prev_output, prev_output_length)[0]
+                else:
+                    residual += residual_layer(prev_output, prev_output_length)[0]
+
+        return residual
+
+    def _get_residual_layers(self, num_blocks: int):
+        total_residual_layers = list()
+
+        for i in range(num_blocks - 1):
+            residual_layers = list()
+            for j in range(i + 1):
+                residual_layers.append(nn.Sequential(
+                    MaskConv1d(self.config.block['in_channels'][j], self.config.block['out_channels'][i], kernel_size=1),
+                    BatchNorm1d(self.config.block['out_channels'][i], eps=1e-3, momentum=0.1)
+                ))
+            total_residual_layers.append(residual_layers)
+
+        return total_residual_layers

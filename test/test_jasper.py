@@ -12,18 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pandas as pd
-import matplotlib.pyplot as plt
+import torch
+from kospeech.models.jasper.model import Jasper
 
-RGB = (0.4157, 0.2784, 0.3333)
-TRAIN_RESULT_PATH = '../data/train_result/train_step_result.csv'
+inputs = torch.rand(3, 80, 100)  # BxDxT
+input_lengths = [100, 90, 80]
 
-train_result = pd.read_csv(TRAIN_RESULT_PATH, delimiter=',', encoding='cp949')
-losses = train_result['loss']
-cers = train_result['cer']
+model = Jasper(num_classes=10, version='10x5')
+output, output_lengths = model(inputs, input_lengths)
 
-plt.title('Visualization of training (cer)')
-plt.plot(cers, color=RGB, label='cers')
-plt.xlabel('step (unit : 1000)', fontsize='x-large')
-plt.ylabel('cer', fontsize='x-large')
-plt.show()
+print(output)
+print(output_lengths)

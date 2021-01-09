@@ -1,10 +1,22 @@
-# Test code for e2e.optim.optim & e2e.optim.lr_scheduler
+# Copyright (c) 2020, Soohwan Kim. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 import torch.nn as nn
 import matplotlib.pyplot as plt
 from torch import optim
 from kospeech.optim.__init__ import Optimizer
-from kospeech.optim.lr_scheduler.tri_stage_lr_scheduler import RampUpLR, ExponentialDecayLR
+from kospeech.optim.lr_scheduler.tri_stage_lr_scheduler import TriStageLRScheduler
 
 
 class Model(nn.Module):
@@ -17,29 +29,29 @@ class Model(nn.Module):
 
 
 INIT_LR = 1e-15
-HIGH_PLATEAU_LR = 3e-04
-LOW_PLATEAU_LR = 1e-05
-RAMPUP_PERIOD = 1000
+PEAK_LR = 3e-04
+FINAL_LR = 1e-05
+WARMUP_STEPS = 4000
 MAX_GRAD_NORM = 400
-TOTAL_TIME_STEP = 7000
-EXP_DECAY_START = 4500
-EXP_DECAY_PERIOD = 1000
+TOTAL_STEPS = 32000
 
 model = Model()
 
 optimizer = optim.Adam(model.parameters(), lr=INIT_LR)
-scheduler = RampUpLR(optimizer, INIT_LR, HIGH_PLATEAU_LR, RAMPUP_PERIOD)
-optimizer = Optimizer(optimizer, scheduler, RAMPUP_PERIOD, MAX_GRAD_NORM)
-
+scheduler = TriStageLRScheduler(
+    optimizer=optimizer,
+    init_lr=INIT_LRr,
+    peak_lr=PEAK_LR,
+    final_lr=FINAL_LR,
+    warmup_steps=WARMUP_STEPS,
+    total_steps=TOTAL_STEPS
+)
+optimizer = Optimizer(optimizer, scheduler, WARMUP_STEPS, MAX_GRAD_NORM)
 lr_processes = list()
 
 for timestep in range(TOTAL_TIME_STEP):
-    optimizer.step(model, 0.0)
+    optimizer.step(model)
     lr_processes.append(optimizer.get_lr())
-
-    if timestep == EXP_DECAY_START:
-        scheduler = ExponentialDecayLR(optimizer.optim, optimizer.get_lr(), LOW_PLATEAU_LR, EXP_DECAY_PERIOD)
-        optimizer.set_scheduler(scheduler, EXP_DECAY_PERIOD)
 
 plt.title('Test Optimizer class')
 plt.plot(lr_processes)
