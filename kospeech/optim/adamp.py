@@ -11,7 +11,7 @@ class AdamP(Optimizer):
     """
     Paper: "AdamP: Slowing Down the Slowdown for Momentum Optimizers on Scale-invariant Weights"
 
-    Refer to https://github.com/clovaai/AdamP/
+    Copied from https://github.com/clovaai/AdamP/
     Copyright (c) 2020 Naver Corp.
     MIT License
     """

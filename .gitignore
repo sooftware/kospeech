@@ -10,7 +10,7 @@ data/data_list/sample_list.csv
 docs/training
 docs/training/*
 __pycache__/
-  
+venv/*
 *.pyc
 .idea
 .ipynb_checkpoints
