@@ -131,12 +131,12 @@ class MaskConv1d(nn.Conv1d):
         mask = indices >= input_lengths.unsqueeze(1)
         inputs = inputs.masked_fill(mask.unsqueeze(1).to(device=inputs.device), 0)
 
-        input_lengths = self.get_sequence_lengths(input_lengths)
+        output_lengths = self.get_sequence_lengths(input_lengths)
         output = super(MaskConv1d, self).forward(inputs)
 
         del mask, indices
 
-        return output, input_lengths
+        return output, output_lengths
 
 
 class MaskConv2d(nn.Module):
