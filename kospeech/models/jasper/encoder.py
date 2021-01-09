@@ -79,10 +79,19 @@ class JasperEncoder(nn.Module):
         ]
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
+        # TODO: Residual DenseNet
+        # 구조 다시 생각해봐야 할듯
+        # 누적애서 Residual 하려면 어떻게 해야할지?
+        # 어떻게 해야 깔끔할지?
+        residuals, residual_lengths = list(), list()
+        residuals.append(inputs)
+        residual_lengths.append(input_lengths)
+
         for layer, conv, bn in zip(self.layers, self.residual_conv_layers, self.residual_bn_layers):
-            residual = inputs.clone().detach()
-            residual, _ = conv(residual, input_lengths)
-            residual = bn(residual)
-            inputs, input_lengths = layer(inputs, input_lengths, residual)
+            residual = bn(conv(residual, input_lengths)[0])
+            output, output_lengths = layer(residuals[-1], input_lengths, residual)
+
+            outputs.append(output)
+            output_lengths.append(output_lengths)
 
         return inputs, input_lengths

@@ -26,6 +26,10 @@ class Jasper(nn.Module):
         self.decoder = JasperDecoder(num_classes, version)
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
+        """
+        inputs: BxTxD
+        input_lengths: B
+        """
         encoder_outputs, output_lengths = self.encoder(inputs, input_lengths)
         output, output_lengths = self.decoder(encoder_outputs, output_lengths)
         return output, output_lengths
