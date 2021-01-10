@@ -100,6 +100,10 @@ class Listener(BaseRNN):
             )
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor, Optional[Tensor]]:
+        """
+        inputs (torch.FloatTensor): (batch_size, sequence_length, dimension)
+        input_lengths (torch.LongTensor): (batch_size)
+        """
         encoder_log_probs = None
         encoder_output_lengths = None
 

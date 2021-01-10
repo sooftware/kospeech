@@ -20,7 +20,11 @@ import platform
 from omegaconf import DictConfig
 from kospeech.vocabs import Vocabulary
 from torch import optim
-from kospeech.optim import RAdam, AdamP
+from kospeech.optim import (
+    RAdam,
+    AdamP,
+    Novograd,
+)
 from kospeech.criterion import (
     LabelSmoothedCrossEntropyLoss,
     JointCTCCrossEntropyLoss,
@@ -76,6 +80,10 @@ def get_optimizer(model: nn.Module, config: DictConfig):
         optimizer = optim.Adagrad(
             model.module.parameters(), lr=config.train.init_lr, weight_decay=config.train.weight_decay
         )
+    elif config.train.optimizer.lower() == 'novograd':
+        optimizer = Novograd(
+            model.module.parameters(), lr=config.train.init_lr, weight_decay=config.train.weight_decay
+        )
     else:
         raise ValueError(f"Unsupported Optimizer: {config.train.optimizer}")
 
@@ -83,7 +91,7 @@ def get_optimizer(model: nn.Module, config: DictConfig):
 
 
 def get_criterion(config: DictConfig, vocab: Vocabulary) -> nn.Module:
-    if config.model.architecture == 'deepspeech2':
+    if config.model.architecture in ('deepspeech2', 'jasper'):
         criterion = nn.CTCLoss(blank=vocab.blank_id, reduction=config.train.reduction, zero_infinity=True)
     elif config.model.architecture in ('las', 'transformer') and config.model.joint_ctc_attention:
         criterion = JointCTCCrossEntropyLoss(

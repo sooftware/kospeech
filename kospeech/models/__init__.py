@@ -33,8 +33,10 @@ from kospeech.models.las.decoder import Speller
 from kospeech.models.las.topk_decoder import TopKDecoder
 from kospeech.models.las.model import ListenAttendSpell
 from kospeech.models.transformer.model import SpeechTransformer
+from kospeech.models.jasper.model import Jasper
 from kospeech.models.transformer.sublayers import AddNorm
 from kospeech.models.resnet1d.model import ResnetVADModel
 from kospeech.models.las import ListenAttendSpellConfig, JointCTCAttentionLASConfig
 from kospeech.models.transformer import TransformerConfig, JointCTCAttentionTransformerConfig
 from kospeech.models.deepspeech2 import DeepSpeech2Config
+from kospeech.models.jasper import JasperConfig

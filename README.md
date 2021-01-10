@@ -3,9 +3,11 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/sooftware/kospeech/badge)](https://www.codefactor.io/repository/github/sooftware/kospeech) 
 [<img src="http://img.shields.io/badge/docs-passing-success">](https://sooftware.github.io/KoSpeech/) 
 [<img src="http://img.shields.io/badge/DeepSpeech2-passing-success">](https://sooftware.github.io/KoSpeech/) 
-[<img src="http://img.shields.io/badge/ListenAttendSpell-Fail-red">](https://sooftware.github.io/KoSpeech/) 
+[<img src="http://img.shields.io/badge/ListenAttendSpell-passing-success">](https://sooftware.github.io/KoSpeech/) 
 [<img src="http://img.shields.io/badge/SpeechTransformer-passing-success">](https://sooftware.github.io/KoSpeech/) 
-[<img src="http://img.shields.io/badge/JointCTCAttention-passing-success">](https://sooftware.github.io/KoSpeech/)  
+[<img src="http://img.shields.io/badge/JointCTCAttentionListenAttendSpell-passing-success">](https://sooftware.github.io/KoSpeech/)
+[<img src="http://img.shields.io/badge/JointCTCAttentionSpeechTransformer-passing-success">](https://sooftware.github.io/KoSpeech/)
+[<img src="http://img.shields.io/badge/Jasper-passing-success">](https://sooftware.github.io/KoSpeech/)
   
 ### What's New
 
@@ -23,7 +25,7 @@
 ### Note
   
 - Currently, beam search may not work properly.  
-- The model's inference is currently not working properly, but will be updated as soon as possible.  
+- The pre-train model's inference is currently not working properly, pre-train model will be updated.     
   
 ### ***[KoSpeech:  Open-Source Toolkit for End-to-End Korean Speech Recognition \[Paper\]](https://arxiv.org/abs/2009.03092)***
   
@@ -31,14 +33,16 @@
   
 ### [UPDATED] Pre-train Models
   
-|Description|Feature|Dataset|Epochs|CER|Model|  
-|-----------|:-----:|-------|:----:|:-:|-----|    
-|Deep Speech 2|Kaldi-style fbank 80|[KsponSpeech](http://www.aihub.or.kr/aidata/105)|1|42.3|[download](https://drive.google.com/file/d/1MMqZMjEuc5wvFNIxfhCkhn1kG3Z0HaEx/view?usp=sharing)|  
-|Listen, Attend and Spell|Kaldi-style fbank 80|[KsponSpeech](http://www.aihub.or.kr/aidata/105)|1|19.2|[download](https://drive.google.com/file/d/17q2qg23ud-Kebsa0Fy4DEpA2Uy6rlT90/view?usp=sharing)|  
-|Joint CTC-Attention|Kaldi-style fbank 80|[KsponSpeech](http://www.aihub.or.kr/aidata/105)|10|12.5|[download](https://drive.google.com/file/d/1DDclNR4BInOXvWOJphajkG4jDf8KCa_W/view?usp=sharing)|  
-|VAD Model|-|-|-|-|[download](https://drive.google.com/file/d/14lLxfCiFgXqnb1a8dZ_AYhlKQeaMz7Jd/view?usp=sharing)|  
+|Description|Loss|Feature|Dataset|Epochs|CER|Model|  
+|-----------|----|:-----:|-------|:----:|:-:|-----|    
+|[Transformer (12-6)](https://ieeexplore.ieee.org/document/8462506)|Joint CTC-CrossEntropy|Kaldi-style fbank 80|[KsponSpeech](https://www.mdpi.com/2076-3417/10/19/6936)|3|15.4|[download](https://drive.google.com/file/d/1Te6K12KDw59PPRnvrM8xZPhxRYH3GYuy/view?usp=sharing)|   
+|[Listen Attend Spell](https://arxiv.org/abs/1508.01211)|CrossEntropy|-|[KsponSpeech](https://www.mdpi.com/2076-3417/10/19/6936)|-|-|will be upload|  
+|[Listen Attend Spell](https://arxiv.org/abs/1706.02737)|Joint CTC-CrossEntropy|-|[KsponSpeech](https://www.mdpi.com/2076-3417/10/19/6936)|-|-|will be upload|  
+|[Deep Speech 2](https://arxiv.org/abs/1512.02595)|CTC|-|[KsponSpeech](https://www.mdpi.com/2076-3417/10/19/6936)|-|-|will be upload|  
+|[Jasper](https://arxiv.org/pdf/1904.03288.pdf)|CTC|-|[KsponSpeech](https://www.mdpi.com/2076-3417/10/19/6936)|-|-|will be upload|  
+|VAD Model|-|-|-|-|-|[download](https://drive.google.com/file/d/14lLxfCiFgXqnb1a8dZ_AYhlKQeaMz7Jd/view?usp=sharing)|  
   
-※ Training is in progress. As the training progresses, the pre-trained model will be updated.
+※ Training is in progress. As the training progresses, the pre-trained model will be updated.  
   
 ### Pre-processed Transcripts
   
@@ -49,7 +53,8 @@
 |KsponSpeech|*Required*    |Grapheme   |[download](https://drive.google.com/file/d/1awhfTpqAaDs7K5R9npvFoqeMYWiUtGtq/view?usp=sharing)|   
 |LibriSpeech|*Unrequired*  |Subword    |[download](https://drive.google.com/file/d/1RA29SLtNIo1zmnk0OgVeXNH553Ul_DhY/view?usp=sharing)|  
    
-※ Authentication : Refer to [[Link]](https://github.com/sooftware/KoSpeech/issues/54)  
+※ KsponSpeech needs permission from. [AI Hub](https://aihub.or.kr/). Please send the approved screenshot to sh951011@gmail.com.  
+※ It may be slow to reply, so it is recommended to execute [preprocessing code](https://github.com/sooftware/KoSpeech/tree/master/dataset/kspon).
   
 ## Introduction
   
@@ -201,6 +206,11 @@ python ./bin/main.py model=transformer train=transformer_train train.dataset_pat
 - **Joint CTC-Attention Speech Transformer** Training
 ```
 python ./bin/main.py model=joint-ctc-attention-transformer train=transformer_train train.dataset_path=$DATASET_PATH
+```
+  
+- **Jasper** Training
+```
+python ./bin/main.py model=jasper train=jasper_train train.dataset_path=$DATASET_PATH
 ```
   
 ### Evaluate for KsponSpeech

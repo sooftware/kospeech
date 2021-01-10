@@ -47,11 +47,13 @@ from kospeech.models import (
     ListenAttendSpellConfig,
     TransformerConfig,
     JointCTCAttentionTransformerConfig,
+    JasperConfig,
 )
 from kospeech.trainer import (
     DeepSpeech2TrainConfig,
     ListenAttendSpellTrainConfig,
     TransformerTrainConfig,
+    JasperTrainConfig,
 )
 
 
@@ -143,9 +145,11 @@ cs.store(group="audio", name="spectrogram", node=SpectrogramConfig, package="aud
 cs.store(group="train", name="ds2_train", node=DeepSpeech2TrainConfig, package="train")
 cs.store(group="train", name="las_train", node=ListenAttendSpellTrainConfig, package="train")
 cs.store(group="train", name="transformer_train", node=TransformerTrainConfig, package="train")
+cs.store(group="train", name="jasper_train", node=JasperTrainConfig, package="train")
 cs.store(group="model", name="ds2", node=DeepSpeech2Config, package="model")
 cs.store(group="model", name="las", node=ListenAttendSpellConfig, package="model")
 cs.store(group="model", name="transformer", node=TransformerConfig, package="model")
+cs.store(group="model", name="jasper", node=JasperConfig, package="model")
 cs.store(group="model", name="joint-ctc-attention-las", node=JointCTCAttentionLASConfig, package="model")
 cs.store(group="model", name="joint-ctc-attention-transformer", node=JointCTCAttentionTransformerConfig, package="model")
 

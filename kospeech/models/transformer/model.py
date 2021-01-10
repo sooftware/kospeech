@@ -156,6 +156,10 @@ class SpeechTransformer(nn.Module):
             input_lengths: Tensor,                  # tensor of input sequence lengths
             targets: Optional[Tensor] = None,       # tensor of target sequences
     ) -> Union[Tensor, tuple]:
+        """
+        inputs (torch.FloatTensor): (batch_size, sequence_length, dimension)
+        input_lengths (torch.LongTensor): (batch_size)
+        """
         encoder_log_probs = None
 
         conv_feat = self.conv(inputs.unsqueeze(1), input_lengths)

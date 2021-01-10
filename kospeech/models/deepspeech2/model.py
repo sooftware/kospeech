@@ -85,6 +85,10 @@ class DeepSpeech2(nn.Module):
         )
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
+        """
+        inputs (torch.FloatTensor): (batch_size, sequence_length, dimension)
+        input_lengths (torch.LongTensor): (batch_size)
+        """
         inputs = inputs.unsqueeze(1).permute(0, 1, 3, 2)
         output, output_lengths = self.conv(inputs, input_lengths)
 

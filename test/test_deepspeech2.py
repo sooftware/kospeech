@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import torch
-from kospeech.models.jasper.model import Jasper
+from kospeech.models import DeepSpeech2
 
 batch_size = 3
 sequence_length = 14321
@@ -25,18 +25,11 @@ device = torch.device('cuda' if cuda else 'cpu')
 inputs = torch.rand(batch_size, sequence_length, dimension).to(device)  # BxTxD
 input_lengths = torch.LongTensor([14321, 14300, 13000]).to(device)
 
-print("Jasper 10x3 Model Test..")
-model = Jasper(num_classes=10, version='10x5').to(device)
+print("Deep Speech 2 Model Test..")
+model = DeepSpeech2(num_classes=10, input_size=dimension).to(device)
 output, output_lengths = model(inputs, input_lengths)
 
 print(output)
 print(output.size())
 print(output_lengths)
 
-print("Jasper 5x3 Model Test..")
-model = Jasper(num_classes=10, version='5x3').to(device)
-output, output_lengths = model(inputs, input_lengths)
-
-print(output)
-print(output.size())
-print(output_lengths)

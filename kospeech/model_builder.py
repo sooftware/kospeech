@@ -28,7 +28,7 @@ from kospeech.models import (
     Listener,
     Speller,
     DeepSpeech2,
-    SpeechTransformer,
+    SpeechTransformer, Jasper,
 )
 
 
@@ -75,6 +75,13 @@ def build_model(
             dropout_p=config.model.dropout,
             bidirectional=config.model.use_bidirectional,
             activation=config.model.activation,
+            device=device,
+        )
+
+    elif config.model.architecture.lower() == 'jasper':
+        model = build_jasper(
+            num_classes=len(vocab),
+            version=config.model.version,
             device=device,
         )
 
@@ -267,6 +274,15 @@ def build_speller(
         dropout_p=dropout_p,
         device=device,
     )
+
+
+def build_jasper(version: str, num_classes: int, device: torch.device) -> nn.DataParallel:
+    assert version.lower() in ["10x5", "5x3"], "Unsupported Version: {}".format(version)
+    return nn.DataParallel(Jasper(
+        num_classes=num_classes,
+        version=version,
+        device=device,
+    ))
 
 
 def load_test_model(config: DictConfig, device: torch.device):

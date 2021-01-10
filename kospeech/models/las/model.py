@@ -53,6 +53,10 @@ class ListenAttendSpell(nn.Module):
             targets: Optional[Tensor] = None,           # tensor contains target sentences
             teacher_forcing_ratio: float = 1.0,         # ratio of teacher forcing
     ) -> Tuple[dict, Tensor, Tensor]:
+        """
+        inputs (torch.FloatTensor): (batch_size, sequence_length, dimension)
+        input_lengths (torch.LongTensor): (batch_size)
+        """
         encoder_outputs, encoder_log_probs, encoder_output_lengths = self.encoder(inputs, input_lengths)
 
         if isinstance(self.decoder, TopKDecoder):

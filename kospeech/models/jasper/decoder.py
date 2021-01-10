@@ -1,4 +1,4 @@
-# Copyright (c) 2020, Soohwan Kim. All rights reserved.
+# Copyright (c) 2021, Soohwan Kim. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
@@ -27,6 +28,7 @@ class JasperDecoder(nn.Module):
 
     Args:
         config (JasperDecoderConfig): configurations of Jasper Decoder
+        device (torch.device): device - 'cuda' or 'cpu'
 
     Inputs: inputs, input_lengths, residual
         - **inputs**: tensor contains input sequence vector
@@ -37,8 +39,10 @@ class JasperDecoder(nn.Module):
         - **output**: tensor contains output sequence lengths
     """
 
-    def __init__(self, config: JasperDecoderConfig):
+    def __init__(self, config: JasperDecoderConfig, device: torch.device = 'cuda') -> None:
         super(JasperDecoder, self).__init__()
+        self.config = config
+        self.device = device
         self.layers = nn.ModuleList([
             JasperSubBlock(
                 in_channels=config.block['in_channels'][i],
@@ -48,15 +52,20 @@ class JasperDecoder(nn.Module):
                 dropout_p=config.block['dropout_p'][i],
                 activation='relu',
                 bias=True if i == 2 else False
-            ) for i in range(3)
+            ).to(self.device) for i in range(3)
         ])
 
     def forward(self, encoder_outputs: Tensor, encoder_output_lengths: Tensor) -> Tuple[Tensor, Tensor]:
+        """
+        encoder_outputs (torch.FloatTensor): (batch_size, dimension, sequence_length)
+        encoder_output_lengths (torch.LongTensor): (batch_size)
+        """
         output, output_lengths = encoder_outputs, encoder_output_lengths
 
-        for layer in self.layers:
-            output, output_lengths = layer(encoder_outputs, encoder_output_lengths)
+        for i, layer in enumerate(self.layers):
+            output, output_lengths = layer(output, output_lengths)
 
-        output = F.log_softmax(output, dim=-1)
+        output = F.log_softmax(output.transpose(1, 2), dim=-1)
+        del encoder_outputs, encoder_output_lengths
 
         return output, output_lengths

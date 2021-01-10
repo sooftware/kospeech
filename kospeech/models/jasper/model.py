@@ -1,4 +1,4 @@
-# Copyright (c) 2020, Soohwan Kim. All rights reserved.
+# Copyright (c) 2021, Soohwan Kim. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import torch
 import torch.nn as nn
 
 from torch import Tensor
@@ -20,7 +21,8 @@ from kospeech.models.jasper.decoder import JasperDecoder
 from kospeech.models.jasper.encoder import JasperEncoder
 from kospeech.models.jasper import (
     Jasper10x5EncoderConfig,
-    Jasper10x5DecoderConfig,
+    Jasper5x3EncoderConfig,
+    JasperDecoderConfig,
 )
 
 
@@ -34,6 +36,7 @@ class Jasper(nn.Module):
     Args:
         num_classes (int): number of classification
         version (str): version of jasper. Marked as BxR: B - number of blocks, R - number of sub-blocks
+        device (torch.device): device - 'cuda' or 'cpu'
 
     Inputs: inputs, input_lengths, residual
         - **inputs**: tensor contains input sequence vector
@@ -45,24 +48,29 @@ class Jasper(nn.Module):
         - **output**: tensor contains output sequence lengths
     """
 
-    def __init__(self, num_classes: int, version: str = '10x5') -> None:
+    def __init__(self, num_classes: int, version: str = '10x5', device: torch.device = 'cuda') -> None:
         super(Jasper, self).__init__()
         supported_versions = {
             '10x5': {
                 'encoder_config': Jasper10x5EncoderConfig(num_blocks=10, num_sub_blocks=5),
-                'decoder_config': Jasper10x5DecoderConfig(num_classes),
-            }
+                'decoder_config': JasperDecoderConfig(num_classes),
+            },
+            '5x3': {
+                'encoder_config': Jasper5x3EncoderConfig(num_blocks=5, num_sub_blocks=3),
+                'decoder_config': JasperDecoderConfig(num_classes),
+            },
         }
         assert version.lower() in supported_versions.keys(), "Unsupported Version: {}".format(version)
 
-        self.encoder = JasperEncoder(config=supported_versions[version]['encoder_config'])
-        self.decoder = JasperDecoder(config=supported_versions[version]['decoder_config'])
+        self.encoder = JasperEncoder(config=supported_versions[version]['encoder_config'], device=device)
+        self.decoder = JasperDecoder(config=supported_versions[version]['decoder_config'], device=device)
+        self.device = device
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
         """
-        inputs: BxTxD
-        input_lengths: B
+        inputs (torch.FloatTensor): (batch_size, sequence_length, dimension)
+        input_lengths (torch.LongTensor): (batch_size)
         """
-        encoder_outputs, output_lengths = self.encoder(inputs, input_lengths)
+        encoder_outputs, output_lengths = self.encoder(inputs.transpose(1, 2), input_lengths)
         output, output_lengths = self.decoder(encoder_outputs, output_lengths)
         return output, output_lengths

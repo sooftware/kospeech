@@ -15,6 +15,7 @@
 import torch
 from kospeech.optim.adamp import AdamP
 from kospeech.optim.radam import RAdam
+from kospeech.optim.novograd import Novograd
 
 
 class Optimizer(object):
