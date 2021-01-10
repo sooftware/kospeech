@@ -26,9 +26,9 @@ def load_label(filepath):
     id_list = vocab_data_frame["id"]
     grpm_list = vocab_data_frame["grpm"]
 
-    for id, grpm in zip(id_list, grpm_list):
-        grpm2id[grpm] = id
-        id2grpm[id] = grpm
+    for _id, grpm in zip(id_list, grpm_list):
+        grpm2id[grpm] = _id
+        id2grpm[_id] = grpm
     return grpm2id, id2grpm
 
 
@@ -89,4 +89,3 @@ def generate_grapheme_labels(grapheme_transcripts, vocab_dest: str = './data'):
 
     label_df = pd.DataFrame(vocab_dict)
     label_df.to_csv(os.path.join(vocab_dest, "aihub_labels.csv"), encoding="utf-8", index=False)
-

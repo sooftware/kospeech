@@ -32,4 +32,3 @@ output, output_lengths = model(inputs, input_lengths)
 print(output)
 print(output.size())
 print(output_lengths)
-

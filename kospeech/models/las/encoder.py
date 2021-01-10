@@ -135,4 +135,3 @@ class Listener(BaseRNN):
             encoder_log_probs = self.fc(encoder_outputs.transpose(1, 2)).log_softmax(dim=2)
 
         return encoder_outputs, encoder_log_probs, encoder_output_lengths
-

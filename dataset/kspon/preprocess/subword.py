@@ -57,4 +57,3 @@ def sentence_to_subwords(audio_paths: list, transcripts: list, datapath: str = '
             f.write(f'{audio_path}\t{subword_transcript}\t{subword_id_transcript}\n')
 
     return subwords
-
