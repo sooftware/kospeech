@@ -113,45 +113,6 @@ With the proposed architecture to take advantage of both the CTC-based model and
   
 Jasper (Just Another SPEech Recognizer) is a end-to-end convolutional neural acoustic model. Jasper showed powerful performance with only CNN → BatchNorm → ReLU → Dropout block and residential connection.  
   
-### Various Options   
-  
-We support various options for training. More details please check [here](https://sooftware.github.io/KoSpeech/notes/opts.html).  
-  
-* Options
-```
-usage: main.py [-h] [--mode MODE] [--sample_rate SAMPLE_RATE]
-               [--frame_length FRAME_LENGTH] [--frame_shift FRAME_SHIFT]
-               [--n_mels N_MELS] [--normalize] [--del_silence]
-               [--input_reverse] [--feature_extract_by FEATURE_EXTRACT_BY]
-               [--transform_method TRANSFORM_METHOD]
-               [--freq_mask_para FREQ_MASK_PARA]
-               [--time_mask_num TIME_MASK_NUM] [--freq_mask_num FREQ_MASK_NUM]
-               [--architecture ARCHITECTURE] [--use_bidirectional]
-               [--mask_conv] [--hidden_dim HIDDEN_DIM] [--dropout DROPOUT]
-               [--num_heads NUM_HEADS] [--label_smoothing LABEL_SMOOTHING]
-               [--num_encoder_layers NUM_ENCODER_LAYERS]
-               [--num_decoder_layers NUM_DECODER_LAYERS] [--rnn_type RNN_TYPE]
-               [--extractor EXTRACTOR] [--activation ACTIVATION]
-               [--attn_mechanism ATTN_MECHANISM]
-               [--teacher_forcing_ratio TEACHER_FORCING_RATIO]
-               [--num_classes NUM_CLASSES] [--d_model D_MODEL]
-               [--ffnet_style FFNET_STYLE] [--dataset_path DATASET_PATH]
-               [--transcripts_path TRANSCRIPTS_PATH]
-               [--data_list_path DATA_LIST_PATH] [--spec_augment] [--use_cuda]
-               [--batch_size BATCH_SIZE] [--num_workers NUM_WORKERS]
-               [--num_epochs NUM_EPOCHS] [--init_lr INIT_LR]
-               [--peak_lr PEAK_LR] [--final_lr FINAL_LR]
-               [--final_lr_scale FINAL_LR_SCALE]
-               [--init_lr_scale INIT_LR_SCALE] [--max_len MAX_LEN]
-               [--max_grad_norm MAX_GRAD_NORM] [--weight_decay WEIGHT_DECAY]
-               [--reduction REDUCTION] [--warmup_steps WARMUP_STEPS]
-               [--teacher_forcing_step TEACHER_FORCING_STEP]
-               [--min_teacher_forcing_ratio MIN_TEACHER_FORCING_RATIO]
-               [--seed SEED] [--save_result_every SAVE_RESULT_EVERY]
-               [--checkpoint_every CHECKPOINT_EVERY]
-               [--print_every PRINT_EVERY] [--resume]
-```
-  
 ## Installation
 This project recommends Python 3.7 or higher.   
 We recommend creating a new virtual environment for this project (using virtual env or conda).  
@@ -176,7 +137,9 @@ pip install -e .
 ```
   
 ## Get Started
-    
+  
+We use [Hydra](https://github.com/facebookresearch/hydra) to control all the training configurations. If you are not familiar with Hydra we recommend visiting the [Hydra website](https://hydra.cc/). Generally, Hydra is an open-source framework that simplifies the development of research applications by providing the ability to create a hierarchical configuration dynamically.
+  
 ### Preparing KsponSpeech Dataset (LibriSpeech also supports)
   
 Download from [here](https://github.com/sooftware/KoSpeech#pre-processed-transcripts) or refer to the following to preprocess.
@@ -186,7 +149,7 @@ Download from [here](https://github.com/sooftware/KoSpeech#pre-processed-transcr
   
 ### Training KsponSpeech Dataset
   
-You can choose from four models and training this. There are many other training options, so look carefully and execute the following command:  
+You can choose from several models and training options. There are many other training options, so look carefully and execute the following command:  
   
 - **Deep Speech 2** Training
 ```
