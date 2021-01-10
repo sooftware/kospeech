@@ -111,7 +111,7 @@ With the proposed architecture to take advantage of both the CTC-based model and
   
 - *Jasper*  
   
-Jasper (Just Another SPEech Recognizer) is a end-to-end convolutional neural acoustic model. Jasper showed powerful performance with only CNN → Batch-Norm → ReLU → Dropout Block and Residential Connection.  
+Jasper (Just Another SPEech Recognizer) is a end-to-end convolutional neural acoustic model. Jasper showed powerful performance with only CNN → BatchNorm → ReLU → Dropout block and residential connection.  
   
 ### Various Options   
   
