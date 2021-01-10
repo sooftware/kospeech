@@ -89,7 +89,7 @@ We will response as soon as possible.
   
 ![image](https://user-images.githubusercontent.com/42150335/101985614-8b1f2080-3ccc-11eb-9645-e5217a2dfa53.png)
   
-So far, Five models are implemented: *Deep Speech 2, Listen Attend and Spell (LAS), Speech Transformer, Joint CTC-Attention LAS, and Joint CTC-Attention Transformer*. To check details of these model architectures, check figures attached to each section.
+So far, serveral models are implemented: *Deep Speech 2, Listen Attend and Spell (LAS), Speech Transformer, Joint CTC-Attention LAS, and Joint CTC-Attention Transformer, Jasper*. To check details of these model architectures, check figures attached to each section.
   
 - *Deep Speech 2*  
   
@@ -106,7 +106,11 @@ Transformer is a powerful architecture in the Natural Language Processing (NLP) 
   
 - *Joint CTC-Attention*
   
-With the proposed architecture to take advantage of both the CTC-based model and the attention-based model. It is a structure that makes it robust by adding CTC to the encoder.
+With the proposed architecture to take advantage of both the CTC-based model and the attention-based model. It is a structure that makes it robust by adding CTC to the encoder.  
+  
+- *Jasper*  
+  
+Jasper (Just Another SPEech Recognizer) is a end-to-end convolutional neural acoustic model. Jasper showed powerful performance with only CNN → Batch-Norm → ReLU → Dropout Block and Residential Connection.  
   
 ### Various Options   
   
@@ -278,7 +282,9 @@ We follow [PEP-8](https://www.python.org/dev/peps/pep-0008/) for code style. Esp
   
 *Daniel S. Park et al. [SpecAugment on large scale datasets](https://arxiv.org/abs/1912.05533) arXiv:1912.05533* 
     
-*Jung-Woo Ha et al. [ClovaCall: Korean Goal-Oriented Dialog Speech Corpus for Automatic Speech Recognition of Contact Centers](https://arxiv.org/abs/2004.09367) arXiv: 2004.09367*
+*Jung-Woo Ha et al. [ClovaCall: Korean Goal-Oriented Dialog Speech Corpus for Automatic Speech Recognition of Contact Centers](https://arxiv.org/abs/2004.09367) arXiv: 2004.09367*  
+  
+*Jason Li et al. [Jasper: An End-to-End Convolutional Neural Acoustic Model](https://arxiv.org/pdf/1904.03288.pdf)*
     
 ### Github References
   
@@ -294,7 +300,9 @@ We follow [PEP-8](https://www.python.org/dev/peps/pep-0008/) for code style. Esp
   
 *[LiyuanLucasLiu/RAdam](https://github.com/LiyuanLucasLiu/RAdam)*
   
-*[AppleHolic/2020 AI Challenge - SpeechRecognition](https://github.com/AppleHolic/2020AIChallengeSpeechRecognition)*
+*[AppleHolic/2020 AI Challenge - SpeechRecognition](https://github.com/AppleHolic/2020AIChallengeSpeechRecognition)*  
+  
+*[NVIDIA/DeepLearningExample](https://github.com/NVIDIA/DeepLearningExamples)*
    
 ### License
 This project is licensed under the Apache-2.0 LICENSE - see the [LICENSE.md](https://github.com/sooftware/KoSpeech/blob/master/LICENSE) file for details
