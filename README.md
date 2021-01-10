@@ -54,7 +54,7 @@
 |KsponSpeech|*Required*    |Grapheme   |[download](https://drive.google.com/file/d/1awhfTpqAaDs7K5R9npvFoqeMYWiUtGtq/view?usp=sharing)|   
 |LibriSpeech|*Unrequired*  |Subword    |[download](https://drive.google.com/file/d/1RA29SLtNIo1zmnk0OgVeXNH553Ul_DhY/view?usp=sharing)|  
    
-※ KsponSpeech needs permission from. [AI Hub](https://aihub.or.kr/). Please send the approved screenshot to sh951011@gmail.com.  
+※ KsponSpeech needs permission from [AI Hub](https://aihub.or.kr/). Please send e-mail including the approved screenshot to sh951011@gmail.com.  
 ※ It may be slow to reply, so it is recommended to execute [preprocessing code](https://github.com/sooftware/KoSpeech/tree/master/dataset/kspon).
   
 ## Introduction
