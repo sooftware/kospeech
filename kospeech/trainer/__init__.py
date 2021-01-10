@@ -73,7 +73,8 @@ class TransformerTrainConfig(TrainConfig):
 @dataclass
 class JasperTrainConfig(TrainConfig):
     optimizer: str = "novograd"
-    init_lr: float = 1e-06
-    final_lr: float = 1e-06
-    peak_lr: float = 1e-04
-    warmup_steps: int = 1000
+    init_lr: float = 1e-3
+    final_lr: float = 1e-3
+    peak_lr: float = 1e-3
+    weight_decay: float = 1e-3
+    warmup_steps: int = 0
