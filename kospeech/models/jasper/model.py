@@ -77,5 +77,5 @@ class Jasper(nn.Module):
 
     def greedy_search(self, inputs: Tensor, input_lengths: Tensor, device: str):
         with torch.no_grad():
-            output, output_lengths = self.forward(inputs.transpose(1, 2), input_lengths)
+            output, output_lengths = self.forward(inputs, input_lengths)
             return output.max(-1)[1]
