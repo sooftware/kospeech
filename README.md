@@ -11,17 +11,17 @@
   
 ### What's New
 
-- January 2021: [Jasper](https://arxiv.org/pdf/1904.03288.pdf) passing
+- January 2021: Add Jasper model
 - January 2021: Release v1.2
-- January 2021: Joint CTC-Attention Transformer model passing
-- January 2021: Speech Transformer model passing
+- January 2021: Add Joint CTC-Attention Transformer model
+- January 2021: Add Speech Transformer model
 - January 2021: Apply [Hydra: framework for elegantly configuring complex applications](https://github.com/facebookresearch/hydra)
 - December 2020: Release v1.1
 - December 2020: Update pre-train models
-- December 2020: Joint CTC-Attention LAS passing (*Currently, Not Supports Multi-GPU*)
-- November 2020: Deep Speech 2 passing
-- November 2020: KsponSpeech Subword & Grapheme Unit passing (*Not Tested*)
-- November 2020: RAdam & AdamP Optimizer passing
+- December 2020: Add Joint CTC-Attention LAS (*Currently, Not Supports Multi-GPU*)
+- November 2020: Add Deep Speech 2 passing
+- November 2020: Add KsponSpeech Subword & Grapheme Unit (*Not Tested*)
+- November 2020: Add RAdam & AdamP Optimizer
   
 ### Note
   
