@@ -26,7 +26,6 @@
 ### Note
   
 - Currently, beam search may not work properly.  
-- The pre-train model's inference is currently not working properly, pre-train model will be updated.     
   
 ### ***[KoSpeech:  Open-Source Toolkit for End-to-End Korean Speech Recognition \[Paper\]](https://arxiv.org/abs/2009.03092)***
   
