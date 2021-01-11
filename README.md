@@ -192,7 +192,7 @@ Now you have a model which you can use to predict on new data. We do this by run
 
 * Command
 ```
-$ python3 inference.py --model_path $MODEL_PATH --audio_path $AUDIO_PATH --device $DEVICE
+$ python3 ./bin/inference.py --model_path $MODEL_PATH --audio_path $AUDIO_PATH --device $DEVICE
 ```
 * Output
 ```
