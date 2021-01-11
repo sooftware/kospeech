@@ -268,7 +268,7 @@ class SupervisedTrainer(object):
                 if self.joint_ctc_attention:
                     logger.info(self.log_format.format(
                         timestep, epoch_time_step,
-                        ctc_loss * self.criterion.ctc_weight + cross_entropy_loss * self.criterion.cross_entropy_weight,
+                        loss,
                         ctc_loss, cross_entropy_loss,
                         cer,
                         elapsed, epoch_elapsed, train_elapsed,
@@ -277,7 +277,7 @@ class SupervisedTrainer(object):
                 else:
                     logger.info(self.log_format.format(
                         timestep, epoch_time_step,
-                        epoch_loss_total / total_num,
+                        loss,
                         cer,
                         elapsed, epoch_elapsed, train_elapsed,
                         self.optimizer.get_lr()
