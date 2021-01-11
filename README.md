@@ -52,7 +52,7 @@
 |KsponSpeech|*Required*    |Character  |[download](https://drive.google.com/file/d/1ivJJiUhKhj0FcOntA2hcYWXR00XzRI_f/view?usp=sharing)|  
 |KsponSpeech|*Required*    |Subword    |[download](https://drive.google.com/file/d/1awhfTpqAaDs7K5R9npvFoqeMYWiUtGtq/view?usp=sharing)|  
 |KsponSpeech|*Required*    |Grapheme   |[download](https://drive.google.com/file/d/1awhfTpqAaDs7K5R9npvFoqeMYWiUtGtq/view?usp=sharing)|   
-|LibriSpeech|*Unrequired*  |Subword    |[download](https://drive.google.com/file/d/1RA29SLtNIo1zmnk0OgVeXNH553Ul_DhY/view?usp=sharing)|  
+|LibriSpeech|*Unrequired*  |Subword    |[download](https://drive.google.com/file/d/1kTeQ93FU7B6bzIXlQLV6du5g-7LEukGH/view?usp=sharing)|  
    
 ※ KsponSpeech needs permission from [AI Hub](https://aihub.or.kr/). Please send mail including the approved screenshot to sh951011@gmail.com.  
 ※ It may be slow to reply, so it is recommended to execute [preprocessing code](https://github.com/sooftware/KoSpeech/tree/master/dataset/kspon).
