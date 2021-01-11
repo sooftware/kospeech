@@ -26,6 +26,7 @@
 ### Note
   
 - Currently, beam search may not work properly.  
+- Subword and Grapheme unit currently not tested.
   
 ### ***[KoSpeech:  Open-Source Toolkit for End-to-End Korean Speech Recognition \[Paper\]](https://arxiv.org/abs/2009.03092)***
   
