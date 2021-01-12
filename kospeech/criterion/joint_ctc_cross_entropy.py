@@ -13,9 +13,10 @@
 # limitations under the License.
 
 import torch.nn as nn
-
 from typing import Tuple
 from torch import Tensor
+
+from kospeech.criterion import LabelSmoothedCrossEntropyLoss
 
 
 class JointCTCCrossEntropyLoss(nn.Module):
@@ -46,6 +47,7 @@ class JointCTCCrossEntropyLoss(nn.Module):
             ctc_weight: float = 0.3,              # weight of ctc loss
             cross_entropy_weight: float = 0.7,    # weight of cross entropy loss
             blank_id: int = None,                 # identification of blank token
+            smoothing: float = 0.1,               # ratio of smoothing (confidence = 1.0 - smoothing)
             architecture: str = 'las',            # architecture of model to train
     ) -> None:
         super(JointCTCCrossEntropyLoss, self).__init__()
@@ -57,7 +59,17 @@ class JointCTCCrossEntropyLoss(nn.Module):
         self.cross_entropy_weight = cross_entropy_weight
         self.architecture = architecture
         self.ctc_loss = nn.CTCLoss(blank=blank_id, reduction=self.reduction, zero_infinity=True)
-        self.cross_entropy_loss = nn.CrossEntropyLoss(reduction=self.reduction, ignore_index=self.ignore_index)
+        if smoothing > 0.0:
+            self.cross_entropy_loss = LabelSmoothedCrossEntropyLoss(
+                num_classes=num_classes,
+                ignore_index=ignore_index,
+                smoothing=smoothing,
+                reduction=reduction,
+                architecture=architecture,
+                dim=-1,
+            )
+        else:
+            self.cross_entropy_loss = nn.CrossEntropyLoss(reduction=self.reduction, ignore_index=self.ignore_index)
 
     def forward(
             self,

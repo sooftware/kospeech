@@ -38,11 +38,13 @@ class Checkpoint(object):
 
     Attributes:
         SAVE_PATH (str): path of file to save
+        LOAD_PATH (str): path of file to load
         TRAINER_STATE_NAME (str): name of the file storing trainer states
         MODEL_NAME (str): name of the file storing model
     """
 
     SAVE_PATH = 'outputs'
+    LOAD_PATH = '../../../outputs'
     TRAINER_STATE_NAME = 'trainer_states.pt'
     MODEL_NAME = 'model.pt'
 
@@ -118,6 +120,6 @@ class Checkpoint(object):
         returns the path to the last saved checkpoint's subdirectory.
         Precondition: at least one checkpoint has been made (i.e., latest checkpoint subdirectory exists).
         """
-        checkpoints_path = sorted(os.listdir(self.SAVE_PATH), reverse=True)[0]
-        sorted_listdir = sorted(os.listdir(checkpoints_path), reverse=True)
-        return os.path.join(checkpoints_path, sorted_listdir[0])
+        checkpoints_path = sorted(os.listdir(self.LOAD_PATH), reverse=True)[0]
+        sorted_listdir = sorted(os.listdir(os.path.join(self.LOAD_PATH, checkpoints_path)), reverse=True)
+        return os.path.join(checkpoints_path, sorted_listdir[1])

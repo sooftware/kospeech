@@ -22,7 +22,6 @@ class ListenAttendSpellConfig(ModelConfig):
     use_bidirectional: bool = True
     dropout: float = 0.3
     num_heads: int = 4
-    label_smoothing: float = 0.1
     num_encoder_layers: int = 3
     num_decoder_layers: int = 2
     rnn_type: str = "lstm"

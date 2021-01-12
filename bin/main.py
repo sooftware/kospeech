@@ -16,8 +16,8 @@ import os
 import random
 import warnings
 import torch
+import torch.nn as nn
 import hydra
-
 from hydra.core.config_store import ConfigStore
 from omegaconf import OmegaConf, DictConfig
 from kospeech.data.data_loader import split_dataset
@@ -57,7 +57,13 @@ from kospeech.trainer import (
 )
 
 
-def train(config: DictConfig):
+KSPONSPEECH_VOCAB_PATH = '../../../data/vocab/kspon_sentencepiece.vocab'
+KSPONSPEECH_SP_MODEL_PATH = '../../../data/vocab/kspon_sentencepiece.model'
+LIBRISPEECH_VOCAB_PATH = '../../../data/vocab/tokenizer.vocab'
+LIBRISPEECH_TOKENIZER_PATH = '../../../data/vocab/tokenizer.model'
+
+
+def train(config: DictConfig) -> nn.DataParallel:
     random.seed(config.train.seed)
     torch.manual_seed(config.train.seed)
     torch.cuda.manual_seed_all(config.train.seed)
@@ -66,19 +72,18 @@ def train(config: DictConfig):
     if config.train.dataset == 'kspon':
         if config.train.output_unit == 'subword':
             vocab = KsponSpeechVocabulary(
-                vocab_path='../../../data/vocab/kspon_sentencepiece.vocab',
+                vocab_path=KSPONSPEECH_VOCAB_PATH,
                 output_unit=config.train.output_unit,
-                sp_model_path='../../../data/vocab/kspon_sentencepiece.model',
+                sp_model_path=KSPONSPEECH_SP_MODEL_PATH,
             )
         else:
             vocab = KsponSpeechVocabulary(
-                f'../../../data/vocab/aihub_{config.train.output_unit}_vocabs.csv', output_unit=config.train.output_unit
+                f'../../../data/vocab/aihub_{config.train.output_unit}_vocabs.csv',
+                output_unit=config.train.output_unit,
             )
 
     elif config.train.dataset == 'libri':
-        vocab = LibriSpeechVocabulary(
-            '../../../data/vocab/tokenizer.vocab', '../../../data/vocab/tokenizer.model'
-        )
+        vocab = LibriSpeechVocabulary(LIBRISPEECH_VOCAB_PATH, LIBRISPEECH_TOKENIZER_PATH)
 
     else:
         raise ValueError("Unsupported Dataset : {0}".format(config.train.dataset))
@@ -158,7 +163,8 @@ cs.store(group="model", name="joint-ctc-attention-transformer", node=JointCTCAtt
 def main(config: DictConfig) -> None:
     warnings.filterwarnings('ignore')
     logger.info(OmegaConf.to_yaml(config))
-    train(config)
+    last_model_checkpoint = train(config)
+    torch.save(last_model_checkpoint, os.path.join(os.getcwd(), "last_model_checkpoint.pt"))
 
 
 if __name__ == '__main__':

@@ -23,7 +23,6 @@ class TrainConfig:
     transcripts_path: str = "../../../data/transcripts.txt"
     output_unit: str = "character"
 
-    num_epochs: int = 20
     batch_size: int = 32
     save_result_every: int = 1000
     checkpoint_every: int = 5000
@@ -37,7 +36,6 @@ class TrainConfig:
     final_lr_scale: float = 0.05
     max_grad_norm: int = 400
     weight_decay: float = 1e-05
-    reduction: str = "mean"
 
     seed: int = 777
     resume: bool = False
@@ -50,6 +48,9 @@ class ListenAttendSpellTrainConfig(TrainConfig):
     final_lr: float = 1e-06
     peak_lr: float = 1e-04
     warmup_steps: int = 400
+    num_epochs: int = 20
+    reduction: str = "mean"
+    label_smoothing: float = 0.1
 
 
 @dataclass
@@ -59,6 +60,8 @@ class DeepSpeech2TrainConfig(TrainConfig):
     final_lr: float = 1e-06
     peak_lr: float = 1e-04
     warmup_steps: int = 1000
+    num_epochs: int = 70
+    reduction: str = "mean"
 
 
 @dataclass
@@ -68,6 +71,9 @@ class TransformerTrainConfig(TrainConfig):
     final_lr: float = 1e-06
     peak_lr: float = 1e-04
     warmup_steps: int = 4000
+    num_epochs: int = 40
+    reduction: str = "mean"
+    label_smoothing: float = 0.1
 
 
 @dataclass
@@ -75,7 +81,8 @@ class JasperTrainConfig(TrainConfig):
     optimizer: str = "novograd"
     reduction: str = "sum"
     init_lr: float = 1e-3
-    final_lr: float = 1e-3
+    final_lr: float = 1e-4
     peak_lr: float = 1e-3
     weight_decay: float = 1e-3
     warmup_steps: int = 0
+    num_epochs: int = 10
