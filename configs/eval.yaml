@@ -1,0 +1,3 @@
+defaults:
+  - audio: fbank
+  - eval: default
