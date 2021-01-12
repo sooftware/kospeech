@@ -86,16 +86,16 @@ We will response as soon as possible.
 
 ## Roadmap
   
-![image](https://user-images.githubusercontent.com/42150335/101985614-8b1f2080-3ccc-11eb-9645-e5217a2dfa53.png)
+![image](https://user-images.githubusercontent.com/42150335/104332114-2e18c380-5533-11eb-8bad-b60b17b9bfa2.png)
   
-So far, serveral models are implemented: *Deep Speech 2, Listen Attend and Spell (LAS), Speech Transformer, Joint CTC-Attention LAS, and Joint CTC-Attention Transformer, Jasper*. To check details of these model architectures, check figures attached to each section.
+So far, serveral models are implemented: *Deep Speech 2, Listen Attend and Spell (LAS), Speech Transformer, Jasper*. To check details of these model architectures, check figures attached to each section.
   
 - *Deep Speech 2*  
   
 Deep Speech 2 showed faster and more accurate performance on ASR tasks with Connectionist Temporal Classification (CTC) loss. This model has been highlighted for significantly increasing performance compared to the previous end- to-end models.
 
   
-- *Listen, Attend and Spell*
+- *Listen, Attend and Spell (LAS)*
    
 We follow the architecture previously proposed in the "Listen, Attend and Spell", but some modifications were added to improve performance. We provide four different attention mechanisms, `scaled dot-product attention`, `additive attention`, `location aware attention`, `multi-head attention`. Attention mechanisms much affect the performance of models. 
   
@@ -105,7 +105,7 @@ Transformer is a powerful architecture in the Natural Language Processing (NLP) 
   
 - *Joint CTC-Attention*
   
-With the proposed architecture to take advantage of both the CTC-based model and the attention-based model. It is a structure that makes it robust by adding CTC to the encoder.  
+With the proposed architecture to take advantage of both the CTC-based model and the attention-based model. It is a structure that makes it robust by adding CTC to the encoder. Joint CTC-Attention can be trained in combination with LAS and Speech Transformer.  
   
 - *Jasper*  
   
