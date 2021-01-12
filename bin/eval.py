@@ -13,14 +13,12 @@
 # limitations under the License.
 
 import os
-import sys
 import hydra
 import warnings
-sys.path.append('..')
-
 from hydra.core.config_store import ConfigStore
 from omegaconf import OmegaConf, DictConfig
-from kospeech.dataclass import EvalConfig, FilterBankConfig
+from kospeech.evaluator import EvalConfig
+from kospeech.data.audio import FilterBankConfig
 from kospeech.vocabs.ksponspeech import KsponSpeechVocabulary
 from kospeech.vocabs.librispeech import LibriSpeechVocabulary
 from kospeech.data.label_loader import load_dataset

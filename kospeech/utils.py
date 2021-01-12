@@ -16,7 +16,6 @@ import torch
 import torch.nn as nn
 import logging
 import platform
-
 from omegaconf import DictConfig
 from kospeech.vocabs import Vocabulary
 from torch import optim
@@ -60,34 +59,22 @@ def check_envirionment(use_cuda: bool) -> torch.device:
 
 
 def get_optimizer(model: nn.Module, config: DictConfig):
-    if config.train.optimizer.lower() == 'adam':
-        optimizer = optim.Adam(
-            model.module.parameters(), lr=config.train.init_lr, weight_decay=config.train.weight_decay
-        )
-    elif config.train.optimizer.lower() == 'radam':
-        optimizer = RAdam(
-            model.module.parameters(), lr=config.train.init_lr, weight_decay=config.train.weight_decay
-        )
-    elif config.train.optimizer.lower() == 'adamp':
-        optimizer = AdamP(
-            model.module.parameters(), lr=config.train.init_lr, weight_decay=config.train.weight_decay
-        )
-    elif config.train.optimizer.lower() == 'adadelta':
-        optimizer = optim.Adadelta(
-            model.module.parameters(), lr=config.train.init_lr, weight_decay=config.train.weight_decay
-        )
-    elif config.train.optimizer.lower() == 'adagrad':
-        optimizer = optim.Adagrad(
-            model.module.parameters(), lr=config.train.init_lr, weight_decay=config.train.weight_decay
-        )
-    elif config.train.optimizer.lower() == 'novograd':
-        optimizer = Novograd(
-            model.module.parameters(), lr=config.train.init_lr, weight_decay=config.train.weight_decay
-        )
-    else:
-        raise ValueError(f"Unsupported Optimizer: {config.train.optimizer}")
-
-    return optimizer
+    supported_optimizer = {
+        'adam': optim.Adam,
+        'radam': RAdam,
+        'adamp': AdamP,
+        'adadelta': optim.Adadelta,
+        'adagrad': optim.Adagrad,
+        'novograd': Novograd,
+    }
+    assert config.train.optimizer.lower() in supported_optimizer.keys(), \
+        f"Unsupported Optimizer: {config.train.optimizer}\n" \
+        f"Supported Optimizer: {supported_optimizer.keys()}"
+    return supported_optimizer[config.train.optimizer](
+        model.module.parameters(),
+        lr=config.train.init_lr,
+        weight_decay=config.train.weight_decay,
+    )
 
 
 def get_criterion(config: DictConfig, vocab: Vocabulary) -> nn.Module:
@@ -103,6 +90,7 @@ def get_criterion(config: DictConfig, vocab: Vocabulary) -> nn.Module:
             blank_id=vocab.blank_id,
             dim=-1,
             architecture=config.model.architecture,
+            smoothing=config.train.label_smoothing,
         )
     elif config.model.architecture == 'transformer' and config.model.label_smoothing <= 0.0:
         criterion = nn.CrossEntropyLoss(
@@ -113,7 +101,7 @@ def get_criterion(config: DictConfig, vocab: Vocabulary) -> nn.Module:
         criterion = LabelSmoothedCrossEntropyLoss(
             num_classes=len(vocab),
             ignore_index=vocab.pad_id,
-            smoothing=config.model.label_smoothing,
+            smoothing=config.train.label_smoothing,
             reduction=config.train.reduction,
             architecture=config.model.architecture,
             dim=-1,
