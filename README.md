@@ -36,11 +36,11 @@
   
 |Description|Loss|Feature|Dataset|Epochs|CER|Model|  
 |-----------|----|:-----:|-------|:----:|:-:|-----|    
-|[Transformer (12-6)](https://ieeexplore.ieee.org/document/8462506)|Joint CTC-CrossEntropy|Kaldi-style fbank 80|[KsponSpeech](https://www.mdpi.com/2076-3417/10/19/6936)|3|15.4|[download](https://drive.google.com/file/d/1Te6K12KDw59PPRnvrM8xZPhxRYH3GYuy/view?usp=sharing)|   
+|[Transformer (12-6)](https://ieeexplore.ieee.org/document/8462506)|Joint CTC-CrossEntropy|Kaldi-style fbank 80|[KsponSpeech](https://www.mdpi.com/2076-3417/10/19/6936)|7|9.84|[download](https://drive.google.com/file/d/1CwP0SahxU2bj-DIAjtV7UFYwXPIcAoun/view?usp=sharing)|   
 |[Listen Attend Spell](https://arxiv.org/abs/1508.01211)|CrossEntropy|-|[KsponSpeech](https://www.mdpi.com/2076-3417/10/19/6936)|-|-|will be upload|  
 |[Listen Attend Spell](https://arxiv.org/abs/1706.02737)|Joint CTC-CrossEntropy|-|[KsponSpeech](https://www.mdpi.com/2076-3417/10/19/6936)|-|-|will be upload|  
 |[Deep Speech 2](https://arxiv.org/abs/1512.02595)|CTC|-|[KsponSpeech](https://www.mdpi.com/2076-3417/10/19/6936)|-|-|will be upload|  
-|[Jasper](https://arxiv.org/pdf/1904.03288.pdf)|CTC|-|[KsponSpeech](https://www.mdpi.com/2076-3417/10/19/6936)|-|-|will be upload|  
+|[Jasper](https://arxiv.org/pdf/1904.03288.pdf)|CTC|Kaldi-style fbank 80|[KsponSpeech](https://www.mdpi.com/2076-3417/10/19/6936)|2|56.5|[download](https://drive.google.com/file/d/10v5FWEUX-gsfLEnOuBsRs5bb6T-ll3lg/view?usp=sharing)|  
 |VAD Model|-|-|-|-|-|[download](https://drive.google.com/file/d/14lLxfCiFgXqnb1a8dZ_AYhlKQeaMz7Jd/view?usp=sharing)|  
   
 ※ Training is in progress. As the training progresses, the pre-trained model will be updated.  
@@ -54,7 +54,7 @@
 |KsponSpeech|*Required*    |Grapheme   |[download](https://drive.google.com/file/d/1awhfTpqAaDs7K5R9npvFoqeMYWiUtGtq/view?usp=sharing)|   
 |LibriSpeech|*Unrequired*  |Subword    |[download](https://drive.google.com/file/d/1kTeQ93FU7B6bzIXlQLV6du5g-7LEukGH/view?usp=sharing)|  
    
-※ KsponSpeech needs permission from [AI Hub](https://aihub.or.kr/). Please send mail including the approved screenshot to sh951011@gmail.com.  
+※ KsponSpeech needs permission from [AI Hub](https://aihub.or.kr/). Send mail including the approved screenshot to sh951011@gmail.com.  
 ※ It may be slow to reply, so it is recommended to execute [preprocessing code](https://github.com/sooftware/KoSpeech/tree/master/dataset/kspon).
   
 ## Introduction
@@ -75,7 +75,6 @@ For example, training of an acoustic model is a multi-stage process of model tra
 * [Delete silence](https://sooftware.github.io/KoSpeech/Data.html#module-kospeech.data.audio.core)
 * [SpecAugment / NoiseAugment](https://sooftware.github.io/KoSpeech/Data.html#module-kospeech.data.audio.augment)
 * [Label Smoothing](https://sooftware.github.io/KoSpeech/Optim.html#module-kospeech.optim.loss)
-
 * [Save & load Checkpoint](https://sooftware.github.io/KoSpeech/Checkpoint.html#id1)
 * [Learning Rate Scheduling](https://sooftware.github.io/KoSpeech/Optim.html#module-kospeech.optim.lr_scheduler)
 * [Implement data loader as multi-thread for speed](https://sooftware.github.io/KoSpeech/Data.html#module-kospeech.data.data_loader)
