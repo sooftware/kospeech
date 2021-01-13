@@ -92,7 +92,7 @@ def get_criterion(config: DictConfig, vocab: Vocabulary) -> nn.Module:
             architecture=config.model.architecture,
             smoothing=config.train.label_smoothing,
         )
-    elif config.model.architecture == 'transformer' and config.model.label_smoothing <= 0.0:
+    elif config.model.architecture == 'transformer' and config.train.label_smoothing <= 0.0:
         criterion = nn.CrossEntropyLoss(
             ignore_index=vocab.pad_id,
             reduction=config.train.reduction
