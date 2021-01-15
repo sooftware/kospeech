@@ -29,7 +29,8 @@ from kospeech.models.extractor import (
 )
 from kospeech.models.modules import (
     Linear,
-    LayerNorm, Transpose,
+    LayerNorm, 
+    Transpose,
 )
 from kospeech.models.transformer.mask import (
     get_attn_pad_mask,
