@@ -152,7 +152,7 @@ class SupervisedTrainer(object):
             )
             train_loader.start()
 
-            train_loss, train_cer = self.__train_epoches(
+            model, train_loss, train_cer = self.__train_epoches(
                 model,
                 epoch,
                 epoch_time_step,
@@ -295,7 +295,7 @@ class SupervisedTrainer(object):
         Checkpoint(model, self.optimizer, self.trainset_list, self.validset, epoch).save()
         logger.info('train() completed')
 
-        return epoch_loss_total / total_num, cer
+        return model, epoch_loss_total / total_num, cer
 
     def validate(self, model: nn.Module, queue: queue.Queue) -> float:
         """
