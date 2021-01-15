@@ -309,6 +309,8 @@ class SupervisedTrainer(object):
             - **loss** (float): loss of validation
             - **cer** (float): character error rate of validation
         """
+        target_list = list()
+        predict_list = list()
         cer = 1.0
 
         model.eval()
@@ -328,8 +330,18 @@ class SupervisedTrainer(object):
                 y_hats = model.module.greedy_search(inputs, input_lengths, self.device)
             else:
                 y_hats = model.greedy_search(inputs, input_lengths, self.device)
+                
+            for idx in range(targets.size(0)):
+                target_list.append(
+                    self.vocab.label_to_string(targets[idx])
+                )
+                predict_list.append(
+                    self.vocab.label_to_string(y_hats[idx].cpu().detach().numpy())
+                )
+                
             cer = self.metric(targets, y_hats)
 
+        self.__save_result(target_list, predict_list)
         logger.info('validate() completed')
 
         return cer
@@ -407,6 +419,17 @@ class SupervisedTrainer(object):
 
         return output, loss, ctc_loss, cross_entropy_loss
 
+    def __save_result(self, target_list: list, predict_list: list) -> None:
+        results = {
+            'targets': target_list,
+            'predictions': predict_list
+        }
+        date_time = time.strftime('%Y_%m_%d_%H_%M_%S', time.localtime())
+        save_path = f"{date_time}-valid.csv"
+        
+        results = pd.DataFrame(results)
+        results.to_csv(save_path, index=False, encoding='cp949')
+    
     def __save_epoch_result(self, train_result: list, valid_result: list) -> None:
         """ Save result of epoch """
         train_dict, train_loss, train_cer = train_result
