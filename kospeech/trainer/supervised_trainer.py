@@ -332,12 +332,8 @@ class SupervisedTrainer(object):
                 y_hats = model.greedy_search(inputs, input_lengths, self.device)
                 
             for idx in range(targets.size(0)):
-                target_list.append(
-                    self.vocab.label_to_string(targets[idx])
-                )
-                predict_list.append(
-                    self.vocab.label_to_string(y_hats[idx].cpu().detach().numpy())
-                )
+                target_list.append(self.vocab.label_to_string(targets[idx]))
+                predict_list.append(self.vocab.label_to_string(y_hats[idx].cpu().detach().numpy()))
                 
             cer = self.metric(targets, y_hats)
 
