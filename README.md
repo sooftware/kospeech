@@ -36,7 +36,7 @@
   
 |Description|Loss|Feature|Dataset|Epochs|CER|Model|  
 |-----------|----|:-----:|-------|:----:|:-:|-----|    
-|[Transformer (12-6)](https://ieeexplore.ieee.org/document/8462506)|CTC + CrossEntropy|Kaldi-style fbank 80|[KsponSpeech](https://www.mdpi.com/2076-3417/10/19/6936)|7|9.84|[download](https://drive.google.com/file/d/1CwP0SahxU2bj-DIAjtV7UFYwXPIcAoun/view?usp=sharing)|   
+|[Transformer (12-6)](https://ieeexplore.ieee.org/document/8462506)|CTC + CrossEntropy|Kaldi-style fbank 80|[KsponSpeech](https://www.mdpi.com/2076-3417/10/19/6936)|7|9.84|will be upload|   
 |[Listen Attend Spell](https://arxiv.org/abs/1508.01211)|CrossEntropy|-|[KsponSpeech](https://www.mdpi.com/2076-3417/10/19/6936)|-|-|will be upload|  
 |[Listen Attend Spell](https://arxiv.org/abs/1706.02737)|CTC + CrossEntropy|-|[KsponSpeech](https://www.mdpi.com/2076-3417/10/19/6936)|-|-|will be upload|  
 |[Deep Speech 2](https://arxiv.org/abs/1512.02595)|CTC|-|[KsponSpeech](https://www.mdpi.com/2076-3417/10/19/6936)|-|-|will be upload|  
