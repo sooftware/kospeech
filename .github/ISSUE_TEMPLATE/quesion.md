@@ -1,6 +1,6 @@
 ---
-name: Custom issue template
-about: Describe this issue template's purpose here.
+name: Quesion
+about: Question about this project
 title: ''
 labels: ''
 assignees: sooftware
@@ -8,7 +8,7 @@ assignees: sooftware
 ---
 
 ## Title
-- [QUESTION]
+- 
 
 ## Description
 
