@@ -124,7 +124,7 @@ class MaskConv1d(nn.Conv1d):
                                          stride=stride, padding=padding, dilation=dilation,
                                          groups=groups, bias=bias)
 
-    def get_sequence_lengths(self, seq_lengths):
+    def _get_sequence_lengths(self, seq_lengths):
         return (
             (seq_lengths + 2 * self.padding[0] - self.dilation[0] * (self.kernel_size[0] - 1) - 1) // self.stride[0] + 1
         )
@@ -142,7 +142,7 @@ class MaskConv1d(nn.Conv1d):
         mask = indices >= input_lengths.unsqueeze(1)
         inputs = inputs.masked_fill(mask.unsqueeze(1).to(device=inputs.device), 0)
 
-        output_lengths = self.get_sequence_lengths(input_lengths)
+        output_lengths = self._get_sequence_lengths(input_lengths)
         output = super(MaskConv1d, self).forward(inputs)
 
         del mask, indices
@@ -187,7 +187,7 @@ class MaskConv2d(nn.Module):
             if output.is_cuda:
                 mask = mask.cuda()
 
-            seq_lengths = self.get_sequence_lengths(module, seq_lengths)
+            seq_lengths = self._get_sequence_lengths(module, seq_lengths)
 
             for idx, length in enumerate(seq_lengths):
                 length = length.item()
@@ -200,7 +200,7 @@ class MaskConv2d(nn.Module):
 
         return output, seq_lengths
 
-    def get_sequence_lengths(self, module: nn.Module, seq_lengths: Tensor) -> Tensor:
+    def _get_sequence_lengths(self, module: nn.Module, seq_lengths: Tensor) -> Tensor:
         """
         Calculate convolutional neural network receptive formula
 

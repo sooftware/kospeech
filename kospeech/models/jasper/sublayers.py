@@ -56,7 +56,7 @@ class JasperBlock(nn.Module):
             activation: str = 'relu',
     ) -> None:
         super(JasperBlock, self).__init__()
-        padding = self.get_same_padding(kernel_size, stride, dilation)
+        padding = self._get_same_padding(kernel_size, stride, dilation)
         self.layers = nn.ModuleList([
             JasperSubBlock(
                 in_channels=in_channels if i == 0 else out_channels,
@@ -71,7 +71,7 @@ class JasperBlock(nn.Module):
             ) for i in range(num_sub_blocks)
         ])
 
-    def get_same_padding(self, kernel_size: int, stride: int, dilation: int):
+    def _get_same_padding(self, kernel_size: int, stride: int, dilation: int):
         if stride > 1 and dilation > 1:
             raise ValueError("Only stride OR dilation may be greater than 1")
         return (kernel_size // 2) * dilation

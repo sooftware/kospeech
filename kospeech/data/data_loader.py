@@ -63,15 +63,15 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
         self.transcripts = list(transcripts)
         self.augment_methods = [self.VANILLA] * len(self.audio_paths)
         self.dataset_size = len(self.audio_paths)
-        self.augment(spec_augment)
+        self._augment(spec_augment)
         self.shuffle()
 
     def get_item(self, idx):
         """ get feature vector & transcript """
-        feature_vector = self.parse_audio(os.path.join(self.dataset_path, self.audio_paths[idx]), self.augment_methods[idx])
+        feature = self.parse_audio(os.path.join(self.dataset_path, self.audio_paths[idx]), self.augment_methods[idx])
         transcript = self.parse_transcript(self.transcripts[idx])
 
-        return feature_vector, transcript
+        return feature, transcript
 
     def parse_transcript(self, transcript):
         """ Parses transcript """
@@ -85,7 +85,7 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
 
         return transcript
 
-    def augment(self, spec_augment):
+    def _augment(self, spec_augment):
         """ Spec Augmentation """
         if spec_augment:
             logger.info("Applying Spec Augmentation...")
@@ -129,7 +129,7 @@ class AudioDataLoader(threading.Thread):
         self.thread_id = thread_id
         self.pad_id = pad_id
 
-    def create_empty_batch(self):
+    def _create_empty_batch(self):
         seqs = torch.zeros(0, 0, 0)
         targets = torch.zeros(0, 0).to(torch.long)
 
@@ -157,7 +157,7 @@ class AudioDataLoader(threading.Thread):
                 self.index += 1
 
             if len(items) == 0:
-                batch = self.create_empty_batch()
+                batch = self._create_empty_batch()
                 self.queue.put(batch)
                 break
 

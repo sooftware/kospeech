@@ -41,7 +41,7 @@ def get_non_pad_mask(inputs: Tensor, input_lengths: Optional[Any] = None, pad_id
 
 def get_decoder_self_attn_mask(seq_k: Tensor, seq_q: Tensor, pad_id):
     """ For masking the decoder self attention """
-    def get_attn_key_pad_mask(seq_k, seq_q, pad_id):
+    def _get_attn_key_pad_mask(seq_k, seq_q, pad_id):
         """ For masking out the padding part of key sequence. """
         len_q = seq_q.size(1)
         padding_mask = seq_k.eq(pad_id)
@@ -49,7 +49,7 @@ def get_decoder_self_attn_mask(seq_k: Tensor, seq_q: Tensor, pad_id):
 
         return padding_mask
 
-    def get_subsequent_mask(inputs: Tensor) -> Tensor:
+    def _get_subsequent_mask(inputs: Tensor) -> Tensor:
         """ Makes subsequent masking """
         batch_size, seq_length = inputs.size()
         subsequent_mask = torch.triu(torch.ones((seq_length, seq_length), device=inputs.device, dtype=torch.uint8), diagonal=1)
@@ -57,7 +57,7 @@ def get_decoder_self_attn_mask(seq_k: Tensor, seq_q: Tensor, pad_id):
 
         return subsequent_mask.bool()
 
-    return get_attn_key_pad_mask(seq_k, seq_q, pad_id) | get_subsequent_mask(seq_k)
+    return _get_attn_key_pad_mask(seq_k, seq_q, pad_id) | _get_subsequent_mask(seq_k)
 
 
 def get_attn_pad_mask(inputs, input_lengths, expand_length):
