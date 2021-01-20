@@ -6,8 +6,11 @@
 
 <p  align="center"> 
 <img src="https://www.codefactor.io/repository/github/sooftware/kospeech/badge">  
-[<img src="http://img.shields.io/badge/docs-passing-success">](https://sooftware.github.io/KoSpeech/) 
+<img src="http://img.shields.io/badge/docs-passing-success"> 
 <img src="http://img.shields.io/badge/license-Apache--2.0-informational"> 
+<img src="http://img.shields.io/badge/framework-PyTorch-informational"> 
+<img src="https://img.shields.io/gitter/room/sooftware/KoSpeech">
+     
    
 ### What's New
 
