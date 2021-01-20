@@ -20,7 +20,7 @@ from kospeech.utils import logger
 from kospeech.data import SpectrogramDataset
 from kospeech.models import ListenAttendSpell
 from kospeech.optim import Optimizer
-
+import pdb
 
 class Checkpoint(object):
     """
@@ -43,8 +43,8 @@ class Checkpoint(object):
         MODEL_NAME (str): name of the file storing model
     """
 
-    SAVE_PATH = 'outputs'
-    LOAD_PATH = '../../../outputs'
+    SAVE_PATH = '/home/sanghoon/KoSpeech/bin/outputs/'
+    LOAD_PATH = '/home/sanghoon/KoSpeech/bin/outputs/'
     TRAINER_STATE_NAME = 'trainer_states.pt'
     MODEL_NAME = 'model.pt'
 
@@ -81,23 +81,24 @@ class Checkpoint(object):
                     % (os.path.join(os.getcwd(), f'{date_time}-{self.TRAINER_STATE_NAME}'),
                        os.path.join(os.getcwd(), f'{date_time}-{self.MODEL_NAME}')))
 
-    def load(self, path):
-        """
-        Loads a Checkpoint object that was previously saved to disk.
+    def load(self, path, wanted=False):
 
-        Args:
-            path (str): path to the checkpoint subdirectory
+        if torch.cuda.is_available():
+            if wanted:
+                logger.info('load checkpoints\n%s\n%s'
+                    % (os.path.join(path, self.TRAINER_STATE_NAME),
+                       os.path.join(path,'transformer_90-16.pt')))
 
-        Returns:
-            checkpoint (Checkpoint): checkpoint object with fields copied from those stored on disk
-       """
-        logger.info('load checkpoints\n%s\n%s'
+                resume_checkpoint = torch.load(os.path.join(path,self.TRAINER_STATE_NAME))
+                model = torch.load(os.path.join(path,'transformer_90-16.pt'))
+            else:
+                
+                logger.info('load checkpoints\n%s\n%s'
                     % (os.path.join(path, self.TRAINER_STATE_NAME),
                        os.path.join(path, self.MODEL_NAME)))
 
-        if torch.cuda.is_available():
-            resume_checkpoint = torch.load(os.path.join(path, self.TRAINER_STATE_NAME))
-            model = torch.load(os.path.join(path, self.MODEL_NAME))
+                resume_checkpoint = torch.load(os.path.join(path, self.TRAINER_STATE_NAME))
+                model = torch.load(os.path.join(path, self.MODEL_NAME))
 
         else:
             resume_checkpoint = torch.load(os.path.join(path, self.TRAINER_STATE_NAME), map_location=lambda storage, loc: storage)
@@ -123,3 +124,7 @@ class Checkpoint(object):
         checkpoints_path = sorted(os.listdir(self.LOAD_PATH), reverse=True)[0]
         sorted_listdir = sorted(os.listdir(os.path.join(self.LOAD_PATH, checkpoints_path)), reverse=True)
         return os.path.join(checkpoints_path, sorted_listdir[1])
+    
+    def get_wanted_checkpoint(self):
+        checkpoints_path = '/home/sanghoon/KoSpeech/bin/outputs/wanted/'
+        return checkpoints_path
