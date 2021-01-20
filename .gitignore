@@ -14,8 +14,3 @@ venv/*
 *.pyc
 .idea
 .ipynb_checkpoints
-.hydra
-*.swp
-*.pt
-*.log
-*.txt
