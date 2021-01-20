@@ -28,7 +28,7 @@
 - Currently, beam search may not work properly.  
 - Subword and Grapheme unit currently not tested.
   
-### ***[KoSpeech:  Open-Source Toolkit for End-to-End Korean Speech Recognition \[Paper\]](https://arxiv.org/abs/2009.03092)***
+### ***[KoSpeech:  Open-Source Toolkit for End-to-End Korean Speech Recognition \[Paper\]](https://www.sciencedirect.com/science/article/pii/S2665963821000026)***
   
 ***KoSpeech***, an open-source software, is modular and extensible end-to-end Korean automatic speech recognition (ASR) toolkit based on the deep learning library PyTorch. Several automatic speech recognition open-source toolkits have been released, but all of them deal with non-Korean languages, such as English (e.g. ESPnet, Espresso). Although AI Hub opened 1,000 hours of Korean speech corpus known as KsponSpeech, there is no established preprocessing method and baseline model to compare model performances. Therefore, we propose preprocessing methods for KsponSpeech corpus and a several models (Deep Speech 2, LAS, Transformer, Jasper). By KoSpeech, we hope this could be a guideline for those who research Korean speech recognition.  
   
@@ -271,13 +271,13 @@ This project is licensed under the Apache-2.0 LICENSE - see the [LICENSE.md](htt
   
 ## Citation
   
-A [technical report](https://arxiv.org/abs/2009.03092) on KoSpeech is available. If you use the system for academic work, please cite:
+A [paper](https://www.sciencedirect.com/science/article/pii/S2665963821000026) on KoSpeech is available. If you use the system for academic work, please cite:
   
 ```
 @ARTICLE{2020kospeech,
   author = {Soohwan Kim, Seyoung Bae, Cheolhwang Won},
   title = "{KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition}",
-  journal = {ArXiv e-prints},
-  eprint = {2009.03092}
+  journal = {ELSEVIER, SIMPAC},
+  eprint = {Volume 7, February 2021, 100054}
 }
 ```
