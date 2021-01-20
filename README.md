@@ -1,14 +1,14 @@
-# [UPDATED] KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition
+<p  align="center"><img src="https://user-images.githubusercontent.com/42150335/105211661-e1b33080-5b8f-11eb-9956-184d60ccc55a.png" height=100>
 
-[![CodeFactor](https://www.codefactor.io/repository/github/sooftware/kospeech/badge)](https://www.codefactor.io/repository/github/sooftware/kospeech) 
+<p  align="center">An Apache 2.0 ASR research library, built on PyTorch, for developing end-to-end speech recognition models.
+
+***
+
+<p  align="center"> 
+<img src="https://www.codefactor.io/repository/github/sooftware/kospeech/badge">  
 [<img src="http://img.shields.io/badge/docs-passing-success">](https://sooftware.github.io/KoSpeech/) 
-[<img src="http://img.shields.io/badge/DeepSpeech2-passing-success">](https://sooftware.github.io/KoSpeech/) 
-[<img src="http://img.shields.io/badge/ListenAttendSpell-passing-success">](https://sooftware.github.io/KoSpeech/) 
-[<img src="http://img.shields.io/badge/SpeechTransformer-passing-success">](https://sooftware.github.io/KoSpeech/) 
-[<img src="http://img.shields.io/badge/JointCTCAttentionListenAttendSpell-passing-success">](https://sooftware.github.io/KoSpeech/)
-[<img src="http://img.shields.io/badge/JointCTCAttentionSpeechTransformer-passing-success">](https://sooftware.github.io/KoSpeech/)
-[<img src="http://img.shields.io/badge/Jasper-passing-success">](https://sooftware.github.io/KoSpeech/)
-  
+<img src="http://img.shields.io/badge/license-Apache--2.0-informational"> 
+   
 ### What's New
 
 - January 2021: Add Jasper model
