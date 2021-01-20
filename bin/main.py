@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# TEMP
+
 import os
 import random
 import warnings
@@ -78,7 +80,7 @@ def train(config: DictConfig) -> nn.DataParallel:
             )
         else:
             vocab = KsponSpeechVocabulary(
-                f'../../../data/vocab/aihub_{config.train.output_unit}_vocabs.csv',
+                f'/home/sanghoon/KoSpeech/data/vocab/aihub_{config.train.output_unit}_vocabs.csv',
                 output_unit=config.train.output_unit,
             )
 
@@ -88,9 +90,10 @@ def train(config: DictConfig) -> nn.DataParallel:
     else:
         raise ValueError("Unsupported Dataset : {0}".format(config.train.dataset))
 
-    if not config.train.resume:
+    model = build_model(config, vocab, device)
+    #if not config.train.resume:
+    if True:
         epoch_time_step, trainset_list, validset = split_dataset(config, config.train.transcripts_path, vocab)
-        model = build_model(config, vocab, device)
 
         optimizer = get_optimizer(model, config)
 
@@ -107,13 +110,13 @@ def train(config: DictConfig) -> nn.DataParallel:
         optimizer = Optimizer(optimizer, lr_scheduler, config.train.warmup_steps, config.train.max_grad_norm)
         criterion = get_criterion(config, vocab)
 
-    else:
-        trainset_list = None
-        validset = None
-        model = None
-        optimizer = None
-        epoch_time_step = None
-        criterion = get_criterion(config, vocab)
+    #else:
+    #    trainset_list = None
+    #    validset = None
+    #    #model = None
+    #    optimizer = None
+    #    epoch_time_step = None
+    #    criterion = get_criterion(config, vocab)
 
     trainer = SupervisedTrainer(
         optimizer=optimizer,
@@ -168,4 +171,5 @@ def main(config: DictConfig) -> None:
 
 
 if __name__ == '__main__':
+    #os.environ["CUDA_VISIBLE_DEVICES"]="0"
     main()

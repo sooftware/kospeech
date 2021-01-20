@@ -19,17 +19,17 @@ from kospeech.trainer.supervised_trainer import SupervisedTrainer
 @dataclass
 class TrainConfig:
     dataset: str = "kspon"
-    dataset_path: str = "???"
-    transcripts_path: str = "../../../data/transcripts.txt"
+    dataset_path: str = "/home/sanghoon/KoSpeech/dataset/kspon/original/"
+    transcripts_path: str = "/home/sanghoon/KoSpeech/data/transcripts/transcripts.txt"
     output_unit: str = "character"
 
-    batch_size: int = 32
+    batch_size: int = 16
     save_result_every: int = 1000
     checkpoint_every: int = 5000
     print_every: int = 10
     mode: str = "train"
 
-    num_workers: int = 4
+    num_workers: int = 40
     use_cuda: bool = True
 
     init_lr_scale: float = 0.01
@@ -38,7 +38,7 @@ class TrainConfig:
     weight_decay: float = 1e-05
 
     seed: int = 777
-    resume: bool = False
+    resume: bool = True
 
 
 @dataclass

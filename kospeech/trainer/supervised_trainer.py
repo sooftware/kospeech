@@ -16,6 +16,7 @@ import math
 import time
 import torch
 import torch.nn as nn
+import pdb
 import queue
 import pandas as pd
 from torch import Tensor
@@ -122,12 +123,15 @@ class SupervisedTrainer(object):
 
         if resume:
             checkpoint = Checkpoint()
-            latest_checkpoint_path = checkpoint.get_latest_checkpoint()
-            resume_checkpoint = checkpoint.load(latest_checkpoint_path)
-            model = resume_checkpoint.model
-            self.optimizer = resume_checkpoint.optimizer
-            self.trainset_list = resume_checkpoint.trainset_list
-            self.validset = resume_checkpoint.validset
+            wanted_checkpoint_path = checkpoint.get_wanted_checkpoint()
+            resume_checkpoint = checkpoint.load(wanted_checkpoint_path,wanted=True)
+            #latest_checkpoint_path = checkpoint.get_latest_checkpoint()
+            #resume_checkpoint = checkpoint.load(latest_checkpoint_path)
+            #model = resume_checkpoint.model
+            model.load_state_dict(resume_checkpoint.model.state_dict())
+            #self.optimizer = resume_checkpoint.optimizer
+            #self.trainset_list = resume_checkpoint.trainset_list
+            #self.validset = resume_checkpoint.validset
             start_epoch = resume_checkpoint.epoch + 1
             epoch_time_step = 0
 
@@ -161,7 +165,6 @@ class SupervisedTrainer(object):
                 teacher_forcing_ratio
             )
             train_loader.join()
-
             Checkpoint(model, self.optimizer, self.trainset_list, self.validset, epoch).save()
             logger.info('Epoch %d (Training) Loss %0.4f CER %0.4f' % (epoch, train_loss, train_cer))
 
@@ -238,6 +241,7 @@ class SupervisedTrainer(object):
             input_lengths = input_lengths.to(self.device)
             target_lengths = torch.as_tensor(target_lengths).to(self.device)
 
+            #pdb.set_trace()
             model = model.to(self.device)
             output, loss, ctc_loss, cross_entropy_loss = self.model_forward(
                 teacher_forcing_ratio=teacher_forcing_ratio,
@@ -345,7 +349,6 @@ class SupervisedTrainer(object):
     ) -> Tuple[Tensor, Tensor, Tensor, Tensor]:
         ctc_loss = None
         cross_entropy_loss = None
-
         if self.architecture == 'las':
             if isinstance(model, nn.DataParallel):
                 model.module.flatten_parameters()

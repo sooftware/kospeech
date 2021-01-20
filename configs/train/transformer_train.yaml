@@ -1,21 +1,21 @@
 # data
 dataset: 'kspon'
-dataset_path: ''
-transcripts_path: '../../../data/transcripts.txt'
+dataset_path: '/home/sanghoon/KoSpeech/dataset/kspon/original/'
+transcripts_path: '/home/sanghoon/KoSpeech/data/transcripts/transcripts.txt'
 output_unit: 'character'
 
 # trainer
 num_epochs: 40
-batch_size: 32
+batch_size: 16
 save_result_every: 1000
 checkpoint_every: 5000
 print_every: 10
 mode: 'train'
 seed: 777
-resume: false
+resume: True
 
 # device
-num_workers: 4
+num_workers: 40
 use_cuda: True
 
 # optim
