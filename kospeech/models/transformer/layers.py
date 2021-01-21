@@ -20,7 +20,7 @@ from kospeech.models.transformer.sublayers import (
     AddNorm,
     PositionWiseFeedForwardNet
 )
-
+import pdb
 
 class SpeechTransformerEncoderLayer(nn.Module):
     """

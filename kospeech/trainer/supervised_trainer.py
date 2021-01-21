@@ -97,7 +97,7 @@ class SupervisedTrainer(object):
                               "cer: {:.2f}, elapsed: {:.2f}s {:.2f}m {:.2f}h, lr: {:.6f}"
         else:
             self.log_format = "step: {:4d}/{:4d}, loss: {:.6f}, " \
-                              "cer: {:.2f}, elapsed: {:.2f}s {:.2f}m {:.2f}h, lr: {:.6f}"
+                              "cer: {:}, elapsed: {:.2f}s {:.2f}m {:.2f}h, lr: {:.6f}"
 
     def train(
         self,
@@ -120,7 +120,6 @@ class SupervisedTrainer(object):
             resume(bool, optional): resume training with the latest checkpoint, (default False)
         """
         start_epoch = 0
-
         if resume:
             checkpoint = Checkpoint()
             wanted_checkpoint_path = checkpoint.get_wanted_checkpoint()
@@ -156,13 +155,13 @@ class SupervisedTrainer(object):
             )
             train_loader.start()
 
-            train_loss, train_cer = self.__train_epoches(
-                model,
-                epoch,
-                epoch_time_step,
-                train_begin_time,
-                train_queue,
-                teacher_forcing_ratio
+            model, train_loss, train_cer = self.__train_epoches(
+                model=model,
+                epoch=epoch,
+                epoch_time_step=epoch_time_step,
+                train_begin_time=train_begin_time,
+                queue=train_queue,
+                teacher_forcing_ratio=teacher_forcing_ratio,
             )
             train_loader.join()
             Checkpoint(model, self.optimizer, self.trainset_list, self.validset, epoch).save()
@@ -180,9 +179,9 @@ class SupervisedTrainer(object):
             valid_loader.join()
 
             logger.info('Epoch %d CER %0.4f' % (epoch, valid_cer))
-            self.__save_epoch_result(train_result=[self.train_dict, train_loss, train_cer],
-                                     valid_result=[self.valid_dict, train_loss, valid_cer])
-            logger.info('Epoch %d Training result saved as a csv file complete !!' % epoch)
+#            self.__save_epoch_result(train_result=[self.train_dict, train_loss, train_cer],
+#                                     valid_result=[self.valid_dict, train_loss, valid_cer])
+#            logger.info('Epoch %d Training result saved as a csv file complete !!' % epoch)
             torch.cuda.empty_cache()
 
         Checkpoint(model, self.optimizer, self.criterion, self.trainset_list, self.validset, num_epochs).save()
@@ -241,7 +240,6 @@ class SupervisedTrainer(object):
             input_lengths = input_lengths.to(self.device)
             target_lengths = torch.as_tensor(target_lengths).to(self.device)
 
-            #pdb.set_trace()
             model = model.to(self.device)
             output, loss, ctc_loss, cross_entropy_loss = self.model_forward(
                 teacher_forcing_ratio=teacher_forcing_ratio,
@@ -251,7 +249,6 @@ class SupervisedTrainer(object):
                 target_lengths=target_lengths,
                 model=model
             )
-
             y_hats = output.max(-1)[1]
             cer = self.metric(targets, y_hats)
             total_num += int(input_lengths.sum())
@@ -299,7 +296,7 @@ class SupervisedTrainer(object):
         Checkpoint(model, self.optimizer, self.trainset_list, self.validset, epoch).save()
         logger.info('train() completed')
 
-        return epoch_loss_total / total_num, cer
+        return model, epoch_loss_total / total_num, cer
 
     def validate(self, model: nn.Module, queue: queue.Queue) -> float:
         """
@@ -313,11 +310,13 @@ class SupervisedTrainer(object):
             - **loss** (float): loss of validation
             - **cer** (float): character error rate of validation
         """
+        target_list = list()
+        predict_list = list()
+        
         cer = 1.0
 
         model.eval()
         logger.info('validate() start')
-
         while True:
             inputs, targets, input_lengths, target_lengths = queue.get()
 
@@ -332,8 +331,15 @@ class SupervisedTrainer(object):
                 y_hats = model.module.greedy_search(inputs, input_lengths, self.device)
             else:
                 y_hats = model.greedy_search(inputs, input_lengths, self.device)
+            
+            
+            for idx in range(targets.size(0)):
+                target_list.append(self.vocab.label_to_string(targets[idx]))
+                predict_list.append(self.vocab.label_to_string(y_hats[idx].cpu().detach().numpy()))
+            
             cer = self.metric(targets, y_hats)
-
+            
+        self._save_result(target_list,predict_list)    
         logger.info('validate() completed')
 
         return cer
@@ -381,7 +387,6 @@ class SupervisedTrainer(object):
 
         elif self.architecture == 'transformer':
             output, encoder_log_probs, encoder_output_lengths = model(inputs, input_lengths, targets)
-
             if isinstance(self.criterion, LabelSmoothedCrossEntropyLoss):
                 loss = self.criterion(
                     output.contiguous().view(-1, output.size(-1)), targets[:, 1:].contiguous().view(-1)
@@ -410,6 +415,17 @@ class SupervisedTrainer(object):
 
         return output, loss, ctc_loss, cross_entropy_loss
 
+    def _save_result(self, target_list: list, predict_list: list) -> None:
+        results = {
+            'targets': target_list,
+            'predictions': predict_list
+        }
+        date_time = time.strftime('%Y_%m_%d_%H_%M_%S', time.localtime())
+        save_path = f"{date_time}-valid.csv"
+                                
+        results = pd.DataFrame(results)
+        results.to_csv(save_path, index=False, encoding='cp949')
+    
     def __save_epoch_result(self, train_result: list, valid_result: list) -> None:
         """ Save result of epoch """
         train_dict, train_loss, train_cer = train_result

@@ -28,7 +28,7 @@ from kospeech.criterion import (
     LabelSmoothedCrossEntropyLoss,
     JointCTCCrossEntropyLoss,
 )
-
+import pdb
 
 logger = logging.getLogger(__name__)
 
@@ -70,6 +70,7 @@ def get_optimizer(model: nn.Module, config: DictConfig):
     assert config.train.optimizer.lower() in supported_optimizer.keys(), \
         f"Unsupported Optimizer: {config.train.optimizer}\n" \
         f"Supported Optimizer: {supported_optimizer.keys()}"
+    
     return supported_optimizer[config.train.optimizer](
         model.module.parameters(),
         lr=config.train.init_lr,
@@ -92,7 +93,7 @@ def get_criterion(config: DictConfig, vocab: Vocabulary) -> nn.Module:
             architecture=config.model.architecture,
             smoothing=config.train.label_smoothing,
         )
-    elif config.model.architecture == 'transformer' and config.model.label_smoothing <= 0.0:
+    elif config.model.architecture == 'transformer' and config.train.label_smoothing <= 0.0:
         criterion = nn.CrossEntropyLoss(
             ignore_index=vocab.pad_id,
             reduction=config.train.reduction

@@ -18,7 +18,7 @@ from kospeech.models.modules import (
     Linear,
     LayerNorm
 )
-
+import pdb
 
 class AddNorm(nn.Module):
     """
@@ -36,8 +36,9 @@ class AddNorm(nn.Module):
         output = self.sublayer(*args)
 
         if isinstance(output, tuple):
+            '''output = (context,attn) '''
             return self.layer_norm(output[0] + residual), output[1]
-
+            
         return self.layer_norm(output + residual)
 
 

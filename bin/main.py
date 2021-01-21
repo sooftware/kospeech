@@ -16,6 +16,7 @@
 
 import os
 import random
+import pdb
 import warnings
 import torch
 import torch.nn as nn
@@ -89,7 +90,6 @@ def train(config: DictConfig) -> nn.DataParallel:
 
     else:
         raise ValueError("Unsupported Dataset : {0}".format(config.train.dataset))
-
     model = build_model(config, vocab, device)
     #if not config.train.resume:
     if True:
@@ -117,7 +117,6 @@ def train(config: DictConfig) -> nn.DataParallel:
     #    optimizer = None
     #    epoch_time_step = None
     #    criterion = get_criterion(config, vocab)
-
     trainer = SupervisedTrainer(
         optimizer=optimizer,
         criterion=criterion,
@@ -134,6 +133,7 @@ def train(config: DictConfig) -> nn.DataParallel:
         vocab=vocab,
         joint_ctc_attention=config.model.joint_ctc_attention,
     )
+    pdb.set_trace()
     model = trainer.train(
         model=model,
         batch_size=config.train.batch_size,

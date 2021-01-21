@@ -1,23 +1,9 @@
-# Copyright (c) 2020, Soohwan Kim. All rights reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 import os
 import math
 import threading
 import torch
 import random
-
+import pdb
 from omegaconf import DictConfig
 from torch.utils.data import Dataset
 from kospeech.data import load_dataset
@@ -141,7 +127,6 @@ class AudioDataLoader(threading.Thread):
     def run(self):
         """ Load data from MelSpectrogramDataset """
         logger.debug('loader %d start' % self.thread_id)
-
         while True:
             items = list()
 
@@ -260,7 +245,7 @@ def split_dataset(config: DictConfig, transcripts_path: str, vocab: Vocabulary):
 
     if config.train.dataset == 'kspon':
         train_num = 620000
-        valid_num = 2545
+        valid_num = 22545
     elif config.train.dataset == 'libri':
         train_num = 281241
         valid_num = 5567
@@ -294,7 +279,6 @@ def split_dataset(config: DictConfig, transcripts_path: str, vocab: Vocabulary):
     for idx in range(config.train.num_workers):
         train_begin_idx = train_num_per_worker * idx
         train_end_idx = min(train_num_per_worker * (idx + 1), train_num)
-
         trainset_list.append(
             SpectrogramDataset(
                 train_audio_paths[train_begin_idx:train_end_idx],

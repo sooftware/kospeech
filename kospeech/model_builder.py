@@ -14,7 +14,7 @@
 
 import torch
 import torch.nn as nn
-
+import pdb
 from omegaconf import DictConfig
 from astropy.modeling import ParameterError
 from kospeech.models.modules import BaseRNN
@@ -124,7 +124,6 @@ def build_transformer(num_classes: int, pad_id: int, d_model: int, num_heads: in
                       joint_ctc_attention: bool) -> nn.DataParallel:
     if ffnet_style not in {'ff', 'conv'}:
         raise ParameterError("Unsupported ffnet_style: {0}".format(ffnet_style))
-
     return nn.DataParallel(SpeechTransformer(
             num_classes=num_classes,
             pad_id=pad_id,

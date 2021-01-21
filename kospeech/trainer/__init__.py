@@ -23,13 +23,13 @@ class TrainConfig:
     transcripts_path: str = "/home/sanghoon/KoSpeech/data/transcripts/transcripts.txt"
     output_unit: str = "character"
 
-    batch_size: int = 16
+    batch_size: int = 2
     save_result_every: int = 1000
     checkpoint_every: int = 5000
     print_every: int = 10
     mode: str = "train"
 
-    num_workers: int = 40
+    num_workers: int = 28
     use_cuda: bool = True
 
     init_lr_scale: float = 0.01
@@ -38,7 +38,7 @@ class TrainConfig:
     weight_decay: float = 1e-05
 
     seed: int = 777
-    resume: bool = True
+    resume: bool = False
 
 
 @dataclass

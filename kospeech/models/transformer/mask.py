@@ -15,7 +15,7 @@
 import torch
 from torch import Tensor
 from typing import Any, Optional
-
+import pdb
 
 def get_non_pad_mask(inputs: Tensor, input_lengths: Optional[Any] = None, pad_id: int = None) -> Tensor:
     """ Padding position is set to 0, either use input_lengths or pad_id """
@@ -43,6 +43,7 @@ def get_decoder_self_attn_mask(seq_k: Tensor, seq_q: Tensor, pad_id):
     """ For masking the decoder self attention """
     def get_attn_key_pad_mask(seq_k, seq_q, pad_id):
         """ For masking out the padding part of key sequence. """
+        '''mask for pad token'''
         len_q = seq_q.size(1)
         padding_mask = seq_k.eq(pad_id)
         padding_mask = padding_mask.unsqueeze(1).expand(-1, len_q, -1)  # b x lq x lk
@@ -51,17 +52,17 @@ def get_decoder_self_attn_mask(seq_k: Tensor, seq_q: Tensor, pad_id):
 
     def get_subsequent_mask(inputs: Tensor) -> Tensor:
         """ Makes subsequent masking """
+        '''mask for future token'''
         batch_size, seq_length = inputs.size()
         subsequent_mask = torch.triu(torch.ones((seq_length, seq_length), device=inputs.device, dtype=torch.uint8), diagonal=1)
         subsequent_mask = subsequent_mask.unsqueeze(0).expand(batch_size, -1, -1)  # BxTxT
 
         return subsequent_mask.bool()
-
     return get_attn_key_pad_mask(seq_k, seq_q, pad_id) | get_subsequent_mask(seq_k)
 
 
 def get_attn_pad_mask(inputs, input_lengths, expand_length):
-    """ mask position is set to 1 """
+    """ mask for pad token"""
     non_pad_mask = get_non_pad_mask(inputs, input_lengths=input_lengths)
     pad_mask = non_pad_mask.squeeze(-1).lt(1)
     attn_mask = pad_mask.unsqueeze(1).expand(-1, expand_length, -1)

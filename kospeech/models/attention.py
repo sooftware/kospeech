@@ -19,7 +19,7 @@ import torch.nn.functional as F
 from torch import Tensor
 from kospeech.models.modules import Linear
 from typing import Tuple, Optional, Any
-
+import pdb
 
 class ScaledDotProductAttention(nn.Module):
     """
@@ -46,8 +46,8 @@ class ScaledDotProductAttention(nn.Module):
         self.sqrt_dim = np.sqrt(dim)
 
     def forward(self, query: Tensor, key: Tensor, value: Tensor, mask: Optional[Any] = None) -> Tuple[Tensor, Tensor]:
+        #pdb.set_trace()
         score = torch.bmm(query, key.transpose(1, 2)) / self.sqrt_dim
-
         if mask is not None:
             score.masked_fill_(mask, -1e9)
 
@@ -86,7 +86,6 @@ class MultiHeadAttention(nn.Module):
         super(MultiHeadAttention, self).__init__()
 
         assert d_model % num_heads == 0, "hidden_dim % num_heads should be zero."
-
         self.d_head = int(d_model / num_heads)
         self.num_heads = num_heads
         self.query_proj = Linear(d_model, self.d_head * num_heads)
@@ -97,7 +96,7 @@ class MultiHeadAttention(nn.Module):
 
     def forward(self, query: Tensor, key: Tensor, value: Tensor, mask: Optional[Any] = None) -> Tuple[Tensor, Tensor]:
         batch_size = value.size(0)
-
+        #pdb.set_trace()
         query = self.query_proj(query).view(batch_size, -1, self.num_heads, self.d_head)  # BxQ_LENxNxD
         key = self.key_proj(key).view(batch_size, -1, self.num_heads, self.d_head)        # BxK_LENxNxD
         value = self.value_proj(value).view(batch_size, -1, self.num_heads, self.d_head)  # BxV_LENxNxD

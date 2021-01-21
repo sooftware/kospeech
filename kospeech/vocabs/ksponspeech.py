@@ -14,7 +14,7 @@
 
 import csv
 from kospeech.vocabs import Vocabulary
-
+import pdb
 
 class KsponSpeechVocabulary(Vocabulary):
     def __init__(self, vocab_path, output_unit: str = 'character', sp_model_path=None):

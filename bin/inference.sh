@@ -1,0 +1,1 @@
+python inference.py --model_path /home/sanghoon/KoSpeech/bin/outputs/wanted/transformer_90-16.pt --audio_path /home/sanghoon/KoSpeech/dataset/kspon/original/KsponSpeech_01/KsponSpeech_0001/KsponSpeech_000001.pcm --device cuda:0

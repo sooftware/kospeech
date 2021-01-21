@@ -15,7 +15,7 @@
 import math
 import torch
 import torch.nn as nn
-
+import pdb
 from torch import Tensor
 from typing import (
     Optional,
@@ -96,7 +96,6 @@ class SpeechTransformer(nn.Module):
         super(SpeechTransformer, self).__init__()
 
         assert d_model % num_heads == 0, "d_model % num_heads should be zero."
-
         self.num_classes = num_classes
         self.extractor = extractor
         self.joint_ctc_attention = joint_ctc_attention
@@ -161,7 +160,6 @@ class SpeechTransformer(nn.Module):
         input_lengths (torch.LongTensor): (batch_size)
         """
         encoder_log_probs = None
-
         conv_feat = self.conv(inputs.unsqueeze(1), input_lengths)
         conv_feat = conv_feat.transpose(1, 2)
 
@@ -174,10 +172,8 @@ class SpeechTransformer(nn.Module):
         memory = self.encoder(conv_feat, input_lengths)
         if self.joint_ctc_attention:
             encoder_log_probs = self.encoder_fc(memory.transpose(1, 2)).log_softmax(dim=2)
-
         output = self.decoder(targets, input_lengths, memory)
         output = self.decoder_fc(output)
-
         return output, encoder_log_probs, input_lengths
 
     def greedy_search(self, inputs: Tensor, input_lengths: Tensor, device: str):
@@ -244,7 +240,7 @@ class SpeechTransformerEncoder(nn.Module):
         self.input_proj = Linear(input_dim, d_model)
         self.input_layer_norm = LayerNorm(d_model)
         self.input_dropout = nn.Dropout(p=dropout_p)
-        self.positional_encoding = PositionalEncoding(d_model)
+        self.positional_encoding = PositionalEncoding(d_model) #just like "Attention is all you Need"
         self.layers = nn.ModuleList(
             [SpeechTransformerEncoderLayer(d_model, num_heads, d_ff, dropout_p, ffnet_style) for _ in range(num_layers)]
         )
@@ -305,6 +301,7 @@ class SpeechTransformerDecoder(nn.Module):
         self.eos_id = eos_id
 
     def forward(self, inputs: Tensor, input_lengths: Optional[Any] = None, memory: Tensor = None):
+        #inputs equals to targets
         batch_size, output_length = inputs.size(0), inputs.size(1)
 
         self_attn_mask = get_decoder_self_attn_mask(inputs, inputs, self.pad_id)
