@@ -281,3 +281,14 @@ A [technical report](https://arxiv.org/abs/2009.03092) on KoSpeech is available.
   eprint = {2009.03092}
 }
 ```
+## Experiment by Sang Hoon
+
+|model|loss|epoch|cer|  
+|-----------|--------------|-----------|:--------:|  
+|Transformer| CE  |1  ||  
+|Transformer|CTC + smoothedCE  |1  ||  
+|LAS|CE  |0 ||   
+||  |   ||    
+
+validation code 부분 점검 필요  
+
