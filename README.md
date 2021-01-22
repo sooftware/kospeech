@@ -14,7 +14,7 @@
      <a href="https://github.com/pytorch/pytorch">
           <img src="http://img.shields.io/badge/framework-PyTorch-informational"> 
      </a>
-     <a href="sooftware.github.io/KoSpeech/">
+     <a href="https://sooftware.github.io/KoSpeech/">
           <img src="http://img.shields.io/badge/docs-passing-success">
      </a>
      <a href="https://gitter.im/Korean-Speech-Recognition/community">
