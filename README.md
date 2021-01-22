@@ -8,14 +8,14 @@
      <a href="https://www.codefactor.io/repository/github/sooftware/kospeech">
           <img src="https://www.codefactor.io/repository/github/sooftware/kospeech/badge"> 
      </a>
-     <a href="sooftware.github.io/KoSpeech/">
-          <img src="http://img.shields.io/badge/docs-passing-success">
-     </a>
      <a href="https://github.com/sooftware/KoSpeech/blob/latest/LICENSE">
           <img src="http://img.shields.io/badge/license-Apache--2.0-informational"> 
      </a>
      <a href="https://github.com/pytorch/pytorch">
           <img src="http://img.shields.io/badge/framework-PyTorch-informational"> 
+     </a>
+     <a href="sooftware.github.io/KoSpeech/">
+          <img src="http://img.shields.io/badge/docs-passing-success">
      </a>
      <a href="https://gitter.im/Korean-Speech-Recognition/community">
           <img src="https://img.shields.io/gitter/room/sooftware/KoSpeech">
