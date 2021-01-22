@@ -45,19 +45,6 @@
   
 ***KoSpeech***, an open-source software, is modular and extensible end-to-end Korean automatic speech recognition (ASR) toolkit based on the deep learning library PyTorch. Several automatic speech recognition open-source toolkits have been released, but all of them deal with non-Korean languages, such as English (e.g. ESPnet, Espresso). Although AI Hub opened 1,000 hours of Korean speech corpus known as KsponSpeech, there is no established preprocessing method and baseline model to compare model performances. Therefore, we propose preprocessing methods for KsponSpeech corpus and a several models (Deep Speech 2, LAS, Transformer, Jasper). By KoSpeech, we hope this could be a guideline for those who research Korean speech recognition.  
   
-### [UPDATED] Pre-train Models
-  
-|Description|Loss|Feature|Dataset|Epochs|CER|Model|  
-|-----------|----|:-----:|-------|:----:|:-:|-----|    
-|[Transformer (12-6)](https://ieeexplore.ieee.org/document/8462506)|CTC + CrossEntropy|Kaldi-style fbank 80|[KsponSpeech](https://www.mdpi.com/2076-3417/10/19/6936)|10|8.6|will be upload|   
-|[Listen Attend Spell](https://arxiv.org/abs/1508.01211)|CrossEntropy|-|[KsponSpeech](https://www.mdpi.com/2076-3417/10/19/6936)|-|-|will be upload|  
-|[Listen Attend Spell](https://arxiv.org/abs/1706.02737)|CTC + CrossEntropy|-|[KsponSpeech](https://www.mdpi.com/2076-3417/10/19/6936)|-|-|will be upload|  
-|[Deep Speech 2](https://arxiv.org/abs/1512.02595)|CTC|-|[KsponSpeech](https://www.mdpi.com/2076-3417/10/19/6936)|-|-|will be upload|  
-|[Jasper](https://arxiv.org/pdf/1904.03288.pdf)|CTC|Kaldi-style fbank 80|[KsponSpeech](https://www.mdpi.com/2076-3417/10/19/6936)|2|56.5|[download](https://drive.google.com/file/d/10v5FWEUX-gsfLEnOuBsRs5bb6T-ll3lg/view?usp=sharing)|  
-|VAD Model|-|-|-|-|-|[download](https://drive.google.com/file/d/14lLxfCiFgXqnb1a8dZ_AYhlKQeaMz7Jd/view?usp=sharing)|  
-  
-※ Training is in progress. As the training progresses, the pre-trained model will be updated.  
-  
 ### Pre-processed Transcripts
   
 |Dataset    |Authentication|Output-Unit|Transcript|  
