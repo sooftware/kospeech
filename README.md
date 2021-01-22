@@ -23,7 +23,7 @@
      
    
 ### What's New
-
+- (*Expected*) February 2021: Add Conformer model
 - January 2021: Add Jasper model
 - January 2021: Release v1.2
 - January 2021: Add Joint CTC-Attention Transformer model
