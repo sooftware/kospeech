@@ -8,8 +8,10 @@ ffnet_style: ff
 teacher_forcing_ratio: 1.0
 teacher_forcing_step: 0.0
 min_teacher_forcing_ratio: 1.0
-cross_entropy_weight: 0.7
-ctc_weight: 0.3
+cross_entropy_weight: 1.0
+ctc_weight: 0.0
+#cross_entropy_weight: 0.7
+#ctc_weight: 0.3
 mask_conv: True
-joint_ctc_attention: True
+joint_ctc_attention: False
 max_len: 400

@@ -177,6 +177,7 @@ class SpeechTransformer(nn.Module):
         return output, encoder_log_probs, input_lengths
 
     def greedy_search(self, inputs: Tensor, input_lengths: Tensor, device: str):
+        #pdb.set_trace()
         with torch.no_grad():
             conv_feat = self.conv(inputs.unsqueeze(1), input_lengths)
             conv_feat = conv_feat.transpose(1, 2)

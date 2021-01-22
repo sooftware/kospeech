@@ -65,7 +65,6 @@ class LabelSmoothedCrossEntropyLoss(nn.Module):
     def forward(self, logit: Tensor, target: Tensor):
         if self.architecture == 'transformer':
             logit = F.log_softmax(logit, dim=-1)
-
         if self.smoothing > 0.0:
             with torch.no_grad():
                 label_smoothed = torch.zeros_like(logit)

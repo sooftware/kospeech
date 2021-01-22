@@ -99,6 +99,7 @@ def get_criterion(config: DictConfig, vocab: Vocabulary) -> nn.Module:
             reduction=config.train.reduction
         )
     else:
+        '''no ctc_loss and smoothing for ce_loss'''
         criterion = LabelSmoothedCrossEntropyLoss(
             num_classes=len(vocab),
             ignore_index=vocab.pad_id,

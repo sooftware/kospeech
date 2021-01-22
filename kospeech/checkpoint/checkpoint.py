@@ -87,10 +87,10 @@ class Checkpoint(object):
             if wanted:
                 logger.info('load checkpoints\n%s\n%s'
                     % (os.path.join(path, self.TRAINER_STATE_NAME),
-                       os.path.join(path,'transformer_90-16.pt')))
+                       os.path.join(path,'model.pt')))
 
                 resume_checkpoint = torch.load(os.path.join(path,self.TRAINER_STATE_NAME))
-                model = torch.load(os.path.join(path,'transformer_90-16.pt'))
+                model = torch.load(os.path.join(path,'model.pt'))
             else:
                 
                 logger.info('load checkpoints\n%s\n%s'
@@ -126,5 +126,5 @@ class Checkpoint(object):
         return os.path.join(checkpoints_path, sorted_listdir[1])
     
     def get_wanted_checkpoint(self):
-        checkpoints_path = '/home/sanghoon/KoSpeech/bin/outputs/wanted/'
+        checkpoints_path = '/home/sanghoon/KoSpeech/bin/outputs/2021-01-22/05-29-38/'
         return checkpoints_path

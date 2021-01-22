@@ -35,7 +35,7 @@ from kospeech.data import (
     AudioDataLoader,
     SpectrogramDataset
 )
-
+from torch.utils.tensorboard import SummaryWriter
 
 class SupervisedTrainer(object):
     """
@@ -91,7 +91,9 @@ class SupervisedTrainer(object):
         self.architecture = architecture.lower()
         self.vocab = vocab
         self.joint_ctc_attention = joint_ctc_attention
-
+        #self.joint_ctc_attention = False
+        self.writer = SummaryWriter
+        self.writer_idx = 0
         if self.joint_ctc_attention:
             self.log_format = "step: {:4d}/{:4d}, loss: {:.6f}, ctc_loss: {:.6f}, ce_loss: {:.6f}, " \
                               "cer: {:.2f}, elapsed: {:.2f}s {:.2f}m {:.2f}h, lr: {:.6f}"
@@ -176,12 +178,15 @@ class SupervisedTrainer(object):
             valid_loader.start()
 
             valid_cer = self.validate(model, valid_queue)
+            '''Tensorboard'''
+            self.writer.add_scalar('/valid/cer',valid_cer,epoch)
+                
             valid_loader.join()
 
             logger.info('Epoch %d CER %0.4f' % (epoch, valid_cer))
-#            self.__save_epoch_result(train_result=[self.train_dict, train_loss, train_cer],
-#                                     valid_result=[self.valid_dict, train_loss, valid_cer])
-#            logger.info('Epoch %d Training result saved as a csv file complete !!' % epoch)
+            self.__save_epoch_result(train_result=[self.train_dict, train_loss, train_cer],
+                                     valid_result=[self.valid_dict, train_loss, valid_cer])
+            logger.info('Epoch %d Training result saved as a csv file complete !!' % epoch)
             torch.cuda.empty_cache()
 
         Checkpoint(model, self.optimizer, self.criterion, self.trainset_list, self.validset, num_epochs).save()
@@ -259,7 +264,17 @@ class SupervisedTrainer(object):
 
             timestep += 1
             torch.cuda.empty_cache()
-
+           
+            '''Tensorboard'''
+            if timestep % (epoch_time_step//50) == 0:
+                self.writer_idx+=1
+                self.writer.add_scalar('/train/cer',cer,self.writer_idx)
+                self.writer.add_scalar('/train/loss',loss,self.writer_idx)
+                self.writer.add_scalar('/train/ce_loss',cross_entropy_loss,self.writer_idx)
+                self.writer.add_scalar('/train/lr',self.optimizer,self.optmizer.get_lr(),writer_idx)
+                if self.joint_ctc_attention:
+                    self.writer.add_scalar('/train/ctc_loss',ctc_loss,self.writer_idx)
+            
             if timestep % self.print_every == 0:
                 current_time = time.time()
                 elapsed = current_time - begin_time
@@ -336,9 +351,11 @@ class SupervisedTrainer(object):
             for idx in range(targets.size(0)):
                 target_list.append(self.vocab.label_to_string(targets[idx]))
                 predict_list.append(self.vocab.label_to_string(y_hats[idx].cpu().detach().numpy()))
-            
+             
             cer = self.metric(targets, y_hats)
-            
+            print('targets: ',targets)
+            print('y_hat: ',y_hats)
+            print('cer :',cer)
         self._save_result(target_list,predict_list)    
         logger.info('validate() completed')
 

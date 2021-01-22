@@ -133,7 +133,6 @@ def train(config: DictConfig) -> nn.DataParallel:
         vocab=vocab,
         joint_ctc_attention=config.model.joint_ctc_attention,
     )
-    pdb.set_trace()
     model = trainer.train(
         model=model,
         batch_size=config.train.batch_size,
