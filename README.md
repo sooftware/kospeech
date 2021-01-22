@@ -29,12 +29,6 @@
 - January 2021: Add Joint CTC-Attention Transformer model
 - January 2021: Add Speech Transformer model
 - January 2021: Apply [Hydra: framework for elegantly configuring complex applications](https://github.com/facebookresearch/hydra)
-- December 2020: Release v1.1
-- December 2020: Update pre-train models
-- December 2020: Add Joint CTC-Attention LAS (*Currently, Not Supports Multi-GPU*)
-- November 2020: Add Deep Speech 2 passing
-- November 2020: Add KsponSpeech Subword & Grapheme Unit (*Not Tested*)
-- November 2020: Add RAdam & AdamP Optimizer
   
 ### Note
   
