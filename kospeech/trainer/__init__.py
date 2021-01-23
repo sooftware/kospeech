@@ -23,13 +23,13 @@ class TrainConfig:
     transcripts_path: str = "/home/sanghoon/KoSpeech/data/transcripts/transcripts.txt"
     output_unit: str = "character"
 
-    batch_size: int = 4
+    batch_size: int = 16
     save_result_every: int = 1000
     checkpoint_every: int = 5000
     print_every: int = 10
     mode: str = "train"
 
-    num_workers: int = 28
+    num_workers: int = 40
     use_cuda: bool = True
 
     init_lr_scale: float = 0.01
