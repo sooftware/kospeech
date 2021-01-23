@@ -6,7 +6,7 @@ output_unit: 'character'
 
 # trainer
 num_epochs: 40
-batch_size: 4
+batch_size: 16
 save_result_every: 1000
 checkpoint_every: 5000
 print_every: 10
@@ -15,7 +15,7 @@ seed: 777
 resume: False
 
 # device
-num_workers: 28
+num_workers: 40
 use_cuda: True
 
 # optim
