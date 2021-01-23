@@ -14,6 +14,9 @@
      <a href="https://github.com/pytorch/pytorch">
           <img src="http://img.shields.io/badge/framework-PyTorch-informational"> 
      </a>
+     <a href="https://www.python.org/dev/peps/pep-0008/">
+          <img src="http://img.shields.io/badge/codestyle-PEP--8-informational"> 
+     </a>
      <a href="https://sooftware.github.io/KoSpeech/">
           <img src="http://img.shields.io/badge/docs-passing-success">
      </a>
