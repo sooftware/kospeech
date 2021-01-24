@@ -20,4 +20,4 @@ venv/*
 .hydra
 *.txt
 *.yaml
-__init__.py
+*__init__.py
