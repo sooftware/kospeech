@@ -13,6 +13,7 @@ print_every: 10
 mode: 'train'
 seed: 777
 resume: False
+#resume: False
 
 # device
 num_workers: 40

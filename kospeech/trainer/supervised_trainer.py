@@ -90,9 +90,9 @@ class SupervisedTrainer(object):
         self.metric = CharacterErrorRate(vocab)
         self.architecture = architecture.lower()
         self.vocab = vocab
-        self.joint_ctc_attention = joint_ctc_attention
-        #self.joint_ctc_attention = False
-        self.writer = SummaryWriter
+        #self.joint_ctc_attention = joint_ctc_attention
+        self.joint_ctc_attention = False
+        self.writer = SummaryWriter()
         self.writer_idx = 0
         if self.joint_ctc_attention:
             self.log_format = "step: {:4d}/{:4d}, loss: {:.6f}, ctc_loss: {:.6f}, ce_loss: {:.6f}, " \
@@ -266,12 +266,12 @@ class SupervisedTrainer(object):
             torch.cuda.empty_cache()
            
             '''Tensorboard'''
-            if timestep % (epoch_time_step//50) == 0:
+            if timestep % (epoch_time_step//1000) == 0:
                 self.writer_idx+=1
                 self.writer.add_scalar('/train/cer',cer,self.writer_idx)
                 self.writer.add_scalar('/train/loss',loss,self.writer_idx)
                 self.writer.add_scalar('/train/ce_loss',cross_entropy_loss,self.writer_idx)
-                self.writer.add_scalar('/train/lr',self.optimizer,self.optmizer.get_lr(),writer_idx)
+                self.writer.add_scalar('/train/lr',self.optimizer.get_lr(),self.writer_idx)
                 if self.joint_ctc_attention:
                     self.writer.add_scalar('/train/ctc_loss',ctc_loss,self.writer_idx)
             

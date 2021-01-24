@@ -23,7 +23,7 @@ class ModelConfig:
     min_teacher_forcing_ratio: float = 0.9
     dropout: float = 0.3
     bidirectional: bool = False
-    joint_ctc_attention: bool = False
+    joint_ctc_attention: bool = True
     max_len: int = 400
 
 

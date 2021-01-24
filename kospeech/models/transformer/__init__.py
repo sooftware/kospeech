@@ -35,4 +35,4 @@ class JointCTCAttentionTransformerConfig(TransformerConfig):
     #cross_entropy_weight: float = 0.7
     #ctc_weight: float = 0.3
     mask_conv: bool = True
-    joint_ctc_attention: bool = False
+    joint_ctc_attention: bool = True
