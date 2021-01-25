@@ -176,10 +176,10 @@ class SpeechTransformer(nn.Module):
         if self.joint_ctc_attention:
             encoder_log_probs = self.encoder_fc(memory.transpose(1, 2)).log_softmax(dim=2)
 
-        output = self.decoder(targets, input_lengths, memory)
-        output = self.decoder_fc(output)
+        outputs = self.decoder(targets, input_lengths, memory)
+        outputs = self.decoder_fc(outputs)
 
-        return output, encoder_log_probs, input_lengths
+        return outputs, encoder_log_probs, input_lengths
 
     def greedy_search(self, inputs: Tensor, input_lengths: Tensor, device: str):
         with torch.no_grad():
@@ -253,13 +253,13 @@ class SpeechTransformerEncoder(nn.Module):
     def forward(self, inputs: Tensor, input_lengths: Tensor = None) -> Tuple[Tensor, list]:
         self_attn_mask = get_attn_pad_mask(inputs, input_lengths, inputs.size(1))
 
-        output = self.input_layer_norm(self.input_proj(inputs)) + self.positional_encoding(inputs.size(1))
-        output = self.input_dropout(output)
+        outputs = self.input_layer_norm(self.input_proj(inputs)) + self.positional_encoding(inputs.size(1))
+        outputs = self.input_dropout(outputs)
 
         for layer in self.layers:
-            output, attn = layer(output, self_attn_mask)
+            outputs, attn = layer(outputs, self_attn_mask)
 
-        return output
+        return outputs
 
 
 class SpeechTransformerDecoder(nn.Module):
@@ -311,10 +311,10 @@ class SpeechTransformerDecoder(nn.Module):
         self_attn_mask = get_decoder_self_attn_mask(inputs, inputs, self.pad_id)
         memory_mask = get_attn_pad_mask(memory, input_lengths, output_length)
 
-        output = self.embedding(inputs) + self.positional_encoding(output_length)
-        output = self.input_dropout(output)
+        outputs = self.embedding(inputs) + self.positional_encoding(output_length)
+        outputs = self.input_dropout(outputs)
 
         for layer in self.layers:
-            output, self_attn, memory_attn = layer(output, memory, self_attn_mask, memory_mask)
+            outputs, self_attn, memory_attn = layer(outputs, memory, self_attn_mask, memory_mask)
 
-        return output
+        return outputs

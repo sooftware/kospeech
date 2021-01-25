@@ -48,9 +48,9 @@ class SpeechTransformerEncoderLayer(nn.Module):
         self.feed_forward = AddNorm(PositionWiseFeedForwardNet(d_model, d_ff, dropout_p, ffnet_style), d_model)
 
     def forward(self, inputs: Tensor, self_attn_mask: Optional[Any] = None) -> Tuple[Tensor, Tensor]:
-        output, attn = self.self_attention(inputs, inputs, inputs, self_attn_mask)
-        output = self.feed_forward(output)
-        return output, attn
+        outputs, attn = self.self_attention(inputs, inputs, inputs, self_attn_mask)
+        outputs = self.feed_forward(outputs)
+        return outputs, attn
 
 
 class SpeechTransformerDecoderLayer(nn.Module):
@@ -86,7 +86,7 @@ class SpeechTransformerDecoderLayer(nn.Module):
             self_attn_mask: Optional[Any] = None,           # B x T_input x T_input
             memory_mask: Optional[Any] = None               # B x T_input x T_output
     ) -> Tuple[Tensor, Tensor, Tensor]:
-        output, self_attn = self.self_attention(inputs, inputs, inputs, self_attn_mask)
-        output, memory_attn = self.memory_attention(output, memory, memory, memory_mask)
-        output = self.feed_forward(output)
-        return output, self_attn, memory_attn
+        outputs, self_attn = self.self_attention(inputs, inputs, inputs, self_attn_mask)
+        outputs, memory_attn = self.memory_attention(outputs, memory, memory, memory_mask)
+        outputs = self.feed_forward(outputs)
+        return outputs, self_attn, memory_attn

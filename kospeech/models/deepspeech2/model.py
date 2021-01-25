@@ -90,22 +90,22 @@ class DeepSpeech2(nn.Module):
         input_lengths (torch.LongTensor): (batch_size)
         """
         inputs = inputs.unsqueeze(1).permute(0, 1, 3, 2)
-        output, output_lengths = self.conv(inputs, input_lengths)
+        outputs, output_lengths = self.conv(inputs, input_lengths)
 
-        batch_size, num_channels, hidden_dim, seq_length = output.size()
-        output = output.view(batch_size, num_channels * hidden_dim, seq_length).permute(2, 0, 1).contiguous()
+        batch_size, num_channels, hidden_dim, seq_length = outputs.size()
+        outputs = outputs.view(batch_size, num_channels * hidden_dim, seq_length).permute(2, 0, 1).contiguous()
 
         for rnn_layer in self.rnn_layers:
             rnn_layer.to(self.device)
-            output = rnn_layer(output, output_lengths)
+            outputs = rnn_layer(outputs, output_lengths)
 
-        output = output.transpose(0, 1)
-        output = self.fc(output)
-        output = F.log_softmax(output, dim=-1)
+        outputs = outputs.transpose(0, 1)
+        outputs = self.fc(outputs)
+        outputs = F.log_softmax(outputs, dim=-1)
 
-        return output, output_lengths
+        return outputs, output_lengths
 
     def greedy_search(self, inputs: Tensor, input_lengths: Tensor, device: str):
         with torch.no_grad():
-            output, output_lengths = self.forward(inputs, input_lengths)
-            return output.max(-1)[1]
+            outputs, output_lengths = self.forward(inputs, input_lengths)
+            return outputs.max(-1)[1]

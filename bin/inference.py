@@ -18,6 +18,7 @@ import torch.nn as nn
 import numpy as np
 import torchaudio
 from torch import Tensor
+
 from kospeech.vocabs.ksponspeech import KsponSpeechVocabulary
 from kospeech.data.audio.core import load_audio
 from kospeech.models import (
@@ -25,6 +26,7 @@ from kospeech.models import (
     Jasper,
     DeepSpeech2,
     ListenAttendSpell,
+    Conformer,
 )
 
 
@@ -67,7 +69,7 @@ if isinstance(model, ListenAttendSpell):
 elif isinstance(model, DeepSpeech2):
     model.device = opt.device
     y_hats = model.greedy_search(feature.unsqueeze(0), input_length, opt.device)
-elif isinstance(model, SpeechTransformer) or isinstance(model, Jasper):
+elif isinstance(model, SpeechTransformer) or isinstance(model, Jasper) or isinstance(model, Conformer):
     y_hats = model.greedy_search(feature.unsqueeze(0), input_length, opt.device)
 
 sentence = vocab.label_to_string(y_hats.cpu().detach().numpy())
