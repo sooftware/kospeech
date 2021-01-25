@@ -26,9 +26,9 @@
      
    
 ### What's New
+- January 2021: Release v1.3
 - January 2021: Add Conformer model
 - January 2021: Add Jasper model
-- January 2021: Release v1.2
 - January 2021: Add Joint CTC-Attention Transformer model
 - January 2021: Add Speech Transformer model
 - January 2021: Apply [Hydra: framework for elegantly configuring complex applications](https://github.com/facebookresearch/hydra)
@@ -309,7 +309,7 @@ A [paper](https://www.sciencedirect.com/science/article/pii/S2665963821000026) o
      Cheolhwang, Won",
   title = "KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition",
   url = "https://www.sciencedirect.com/science/article/pii/S2665963821000026",
-  month = "Feb"
+  month = "February",
   year = "2021",
   publisher = "ELSEVIER",
   journal = "SIMPAC",
