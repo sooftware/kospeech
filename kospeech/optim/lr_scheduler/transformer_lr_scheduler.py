@@ -51,7 +51,6 @@ class TransformerLRScheduler(LearningRateScheduler):
             self.lr = self.update_step * self.warmup_rate
         elif stage == 1:
             self.lr = self.peak_lr * math.exp(-self.decay_factor * steps_in_stage)
-            print(self.lr)
         elif stage == 2:
             self.lr = self.final_lr
         else:

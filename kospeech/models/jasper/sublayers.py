@@ -13,10 +13,10 @@
 # limitations under the License.
 
 import torch.nn as nn
-
 from typing import Tuple, Optional
 from torch import Tensor
-from kospeech.models.modules import MaskConv1d
+
+from kospeech.models.conv import MaskConv1d
 
 
 class JasperBlock(nn.Module):

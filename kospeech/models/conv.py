@@ -134,12 +134,13 @@ class Conv2dSubampling(nn.Module):
         outputs = outputs.permute(0, 2, 1, 3)
         outputs = outputs.contiguous().view(batch_size, subsampled_lengths, channels * sumsampled_dim)
 
-        output_lengths = input_lengths >> 2
+        output_lengths = (input_lengths >> 2).int()
+        output_lengths -= 1
 
         return outputs, output_lengths
 
 
-class MaskConv1d(nn.Module):
+class MaskConv1d(nn.Conv1d):
     """1D convolution with sequence masking """
     def __init__(
             self,
@@ -152,17 +153,9 @@ class MaskConv1d(nn.Module):
             groups: int = 1,
             bias: bool = False,
     ) -> None:
-        super(MaskConv1d, self).__init__()
-        self.conv = nn.Conv1d(
-            in_channels=in_channels,
-            out_channels=out_channels,
-            kernel_size=kernel_size,
-            stride=stride,
-            padding=padding,
-            dilation=dilation,
-            groups=groups,
-            bias=bias,
-        )
+        super(MaskConv1d, self).__init__(in_channels=in_channels, out_channels=out_channels,
+                                         kernel_size=kernel_size, stride=stride, padding=padding,
+                                         dilation=dilation, groups=groups, bias=bias)
 
     def _get_sequence_lengths(self, seq_lengths):
         return (
@@ -171,8 +164,8 @@ class MaskConv1d(nn.Module):
 
     def forward(self, inputs: Tensor, input_lengths: Tensor):
         """
-        inputs: BxDxT
-        input_lengths: B
+        inputs: (batch, dimension, time)
+        input_lengths: (batch)
         """
         max_length = inputs.size(2)
 
@@ -183,7 +176,7 @@ class MaskConv1d(nn.Module):
         inputs = inputs.masked_fill(mask.unsqueeze(1).to(device=inputs.device), 0)
 
         output_lengths = self._get_sequence_lengths(input_lengths)
-        output = self.conv(inputs)
+        output = super(MaskConv1d, self).forward(inputs)
 
         del mask, indices
 

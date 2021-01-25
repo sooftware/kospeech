@@ -1,0 +1,15 @@
+architecture: conformer
+teacher_forcing_step: 0.0
+min_teacher_forcing_ratio: 1.0
+joint_ctc_attention: false
+feed_forward_expansion_factor: int = 4
+conv_expansion_factor: 2
+input_dropout_p: 0.1
+feed_forward_dropout_p: 0.1
+attention_dropout_p: 0.1
+conv_dropout_p: 0.1
+conv_kernel_size: 31
+half_step_residual: True
+encoder_dim: 256
+num_layers: 16
+num_attention_heads: 4

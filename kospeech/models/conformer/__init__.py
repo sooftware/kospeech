@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import torch
 from dataclasses import dataclass
 
 from kospeech.models import ModelConfig
@@ -30,7 +29,6 @@ class ConformerConfig(ModelConfig):
     conv_dropout_p: float = 0.1
     conv_kernel_size: int = 31
     half_step_residual: bool = True
-    device: torch.device = 'cuda'
 
 
 @dataclass
@@ -41,14 +39,14 @@ class ConformerLargeConfig(ConformerConfig):
 
 
 @dataclass
-class ConformerMediumConfig(ModelConfig):
+class ConformerMediumConfig(ConformerConfig):
     encoder_dim: int = 256
     num_layers: int = 16
     num_attention_heads: int = 4
 
 
 @dataclass
-class ConformerSmallConfig(ModelConfig):
+class ConformerSmallConfig(ConformerConfig):
     encoder_dim: int = 144
     num_layers: int = 16
     num_attention_heads: int = 4

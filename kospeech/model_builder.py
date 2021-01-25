@@ -109,6 +109,8 @@ def build_model(
     else:
         raise ValueError('Unsupported model: {0}'.format(config.model.architecture))
 
+    print(model)
+
     return model
 
 

@@ -77,7 +77,7 @@ def get_optimizer(model: nn.Module, config: DictConfig):
         f"Unsupported Optimizer: {config.train.optimizer}\n" \
         f"Supported Optimizer: {supported_optimizer.keys()}"
 
-    if config.architecture == 'conformer':
+    if config.model.architecture == 'conformer':
         return optim.Adam(
             model.parameters(),
             betas=config.train.optimizer_betas,

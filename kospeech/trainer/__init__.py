@@ -74,6 +74,7 @@ class TransformerTrainConfig(TrainConfig):
     final_lr: float = 1e-06
     peak_lr: float = 1e-04
     warmup_steps: int = 4000
+    decay_steps: int = 80000
     num_epochs: int = 40
     reduction: str = "mean"
     label_smoothing: float = 0.1
