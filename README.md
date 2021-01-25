@@ -274,7 +274,7 @@ A [paper](https://www.sciencedirect.com/science/article/pii/S2665963821000026) o
 @ARTICLE{2021-kospeech,
   author = "Soohwan, Kim and
      Seyoung, Bae and
-     Cheolhwang Won",
+     Cheolhwang, Won",
   title = "KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition",
   url = "https://www.sciencedirect.com/science/article/pii/S2665963821000026",
   month = "Feb"
