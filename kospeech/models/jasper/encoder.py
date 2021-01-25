@@ -84,10 +84,10 @@ class JasperEncoder(nn.Module):
             prev_output_lengths.append(input_lengths)
             residual = self._get_jasper_dencse_residual(prev_outputs, prev_output_lengths, i)
 
-        output, output_lengths = self.layers[-1](inputs, input_lengths, residual)
+        outputs, output_lengths = self.layers[-1](inputs, input_lengths, residual)
         del prev_outputs, prev_output_lengths, residual, inputs, input_lengths
 
-        return output, output_lengths
+        return outputs, output_lengths
 
     def _get_jasper_dencse_residual(self, prev_outputs: list, prev_output_lengths: list, index: int):
         residual = None

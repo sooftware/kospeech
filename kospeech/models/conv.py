@@ -141,7 +141,7 @@ class Conv2dSubampling(nn.Module):
 
 
 class MaskConv1d(nn.Conv1d):
-    """1D convolution with sequence masking """
+    """ 1D convolution with sequence masking """
     def __init__(
             self,
             in_channels: int,

@@ -30,8 +30,8 @@ class LabelSmoothedCrossEntropyLoss(nn.Module):
         reduction (str): reduction method [sum, mean] (default: sum)
         architecture (str): speech model`s model [las, transformer] (default: las)
 
-    Inputs: logit, target
-        logit (torch.Tensor): probability distribution value from model and it has a logarithm shape
+    Inputs: logits, target
+        logits (torch.Tensor): probability distribution value from model and it has a logarithm shape
         target (torch.Tensor): ground-thruth encoded to integers which directly point a word in label
 
     Returns: label_smoothed
@@ -44,7 +44,7 @@ class LabelSmoothedCrossEntropyLoss(nn.Module):
             smoothing: float = 0.1,     # ratio of smoothing (confidence = 1.0 - smoothing)
             dim: int = -1,              # dimension of caculation loss
             reduction='sum',            # reduction method [sum, mean]
-            architecture='las'          # speech model`s model [las, transformer]
+            architecture='las',         # speech model`s model [las, transformer]
     ) -> None:
         super(LabelSmoothedCrossEntropyLoss, self).__init__()
         self.confidence = 1.0 - smoothing
@@ -62,16 +62,16 @@ class LabelSmoothedCrossEntropyLoss(nn.Module):
         else:
             raise ValueError("Unsupported reduction method {0}".format(reduction))
 
-    def forward(self, logit: Tensor, target: Tensor):
+    def forward(self, logits: Tensor, targets: Tensor):
         if self.architecture == 'transformer':
-            logit = F.log_softmax(logit, dim=-1)
+            logits = F.log_softmax(logits, dim=-1)
 
         if self.smoothing > 0.0:
             with torch.no_grad():
-                label_smoothed = torch.zeros_like(logit)
+                label_smoothed = torch.zeros_like(logits)
                 label_smoothed.fill_(self.smoothing / (self.num_classes - 1))
-                label_smoothed.scatter_(1, target.data.unsqueeze(1), self.confidence)
-                label_smoothed[target == self.ignore_index, :] = 0
-            return self.reduction_method(-label_smoothed * logit)
+                label_smoothed.scatter_(1, targets.data.unsqueeze(1), self.confidence)
+                label_smoothed[targets == self.ignore_index, :] = 0
+            return self.reduction_method(-label_smoothed * logits)
 
-        return F.cross_entropy(logit, target, ignore_index=self.ignore_index, reduction=self.reduction)
+        return F.cross_entropy(logits, targets, ignore_index=self.ignore_index, reduction=self.reduction)

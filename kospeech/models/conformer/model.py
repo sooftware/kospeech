@@ -14,6 +14,7 @@
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from torch import Tensor
 from typing import Tuple
 
@@ -87,7 +88,8 @@ class Conformer(nn.Module):
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
         outputs, output_lengths = self.encoder(inputs, input_lengths)
-        outputs = self.fc(outputs).log_softmax(dim=-1)
+        outputs = self.fc(outputs)
+        outputs = F.log_softmax(outputs, dim=-1)
         return outputs, output_lengths
 
     def greedy_search(self, inputs: Tensor, input_lengths: Tensor, device: str):

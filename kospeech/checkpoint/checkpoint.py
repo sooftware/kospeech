@@ -16,6 +16,7 @@ import os
 import time
 import torch
 import torch.nn as nn
+
 from kospeech.utils import logger
 from kospeech.data import SpectrogramDataset
 from kospeech.models import ListenAttendSpell
@@ -54,7 +55,7 @@ class Checkpoint(object):
             optimizer: Optimizer = None,               # stores the state of the optimizer
             trainset_list: list = None,                # list of trainset
             validset: SpectrogramDataset = None,       # validation dataset
-            epoch: int = None                          # current epoch is a loop through the full training data
+            epoch: int = None,                         # current epoch is a loop through the full training data
     ) -> None:
         self.model = model
         self.optimizer = optimizer

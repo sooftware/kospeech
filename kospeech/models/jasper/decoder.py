@@ -60,12 +60,12 @@ class JasperDecoder(nn.Module):
         encoder_outputs (torch.FloatTensor): (batch_size, dimension, sequence_length)
         encoder_output_lengths (torch.LongTensor): (batch_size)
         """
-        output, output_lengths = encoder_outputs, encoder_output_lengths
+        outputs, output_lengths = encoder_outputs, encoder_output_lengths
 
         for i, layer in enumerate(self.layers):
-            output, output_lengths = layer(output, output_lengths)
+            outputs, output_lengths = layer(outputs, output_lengths)
 
-        output = F.log_softmax(output.transpose(1, 2), dim=-1)
+        outputs = F.log_softmax(outputs.transpose(1, 2), dim=-1)
         del encoder_outputs, encoder_output_lengths
 
-        return output, output_lengths
+        return outputs, output_lengths

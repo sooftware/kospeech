@@ -30,12 +30,12 @@ class AddNorm(nn.Module):
 
     def forward(self, *args):
         residual = args[0]
-        output = self.sublayer(*args)
+        outputs = self.sublayer(*args)
 
-        if isinstance(output, tuple):
-            return self.layer_norm(output[0] + residual), output[1]
+        if isinstance(outputs, tuple):
+            return self.layer_norm(outputs[0] + residual), outputs[1]
 
-        return self.layer_norm(output + residual)
+        return self.layer_norm(outputs + residual)
 
 
 class PositionWiseFeedForwardNet(nn.Module):
@@ -68,8 +68,8 @@ class PositionWiseFeedForwardNet(nn.Module):
 
     def forward(self, inputs: Tensor) -> Tensor:
         if self.ffnet_style == 'conv':
-            output = self.conv1(inputs.transpose(1, 2))
-            output = self.relu(output)
-            return self.conv2(output).transpose(1, 2)
+            outputs = self.conv1(inputs.transpose(1, 2))
+            outputs = self.relu(outputs)
+            return self.conv2(outputs).transpose(1, 2)
 
         return self.feed_forward(inputs)

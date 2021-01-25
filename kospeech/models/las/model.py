@@ -69,8 +69,8 @@ class ListenAttendSpell(nn.Module):
         with torch.no_grad():
             self.flatten_parameters()
             decoder_outputs, _, _ = self.forward(inputs, input_lengths, teacher_forcing_ratio=0.0)
-            output = torch.stack(decoder_outputs['decoder_log_probs'], dim=1).to(device)
-            return output.max(-1)[1]
+            outputs = torch.stack(decoder_outputs['decoder_log_probs'], dim=1).to(device)
+            return outputs.max(-1)[1]
 
     def flatten_parameters(self) -> None:
         self.encoder.rnn.flatten_parameters()
