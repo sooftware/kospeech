@@ -22,7 +22,7 @@ from kospeech.models.modules import (
     Linear,
     Transpose
 )
-from kospeech.models.extractor import (
+from kospeech.models.conv import (
     VGGExtractor,
     DeepSpeech2Extractor
 )
@@ -57,7 +57,7 @@ class Listener(BaseRNN):
             input_size: int,                         # size of input
             num_classes: int,                        # number of class
             hidden_dim: int = 512,                   # dimension of RNN`s hidden state
-            device: str = 'cuda',                    # device - 'cuda' or 'cpu'
+            device: torch.device = 'cuda',           # device - 'cuda' or 'cpu'
             dropout_p: float = 0.3,                  # dropout probability
             num_layers: int = 3,                     # number of RNN layers
             bidirectional: bool = True,              # if True, becomes a bidirectional encoder

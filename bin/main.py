@@ -20,9 +20,9 @@ import torch.nn as nn
 import hydra
 from hydra.core.config_store import ConfigStore
 from omegaconf import OmegaConf, DictConfig
+
 from kospeech.data.data_loader import split_dataset
 from kospeech.optim import Optimizer
-from kospeech.optim.lr_scheduler import TriStageLRScheduler
 from kospeech.trainer import SupervisedTrainer
 from kospeech.model_builder import build_model
 from kospeech.utils import (
@@ -30,6 +30,7 @@ from kospeech.utils import (
     get_optimizer,
     get_criterion,
     logger,
+    get_lr_scheduler,
 )
 from kospeech.vocabs import (
     KsponSpeechVocabulary,
@@ -48,12 +49,18 @@ from kospeech.models import (
     TransformerConfig,
     JointCTCAttentionTransformerConfig,
     JasperConfig,
+    ConformerSmallConfig,
+    ConformerMediumConfig,
+    ConformerLargeConfig,
 )
 from kospeech.trainer import (
     DeepSpeech2TrainConfig,
     ListenAttendSpellTrainConfig,
     TransformerTrainConfig,
     JasperTrainConfig,
+    ConformerSmallTrainConfig,
+    ConformerMediumTrainConfig,
+    ConformerLargeTrainConfig,
 )
 
 
@@ -93,17 +100,8 @@ def train(config: DictConfig) -> nn.DataParallel:
         model = build_model(config, vocab, device)
 
         optimizer = get_optimizer(model, config)
+        lr_scheduler = get_lr_scheduler(config, optimizer, epoch_time_step)
 
-        lr_scheduler = TriStageLRScheduler(
-            optimizer=optimizer,
-            init_lr=config.train.init_lr,
-            peak_lr=config.train.peak_lr,
-            final_lr=config.train.final_lr,
-            init_lr_scale=config.train.init_lr_scale,
-            final_lr_scale=config.train.final_lr_scale,
-            warmup_steps=config.train.warmup_steps,
-            total_steps=int(config.train.num_epochs * epoch_time_step)
-        )
         optimizer = Optimizer(optimizer, lr_scheduler, config.train.warmup_steps, config.train.max_grad_norm)
         criterion = get_criterion(config, vocab)
 
@@ -151,12 +149,18 @@ cs.store(group="train", name="ds2_train", node=DeepSpeech2TrainConfig, package="
 cs.store(group="train", name="las_train", node=ListenAttendSpellTrainConfig, package="train")
 cs.store(group="train", name="transformer_train", node=TransformerTrainConfig, package="train")
 cs.store(group="train", name="jasper_train", node=JasperTrainConfig, package="train")
+cs.store(group="train", name="conformer_small_train", node=ConformerSmallTrainConfig, package="train")
+cs.store(group="train", name="conformer_medium_train", node=ConformerMediumTrainConfig, package="train")
+cs.store(group="train", name="conformer_large_train", node=ConformerLargeTrainConfig, package="train")
 cs.store(group="model", name="ds2", node=DeepSpeech2Config, package="model")
 cs.store(group="model", name="las", node=ListenAttendSpellConfig, package="model")
 cs.store(group="model", name="transformer", node=TransformerConfig, package="model")
 cs.store(group="model", name="jasper", node=JasperConfig, package="model")
 cs.store(group="model", name="joint-ctc-attention-las", node=JointCTCAttentionLASConfig, package="model")
 cs.store(group="model", name="joint-ctc-attention-transformer", node=JointCTCAttentionTransformerConfig, package="model")
+cs.store(group="model", name="conformer-small", node=ConformerSmallConfig, package="model")
+cs.store(group="model", name="conformer-medium", node=ConformerMediumConfig, package="model")
+cs.store(group="model", name="conformer-large", node=ConformerLargeConfig, package="model")
 
 
 @hydra.main(config_path=os.path.join('..', "configs"), config_name="train")
