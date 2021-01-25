@@ -20,6 +20,7 @@ import queue
 import pandas as pd
 from torch import Tensor
 from typing import Tuple
+
 from kospeech.optim import Optimizer
 from kospeech.vocabs import Vocabulary
 from kospeech.checkpoint import Checkpoint
@@ -27,12 +28,12 @@ from kospeech.metrics import CharacterErrorRate
 from kospeech.utils import logger
 from kospeech.criterion import (
     LabelSmoothedCrossEntropyLoss,
-    JointCTCCrossEntropyLoss
+    JointCTCCrossEntropyLoss,
 )
 from kospeech.data import (
     MultiDataLoader,
     AudioDataLoader,
-    SpectrogramDataset
+    SpectrogramDataset,
 )
 
 
@@ -73,7 +74,7 @@ class SupervisedTrainer(object):
             min_teacher_forcing_ratio: float = 0.8,        # minimum value of teacher forcing ratio
             architecture: str = 'las',                     # model to train - las, transformer
             vocab: Vocabulary = None,                      # vocabulary object
-            joint_ctc_attention: bool = False              # flag indication whether joint CTC-Attention or not
+            joint_ctc_attention: bool = False,             # flag indication whether joint CTC-Attention or not
     ) -> None:
         self.num_workers = num_workers
         self.optimizer = optimizer
@@ -105,7 +106,7 @@ class SupervisedTrainer(object):
         epoch_time_step: int,                       # number of time step for training
         num_epochs: int,                            # number of epochs (iteration) for training
         teacher_forcing_ratio: float = 0.99,        # teacher forcing ratio
-        resume: bool = False                        # resume training with the latest checkpoint
+        resume: bool = False,                       # resume training with the latest checkpoint
     ) -> nn.Module:
         """
         Run training for a given model.
@@ -192,8 +193,8 @@ class SupervisedTrainer(object):
             epoch_time_step: int,
             train_begin_time: float,
             queue: queue.Queue,
-            teacher_forcing_ratio: float
-    ) -> Tuple[float, float]:
+            teacher_forcing_ratio: float,
+    ) -> Tuple[nn.Module, float, float]:
         """
         Run training one epoch
 
@@ -368,16 +369,16 @@ class SupervisedTrainer(object):
                 teacher_forcing_ratio=teacher_forcing_ratio
             )
 
-            output = torch.stack(decoder_outputs['decoder_log_probs'], dim=1).to(self.device)
+            outputs = torch.stack(decoder_outputs['decoder_log_probs'], dim=1).to(self.device)
 
             if isinstance(self.criterion, LabelSmoothedCrossEntropyLoss):
                 loss = self.criterion(
-                    output.contiguous().view(-1, output.size(-1)), targets[:, 1:].contiguous().view(-1)
+                    outputs.contiguous().view(-1, outputs.size(-1)), targets[:, 1:].contiguous().view(-1)
                 )
             elif isinstance(self.criterion, JointCTCCrossEntropyLoss):
                 loss, ctc_loss, cross_entropy_loss = self.criterion(
                     encoder_log_probs=encoder_log_probs.transpose(0, 1),
-                    decoder_log_probs=output.contiguous().view(-1, output.size(-1)),
+                    decoder_log_probs=outputs.contiguous().view(-1, outputs.size(-1)),
                     output_lengths=encoder_output_lengths,
                     targets=targets,
                     target_lengths=target_lengths
@@ -386,35 +387,35 @@ class SupervisedTrainer(object):
                 raise ValueError(f"Unsupported Criterion: {self.criterion}")
 
         elif self.architecture == 'transformer':
-            output, encoder_log_probs, encoder_output_lengths = model(inputs, input_lengths, targets)
+            outputs, encoder_log_probs, encoder_output_lengths = model(inputs, input_lengths, targets)
 
             if isinstance(self.criterion, LabelSmoothedCrossEntropyLoss):
                 loss = self.criterion(
-                    output.contiguous().view(-1, output.size(-1)), targets[:, 1:].contiguous().view(-1)
+                    outputs.contiguous().view(-1, outputs.size(-1)), targets[:, 1:].contiguous().view(-1)
                 )
             elif isinstance(self.criterion, JointCTCCrossEntropyLoss):
                 loss, ctc_loss, cross_entropy_loss = self.criterion(
                     encoder_log_probs=encoder_log_probs.transpose(0, 1),
-                    decoder_log_probs=output.contiguous().view(-1, output.size(-1)),
+                    decoder_log_probs=outputs.contiguous().view(-1, outputs.size(-1)),
                     output_lengths=encoder_output_lengths,
                     targets=targets,
                     target_lengths=target_lengths
                 )
             elif isinstance(self.criterion, nn.CrossEntropyLoss):
                 loss = self.criterion(
-                    output.contiguous().view(-1, output.size(-1)), targets.contiguous().view(-1)
+                    outputs.contiguous().view(-1, outputs.size(-1)), targets.contiguous().view(-1)
                 )
             else:
                 raise ValueError(f"Unsupported Criterion: {self.criterion}")
 
-        elif self.architecture in ('deepspeech2', 'jasper'):
-            output, output_lengths = model(inputs, input_lengths)
-            loss = self.criterion(output.transpose(0, 1), targets, output_lengths, target_lengths)
+        elif self.architecture in ('deepspeech2', 'jasper', 'conformer'):
+            outputs, output_lengths = model(inputs, input_lengths)
+            loss = self.criterion(outputs.transpose(0, 1), targets, output_lengths, target_lengths)
 
         else:
             raise ValueError("Unsupported model : {0}".format(self.architecture))
 
-        return output, loss, ctc_loss, cross_entropy_loss
+        return outputs, loss, ctc_loss, cross_entropy_loss
 
     def _save_result(self, target_list: list, predict_list: list) -> None:
         results = {

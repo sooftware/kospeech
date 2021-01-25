@@ -17,6 +17,8 @@ import torch.nn as nn
 
 from omegaconf import DictConfig
 from astropy.modeling import ParameterError
+
+from kospeech.models.conformer import Conformer
 from kospeech.models.modules import BaseRNN
 from kospeech.vocabs import Vocabulary
 from kospeech.decode.ensemble import (
@@ -28,7 +30,8 @@ from kospeech.models import (
     Listener,
     Speller,
     DeepSpeech2,
-    SpeechTransformer, Jasper,
+    SpeechTransformer,
+    Jasper,
 )
 
 
@@ -85,15 +88,89 @@ def build_model(
             device=device,
         )
 
+    elif config.model.architecture.lower() == 'conformer':
+        model = build_conformer(
+            num_classes=len(vocab),
+            input_size=input_size,
+            encoder_dim=config.model.encoder_dim,
+            num_layers=config.model.num_layers,
+            num_attention_heads=config.model.num_attention_heads,
+            feed_forward_expansion_factor=config.model.feed_forward_expansion_factor,
+            conv_expansion_factor=config.model.conv_expansion_factor,
+            input_dropout_p=config.model.input_dropout_p,
+            feed_forward_dropout_p=config.model.feed_forward_dropout_p,
+            attention_dropout_p=config.model.attention_dropout_p,
+            conv_dropout_p=config.model.conv_dropout_p,
+            conv_kernel_size=config.model.conv_kernel_size,
+            half_step_residual=config.model.half_step_residual,
+            device=device,
+        )
+
     else:
         raise ValueError('Unsupported model: {0}'.format(config.model.architecture))
+
+    print(model)
 
     return model
 
 
-def build_deepspeech2(input_size: int, num_classes: int, rnn_type: str, num_rnn_layers: int,
-                      rnn_hidden_dim: int, dropout_p: float,
-                      bidirectional: bool, activation: str, device: torch.device) -> nn.DataParallel:
+def build_conformer(
+        num_classes: int,
+        input_size: int,
+        encoder_dim: int,
+        num_layers: int,
+        num_attention_heads: int,
+        feed_forward_expansion_factor: int,
+        conv_expansion_factor: int,
+        input_dropout_p: float,
+        feed_forward_dropout_p: float,
+        attention_dropout_p: float,
+        conv_dropout_p: float,
+        conv_kernel_size: int,
+        half_step_residual: bool,
+        device: torch.device,
+) -> nn.DataParallel:
+    if input_dropout_p < 0.0:
+        raise ParameterError("dropout probability should be positive")
+    if feed_forward_dropout_p < 0.0:
+        raise ParameterError("dropout probability should be positive")
+    if attention_dropout_p < 0.0:
+        raise ParameterError("dropout probability should be positive")
+    if conv_dropout_p < 0.0:
+        raise ParameterError("dropout probability should be positive")
+    if input_size < 0:
+        raise ParameterError("input_size should be greater than 0")
+    assert conv_expansion_factor == 2, "currently, conformer conv expansion factor only supports 2"
+
+    return nn.DataParallel(Conformer(
+        num_classes=num_classes,
+        input_size=input_size,
+        encoder_dim=encoder_dim,
+        num_layers=num_layers,
+        num_attention_heads=num_attention_heads,
+        feed_forward_expansion_factor=feed_forward_expansion_factor,
+        conv_expansion_factor=conv_expansion_factor,
+        input_dropout_p=input_dropout_p,
+        feed_forward_dropout_p=feed_forward_dropout_p,
+        attention_dropout_p=attention_dropout_p,
+        conv_dropout_p=conv_dropout_p,
+        conv_kernel_size=conv_kernel_size,
+        half_step_residual=half_step_residual,
+        device=device,
+    ))
+
+
+def build_deepspeech2(
+        input_size: int,
+        num_classes: int,
+        rnn_type: str,
+        num_rnn_layers: int,
+        rnn_hidden_dim: int,
+        dropout_p: float,
+        bidirectional: bool,
+        activation: str,
+        device: torch.device,
+) -> nn.DataParallel:
     if dropout_p < 0.0:
         raise ParameterError("dropout probability should be positive")
     if input_size < 0:
@@ -106,37 +183,47 @@ def build_deepspeech2(input_size: int, num_classes: int, rnn_type: str, num_rnn_
         raise ParameterError("Unsupported RNN Cell: {0}".format(rnn_type))
 
     return nn.DataParallel(DeepSpeech2(
-            input_size=input_size,
-            num_classes=num_classes,
-            rnn_type=rnn_type,
-            num_rnn_layers=num_rnn_layers,
-            rnn_hidden_dim=rnn_hidden_dim,
-            dropout_p=dropout_p,
-            bidirectional=bidirectional,
-            activation=activation,
-            device=device,
+        input_size=input_size,
+        num_classes=num_classes,
+        rnn_type=rnn_type,
+        num_rnn_layers=num_rnn_layers,
+        rnn_hidden_dim=rnn_hidden_dim,
+        dropout_p=dropout_p,
+        bidirectional=bidirectional,
+        activation=activation,
+        device=device,
     )).to(device)
 
 
-def build_transformer(num_classes: int, pad_id: int, d_model: int, num_heads: int, input_size: int,
-                      num_encoder_layers: int, num_decoder_layers: int,
-                      dropout_p: float, ffnet_style: str, device: torch.device, eos_id: int,
-                      joint_ctc_attention: bool) -> nn.DataParallel:
+def build_transformer(
+        num_classes: int,
+        pad_id: int,
+        d_model: int,
+        num_heads: int,
+        input_size: int,
+        num_encoder_layers: int,
+        num_decoder_layers: int,
+        dropout_p: float,
+        ffnet_style: str,
+        device: torch.device,
+        eos_id: int,
+        joint_ctc_attention: bool,
+) -> nn.DataParallel:
     if ffnet_style not in {'ff', 'conv'}:
         raise ParameterError("Unsupported ffnet_style: {0}".format(ffnet_style))
 
     return nn.DataParallel(SpeechTransformer(
-            num_classes=num_classes,
-            pad_id=pad_id,
-            d_model=d_model,
-            num_heads=num_heads,
-            num_encoder_layers=num_encoder_layers,
-            num_decoder_layers=num_decoder_layers,
-            dropout_p=dropout_p,
-            ffnet_style=ffnet_style,
-            input_dim=input_size,
-            eos_id=eos_id,
-            joint_ctc_attention=joint_ctc_attention,
+        num_classes=num_classes,
+        pad_id=pad_id,
+        d_model=d_model,
+        num_heads=num_heads,
+        num_encoder_layers=num_encoder_layers,
+        num_decoder_layers=num_decoder_layers,
+        dropout_p=dropout_p,
+        ffnet_style=ffnet_style,
+        input_dim=input_size,
+        eos_id=eos_id,
+        joint_ctc_attention=joint_ctc_attention,
     )).to(device)
 
 
@@ -144,36 +231,36 @@ def build_las(
         input_size: int,
         config: DictConfig,
         vocab: Vocabulary,
-        device: torch.device
+        device: torch.device,
 ) -> nn.DataParallel:
     """ Various Listen, Attend and Spell dispatcher function. """
     listenr = build_listener(
-            input_size=input_size,
-            num_classes=len(vocab),
-            hidden_dim=config.model.hidden_dim,
-            dropout_p=config.model.dropout,
-            num_layers=config.model.num_encoder_layers,
-            bidirectional=config.model.use_bidirectional,
-            extractor=config.model.extractor,
-            activation=config.model.activation,
-            rnn_type=config.model.rnn_type,
-            device=device,
-            mask_conv=config.model.mask_conv,
-            joint_ctc_attention=config.model.joint_ctc_attention,
+        input_size=input_size,
+        num_classes=len(vocab),
+        hidden_dim=config.model.hidden_dim,
+        dropout_p=config.model.dropout,
+        num_layers=config.model.num_encoder_layers,
+        bidirectional=config.model.use_bidirectional,
+        extractor=config.model.extractor,
+        activation=config.model.activation,
+        rnn_type=config.model.rnn_type,
+        device=device,
+        mask_conv=config.model.mask_conv,
+        joint_ctc_attention=config.model.joint_ctc_attention,
     )
     speller = build_speller(
-            num_classes=len(vocab),
-            max_len=config.model.max_len,
-            pad_id=vocab.pad_id,
-            sos_id=vocab.sos_id,
-            eos_id=vocab.eos_id,
-            hidden_dim=config.model.hidden_dim << (1 if config.model.use_bidirectional else 0),
-            num_layers=config.model.num_decoder_layers,
-            rnn_type=config.model.rnn_type,
-            dropout_p=config.model.dropout,
-            num_heads=config.model.num_heads,
-            attn_mechanism=config.model.attn_mechanism,
-            device=device,
+        num_classes=len(vocab),
+        max_len=config.model.max_len,
+        pad_id=vocab.pad_id,
+        sos_id=vocab.sos_id,
+        eos_id=vocab.eos_id,
+        hidden_dim=config.model.hidden_dim << (1 if config.model.use_bidirectional else 0),
+        num_layers=config.model.num_decoder_layers,
+        rnn_type=config.model.rnn_type,
+        dropout_p=config.model.dropout,
+        num_heads=config.model.num_heads,
+        attn_mechanism=config.model.attn_mechanism,
+        device=device,
     )
 
     model = ListenAttendSpell(listenr, speller)
@@ -227,18 +314,18 @@ def build_listener(
 
 
 def build_speller(
-        num_classes: int,
-        max_len: int,
-        hidden_dim: int,
-        sos_id: int,
-        eos_id: int,
-        pad_id: int,
-        attn_mechanism: str,
-        num_layers: int,
-        rnn_type: str,
-        dropout_p: float,
-        num_heads: int,
-        device: torch.device,
+    num_classes: int,
+    max_len: int,
+    hidden_dim: int,
+    sos_id: int,
+    eos_id: int,
+    pad_id: int,
+    attn_mechanism: str,
+    num_layers: int,
+    rnn_type: str,
+    dropout_p: float,
+    num_heads: int,
+    device: torch.device,
 ) -> Speller:
     """ Various decoder dispatcher function. """
     if hidden_dim % num_heads != 0:
@@ -276,7 +363,11 @@ def build_speller(
     )
 
 
-def build_jasper(version: str, num_classes: int, device: torch.device) -> nn.DataParallel:
+def build_jasper(
+    version: str,
+    num_classes: int,
+    device: torch.device,
+) -> nn.DataParallel:
     assert version.lower() in ["10x5", "5x3"], "Unsupported Version: {}".format(version)
     return nn.DataParallel(Jasper(
         num_classes=num_classes,

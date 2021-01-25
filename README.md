@@ -26,7 +26,7 @@
      
    
 ### What's New
-- (Expected) February 2021: Add Conformer model
+- January 2021: Add Conformer model
 - January 2021: Add Jasper model
 - January 2021: Release v1.2
 - January 2021: Add Joint CTC-Attention Transformer model
@@ -244,6 +244,8 @@ We follow [PEP-8](https://www.python.org/dev/peps/pep-0008/) for code style. Esp
 *Jung-Woo Ha et al. [ClovaCall: Korean Goal-Oriented Dialog Speech Corpus for Automatic Speech Recognition of Contact Centers](https://arxiv.org/abs/2004.09367) arXiv: 2004.09367*  
   
 *Jason Li et al. [Jasper: An End-to-End Convolutional Neural Acoustic Model](https://arxiv.org/pdf/1904.03288.pdf) arXiv: 1902.03288* 
+    
+*Anmol Gulati et al. [Conformer: Convolution-augmented Transformer for Speech Recognition](https://arxiv.org/abs/2005.08100) arXiv: 2005.08100*
     
 ### Github References
   
