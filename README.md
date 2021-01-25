@@ -271,10 +271,16 @@ This project is licensed under the Apache-2.0 LICENSE - see the [LICENSE.md](htt
 A [paper](https://www.sciencedirect.com/science/article/pii/S2665963821000026) on KoSpeech is available. If you use the system for academic work, please cite:
   
 ```
-@ARTICLE{2020kospeech,
-  author = {Soohwan Kim, Seyoung Bae, Cheolhwang Won},
-  title = "{KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition}",
-  journal = {ELSEVIER, SIMPAC},
-  eprint = {Volume 7, February 2021, 100054}
+@ARTICLE{2021-kospeech,
+  author = "Soohwan, Kim and
+     Seyoung, Bae and
+     Cheolhwang Won",
+  title = "KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition",
+  url = "https://www.sciencedirect.com/science/article/pii/S2665963821000026",
+  month = "Feb"
+  year = "2021",
+  publisher = "ELSEVIER",
+  journal = "SIMPAC",
+  pages = "Volume 7, 100054"
 }
 ```
