@@ -46,11 +46,11 @@
   
 |Acoustic Model|Notes|Citation|  
 |--------------|------|--------:|  
-|Deep Speech 2|9-layer model w/ 2 layers of 2D-invariant convolution & 7 recurrent layers|[Dario Amodei et al., 2015](https://arxiv.org/abs/1512.02595)|   
+|Deep Speech 2|2D-invariant convolution & RNN & CTC|[Dario Amodei et al., 2015](https://arxiv.org/abs/1512.02595)|   
 |Listen Attend Spell (LAS)|Attention based RNN sequence to sequence|[William Chan et al., 2016](https://arxiv.org/abs/1508.01211)|  
 |Joint CTC-Attention LAS|Joint CTC-Attention LAS|[Suyoun Kim et al., 2017](https://arxiv.org/pdf/1609.06773.pdf)|  
 |Speech Transformer|Convolutional extractor & transformer|[Linhao Dong et al., 2018](https://ieeexplore.ieee.org/document/8462506)|  
-|Jasper|Fully convolutional & dense residual connection|[Jason Li et al., 2019](https://arxiv.org/pdf/1904.03288.pdf)|  
+|Jasper|Fully convolutional & dense residual connection & CTC|[Jason Li et al., 2019](https://arxiv.org/pdf/1904.03288.pdf)|  
 |Conformer|Convolution-augmented-Transformer|[Anmol Gulati et al., 2020](https://arxiv.org/abs/2005.08100)|  
   
 ### Pre-processed Transcripts
