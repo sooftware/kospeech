@@ -94,9 +94,7 @@ We will response as soon as possible.
 
 ## Roadmap
   
-![image](https://user-images.githubusercontent.com/42150335/104332114-2e18c380-5533-11eb-8bad-b60b17b9bfa2.png)
-  
-So far, serveral models are implemented: *Deep Speech 2, Listen Attend and Spell (LAS), Speech Transformer, Jasper*. To check details of these model architectures, check figures attached to each section.
+So far, serveral models are implemented: *Deep Speech 2, Listen Attend and Spell (LAS), Speech Transformer, Jasper, Conformer*. To check details of these model architectures, check figures attached to each section.
   
 - *Deep Speech 2*  
   
