@@ -320,6 +320,8 @@ A [technical report](https://arxiv.org/abs/2009.03092) on KoSpeech in available.
 @ARTICLE{2020-kospeech,
   author    = {Kim, Soohwan and Bae, Seyoung and Won, Cheolhwang},
   title     = {KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition},
+  month     = {September},
+  year      = {2020},
   url       = {https://arxiv.org/abs/2009.03092},
   journal   = {ArXiv e-prints},
   eprint    = {2009.03092}
