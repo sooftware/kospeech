@@ -304,28 +304,24 @@ A [paper](https://www.sciencedirect.com/science/article/pii/S2665963821000026) o
   
 ```
 @ARTICLE{2021-kospeech,
-  author = "Kim, Soohwan and
-     Bae, Seyoung and
-     Won, Cheolhwang",
-  title = "KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition",
-  url = "https://www.sciencedirect.com/science/article/pii/S2665963821000026",
-  month = "February",
-  year = "2021",
-  publisher = "ELSEVIER",
-  journal = "SIMPAC",
-  pages = "Volume 7, 100054"
+  author    = {Kim, Soohwan and Bae, Seyoung and Won, Cheolhwang},
+  title     = {KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition},
+  url       = {https://www.sciencedirect.com/science/article/pii/S2665963821000026},
+  month     = {February},
+  year      = {2021},
+  publisher = {ELSEVIER},
+  journal   = {SIMPAC},
+  pages     = {Volume 7, 100054}
 }
 ```
 A [technical report](https://arxiv.org/abs/2009.03092) on KoSpeech in available.  
   
 ```
 @ARTICLE{2020-kospeech,
-  author = "Kim, Soohwan and
-     Bae, Seyoung and
-     Won, Cheolhwang",
-  title = "KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition",
-  url = "https://arxiv.org/abs/2009.03092",
-  journal = {ArXiv e-prints},
-  eprint = {2009.03092}
+  author    = {Kim, Soohwan and Bae, Seyoung and Won, Cheolhwang},
+  title     = {KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition},
+  url       = {https://arxiv.org/abs/2009.03092},
+  journal   = {ArXiv e-prints},
+  eprint    = {2009.03092}
 }
 ```
