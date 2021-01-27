@@ -18,7 +18,7 @@ import torch.nn as nn
 from torch import Tensor
 from typing import Tuple
 from kospeech.models.jasper import JasperEncoderConfig
-from kospeech.models.modules import MaskConv1d
+from kospeech.models.conv import MaskConv1d
 from kospeech.models.jasper.sublayers import (
     JasperSubBlock, 
     JasperBlock,
