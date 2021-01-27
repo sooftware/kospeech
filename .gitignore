@@ -19,5 +19,3 @@ venv/*
 *.log
 .hydra
 *.txt
-*.yaml
-*__init__.py
