@@ -182,7 +182,7 @@ class MultiHeadAttention(nn.Module):
 
 
 
-    class RelativeMultiHeadAttention(nn.Module):
+class RelativeMultiHeadAttention(nn.Module):
     """
     Multi-head attention with relative positional encoding.
     This concept was proposed in the "Transformer-XL: Attentive Language Models Beyond a Fixed-Length Context"
@@ -269,7 +269,7 @@ class MultiHeadAttention(nn.Module):
         return pos_score
 
 
-    class LocationAwareAttention(nn.Module):
+class LocationAwareAttention(nn.Module):
     """
     Applies a location-aware attention mechanism on the output features from the decoder.
     Location-aware attention proposed in "Attention-Based Models for Speech Recognition" paper.

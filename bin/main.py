@@ -33,7 +33,7 @@ from kospeech.utils import (
     get_optimizer,
     get_criterion,
     logger,
-     get_lr_scheduler,
+    get_lr_scheduler,
 )
 from kospeech.vocabs import (
     KsponSpeechVocabulary,
@@ -61,9 +61,9 @@ from kospeech.trainer import (
     ListenAttendSpellTrainConfig,
     TransformerTrainConfig,
     JasperTrainConfig,
-    ConformerSmallConfig,
-    ConformerMediumConfig,
-    ConformerLargeConfig,
+    ConformerSmallTrainConfig,
+    ConformerMediumTrainConfig,
+    ConformerLargeTrainConfig,
 )
 
 

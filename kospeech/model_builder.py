@@ -87,7 +87,7 @@ def build_model(
             device=device,
         )
 
-     elif config.model.architecture.lower() == 'conformer':
+    elif config.model.architecture.lower() == 'conformer':
         model = build_conformer(
             num_classes=len(vocab),
             input_size=input_size,
