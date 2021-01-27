@@ -289,7 +289,7 @@ A [technical report](https://arxiv.org/abs/2009.03092) on KoSpeech is available.
 |Transformer|CTC + smoothedCE  |1  |44.36| got stuck around 44% cer |  
 |LAS|CE  |0 | 98.88 | got stuck, trying joint-ctc-loss |  
 |LAS|CTC + smoothedCE  | 0  | |   | 
-|Large Conformer|smoothedCE  | 0  | |  dim: 512 | 
+|Large Conformer|smoothedCE  | 0  | |  dim: 512, need to change batch_size 8 -> 16 | 
 
 validation code 부분 점검 필요  
 
