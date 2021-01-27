@@ -40,7 +40,7 @@ model = Model()
 optimizer = optim.Adam(model.parameters(), lr=INIT_LR)
 scheduler = TriStageLRScheduler(
     optimizer=optimizer,
-    init_lr=INIT_LRr,
+    init_lr=INIT_LR,
     peak_lr=PEAK_LR,
     final_lr=FINAL_LR,
     warmup_steps=WARMUP_STEPS,
@@ -49,7 +49,7 @@ scheduler = TriStageLRScheduler(
 optimizer = Optimizer(optimizer, scheduler, WARMUP_STEPS, MAX_GRAD_NORM)
 lr_processes = list()
 
-for timestep in range(TOTAL_TIME_STEP):
+for timestep in range(TOTAL_STEPS):
     optimizer.step(model)
     lr_processes.append(optimizer.get_lr())
 
