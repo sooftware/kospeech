@@ -23,7 +23,7 @@ from typing import (
     Tuple,
     Union,
 )
-from kospeech.models.extractor import (
+from kospeech.models.conv import (
     VGGExtractor,
     DeepSpeech2Extractor,
 )
@@ -91,7 +91,7 @@ class SpeechTransformer(nn.Module):
             ffnet_style: str = 'ff',                # feed forward network style 'ff' or 'conv'
             extractor: str = 'vgg',                 # CNN extractor [vgg, ds2]
             joint_ctc_attention: bool = False,      # flag indication whether to apply joint ctc attention
-            max_length: int = 400                   # a maximum allowed length for the sequence to be processed
+            max_length: int = 400,                   # a maximum allowed length for the sequence to be processed
     ) -> None:
         super(SpeechTransformer, self).__init__()
 
