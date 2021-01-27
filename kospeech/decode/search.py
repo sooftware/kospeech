@@ -24,7 +24,7 @@ from kospeech.models import (
     DeepSpeech2,
     ListenAttendSpell,
     TopKDecoder,
-    SpeechTransformer
+    SpeechTransformer, Jasper, Conformer
 )
 
 
@@ -55,6 +55,10 @@ class GreedySearch(object):
                 architecture = 'transformer'
             elif isinstance(model, DeepSpeech2):
                 architecture = 'deepspeech2'
+            elif isinstance(model, Jasper):
+                architecture = 'jasper'
+            elif isinstance(model, Conformer):
+                architecture = 'conformer'
             else:
                 raise ValueError("Unsupported model : {0}".format(type(model)))
         else:
@@ -64,6 +68,10 @@ class GreedySearch(object):
                 architecture = 'transformer'
             elif isinstance(model, DeepSpeech2):
                 architecture = 'deepspeech2'
+            elif isinstance(model, Jasper):
+                architecture = 'jasper'
+            elif isinstance(model, Conformer):
+                architecture = 'conformer'
             else:
                 raise ValueError("Unsupported model : {0}".format(type(model)))
 
@@ -78,14 +86,7 @@ class GreedySearch(object):
             inputs = inputs.to(device)
             targets = targets.to(device)
 
-            if architecture == 'las':
-                y_hats = model.greedy_search(inputs, input_lengths, device)
-            elif architecture == 'transformer':
-                y_hats = model.greedy_search(inputs, input_lengths, device)
-            elif architecture == 'deepspeech2':
-                y_hats = model.greedy_search(inputs, input_lengths, device)
-            else:
-                raise ValueError("Unsupported model : {0}".format(architecture))
+            y_hats = model.greedy_search(inputs, input_lengths, device)
 
             for idx in range(targets.size(0)):
                 self.target_list.append(
