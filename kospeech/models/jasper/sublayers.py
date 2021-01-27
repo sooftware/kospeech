@@ -80,9 +80,9 @@ class JasperBlock(nn.Module):
         for layer in self.layers[:-1]:
             inputs, input_lengths = layer(inputs, input_lengths)
 
-        output, output_lengths = self.layers[-1](inputs, input_lengths, residual)
+        outputs, output_lengths = self.layers[-1](inputs, input_lengths, residual)
 
-        return output, output_lengths
+        return outputs, output_lengths
 
 
 class JasperSubBlock(nn.Module):
