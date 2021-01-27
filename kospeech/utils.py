@@ -17,6 +17,8 @@ import torch.nn as nn
 import logging
 import platform
 from omegaconf import DictConfig
+
+from kospeech.optim.lr_scheduler.lr_scheduler import LearningRateScheduler
 from kospeech.vocabs import Vocabulary
 from torch import optim
 from kospeech.optim import (
@@ -29,6 +31,10 @@ from kospeech.criterion import (
     JointCTCCrossEntropyLoss,
 )
 import pdb
+from kospeech.optim.lr_scheduler import (
+    TriStageLRScheduler,
+    TransformerLRScheduler,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -71,6 +77,14 @@ def get_optimizer(model: nn.Module, config: DictConfig):
         f"Unsupported Optimizer: {config.train.optimizer}\n" \
         f"Supported Optimizer: {supported_optimizer.keys()}"
     
+    if config.architecture == 'conformer':
+        return optim.Adam(
+            model.parameters(),
+            betas=config.train.optimizer_betas,
+            eps=config.train.optimizer_eps,
+            weight_decay=config.train.weight_decay,
+        )
+    
     return supported_optimizer[config.train.optimizer](
         model.module.parameters(),
         lr=config.train.init_lr,
@@ -79,7 +93,7 @@ def get_optimizer(model: nn.Module, config: DictConfig):
 
 
 def get_criterion(config: DictConfig, vocab: Vocabulary) -> nn.Module:
-    if config.model.architecture in ('deepspeech2', 'jasper'):
+    if config.model.architecture in ('deepspeech2', 'jasper', 'conformer'):
         criterion = nn.CTCLoss(blank=vocab.blank_id, reduction=config.train.reduction, zero_infinity=True)
     elif config.model.architecture in ('las', 'transformer') and config.model.joint_ctc_attention:
         criterion = JointCTCCrossEntropyLoss(
@@ -110,3 +124,30 @@ def get_criterion(config: DictConfig, vocab: Vocabulary) -> nn.Module:
         )
 
     return criterion
+
+
+def get_lr_scheduler(config: DictConfig, optimizer, epoch_time_step) -> LearningRateScheduler:
+    if config.train.lr_scheduler == "tri_stage_lr_scheduler":
+        lr_scheduler = TriStageLRScheduler(
+            optimizer=optimizer,
+            init_lr=config.train.init_lr,
+            peak_lr=config.train.peak_lr,
+            final_lr=config.train.final_lr,
+            init_lr_scale=config.train.init_lr_scale,
+            final_lr_scale=config.train.final_lr_scale,
+            warmup_steps=config.train.warmup_steps,
+            total_steps=int(config.train.num_epochs * epoch_time_step)
+        )
+    elif config.train.lr_scheduler == "transformer_lr_scheduler":
+        lr_scheduler = TransformerLRScheduler(
+            optimizer=optimizer,
+            peak_lr=config.train.peak_lr,
+            final_lr=config.train.final_lr,
+            final_lr_scale=config.train.final_lr_scale,
+            warmup_steps=config.train.warmup_steps,
+            decay_steps=config.train.decay_steps,
+        )
+    else:
+        raise ValueError(f"Unsupported Learning Rate Scheduler: {config.train.lr_scheduler}")
+
+    return lr_scheduler
