@@ -18,7 +18,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
 from typing import Tuple
-from kospeech.models.extractor import DeepSpeech2Extractor
+from kospeech.models.conv import DeepSpeech2Extractor
 from kospeech.models.modules import Linear, BNReluRNN
 
 
