@@ -283,10 +283,10 @@ A [technical report](https://arxiv.org/abs/2009.03092) on KoSpeech is available.
 ```
 ## Experiment by Sang Hoon
 
-|model|loss|epoch|cer|  
-|-----------|--------------|-----------|:--------:|  
+|model|loss|epoch|cer|more| 
+|-----------|--------------|-----------|:--------:|-------------------|  
 |Transformer| CE  |1  ||  
-|Transformer|CTC + smoothedCE  |1  ||  
+|Transformer|CTC + smoothedCE  |1  |44.36| got stuck around 44% cer |  
 |LAS|CE  |0 ||   
 ||  |   ||    
 
