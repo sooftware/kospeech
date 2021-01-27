@@ -15,6 +15,7 @@
 import torch
 import torch.nn as nn
 from torch import Tensor
+import torch.nn.functional as F
 from typing import Tuple
 
 from kospeech.models.conformer.encoder import ConformerEncoder
@@ -84,7 +85,8 @@ class Conformer(nn.Module):
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
         outputs, output_lengths = self.encoder(inputs, input_lengths)
-        outputs = self.fc(outputs).log_softmax(dim=-1)
+        outputs = self.fc(outputs)
+        outputs = F.log_softmax(outputs, dim=-1)
         return outputs, output_lengths
 
     def greedy_search(self, inputs: Tensor, input_lengths: Tensor, device: str):
