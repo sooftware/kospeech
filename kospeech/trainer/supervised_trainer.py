@@ -199,7 +199,7 @@ class SupervisedTrainer(object):
             train_begin_time: float,
             queue: queue.Queue,
             teacher_forcing_ratio: float
-    ) -> Tuple[float, float]:
+    ) -> Tuple[nn.Module, float, float]:
         """
         Run training one epoch
 
@@ -423,7 +423,7 @@ class SupervisedTrainer(object):
             else:
                 raise ValueError(f"Unsupported Criterion: {self.criterion}")
 
-        elif self.architecture in ('deepspeech2', 'jasper'):
+        elif self.architecture in ('deepspeech2', 'jasper', 'conformer'):
             output, output_lengths = model(inputs, input_lengths)
             loss = self.criterion(output.transpose(0, 1), targets, output_lengths, target_lengths)
 
