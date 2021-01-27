@@ -270,10 +270,10 @@ class SupervisedTrainer(object):
                 self.writer_idx+=1
                 self.writer.add_scalar('/train/cer',cer,self.writer_idx)
                 self.writer.add_scalar('/train/loss',loss,self.writer_idx)
-                #self.writer.add_scalar('/train/ce_loss',cross_entropy_loss,self.writer_idx)
                 self.writer.add_scalar('/train/lr',self.optimizer.get_lr(),self.writer_idx)
                 if self.joint_ctc_attention:
                     self.writer.add_scalar('/train/ctc_loss',ctc_loss,self.writer_idx)
+                    self.writer.add_scalar('/train/ce_loss',cross_entropy_loss,self.writer_idx)
             
             if timestep % self.print_every == 0:
                 current_time = time.time()
