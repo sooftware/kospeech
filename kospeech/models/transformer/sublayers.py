@@ -14,10 +14,7 @@
 
 import torch.nn as nn
 from torch import Tensor
-from kospeech.models.modules import (
-    Linear,
-    LayerNorm
-)
+from kospeech.models.modules import Linear, LayerNorm
 import pdb
 
 class AddNorm(nn.Module):
