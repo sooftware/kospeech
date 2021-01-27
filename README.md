@@ -285,10 +285,10 @@ A [technical report](https://arxiv.org/abs/2009.03092) on KoSpeech is available.
 
 |model|loss|epoch|cer|more| 
 |-----------|--------------|-----------|:--------:|-------------------|  
-|Transformer| CE  |1  ||  
+|Transformer| CE  |3  |22.88%| |  
 |Transformer|CTC + smoothedCE  |1  |44.36| got stuck around 44% cer |  
-|LAS|CE  |0 ||   
-||  |   ||    
+|LAS|CE  |0 || |  
+||  |   ||   | 
 
 validation code 부분 점검 필요  
 
