@@ -55,7 +55,7 @@ def inference(config: DictConfig):
         num_workers=config.eval.num_workers,
         print_every=config.eval.print_every,
         decode=config.eval.decode,
-        beam_size=config.eval.k
+        beam_size=config.eval.k,
     )
     evaluator.evaluate(model)
 
