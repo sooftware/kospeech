@@ -1,0 +1,12 @@
+Metadata-Version: 1.2
+Name: KoSpeech
+Version: latest
+Summary: Open-Source Toolkit for End-to-End Korean Speech Recognition
+Home-page: https://github.com/sooftware/KoSpeech
+Author: Soohwan Kim
+Author-email: kaki.brain@kakaobrain.com
+License: UNKNOWN
+Description: UNKNOWN
+Keywords: asr,speech_recognition,korean
+Platform: UNKNOWN
+Requires-Python: >=3
