@@ -58,7 +58,7 @@ class DeepSpeech2(nn.Module):
             device: torch.device = 'cuda'           # device - 'cuda' or 'cpu'
     ):
         super(DeepSpeech2, self).__init__()
-        self.rnn_layers = list()
+        self.rnn_layers = nn.ModuleList()
         self.device = device
 
         input_size = int(math.floor(input_size + 2 * 20 - 41) / 2 + 1)
