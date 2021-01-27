@@ -113,7 +113,7 @@ class BNReluRNN(BaseRNN):
         inputs = F.relu(self.batch_norm(inputs.transpose(1, 2)))
         inputs = inputs.transpose(1, 2)
 
-        output = nn.utils.rnn.pack_padded_sequence(inputs, input_lengths)
+        output = nn.utils.rnn.pack_padded_sequence(inputs, input_lengths.cpu())
         output, hidden = self.rnn(output)
         output, _ = nn.utils.rnn.pad_packed_sequence(output, total_length=total_length)
 
