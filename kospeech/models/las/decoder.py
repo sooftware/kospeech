@@ -117,22 +117,22 @@ class Speller(BaseRNN):
         if self.training:
             self.rnn.flatten_parameters()
 
-        output, hidden = self.rnn(embedded, hidden)
+        outputs, hidden = self.rnn(embedded, hidden)
 
         if self.attn_mechanism == 'loc':
-            context, attn = self.attention(output, encoder_outputs, attn)
+            context, attn = self.attention(outputs, encoder_outputs, attn)
         else:
-            context, attn = self.attention(output, encoder_outputs, encoder_outputs)
+            context, attn = self.attention(outputs, encoder_outputs, encoder_outputs)
 
-        context = torch.cat((output, context), dim=2)
+        context = torch.cat((outputs, context), dim=2)
 
-        output = self.fc1(context.view(-1, self.hidden_dim << 1)).view(batch_size, -1, self.hidden_dim)
-        output = self.fc2(torch.tanh(output).contiguous().view(-1, self.hidden_dim))
+        outputs = self.fc1(context.view(-1, self.hidden_dim << 1)).view(batch_size, -1, self.hidden_dim)
+        outputs = self.fc2(torch.tanh(outputs).contiguous().view(-1, self.hidden_dim))
 
-        step_output = F.log_softmax(output, dim=1)
-        step_output = step_output.view(batch_size, output_lengths, -1).squeeze(1)
+        step_outputs = F.log_softmax(outputs, dim=1)
+        step_outputs = step_outputs.view(batch_size, output_lengths, -1).squeeze(1)
 
-        return step_output, hidden, attn
+        return step_outputs, hidden, attn
 
     def forward(
             self,
@@ -157,8 +157,8 @@ class Speller(BaseRNN):
             if self.attn_mechanism == 'loc' or self.attn_mechanism == 'additive':
                 for di in range(inputs.size(1)):
                     input_var = inputs[:, di].unsqueeze(1)
-                    step_output, hidden, attn = self.forward_step(input_var, hidden, encoder_outputs, attn)
-                    decoder_outputs["decoder_log_probs"].append(step_output)
+                    step_outputs, hidden, attn = self.forward_step(input_var, hidden, encoder_outputs, attn)
+                    decoder_outputs["decoder_log_probs"].append(step_outputs)
 
             else:
                 step_outputs, hidden, attn = self.forward_step(inputs, hidden, encoder_outputs, attn)
@@ -171,8 +171,8 @@ class Speller(BaseRNN):
             input_var = inputs[:, 0].unsqueeze(1)
 
             for di in range(max_length):
-                step_output, hidden, attn = self.forward_step(input_var, hidden, encoder_outputs, attn)
-                decoder_outputs["decoder_log_probs"].append(step_output)
+                step_outputs, hidden, attn = self.forward_step(input_var, hidden, encoder_outputs, attn)
+                decoder_outputs["decoder_log_probs"].append(step_outputs)
                 input_var = decoder_outputs["decoder_log_probs"][-1].topk(1)[1]
 
                 if not self.training:
