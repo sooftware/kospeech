@@ -117,7 +117,11 @@ class SpeechTransformerDecoder(BaseDecoder):
         ])
         self.pad_id = pad_id
         self.eos_id = eos_id
-        self.fc = Linear(d_model, num_classes)
+        self.fc = nn.Sequential(
+            Linear(d_model, d_model),
+            nn.Tanh(),
+            Linear(d_model, num_classes),
+        )
 
     def forward(self, inputs: Tensor, input_lengths: Optional[Tensor] = None, memory: Tensor = None):
         batch_size, output_length = inputs.size(0), inputs.size(1)
