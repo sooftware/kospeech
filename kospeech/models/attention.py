@@ -148,25 +148,24 @@ class MultiHeadAttention(ScaledDotProductAttention):
         self.query_proj = Linear(d_model, self.d_head * num_heads)
         self.key_proj = Linear(d_model, self.d_head * num_heads)
         self.value_proj = Linear(d_model, self.d_head * num_heads)
-        self.sqrt_dim = np.sqrt(d_model)
 
     def forward(self, query: Tensor, key: Tensor, value: Tensor, mask: Optional[Any] = None) -> Tuple[Tensor, Tensor]:
         batch_size = value.size(0)
 
-        query = self.query_proj(query).view(batch_size, -1, self.num_heads, self.d_head)  # BxQ_LENxNxD
-        key = self.key_proj(key).view(batch_size, -1, self.num_heads, self.d_head)        # BxK_LENxNxD
-        value = self.value_proj(value).view(batch_size, -1, self.num_heads, self.d_head)  # BxV_LENxNxD
+        query = self.query_proj(query).view(batch_size, -1, self.num_heads, self.d_head)
+        key = self.key_proj(key).view(batch_size, -1, self.num_heads, self.d_head)
+        value = self.value_proj(value).view(batch_size, -1, self.num_heads, self.d_head)
 
-        query = query.permute(2, 0, 1, 3).contiguous().view(batch_size * self.num_heads, -1, self.d_head)  # BNxQ_LENxD
-        key = key.permute(2, 0, 1, 3).contiguous().view(batch_size * self.num_heads, -1, self.d_head)      # BNxK_LENxD
-        value = value.permute(2, 0, 1, 3).contiguous().view(batch_size * self.num_heads, -1, self.d_head)  # BNxV_LENxD
+        query = query.permute(2, 0, 1, 3).contiguous().view(batch_size * self.num_heads, -1, self.d_head)
+        key = key.permute(2, 0, 1, 3).contiguous().view(batch_size * self.num_heads, -1, self.d_head)
+        value = value.permute(2, 0, 1, 3).contiguous().view(batch_size * self.num_heads, -1, self.d_head)
 
         if mask is not None:
             mask = mask.repeat(self.num_heads, 1, 1)
 
         context, attn = self.forward_qkv(query, key, value, mask)
         context = context.view(self.num_heads, batch_size, -1, self.d_head)
-        context = context.permute(1, 2, 0, 3).contiguous().view(batch_size, -1, self.num_heads * self.d_head)  # BxTxND
+        context = context.permute(1, 2, 0, 3).contiguous().view(batch_size, -1, self.num_heads * self.d_head)
 
         return context, attn
 
