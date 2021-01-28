@@ -126,6 +126,6 @@ class Checkpoint(object):
         return os.path.join(checkpoints_path, sorted_listdir[1])
     
     def get_wanted_checkpoint(self):
-        #checkpoints_path = '/home/sanghoon/KoSpeech/bin/outputs/2021-01-22/05-29-38/'
-        checkpoints_path = '/home/sanghoon/KoSpeech/bin/outputs/wanted/ce_trans/'
+        checkpoints_path = '/home/sanghoon/KoSpeech/bin/outputs/2021-01-23/22-16-06/'
+        #checkpoints_path = '/home/sanghoon/KoSpeech/bin/outputs/wanted/ce_trans/'
         return checkpoints_path

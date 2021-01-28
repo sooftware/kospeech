@@ -18,6 +18,7 @@ import torch.nn.functional as F
 import torch.nn.init as init
 
 from torch import Tensor
+from typing import Tuple
 
 class ResidualConnectionModule(nn.Module):
     """
