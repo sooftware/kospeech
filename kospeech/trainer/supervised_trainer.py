@@ -398,7 +398,7 @@ class SupervisedTrainer(object):
                     encoder_log_probs=encoder_log_probs.transpose(0, 1),
                     decoder_log_probs=outputs.contiguous().view(-1, outputs.size(-1)),
                     output_lengths=encoder_output_lengths,
-                    targets=targets[:, 1:],
+                    targets=targets,
                     target_lengths=target_lengths
                 )
             elif isinstance(self.criterion, nn.CrossEntropyLoss):
