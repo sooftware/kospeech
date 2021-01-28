@@ -351,7 +351,7 @@ class SupervisedTrainer(object):
             input_lengths: Tensor,
             targets: Tensor,
             target_lengths: Tensor,
-            teacher_forcing_ratio: float
+            teacher_forcing_ratio: float,
     ) -> Tuple[Tensor, Tensor, Tensor, Tensor]:
         ctc_loss = None
         cross_entropy_loss = None
@@ -366,7 +366,7 @@ class SupervisedTrainer(object):
                 inputs=inputs,
                 input_lengths=input_lengths,
                 targets=targets,
-                teacher_forcing_ratio=teacher_forcing_ratio
+                teacher_forcing_ratio=teacher_forcing_ratio,
             )
 
             outputs = torch.stack(decoder_outputs, dim=1).to(self.device)
@@ -381,7 +381,7 @@ class SupervisedTrainer(object):
                     decoder_log_probs=outputs.contiguous().view(-1, outputs.size(-1)),
                     output_lengths=encoder_output_lengths,
                     targets=targets,
-                    target_lengths=target_lengths
+                    target_lengths=target_lengths,
                 )
             else:
                 raise ValueError(f"Unsupported Criterion: {self.criterion}")
@@ -399,7 +399,7 @@ class SupervisedTrainer(object):
                     decoder_log_probs=outputs.contiguous().view(-1, outputs.size(-1)),
                     output_lengths=encoder_output_lengths,
                     targets=targets,
-                    target_lengths=target_lengths
+                    target_lengths=target_lengths,
                 )
             elif isinstance(self.criterion, nn.CrossEntropyLoss):
                 loss = self.criterion(
