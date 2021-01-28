@@ -73,7 +73,6 @@ class Speller(DecoderRNN):
             num_layers: int = 2,                     # number of RNN layers
             rnn_type: str = 'lstm',                  # type of RNN cell
             dropout_p: float = 0.3,                  # dropout probability
-            device: torch.device = 'cuda',           # device - 'cuda' or 'cpu'
     ) -> None:
         super(Speller, self).__init__(hidden_state_dim, hidden_state_dim, num_layers, rnn_type, dropout_p, False)
         self.num_classes = num_classes
@@ -83,7 +82,6 @@ class Speller(DecoderRNN):
         self.eos_id = eos_id
         self.sos_id = sos_id
         self.pad_id = pad_id
-        self.device = device
         self.attn_mechanism = attn_mechanism.lower()
         self.embedding = nn.Embedding(num_classes, hidden_state_dim)
         self.input_dropout = nn.Dropout(dropout_p)
@@ -115,7 +113,7 @@ class Speller(DecoderRNN):
     ) -> Tuple[Tensor, Tensor, Tensor]:
         batch_size, output_lengths = input_var.size(0), input_var.size(1)
 
-        embedded = self.embedding(input_var).to(self.device)
+        embedded = self.embedding(input_var)
         embedded = self.input_dropout(embedded)
 
         outputs, hidden_states = self._forward(embedded, hidden_states)
