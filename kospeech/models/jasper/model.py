@@ -86,7 +86,7 @@ class Jasper(CTCModel):
                 bias=False,
             ).to(self.device) for i in range(self.config.num_blocks)
         ])
-        self.postprocess_layers.extend([
+        self.postprocess_layers = nn.ModuleList([
             JasperSubBlock(
                 in_channels=self.config.postprocess_block['in_channels'][i],
                 out_channels=self.config.postprocess_block['out_channels'][i],

@@ -45,12 +45,16 @@ class ListenAttendSpell(EncoderDecoderModel):
     def __init__(self, encoder: nn.Module, decoder: nn.Module) -> None:
         super(ListenAttendSpell, self).__init__(encoder, decoder)
 
+    def flatten_parameters(self) -> None:
+        self.encoder.rnn.flatten_parameters()
+        self.decoder.rnn.flatten_parameters()
+
     def forward(
             self,
-            inputs: Tensor,                             # tensor contains audio's features
-            input_lengths: Tensor,                      # tensor contains feature's lengths
-            targets: Optional[Tensor] = None,           # tensor contains target sentences
-            teacher_forcing_ratio: float = 1.0,         # ratio of teacher forcing
+            inputs: Tensor,
+            input_lengths: Tensor,
+            targets: Optional[Tensor] = None,
+            teacher_forcing_ratio: float = 1.0,
     ) -> Tuple[list, Tensor, Tensor]:
         """
         inputs (torch.FloatTensor): (batch_size, sequence_length, dimension)
@@ -61,14 +65,7 @@ class ListenAttendSpell(EncoderDecoderModel):
         return decoder_outputs, encoder_log_probs, encoder_output_lengths
 
     @torch.no_grad()
-    def recognize(self, inputs: Tensor, input_lengths: Tensor, device: str) -> Tensor:
+    def recognize(self, inputs: Tensor, input_lengths: Tensor) -> Tensor:
         predicted_log_probs, _, _ = self.forward(inputs, input_lengths, teacher_forcing_ratio=0.0)
-        outputs = torch.stack(predicted_log_probs, dim=1).to(device)
+        outputs = torch.stack(predicted_log_probs, dim=1)
         return outputs.max(-1)[1]
-
-    def flatten_parameters(self) -> None:
-        self.encoder.rnn.flatten_parameters()
-        self.decoder.rnn.flatten_parameters()
-
-    def set_decoder(self, decoder: nn.Module) -> None:
-        self.decoder = decoder
