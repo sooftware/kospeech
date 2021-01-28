@@ -15,12 +15,11 @@
 import random
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
-import numpy as np
-
 from torch import Tensor, LongTensor
 from typing import Optional, Any, Tuple
-from kospeech.models.modules import Linear, BaseRNN
+
+from kospeech.models.decoder import DecoderRNN
+from kospeech.models.modules import Linear, View
 from kospeech.models.attention import (
     LocationAwareAttention,
     MultiHeadAttention,
@@ -29,7 +28,7 @@ from kospeech.models.attention import (
 )
 
 
-class Speller(BaseRNN):
+class Speller(DecoderRNN):
     """
     Converts higher level features (from encoder) into output utterances
     by specifying a probability distribution over sequences of characters.
@@ -37,7 +36,7 @@ class Speller(BaseRNN):
     Args:
         num_classes (int): number of classification
         max_length (int): a maximum allowed length for the sequence to be processed
-        hidden_dim (int): dimension of RNN`s hidden state vector
+        hidden_state_dim (int): dimension of RNN`s hidden state vector
         sos_id (int): index of the start of sentence symbol
         eos_id (int): index of the end of sentence symbol
         attn_mechanism (str): type of attention mechanism (default: dot)
@@ -57,15 +56,15 @@ class Speller(BaseRNN):
           teacher forcing would be used (default is 0).
         - **return_decode_dict** (dict): dictionary which contains decode informations.
 
-    Returns: decoder_outputs
-        - **decoder_outputs**: dictionary contains decoder outputs and metadata the outputs of the decoding function.
+    Returns: predicted_log_probs
+        - **predicted_log_probs**: list contains decode result (log probability)
     """
 
     def __init__(
             self,
             num_classes: int,                        # number of classfication
             max_length: int = 150,                   # a maximum allowed length for the sequence to be processed
-            hidden_dim: int = 1024,                  # dimension of RNN`s hidden state vector
+            hidden_state_dim: int = 1024,            # dimension of RNN`s hidden state vector
             pad_id: int = 0,                         # pad token`s id
             sos_id: int = 1,                         # start of sentence token`s id
             eos_id: int = 2,                         # end of sentence token`s id
@@ -74,9 +73,9 @@ class Speller(BaseRNN):
             num_layers: int = 2,                     # number of RNN layers
             rnn_type: str = 'lstm',                  # type of RNN cell
             dropout_p: float = 0.3,                  # dropout probability
-            device: str = 'cuda',                    # device - 'cuda' or 'cpu'
+            device: torch.device = 'cuda',           # device - 'cuda' or 'cpu'
     ) -> None:
-        super(Speller, self).__init__(hidden_dim, hidden_dim, num_layers, rnn_type, dropout_p, False, device)
+        super(Speller, self).__init__(hidden_state_dim, hidden_state_dim, num_layers, rnn_type, dropout_p, False)
         self.num_classes = num_classes
         self.num_heads = num_heads
         self.num_layers = num_layers
@@ -84,72 +83,67 @@ class Speller(BaseRNN):
         self.eos_id = eos_id
         self.sos_id = sos_id
         self.pad_id = pad_id
+        self.device = device
         self.attn_mechanism = attn_mechanism.lower()
-        self.embedding = nn.Embedding(num_classes, hidden_dim)
+        self.embedding = nn.Embedding(num_classes, hidden_state_dim)
         self.input_dropout = nn.Dropout(dropout_p)
 
         if self.attn_mechanism == 'loc':
-            self.attention = LocationAwareAttention(decoder_dim=hidden_dim, attn_dim=hidden_dim, smoothing=False)
+            self.attention = LocationAwareAttention(decoder_dim=hidden_state_dim, attn_dim=hidden_state_dim, smoothing=False)
         elif self.attn_mechanism == 'multi-head':
-            self.attention = MultiHeadAttention(d_model=hidden_dim, num_heads=num_heads)
+            self.attention = MultiHeadAttention(d_model=hidden_state_dim, num_heads=num_heads)
         elif self.attn_mechanism == 'additive':
-            self.attention = AdditiveAttention(hidden_dim)
+            self.attention = AdditiveAttention(hidden_state_dim)
         elif self.attn_mechanism == 'scaled-dot':
-            self.attention = ScaledDotProductAttention(dim=hidden_dim)
+            self.attention = ScaledDotProductAttention(dim=hidden_state_dim)
         else:
             raise ValueError("Unsupported attention: %s".format(attn_mechanism))
 
-        self.fc1 = Linear(hidden_dim << 1, hidden_dim)
-        self.fc2 = Linear(hidden_dim, num_classes)
+        self.fc = nn.Sequential(
+            Linear(hidden_state_dim << 1, hidden_state_dim),
+            nn.Tanh(),
+            View(shape=(-1, self.hidden_state_dim), contiguous=True),
+            Linear(hidden_state_dim, num_classes),
+        )
 
     def forward_step(
             self,
-            input_var: Tensor,                  # tensor of sequences whose contains target variables
-            hidden: Optional[Any],              # tensor containing hidden state vector of RNN
-            encoder_outputs: Tensor,            # tensor with containing the outputs of the encoder
-            attn: Optional[Any] = None,         # tensor containing attention distribution
+            input_var: Tensor,                      # tensor of sequences whose contains target variables
+            hidden_states: Optional[Tensor],        # tensor containing hidden state vector of RNN
+            encoder_outputs: Tensor,                # tensor with containing the outputs of the encoder
+            attn: Optional[Tensor] = None,          # tensor containing attention distribution
     ) -> Tuple[Tensor, Tensor, Tensor]:
         batch_size, output_lengths = input_var.size(0), input_var.size(1)
 
         embedded = self.embedding(input_var).to(self.device)
         embedded = self.input_dropout(embedded)
 
-        if self.training:
-            self.rnn.flatten_parameters()
-
-        outputs, hidden = self.rnn(embedded, hidden)
+        outputs, hidden_states = self._forward(embedded, hidden_states)
 
         if self.attn_mechanism == 'loc':
             context, attn = self.attention(outputs, encoder_outputs, attn)
         else:
             context, attn = self.attention(outputs, encoder_outputs, encoder_outputs)
 
-        context = torch.cat((outputs, context), dim=2)
+        outputs = torch.cat((outputs, context), dim=2)
 
-        outputs = self.fc1(context.view(-1, self.hidden_dim << 1)).view(batch_size, -1, self.hidden_dim)
-        outputs = self.fc2(torch.tanh(outputs).contiguous().view(-1, self.hidden_dim))
-
-        step_outputs = F.log_softmax(outputs, dim=1)
+        step_outputs = self.get_normalized_probs(outputs.view(-1, self.hidden_state_dim << 1))
         step_outputs = step_outputs.view(batch_size, output_lengths, -1).squeeze(1)
 
-        return step_outputs, hidden, attn
+        return step_outputs, hidden_states, attn
 
     def forward(
             self,
             inputs: Tensor,                         # tensor of sequences whose contains target variables
             encoder_outputs: Tensor,                # tensor with containing the outputs of the encoder
             teacher_forcing_ratio: float = 1.0,     # probability that teacher forcing will be used.
-    ) -> dict:
+    ) -> list:
 
-        hidden, attn = None, None
-        decoder_outputs = dict()
-        decoder_outputs["decoder_log_probs"] = list()
-        decoder_outputs["attention_score"] = list()
-        decoder_outputs["sequence_symbol"] = list()
+        hidden_states, attn = None, None
+        predicted_log_probs = list()
 
         inputs, batch_size, max_length = self._validate_args(inputs, encoder_outputs, teacher_forcing_ratio)
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
-        lengths = np.array([max_length] * batch_size)
 
         if use_teacher_forcing:
             inputs = inputs[inputs != self.eos_id].view(batch_size, -1)
@@ -157,35 +151,25 @@ class Speller(BaseRNN):
             if self.attn_mechanism == 'loc' or self.attn_mechanism == 'additive':
                 for di in range(inputs.size(1)):
                     input_var = inputs[:, di].unsqueeze(1)
-                    step_outputs, hidden, attn = self.forward_step(input_var, hidden, encoder_outputs, attn)
-                    decoder_outputs["decoder_log_probs"].append(step_outputs)
+                    step_outputs, hidden_states, attn = self.forward_step(input_var, hidden_states, encoder_outputs, attn)
+                    predicted_log_probs.append(step_outputs)
 
             else:
-                step_outputs, hidden, attn = self.forward_step(inputs, hidden, encoder_outputs, attn)
+                step_outputs, hidden_states, attn = self.forward_step(inputs, hidden_states, encoder_outputs, attn)
 
                 for di in range(step_outputs.size(1)):
                     step_output = step_outputs[:, di, :]
-                    decoder_outputs["decoder_log_probs"].append(step_output)
+                    predicted_log_probs.append(step_output)
 
         else:
             input_var = inputs[:, 0].unsqueeze(1)
 
             for di in range(max_length):
-                step_outputs, hidden, attn = self.forward_step(input_var, hidden, encoder_outputs, attn)
-                decoder_outputs["decoder_log_probs"].append(step_outputs)
-                input_var = decoder_outputs["decoder_log_probs"][-1].topk(1)[1]
+                step_outputs, hidden_states, attn = self.forward_step(input_var, hidden_states, encoder_outputs, attn)
+                predicted_log_probs.append(step_outputs)
+                input_var = predicted_log_probs[-1].topk(1)[1]
 
-                if not self.training:
-                    decoder_outputs["attention_score"].append(attn)
-                    decoder_outputs["sequence_symbol"].append(input_var)
-                    eos_batches = input_var.data.eq(self.eos_id)
-
-                    if eos_batches.dim() > 0:
-                        eos_batches = eos_batches.cpu().view(-1).numpy()
-                        update_idx = ((lengths > di) & eos_batches) != 0
-                        lengths[update_idx] = len(decoder_outputs["sequence_symbol"])
-
-        return decoder_outputs
+        return predicted_log_probs
 
     def _validate_args(
             self,

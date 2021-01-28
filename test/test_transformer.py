@@ -26,5 +26,5 @@ inputs = torch.FloatTensor(batch_size, seq_length, input_size)
 input_lengths = torch.LongTensor([seq_length, seq_length - 10, seq_length - 20, seq_length - 30])
 targets = torch.randint(0, 10, size=(batch_size, target_length), dtype=torch.long)
 
-output = transformer(inputs, input_lengths, targets)
-print(output)
+output, _, _ = transformer(inputs, input_lengths, targets)
+print(output.size())

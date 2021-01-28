@@ -14,12 +14,12 @@
 
 import torch
 import torch.nn as nn
-
 from omegaconf import DictConfig
 from astropy.modeling import ParameterError
 
 from kospeech.models.conformer import Conformer
-from kospeech.models.modules import BaseRNN
+from kospeech.models.decoder import DecoderRNN
+from kospeech.models.encoder import EncoderRNN
 from kospeech.vocabs import Vocabulary
 from kospeech.decode.ensemble import (
     BasicEnsemble,
@@ -144,7 +144,7 @@ def build_conformer(
 
     return nn.DataParallel(Conformer(
         num_classes=num_classes,
-        input_size=input_size,
+        input_dim=input_size,
         encoder_dim=encoder_dim,
         num_layers=num_layers,
         num_attention_heads=num_attention_heads,
@@ -179,11 +179,11 @@ def build_deepspeech2(
         raise ParameterError("hidden_dim should be greater than 0")
     if num_rnn_layers < 0:
         raise ParameterError("num_layers should be greater than 0")
-    if rnn_type.lower() not in BaseRNN.supported_rnns.keys():
+    if rnn_type.lower() not in EncoderRNN.supported_rnns.keys():
         raise ParameterError("Unsupported RNN Cell: {0}".format(rnn_type))
 
     return nn.DataParallel(DeepSpeech2(
-        input_size=input_size,
+        input_dim=input_size,
         num_classes=num_classes,
         rnn_type=rnn_type,
         num_rnn_layers=num_rnn_layers,
@@ -244,8 +244,6 @@ def build_las(
         extractor=config.model.extractor,
         activation=config.model.activation,
         rnn_type=config.model.rnn_type,
-        device=device,
-        mask_conv=config.model.mask_conv,
         joint_ctc_attention=config.model.joint_ctc_attention,
     )
     speller = build_speller(
@@ -279,8 +277,6 @@ def build_listener(
         rnn_type: str = 'lstm',
         extractor: str = 'vgg',
         activation: str = 'hardtanh',
-        device: torch.device = 'cuda',
-        mask_conv: bool = False,
         joint_ctc_attention: bool = False,
 ) -> Listener:
     """ Various encoder dispatcher function. """
@@ -294,20 +290,18 @@ def build_listener(
         raise ParameterError("num_layers should be greater than 0")
     if extractor.lower() not in {'vgg', 'ds2'}:
         raise ParameterError("Unsupported extractor".format(extractor))
-    if rnn_type.lower() not in BaseRNN.supported_rnns.keys():
+    if rnn_type.lower() not in EncoderRNN.supported_rnns.keys():
         raise ParameterError("Unsupported RNN Cell: {0}".format(rnn_type))
 
     return Listener(
-        input_size=input_size,
+        input_dim=input_size,
         num_classes=num_classes,
-        hidden_dim=hidden_dim,
+        hidden_state_dim=hidden_dim,
         dropout_p=dropout_p,
         num_layers=num_layers,
-        mask_conv=mask_conv,
         bidirectional=bidirectional,
         rnn_type=rnn_type,
         extractor=extractor,
-        device=device,
         activation=activation,
         joint_ctc_attention=joint_ctc_attention,
     )
@@ -342,7 +336,7 @@ def build_speller(
         raise ParameterError("max_len should be greater than 0")
     if num_classes < 0:
         raise ParameterError("num_classes should be greater than 0")
-    if rnn_type.lower() not in BaseRNN.supported_rnns.keys():
+    if rnn_type.lower() not in DecoderRNN.supported_rnns.keys():
         raise ParameterError("Unsupported RNN Cell: {0}".format(rnn_type))
     if device is None:
         raise ParameterError("device is None")
@@ -350,7 +344,7 @@ def build_speller(
     return Speller(
         num_classes=num_classes,
         max_length=max_len,
-        hidden_dim=hidden_dim,
+        hidden_state_dim=hidden_dim,
         pad_id=pad_id,
         sos_id=sos_id,
         eos_id=eos_id,

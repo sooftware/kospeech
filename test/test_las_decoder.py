@@ -1,4 +1,4 @@
-# Copyright (c) 2020, Soohwan Kim. All rights reserved.
+# Copyright (c) 2021, Soohwan Kim. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,22 +13,18 @@
 # limitations under the License.
 
 import torch
-from kospeech.models import DeepSpeech2
-
-batch_size = 3
-sequence_length = 14321
-dimension = 80
+from kospeech.models.las.decoder import Speller
 
 cuda = torch.cuda.is_available()
 device = torch.device('cuda' if cuda else 'cpu')
 
-inputs = torch.rand(batch_size, sequence_length, dimension).to(device)  # BxTxD
-input_lengths = torch.LongTensor([14321, 14300, 13000]).to(device)
+inputs = torch.LongTensor([[1, 1, 2], [3, 4, 2], [7, 2, 0]])
+encoder_outputs = torch.rand(3, 100, 32)
 
-print("Deep Speech 2 Model Test..")
-model = DeepSpeech2(num_classes=10, input_dim=dimension).to(device)
-output, output_lengths = model(inputs, input_lengths)
+decoder = Speller(num_classes=10, hidden_state_dim=32, max_length=10, device=device)
+decoder_outputs = decoder(inputs, encoder_outputs, teacher_forcing_ratio=1.0)
+print("teacher_forcing_ratio=1.0 PASS")
 
-print(output)
-print(output.size())
-print(output_lengths)
+decoder = Speller(num_classes=10, hidden_state_dim=32, max_length=10, device=device)
+decoder_outputs = decoder(inputs, encoder_outputs, teacher_forcing_ratio=0.0)
+print("teacher_forcing_ratio=0.0 PASS")

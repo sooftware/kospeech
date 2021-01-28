@@ -58,35 +58,6 @@ class AdditiveAttention(nn.Module):
         return context, attn
 
 
-class DotProductAttention(nn.Module):
-    """
-    Dot-Product Attention. Compute the dot products of the query with all keys,
-    and apply a softmax function to obtain the weights on the values
-
-    Inputs: query, key, value, mask
-        - **query** (batch, q_len, d_model): tensor containing projection vector for decoder.
-        - **key** (batch, k_len, d_model): tensor containing projection vector for encoder.
-        - **value** (batch, v_len, d_model): tensor containing features of the encoded input sequence.
-        - **mask** (-): tensor containing indices to be masked
-
-    Returns: context, attn
-        - **context**: tensor containing the context vector from attention mechanism.
-        - **attn**: tensor containing the attention (alignment) from the encoder outputs.
-    """
-    def __init__(self) -> None:
-        super(DotProductAttention, self).__init__()
-
-    def forward(self, query: Tensor, key: Tensor, value: Tensor, mask: Optional[Any] = None) -> Tuple[Tensor, Tensor]:
-        score = torch.bmm(query, key.transpose(1, 2))
-
-        if mask is not None:
-            score.masked_fill_(mask, -1e9)
-
-        attn = F.softmax(score, -1)
-        context = torch.bmm(attn, value)
-        return context, attn
-
-
 class ScaledDotProductAttention(nn.Module):
     """
     Scaled Dot-Product Attention proposed in "Attention Is All You Need"
@@ -107,11 +78,20 @@ class ScaledDotProductAttention(nn.Module):
         - **context**: tensor containing the context vector from attention mechanism.
         - **attn**: tensor containing the attention (alignment) from the encoder outputs.
     """
-    def __init__(self, dim: int) -> None:
+    def __init__(self, dim: int, scale: bool = True) -> None:
         super(ScaledDotProductAttention, self).__init__()
-        self.sqrt_dim = np.sqrt(dim)
+        if scale:
+            self.sqrt_dim = np.sqrt(dim)
+        else:
+            self.sqrt_dim = 1
 
-    def forward(self, query: Tensor, key: Tensor, value: Tensor, mask: Optional[Any] = None) -> Tuple[Tensor, Tensor]:
+    def forward_qkv(
+            self,
+            query: Tensor,
+            key: Tensor,
+            value: Tensor,
+            mask: Optional[Tensor] = None
+    ) -> Tuple[Tensor, Tensor]:
         score = torch.bmm(query, key.transpose(1, 2)) / self.sqrt_dim
 
         if mask is not None:
@@ -121,8 +101,17 @@ class ScaledDotProductAttention(nn.Module):
         context = torch.bmm(attn, value)
         return context, attn
 
+    def forward(
+            self,
+            query: Tensor,
+            key: Tensor,
+            value: Tensor,
+            mask: Optional[Any] = None
+    ) -> Tuple[Tensor, Tensor]:
+        return self.forward(query, key, value, mask)
 
-class MultiHeadAttention(nn.Module):
+
+class MultiHeadAttention(ScaledDotProductAttention):
     """
     Multi-Head Attention proposed in "Attention Is All You Need"
     Instead of performing a single attention function with d_model-dimensional keys, values, and queries,
@@ -149,7 +138,7 @@ class MultiHeadAttention(nn.Module):
         - **attn** (batch * num_heads, v_len): tensor containing the attention (alignment) from the encoder outputs.
     """
     def __init__(self, d_model: int = 512, num_heads: int = 8) -> None:
-        super(MultiHeadAttention, self).__init__()
+        super(MultiHeadAttention, self).__init__(d_model, scale=True)
 
         assert d_model % num_heads == 0, "hidden_dim % num_heads should be zero."
 
@@ -159,7 +148,6 @@ class MultiHeadAttention(nn.Module):
         self.key_proj = Linear(d_model, self.d_head * num_heads)
         self.value_proj = Linear(d_model, self.d_head * num_heads)
         self.sqrt_dim = np.sqrt(d_model)
-        self.scaled_dot_attn = ScaledDotProductAttention(self.d_head)
 
     def forward(self, query: Tensor, key: Tensor, value: Tensor, mask: Optional[Any] = None) -> Tuple[Tensor, Tensor]:
         batch_size = value.size(0)
@@ -175,7 +163,7 @@ class MultiHeadAttention(nn.Module):
         if mask is not None:
             mask = mask.repeat(self.num_heads, 1, 1)
 
-        context, attn = self.scaled_dot_attn(query, key, value, mask)
+        context, attn = self.forward_qkv(query, key, value, mask)
         context = context.view(self.num_heads, batch_size, -1, self.d_head)
         context = context.permute(1, 2, 0, 3).contiguous().view(batch_size, -1, self.num_heads * self.d_head)  # BxTxND
 
