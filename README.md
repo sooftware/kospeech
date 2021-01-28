@@ -131,7 +131,7 @@ We recommend creating a new virtual environment for this project (using virtual 
 * Pytorch: Refer to [PyTorch website](http://pytorch.org/) to install the version w.r.t. your environment.   
 * Pandas: `pip install pandas` (Refer [here](https://github.com/pandas-dev/pandas) for problem installing Pandas)  
 * Matplotlib: `pip install matplotlib` (Refer [here](https://github.com/matplotlib/matplotlib) for problem installing Matplotlib)
-* librosa: `conda install -c conda-forge librosa` (Refer [here](https://github.com/librosa/librosa) for problem installing librosa)
+* librosa: `conda install librosa -c conda-forge` (Refer [here](https://github.com/librosa/librosa) for problem installing librosa)
 * torchaudio: `pip install torchaudio==0.6.0` (Refer [here](https://github.com/pytorch/pytorch) for problem installing torchaudio)
 * tqdm: `pip install tqdm` (Refer [here](https://github.com/tqdm/tqdm) for problem installing tqdm)
 * sentencepiece: `pip install sentencepiece` (Refer [here](https://github.com/google/sentencepiece) for problem installing sentencepiece)
