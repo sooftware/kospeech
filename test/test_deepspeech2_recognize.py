@@ -27,8 +27,7 @@ input_lengths = torch.LongTensor([14321, 14300, 13000]).to(device)
 
 print("Deep Speech 2 Model Test..")
 model = DeepSpeech2(num_classes=10, input_dim=dimension).to(device)
-output, output_lengths = model.recognize(inputs, input_lengths)
+output = model.recognize(inputs, input_lengths)
 
 print(output)
 print(output.size())
-print(output_lengths)

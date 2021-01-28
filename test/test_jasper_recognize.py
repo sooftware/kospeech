@@ -27,16 +27,14 @@ input_lengths = torch.LongTensor([14321, 14300, 13000]).to(device)
 
 print("Jasper 10x3 Model Test..")
 model = Jasper(num_classes=10, version='10x5').to(device)
-output, output_lengths = model.recognize(inputs, input_lengths)
+output = model.recognize(inputs, input_lengths)
 
 print(output)
 print(output.size())
-print(output_lengths)
 
 print("Jasper 5x3 Model Test..")
 model = Jasper(num_classes=10, version='5x3').to(device)
-output, output_lengths = model.recognize(inputs, input_lengths)
+output = model.recognize(inputs, input_lengths)
 
 print(output)
 print(output.size())
-print(output_lengths)
