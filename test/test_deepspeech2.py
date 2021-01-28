@@ -26,7 +26,7 @@ inputs = torch.rand(batch_size, sequence_length, dimension).to(device)  # BxTxD
 input_lengths = torch.LongTensor([14321, 14300, 13000]).to(device)
 
 print("Deep Speech 2 Model Test..")
-model = DeepSpeech2(num_classes=10, input_size=dimension).to(device)
+model = DeepSpeech2(num_classes=10, input_dim=dimension).to(device)
 output, output_lengths = model(inputs, input_lengths)
 
 print(output)

@@ -48,7 +48,7 @@ class Embedding(nn.Module):
     to convert the input tokens and output tokens to vectors of dimension d_model.
     In the embedding layers, transformer multiply those weights by sqrt(d_model)
     """
-    def __init__(self, num_embeddings: int, pad_id: int, d_model: int = 512) -> Tensor:
+    def __init__(self, num_embeddings: int, pad_id: int, d_model: int = 512) -> None:
         super(Embedding, self).__init__()
         self.sqrt_dim = math.sqrt(d_model)
         self.embedding = nn.Embedding(num_embeddings, d_model, padding_idx=pad_id)

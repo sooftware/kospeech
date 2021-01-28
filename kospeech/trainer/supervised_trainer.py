@@ -247,7 +247,7 @@ class SupervisedTrainer(object):
                 input_lengths=input_lengths,
                 targets=targets,
                 target_lengths=target_lengths,
-                model=model
+                model=model,
             )
 
             y_hats = output.max(-1)[1]
@@ -274,7 +274,7 @@ class SupervisedTrainer(object):
                         ctc_loss, cross_entropy_loss,
                         cer,
                         elapsed, epoch_elapsed, train_elapsed,
-                        self.optimizer.get_lr()
+                        self.optimizer.get_lr(),
                     ))
                 else:
                     logger.info(self.log_format.format(
@@ -282,7 +282,7 @@ class SupervisedTrainer(object):
                         loss,
                         cer,
                         elapsed, epoch_elapsed, train_elapsed,
-                        self.optimizer.get_lr()
+                        self.optimizer.get_lr(),
                     ))
                 begin_time = time.time()
 
@@ -329,9 +329,9 @@ class SupervisedTrainer(object):
             model.to(self.device)
 
             if isinstance(model, nn.DataParallel):
-                y_hats = model.module.greedy_search(inputs, input_lengths, self.device)
+                y_hats = model.module.recognize(inputs, input_lengths)
             else:
-                y_hats = model.greedy_search(inputs, input_lengths, self.device)
+                y_hats = model.recognize(inputs, input_lengths)
                 
             for idx in range(targets.size(0)):
                 target_list.append(self.vocab.label_to_string(targets[idx]))
@@ -351,7 +351,7 @@ class SupervisedTrainer(object):
             input_lengths: Tensor,
             targets: Tensor,
             target_lengths: Tensor,
-            teacher_forcing_ratio: float
+            teacher_forcing_ratio: float,
     ) -> Tuple[Tensor, Tensor, Tensor, Tensor]:
         ctc_loss = None
         cross_entropy_loss = None
@@ -366,10 +366,10 @@ class SupervisedTrainer(object):
                 inputs=inputs,
                 input_lengths=input_lengths,
                 targets=targets,
-                teacher_forcing_ratio=teacher_forcing_ratio
+                teacher_forcing_ratio=teacher_forcing_ratio,
             )
 
-            outputs = torch.stack(decoder_outputs['decoder_log_probs'], dim=1).to(self.device)
+            outputs = torch.stack(decoder_outputs, dim=1).to(self.device)
 
             if isinstance(self.criterion, LabelSmoothedCrossEntropyLoss):
                 loss = self.criterion(
@@ -381,7 +381,7 @@ class SupervisedTrainer(object):
                     decoder_log_probs=outputs.contiguous().view(-1, outputs.size(-1)),
                     output_lengths=encoder_output_lengths,
                     targets=targets,
-                    target_lengths=target_lengths
+                    target_lengths=target_lengths,
                 )
             else:
                 raise ValueError(f"Unsupported Criterion: {self.criterion}")
@@ -399,7 +399,7 @@ class SupervisedTrainer(object):
                     decoder_log_probs=outputs.contiguous().view(-1, outputs.size(-1)),
                     output_lengths=encoder_output_lengths,
                     targets=targets,
-                    target_lengths=target_lengths
+                    target_lengths=target_lengths,
                 )
             elif isinstance(self.criterion, nn.CrossEntropyLoss):
                 loss = self.criterion(

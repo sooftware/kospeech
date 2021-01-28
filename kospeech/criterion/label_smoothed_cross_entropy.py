@@ -44,7 +44,6 @@ class LabelSmoothedCrossEntropyLoss(nn.Module):
             smoothing: float = 0.1,     # ratio of smoothing (confidence = 1.0 - smoothing)
             dim: int = -1,              # dimension of caculation loss
             reduction='sum',            # reduction method [sum, mean]
-            architecture='las',         # speech model`s model [las, transformer]
     ) -> None:
         super(LabelSmoothedCrossEntropyLoss, self).__init__()
         self.confidence = 1.0 - smoothing
@@ -53,7 +52,6 @@ class LabelSmoothedCrossEntropyLoss(nn.Module):
         self.dim = dim
         self.ignore_index = ignore_index
         self.reduction = reduction.lower()
-        self.architecture = architecture.lower()
 
         if self.reduction == 'sum':
             self.reduction_method = torch.sum
@@ -63,9 +61,6 @@ class LabelSmoothedCrossEntropyLoss(nn.Module):
             raise ValueError("Unsupported reduction method {0}".format(reduction))
 
     def forward(self, logits: Tensor, targets: Tensor):
-        if self.architecture == 'transformer':
-            logits = F.log_softmax(logits, dim=-1)
-
         if self.smoothing > 0.0:
             with torch.no_grad():
                 label_smoothed = torch.zeros_like(logits)

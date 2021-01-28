@@ -1,4 +1,4 @@
-# Copyright (c) 2020, Soohwan Kim. All rights reserved.
+# Copyright (c) 2021, Soohwan Kim. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,21 +13,18 @@
 # limitations under the License.
 
 import torch
-from kospeech.models import SpeechTransformer
-
-batch_size = 4
-seq_length = 200
-target_length = 20
-input_size = 80
+from kospeech.models.las.decoder import Speller
 
 cuda = torch.cuda.is_available()
 device = torch.device('cuda' if cuda else 'cpu')
 
-transformer = SpeechTransformer(num_classes=10, d_model=16, d_ff=32, num_encoder_layers=3, num_decoder_layers=2).to(device)
+inputs = torch.LongTensor([[1, 1, 2], [3, 4, 2], [7, 2, 0]])
+encoder_outputs = torch.rand(3, 100, 32)
 
-inputs = torch.FloatTensor(batch_size, seq_length, input_size).to(device)
-input_lengths = torch.LongTensor([seq_length, seq_length - 10, seq_length - 20, seq_length - 30])
-targets = torch.randint(0, 10, size=(batch_size, target_length), dtype=torch.long).to(device)
+decoder = Speller(num_classes=10, hidden_state_dim=32, max_length=10, device=device)
+decoder_outputs = decoder(inputs, encoder_outputs, teacher_forcing_ratio=1.0)
+print("teacher_forcing_ratio=1.0 PASS")
 
-output, _, _ = transformer(inputs, input_lengths, targets)
-print(output.size())
+decoder = Speller(num_classes=10, hidden_state_dim=32, max_length=10, device=device)
+decoder_outputs = decoder(inputs, encoder_outputs, teacher_forcing_ratio=0.0)
+print("teacher_forcing_ratio=0.0 PASS")

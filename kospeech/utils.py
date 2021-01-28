@@ -104,13 +104,12 @@ def get_criterion(config: DictConfig, vocab: Vocabulary) -> nn.Module:
             cross_entropy_weight=config.model.cross_entropy_weight,
             blank_id=vocab.blank_id,
             dim=-1,
-            architecture=config.model.architecture,
             smoothing=config.train.label_smoothing,
         )
     elif config.model.architecture == 'transformer' and config.train.label_smoothing <= 0.0:
         criterion = nn.CrossEntropyLoss(
             ignore_index=vocab.pad_id,
-            reduction=config.train.reduction
+            reduction=config.train.reduction,
         )
     else:
         criterion = LabelSmoothedCrossEntropyLoss(
@@ -118,7 +117,6 @@ def get_criterion(config: DictConfig, vocab: Vocabulary) -> nn.Module:
             ignore_index=vocab.pad_id,
             smoothing=config.train.label_smoothing,
             reduction=config.train.reduction,
-            architecture=config.model.architecture,
             dim=-1,
         )
 
@@ -135,7 +133,7 @@ def get_lr_scheduler(config: DictConfig, optimizer, epoch_time_step) -> Learning
             init_lr_scale=config.train.init_lr_scale,
             final_lr_scale=config.train.final_lr_scale,
             warmup_steps=config.train.warmup_steps,
-            total_steps=int(config.train.num_epochs * epoch_time_step)
+            total_steps=int(config.train.num_epochs * epoch_time_step),
         )
     elif config.train.lr_scheduler == "transformer_lr_scheduler":
         lr_scheduler = TransformerLRScheduler(

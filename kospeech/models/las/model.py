@@ -15,11 +15,12 @@
 import torch
 import torch.nn as nn
 from torch import Tensor
-from kospeech.models import TopKDecoder
 from typing import Optional, Tuple
 
+from kospeech.models.model import EncoderDecoderModel
 
-class ListenAttendSpell(nn.Module):
+
+class ListenAttendSpell(EncoderDecoderModel):
     """
     Listen, Attend and Spell model with configurable encoder and decoder.
 
@@ -42,39 +43,29 @@ class ListenAttendSpell(nn.Module):
           the outputs of the decoding function.
     """
     def __init__(self, encoder: nn.Module, decoder: nn.Module) -> None:
-        super(ListenAttendSpell, self).__init__()
-        self.encoder = encoder
-        self.decoder = decoder
-
-    def forward(
-            self,
-            inputs: Tensor,                             # tensor contains audio's features
-            input_lengths: Tensor,                      # tensor contains feature's lengths
-            targets: Optional[Tensor] = None,           # tensor contains target sentences
-            teacher_forcing_ratio: float = 1.0,         # ratio of teacher forcing
-    ) -> Tuple[dict, Tensor, Tensor]:
-        """
-        inputs (torch.FloatTensor): (batch_size, sequence_length, dimension)
-        input_lengths (torch.LongTensor): (batch_size)
-        """
-        encoder_outputs, encoder_log_probs, encoder_output_lengths = self.encoder(inputs, input_lengths)
-
-        if isinstance(self.decoder, TopKDecoder):
-            return self.decoder(targets, encoder_outputs)
-        decoder_outputs = self.decoder(targets, encoder_outputs, teacher_forcing_ratio)
-
-        return decoder_outputs, encoder_log_probs, encoder_output_lengths
-
-    def greedy_search(self, inputs: Tensor, input_lengths: Tensor, device: str) -> Tensor:
-        with torch.no_grad():
-            self.flatten_parameters()
-            decoder_outputs, _, _ = self.forward(inputs, input_lengths, teacher_forcing_ratio=0.0)
-            outputs = torch.stack(decoder_outputs['decoder_log_probs'], dim=1).to(device)
-            return outputs.max(-1)[1]
+        super(ListenAttendSpell, self).__init__(encoder, decoder)
 
     def flatten_parameters(self) -> None:
         self.encoder.rnn.flatten_parameters()
         self.decoder.rnn.flatten_parameters()
 
-    def set_decoder(self, decoder: nn.Module) -> None:
-        self.decoder = decoder
+    def forward(
+            self,
+            inputs: Tensor,
+            input_lengths: Tensor,
+            targets: Optional[Tensor] = None,
+            teacher_forcing_ratio: float = 1.0,
+    ) -> Tuple[list, Tensor, Tensor]:
+        """
+        inputs (torch.FloatTensor): (batch_size, sequence_length, dimension)
+        input_lengths (torch.LongTensor): (batch_size)
+        """
+        encoder_outputs, encoder_log_probs, encoder_output_lengths = self.encoder(inputs, input_lengths)
+        decoder_outputs = self.decoder(targets, encoder_outputs, teacher_forcing_ratio)
+        return decoder_outputs, encoder_log_probs, encoder_output_lengths
+
+    @torch.no_grad()
+    def recognize(self, inputs: Tensor, input_lengths: Tensor) -> Tensor:
+        predicted_log_probs, _, _ = self.forward(inputs, input_lengths, teacher_forcing_ratio=0.0)
+        outputs = torch.stack(predicted_log_probs, dim=1)
+        return outputs.max(-1)[1]

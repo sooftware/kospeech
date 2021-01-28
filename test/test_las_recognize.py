@@ -13,21 +13,25 @@
 # limitations under the License.
 
 import torch
-from kospeech.models import SpeechTransformer
 
-batch_size = 4
-seq_length = 200
-target_length = 20
-input_size = 80
+from kospeech.models import Speller, ListenAttendSpell
+from kospeech.models.las.encoder import Listener
+
+B, T, D, H = 3, 12345, 80, 32
 
 cuda = torch.cuda.is_available()
 device = torch.device('cuda' if cuda else 'cpu')
 
-transformer = SpeechTransformer(num_classes=10, d_model=16, d_ff=32, num_encoder_layers=3, num_decoder_layers=2).to(device)
+inputs = torch.rand(B, T, D).to(device)
+input_lengths = torch.IntTensor([T, T - 100, T - 1000])
+targets = torch.LongTensor([[1, 1, 2], [3, 4, 2], [7, 2, 0]])
 
-inputs = torch.FloatTensor(batch_size, seq_length, input_size).to(device)
-input_lengths = torch.LongTensor([seq_length, seq_length - 10, seq_length - 20, seq_length - 30])
-targets = torch.randint(0, 10, size=(batch_size, target_length), dtype=torch.long).to(device)
+encoder = Listener(input_dim=D, hidden_state_dim=H, joint_ctc_attention=False)
+decoder = Speller(num_classes=10, hidden_state_dim=H << 1, max_length=10)
+model = ListenAttendSpell(encoder, decoder).to(device)
 
-output, _, _ = transformer(inputs, input_lengths, targets)
-print(output.size())
+model.recognize(inputs, input_lengths)
+print("teacher_forcing_ratio=0.0 PASS")
+
+model(inputs, input_lengths, targets, teacher_forcing_ratio=1.0)
+print("teacher_forcing_ratio=1.0 PASS")

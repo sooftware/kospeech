@@ -13,16 +13,21 @@
 # limitations under the License.
 
 import torch
-from kospeech.models import SpeechTransformer
+from kospeech.models import DeepSpeech2
 
-batch_size = 4
-seq_length = 200
-input_size = 80
+batch_size = 3
+sequence_length = 14321
+dimension = 80
 
-transformer = SpeechTransformer(num_classes=10, d_model=16, d_ff=32, num_encoder_layers=3, num_decoder_layers=2)
+cuda = torch.cuda.is_available()
+device = torch.device('cuda' if cuda else 'cpu')
 
-inputs = torch.FloatTensor(batch_size, seq_length, input_size)
-input_lengths = torch.LongTensor([seq_length, seq_length - 10, seq_length - 20, seq_length - 30])
+inputs = torch.rand(batch_size, sequence_length, dimension).to(device)  # BxTxD
+input_lengths = torch.LongTensor([14321, 14300, 13000]).to(device)
 
-output = transformer.greedy_search(inputs, input_lengths, device='cuda')
+print("Deep Speech 2 Model Test..")
+model = DeepSpeech2(num_classes=10, input_dim=dimension).to(device)
+output = model.recognize(inputs, input_lengths)
+
 print(output)
+print(output.size())

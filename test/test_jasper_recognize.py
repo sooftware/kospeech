@@ -1,4 +1,4 @@
-# Copyright (c) 2020, Soohwan Kim. All rights reserved.
+# Copyright (c) 2021, Soohwan Kim. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,21 +13,28 @@
 # limitations under the License.
 
 import torch
-from kospeech.models import SpeechTransformer
+from kospeech.models.jasper.model import Jasper
 
-batch_size = 4
-seq_length = 200
-target_length = 20
-input_size = 80
+batch_size = 3
+sequence_length = 14321
+dimension = 80
 
 cuda = torch.cuda.is_available()
 device = torch.device('cuda' if cuda else 'cpu')
 
-transformer = SpeechTransformer(num_classes=10, d_model=16, d_ff=32, num_encoder_layers=3, num_decoder_layers=2).to(device)
+inputs = torch.rand(batch_size, sequence_length, dimension).to(device)  # BxTxD
+input_lengths = torch.LongTensor([14321, 14300, 13000]).to(device)
 
-inputs = torch.FloatTensor(batch_size, seq_length, input_size).to(device)
-input_lengths = torch.LongTensor([seq_length, seq_length - 10, seq_length - 20, seq_length - 30])
-targets = torch.randint(0, 10, size=(batch_size, target_length), dtype=torch.long).to(device)
+print("Jasper 10x3 Model Test..")
+model = Jasper(num_classes=10, version='10x5').to(device)
+output = model.recognize(inputs, input_lengths)
 
-output, _, _ = transformer(inputs, input_lengths, targets)
+print(output)
+print(output.size())
+
+print("Jasper 5x3 Model Test..")
+model = Jasper(num_classes=10, version='5x3').to(device)
+output = model.recognize(inputs, input_lengths)
+
+print(output)
 print(output.size())
