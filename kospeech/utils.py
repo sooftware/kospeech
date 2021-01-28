@@ -104,7 +104,6 @@ def get_criterion(config: DictConfig, vocab: Vocabulary) -> nn.Module:
             cross_entropy_weight=config.model.cross_entropy_weight,
             blank_id=vocab.blank_id,
             dim=-1,
-            architecture=config.model.architecture,
             smoothing=config.train.label_smoothing,
         )
     elif config.model.architecture == 'transformer' and config.train.label_smoothing <= 0.0:
