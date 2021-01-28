@@ -30,7 +30,7 @@ encoder = Listener(input_dim=D, hidden_state_dim=H, joint_ctc_attention=False)
 decoder = Speller(num_classes=10, hidden_state_dim=H << 1, max_length=10, device=device)
 model = ListenAttendSpell(encoder, decoder).to(device)
 
-model(inputs, input_lengths, targets, teacher_forcing_ratio=0.0)
+model.recognize(inputs, input_lengths)
 print("teacher_forcing_ratio=0.0 PASS")
 
 model(inputs, input_lengths, targets, teacher_forcing_ratio=1.0)

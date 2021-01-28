@@ -147,7 +147,7 @@ class MaskConv1d(nn.Conv1d):
             (seq_lengths + 2 * self.padding[0] - self.dilation[0] * (self.kernel_size[0] - 1) - 1) // self.stride[0] + 1
         )
 
-    def forward(self, inputs: Tensor, input_lengths: Tensor):
+    def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
         """
         inputs: (batch, dimension, time)
         input_lengths: (batch)
