@@ -77,7 +77,7 @@ class TransformerTrainConfig(TrainConfig):
     decay_steps: int = 80000
     num_epochs: int = 40
     reduction: str = "mean"
-    label_smoothing: float = 0.1
+    label_smoothing: float = 0.0
     lr_scheduler: str = 'transformer_lr_scheduler'
 
 
