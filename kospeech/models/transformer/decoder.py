@@ -117,19 +117,15 @@ class SpeechTransformerDecoder(BaseDecoder):
         ])
         self.pad_id = pad_id
         self.eos_id = eos_id
-        self.fc = nn.Sequential(
-            Linear(d_model, d_model),
-            nn.Tanh(),
-            Linear(d_model, num_classes),
-        )
+        self.fc = Linear(d_model, num_classes)
 
-    def forward(self, inputs: Tensor, input_lengths: Optional[Tensor] = None, memory: Tensor = None):
-        batch_size, output_length = inputs.size(0), inputs.size(1)
+    def forward(self, targets: Tensor, input_lengths: Optional[Tensor] = None, memory: Tensor = None):
+        batch_size, output_length = targets.size(0), targets.size(1)
 
-        self_attn_mask = get_decoder_self_attn_mask(inputs, inputs, self.pad_id)
+        self_attn_mask = get_decoder_self_attn_mask(targets, targets, self.pad_id)
         memory_mask = get_attn_pad_mask(memory, input_lengths, output_length)
 
-        outputs = self.embedding(inputs) + self.positional_encoding(output_length)
+        outputs = self.embedding(targets) + self.positional_encoding(output_length)
         outputs = self.input_dropout(outputs)
 
         for layer in self.layers:
