@@ -145,33 +145,33 @@ class SupervisedTrainer(object):
         train_begin_time = time.time()
 
         for epoch in range(start_epoch, num_epochs):
-            logger.info('Epoch %d start' % epoch)
-            train_queue = queue.Queue(self.num_workers << 1)
-
-            for trainset in self.trainset_list:
-                trainset.shuffle()
-
-            # Training
-            train_loader = MultiDataLoader(
-                self.trainset_list, train_queue, batch_size, self.num_workers, self.vocab.pad_id
-            )
-            train_loader.start()
-
-            model, train_loss, train_cer = self.__train_epoches(
-                model=model,
-                epoch=epoch,
-                epoch_time_step=epoch_time_step,
-                train_begin_time=train_begin_time,
-                queue=train_queue,
-                teacher_forcing_ratio=teacher_forcing_ratio,
-            )
-            train_loader.join()
-            Checkpoint(model, self.optimizer, self.trainset_list, self.validset, epoch).save()
-            logger.info('Epoch %d (Training) Loss %0.4f CER %0.4f' % (epoch, train_loss, train_cer))
-
-            teacher_forcing_ratio -= self.teacher_forcing_step
-            teacher_forcing_ratio = max(self.min_teacher_forcing_ratio, teacher_forcing_ratio)
-
+#            logger.info('Epoch %d start' % epoch)
+#            train_queue = queue.Queue(self.num_workers << 1)
+#
+#            for trainset in self.trainset_list:
+#                trainset.shuffle()
+#
+#            # Training
+#            train_loader = MultiDataLoader(
+#                self.trainset_list, train_queue, batch_size, self.num_workers, self.vocab.pad_id
+#            )
+#            train_loader.start()
+#
+#            model, train_loss, train_cer = self.__train_epoches(
+#                model=model,
+#                epoch=epoch,
+#                epoch_time_step=epoch_time_step,
+#                train_begin_time=train_begin_time,
+#                queue=train_queue,
+#                teacher_forcing_ratio=teacher_forcing_ratio,
+#            )
+#            train_loader.join()
+#            Checkpoint(model, self.optimizer, self.trainset_list, self.validset, epoch).save()
+#            logger.info('Epoch %d (Training) Loss %0.4f CER %0.4f' % (epoch, train_loss, train_cer))
+#
+#            teacher_forcing_ratio -= self.teacher_forcing_step
+#            teacher_forcing_ratio = max(self.min_teacher_forcing_ratio, teacher_forcing_ratio)
+#
             # Validation
             valid_queue = queue.Queue(self.num_workers << 1)
             valid_loader = AudioDataLoader(self.validset, valid_queue, batch_size, 0, self.vocab.pad_id)
@@ -184,8 +184,8 @@ class SupervisedTrainer(object):
             valid_loader.join()
 
             logger.info('Epoch %d CER %0.4f' % (epoch, valid_cer))
-            self.__save_epoch_result(train_result=[self.train_dict, train_loss, train_cer],
-                                     valid_result=[self.valid_dict, train_loss, valid_cer])
+#            self.__save_epoch_result(train_result=[self.train_dict, train_loss, train_cer],
+#                                     valid_result=[self.valid_dict, train_loss, valid_cer])
             logger.info('Epoch %d Training result saved as a csv file complete !!' % epoch)
             torch.cuda.empty_cache()
 
@@ -255,6 +255,9 @@ class SupervisedTrainer(object):
                 model=model
             )
             y_hats = output.max(-1)[1]
+            print('--------------------------------------')
+            print('targets: ',targets)
+            print('y_hats: ',y_hats)
             cer = self.metric(targets, y_hats)
             total_num += int(input_lengths.sum())
 
@@ -353,6 +356,7 @@ class SupervisedTrainer(object):
                 predict_list.append(self.vocab.label_to_string(y_hats[idx].cpu().detach().numpy()))
              
             cer = self.metric(targets, y_hats)
+            print('--------------------------')
             print('targets: ',targets)
             print('y_hat: ',y_hats)
             print('cer :',cer)

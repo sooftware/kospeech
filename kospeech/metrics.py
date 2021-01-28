@@ -30,6 +30,7 @@ class ErrorRate(object):
 
     def __call__(self, targets, y_hats):
         """ Calculating character error rate """
+        pdb.set_trace()
         dist, length = self._get_distance(targets, y_hats)
         self.total_dist += dist
         self.total_length += length
@@ -47,6 +48,7 @@ class ErrorRate(object):
             - **total_dist**: total distance between targets & y_hats
             - **total_length**: total length of targets sequence
         """
+        pdb.set_trace()
         total_dist = 0
         total_length = 0
 
@@ -82,6 +84,7 @@ class CharacterErrorRate(ErrorRate):
             s1 (string): space-separated sentence
             s2 (string): space-separated sentence
         """
+        pdb.set_trace()
         s1 = s1.replace(' ', '')
         s2 = s2.replace(' ', '')
 
