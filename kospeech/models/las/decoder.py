@@ -18,7 +18,7 @@ import torch.nn as nn
 from torch import Tensor, LongTensor
 from typing import Optional, Any, Tuple
 
-from kospeech.models.decoder import DecoderRNN
+from kospeech.models.base import BaseDecoder
 from kospeech.models.modules import Linear, View
 from kospeech.models.attention import (
     LocationAwareAttention,
@@ -28,7 +28,7 @@ from kospeech.models.attention import (
 )
 
 
-class Speller(DecoderRNN):
+class DecoderRNN(BaseDecoder):
     """
     Converts higher level features (from encoder) into output utterances
     by specifying a probability distribution over sequences of characters.
@@ -44,9 +44,8 @@ class Speller(DecoderRNN):
         num_layers (int, optional): number of recurrent layers (default: 1)
         rnn_type (str, optional): type of RNN cell (default: lstm)
         dropout_p (float, optional): dropout probability (default: 0.3)
-        device (torch.device): device - 'cuda' or 'cpu'
 
-    Inputs: inputs, encoder_outputs, teacher_forcing_ratio, return_decode_dict
+    Inputs: inputs, encoder_outputs, teacher_forcing_ratio
         - **inputs** (batch, seq_len, input_size): list of sequences, whose length is the batch size and within which
           each sequence is a list of token IDs.  It is used for teacher forcing when provided. (default `None`)
         - **encoder_outputs** (batch, seq_len, hidden_dim): tensor with containing the outputs of the encoder.
@@ -54,11 +53,15 @@ class Speller(DecoderRNN):
         - **teacher_forcing_ratio** (float): The probability that teacher forcing will be used. A random number is
           drawn uniformly from 0-1 for every decoding token, and if the sample is smaller than the given value,
           teacher forcing would be used (default is 0).
-        - **return_decode_dict** (dict): dictionary which contains decode informations.
 
     Returns: predicted_log_probs
         - **predicted_log_probs**: list contains decode result (log probability)
     """
+    supported_rnns = {
+        'lstm': nn.LSTM,
+        'gru': nn.GRU,
+        'rnn': nn.RNN,
+    }
 
     def __init__(
             self,
@@ -74,7 +77,8 @@ class Speller(DecoderRNN):
             rnn_type: str = 'lstm',                  # type of RNN cell
             dropout_p: float = 0.3,                  # dropout probability
     ) -> None:
-        super(Speller, self).__init__(hidden_state_dim, hidden_state_dim, num_layers, rnn_type, dropout_p, False)
+        super(DecoderRNN, self).__init__()
+        self.hidden_state_dim = hidden_state_dim
         self.num_classes = num_classes
         self.num_heads = num_heads
         self.num_layers = num_layers
@@ -85,11 +89,21 @@ class Speller(DecoderRNN):
         self.attn_mechanism = attn_mechanism.lower()
         self.embedding = nn.Embedding(num_classes, hidden_state_dim)
         self.input_dropout = nn.Dropout(dropout_p)
+        rnn_cell = self.supported_rnns[rnn_type.lower()]
+        self.rnn = rnn_cell(
+            input_size=hidden_state_dim,
+            hidden_size=hidden_state_dim,
+            num_layers=num_layers,
+            bias=True,
+            batch_first=True,
+            dropout=dropout_p,
+            bidirectional=False,
+        )
 
         if self.attn_mechanism == 'loc':
-            self.attention = LocationAwareAttention(decoder_dim=hidden_state_dim, attn_dim=hidden_state_dim, smoothing=False)
+            self.attention = LocationAwareAttention(hidden_state_dim, attn_dim=hidden_state_dim, smoothing=False)
         elif self.attn_mechanism == 'multi-head':
-            self.attention = MultiHeadAttention(d_model=hidden_state_dim, num_heads=num_heads)
+            self.attention = MultiHeadAttention(hidden_state_dim, num_heads=num_heads)
         elif self.attn_mechanism == 'additive':
             self.attention = AdditiveAttention(hidden_state_dim)
         elif self.attn_mechanism == 'scaled-dot':
@@ -116,7 +130,10 @@ class Speller(DecoderRNN):
         embedded = self.embedding(input_var)
         embedded = self.input_dropout(embedded)
 
-        outputs, hidden_states = self._forward(embedded, hidden_states)
+        if self.training:
+            self.rnn.flatten_parameters()
+
+        outputs, hidden_states = self.rnn(embedded, hidden_states)
 
         if self.attn_mechanism == 'loc':
             context, attn = self.attention(outputs, encoder_outputs, attn)
@@ -125,53 +142,92 @@ class Speller(DecoderRNN):
 
         outputs = torch.cat((outputs, context), dim=2)
 
-        step_outputs = self.get_normalized_probs(outputs.view(-1, self.hidden_state_dim << 1))
+        step_outputs = self.fc(outputs.view(-1, self.hidden_state_dim << 1)).log_softmax(dim=-1)
         step_outputs = step_outputs.view(batch_size, output_lengths, -1).squeeze(1)
 
         return step_outputs, hidden_states, attn
 
     def forward(
             self,
-            inputs: Tensor,
+            targets: Tensor,
             encoder_outputs: Tensor,
             teacher_forcing_ratio: float = 1.0,
     ) -> list:
-
         hidden_states, attn = None, None
         predicted_log_probs = list()
 
-        inputs, batch_size, max_length = self._validate_args(inputs, encoder_outputs, teacher_forcing_ratio)
+        targets, batch_size, max_length = self._validate_args(targets, encoder_outputs, teacher_forcing_ratio)
         use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
 
         if use_teacher_forcing:
-            inputs = inputs[inputs != self.eos_id].view(batch_size, -1)
+            targets = targets[targets != self.eos_id].view(batch_size, -1)
 
             if self.attn_mechanism == 'loc' or self.attn_mechanism == 'additive':
-                for di in range(inputs.size(1)):
-                    input_var = inputs[:, di].unsqueeze(1)
-                    step_outputs, hidden_states, attn = self.forward_step(input_var, hidden_states, encoder_outputs, attn)
+                for di in range(targets.size(1)):
+                    input_var = targets[:, di].unsqueeze(1)
+                    step_outputs, hidden_states, attn = self.forward_step(
+                        input_var,
+                        hidden_states,
+                        encoder_outputs,
+                        attn,
+                    )
                     predicted_log_probs.append(step_outputs)
 
             else:
-                step_outputs, hidden_states, attn = self.forward_step(inputs, hidden_states, encoder_outputs, attn)
+                step_outputs, hidden_states, attn = self.forward_step(
+                    input_var=targets,
+                    hidden_states=hidden_states,
+                    encoder_outputs=encoder_outputs,
+                    attn=attn,
+                )
 
                 for di in range(step_outputs.size(1)):
                     step_output = step_outputs[:, di, :]
                     predicted_log_probs.append(step_output)
 
         else:
-            input_var = inputs[:, 0].unsqueeze(1)
+            input_var = targets[:, 0].unsqueeze(1)
 
             for di in range(max_length):
-                step_outputs, hidden_states, attn = self.forward_step(input_var, hidden_states, encoder_outputs, attn)
+                step_outputs, hidden_states, attn = self.forward_step(
+                    input_var=input_var,
+                    hidden_states=hidden_states,
+                    encoder_outputs=encoder_outputs,
+                    attn=attn,
+                )
                 predicted_log_probs.append(step_outputs)
                 input_var = predicted_log_probs[-1].topk(1)[1]
 
         return predicted_log_probs
 
+    @torch.no_grad()
+    def decode(self, encoder_outputs: Tensor, encoder_output_lengths: Tensor) -> Tensor:
+        hidden_states, attn = None, None
+        predicted_log_probs = list()
+
+        batch_size = encoder_outputs.size(0)
+        input_var = LongTensor([self.sos_id] * batch_size).view(batch_size, 1)
+
+        if torch.cuda.is_available():
+            input_var = input_var.cuda()
+
+        for di in range(self.max_length):
+            step_outputs, hidden_states, attn = self.forward_step(
+                input_var=input_var,
+                hidden_states=hidden_states,
+                encoder_outputs=encoder_outputs,
+                attn=attn,
+            )
+            predicted_log_probs.append(step_outputs)
+            input_var = predicted_log_probs[-1].topk(1)[1]
+
+        outputs = torch.stack(predicted_log_probs, dim=1)
+
+        return outputs
+
     def _validate_args(
             self,
-            inputs: Optional[Any] = None,
+            targets: Optional[Any] = None,
             encoder_outputs: Tensor = None,
             teacher_forcing_ratio: float = 1.0,
     ) -> Tuple[Tensor, int, int]:
@@ -179,17 +235,17 @@ class Speller(DecoderRNN):
         assert encoder_outputs is not None
         batch_size = encoder_outputs.size(0)
 
-        if inputs is None:  # inference
-            inputs = LongTensor([self.sos_id] * batch_size).view(batch_size, 1)
+        if targets is None:  # inference
+            targets = LongTensor([self.sos_id] * batch_size).view(batch_size, 1)
             max_length = self.max_length
 
             if torch.cuda.is_available():
-                inputs = inputs.cuda()
+                targets = targets.cuda()
 
             if teacher_forcing_ratio > 0:
-                raise ValueError("Teacher forcing has to be disabled (set 0) when no inputs is provided.")
+                raise ValueError("Teacher forcing has to be disabled (set 0) when no targets is provided.")
 
         else:
-            max_length = inputs.size(1) - 1  # minus the start of sequence symbol
+            max_length = targets.size(1) - 1  # minus the start of sequence symbol
 
-        return inputs, batch_size, max_length
+        return targets, batch_size, max_length

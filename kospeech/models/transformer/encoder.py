@@ -17,7 +17,8 @@ from torch import Tensor
 from typing import Tuple
 
 from kospeech.models.attention import MultiHeadAttention
-from kospeech.models.encoder import BaseEncoder
+from kospeech.models.base import BaseEncoder
+from kospeech.models.conv import Conv2dExtractor
 from kospeech.models.transformer.embeddings import PositionalEncoding
 from kospeech.models.transformer.mask import get_attn_pad_mask
 from kospeech.models.modules import (
@@ -31,7 +32,7 @@ from kospeech.models.transformer.sublayers import (
 )
 
 
-class SpeechTransformerEncoderLayer(nn.Module):
+class TransformerEncoderLayer(nn.Module):
     """
     EncoderLayer is made up of self-attention and feedforward network.
     This standard encoder layer is based on the paper "Attention Is All You Need".
@@ -52,7 +53,7 @@ class SpeechTransformerEncoderLayer(nn.Module):
             dropout_p: float = 0.3,         # probability of dropout
             ffnet_style: str = 'ff'         # style of feed forward network
     ) -> None:
-        super(SpeechTransformerEncoderLayer, self).__init__()
+        super(TransformerEncoderLayer, self).__init__()
         self.self_attention = AddNorm(MultiHeadAttention(d_model, num_heads), d_model)
         self.feed_forward = AddNorm(PositionwiseFeedForwardNet(d_model, d_ff, dropout_p, ffnet_style), d_model)
 
@@ -62,13 +63,14 @@ class SpeechTransformerEncoderLayer(nn.Module):
         return outputs, attn
 
 
-class SpeechTransformerEncoder(BaseEncoder):
+class TransformerEncoder(BaseEncoder):
     """
     The TransformerEncoder is composed of a stack of N identical layers.
     Each layer has two sub-layers. The first is a multi-head self-attention mechanism,
     and the second is a simple, position-wise fully connected feed-forward network.
 
     Args:
+        conv (Conv2dExtractor): convolutional extractor
         d_model: dimension of model (default: 512)
         input_dim: dimension of feature vector (default: 80)
         d_ff: dimension of feed forward network (default: 2048)
@@ -85,7 +87,7 @@ class SpeechTransformerEncoder(BaseEncoder):
 
     def __init__(
             self,
-            num_classes: int = None,                # number of classification
+            conv: Conv2dExtractor,                  # convolutional extractor
             d_model: int = 512,                     # dimension of model
             input_dim: int = 80,                    # dimension of feature vector
             d_ff: int = 2048,                       # dimension of feed forward network
@@ -95,8 +97,10 @@ class SpeechTransformerEncoder(BaseEncoder):
             dropout_p: float = 0.3,                 # probability of dropout
             pad_id: int = 0,                        # identification of pad token
             joint_ctc_attention: bool = False,      # use CTC Loss & Cross Entropy Joint Learning
+            num_classes: int = None,                # number of classification
     ) -> None:
-        super(SpeechTransformerEncoder, self).__init__()
+        super(TransformerEncoder, self).__init__()
+        self.conv = conv
         self.d_model = d_model
         self.num_layers = num_layers
         self.num_heads = num_heads
@@ -107,7 +111,7 @@ class SpeechTransformerEncoder(BaseEncoder):
         self.positional_encoding = PositionalEncoding(d_model)
         self.joint_ctc_attention = joint_ctc_attention
         self.layers = nn.ModuleList([
-            SpeechTransformerEncoderLayer(
+            TransformerEncoderLayer(
                 d_model=d_model,
                 num_heads=num_heads,
                 d_ff=d_ff,
@@ -123,17 +127,20 @@ class SpeechTransformerEncoder(BaseEncoder):
                 Linear(d_model, num_classes, bias=False),
             )
 
-    def forward(self, inputs: Tensor, input_lengths: Tensor = None) -> Tuple[Tensor, Tensor, Tensor]:
+    def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor, Tensor]:
         encoder_log_probs = None
-        self_attn_mask = get_attn_pad_mask(inputs, input_lengths, inputs.size(1))
 
-        encoder_outputs = self.input_layer_norm(self.input_proj(inputs)) + self.positional_encoding(inputs.size(1))
+        features, output_lengths = self.conv(inputs, input_lengths)
+        self_attn_mask = get_attn_pad_mask(features, output_lengths, features.size(1))
+
+        encoder_outputs = self.input_layer_norm(self.input_proj(features))
+        encoder_outputs += self.positional_encoding(encoder_outputs.size(1))
         encoder_outputs = self.input_dropout(encoder_outputs)
 
         for layer in self.layers:
             encoder_outputs, attn = layer(encoder_outputs, self_attn_mask)
 
         if self.joint_ctc_attention:
-            encoder_log_probs = self.get_normalized_probs(encoder_outputs.transpose(1, 2))
+            encoder_log_probs = self.fc(encoder_outputs.transpose(1, 2)).log_softmax(dim=-1)
 
-        return encoder_outputs, encoder_log_probs, input_lengths
+        return encoder_outputs, output_lengths, encoder_log_probs
