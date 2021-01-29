@@ -53,6 +53,9 @@
 |Jasper|Fully convolutional & dense residual connection & CTC|[Jason Li et al., 2019](https://arxiv.org/pdf/1904.03288.pdf)|  
 |Conformer|Convolution-augmented-Transformer|[Anmol Gulati et al., 2020](https://arxiv.org/abs/2005.08100)|  
   
+- **Note**  
+It is based on the above papers, but there may be other parts of the model implementation.
+  
 ### Pre-processed Transcripts
   
 |Dataset    |Authentication|Output-Unit|Transcript|  
