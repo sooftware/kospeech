@@ -17,8 +17,8 @@ import torch.nn as nn
 from torch import Tensor
 from typing import Tuple
 
-from kospeech.models.conv import Conv2dSubsampling
-from kospeech.models.base import BaseEncoder
+from kospeech.models.convolution import Conv2dSubsampling
+from kospeech.models.interface import EncoderInterface
 from kospeech.models.modules import (
     LayerNorm,
     ResidualConnectionModule,
@@ -116,7 +116,7 @@ class ConformerBlock(nn.Module):
         return self.sequential(inputs.to(self.device))
 
 
-class ConformerEncoder(BaseEncoder):
+class ConformerEncoder(EncoderInterface):
     """
     Conformer encoder first processes the input with a convolution subsampling layer and then
     with a number of conformer blocks.

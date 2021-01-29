@@ -16,15 +16,15 @@ import torch.nn as nn
 from torch import Tensor
 from typing import Tuple, Optional
 
-from kospeech.models.base import BaseEncoder
+from kospeech.models.interface import EncoderInterface
 from kospeech.models.modules import Linear, Transpose
-from kospeech.models.conv import (
+from kospeech.models.convolution import (
     VGGExtractor,
     DeepSpeech2Extractor,
 )
 
 
-class EncoderRNN(BaseEncoder):
+class EncoderRNN(EncoderInterface):
     """
     Converts low level speech signals into higher level features
 

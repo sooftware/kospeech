@@ -17,8 +17,8 @@ from torch import Tensor
 from typing import Tuple
 
 from kospeech.models.attention import MultiHeadAttention
-from kospeech.models.base import BaseEncoder
-from kospeech.models.conv import Conv2dExtractor
+from kospeech.models.convolution import Conv2dExtractor
+from kospeech.models.interface import EncoderInterface
 from kospeech.models.transformer.embeddings import PositionalEncoding
 from kospeech.models.transformer.mask import get_attn_pad_mask
 from kospeech.models.modules import (
@@ -63,7 +63,7 @@ class TransformerEncoderLayer(nn.Module):
         return outputs, attn
 
 
-class TransformerEncoder(BaseEncoder):
+class TransformerEncoder(EncoderInterface):
     """
     The TransformerEncoder is composed of a stack of N identical layers.
     Each layer has two sub-layers. The first is a multi-head self-attention mechanism,

@@ -18,10 +18,14 @@ from omegaconf import DictConfig
 from astropy.modeling import ParameterError
 
 from kospeech.models.conformer import Conformer
-from kospeech.models.conv import VGGExtractor, DeepSpeech2Extractor, Conv2dSubsampling
 from kospeech.models.transformer.decoder import TransformerDecoder
 from kospeech.models.transformer.encoder import TransformerEncoder
 from kospeech.vocabs import Vocabulary
+from kospeech.models.convolution import (
+    VGGExtractor,
+    DeepSpeech2Extractor,
+    Conv2dSubsampling,
+)
 from kospeech.models.las import (
     EncoderRNN,
     DecoderRNN,

@@ -17,10 +17,10 @@ import torch.nn as nn
 from torch import Tensor
 from typing import Optional, Tuple
 
-from kospeech.models.base import BaseEncoderDecoderModel
+from kospeech.models.interface import EncoderDecoderModelInterface
 
 
-class ListenAttendSpell(BaseEncoderDecoderModel):
+class ListenAttendSpell(EncoderDecoderModelInterface):
     """
     Listen, Attend and Spell model with configurable encoder and decoder.
 

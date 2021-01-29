@@ -17,7 +17,7 @@ import torch.nn as nn
 from torch import Tensor
 from typing import Optional, Tuple
 
-from kospeech.models.base import BaseDecoder
+from kospeech.models.interface import DecoderInterface
 from kospeech.models.transformer.sublayers import AddNorm
 from kospeech.models.attention import MultiHeadAttention
 from kospeech.models.modules import Linear
@@ -71,7 +71,7 @@ class TransformerDecoderLayer(nn.Module):
         return outputs, self_attn, memory_attn
 
 
-class TransformerDecoder(BaseDecoder):
+class TransformerDecoder(DecoderInterface):
     """
     The TransformerDecoder is composed of a stack of N identical layers.
     Each layer has three sub-layers. The first is a multi-head self-attention mechanism,

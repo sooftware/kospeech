@@ -18,8 +18,8 @@ import torch.nn.functional as F
 from torch import Tensor
 from typing import Tuple
 
-from kospeech.models.conv import MaskConv1d
-from kospeech.models.model import CTCModel
+from kospeech.models.convolution import MaskConv1d
+from kospeech.models.interface import CTCModelInterface
 from kospeech.models.jasper.sublayers import (
     JasperSubBlock,
     JasperBlock,
@@ -30,7 +30,7 @@ from kospeech.models.jasper.configs import (
 )
 
 
-class Jasper(CTCModel):
+class Jasper(CTCModelInterface):
     """
     Jasper: An End-to-End Convolutional Neural Acoustic Model
     Jasper (Just Another Speech Recognizer), an ASR model comprised of 54 layers proposed by NVIDIA.
@@ -104,8 +104,7 @@ class Jasper(CTCModel):
         inputs (torch.FloatTensor): (batch_size, sequence_length, dimension)
         input_lengths (torch.LongTensor): (batch_size)
         """
-        prev_outputs, prev_output_lengths = list(), list()
-        residual = None
+        residual, prev_outputs, prev_output_lengths = None, list(), list()
         inputs = inputs.transpose(1, 2)
 
         for i, layer in enumerate(self.layers[:-1]):
@@ -115,14 +114,12 @@ class Jasper(CTCModel):
             residual = self._get_jasper_dencse_residual(prev_outputs, prev_output_lengths, i)
 
         outputs, output_lengths = self.layers[-1](inputs, input_lengths, residual)
-        outputs, output_lengths = self.get_normalized_probs(outputs, output_lengths)
 
-        return outputs, output_lengths
-
-    def get_normalized_probs(self, outputs: Tensor, output_lengths: Tensor) -> Tuple[Tensor, Tensor]:
         for i, layer in enumerate(self.postprocess_layers):
             outputs, output_lengths = layer(outputs, output_lengths)
+
         outputs = F.log_softmax(outputs.transpose(1, 2), dim=-1)
+
         return outputs, output_lengths
 
     def _get_jasper_dencse_residual(self, prev_outputs: list, prev_output_lengths: list, index: int):
@@ -154,4 +151,3 @@ class Jasper(CTCModel):
             residual_connections.append(residual_modules)
 
         return residual_connections
-
