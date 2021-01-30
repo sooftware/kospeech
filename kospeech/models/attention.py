@@ -101,7 +101,7 @@ class ScaledDotProductAttention(nn.Module):
         return context, attn
 
 
-class MultiHeadAttention(ScaledDotProductAttention):
+class MultiHeadAttention(nn.Module):
     """
     Multi-Head Attention proposed in "Attention Is All You Need"
     Instead of performing a single attention function with d_model-dimensional keys, values, and queries,
@@ -128,7 +128,7 @@ class MultiHeadAttention(ScaledDotProductAttention):
         - **attn** (batch * num_heads, v_len): tensor containing the attention (alignment) from the encoder outputs.
     """
     def __init__(self, dim: int = 512, num_heads: int = 8) -> None:
-        super(MultiHeadAttention, self).__init__(dim, scale=True)
+        super(MultiHeadAttention, self).__init__()
 
         assert dim % num_heads == 0, "hidden_dim % num_heads should be zero."
 
@@ -137,6 +137,7 @@ class MultiHeadAttention(ScaledDotProductAttention):
         self.query_proj = Linear(dim, self.d_head * num_heads)
         self.key_proj = Linear(dim, self.d_head * num_heads)
         self.value_proj = Linear(dim, self.d_head * num_heads)
+        self.scaled_dot_attn = ScaledDotProductAttention(self.d_head, scale=True)
 
     def forward(self, query: Tensor, key: Tensor, value: Tensor, mask: Optional[Any] = None) -> Tuple[Tensor, Tensor]:
         batch_size = value.size(0)
@@ -152,7 +153,8 @@ class MultiHeadAttention(ScaledDotProductAttention):
         if mask is not None:
             mask = mask.repeat(self.num_heads, 1, 1)
 
-        context, attn = self.forward_qkv(query, key, value, mask)
+        context, attn = self.scaled_dot_attn(query, key, value, mask)
+
         context = context.view(self.num_heads, batch_size, -1, self.d_head)
         context = context.permute(1, 2, 0, 3).contiguous().view(batch_size, -1, self.num_heads * self.d_head)
 

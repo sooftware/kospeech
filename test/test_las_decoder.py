@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import torch
-from kospeech.models.las.decoder import Speller
+from kospeech.models.las.decoder import DecoderRNN
 
 cuda = torch.cuda.is_available()
 device = torch.device('cuda' if cuda else 'cpu')
@@ -21,10 +21,10 @@ device = torch.device('cuda' if cuda else 'cpu')
 inputs = torch.LongTensor([[1, 1, 2], [3, 4, 2], [7, 2, 0]])
 encoder_outputs = torch.rand(3, 100, 32)
 
-decoder = Speller(num_classes=10, hidden_state_dim=32, max_length=10, device=device)
+decoder = DecoderRNN(num_classes=10, hidden_state_dim=32, max_length=10)
 decoder_outputs = decoder(inputs, encoder_outputs, teacher_forcing_ratio=1.0)
 print("teacher_forcing_ratio=1.0 PASS")
 
-decoder = Speller(num_classes=10, hidden_state_dim=32, max_length=10, device=device)
+decoder = DecoderRNN(num_classes=10, hidden_state_dim=32, max_length=10)
 decoder_outputs = decoder(inputs, encoder_outputs, teacher_forcing_ratio=0.0)
 print("teacher_forcing_ratio=0.0 PASS")
