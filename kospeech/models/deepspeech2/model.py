@@ -119,9 +119,8 @@ class DeepSpeech2(CTCModelInterface):
     ):
         super(DeepSpeech2, self).__init__()
         self.device = device
-        self.rnn_layers = nn.ModuleList()
-
         self.conv = DeepSpeech2Extractor(input_dim, activation=activation)
+        self.rnn_layers = nn.ModuleList()
         rnn_output_size = rnn_hidden_dim << 1 if bidirectional else rnn_hidden_dim
 
         for idx in range(num_rnn_layers):

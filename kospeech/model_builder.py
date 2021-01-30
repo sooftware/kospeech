@@ -73,7 +73,6 @@ def build_model(
             num_encoder_layers=config.model.num_encoder_layers,
             num_decoder_layers=config.model.num_decoder_layers,
             dropout_p=config.model.dropout,
-            ffnet_style=config.model.ffnet_style,
             device=device,
             joint_ctc_attention=config.model.joint_ctc_attention,
             extractor=config.model.extractor,
@@ -216,7 +215,6 @@ def build_transformer(
         num_decoder_layers: int,
         extractor: str,
         dropout_p: float,
-        ffnet_style: str,
         device: torch.device,
         pad_id: int = 0,
         sos_id: int = 1,
@@ -224,8 +222,6 @@ def build_transformer(
         joint_ctc_attention: bool = False,
         max_length: int = 400,
 ) -> nn.DataParallel:
-    if ffnet_style not in {'ff', 'conv'}:
-        raise ParameterError("Unsupported ffnet_style: {0}".format(ffnet_style))
     if extractor.lower() == 'vgg':
         conv = VGGExtractor(input_dim)
     elif extractor.lower() == 'ds2':
