@@ -19,7 +19,7 @@ from typing import Tuple
 
 from kospeech.models.conformer.encoder import ConformerEncoder
 from kospeech.models.interface import CTCModelInterface
-from kospeech.models.modules import Linear
+from kospeech.models.modules import Linear, LayerNorm
 
 
 class Conformer(CTCModelInterface):
@@ -85,9 +85,8 @@ class Conformer(CTCModelInterface):
             device=device,
         )
         self.fc = nn.Sequential(
-            Linear(encoder_dim, encoder_dim),
-            nn.ReLU(),
-            Linear(encoder_dim, num_classes, bias=False),
+            LayerNorm(encoder_dim),
+            Linear(encoder_dim, num_classes, bias=False)
         )
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:

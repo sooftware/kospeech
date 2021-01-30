@@ -20,7 +20,7 @@ from typing import Tuple
 
 from kospeech.models.convolution import DeepSpeech2Extractor
 from kospeech.models.interface import CTCModelInterface
-from kospeech.models.modules import Linear
+from kospeech.models.modules import Linear, LayerNorm
 
 
 class BNReluRNN(nn.Module):
@@ -136,8 +136,7 @@ class DeepSpeech2(CTCModelInterface):
             )
 
         self.fc = nn.Sequential(
-            Linear(rnn_output_size, rnn_hidden_dim),
-            nn.ReLU(),
+            LayerNorm(rnn_hidden_dim),
             Linear(rnn_hidden_dim, num_classes, bias=False),
         )
 
