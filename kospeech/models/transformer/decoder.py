@@ -132,8 +132,9 @@ class TransformerDecoder(DecoderInterface):
         )
 
     def forward(self, targets: Tensor, encoder_outputs: Tensor, encoder_output_lengths: Tensor) -> Tensor:
-        batch_size, output_length = targets.size(0), targets.size(1)
+        batch_size, output_length = targets.size(0), targets.size(1) - 1
 
+        targets = targets[targets != self.eos_id].view(batch_size, -1)
         self_attn_mask = get_decoder_self_attn_mask(targets, targets, self.pad_id)
         encoder_outputs_mask = get_attn_pad_mask(encoder_outputs, encoder_output_lengths, output_length)
 

@@ -19,6 +19,7 @@ from kospeech.models import ModelConfig
 @dataclass
 class TransformerConfig(ModelConfig):
     architecture: str = "transformer"
+    extractor: str = "vgg"
     use_bidirectional: bool = True
     dropout: float = 0.3
     d_model: int = 512
