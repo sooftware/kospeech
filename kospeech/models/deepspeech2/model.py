@@ -152,6 +152,6 @@ class DeepSpeech2(CTCModelInterface):
         for rnn_layer in self.rnn_layers:
             outputs = rnn_layer(outputs, output_lengths)
 
-        outputs = self.get_normalized_probs(outputs.transpose(0, 1))
+        outputs = self.fc(outputs.transpose(0, 1)).log_softmax(dim=-1)
 
         return outputs, output_lengths
