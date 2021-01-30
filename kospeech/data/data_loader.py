@@ -182,7 +182,7 @@ def _collate_fn(batch, pad_id):
     batch = sorted(batch, key=lambda sample: sample[0].size(0), reverse=True)
 
     seq_lengths = [len(s[0]) for s in batch]
-    target_lengths = [len(s[1]) for s in batch]
+    target_lengths = [len(s[1]) - 1 for s in batch]
 
     max_seq_sample = max(batch, key=seq_length_)[0]
     max_target_sample = max(batch, key=target_length_)[1]

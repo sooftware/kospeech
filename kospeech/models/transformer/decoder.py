@@ -160,3 +160,9 @@ class TransformerDecoder(DecoderInterface):
             predictions[:, di] = step_outputs[:, di]
 
         return predictions
+
+
+class BeamDecoderTransformer(DecoderInterface):
+    # TODO: Implements
+    def __init__(self):
+        super(BeamDecoderTransformer, self).__init__()

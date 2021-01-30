@@ -71,6 +71,9 @@ class EncoderRNN(EncoderInterface):
             joint_ctc_attention: bool = False,       # Use CTC Loss & Cross Entropy Joint Learning
     ) -> None:
         super(EncoderRNN, self).__init__()
+        if joint_ctc_attention:
+            assert num_classes is not None
+
         self.hidden_state_dim = hidden_state_dim
         self.joint_ctc_attention = joint_ctc_attention
         extractor = self.supported_extractors[extractor.lower()]
