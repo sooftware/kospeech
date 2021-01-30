@@ -137,7 +137,7 @@ class DeepSpeech2(CTCModelInterface):
 
         self.fc = nn.Sequential(
             LayerNorm(rnn_output_size),
-            Linear(rnn_hidden_dim, num_classes, bias=False),
+            Linear(rnn_output_size, num_classes, bias=False),
         )
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
