@@ -29,25 +29,23 @@ class AdditiveAttention(nn.Module):
      Additive attention proposed in "Neural Machine Translation by Jointly Learning to Align and Translate" paper.
 
      Args:
-         d_model (int): dimension of model
+         dim (int): dimension of model
 
-     Inputs: query, value
+     Inputs: query, key, value
          - **query** (batch_size, q_len, hidden_dim): tensor containing the output features from the decoder.
+         - **key** (batch, k_len, d_model): tensor containing projection vector for encoder.
          - **value** (batch_size, v_len, hidden_dim): tensor containing features of the encoded input sequence.
 
      Returns: context, attn
          - **context**: tensor containing the context vector from attention mechanism.
          - **attn**: tensor containing the alignment from the encoder outputs.
-
-     Reference:
-         - **Neural Machine Translation by Jointly Learning to Align and Translate**: https://arxiv.org/abs/1409.0473
     """
-    def __init__(self, d_model: int) -> None:
+    def __init__(self, dim: int) -> None:
         super(AdditiveAttention, self).__init__()
-        self.query_proj = Linear(d_model, d_model, bias=False)
-        self.key_proj = Linear(d_model, d_model, bias=False)
-        self.bias = nn.Parameter(torch.rand(d_model).uniform_(-0.1, 0.1))
-        self.score_proj = Linear(d_model, 1)
+        self.query_proj = Linear(dim, dim, bias=False)
+        self.key_proj = Linear(dim, dim, bias=False)
+        self.score_proj = Linear(dim, 1)
+        self.bias = nn.Parameter(torch.rand(dim).uniform_(-0.1, 0.1))
 
     def forward(self, query: Tensor, key: Tensor, value: Tensor) -> Tuple[Tensor, Tensor]:
         score = self.score_proj(torch.tanh(self.key_proj(key) + self.query_proj(query) + self.bias)).squeeze(-1)
@@ -86,12 +84,12 @@ class ScaledDotProductAttention(nn.Module):
         else:
             self.sqrt_dim = 1
 
-    def forward_qkv(
+    def forward(
             self,
             query: Tensor,
             key: Tensor,
             value: Tensor,
-            mask: Optional[Tensor] = None
+            mask: Optional[Any] = None
     ) -> Tuple[Tensor, Tensor]:
         score = torch.bmm(query, key.transpose(1, 2)) / self.sqrt_dim
 
@@ -102,17 +100,8 @@ class ScaledDotProductAttention(nn.Module):
         context = torch.bmm(attn, value)
         return context, attn
 
-    def forward(
-            self,
-            query: Tensor,
-            key: Tensor,
-            value: Tensor,
-            mask: Optional[Any] = None
-    ) -> Tuple[Tensor, Tensor]:
-        return self.forward(query, key, value, mask)
 
-
-class MultiHeadAttention(ScaledDotProductAttention):
+class MultiHeadAttention(nn.Module):
     """
     Multi-Head Attention proposed in "Attention Is All You Need"
     Instead of performing a single attention function with d_model-dimensional keys, values, and queries,
@@ -125,7 +114,7 @@ class MultiHeadAttention(ScaledDotProductAttention):
         where head_i = Attention(Q · W_q, K · W_k, V · W_v)
 
     Args:
-        d_model (int): The dimension of keys / values / quries (default: 512)
+        dim (int): The dimension of model (default: 512)
         num_heads (int): The number of attention heads. (default: 8)
 
     Inputs: query, key, value, mask
@@ -138,16 +127,17 @@ class MultiHeadAttention(ScaledDotProductAttention):
         - **output** (batch, output_len, dimensions): tensor containing the attended output features.
         - **attn** (batch * num_heads, v_len): tensor containing the attention (alignment) from the encoder outputs.
     """
-    def __init__(self, d_model: int = 512, num_heads: int = 8) -> None:
-        super(MultiHeadAttention, self).__init__(d_model, scale=True)
+    def __init__(self, dim: int = 512, num_heads: int = 8) -> None:
+        super(MultiHeadAttention, self).__init__()
 
-        assert d_model % num_heads == 0, "hidden_dim % num_heads should be zero."
+        assert dim % num_heads == 0, "hidden_dim % num_heads should be zero."
 
-        self.d_head = int(d_model / num_heads)
+        self.d_head = int(dim / num_heads)
         self.num_heads = num_heads
-        self.query_proj = Linear(d_model, self.d_head * num_heads)
-        self.key_proj = Linear(d_model, self.d_head * num_heads)
-        self.value_proj = Linear(d_model, self.d_head * num_heads)
+        self.query_proj = Linear(dim, self.d_head * num_heads)
+        self.key_proj = Linear(dim, self.d_head * num_heads)
+        self.value_proj = Linear(dim, self.d_head * num_heads)
+        self.scaled_dot_attn = ScaledDotProductAttention(self.d_head, scale=True)
 
     def forward(self, query: Tensor, key: Tensor, value: Tensor, mask: Optional[Any] = None) -> Tuple[Tensor, Tensor]:
         batch_size = value.size(0)
@@ -163,7 +153,8 @@ class MultiHeadAttention(ScaledDotProductAttention):
         if mask is not None:
             mask = mask.repeat(self.num_heads, 1, 1)
 
-        context, attn = self.forward_qkv(query, key, value, mask)
+        context, attn = self.scaled_dot_attn(query, key, value, mask)
+
         context = context.view(self.num_heads, batch_size, -1, self.d_head)
         context = context.permute(1, 2, 0, 3).contiguous().view(batch_size, -1, self.num_heads * self.d_head)
 
@@ -176,7 +167,7 @@ class RelativeMultiHeadAttention(nn.Module):
     This concept was proposed in the "Transformer-XL: Attentive Language Models Beyond a Fixed-Length Context"
 
     Args:
-        d_model (int): The dimension of model
+        dim (int): The dimension of model
         num_heads (int): The number of attention heads.
         dropout_p (float): probability of dropout
 
@@ -192,21 +183,22 @@ class RelativeMultiHeadAttention(nn.Module):
     """
     def __init__(
             self,
-            d_model: int = 512,
+            dim: int = 512,
             num_heads: int = 16,
             dropout_p: float = 0.1,
     ):
         super(RelativeMultiHeadAttention, self).__init__()
-        assert d_model % num_heads == 0, "d_model % num_heads should be zero."
-        self.d_model = d_model
-        self.d_head = int(d_model / num_heads)
-        self.num_heads = num_heads
-        self.sqrt_dim = math.sqrt(d_model)
+        assert dim % num_heads == 0, "d_model % num_heads should be zero."
 
-        self.query_proj = Linear(d_model, d_model)
-        self.key_proj = Linear(d_model, d_model)
-        self.value_proj = Linear(d_model, d_model)
-        self.pos_proj = Linear(d_model, d_model, bias=False)
+        self.dim = dim
+        self.d_head = int(dim / num_heads)
+        self.num_heads = num_heads
+        self.sqrt_dim = math.sqrt(dim)
+
+        self.query_proj = Linear(dim, dim)
+        self.key_proj = Linear(dim, dim)
+        self.value_proj = Linear(dim, dim)
+        self.pos_proj = Linear(dim, dim, bias=False)
 
         self.dropout = nn.Dropout(p=dropout_p)
         self.u_bias = nn.Parameter(torch.Tensor(self.num_heads, self.d_head))
@@ -214,7 +206,7 @@ class RelativeMultiHeadAttention(nn.Module):
         torch.nn.init.xavier_uniform_(self.u_bias)
         torch.nn.init.xavier_uniform_(self.v_bias)
 
-        self.out_proj = Linear(d_model, d_model)
+        self.out_proj = Linear(dim, dim)
 
     def forward(
             self,
@@ -245,7 +237,7 @@ class RelativeMultiHeadAttention(nn.Module):
         attn = self.dropout(attn)
 
         context = torch.matmul(attn, value).transpose(1, 2)
-        context = context.contiguous().view(batch_size, -1, self.d_model)
+        context = context.contiguous().view(batch_size, -1, self.dim)
 
         return self.out_proj(context)
 
@@ -268,7 +260,7 @@ class LocationAwareAttention(nn.Module):
     We refer to implementation of ClovaCall Attention style.
 
     Args:
-        decoder_dim (int): dimension of model
+        dim (int): dimension of model
         attn_dim (int): dimension of attention
         smoothing (bool): flag indication whether to use smoothing or not.
 
@@ -285,13 +277,11 @@ class LocationAwareAttention(nn.Module):
         - **Attention-Based Models for Speech Recognition**: https://arxiv.org/abs/1506.07503
         - **ClovaCall**: https://github.com/clovaai/ClovaCall/blob/master/las.pytorch/models/attention.py
     """
-    def __init__(self, decoder_dim: int = 1024, attn_dim: int = 1024, smoothing: bool = False) -> None:
+    def __init__(self, dim: int = 1024, attn_dim: int = 1024, smoothing: bool = False) -> None:
         super(LocationAwareAttention, self).__init__()
-        self.decoder_dim = decoder_dim
-        self.attn_dim = attn_dim
         self.location_conv = nn.Conv1d(in_channels=1, out_channels=attn_dim, kernel_size=3, padding=1)
-        self.query_proj = Linear(decoder_dim, attn_dim, bias=False)
-        self.value_proj = Linear(decoder_dim, attn_dim, bias=False)
+        self.query_proj = Linear(dim, attn_dim, bias=False)
+        self.value_proj = Linear(dim, attn_dim, bias=False)
         self.bias = nn.Parameter(torch.rand(attn_dim).uniform_(-0.1, 0.1))
         self.fc = Linear(attn_dim, 1, bias=True)
         self.smoothing = smoothing

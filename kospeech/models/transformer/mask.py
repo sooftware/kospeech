@@ -17,24 +17,17 @@ from torch import Tensor
 from typing import Any, Optional
 
 
-def get_non_pad_mask(inputs: Tensor, input_lengths: Optional[Any] = None, pad_id: int = None) -> Tensor:
+def get_non_pad_mask(inputs: Tensor, input_lengths: Tensor) -> Tensor:
     """ Padding position is set to 0, either use input_lengths or pad_id """
-    assert (input_lengths is None and pad_id is not None) or (input_lengths is not None and pad_id is None)
+    batch_size = inputs.size(0)
 
-    if input_lengths is not None:
-        batch_size = inputs.size(0)
+    if len(inputs.size()) == 2:
+        non_pad_mask = inputs.new_ones(inputs.size())  # B x T
+    else:
+        non_pad_mask = inputs.new_ones(inputs.size()[:-1])  # B x T
 
-        if len(inputs.size()) == 2:
-            non_pad_mask = inputs.new_ones(inputs.size())  # B x T
-        else:
-            non_pad_mask = inputs.new_ones(inputs.size()[:-1])  # B x T
-
-        for i in range(batch_size):
-            non_pad_mask[i, input_lengths[i]:] = 0
-
-    if pad_id is not None:
-        assert inputs.dim() == 2
-        non_pad_mask = inputs.ne(pad_id).float()
+    for i in range(batch_size):
+        non_pad_mask[i, input_lengths[i]:] = 0
 
     return non_pad_mask.unsqueeze(-1)
 
@@ -62,7 +55,7 @@ def get_decoder_self_attn_mask(seq_k: Tensor, seq_q: Tensor, pad_id):
 
 def get_attn_pad_mask(inputs, input_lengths, expand_length):
     """ mask position is set to 1 """
-    non_pad_mask = get_non_pad_mask(inputs, input_lengths=input_lengths)
+    non_pad_mask = get_non_pad_mask(inputs, input_lengths)
     pad_mask = non_pad_mask.squeeze(-1).lt(1)
     attn_mask = pad_mask.unsqueeze(1).expand(-1, expand_length, -1)
     return attn_mask

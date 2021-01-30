@@ -19,7 +19,7 @@ from typing import Optional
 
 from kospeech.models.activation import GLU, Swish
 from kospeech.models.attention import RelativeMultiHeadAttention
-from kospeech.models.conv import PointwiseConv1d, DepthwiseConv1d
+from kospeech.models.convolution import PointwiseConv1d, DepthwiseConv1d
 from kospeech.models.modules import LayerNorm, Transpose, Linear
 from kospeech.models.transformer.embeddings import PositionalEncoding
 

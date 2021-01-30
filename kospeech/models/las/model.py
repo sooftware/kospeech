@@ -17,10 +17,10 @@ import torch.nn as nn
 from torch import Tensor
 from typing import Optional, Tuple
 
-from kospeech.models.model import EncoderDecoderModel
+from kospeech.models.interface import EncoderDecoderModelInterface
 
 
-class ListenAttendSpell(EncoderDecoderModel):
+class ListenAttendSpell(EncoderDecoderModelInterface):
     """
     Listen, Attend and Spell model with configurable encoder and decoder.
 
@@ -38,16 +38,12 @@ class ListenAttendSpell(EncoderDecoderModel):
           is drawn uniformly from 0-1 for every decoding token, and if the sample is smaller than the given value,
           teacher forcing would be used (default is 0.90)
 
-    Returns: output
-        - **output** (seq_len, batch_size, num_classes): list of tensors containing
+    Returns: predicted_log_probs
+        - **predicted_log_probs** (seq_len, batch_size, num_classes): list of tensors containing
           the outputs of the decoding function.
     """
     def __init__(self, encoder: nn.Module, decoder: nn.Module) -> None:
         super(ListenAttendSpell, self).__init__(encoder, decoder)
-
-    def flatten_parameters(self) -> None:
-        self.encoder.rnn.flatten_parameters()
-        self.decoder.rnn.flatten_parameters()
 
     def forward(
             self,
@@ -60,12 +56,10 @@ class ListenAttendSpell(EncoderDecoderModel):
         inputs (torch.FloatTensor): (batch_size, sequence_length, dimension)
         input_lengths (torch.LongTensor): (batch_size)
         """
-        encoder_outputs, encoder_log_probs, encoder_output_lengths = self.encoder(inputs, input_lengths)
-        decoder_outputs = self.decoder(targets, encoder_outputs, teacher_forcing_ratio)
-        return decoder_outputs, encoder_log_probs, encoder_output_lengths
+        encoder_outputs, encoder_output_lengths, encoder_log_probs = self.encoder(inputs, input_lengths)
+        predicted_log_probs = self.decoder(targets, encoder_outputs, teacher_forcing_ratio)
+        return predicted_log_probs, encoder_log_probs, encoder_output_lengths
 
-    @torch.no_grad()
-    def recognize(self, inputs: Tensor, input_lengths: Tensor) -> Tensor:
-        predicted_log_probs, _, _ = self.forward(inputs, input_lengths, teacher_forcing_ratio=0.0)
-        outputs = torch.stack(predicted_log_probs, dim=1)
-        return outputs.max(-1)[1]
+    def flatten_parameters(self) -> None:
+        self.encoder.rnn.flatten_parameters()
+        self.decoder.rnn.flatten_parameters()

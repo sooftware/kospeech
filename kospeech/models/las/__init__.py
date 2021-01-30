@@ -13,7 +13,10 @@
 # limitations under the License.
 
 from dataclasses import dataclass
+
 from kospeech.models import ModelConfig
+from kospeech.models.las.encoder import EncoderRNN
+from kospeech.models.las.decoder import DecoderRNN
 
 
 @dataclass

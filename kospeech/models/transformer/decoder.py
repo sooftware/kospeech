@@ -12,15 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import torch
 import torch.nn as nn
 from torch import Tensor
 from typing import Optional, Tuple
 
-from kospeech.models.transformer.sublayers import AddNorm
+from kospeech.models.interface import DecoderInterface
 from kospeech.models.attention import MultiHeadAttention
-from kospeech.models.decoder import BaseDecoder
-from kospeech.models.modules import Linear
-from kospeech.models.transformer.sublayers import PositionwiseFeedForwardNet
+from kospeech.models.modules import Linear, LayerNorm
+from kospeech.models.transformer.sublayers import PositionwiseFeedForward
 from kospeech.models.transformer.embeddings import (
     Embedding,
     PositionalEncoding,
@@ -31,7 +31,7 @@ from kospeech.models.transformer.mask import (
 )
 
 
-class SpeechTransformerDecoderLayer(nn.Module):
+class TransformerDecoderLayer(nn.Module):
     """
     DecoderLayer is made up of self-attention, multi-head attention and feedforward network.
     This standard decoder layer is based on the paper "Attention Is All You Need".
@@ -41,7 +41,6 @@ class SpeechTransformerDecoderLayer(nn.Module):
         num_heads: number of attention heads (default: 8)
         d_ff: dimension of feed forward network (default: 2048)
         dropout_p: probability of dropout (default: 0.3)
-        ffnet_style: style of feed forward network [ff, conv] (default: ff)
     """
 
     def __init__(
@@ -50,27 +49,41 @@ class SpeechTransformerDecoderLayer(nn.Module):
             num_heads: int = 8,             # number of attention heads
             d_ff: int = 2048,               # dimension of feed forward network
             dropout_p: float = 0.3,         # probability of dropout
-            ffnet_style: str = 'ff'         # style of feed forward network
     ) -> None:
-        super(SpeechTransformerDecoderLayer, self).__init__()
-        self.self_attention = AddNorm(MultiHeadAttention(d_model, num_heads), d_model)
-        self.memory_attention = AddNorm(MultiHeadAttention(d_model, num_heads), d_model)
-        self.feed_forward = AddNorm(PositionwiseFeedForwardNet(d_model, d_ff, dropout_p, ffnet_style), d_model)
+        super(TransformerDecoderLayer, self).__init__()
+        self.self_attention_prenorm = LayerNorm(d_model)
+        self.encoder_attention_prenorm = LayerNorm(d_model)
+        self.feed_forward_prenorm = LayerNorm(d_model)
+        self.self_attention = MultiHeadAttention(d_model, num_heads)
+        self.encoder_attention = MultiHeadAttention(d_model, num_heads)
+        self.feed_forward = PositionwiseFeedForward(d_model, d_ff, dropout_p)
 
     def forward(
             self,
             inputs: Tensor,
-            memory: Tensor,
+            encoder_outputs: Tensor,
             self_attn_mask: Optional[Tensor] = None,
-            memory_mask: Optional[Tensor] = None
+            encoder_outputs_mask: Optional[Tensor] = None
     ) -> Tuple[Tensor, Tensor, Tensor]:
+        residual = inputs
+        inputs = self.self_attention_prenorm(inputs)
         outputs, self_attn = self.self_attention(inputs, inputs, inputs, self_attn_mask)
-        outputs, memory_attn = self.memory_attention(outputs, memory, memory, memory_mask)
+        outputs += residual
+
+        residual = outputs
+        outputs = self.encoder_attention_prenorm(outputs)
+        outputs, encoder_attn = self.encoder_attention(outputs, encoder_outputs, encoder_outputs, encoder_outputs_mask)
+        outputs += residual
+
+        residual = outputs
+        outputs = self.feed_forward_prenorm(outputs)
         outputs = self.feed_forward(outputs)
-        return outputs, self_attn, memory_attn
+        outputs += residual
+
+        return outputs, self_attn, encoder_attn
 
 
-class SpeechTransformerDecoder(BaseDecoder):
+class TransformerDecoder(DecoderInterface):
     """
     The TransformerDecoder is composed of a stack of N identical layers.
     Each layer has three sub-layers. The first is a multi-head self-attention mechanism,
@@ -82,7 +95,6 @@ class SpeechTransformerDecoder(BaseDecoder):
         d_ff: dimension of feed forward network
         num_layers: number of decoder layers
         num_heads: number of attention heads
-        ffnet_style: style of feed forward network
         dropout_p: probability of dropout
         pad_id: identification of pad token
         eos_id: identification of end of sentence token
@@ -95,47 +107,70 @@ class SpeechTransformerDecoder(BaseDecoder):
             d_ff: int = 512,                # dimension of feed forward network
             num_layers: int = 6,            # number of decoder layers
             num_heads: int = 8,             # number of attention heads
-            ffnet_style: str = 'ff',        # style of feed forward network
             dropout_p: float = 0.3,         # probability of dropout
             pad_id: int = 0,                # identification of pad token
+            sos_id: int = 1,                # identification of start of sentence token
             eos_id: int = 2,                # identification of end of sentence token
+            max_length: int = 400,          # max length of decoding
     ) -> None:
-        super(SpeechTransformerDecoder, self).__init__()
+        super(TransformerDecoder, self).__init__()
         self.d_model = d_model
         self.num_layers = num_layers
         self.num_heads = num_heads
+        self.max_length = max_length
+        self.pad_id = pad_id
+        self.sos_id = sos_id
+        self.eos_id = eos_id
+
         self.embedding = Embedding(num_classes, pad_id, d_model)
         self.positional_encoding = PositionalEncoding(d_model)
         self.input_dropout = nn.Dropout(p=dropout_p)
         self.layers = nn.ModuleList([
-            SpeechTransformerDecoderLayer(
+            TransformerDecoderLayer(
                 d_model=d_model,
                 num_heads=num_heads,
                 d_ff=d_ff,
                 dropout_p=dropout_p,
-                ffnet_style=ffnet_style
             ) for _ in range(num_layers)
         ])
-        self.pad_id = pad_id
-        self.eos_id = eos_id
         self.fc = nn.Sequential(
-            Linear(d_model, d_model),
-            nn.Tanh(),
-            Linear(d_model, num_classes),
+            LayerNorm(d_model),
+            Linear(d_model, num_classes, bias=False),
         )
 
-    def forward(self, targets: Tensor, input_lengths: Optional[Tensor] = None, memory: Tensor = None):
-        batch_size, output_length = targets.size(0), targets.size(1)
+    def forward(self, targets: Tensor, encoder_outputs: Tensor, encoder_output_lengths: Tensor) -> Tensor:
+        batch_size = targets.size(0)
+        targets = targets[targets != self.eos_id].view(batch_size, -1)
+        target_length = targets.size(1)
 
         self_attn_mask = get_decoder_self_attn_mask(targets, targets, self.pad_id)
-        memory_mask = get_attn_pad_mask(memory, input_lengths, output_length)
+        encoder_outputs_mask = get_attn_pad_mask(encoder_outputs, encoder_output_lengths, target_length)
 
-        outputs = self.embedding(targets) + self.positional_encoding(output_length)
+        outputs = self.embedding(targets) + self.positional_encoding(target_length)
         outputs = self.input_dropout(outputs)
 
         for layer in self.layers:
-            outputs, self_attn, memory_attn = layer(outputs, memory, self_attn_mask, memory_mask)
+            outputs, self_attn, memory_attn = layer(
+                inputs=outputs,
+                encoder_outputs=encoder_outputs,
+                self_attn_mask=self_attn_mask,
+                encoder_outputs_mask=encoder_outputs_mask,
+            )
 
-        predicted_log_probs = self.get_normalized_probs(outputs)
+        predicted_log_probs = self.fc(outputs).log_softmax(dim=-1)
 
         return predicted_log_probs
+
+    @torch.no_grad()
+    def decode(self, encoder_outputs: Tensor, encoder_output_lengths: Tensor) -> Tensor:
+        batch_size = encoder_outputs.size(0)
+
+        predictions = encoder_outputs.new_zeros(batch_size, self.max_length).long()
+        predictions[:, 0] = self.sos_id
+
+        for di in range(1, self.max_length):
+            step_outputs = self.forward(predictions, encoder_outputs, encoder_output_lengths)
+            step_outputs = step_outputs.max(dim=-1, keepdim=False)[1]
+            predictions[:, di] = step_outputs[:, di]
+
+        return predictions

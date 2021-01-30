@@ -13,23 +13,19 @@
 # limitations under the License.
 
 import torch
-from kospeech.models.las.encoder import Listener
+from kospeech.models.las.encoder import EncoderRNN
 
 inputs = torch.rand(3, 12345, 80)
 input_lengths = torch.IntTensor([12345, 12300, 12000])
 
-encoder = Listener(input_dim=80, hidden_state_dim=32, joint_ctc_attention=False)
+encoder = EncoderRNN(input_dim=80, hidden_state_dim=32, joint_ctc_attention=False, extractor='vgg')
 encoder_outputs, encoder_log_probs, encoder_output_lengths = encoder(inputs, input_lengths)
 print("joint_ctc_attention=False PASS, VGGExtractor")
 
-encoder = Listener(input_dim=80, hidden_state_dim=32, joint_ctc_attention=False, extractor='ds2')
-encoder_outputs, encoder_log_probs, encoder_output_lengths = encoder(inputs, input_lengths)
+encoder = EncoderRNN(input_dim=80, hidden_state_dim=32, joint_ctc_attention=False, extractor='ds2')
+encoder_outputs, encoder_output_lengths, encoder_log_probs = encoder(inputs, input_lengths)
 print("joint_ctc_attention=False PASS, DeepSpeech2Extractor")
 
-encoder = Listener(input_dim=80, hidden_state_dim=32, joint_ctc_attention=False, extractor='conv2d')
-encoder_outputs, encoder_log_probs, encoder_output_lengths = encoder(inputs, input_lengths)
-print("joint_ctc_attention=False PASS, Conv2dSubsampling")
-
-encoder = Listener(input_dim=80, hidden_state_dim=32, num_classes=2, joint_ctc_attention=True)
-encoder_outputs, encoder_log_probs, encoder_output_lengths = encoder(inputs, input_lengths)
+encoder = EncoderRNN(input_dim=80, hidden_state_dim=32, num_classes=2, joint_ctc_attention=True)
+encoder_outputs, encoder_output_lengths, encoder_log_probs = encoder(inputs, input_lengths)
 print("joint_ctc_attention=True PASS")

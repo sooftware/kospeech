@@ -18,17 +18,24 @@ from omegaconf import DictConfig
 from astropy.modeling import ParameterError
 
 from kospeech.models.conformer import Conformer
-from kospeech.models.decoder import DecoderRNN
-from kospeech.models.encoder import EncoderRNN
+from kospeech.models.transformer.decoder import TransformerDecoder
+from kospeech.models.transformer.encoder import TransformerEncoder
 from kospeech.vocabs import Vocabulary
+from kospeech.models.convolution import (
+    VGGExtractor,
+    DeepSpeech2Extractor,
+    Conv2dSubsampling,
+)
+from kospeech.models.las import (
+    EncoderRNN,
+    DecoderRNN,
+)
 from kospeech.decode.ensemble import (
     BasicEnsemble,
     WeightedEnsemble,
 )
 from kospeech.models import (
     ListenAttendSpell,
-    Listener,
-    Speller,
     DeepSpeech2,
     SpeechTransformer,
     Jasper,
@@ -55,17 +62,20 @@ def build_model(
     elif config.model.architecture.lower() == 'transformer':
         model = build_transformer(
             num_classes=len(vocab),
-            pad_id=vocab.pad_id,
-            input_size=input_size,
+            input_dim=input_size,
             d_model=config.model.d_model,
+            d_ff=config.model.d_ff,
             num_heads=config.model.num_heads,
+            pad_id=vocab.pad_id,
+            sos_id=vocab.sos_id,
             eos_id=vocab.eos_id,
+            max_length=config.model.max_len,
             num_encoder_layers=config.model.num_encoder_layers,
             num_decoder_layers=config.model.num_decoder_layers,
             dropout_p=config.model.dropout,
-            ffnet_style=config.model.ffnet_style,
             device=device,
             joint_ctc_attention=config.model.joint_ctc_attention,
+            extractor=config.model.extractor,
         )
 
     elif config.model.architecture.lower() == 'deepspeech2':
@@ -197,31 +207,62 @@ def build_deepspeech2(
 
 def build_transformer(
         num_classes: int,
-        pad_id: int,
         d_model: int,
+        d_ff: int,
         num_heads: int,
-        input_size: int,
+        input_dim: int,
         num_encoder_layers: int,
         num_decoder_layers: int,
+        extractor: str,
         dropout_p: float,
-        ffnet_style: str,
         device: torch.device,
-        eos_id: int,
-        joint_ctc_attention: bool,
+        pad_id: int = 0,
+        sos_id: int = 1,
+        eos_id: int = 2,
+        joint_ctc_attention: bool = False,
+        max_length: int = 400,
 ) -> nn.DataParallel:
-    if ffnet_style not in {'ff', 'conv'}:
-        raise ParameterError("Unsupported ffnet_style: {0}".format(ffnet_style))
+    if extractor.lower() == 'vgg':
+        conv = VGGExtractor(input_dim)
+    elif extractor.lower() == 'ds2':
+        conv = DeepSpeech2Extractor(input_dim)
+    elif extractor.lower() == 'conv2d':
+        conv = Conv2dSubsampling(input_dim, in_channels=1, out_channels=d_model)
+    else:
+        raise ValueError("Unsupported Extractor : {0}".format(extractor))
+
+    encoder = TransformerEncoder(
+        conv=conv,
+        d_model=d_model,
+        input_dim=conv.get_output_dim(),
+        d_ff=d_ff,
+        num_layers=num_encoder_layers,
+        num_heads=num_heads,
+        dropout_p=dropout_p,
+        pad_id=pad_id,
+        joint_ctc_attention=joint_ctc_attention,
+        num_classes=num_classes,
+    )
+    decoder = TransformerDecoder(
+        num_classes=num_classes,
+        d_model=d_model,
+        d_ff=d_ff,
+        num_layers=num_decoder_layers,
+        num_heads=num_heads,
+        dropout_p=dropout_p,
+        pad_id=pad_id,
+        sos_id=sos_id,
+        eos_id=eos_id,
+        max_length=max_length,
+    )
 
     return nn.DataParallel(SpeechTransformer(
+        encoder=encoder,
+        decoder=decoder,
         num_classes=num_classes,
         pad_id=pad_id,
         d_model=d_model,
         num_heads=num_heads,
-        num_encoder_layers=num_encoder_layers,
-        num_decoder_layers=num_decoder_layers,
-        dropout_p=dropout_p,
-        ffnet_style=ffnet_style,
-        input_dim=input_size,
         eos_id=eos_id,
         joint_ctc_attention=joint_ctc_attention,
     )).to(device)
@@ -278,7 +319,7 @@ def build_listener(
         extractor: str = 'vgg',
         activation: str = 'hardtanh',
         joint_ctc_attention: bool = False,
-) -> Listener:
+) -> EncoderRNN:
     """ Various encoder dispatcher function. """
     if dropout_p < 0.0:
         raise ParameterError("dropout probability should be positive")
@@ -293,7 +334,7 @@ def build_listener(
     if rnn_type.lower() not in EncoderRNN.supported_rnns.keys():
         raise ParameterError("Unsupported RNN Cell: {0}".format(rnn_type))
 
-    return Listener(
+    return EncoderRNN(
         input_dim=input_size,
         num_classes=num_classes,
         hidden_state_dim=hidden_dim,
@@ -320,7 +361,7 @@ def build_speller(
     dropout_p: float,
     num_heads: int,
     device: torch.device,
-) -> Speller:
+) -> DecoderRNN:
     """ Various decoder dispatcher function. """
     if hidden_dim % num_heads != 0:
         raise ParameterError("{0} % {1} should be zero".format(hidden_dim, num_heads))
@@ -341,7 +382,7 @@ def build_speller(
     if device is None:
         raise ParameterError("device is None")
 
-    return Speller(
+    return DecoderRNN(
         num_classes=num_classes,
         max_length=max_len,
         hidden_state_dim=hidden_dim,

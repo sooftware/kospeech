@@ -28,7 +28,6 @@ class LabelSmoothedCrossEntropyLoss(nn.Module):
         smoothing (float): ratio of smoothing (confidence = 1.0 - smoothing)
         dim (int): dimension of calculation loss
         reduction (str): reduction method [sum, mean] (default: sum)
-        architecture (str): speech model`s model [las, transformer] (default: las)
 
     Inputs: logits, target
         logits (torch.Tensor): probability distribution value from model and it has a logarithm shape

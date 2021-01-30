@@ -18,11 +18,11 @@ from torch import Tensor
 from typing import Tuple
 
 from kospeech.models.conformer.encoder import ConformerEncoder
-from kospeech.models.model import CTCModel
-from kospeech.models.modules import Linear
+from kospeech.models.interface import CTCModelInterface
+from kospeech.models.modules import Linear, LayerNorm
 
 
-class Conformer(CTCModel):
+class Conformer(CTCModelInterface):
     """
     Conformer: Convolution-augmented Transformer for Speech Recognition
     The paper used a one-lstm Transducer decoder, currently still only implemented
@@ -85,12 +85,11 @@ class Conformer(CTCModel):
             device=device,
         )
         self.fc = nn.Sequential(
-            Linear(encoder_dim, encoder_dim),
-            nn.ReLU(),
+            LayerNorm(encoder_dim),
             Linear(encoder_dim, num_classes, bias=False),
         )
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
         outputs, output_lengths = self.encoder(inputs, input_lengths)
-        outputs = self.get_normalized_probs(outputs)
+        outputs = self.fc(outputs).log_softmax(dim=2)
         return outputs, output_lengths

@@ -14,16 +14,75 @@
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from torch import Tensor
 from typing import Tuple
 
-from kospeech.models.conv import DeepSpeech2Extractor
-from kospeech.models.model import CTCModel
-from kospeech.models.modules import Linear
-from kospeech.models.rnn import BNReluRNN
+from kospeech.models.convolution import DeepSpeech2Extractor
+from kospeech.models.interface import CTCModelInterface
+from kospeech.models.modules import Linear, LayerNorm
 
 
-class DeepSpeech2(CTCModel):
+class BNReluRNN(nn.Module):
+    """
+    Recurrent neural network with batch normalization layer & ReLU activation function.
+
+    Args:
+        input_size (int): size of input
+        hidden_state_dim (int): the number of features in the hidden state `h`
+        rnn_type (str, optional): type of RNN cell (default: gru)
+        bidirectional (bool, optional): if True, becomes a bidirectional encoder (defulat: True)
+        dropout_p (float, optional): dropout probability (default: 0.1)
+
+    Inputs: inputs, input_lengths
+        - **inputs** (batch, time, dim): Tensor containing input vectors
+        - **input_lengths**: Tensor containing containing sequence lengths
+
+    Returns: outputs
+        - **outputs**: Tensor produced by the BNReluRNN module
+    """
+    supported_rnns = {
+        'lstm': nn.LSTM,
+        'gru': nn.GRU,
+        'rnn': nn.RNN,
+    }
+
+    def __init__(
+            self,
+            input_size: int,  # size of input
+            hidden_state_dim: int = 512,  # dimension of RNN`s hidden state
+            rnn_type: str = 'gru',  # type of RNN cell
+            bidirectional: bool = True,  # if True, becomes a bidirectional rnn
+            dropout_p: float = 0.1,  # dropout probability
+    ):
+        super(BNReluRNN, self).__init__()
+        self.hidden_state_dim = hidden_state_dim
+        self.batch_norm = nn.BatchNorm1d(input_size)
+        rnn_cell = self.supported_rnns[rnn_type]
+        self.rnn = rnn_cell(
+            input_size=input_size,
+            hidden_size=hidden_state_dim,
+            num_layers=1,
+            bias=True,
+            batch_first=True,
+            dropout=dropout_p,
+            bidirectional=bidirectional,
+        )
+
+    def forward(self, inputs: Tensor, input_lengths: Tensor):
+        total_length = inputs.size(0)
+
+        inputs = F.relu(self.batch_norm(inputs.transpose(1, 2)))
+        inputs = inputs.transpose(1, 2)
+
+        outputs = nn.utils.rnn.pack_padded_sequence(inputs, input_lengths.cpu())
+        outputs, hidden_states = self.rnn(outputs)
+        outputs, _ = nn.utils.rnn.pad_packed_sequence(outputs, total_length=total_length)
+
+        return outputs
+
+
+class DeepSpeech2(CTCModelInterface):
     """
     Deep Speech2 model with configurable encoder and decoder.
     Paper: https://arxiv.org/abs/1512.02595
@@ -60,9 +119,8 @@ class DeepSpeech2(CTCModel):
     ):
         super(DeepSpeech2, self).__init__()
         self.device = device
-        self.rnn_layers = nn.ModuleList()
-
         self.conv = DeepSpeech2Extractor(input_dim, activation=activation)
+        self.rnn_layers = nn.ModuleList()
         rnn_output_size = rnn_hidden_dim << 1 if bidirectional else rnn_hidden_dim
 
         for idx in range(num_rnn_layers):
@@ -77,9 +135,8 @@ class DeepSpeech2(CTCModel):
             )
 
         self.fc = nn.Sequential(
-            Linear(rnn_output_size, rnn_hidden_dim),
-            nn.ReLU(),
-            Linear(rnn_hidden_dim, num_classes, bias=False),
+            LayerNorm(rnn_output_size),
+            Linear(rnn_output_size, num_classes, bias=False),
         )
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
@@ -93,6 +150,6 @@ class DeepSpeech2(CTCModel):
         for rnn_layer in self.rnn_layers:
             outputs = rnn_layer(outputs, output_lengths)
 
-        outputs = self.get_normalized_probs(outputs.transpose(0, 1))
+        outputs = self.fc(outputs.transpose(0, 1)).log_softmax(dim=-1)
 
         return outputs, output_lengths
