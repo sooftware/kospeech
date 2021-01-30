@@ -22,6 +22,7 @@ class TransformerConfig(ModelConfig):
     use_bidirectional: bool = True
     dropout: float = 0.3
     d_model: int = 512
+    d_ff: int = 2048
     num_heads: int = 8
     num_encoder_layers: int = 12
     num_decoder_layers: int = 6

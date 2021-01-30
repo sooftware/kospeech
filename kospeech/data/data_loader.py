@@ -113,7 +113,7 @@ class AudioDataLoader(threading.Thread):
     Audio Data Loader
 
     Args:
-        dataset (kodpeech.data.data_loader.SpectrogramDataset): dataset for feature & transcript matching
+        dataset (SpectrogramDataset): dataset for feature & transcript matching
         queue (Queue.queue): queue for threading
         batch_size (int): size of batch
         thread_id (int): identification of thread
@@ -303,7 +303,7 @@ def split_dataset(config: DictConfig, transcripts_path: str, vocab: Vocabulary):
                 config=config,
                 spec_augment=config.audio.spec_augment,
                 dataset_path=config.train.dataset_path,
-                audio_extension=config.audio.audio_extension
+                audio_extension=config.audio.audio_extension,
             )
         )
 
@@ -313,7 +313,7 @@ def split_dataset(config: DictConfig, transcripts_path: str, vocab: Vocabulary):
         sos_id=vocab.sos_id, eos_id=vocab.eos_id,
         config=config, spec_augment=False,
         dataset_path=config.train.dataset_path,
-        audio_extension=config.audio.audio_extension
+        audio_extension=config.audio.audio_extension,
     )
 
     logger.info("split dataset complete !!")

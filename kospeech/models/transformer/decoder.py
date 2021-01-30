@@ -155,7 +155,7 @@ class TransformerDecoder(DecoderInterface):
         predictions[:, 0] = self.sos_id
 
         for di in range(1, self.max_length):
-            step_outputs = self.decoder(predictions, encoder_outputs, encoder_output_lengths)
+            step_outputs = self.forward(predictions, encoder_outputs, encoder_output_lengths)
             step_outputs = step_outputs.max(dim=-1, keepdim=False)[1]
             predictions[:, di] = step_outputs[:, di]
 
