@@ -231,3 +231,18 @@ class CTCModelInterface(nn.Module):
         if self.decoder is not None:
             return self.decoder.decode(predicted_log_probs)
         return self.decode(predicted_log_probs)
+
+
+class TransducerEncoderInterface(nn.Module):
+    def __init__(self):
+        super(TransducerEncoderInterface, self).__init__()
+
+
+class TransducerDecoderInterface(nn.Module):
+    def __init__(self):
+        super(TransducerDecoderInterface, self).__init__()
+
+
+class TransducerInterface(nn.Module):
+    def __init__(self):
+        super(TransducerInterface, self).__init__()
