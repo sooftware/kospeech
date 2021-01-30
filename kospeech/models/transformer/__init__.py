@@ -27,7 +27,6 @@ class TransformerConfig(ModelConfig):
     num_heads: int = 8
     num_encoder_layers: int = 12
     num_decoder_layers: int = 6
-    ffnet_style: str = "ff"
 
 
 @dataclass

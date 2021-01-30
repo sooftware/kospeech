@@ -311,8 +311,7 @@ class SupervisedTrainer(object):
             - **loss** (float): loss of validation
             - **cer** (float): character error rate of validation
         """
-        target_list = list()
-        predict_list = list()
+        target_list, predict_list = list(), list()
         cer = 1.0
 
         model.eval()

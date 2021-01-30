@@ -20,16 +20,12 @@ from kospeech.models.attention import MultiHeadAttention
 from kospeech.models.convolution import Conv2dExtractor
 from kospeech.models.interface import EncoderInterface
 from kospeech.models.transformer.embeddings import PositionalEncoding
-from kospeech.models.transformer.mask import get_attn_pad_mask
+from kospeech.models.transformer.mask import get_attn_pad_mask, get_non_pad_mask
+from kospeech.models.transformer.sublayers import PositionwiseFeedForward
 from kospeech.models.modules import (
     Linear,
     LayerNorm,
     Transpose,
-)
-from kospeech.models.transformer.sublayers import (
-    PositionwiseFeedForward,
-    AddNorm,
-    PreNorm,
 )
 
 
@@ -43,7 +39,6 @@ class TransformerEncoderLayer(nn.Module):
         num_heads: number of attention heads (default: 8)
         d_ff: dimension of feed forward network (default: 2048)
         dropout_p: probability of dropout (default: 0.3)
-        ffnet_style: style of feed forward network [ff, conv] (default: ff)
     """
 
     def __init__(
@@ -52,15 +47,27 @@ class TransformerEncoderLayer(nn.Module):
             num_heads: int = 8,             # number of attention heads
             d_ff: int = 2048,               # dimension of feed forward network
             dropout_p: float = 0.3,         # probability of dropout
-            ffnet_style: str = 'ff',        # style of feed forward network
     ) -> None:
         super(TransformerEncoderLayer, self).__init__()
-        self.self_attention = PreNorm(MultiHeadAttention(d_model, num_heads), d_model)
-        self.feed_forward = PreNorm(PositionwiseFeedForward(d_model, d_ff, dropout_p, ffnet_style), d_model)
+        self.attention_prenorm = LayerNorm(d_model)
+        self.feed_forward_prenorm = LayerNorm(d_model)
+        self.self_attention = MultiHeadAttention(d_model, num_heads)
+        self.feed_forward = PositionwiseFeedForward(d_model, d_ff, dropout_p)
 
-    def forward(self, inputs: Tensor, self_attn_mask: Tensor = None) -> Tuple[Tensor, Tensor]:
+    def forward(
+            self,
+            inputs: Tensor,
+            non_pad_mask: Tensor = None,
+            self_attn_mask: Tensor = None
+    ) -> Tuple[Tensor, Tensor]:
+        inputs = self.attention_prenorm(inputs)
         outputs, attn = self.self_attention(inputs, inputs, inputs, self_attn_mask)
+        outputs *= non_pad_mask
+
+        outputs = self.feed_forward_prenorm(outputs)
         outputs = self.feed_forward(outputs)
+        outputs *= non_pad_mask
+
         return outputs, attn
 
 
@@ -77,7 +84,6 @@ class TransformerEncoder(EncoderInterface):
         d_ff: dimension of feed forward network (default: 2048)
         num_layers: number of encoder layers (default: 6)
         num_heads: number of attention heads (default: 8)
-        ffnet_style: style of feed forward network [ff, conv] (default: ff)
         dropout_p:  probability of dropout (default: 0.3)
         pad_id: identification of pad token (default: 0)
 
@@ -94,7 +100,6 @@ class TransformerEncoder(EncoderInterface):
             d_ff: int = 2048,                       # dimension of feed forward network
             num_layers: int = 6,                    # number of encoder layers
             num_heads: int = 8,                     # number of attention heads
-            ffnet_style: str = 'ff',                # style of feed forward network [ff, conv]
             dropout_p: float = 0.3,                 # probability of dropout
             pad_id: int = 0,                        # identification of pad token
             joint_ctc_attention: bool = False,      # use CTC Loss & Cross Entropy Joint Learning
@@ -117,7 +122,6 @@ class TransformerEncoder(EncoderInterface):
                 num_heads=num_heads,
                 d_ff=d_ff,
                 dropout_p=dropout_p,
-                ffnet_style=ffnet_style,
             ) for _ in range(num_layers)
         ])
         if self.joint_ctc_attention:
@@ -132,6 +136,8 @@ class TransformerEncoder(EncoderInterface):
         encoder_log_probs = None
 
         features, output_lengths = self.conv(inputs, input_lengths)
+
+        non_pad_mask = get_non_pad_mask(features, input_lengths=output_lengths)
         self_attn_mask = get_attn_pad_mask(features, output_lengths, features.size(1))
 
         encoder_outputs = self.input_layer_norm(self.input_proj(features))
@@ -139,7 +145,7 @@ class TransformerEncoder(EncoderInterface):
         encoder_outputs = self.input_dropout(encoder_outputs)
 
         for layer in self.layers:
-            encoder_outputs, attn = layer(encoder_outputs, self_attn_mask)
+            encoder_outputs, attn = layer(encoder_outputs, non_pad_mask, self_attn_mask)
 
         if self.joint_ctc_attention:
             encoder_log_probs = self.fc(encoder_outputs.transpose(1, 2)).log_softmax(dim=-1)

@@ -18,9 +18,8 @@ from torch import Tensor
 from typing import Optional, Tuple
 
 from kospeech.models.interface import DecoderInterface
-from kospeech.models.transformer.sublayers import PreNorm
 from kospeech.models.attention import MultiHeadAttention
-from kospeech.models.modules import Linear
+from kospeech.models.modules import Linear, LayerNorm
 from kospeech.models.transformer.sublayers import PositionwiseFeedForward
 from kospeech.models.transformer.embeddings import (
     Embedding,
@@ -28,7 +27,7 @@ from kospeech.models.transformer.embeddings import (
 )
 from kospeech.models.transformer.mask import (
     get_decoder_self_attn_mask,
-    get_attn_pad_mask,
+    get_attn_pad_mask, get_non_pad_mask,
 )
 
 
@@ -42,7 +41,6 @@ class TransformerDecoderLayer(nn.Module):
         num_heads: number of attention heads (default: 8)
         d_ff: dimension of feed forward network (default: 2048)
         dropout_p: probability of dropout (default: 0.3)
-        ffnet_style: style of feed forward network [ff, conv] (default: ff)
     """
 
     def __init__(
@@ -51,24 +49,36 @@ class TransformerDecoderLayer(nn.Module):
             num_heads: int = 8,             # number of attention heads
             d_ff: int = 2048,               # dimension of feed forward network
             dropout_p: float = 0.3,         # probability of dropout
-            ffnet_style: str = 'ff',        # style of feed forward network
     ) -> None:
         super(TransformerDecoderLayer, self).__init__()
-        self.self_attention = PreNorm(MultiHeadAttention(d_model, num_heads), d_model)
-        self.memory_attention = PreNorm(MultiHeadAttention(d_model, num_heads), d_model)
-        self.feed_forward = PreNorm(PositionwiseFeedForward(d_model, d_ff, dropout_p, ffnet_style), d_model)
+        self.self_attention_prenorm = LayerNorm(d_model)
+        self.encoder_attention_prenorm = LayerNorm(d_model)
+        self.feed_forward_prenorm = LayerNorm(d_model)
+        self.self_attention = MultiHeadAttention(d_model, num_heads)
+        self.encoder_attention = MultiHeadAttention(d_model, num_heads)
+        self.feed_forward = PositionwiseFeedForward(d_model, d_ff, dropout_p)
 
     def forward(
             self,
             inputs: Tensor,
-            memory: Tensor,
+            encoder_outputs: Tensor,
+            non_pad_mask: Optional[Tensor] = None,
             self_attn_mask: Optional[Tensor] = None,
-            memory_mask: Optional[Tensor] = None
+            encoder_outputs_mask: Optional[Tensor] = None
     ) -> Tuple[Tensor, Tensor, Tensor]:
+        inputs = self.self_attention_prenorm(inputs)
         outputs, self_attn = self.self_attention(inputs, inputs, inputs, self_attn_mask)
-        outputs, memory_attn = self.memory_attention(outputs, memory, memory, memory_mask)
+        outputs *= non_pad_mask
+
+        outputs = self.encoder_attention_prenorm(outputs)
+        outputs, encoder_attn = self.encoder_attention(outputs, encoder_outputs, encoder_outputs, encoder_outputs_mask)
+        outputs *= non_pad_mask
+
+        outputs = self.feed_forward_prenorm(outputs)
         outputs = self.feed_forward(outputs)
-        return outputs, self_attn, memory_attn
+        outputs *= non_pad_mask
+
+        return outputs, self_attn, encoder_attn
 
 
 class TransformerDecoder(DecoderInterface):
@@ -83,7 +93,6 @@ class TransformerDecoder(DecoderInterface):
         d_ff: dimension of feed forward network
         num_layers: number of decoder layers
         num_heads: number of attention heads
-        ffnet_style: style of feed forward network
         dropout_p: probability of dropout
         pad_id: identification of pad token
         eos_id: identification of end of sentence token
@@ -96,7 +105,6 @@ class TransformerDecoder(DecoderInterface):
             d_ff: int = 512,                # dimension of feed forward network
             num_layers: int = 6,            # number of decoder layers
             num_heads: int = 8,             # number of attention heads
-            ffnet_style: str = 'ff',        # style of feed forward network
             dropout_p: float = 0.3,         # probability of dropout
             pad_id: int = 0,                # identification of pad token
             sos_id: int = 1,                # identification of start of sentence token
@@ -121,7 +129,6 @@ class TransformerDecoder(DecoderInterface):
                 num_heads=num_heads,
                 d_ff=d_ff,
                 dropout_p=dropout_p,
-                ffnet_style=ffnet_style,
             ) for _ in range(num_layers)
         ])
 
@@ -132,9 +139,11 @@ class TransformerDecoder(DecoderInterface):
         )
 
     def forward(self, targets: Tensor, encoder_outputs: Tensor, encoder_output_lengths: Tensor) -> Tensor:
-        batch_size, output_length = targets.size(0), targets.size(1) - 1
-
+        batch_size = targets.size(0)
         targets = targets[targets != self.eos_id].view(batch_size, -1)
+        output_length = targets.size(1)
+
+        non_pad_mask = get_non_pad_mask(targets, pad_id=self.pad_id)
         self_attn_mask = get_decoder_self_attn_mask(targets, targets, self.pad_id)
         encoder_outputs_mask = get_attn_pad_mask(encoder_outputs, encoder_output_lengths, output_length)
 
@@ -142,7 +151,13 @@ class TransformerDecoder(DecoderInterface):
         outputs = self.input_dropout(outputs)
 
         for layer in self.layers:
-            outputs, self_attn, memory_attn = layer(outputs, encoder_outputs, self_attn_mask, encoder_outputs_mask)
+            outputs, self_attn, memory_attn = layer(
+                inputs=outputs,
+                encoder_outputs=encoder_outputs,
+                non_pad_mask=non_pad_mask,
+                self_attn_mask=self_attn_mask,
+                encoder_outputs_mask=encoder_outputs_mask,
+            )
 
         predicted_log_probs = self.fc(outputs).log_softmax(dim=-1)
 
@@ -161,9 +176,3 @@ class TransformerDecoder(DecoderInterface):
             predictions[:, di] = step_outputs[:, di]
 
         return predictions
-
-
-class BeamDecoderTransformer(DecoderInterface):
-    # TODO: Implements
-    def __init__(self):
-        super(BeamDecoderTransformer, self).__init__()
