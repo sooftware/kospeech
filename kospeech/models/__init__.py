@@ -29,8 +29,7 @@ class ModelConfig:
 
 from kospeech.models.deepspeech2.model import DeepSpeech2
 from kospeech.models.las.encoder import EncoderRNN
-from kospeech.models.las.decoder import DecoderRNN
-from kospeech.models.las.topk_decoder import TopKDecoder
+from kospeech.models.las.decoder import DecoderRNN, BeamDecoderRNN
 from kospeech.models.las.model import ListenAttendSpell
 from kospeech.models.transformer.model import SpeechTransformer
 from kospeech.models.jasper.model import Jasper

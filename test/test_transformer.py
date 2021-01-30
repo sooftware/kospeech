@@ -13,12 +13,13 @@
 # limitations under the License.
 
 import torch
+import torch.nn as nn
 
 from kospeech.model_builder import build_transformer
 
 batch_size = 4
 seq_length = 200
-target_length = 20
+target_length = 10
 input_size = 80
 
 cuda = torch.cuda.is_available()
@@ -34,7 +35,6 @@ transformer = build_transformer(
     num_decoder_layers=2,
     extractor='vgg',
     dropout_p=0.1,
-    ffnet_style='ff',
     device=device,
     pad_id=0,
     sos_id=1,
@@ -43,9 +43,19 @@ transformer = build_transformer(
     max_length=10,
 )
 
-inputs = torch.FloatTensor(batch_size, seq_length, input_size).to(device)
-input_lengths = torch.LongTensor([seq_length, seq_length - 10, seq_length - 20, seq_length - 30])
-targets = torch.randint(0, 10, size=(batch_size, target_length), dtype=torch.long).to(device)
+criterion = nn.CrossEntropyLoss(ignore_index=0, reduction='mean')
+optimizer = torch.optim.Adam(transformer.parameters(), lr=1e-04)
 
-output, _, _ = transformer(inputs, input_lengths, targets)
-print(output.size())
+for i in range(10):
+    inputs = torch.FloatTensor(batch_size, seq_length, input_size).to(device)
+    input_lengths = torch.LongTensor([seq_length, seq_length - 10, seq_length - 20, seq_length - 30])
+    targets = torch.LongTensor([[1, 3, 3, 3, 3, 3, 4, 5, 6, 2],
+                                [1, 3, 3, 3, 3, 3, 4, 5, 2, 0],
+                                [1, 3, 3, 3, 3, 3, 4, 2, 0, 0],
+                                [1, 3, 3, 3, 3, 3, 4, 2, 0, 0]]).to(device)
+
+    outputs, _, _ = transformer(inputs, input_lengths, targets)
+    loss = criterion(outputs.contiguous().view(-1, outputs.size(-1)), targets[:, 1:].contiguous().view(-1))
+    loss.backward()
+    optimizer.step()
+    print(loss)

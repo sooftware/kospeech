@@ -86,10 +86,10 @@ class Conformer(CTCModelInterface):
         )
         self.fc = nn.Sequential(
             LayerNorm(encoder_dim),
-            Linear(encoder_dim, num_classes, bias=False)
+            Linear(encoder_dim, num_classes, bias=False),
         )
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
         outputs, output_lengths = self.encoder(inputs, input_lengths)
-        outputs = self.fc(outputs).log_softmax(dim=-1)
+        outputs = self.fc(outputs).log_softmax(dim=2)
         return outputs, output_lengths
