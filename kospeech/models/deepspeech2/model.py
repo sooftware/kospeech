@@ -136,7 +136,7 @@ class DeepSpeech2(CTCModelInterface):
             )
 
         self.fc = nn.Sequential(
-            LayerNorm(rnn_hidden_dim),
+            LayerNorm(rnn_output_size),
             Linear(rnn_hidden_dim, num_classes, bias=False),
         )
 
