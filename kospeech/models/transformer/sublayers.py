@@ -39,29 +39,6 @@ class AddNorm(nn.Module):
         return self.layer_norm(outputs + residual)
 
 
-class PreNorm(nn.Module):
-    """
-    Applies Pre-normalization layer.
-    Transformer employ a residual connection around each of the two sub-layers,
-    (Multi-Head Attention & Feed-Forward) followed by layer normalization.
-    """
-    def __init__(self, sublayer: nn.Module, d_model: int = 512) -> None:
-        super(PreNorm, self).__init__()
-        self.sublayer = sublayer
-        self.layer_norm = LayerNorm(d_model)
-
-    def forward(self, *args):
-        args = list(args)
-        residual = args[0]
-
-        args[0] = self.layer_norm(args[0])
-        outputs = self.sublayer(*args)
-
-        if isinstance(outputs, tuple):
-            return outputs[0] + residual, outputs[1]
-
-        return outputs + residual
-
 
 class PositionwiseFeedForward(nn.Module):
     """
@@ -70,30 +47,16 @@ class PositionwiseFeedForward(nn.Module):
     This consists of two linear transformations with a ReLU activation in between.
     Another way of describing this is as two convolutions with kernel size 1.
     """
-    def __init__(self, d_model: int = 512, d_ff: int = 2048, dropout_p: float = 0.3, ffnet_style: str = 'ff') -> None:
+    def __init__(self, d_model: int = 512, d_ff: int = 2048, dropout_p: float = 0.3) -> None:
         super(PositionwiseFeedForward, self).__init__()
-        self.ffnet_style = ffnet_style.lower()
-        if self.ffnet_style == 'ff':
-            self.feed_forward = nn.Sequential(
-                Linear(d_model, d_ff),
-                nn.Dropout(dropout_p),
-                nn.ReLU(),
-                Linear(d_ff, d_model),
-                nn.Dropout(dropout_p),
-            )
-
-        elif self.ffnet_style == 'conv':
-            self.conv1 = nn.Conv1d(in_channels=d_model, out_channels=d_ff, kernel_size=1)
-            self.relu = nn.ReLU()
-            self.conv2 = nn.Conv1d(in_channels=d_ff, out_channels=d_model, kernel_size=1)
-
-        else:
-            raise ValueError("Unsupported mode: {0}".format(self.mode))
-
+        self.feed_forward = nn.Sequential(
+            Linear(d_model, d_ff),
+            nn.Dropout(dropout_p),
+            nn.ReLU(),
+            Linear(d_ff, d_model),
+            nn.Dropout(dropout_p),
+        )
+        
     def forward(self, inputs: Tensor) -> Tensor:
-        if self.ffnet_style == 'conv':
-            outputs = self.conv1(inputs.transpose(1, 2))
-            outputs = self.relu(outputs)
-            return self.conv2(outputs).transpose(1, 2)
 
         return self.feed_forward(inputs)
