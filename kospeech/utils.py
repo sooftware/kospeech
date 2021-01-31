@@ -93,7 +93,7 @@ def get_optimizer(model: nn.Module, config: DictConfig):
 
 
 def get_criterion(config: DictConfig, vocab: Vocabulary) -> nn.Module:
-    if config.model.architecture in ('deepspeech2', 'jasper', 'conformer'):
+    if config.model.architecture in ('deepspeech2', 'jasper'):
         criterion = nn.CTCLoss(blank=vocab.blank_id, reduction=config.train.reduction, zero_infinity=True)
     elif config.model.architecture in ('las', 'transformer') and config.model.joint_ctc_attention:
         criterion = JointCTCCrossEntropyLoss(
@@ -106,6 +106,12 @@ def get_criterion(config: DictConfig, vocab: Vocabulary) -> nn.Module:
             dim=-1,
             smoothing=config.train.label_smoothing,
         )
+    elif config.model.architecture in ('rnnt', 'conformer'):
+        try:
+            from warprnnt_pytorch import RNNTLoss
+        except ImportError:
+            raise ImportError("Please install warprnnt_pytorch: https://github.com/HawkAaron/warp-transducer")
+        criterion = RNNTLoss()
     elif config.model.architecture == 'transformer' and config.train.label_smoothing <= 0.0:
         criterion = nn.CrossEntropyLoss(
             ignore_index=vocab.pad_id,

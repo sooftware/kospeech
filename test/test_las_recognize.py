@@ -27,9 +27,15 @@ inputs = torch.rand(B, T, D).to(device)
 input_lengths = torch.IntTensor([T, T - 100, T - 1000])
 targets = torch.LongTensor([[1, 1, 2], [3, 4, 2], [7, 2, 0]])
 
-encoder = EncoderRNN(input_dim=D, hidden_state_dim=H, joint_ctc_attention=False)
-decoder = DecoderRNN(num_classes=10, hidden_state_dim=H << 1, max_length=10)
-model = ListenAttendSpell(encoder, decoder).to(device)
+model = ListenAttendSpell(
+    input_dim=D,
+    num_classes=10,
+    encoder_hidden_state_dim=H,
+    decoder_hidden_state_dim=H << 1,
+    bidirectional=True,
+    max_length=10,
+).to(device)
 
-model.recognize(inputs, input_lengths)
+outputs = model.recognize(inputs, input_lengths)
+print(outputs.size())
 print("LAS Recognize PASS")

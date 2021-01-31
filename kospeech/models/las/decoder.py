@@ -18,7 +18,7 @@ import torch.nn as nn
 from torch import Tensor, LongTensor
 from typing import Optional, Any, Tuple
 
-from kospeech.models.interface import DecoderInterface
+from kospeech.models.decoder import BaseDecoder
 from kospeech.models.modules import Linear, View
 from kospeech.models.attention import (
     LocationAwareAttention,
@@ -28,22 +28,22 @@ from kospeech.models.attention import (
 )
 
 
-class DecoderRNN(DecoderInterface):
+class DecoderRNN(BaseDecoder):
     """
     Converts higher level features (from encoder) into output utterances
     by specifying a probability distribution over sequences of characters.
 
     Args:
         num_classes (int): number of classification
-        max_length (int): a maximum allowed length for the sequence to be processed
-        hidden_state_dim (int): dimension of RNN`s hidden state vector
-        sos_id (int): index of the start of sentence symbol
-        eos_id (int): index of the end of sentence symbol
-        attn_mechanism (str): type of attention mechanism (default: dot)
-        num_heads (int): number of attention heads. (default: 4)
-        num_layers (int, optional): number of recurrent layers (default: 1)
+        hidden_state_dim (int): the number of features in the decoder hidden state `h`
+        num_layers (int, optional): number of recurrent layers (default: 2)
         rnn_type (str, optional): type of RNN cell (default: lstm)
-        dropout_p (float, optional): dropout probability (default: 0.3)
+        pad_id (int, optional): index of the pad symbol (default: 0)
+        sos_id (int, optional): index of the start of sentence symbol (default: 1)
+        eos_id (int, optional): index of the end of sentence symbol (default: 2)
+        attn_mechanism (str, optional): type of attention mechanism (default: multi-head)
+        num_heads (int, optional): number of attention heads. (default: 4)
+        dropout_p (float, optional): dropout probability of decoder (default: 0.2)
 
     Inputs: inputs, encoder_outputs, teacher_forcing_ratio
         - **inputs** (batch, seq_len, input_size): list of sequences, whose length is the batch size and within which
@@ -65,17 +65,17 @@ class DecoderRNN(DecoderInterface):
 
     def __init__(
             self,
-            num_classes: int,                        # number of classfication
-            max_length: int = 150,                   # a maximum allowed length for the sequence to be processed
-            hidden_state_dim: int = 1024,            # dimension of RNN`s hidden state vector
-            pad_id: int = 0,                         # pad token`s id
-            sos_id: int = 1,                         # start of sentence token`s id
-            eos_id: int = 2,                         # end of sentence token`s id
-            attn_mechanism: str = 'multi-head',      # type of attention mechanism
-            num_heads: int = 4,                      # number of attention heads
-            num_layers: int = 2,                     # number of RNN layers
-            rnn_type: str = 'lstm',                  # type of RNN cell
-            dropout_p: float = 0.3,                  # dropout probability
+            num_classes: int,
+            max_length: int = 150,
+            hidden_state_dim: int = 1024,
+            pad_id: int = 0,
+            sos_id: int = 1,
+            eos_id: int = 2,
+            attn_mechanism: str = 'multi-head',
+            num_heads: int = 4,
+            num_layers: int = 2,
+            rnn_type: str = 'lstm',
+            dropout_p: float = 0.3,
     ) -> None:
         super(DecoderRNN, self).__init__()
         self.hidden_state_dim = hidden_state_dim
@@ -152,7 +152,19 @@ class DecoderRNN(DecoderInterface):
             targets: Optional[Tensor],
             encoder_outputs: Tensor,
             teacher_forcing_ratio: float = 1.0,
-    ) -> list:
+    ) -> Tensor:
+        """
+        Forward propagate a `encoder_outputs` for training.
+
+        Args:
+            targets (torch.LongTensr): A target sequence passed to decoder. `IntTensor` of size ``(batch, seq_length)``
+            encoder_outputs (torch.FloatTensor): A output sequence of encoder. `FloatTensor` of size
+                ``(batch, seq_length, dimension)``
+            teacher_forcing_ratio (float): ratio of teacher forcing
+
+        Returns:
+            * predicted_log_probs (torch.FloatTensor): Log probability of model predictions.
+        """
         hidden_states, attn = None, None
         predicted_log_probs = list()
 
@@ -198,6 +210,8 @@ class DecoderRNN(DecoderInterface):
                 predicted_log_probs.append(step_outputs)
                 input_var = predicted_log_probs[-1].topk(1)[1]
 
+        predicted_log_probs = torch.stack(predicted_log_probs, dim=1)
+
         return predicted_log_probs
 
     @torch.no_grad()
@@ -214,7 +228,7 @@ class DecoderRNN(DecoderInterface):
             * predicted_log_probs (torch.FloatTensor): Log probability of model predictions.
         """
         hidden_states, attn = None, None
-        predicted_log_probs = list()
+        outputs = list()
 
         batch_size = encoder_outputs.size(0)
         input_var = LongTensor([self.sos_id] * batch_size).view(batch_size, 1)
@@ -229,10 +243,10 @@ class DecoderRNN(DecoderInterface):
                 encoder_outputs=encoder_outputs,
                 attn=attn,
             )
-            predicted_log_probs.append(step_outputs)
-            input_var = predicted_log_probs[-1].topk(1)[1]
+            input_var = step_outputs.topk(1)[1]
+            outputs.append(input_var)
 
-        outputs = torch.stack(predicted_log_probs, dim=1)
+        outputs = torch.stack(outputs, dim=1).squeeze(2)
 
         return outputs
 
@@ -262,7 +276,7 @@ class DecoderRNN(DecoderInterface):
         return targets, batch_size, max_length
 
 
-class BeamDecoderRNN(DecoderInterface):
+class BeamDecoderRNN(BaseDecoder):
     """ Beam Search Decoder RNN """
     def __init__(self, decoder: DecoderRNN, beam_size: int, batch_size: int):
         super(BeamDecoderRNN, self).__init__()

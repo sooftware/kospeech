@@ -17,8 +17,8 @@ import torch.nn as nn
 from torch import Tensor
 from typing import Optional, Tuple
 
-from kospeech.models.interface import DecoderInterface
 from kospeech.models.attention import MultiHeadAttention
+from kospeech.models.decoder import BaseDecoder
 from kospeech.models.modules import Linear, LayerNorm
 from kospeech.models.transformer.sublayers import PositionwiseFeedForward
 from kospeech.models.transformer.embeddings import (
@@ -83,7 +83,7 @@ class TransformerDecoderLayer(nn.Module):
         return outputs, self_attn, encoder_attn
 
 
-class TransformerDecoder(DecoderInterface):
+class TransformerDecoder(BaseDecoder):
     """
     The TransformerDecoder is composed of a stack of N identical layers.
     Each layer has three sub-layers. The first is a multi-head self-attention mechanism,
@@ -139,6 +139,18 @@ class TransformerDecoder(DecoderInterface):
         )
 
     def forward(self, targets: Tensor, encoder_outputs: Tensor, encoder_output_lengths: Tensor) -> Tensor:
+        """
+        Forward propagate a `encoder_outputs` for training.
+
+        Args:
+            targets (torch.LongTensr): A target sequence passed to decoder. `IntTensor` of size ``(batch, seq_length)``
+            encoder_outputs (torch.FloatTensor): A output sequence of encoder. `FloatTensor` of size
+                ``(batch, seq_length, dimension)``
+            encoder_output_lengths: The length of encoder outputs. ``(batch)``
+
+        Returns:
+            * predicted_log_probs (torch.FloatTensor): Log probability of model predictions.
+        """
         batch_size = targets.size(0)
         targets = targets[targets != self.eos_id].view(batch_size, -1)
         target_length = targets.size(1)

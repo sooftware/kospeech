@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-from kospeech.models.conformer import Conformer
+from kospeech.models.rnnt.model import RNNTransducer
 
 batch_size, sequence_length, dim = 3, 12345, 80
 
@@ -11,12 +11,10 @@ device = torch.device('cuda' if cuda else 'cpu')
 inputs = torch.rand(batch_size, sequence_length, dim).to(device)
 input_lengths = torch.IntTensor([12345, 12300, 12000])
 
-model = nn.DataParallel(Conformer(
+model = nn.DataParallel(RNNTransducer(
     num_classes=10,
     input_dim=dim,
-    encoder_dim=512,
     num_encoder_layers=3,
-    device=device,
 )).to(device)
 
 outputs = model.module.recognize(inputs, input_lengths)

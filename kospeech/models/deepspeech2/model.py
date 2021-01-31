@@ -19,7 +19,7 @@ from torch import Tensor
 from typing import Tuple
 
 from kospeech.models.convolution import DeepSpeech2Extractor
-from kospeech.models.interface import CTCModelInterface
+from kospeech.models.model import EncoderModel
 from kospeech.models.modules import Linear, LayerNorm
 
 
@@ -82,7 +82,7 @@ class BNReluRNN(nn.Module):
         return outputs
 
 
-class DeepSpeech2(CTCModelInterface):
+class DeepSpeech2(EncoderModel):
     """
     Deep Speech2 model with configurable encoder and decoder.
     Paper: https://arxiv.org/abs/1512.02595
@@ -107,15 +107,15 @@ class DeepSpeech2(CTCModelInterface):
     """
     def __init__(
             self,
-            input_dim: int,                         # size of input
-            num_classes: int,                       # number of classfication
-            rnn_type='gru',                         # type of RNN cell
-            num_rnn_layers: int = 5,                # number of RNN layers
-            rnn_hidden_dim: int = 512,              # dimension of RNN`s hidden state
-            dropout_p: float = 0.1,                 # dropout probability
-            bidirectional: bool = True,             # if True, becomes a bidirectional rnn
-            activation: str = 'hardtanh',           # type of activation function
-            device: torch.device = 'cuda',          # device - 'cuda' or 'cpu'
+            input_dim: int,
+            num_classes: int,
+            rnn_type='gru',
+            num_rnn_layers: int = 5,
+            rnn_hidden_dim: int = 512,
+            dropout_p: float = 0.1,
+            bidirectional: bool = True,
+            activation: str = 'hardtanh',
+            device: torch.device = 'cuda',
     ):
         super(DeepSpeech2, self).__init__()
         self.device = device
@@ -141,8 +141,18 @@ class DeepSpeech2(CTCModelInterface):
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
         """
-        inputs (torch.FloatTensor): (batch_size, sequence_length, dimension)
-        input_lengths (torch.LongTensor): (batch_size)
+        Forward propagate a `inputs` for  ctc training.
+
+        Args:
+            inputs (torch.FloatTensor): A input sequence passed to encoder. Typically for inputs this will be a padded
+                `FloatTensor` of size ``(batch, seq_length, dimension)``.
+            input_lengths (torch.LongTensor): The length of input tensor. ``(batch)``
+
+        Returns:
+            (Tensor, Tensor):
+
+            * predicted_log_prob (torch.FloatTensor)s: Log probability of model predictions.
+            * output_lengths (torch.LongTensor): The length of output tensor ``(batch)``
         """
         outputs, output_lengths = self.conv(inputs, input_lengths)
         outputs = outputs.permute(1, 0, 2).contiguous()

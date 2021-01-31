@@ -8,8 +8,12 @@ input_dropout_p: 0.1
 feed_forward_dropout_p: 0.1
 attention_dropout_p: 0.1
 conv_dropout_p: 0.1
+decoder_dropout_p: 0.1
 conv_kernel_size: 31
 half_step_residual: True
 encoder_dim: 512
-num_layers: 17
+decoder_dim: 640
+num_encoder_layers: 17
+num_decoder_layers: 1
 num_attention_heads: 8
+decoder_rnn_type: lstm

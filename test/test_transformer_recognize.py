@@ -34,7 +34,6 @@ transformer = build_transformer(
     num_decoder_layers=2,
     extractor='vgg',
     dropout_p=0.1,
-    ffnet_style='ff',
     device=device,
     pad_id=0,
     sos_id=1,
@@ -43,8 +42,9 @@ transformer = build_transformer(
     max_length=10,
 )
 
-inputs = torch.FloatTensor(batch_size, seq_length, input_size)
-input_lengths = torch.LongTensor([seq_length, seq_length - 10, seq_length - 20, seq_length - 30])
+inputs = torch.FloatTensor(batch_size, seq_length, input_size).to(device)
+input_lengths = torch.LongTensor([seq_length, seq_length - 10, seq_length - 20, seq_length - 30]).to(device)
 
-output = transformer.recognize(inputs, input_lengths)
-print(output)
+output = transformer.module.recognize(inputs, input_lengths)
+print(output.size())
+print("Test Transformer PASS")
