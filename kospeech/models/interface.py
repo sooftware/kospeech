@@ -23,12 +23,14 @@ class EncoderInterface(nn.Module):
         super(EncoderInterface, self).__init__()
 
     def count_parameters(self):
-        raise NotImplementedError
+        return sum([p.numel for p in self.parameters()])
 
-    def update_dropout(self, dropout):
-        raise NotImplementedError
+    def update_dropout(self, dropout_p: float) -> None:
+        for name, child in self.named_children():
+            if isinstance(child, nn.Dropout):
+                child.p = dropout_p
 
-    def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor, Optional[Tensor]]:
+    def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor, Tensor]:
         raise NotImplementedError
 
 
@@ -37,41 +39,58 @@ class DecoderInterface(nn.Module):
         super(DecoderInterface, self).__init__()
 
     def count_parameters(self):
-        raise NotImplementedError
+        return sum([p.numel for p in self.parameters()])
 
-    def update_dropout(self, dropout):
-        raise NotImplementedError
+    def update_dropout(self, dropout_p):
+        for name, child in self.named_children():
+            if isinstance(child, nn.Dropout):
+                child.p = dropout_p
 
     def forward(self, targets: Tensor, encoder_outputs: Tensor, **kwargs):
         raise NotImplementedError
 
     @torch.no_grad()
-    def decode(self, encoder_outputs: Tensor, *args: Tensor) -> Tensor:
+    def decode(self, encoder_outputs: Tensor, *args) -> Tensor:
         raise NotImplementedError
 
 
 class EncoderDecoderModelInterface(nn.Module):
-    def __init__(self):
+    """
+    Interface of KoSpeech's Encoder-Decoder Models.
+    """
+    def __init__(self, encoder: nn.Module, decoder: nn.Module) -> None:
         super(EncoderDecoderModelInterface, self).__init__()
-
+        self.encoder = encoder
+        self.decoder = decoder
+        
     def set_encoder(self, encoder):
-        raise NotImplementedError
-
+        self.encoder = encoder
+        
     def set_decoder(self, decoder):
-        raise NotImplementedError
+        self.decoder = decoder
 
     def count_parameters(self):
-        raise NotImplementedError
+        num_encoder_parameters = self.encoder.count_parameters()
+        num_decoder_parameters = self.decoder.count_parameters()
+        return num_encoder_parameters + num_decoder_parameters
 
     def update_dropout(self, dropout_p):
-        raise NotImplementedError
+        self.encoder.update_dropout(dropout_p)
+        self.decoder.update_dropout(dropout_p)
 
-    def forward(self, inputs: Tensor, input_lengths: Tensor, targets: Tensor, *args) -> Tuple[Tensor, Tensor, Tensor]:
+    def forward(
+            self,
+            inputs: Tensor,
+            input_lengths: Tensor,
+            targets: Tensor,
+            *args,
+    ) -> Tuple[Tensor, Tensor, Tensor]:
         raise NotImplementedError
 
     @torch.no_grad()
     def recognize(self, inputs: Tensor, input_lengths: Tensor) -> Tensor:
-        raise NotImplementedError
+        encoder_outputs, encoder_output_lengths, _ = self.encoder(inputs, input_lengths)
+        return self.decoder.decode(encoder_outputs, encoder_output_lengths)
 
 
 class CTCModelInterface(nn.Module):
@@ -81,23 +100,29 @@ class CTCModelInterface(nn.Module):
     """
     def __init__(self):
         super(CTCModelInterface, self).__init__()
-
+        self.decoder = None
+        
     def set_decoder(self, decoder):
-        raise NotImplementedError
+        self.decoder = decoder
 
     def count_parameters(self):
-        raise NotImplementedError
+        return sum([p.numel for p in self.parameters()])
 
-    def update_dropout(self, dropout):
-        raise NotImplementedError
+    def update_dropout(self, dropout_p: float) -> None:
+        for name, child in self.named_children():
+            if isinstance(child, nn.Dropout):
+                child.p = dropout_p
 
-    def forward(self, *args, **kwargs):
+    def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
         raise NotImplementedError
 
     @torch.no_grad()
     def decode(self, predicted_log_probs: Tensor) -> Tensor:
-        raise NotImplementedError
+        return predicted_log_probs.max(-1)[1]
 
     @torch.no_grad()
     def recognize(self, inputs: Tensor, input_lengths: Tensor) -> Tensor:
-        raise NotImplementedError
+        predicted_log_probs, _ = self.forward(inputs, input_lengths)
+        if self.decoder is not None:
+            return self.decoder.decode(predicted_log_probs)
+        return self.decode(predicted_log_probs)
