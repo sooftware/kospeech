@@ -389,7 +389,7 @@ class SupervisedTrainer(object):
                 teacher_forcing_ratio=teacher_forcing_ratio
             )
 
-            outputs = torch.stack(decoder_outputs['decoder_log_probs'], dim=1).to(self.device)
+            outputs = torch.stack(decoder_outputs, dim=1).to(self.device)
 
             if isinstance(self.criterion, LabelSmoothedCrossEntropyLoss):
                 loss = self.criterion(
