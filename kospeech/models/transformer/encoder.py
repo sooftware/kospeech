@@ -27,8 +27,8 @@ from kospeech.models.modules import (
     Transpose,
 )
 from kospeech.models.transformer.sublayers import (
-    PositionwiseFeedForwardNet,
-    AddNorm,
+    PositionwiseFeedForward,
+    PreNorm,
 )
 
 
@@ -50,11 +50,11 @@ class TransformerEncoderLayer(nn.Module):
             num_heads: int = 8,             # number of attention heads
             d_ff: int = 2048,               # dimension of feed forward network
             dropout_p: float = 0.3,         # probability of dropout
-            ffnet_style: str = 'ff'         # style of feed forward network
+            ffnet_style: str = 'ff',        # style of feed forward network
     ) -> None:
         super(TransformerEncoderLayer, self).__init__()
-        self.self_attention = AddNorm(MultiHeadAttention(d_model, num_heads), d_model)
-        self.feed_forward = AddNorm(PositionwiseFeedForwardNet(d_model, d_ff, dropout_p, ffnet_style), d_model)
+        self.self_attention = PreNorm(MultiHeadAttention(d_model, num_heads), d_model)
+        self.feed_forward = PreNorm(PositionwiseFeedForward(d_model, d_ff, dropout_p, ffnet_style), d_model)
 
     def forward(self, inputs: Tensor, self_attn_mask: Tensor = None) -> Tuple[Tensor, Tensor]:
         outputs, attn = self.self_attention(inputs, inputs, inputs, self_attn_mask)
