@@ -22,13 +22,13 @@ B, T, D, H = 3, 12345, 80, 32
 cuda = torch.cuda.is_available()
 device = torch.device('cuda' if cuda else 'cpu')
 
-inputs = torch.rand(B, T, D)
+inputs = torch.rand(B, T, D).to(device)
 input_lengths = torch.IntTensor([T, T - 100, T - 1000])
 targets = torch.LongTensor([[1, 1, 2], [3, 4, 2], [7, 2, 0]])
 
 encoder = Listener(input_dim=D, hidden_state_dim=H, joint_ctc_attention=False)
 decoder = Speller(num_classes=10, hidden_state_dim=H << 1, max_length=10, device=device)
-model = ListenAttendSpell(encoder, decoder)
+model = ListenAttendSpell(encoder, decoder).to(device)
 
 model(inputs, input_lengths, targets, teacher_forcing_ratio=0.0)
 print("teacher_forcing_ratio=0.0 PASS")
