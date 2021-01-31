@@ -98,7 +98,7 @@ We will response as soon as possible.
 
 ## Roadmap
   
-So far, serveral models are implemented: *Deep Speech 2, Listen Attend and Spell (LAS), Speech Transformer, Jasper, Conformer*. To check details of these model architectures, check figures attached to each section.
+So far, serveral models are implemented: *Deep Speech 2, Listen Attend and Spell (LAS), RNN-Transducer, Speech Transformer, Jasper, Conformer*.
   
 - *Deep Speech 2*  
   
@@ -108,6 +108,10 @@ Deep Speech 2 showed faster and more accurate performance on ASR tasks with Conn
 - *Listen, Attend and Spell (LAS)*
    
 We follow the architecture previously proposed in the "Listen, Attend and Spell", but some modifications were added to improve performance. We provide four different attention mechanisms, `scaled dot-product attention`, `additive attention`, `location aware attention`, `multi-head attention`. Attention mechanisms much affect the performance of models. 
+  
+- *RNN-Transducer*
+  
+RNN-Transducer are a form of sequence-to-sequence models that do not employ attention mechanisms. Unlike most sequence-to-sequence models, which typically need to process the entire input sequence (the waveform in our case) to produce an output (the sentence), the RNN-T continuously processes input samples and streams output symbols, a property that is welcome for speech dictation. In our implementation, the output symbols are the characters of the alphabet.
   
 - *Speech Transformer*  
   
