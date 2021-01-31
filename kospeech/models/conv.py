@@ -58,7 +58,7 @@ class DepthwiseConv1d(nn.Module):
             bias=bias,
         )
 
-    def forward(self, inputs: Tensor) -> Tensor:
+    def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
         return self.conv(inputs)
 
 
