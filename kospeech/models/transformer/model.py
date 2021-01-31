@@ -126,7 +126,7 @@ class SpeechTransformer(EncoderDecoderModel):
         """
         outputs, output_lengths = self.conv(inputs, input_lengths)
         encoder_outputs, encoder_log_probs, output_lengths = self.encoder(outputs, output_lengths)
-        predicted_log_probs = self.decoder(targets, input_lengths, encoder_outputs)
+        predicted_log_probs = self.decoder(targets, output_lengths, encoder_outputs)
         return predicted_log_probs, encoder_log_probs, output_lengths
 
     @torch.no_grad()
