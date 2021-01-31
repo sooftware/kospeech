@@ -15,21 +15,21 @@
 import torch
 import torch.nn as nn
 from torch import Tensor
-import torch.nn.functional as F
 from typing import Tuple
 
 from kospeech.models.conformer.encoder import ConformerEncoder
+from kospeech.models.model import CTCModel
 from kospeech.models.modules import Linear
 
 
-class Conformer(nn.Module):
+class Conformer(CTCModel):
     """
     Conformer: Convolution-augmented Transformer for Speech Recognition
     The paper used a one-lstm Transducer decoder, currently still only implemented
     the conformer encoder shown in the paper.
     Args:
         num_classes (int): Number of classification classes
-        input_size (int, optional): Dimension of input vector
+        input_dim (int, optional): Dimension of input vector
         encoder_dim (int, optional): Dimension of conformer encoder
         num_layers (int, optional): Number of conformer blocks
         num_attention_heads (int, optional): Number of attention heads
@@ -51,7 +51,7 @@ class Conformer(nn.Module):
     def __init__(
             self,
             num_classes: int,
-            input_size: int = 80,
+            input_dim: int = 80,
             encoder_dim: int = 512,
             num_layers: int = 17,
             num_attention_heads: int = 8,
@@ -67,7 +67,7 @@ class Conformer(nn.Module):
     ) -> None:
         super(Conformer, self).__init__()
         self.encoder = ConformerEncoder(
-            input_dim=input_size,
+            input_dim=input_dim,
             encoder_dim=encoder_dim,
             num_layers=num_layers,
             num_attention_heads=num_attention_heads,
@@ -81,15 +81,14 @@ class Conformer(nn.Module):
             half_step_residual=half_step_residual,
             device=device,
         )
-        self.fc = Linear(encoder_dim, num_classes, bias=False)
+        self.fc = nn.Sequential(
+            Linear(encoder_dim, encoder_dim),
+            nn.ReLU(),
+            Linear(encoder_dim, num_classes, bias=False),
+        )
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
         outputs, output_lengths = self.encoder(inputs, input_lengths)
-        outputs = self.fc(outputs)
-        outputs = F.log_softmax(outputs, dim=-1)
+        outputs = self.get_normalized_probs(outputs)
         return outputs, output_lengths
 
-    def greedy_search(self, inputs: Tensor, input_lengths: Tensor, device: str):
-        with torch.no_grad():
-            output, output_lengths = self.forward(inputs, input_lengths)
-            return output.max(-1)[1]
