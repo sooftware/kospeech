@@ -149,7 +149,7 @@ class DecoderRNN(DecoderInterface):
 
     def forward(
             self,
-            targets: Tensor,
+            targets: Optional[Tensor],
             encoder_outputs: Tensor,
             teacher_forcing_ratio: float = 1.0,
     ) -> list:
@@ -260,3 +260,27 @@ class DecoderRNN(DecoderInterface):
             max_length = targets.size(1) - 1  # minus the start of sequence symbol
 
         return targets, batch_size, max_length
+
+
+
+class BeamDecoderRNN(DecoderInterface):
+    def __init__(self, decoder: DecoderRNN):
+        super(BeamDecoderRNN, self).__init__()
+        self.decoder = decoder
+
+    def forward_step(
+            self,
+            input_var: Tensor,
+            hidden_states: Optional[Tensor],
+            encoder_outputs: Tensor,
+            attn: Optional[Tensor] = None,
+    ) -> Tuple[Tensor, Tensor, Tensor]:
+        return self.decoder.forward_step(input_var, hidden_states, encoder_outputs, attn)
+
+    def forward(self, encoder_outputs: Tensor) -> list:
+        return self.decoder.forward(targets=None, encoder_outputs=encoder_outputs, teacher_forcing_ratio=0.0)
+
+    @torch.no_grad()
+    def decode(self, encoder_outputs: Tensor, encoder_output_lengths: Tensor) -> Tensor:
+        """ Applies beam search decoing (Top k decoding) """
+        pass
