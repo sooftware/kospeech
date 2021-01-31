@@ -422,7 +422,7 @@ class SupervisedTrainer(object):
                 )
             elif isinstance(self.criterion, nn.CrossEntropyLoss):
                 loss = self.criterion(
-                    outputs.contiguous().view(-1, outputs.size(-1)), targets[:, 1:].contiguous().view(-1)
+                    outputs.contiguous().view(-1, outputs.size(-1)), targets.contiguous().view(-1)
                 )
             else:
                 raise ValueError(f"Unsupported Criterion: {self.criterion}")
