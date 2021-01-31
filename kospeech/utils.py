@@ -119,7 +119,6 @@ def get_criterion(config: DictConfig, vocab: Vocabulary) -> nn.Module:
             ignore_index=vocab.pad_id,
             smoothing=config.train.label_smoothing,
             reduction=config.train.reduction,
-            architecture=config.model.architecture,
             dim=-1,
         )
 
