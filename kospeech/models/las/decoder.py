@@ -110,10 +110,10 @@ class Speller(DecoderRNN):
 
     def forward_step(
             self,
-            input_var: Tensor,                      # tensor of sequences whose contains target variables
-            hidden_states: Optional[Tensor],        # tensor containing hidden state vector of RNN
-            encoder_outputs: Tensor,                # tensor with containing the outputs of the encoder
-            attn: Optional[Tensor] = None,          # tensor containing attention distribution
+            input_var: Tensor,
+            hidden_states: Optional[Tensor],
+            encoder_outputs: Tensor,
+            attn: Optional[Tensor] = None,
     ) -> Tuple[Tensor, Tensor, Tensor]:
         batch_size, output_lengths = input_var.size(0), input_var.size(1)
 
@@ -136,9 +136,9 @@ class Speller(DecoderRNN):
 
     def forward(
             self,
-            inputs: Tensor,                         # tensor of sequences whose contains target variables
-            encoder_outputs: Tensor,                # tensor with containing the outputs of the encoder
-            teacher_forcing_ratio: float = 1.0,     # probability that teacher forcing will be used.
+            inputs: Tensor,
+            encoder_outputs: Tensor,
+            teacher_forcing_ratio: float = 1.0,
     ) -> list:
 
         hidden_states, attn = None, None
@@ -175,9 +175,9 @@ class Speller(DecoderRNN):
 
     def _validate_args(
             self,
-            inputs: Optional[Any] = None,           # tensor of sequences whose contains target variables
-            encoder_outputs: Tensor = None,         # tensor with containing the outputs of the encoder
-            teacher_forcing_ratio: float = 1.0,     # the probability that teacher forcing will be used
+            inputs: Optional[Any] = None,
+            encoder_outputs: Tensor = None,
+            teacher_forcing_ratio: float = 1.0,
     ) -> Tuple[Tensor, int, int]:
         """ Validate arguments """
         assert encoder_outputs is not None
