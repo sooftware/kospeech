@@ -19,4 +19,4 @@ model = nn.DataParallel(Conformer(
     device=device,
 )).to(device)
 
-outputs, output_lengths = model.recognize(inputs, input_lengths)
+outputs = model.recognize(inputs, input_lengths)
