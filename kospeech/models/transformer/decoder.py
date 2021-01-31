@@ -49,7 +49,8 @@ class SpeechTransformerDecoderLayer(nn.Module):
             num_heads: int = 8,             # number of attention heads
             d_ff: int = 2048,               # dimension of feed forward network
             dropout_p: float = 0.3,         # probability of dropout
-            ffnet_style: str = 'ff'         # style of feed forward network
+            ffnet_style=ffnet_style
+            ) for _ in range(num_layers)
     ) -> None:
         super(SpeechTransformerDecoderLayer, self).__init__()
         self.self_attention = AddNorm(MultiHeadAttention(d_model, num_heads), d_model)
@@ -115,7 +116,11 @@ class SpeechTransformerDecoder(BaseDecoder):
         ])
         self.pad_id = pad_id
         self.eos_id = eos_id
-        self.fc = Linear(d_model, num_classes)
+        self.fc = nn.Sequential(
+            Linear(d_model, d_model),
+            nn.Tanh(),
+            Linear(d_model, num_classes),
+        )
 
     def forward(self, targets: Tensor, input_lengths: Optional[Tensor] = None, memory: Tensor = None):
         batch_size, output_length = targets.size(0), targets.size(1)
