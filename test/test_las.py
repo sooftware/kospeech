@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import torch
-from kospeech.criterion import JointCTCCrossEntropyLoss
+import torch.nn as nn
 from kospeech.models import ListenAttendSpell
 from kospeech.models.las.encoder import EncoderRNN
 from kospeech.models.las.decoder import DecoderRNN
@@ -22,16 +22,25 @@ B, T, D, H = 3, 12345, 80, 32
 
 cuda = torch.cuda.is_available()
 device = torch.device('cuda' if cuda else 'cpu')
-criterion = JointCTCCrossEntropyLoss(num_classes=10, ignore_index=0, reduction='mean')
-
-inputs = torch.rand(B, T, D).to(device)
-input_lengths = torch.IntTensor([T, T - 100, T - 1000])
-targets = torch.LongTensor([[1, 1, 2], [1, 4, 2], [1, 2, 0]]).to(device)
-target_lengths = torch.LongTensor([2, 2, 1])
 
 encoder = EncoderRNN(input_dim=D, hidden_state_dim=H, joint_ctc_attention=True, num_classes=10)
 decoder = DecoderRNN(num_classes=10, hidden_state_dim=H << 1, max_length=10)
 model = ListenAttendSpell(encoder, decoder).to(device)
 
-predicted_log_probs, encoder_log_probs, output_lengths = model(inputs, input_lengths, targets, teacher_forcing_ratio=1.0)
-outputs = torch.stack(predicted_log_probs, dim=1).to(device)
+criterion = nn.CrossEntropyLoss(ignore_index=0, reduction='mean')
+optimizer = torch.optim.Adam(model.parameters(), lr=1e-04)
+
+for i in range(10):
+    inputs = torch.rand(B, T, D).to(device)
+    input_lengths = torch.IntTensor([12345, 12300, 12000])
+    targets = torch.LongTensor([[1, 3, 3, 3, 3, 3, 4, 5, 6, 2],
+                                [1, 3, 3, 3, 3, 3, 4, 5, 2, 0],
+                                [1, 3, 3, 3, 3, 3, 4, 2, 0, 0]]).to(device)
+    predicted_log_probs, encoder_log_probs, output_lengths = model(inputs, input_lengths, targets,
+                                                                   teacher_forcing_ratio=1.0)
+    outputs = torch.stack(predicted_log_probs, dim=1).to(device)
+
+    loss = criterion(outputs.contiguous().view(-1, outputs.size(-1)), targets[:, 1:].contiguous().view(-1))
+    loss.backward()
+    optimizer.step()
+    print(loss)
