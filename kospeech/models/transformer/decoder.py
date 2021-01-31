@@ -128,9 +128,8 @@ class TransformerDecoder(DecoderInterface):
             for _ in range(num_layers)
         ])
         self.fc = nn.Sequential(
-            Linear(d_model, d_model),
-            nn.Tanh(),
-            Linear(d_model, num_classes),
+            LayerNorm(d_model),
+            Linear(d_model, num_classes, bias=False)
         )
 
     def forward(self, targets: Tensor, encoder_outputs: Tensor, encoder_output_lengths: Tensor) -> Tensor:
