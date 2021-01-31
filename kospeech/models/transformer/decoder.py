@@ -26,7 +26,7 @@ from kospeech.models.transformer.embeddings import (
 )
 from kospeech.models.transformer.mask import (
     get_decoder_self_attn_mask,
-    get_attn_pad_mask, get_non_pad_mask,
+    get_attn_pad_mask,
 )
 
 
@@ -60,21 +60,21 @@ class TransformerDecoderLayer(nn.Module):
             self,
             inputs: Tensor,
             encoder_outputs: Tensor,
-            non_pad_mask: Optional[Tensor] = None,
             self_attn_mask: Optional[Tensor] = None,
             encoder_outputs_mask: Optional[Tensor] = None
     ) -> Tuple[Tensor, Tensor, Tensor]:
+        residual = inputs
         inputs = self.self_attention_prenorm(inputs)
         outputs, self_attn = self.self_attention(inputs, inputs, inputs, self_attn_mask)
-        outputs *= non_pad_mask
-
+        outputs += residual
+        residual = outputs
         outputs = self.encoder_attention_prenorm(outputs)
         outputs, encoder_attn = self.encoder_attention(outputs, encoder_outputs, encoder_outputs, encoder_outputs_mask)
-        outputs *= non_pad_mask
-
+        outputs += residual
+        residual = outputs
         outputs = self.feed_forward_prenorm(outputs)
         outputs = self.feed_forward(outputs)
-        outputs *= non_pad_mask
+        outputs += residual
 
         return outputs, self_attn, encoder_attn
 
@@ -136,20 +136,18 @@ class TransformerDecoder(DecoderInterface):
         batch_size = targets.size(0)
 
         targets = targets[targets != self.eos_id].view(batch_size, -1)
-        output_length = targets.size(1)
+        target_length = targets.size(1)
 
-        non_pad_mask = get_non_pad_mask(targets, pad_id=self.pad_id)
         self_attn_mask = get_decoder_self_attn_mask(targets, targets, self.pad_id)
-        encoder_outputs_mask = get_attn_pad_mask(encoder_outputs, encoder_output_lengths, output_length)
+        encoder_outputs_mask = get_attn_pad_mask(encoder_outputs, encoder_output_lengths, target_length)
 
-        outputs = self.embedding(targets) + self.positional_encoding(output_length)
+        outputs = self.embedding(targets) + self.positional_encoding(target_length)
         outputs = self.input_dropout(outputs)
 
         for layer in self.layers:
             outputs, self_attn, memory_attn = layer(
                 inputs=outputs,
                 encoder_outputs=encoder_outputs,
-                non_pad_mask=non_pad_mask,
                 self_attn_mask=self_attn_mask,
                 encoder_outputs_mask=encoder_outputs_mask,
             )
