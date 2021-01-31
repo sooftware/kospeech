@@ -400,7 +400,7 @@ class SupervisedTrainer(object):
                     encoder_log_probs=encoder_log_probs.transpose(0, 1),
                     decoder_log_probs=outputs.contiguous().view(-1, outputs.size(-1)),
                     output_lengths=encoder_output_lengths,
-                    targets=targets,
+                    targets=targets[:, 1:],
                     target_lengths=target_lengths
                 )
             else:
@@ -417,19 +417,19 @@ class SupervisedTrainer(object):
                     encoder_log_probs=encoder_log_probs.transpose(0, 1),
                     decoder_log_probs=outputs.contiguous().view(-1, outputs.size(-1)),
                     output_lengths=encoder_output_lengths,
-                    targets=targets,
+                    targets=targets[:, 1:],
                     target_lengths=target_lengths
                 )
             elif isinstance(self.criterion, nn.CrossEntropyLoss):
                 loss = self.criterion(
-                    outputs.contiguous().view(-1, outputs.size(-1)), targets.contiguous().view(-1)
+                    outputs.contiguous().view(-1, outputs.size(-1)), targets[:, 1:].contiguous().view(-1)
                 )
             else:
                 raise ValueError(f"Unsupported Criterion: {self.criterion}")
 
         elif self.architecture in ('deepspeech2', 'jasper', 'conformer'):
             outputs, output_lengths = model(inputs, input_lengths)
-            loss = self.criterion(outputs.transpose(0, 1), targets, output_lengths, target_lengths)
+            loss = self.criterion(outputs.transpose(0, 1), targets[:, 1:], output_lengths, target_lengths)
 
         else:
             raise ValueError("Unsupported model : {0}".format(self.architecture))
