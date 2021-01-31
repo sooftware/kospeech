@@ -183,6 +183,11 @@ python ./bin/main.py model=las train=las_train train.dataset_path=$DATASET_PATH
 python ./bin/main.py model=joint-ctc-attention-las train=las_train train.dataset_path=$DATASET_PATH
 ```
   
+- **RNN Transducer** Training
+```
+python ./bin/main.py model=rnnt train=rnnt_train train.dataset_path=$DATASET_PATH
+```
+  
 - **Speech Transformer** Training
 ```
 python ./bin/main.py model=transformer train=transformer_train train.dataset_path=$DATASET_PATH
