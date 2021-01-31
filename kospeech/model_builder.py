@@ -103,7 +103,10 @@ def build_model(
             num_classes=len(vocab),
             input_size=input_size,
             encoder_dim=config.model.encoder_dim,
-            num_layers=config.model.num_layers,
+            decoder_dim=config.model.decoder_dim,
+            encoder_num_layers=config.model.encoder_num_layers,
+            decoder_num_layers=config.model.decoder_num_layers,
+            decoder_rnn_type=config.model.decoder_rnn_type,
             num_attention_heads=config.model.num_attention_heads,
             feed_forward_expansion_factor=config.model.feed_forward_expansion_factor,
             conv_expansion_factor=config.model.conv_expansion_factor,
@@ -111,6 +114,7 @@ def build_model(
             feed_forward_dropout_p=config.model.feed_forward_dropout_p,
             attention_dropout_p=config.model.attention_dropout_p,
             conv_dropout_p=config.model.conv_dropout_p,
+            decoder_dropout_p=config.model.decoder_dropout_p,
             conv_kernel_size=config.model.conv_kernel_size,
             half_step_residual=config.model.half_step_residual,
             device=device,
@@ -128,7 +132,10 @@ def build_conformer(
         num_classes: int,
         input_size: int,
         encoder_dim: int,
-        num_layers: int,
+        decoder_dim: int,
+        encoder_num_layers: int,
+        decoder_num_layers: int,
+        decoder_rnn_type: str,
         num_attention_heads: int,
         feed_forward_expansion_factor: int,
         conv_expansion_factor: int,
@@ -136,6 +143,7 @@ def build_conformer(
         feed_forward_dropout_p: float,
         attention_dropout_p: float,
         conv_dropout_p: float,
+        decoder_dropout_p: float,
         conv_kernel_size: int,
         half_step_residual: bool,
         device: torch.device,
@@ -156,7 +164,10 @@ def build_conformer(
         num_classes=num_classes,
         input_dim=input_size,
         encoder_dim=encoder_dim,
-        num_layers=num_layers,
+        decoder_dim=decoder_dim,
+        encoder_num_layers=encoder_num_layers,
+        decoder_num_layers=decoder_num_layers,
+        decoder_rnn_type=decoder_rnn_type,
         num_attention_heads=num_attention_heads,
         feed_forward_expansion_factor=feed_forward_expansion_factor,
         conv_expansion_factor=conv_expansion_factor,
@@ -164,6 +175,7 @@ def build_conformer(
         feed_forward_dropout_p=feed_forward_dropout_p,
         attention_dropout_p=attention_dropout_p,
         conv_dropout_p=conv_dropout_p,
+        decoder_dropout_p=decoder_dropout_p,
         conv_kernel_size=conv_kernel_size,
         half_step_residual=half_step_residual,
         device=device,
@@ -222,24 +234,14 @@ def build_transformer(
         joint_ctc_attention: bool = False,
         max_length: int = 400,
 ) -> nn.DataParallel:
-    if extractor.lower() == 'vgg':
-        conv = VGGExtractor(input_dim)
-    elif extractor.lower() == 'ds2':
-        conv = DeepSpeech2Extractor(input_dim)
-    elif extractor.lower() == 'conv2d':
-        conv = Conv2dSubsampling(input_dim, in_channels=1, out_channels=d_model)
-    else:
-        raise ValueError("Unsupported Extractor : {0}".format(extractor))
-
     encoder = TransformerEncoder(
-        conv=conv,
+        input_dim=input_dim,
+        extractor=extractor,
         d_model=d_model,
-        input_dim=conv.get_output_dim(),
         d_ff=d_ff,
         num_layers=num_encoder_layers,
         num_heads=num_heads,
         dropout_p=dropout_p,
-        pad_id=pad_id,
         joint_ctc_attention=joint_ctc_attention,
         num_classes=num_classes,
     )

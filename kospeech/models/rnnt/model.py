@@ -12,26 +12,45 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from torch import Tensor
+from kospeech.models.model import TransducerModel
+from kospeech.models.rnnt.decoder import DecoderRNNT
+from kospeech.models.rnnt.encoder import EncoderRNNT
 
-from kospeech.models.interface import TransducerInterface
 
-
-class RNNTransducder(TransducerInterface):
-    def __init__(self, encoder, decoder, joint_net):
-        super(RNNTransducder, self).__init__()
-        self.encoder = encoder
-        self.decoder = decoder
-        self.joint_net = joint_net
-
-    def forward(
+class RNNTransducer(TransducerModel):
+    def __init__(
             self,
-            inputs: Tensor,
-            inputs_lengths: Tensor,
-            targets: Tensor,
-            targets_lengths: Tensor
-    ) -> Tensor:
-        encoder_outputs = self.encoder(inputs, inputs_lengths)
-        decoder_outputs = self.decoder(targets, targets_lengths)
-        outputs = self.joint(encoder_outputs, decoder_outputs)
-        return outputs
+            num_classes: int,
+            input_dim: int,
+            num_encoder_layers: int,
+            num_decoder_layers: int,
+            encoder_hidden_state_dim: int,
+            decoder_hidden_state_dim: int,
+            output_dim: int,
+            rnn_type: str,
+            bidirectional: bool,
+            encoder_dropout_p: float,
+            decoder_dropout_p: float,
+            sos_id: int = 1,
+            eos_id: int = 2,
+    ):
+        encoder = EncoderRNNT(
+            input_dim=input_dim,
+            hidden_state_dim=encoder_hidden_state_dim,
+            output_dim=output_dim,
+            num_layers=num_encoder_layers,
+            rnn_type=rnn_type,
+            dropout_p=encoder_dropout_p,
+            bidirectional=bidirectional,
+        )
+        decoder = DecoderRNNT(
+            num_classes=num_classes,
+            hidden_state_dim=decoder_hidden_state_dim,
+            output_dim=output_dim,
+            num_layers=num_decoder_layers,
+            rnn_type=rnn_type,
+            sos_id=sos_id,
+            eos_id=eos_id,
+            dropout_p=decoder_dropout_p,
+        )
+        super(RNNTransducer, self).__init__(encoder, decoder, output_dim, num_classes)

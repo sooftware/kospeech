@@ -27,26 +27,32 @@ class ConformerConfig(ModelConfig):
     feed_forward_dropout_p: float = 0.1
     attention_dropout_p: float = 0.1
     conv_dropout_p: float = 0.1
+    decoder_dropout_p: float = 0.1
     conv_kernel_size: int = 31
     half_step_residual: bool = True
+    decoder_num_layers: int = 1
+    decoder_rnn_type: str = 'lstm'
 
 
 @dataclass
 class ConformerLargeConfig(ConformerConfig):
     encoder_dim: int = 512
-    num_layers: int = 17
+    decoder_dim: int = 640
+    encoder_num_layers: int = 17
     num_attention_heads: int = 8
 
 
 @dataclass
 class ConformerMediumConfig(ConformerConfig):
     encoder_dim: int = 256
-    num_layers: int = 16
+    decoder_dim: int = 640
+    encoder_num_layers: int = 16
     num_attention_heads: int = 4
 
 
 @dataclass
 class ConformerSmallConfig(ConformerConfig):
     encoder_dim: int = 144
-    num_layers: int = 16
+    decoder_dim: int = 320
+    encoder_num_layers: int = 16
     num_attention_heads: int = 4

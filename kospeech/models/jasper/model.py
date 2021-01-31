@@ -19,7 +19,7 @@ from torch import Tensor
 from typing import Tuple
 
 from kospeech.models.convolution import MaskConv1d
-from kospeech.models.interface import CTCModelInterface
+from kospeech.models.model import EncoderModel
 from kospeech.models.jasper.sublayers import (
     JasperSubBlock,
     JasperBlock,
@@ -30,7 +30,7 @@ from kospeech.models.jasper.configs import (
 )
 
 
-class Jasper(CTCModelInterface):
+class Jasper(EncoderModel):
     """
     Jasper: An End-to-End Convolutional Neural Acoustic Model
     Jasper (Just Another Speech Recognizer), an ASR model comprised of 54 layers proposed by NVIDIA.

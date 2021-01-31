@@ -18,7 +18,7 @@ from torch import Tensor
 from typing import Tuple
 
 from kospeech.models.convolution import Conv2dSubsampling
-from kospeech.models.interface import EncoderInterface
+from kospeech.models.model import EncoderInterface
 from kospeech.models.modules import (
     LayerNorm,
     ResidualConnectionModule,

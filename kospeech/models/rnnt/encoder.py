@@ -16,11 +16,11 @@ import torch.nn as nn
 from torch import Tensor
 from typing import Tuple
 
-from kospeech.models.interface import TransducerEncoderInterface
+from kospeech.models.encoder import TransducerEncoder
 from kospeech.models.modules import Linear
 
 
-class EncoderRNNT(TransducerEncoderInterface):
+class EncoderRNNT(TransducerEncoder):
     supported_rnns = {
         'lstm': nn.LSTM,
         'gru': nn.GRU,
@@ -55,5 +55,5 @@ class EncoderRNNT(TransducerEncoderInterface):
         inputs = nn.utils.rnn.pack_padded_sequence(inputs.transpose(0, 1), input_lengths.cpu())
         outputs, hidden_states = self.rnn(inputs)
         outputs, _ = nn.utils.rnn.pad_packed_sequence(outputs)
-        outputs = outputs.transpose(0, 1)
-        return self.out_proj(outputs)
+        outputs = self.out_proj(outputs.transpose(0, 1))
+        return outputs, hidden_states

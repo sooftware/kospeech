@@ -13,15 +13,14 @@
 # limitations under the License.
 
 import torch.nn as nn
-import torch.nn.functional as F
 from torch import Tensor
 from typing import Tuple
 
-from kospeech.models.interface import TransducerDecoderInterface
+from kospeech.models.decoder import TransducerDecoder
 from kospeech.models.modules import Linear
 
 
-class DecoderRNNT(TransducerDecoderInterface):
+class DecoderRNNT(TransducerDecoder):
     supported_rnns = {
         'lstm': nn.LSTM,
         'gru': nn.GRU,
@@ -35,10 +34,14 @@ class DecoderRNNT(TransducerDecoderInterface):
             output_dim: int,
             num_layers: int,
             rnn_type: str = 'lstm',
+            sos_id: int = 1,
+            eos_id: int = 2,
             dropout_p: float = 0.2,
     ):
         super(DecoderRNNT, self).__init__()
         self.hidden_state_dim = hidden_state_dim
+        self.sos_id = sos_id
+        self.eos_id = eos_id
         self.embedding = nn.Embedding(num_classes, hidden_state_dim)
         rnn_cell = self.supported_rnns[rnn_type.lower()]
         self.rnn = rnn_cell(
@@ -53,13 +56,11 @@ class DecoderRNNT(TransducerDecoderInterface):
         self.out_proj = Linear(hidden_state_dim, output_dim)
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
-        inputs = F.pad(inputs, pad=(1, 0, 0, 0), value=0)
-        input_lengths = input_lengths.add(1)
-
         embedded = self.embedding(inputs)
 
         embedded = nn.utils.rnn.pack_padded_sequence(embedded.transpose(0, 1), input_lengths.cpu())
         outputs, hidden_states = self.rnn(embedded)
         outputs, _ = nn.utils.rnn.pad_packed_sequence(outputs)
+        outputs = self.out_proj(outputs.transpose(0, 1))
 
-        return self.out_proj(outputs.transpose(0, 1))
+        return outputs, hidden_states

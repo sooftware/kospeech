@@ -15,12 +15,12 @@
 from torch import Tensor
 from typing import Tuple
 
-from kospeech.models.interface import EncoderDecoderModelInterface
+from kospeech.models.model import EncoderDecoderModel
 from kospeech.models.transformer.decoder import TransformerDecoder
 from kospeech.models.transformer.encoder import TransformerEncoder
 
 
-class SpeechTransformer(EncoderDecoderModelInterface):
+class SpeechTransformer(EncoderDecoderModel):
     """
     A Speech Transformer model. User is able to modify the attributes as needed.
     The model is based on the paper "Attention Is All You Need".

@@ -13,16 +13,13 @@
 # limitations under the License.
 
 import torch
-import torch.nn as nn
-from torch import Tensor
-from typing import Tuple
 
 from kospeech.models.conformer.encoder import ConformerEncoder
-from kospeech.models.interface import CTCModelInterface
-from kospeech.models.modules import Linear, LayerNorm
+from kospeech.models.model import TransducerModel
+from kospeech.models.rnnt.decoder import DecoderRNNT
 
 
-class Conformer(CTCModelInterface):
+class Conformer(TransducerModel):
     """
     Conformer: Convolution-augmented Transformer for Speech Recognition
     The paper used a one-lstm Transducer decoder, currently still only implemented
@@ -32,7 +29,8 @@ class Conformer(CTCModelInterface):
         num_classes (int): Number of classification classes
         input_dim (int, optional): Dimension of input vector
         encoder_dim (int, optional): Dimension of conformer encoder
-        num_layers (int, optional): Number of conformer blocks
+        encoder_num_layers (int, optional): Number of conformer blocks
+        decoder_num_layers (int, optional): Number of decoder layers
         num_attention_heads (int, optional): Number of attention heads
         feed_forward_expansion_factor (int, optional): Expansion factor of feed forward module
         conv_expansion_factor (int, optional): Expansion factor of conformer convolution module
@@ -56,7 +54,10 @@ class Conformer(CTCModelInterface):
             num_classes: int,
             input_dim: int = 80,
             encoder_dim: int = 512,
-            num_layers: int = 17,
+            decoder_dim: int = 640,
+            encoder_num_layers: int = 17,
+            decoder_num_layers: int = 1,
+            decoder_rnn_type: str = 'lstm',
             num_attention_heads: int = 8,
             feed_forward_expansion_factor: int = 4,
             conv_expansion_factor: int = 2,
@@ -64,15 +65,15 @@ class Conformer(CTCModelInterface):
             feed_forward_dropout_p: float = 0.1,
             attention_dropout_p: float = 0.1,
             conv_dropout_p: float = 0.1,
+            decoder_dropout_p: float = 0.1,
             conv_kernel_size: int = 31,
             half_step_residual: bool = True,
             device: torch.device = 'cuda',
     ) -> None:
-        super(Conformer, self).__init__()
-        self.encoder = ConformerEncoder(
+        encoder = ConformerEncoder(
             input_dim=input_dim,
             encoder_dim=encoder_dim,
-            num_layers=num_layers,
+            num_layers=encoder_num_layers,
             num_attention_heads=num_attention_heads,
             feed_forward_expansion_factor=feed_forward_expansion_factor,
             conv_expansion_factor=conv_expansion_factor,
@@ -84,12 +85,12 @@ class Conformer(CTCModelInterface):
             half_step_residual=half_step_residual,
             device=device,
         )
-        self.fc = nn.Sequential(
-            LayerNorm(encoder_dim),
-            Linear(encoder_dim, num_classes, bias=False),
+        decoder = DecoderRNNT(
+            num_classes=num_classes,
+            hidden_state_dim=decoder_dim,
+            output_dim=encoder_dim,
+            num_layers=decoder_num_layers,
+            rnn_type=decoder_rnn_type,
+            dropout_p=decoder_dropout_p,
         )
-
-    def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
-        outputs, output_lengths = self.encoder(inputs, input_lengths)
-        outputs = self.fc(outputs).log_softmax(dim=2)
-        return outputs, output_lengths
+        super(Conformer, self).__init__(encoder, decoder, encoder_dim, num_classes)

@@ -16,15 +16,10 @@ import torch.nn as nn
 from torch import Tensor
 from typing import Tuple, Optional
 
-from kospeech.models.interface import EncoderInterface
-from kospeech.models.modules import Linear, Transpose
-from kospeech.models.convolution import (
-    VGGExtractor,
-    DeepSpeech2Extractor,
-)
+from kospeech.models.encoder import BaseEncoder
 
 
-class EncoderRNN(EncoderInterface):
+class EncoderRNN(BaseEncoder):
     """
     Converts low level speech signals into higher level features
 
@@ -52,10 +47,6 @@ class EncoderRNN(EncoderInterface):
         'gru': nn.GRU,
         'rnn': nn.RNN,
     }
-    supported_extractors = {
-        'ds2': DeepSpeech2Extractor,
-        'vgg': VGGExtractor,
-    }
 
     def __init__(
             self,
@@ -70,17 +61,13 @@ class EncoderRNN(EncoderInterface):
             activation: str = 'hardtanh',            # type of activation function
             joint_ctc_attention: bool = False,       # Use CTC Loss & Cross Entropy Joint Learning
     ) -> None:
-        super(EncoderRNN, self).__init__()
-        if joint_ctc_attention:
-            assert num_classes is not None
-
+        super(EncoderRNN, self).__init__(input_dim=input_dim, extractor=extractor, d_model=hidden_state_dim << 1,
+                                         num_classes=num_classes, dropout_p=dropout_p, activation=activation,
+                                         joint_ctc_attention=joint_ctc_attention)
         self.hidden_state_dim = hidden_state_dim
-        self.joint_ctc_attention = joint_ctc_attention
-        extractor = self.supported_extractors[extractor.lower()]
         rnn_cell = self.supported_rnns[rnn_type.lower()]
-        self.conv = extractor(input_dim, activation=activation)
         self.rnn = rnn_cell(
-            input_size=self.conv.get_output_dim(),
+            input_size=self.conv_output_dim,
             hidden_size=hidden_state_dim,
             num_layers=num_layers,
             bias=True,
@@ -88,14 +75,6 @@ class EncoderRNN(EncoderInterface):
             dropout=dropout_p,
             bidirectional=bidirectional,
         )
-
-        if self.joint_ctc_attention:
-            self.fc = nn.Sequential(
-                nn.BatchNorm1d(self.hidden_state_dim << 1),
-                Transpose(shape=(1, 2)),
-                nn.Dropout(dropout_p),
-                Linear(self.hidden_state_dim << 1, num_classes, bias=False),
-            )
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor, Optional[Tensor]]:
         """
