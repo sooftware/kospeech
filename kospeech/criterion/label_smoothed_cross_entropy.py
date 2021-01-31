@@ -69,6 +69,8 @@ class LabelSmoothedCrossEntropyLoss(nn.Module):
                 label_smoothed = torch.zeros_like(logits)
                 label_smoothed.fill_(self.smoothing / (self.num_classes - 1))
                 label_smoothed.scatter_(1, targets.data.unsqueeze(1), self.confidence)
+                print(label_smoothed.size())
+                print(targets.size())
                 label_smoothed[targets == self.ignore_index, :] = 0
             return self.reduction_method(-label_smoothed * logits)
 
