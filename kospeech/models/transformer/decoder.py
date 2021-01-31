@@ -11,14 +11,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+import torch
 import torch.nn as nn
 from torch import Tensor
 from typing import Optional, Tuple
 
+from kospeech.models.base import BaseDecoder
 from kospeech.models.transformer.sublayers import AddNorm
 from kospeech.models.attention import MultiHeadAttention
-from kospeech.models.decoder import BaseDecoder
 from kospeech.models.modules import Linear
 from kospeech.models.transformer.sublayers import PositionwiseFeedForwardNet
 from kospeech.models.transformer.embeddings import (
@@ -31,7 +31,7 @@ from kospeech.models.transformer.mask import (
 )
 
 
-class SpeechTransformerDecoderLayer(nn.Module):
+class TransformerDecoderLayer(nn.Module):
     """
     DecoderLayer is made up of self-attention, multi-head attention and feedforward network.
     This standard decoder layer is based on the paper "Attention Is All You Need".
@@ -49,10 +49,9 @@ class SpeechTransformerDecoderLayer(nn.Module):
             num_heads: int = 8,             # number of attention heads
             d_ff: int = 2048,               # dimension of feed forward network
             dropout_p: float = 0.3,         # probability of dropout
-            ffnet_style=ffnet_style
-            ) for _ in range(num_layers)
+            ffnet_style: str = 'ff',        # style of feed forward network
     ) -> None:
-        super(SpeechTransformerDecoderLayer, self).__init__()
+        super(TransformerDecoderLayer, self).__init__()
         self.self_attention = AddNorm(MultiHeadAttention(d_model, num_heads), d_model)
         self.memory_attention = AddNorm(MultiHeadAttention(d_model, num_heads), d_model)
         self.feed_forward = AddNorm(PositionwiseFeedForwardNet(d_model, d_ff, dropout_p, ffnet_style), d_model)
@@ -70,7 +69,7 @@ class SpeechTransformerDecoderLayer(nn.Module):
         return outputs, self_attn, memory_attn
 
 
-class SpeechTransformerDecoder(BaseDecoder):
+class TransformerDecoder(BaseDecoder):
     """
     The TransformerDecoder is composed of a stack of N identical layers.
     Each layer has three sub-layers. The first is a multi-head self-attention mechanism,
@@ -97,43 +96,63 @@ class SpeechTransformerDecoder(BaseDecoder):
             ffnet_style: str = 'ff',        # style of feed forward network
             dropout_p: float = 0.3,         # probability of dropout
             pad_id: int = 0,                # identification of pad token
+            sos_id: int = 1,                # identification of start of sentence token
             eos_id: int = 2,                # identification of end of sentence token
+            max_length: int = 400,          # max length of decoding
     ) -> None:
-        super(SpeechTransformerDecoder, self).__init__()
+        super(TransformerDecoder, self).__init__()
         self.d_model = d_model
         self.num_layers = num_layers
         self.num_heads = num_heads
+        self.max_length = max_length
+        self.pad_id = pad_id
+        self.sos_id = sos_id
+        self.eos_id = eos_id
         self.embedding = Embedding(num_classes, pad_id, d_model)
         self.positional_encoding = PositionalEncoding(d_model)
         self.input_dropout = nn.Dropout(p=dropout_p)
         self.layers = nn.ModuleList([
-            SpeechTransformerDecoderLayer(
+            TransformerDecoderLayer(
                 d_model=d_model,
                 num_heads=num_heads,
                 d_ff=d_ff,
                 dropout_p=dropout_p,
-                ffnet_style=ffnet_style) for _ in range(num_layers)
+                ffnet_style=ffnet_style,
+            for _ in range(num_layers)
         ])
-        self.pad_id = pad_id
-        self.eos_id = eos_id
         self.fc = nn.Sequential(
             Linear(d_model, d_model),
             nn.Tanh(),
             Linear(d_model, num_classes),
         )
 
-    def forward(self, targets: Tensor, input_lengths: Optional[Tensor] = None, memory: Tensor = None):
+    def forward(self, targets: Tensor, encoder_outputs: Tensor, encoder_output_lengths: Tensor) -> Tensor:
         batch_size, output_length = targets.size(0), targets.size(1)
 
         self_attn_mask = get_decoder_self_attn_mask(targets, targets, self.pad_id)
-        memory_mask = get_attn_pad_mask(memory, input_lengths, output_length)
+        encoder_outputs_mask = get_attn_pad_mask(encoder_outputs, encoder_output_lengths, output_length)
 
         outputs = self.embedding(targets) + self.positional_encoding(output_length)
         outputs = self.input_dropout(outputs)
 
         for layer in self.layers:
-            outputs, self_attn, memory_attn = layer(outputs, memory, self_attn_mask, memory_mask)
+            outputs, self_attn, memory_attn = layer(outputs, encoder_outputs, self_attn_mask, encoder_outputs_mask)
 
-        predicted_log_probs = self.get_normalized_probs(outputs)
+        predicted_log_probs = self.fc(outputs).log_softmax(dim=-1)
 
         return predicted_log_probs
+
+
+    @torch.no_grad()
+    def decode(self, encoder_outputs: Tensor, encoder_output_lengths: Tensor) -> Tensor:
+        batch_size = encoder_outputs.size(0)
+
+        y_hats = encoder_outputs.new_zeros(batch_size, self.max_length).long()
+        y_hats[:, 0] = self.sos_id
+
+        for di in range(1, self.max_length):
+            step_outputs = self.decoder(y_hats, encoder_outputs, encoder_output_lengths)
+            step_outputs = step_outputs.max(dim=-1, keepdim=False)[1]
+            y_hats[:, di] = step_outputs[:, di]
+
+        return y_hats
