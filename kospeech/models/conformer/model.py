@@ -49,9 +49,8 @@ class Conformer(TransducerModel):
         - **inputs** (batch, time, dim): Tensor containing input vector
         - **input_lengths** (batch): list of sequence input lengths
 
-    Returns: outputs, output_lengths
-        - **outputs** (batch, out_channels, time): Tensor produces by conformer.
-        - **output_lengths** (batch): list of sequence output lengths
+    Returns:
+        * predictions (torch.FloatTensor): Result of model predictions.
     """
     def __init__(
             self,
@@ -106,4 +105,17 @@ class Conformer(TransducerModel):
             targets: Tensor,
             target_lengths: Tensor
     ) -> Tensor:
+        """
+        Forward propagate a `inputs` and `targets` pair for training.
+
+        Args:
+            inputs (torch.FloatTensor): A input sequence passed to encoder. Typically for inputs this will be a padded
+                `FloatTensor` of size ``(batch, seq_length, dimension)``.
+            input_lengths (torch.LongTensor): The length of input tensor. ``(batch)``
+            targets (torch.LongTensr): A target sequence passed to decoder. `IntTensor` of size ``(batch, seq_length)``
+            target_lengths (torch.LongTensor): The length of target tensor. ``(batch)``
+
+        Returns:
+            * predictions (torch.FloatTensor): Result of model predictions.
+        """
         return super().forward(inputs, input_lengths, targets, target_lengths)

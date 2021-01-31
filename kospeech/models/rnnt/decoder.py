@@ -21,6 +21,32 @@ from kospeech.models.modules import Linear
 
 
 class DecoderRNNT(TransducerDecoder):
+    """
+    Decoder of RNN-Transducer
+
+
+    Args:
+        num_classes (int): number of classification
+        hidden_state_dim (int, optional): hidden state dimension of decoder (default: 512)
+        output_dim (int, optional): output dimension of encoder and decoder (default: 512)
+        num_layers (int, optional): number of decoder layers (default: 1)
+        rnn_type (str, optional): type of rnn cell (default: lstm)
+        sos_id (int, optional): start of sentence identification
+        eos_id (int, optional): end of sentence identification
+        dropout_p (float, optional): dropout probability of decoder
+
+    Inputs: inputs, input_lengths
+        inputs (torch.LongTensor): A target sequence passed to decoder. `IntTensor` of size ``(batch, seq_length)``
+        input_lengths (torch.LongTensor): The length of input tensor. ``(batch)``
+
+    Returns:
+        (Tensor, Tensor):
+
+        * decoder_outputs (torch.FloatTensor): A output sequence of decoder. `FloatTensor` of size
+            ``(batch, seq_length, dimension)``
+        * hidden_states (torch.FloatTensor): A hidden state of decoder. `FloatTensor` of size
+            ``(batch, seq_length, dimension)``
+    """
     supported_rnns = {
         'lstm': nn.LSTM,
         'gru': nn.GRU,
@@ -56,6 +82,21 @@ class DecoderRNNT(TransducerDecoder):
         self.out_proj = Linear(hidden_state_dim, output_dim)
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
+        """
+        Forward propage a `inputs` (targets) for training.
+
+        Args:
+            inputs (torch.LongTensor): A target sequence passed to decoder. `IntTensor` of size ``(batch, seq_length)``
+            input_lengths (torch.LongTensor): The length of input tensor. ``(batch)``
+
+        Returns:
+            (Tensor, Tensor):
+
+            * decoder_outputs (torch.FloatTensor): A output sequence of decoder. `FloatTensor` of size
+                ``(batch, seq_length, dimension)``
+            * hidden_states (torch.FloatTensor): A hidden state of decoder. `FloatTensor` of size
+                ``(batch, seq_length, dimension)``
+        """
         embedded = self.embedding(inputs)
 
         embedded = nn.utils.rnn.pack_padded_sequence(embedded.transpose(0, 1), input_lengths.cpu())

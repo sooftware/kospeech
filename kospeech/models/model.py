@@ -150,7 +150,12 @@ class EncoderDecoderModel(BaseModel):
             targets (torch.LongTensr): A target sequence passed to decoder. `IntTensor` of size ``(batch, seq_length)``
 
         Returns:
-            * predictions (torch.FloatTensor): Result of model predictions.
+            (Tensor, Tensor, Tensor)
+
+            * predicted_log_probs (torch.FloatTensor): Log probability of model predictions.
+            * encoder_output_lengths: The length of encoder outputs. ``(batch)``
+            * encoder_log_probs: Log probability of encoder outputs will be passed to CTC Loss.
+                If joint_ctc_attention is False, return None.
         """
         raise NotImplementedError
 

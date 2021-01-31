@@ -21,6 +21,30 @@ from kospeech.models.modules import Linear
 
 
 class EncoderRNNT(TransducerEncoder):
+    """
+    Encoder of RNN-Transducer.
+
+    Args:
+        input_dim (int): dimension of input vector
+        hidden_state_dim (int, optional): hidden state dimension of encoder (default: 320)
+        output_dim (int, optional): output dimension of encoder and decoder (default: 512)
+        num_layers (int, optional): number of encoder layers (default: 4)
+        rnn_type (str, optional): type of rnn cell (default: lstm)
+        bidirectional (bool, optional): if True, becomes a bidirectional encoder (default: True)
+
+    Inputs: inputs, input_lengths
+        inputs (torch.FloatTensor): A input sequence passed to encoder. Typically for inputs this will be a padded
+            `FloatTensor` of size ``(batch, seq_length, dimension)``.
+        input_lengths (torch.LongTensor): The length of input tensor. ``(batch)``
+
+    Returns:
+        (Tensor, Tensor)
+
+        * outputs (torch.FloatTensor): A output sequence of encoder. `FloatTensor` of size
+            ``(batch, seq_length, dimension)``
+        * hidden_states (torch.FloatTensor): A hidden state of encoder. `FloatTensor` of size
+            ``(batch, seq_length, dimension)``
+    """
     supported_rnns = {
         'lstm': nn.LSTM,
         'gru': nn.GRU,
@@ -52,6 +76,22 @@ class EncoderRNNT(TransducerEncoder):
         self.out_proj = Linear(hidden_state_dim << 1 if bidirectional else hidden_state_dim, output_dim)
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
+        """
+        Forward propagate a `inputs` for  encoder training.
+
+        Args:
+            inputs (torch.FloatTensor): A input sequence passed to encoder. Typically for inputs this will be a padded
+                `FloatTensor` of size ``(batch, seq_length, dimension)``.
+            input_lengths (torch.LongTensor): The length of input tensor. ``(batch)``
+
+        Returns:
+            (Tensor, Tensor)
+
+            * outputs (torch.FloatTensor): A output sequence of encoder. `FloatTensor` of size
+                ``(batch, seq_length, dimension)``
+            * hidden_states (torch.FloatTensor): A hidden state of encoder. `FloatTensor` of size
+                ``(batch, seq_length, dimension)``
+        """
         inputs = nn.utils.rnn.pack_padded_sequence(inputs.transpose(0, 1), input_lengths.cpu())
         outputs, hidden_states = self.rnn(inputs)
         outputs, _ = nn.utils.rnn.pad_packed_sequence(outputs)

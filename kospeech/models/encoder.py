@@ -21,6 +21,7 @@ from kospeech.models.modules import Transpose, Linear
 
 
 class EncoderInterface(nn.Module):
+    """ Base Interface of Encoder """
     def __init__(self):
         super(EncoderInterface, self).__init__()
 
@@ -120,7 +121,11 @@ class TransducerEncoder(EncoderInterface):
             input_lengths (torch.LongTensor): The length of input tensor. ``(batch)``
 
         Returns:
-            * encoder_outputs (torch.FloatTensor): A output sequence of encoder. `FloatTensor` of size
+            (Tensor, Tensor)
+
+            * outputs (torch.FloatTensor): A output sequence of encoder. `FloatTensor` of size
+                ``(batch, seq_length, dimension)``
+            * hidden_states (torch.FloatTensor): A hidden state of encoder. `FloatTensor` of size
                 ``(batch, seq_length, dimension)``
         """
         raise NotImplementedError

@@ -119,6 +119,22 @@ class TransformerEncoder(BaseEncoder):
         ])
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor, Tensor]:
+        """
+        Forward propagate a `inputs` for  encoder training.
+
+        Args:
+            inputs (torch.FloatTensor): A input sequence passed to encoder. Typically for inputs this will be a padded
+                `FloatTensor` of size ``(batch, seq_length, dimension)``.
+            input_lengths (torch.LongTensor): The length of input tensor. ``(batch)``
+
+        Returns:
+            (Tensor, Tensor, Tensor):
+
+            * outputs: A output sequence of encoder. `FloatTensor` of size ``(batch, seq_length, dimension)``
+            * output_lengths: The length of encoder outputs. ``(batch)``
+            * encoder_log_probs: Log probability of encoder outputs will be passed to CTC Loss.
+                If joint_ctc_attention is False, return None.
+        """
         encoder_log_probs = None
 
         features, output_lengths = self.conv(inputs, input_lengths)

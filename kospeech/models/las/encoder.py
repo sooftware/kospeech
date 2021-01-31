@@ -25,13 +25,15 @@ class EncoderRNN(BaseEncoder):
 
     Args:
         input_dim (int): dimension of input vector
-        hidden_state_dim (int): the number of features in the hidden state `h`
-        num_layers (int, optional): number of recurrent layers (default: 1)
-        bidirectional (bool, optional): if True, becomes a bidirectional encoder (defulat: False)
-        rnn_type (str, optional): type of RNN cell (default: lstm)
-        dropout_p (float, optional): dropout probability (default: 0.3)
+        num_classes (int): number of classification
+        hidden_state_dim (int): the number of features in the encoder hidden state `h`
+        num_layers (int, optional): number of recurrent layers (default: 3)
+        bidirectional (bool, optional): if True, becomes a bidirectional encoder (default: False)
         extractor (str): type of CNN extractor (default: vgg)
         activation (str): type of activation function (default: hardtanh)
+        rnn_type (str, optional): type of RNN cell (default: lstm)
+        dropout_p (float, optional): dropout probability of encoder (default: 0.2)
+        joint_ctc_attention (bool, optional): flag indication joint ctc attention or not
 
     Inputs: inputs, input_lengths
         - **inputs**: list of sequences, whose length is the batch size and within which each sequence is list of tokens
@@ -78,8 +80,20 @@ class EncoderRNN(BaseEncoder):
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor, Optional[Tensor]]:
         """
-        inputs (torch.FloatTensor): (batch_size, sequence_length, dimension)
-        input_lengths (torch.LongTensor): (batch_size)
+        Forward propagate a `inputs` for  encoder training.
+
+        Args:
+            inputs (torch.FloatTensor): A input sequence passed to encoder. Typically for inputs this will be a padded
+                `FloatTensor` of size ``(batch, seq_length, dimension)``.
+            input_lengths (torch.LongTensor): The length of input tensor. ``(batch)``
+
+        Returns:
+            (Tensor, Tensor, Tensor):
+
+            * encoder_outputs: A output sequence of encoder. `FloatTensor` of size ``(batch, seq_length, dimension)``
+            * encoder_output_lengths: The length of encoder outputs. ``(batch)``
+            * encoder_log_probs: Log probability of encoder outputs will be passed to CTC Loss.
+                If joint_ctc_attention is False, return None.
         """
         encoder_log_probs = None
         features, output_lengths = self.conv(inputs, input_lengths)

@@ -1,4 +1,4 @@
-# Copyright (c) 2020, Soohwan Kim. All rights reserved.
+# Copyright (c) 2021, Soohwan Kim. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -354,6 +354,9 @@ class Conv2dSubsampling(Conv2dExtractor):
             )
         )
 
+    def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
+        return super().forward(inputs, input_lengths)
+
 
 class DeepSpeech2Extractor(Conv2dExtractor):
     """
@@ -395,6 +398,9 @@ class DeepSpeech2Extractor(Conv2dExtractor):
                 self.activation,
             )
         )
+
+    def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
+        return super().forward(inputs, input_lengths)
 
 
 class VGGExtractor(Conv2dExtractor):
@@ -445,3 +451,6 @@ class VGGExtractor(Conv2dExtractor):
                 nn.MaxPool2d(2, stride=2),
             )
         )
+
+    def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
+        return super().forward(inputs, input_lengths)

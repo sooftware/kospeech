@@ -35,15 +35,15 @@ class DecoderRNN(BaseDecoder):
 
     Args:
         num_classes (int): number of classification
-        max_length (int): a maximum allowed length for the sequence to be processed
-        hidden_state_dim (int): dimension of RNN`s hidden state vector
-        sos_id (int): index of the start of sentence symbol
-        eos_id (int): index of the end of sentence symbol
-        attn_mechanism (str): type of attention mechanism (default: dot)
-        num_heads (int): number of attention heads. (default: 4)
-        num_layers (int, optional): number of recurrent layers (default: 1)
+        hidden_state_dim (int): the number of features in the decoder hidden state `h`
+        num_layers (int, optional): number of recurrent layers (default: 2)
         rnn_type (str, optional): type of RNN cell (default: lstm)
-        dropout_p (float, optional): dropout probability (default: 0.3)
+        pad_id (int, optional): index of the pad symbol (default: 0)
+        sos_id (int, optional): index of the start of sentence symbol (default: 1)
+        eos_id (int, optional): index of the end of sentence symbol (default: 2)
+        attn_mechanism (str, optional): type of attention mechanism (default: multi-head)
+        num_heads (int, optional): number of attention heads. (default: 4)
+        dropout_p (float, optional): dropout probability of decoder (default: 0.2)
 
     Inputs: inputs, encoder_outputs, teacher_forcing_ratio
         - **inputs** (batch, seq_len, input_size): list of sequences, whose length is the batch size and within which
@@ -153,6 +153,18 @@ class DecoderRNN(BaseDecoder):
             encoder_outputs: Tensor,
             teacher_forcing_ratio: float = 1.0,
     ) -> list:
+        """
+        Forward propagate a `encoder_outputs` for training.
+
+        Args:
+            targets (torch.LongTensr): A target sequence passed to decoder. `IntTensor` of size ``(batch, seq_length)``
+            encoder_outputs (torch.FloatTensor): A output sequence of encoder. `FloatTensor` of size
+                ``(batch, seq_length, dimension)``
+            teacher_forcing_ratio (float): ratio of teacher forcing
+
+        Returns:
+            * predicted_log_probs (torch.FloatTensor): Log probability of model predictions.
+        """
         hidden_states, attn = None, None
         predicted_log_probs = list()
 
@@ -197,6 +209,8 @@ class DecoderRNN(BaseDecoder):
                 )
                 predicted_log_probs.append(step_outputs)
                 input_var = predicted_log_probs[-1].topk(1)[1]
+
+        predicted_log_probs = torch.stack(predicted_log_probs, dim=1).to(self.device)
 
         return predicted_log_probs
 

@@ -101,8 +101,18 @@ class Jasper(EncoderModel):
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
         """
-        inputs (torch.FloatTensor): (batch_size, sequence_length, dimension)
-        input_lengths (torch.LongTensor): (batch_size)
+        Forward propagate a `inputs` for  ctc training.
+
+        Args:
+            inputs (torch.FloatTensor): A input sequence passed to encoder. Typically for inputs this will be a padded
+                `FloatTensor` of size ``(batch, seq_length, dimension)``.
+            input_lengths (torch.LongTensor): The length of input tensor. ``(batch)``
+
+        Returns:
+            (Tensor, Tensor):
+
+            * predicted_log_prob (torch.FloatTensor)s: Log probability of model predictions.
+            * output_lengths (torch.LongTensor): The length of output tensor ``(batch)``
         """
         residual, prev_outputs, prev_output_lengths = None, list(), list()
         inputs = inputs.transpose(1, 2)
