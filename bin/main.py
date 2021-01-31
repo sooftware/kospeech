@@ -23,7 +23,6 @@ from omegaconf import OmegaConf, DictConfig
 
 from kospeech.data.data_loader import split_dataset
 from kospeech.optim import Optimizer
-from kospeech.trainer import SupervisedTrainer
 from kospeech.model_builder import build_model
 from kospeech.utils import (
     check_envirionment,
@@ -52,8 +51,10 @@ from kospeech.models import (
     ConformerSmallConfig,
     ConformerMediumConfig,
     ConformerLargeConfig,
+    RNNTransducerConfig,
 )
 from kospeech.trainer import (
+    SupervisedTrainer,
     DeepSpeech2TrainConfig,
     ListenAttendSpellTrainConfig,
     TransformerTrainConfig,
@@ -61,6 +62,7 @@ from kospeech.trainer import (
     ConformerSmallTrainConfig,
     ConformerMediumTrainConfig,
     ConformerLargeTrainConfig,
+    RNNTTrainConfig
 )
 
 
@@ -152,6 +154,7 @@ cs.store(group="train", name="jasper_train", node=JasperTrainConfig, package="tr
 cs.store(group="train", name="conformer_small_train", node=ConformerSmallTrainConfig, package="train")
 cs.store(group="train", name="conformer_medium_train", node=ConformerMediumTrainConfig, package="train")
 cs.store(group="train", name="conformer_large_train", node=ConformerLargeTrainConfig, package="train")
+cs.store(group="train", name="rnnt_train", node=RNNTTrainConfig, package="train")
 cs.store(group="model", name="ds2", node=DeepSpeech2Config, package="model")
 cs.store(group="model", name="las", node=ListenAttendSpellConfig, package="model")
 cs.store(group="model", name="transformer", node=TransformerConfig, package="model")
@@ -161,6 +164,7 @@ cs.store(group="model", name="joint-ctc-attention-transformer", node=JointCTCAtt
 cs.store(group="model", name="conformer-small", node=ConformerSmallConfig, package="model")
 cs.store(group="model", name="conformer-medium", node=ConformerMediumConfig, package="model")
 cs.store(group="model", name="conformer-large", node=ConformerLargeConfig, package="model")
+cs.store(group="model", name="rnnt", node=RNNTransducerConfig, package="model")
 
 
 @hydra.main(config_path=os.path.join('..', "configs"), config_name="train")
