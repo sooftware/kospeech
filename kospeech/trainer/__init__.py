@@ -68,6 +68,19 @@ class DeepSpeech2TrainConfig(TrainConfig):
 
 
 @dataclass
+class RNNTTrainConfig(TrainConfig):
+    optimizer: str = "adam"
+    init_lr: float = 1e-06
+    final_lr: float = 1e-06
+    peak_lr: float = 1e-04
+    warmup_steps: int = 400
+    num_epochs: int = 20
+    reduction: str = "mean"
+    label_smoothing: float = 0.1
+    lr_scheduler: str = 'tri_stage_lr_scheduler'
+
+
+@dataclass
 class TransformerTrainConfig(TrainConfig):
     optimizer: str = "adam"
     init_lr: float = 1e-06

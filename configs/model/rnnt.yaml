@@ -1,0 +1,10 @@
+architecture: rnnt
+num_encoder_layers: 4
+num_decoder_layers: 1
+encoder_hidden_state_dim: 320
+decoder_hidden_state_dim: 512
+output_dim: 512
+rnn_type: lstm
+bidirectional: True
+encoder_dropout_p: 0.2
+decoder_dropout_p: 0.2

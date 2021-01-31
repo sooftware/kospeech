@@ -18,18 +18,8 @@ from omegaconf import DictConfig
 from astropy.modeling import ParameterError
 
 from kospeech.models.conformer import Conformer
-from kospeech.models.transformer.decoder import TransformerDecoder
-from kospeech.models.transformer.encoder import TransformerEncoder
 from kospeech.vocabs import Vocabulary
-from kospeech.models.convolution import (
-    VGGExtractor,
-    DeepSpeech2Extractor,
-    Conv2dSubsampling,
-)
-from kospeech.models.las import (
-    EncoderRNN,
-    DecoderRNN,
-)
+from kospeech.models.las import EncoderRNN
 from kospeech.decode.ensemble import (
     BasicEnsemble,
     WeightedEnsemble,
@@ -39,6 +29,7 @@ from kospeech.models import (
     DeepSpeech2,
     SpeechTransformer,
     Jasper,
+    RNNTransducer,
 )
 
 
@@ -120,12 +111,61 @@ def build_model(
             device=device,
         )
 
+    elif config.model.architecture.lower() == 'rnnt':
+        model = build_rnnt(
+            num_classes=len(vocab),
+            input_dim=input_size,
+            num_encoder_layers=config.model.num_encoder_layers,
+            num_decoder_layers=config.model.num_decoder_layers,
+            encoder_hidden_state_dim=config.model.encoder_hidden_state_dim,
+            decoder_hidden_state_dim=config.model.decoder_hidden_state_dim,
+            output_dim=config.model.output_dim,
+            rnn_type=config.model.rnn_type,
+            bidirectional=config.model.bidirectional,
+            encoder_dropout_p=config.model.encoder_dropout_p,
+            decoder_dropout_p=config.model.decoder_dropout_p,
+            sos_id=vocab.sos_id,
+            eos_id=vocab.eos_id,
+        )
+
     else:
         raise ValueError('Unsupported model: {0}'.format(config.model.architecture))
 
     print(model)
 
     return model
+
+
+def build_rnnt(
+        num_classes: int,
+        input_dim: int,
+        num_encoder_layers: int = 4,
+        num_decoder_layers: int = 1,
+        encoder_hidden_state_dim: int = 320,
+        decoder_hidden_state_dim: int = 512,
+        output_dim: int = 512,
+        rnn_type: str = "lstm",
+        bidirectional: bool = True,
+        encoder_dropout_p: float = 0.2,
+        decoder_dropout_p: float = 0.2,
+        sos_id: int = 1,
+        eos_id: int = 2,
+) -> nn.DataParallel:
+    return nn.DataParallel(RNNTransducer(
+        num_classes=num_classes,
+        input_dim=input_dim,
+        num_encoder_layers=num_encoder_layers,
+        num_decoder_layers=num_decoder_layers,
+        encoder_hidden_state_dim=encoder_hidden_state_dim,
+        decoder_hidden_state_dim=decoder_hidden_state_dim,
+        output_dim=output_dim,
+        rnn_type=rnn_type,
+        bidirectional=bidirectional,
+        encoder_dropout_p=encoder_dropout_p,
+        decoder_dropout_p=decoder_dropout_p,
+        sos_id=sos_id,
+        eos_id=eos_id,
+    ))
 
 
 def build_conformer(
