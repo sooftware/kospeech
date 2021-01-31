@@ -88,6 +88,6 @@ class Conformer(CTCModelInterface):
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
         outputs, output_lengths = self.encoder(inputs, input_lengths)
-        outputs = self.fc(outputs).log_softmax(dim=-1)
+        outputs = self.fc(outputs).log_softmax(dim=2)
         return outputs, output_lengths
 
