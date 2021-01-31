@@ -63,8 +63,7 @@ class LabelSmoothedCrossEntropyLoss(nn.Module):
             raise ValueError("Unsupported reduction method {0}".format(reduction))
 
     def forward(self, logits: Tensor, targets: Tensor):
-        if self.architecture == 'transformer':
-            logits = F.log_softmax(logits, dim=-1)
+
         if self.smoothing > 0.0:
             with torch.no_grad():
                 label_smoothed = torch.zeros_like(logits)
