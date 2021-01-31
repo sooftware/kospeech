@@ -17,10 +17,10 @@ from torch import Tensor
 from typing import Optional, Tuple
 
 from kospeech.models.interface import DecoderInterface
-from kospeech.models.transformer.sublayers import AddNorm
+from kospeech.models.transformer.sublayers import PreNorm
 from kospeech.models.attention import MultiHeadAttention
 from kospeech.models.modules import Linear
-from kospeech.models.transformer.sublayers import PositionwiseFeedForwardNet
+from kospeech.models.transformer.sublayers import PositionwiseFeedForward
 from kospeech.models.transformer.embeddings import (
     Embedding,
     PositionalEncoding,
@@ -52,9 +52,9 @@ class TransformerDecoderLayer(nn.Module):
             ffnet_style: str = 'ff',        # style of feed forward network
     ) -> None:
         super(TransformerDecoderLayer, self).__init__()
-        self.self_attention = AddNorm(MultiHeadAttention(d_model, num_heads), d_model)
-        self.memory_attention = AddNorm(MultiHeadAttention(d_model, num_heads), d_model)
-        self.feed_forward = AddNorm(PositionwiseFeedForwardNet(d_model, d_ff, dropout_p, ffnet_style), d_model)
+        self.self_attention = PreNorm(MultiHeadAttention(d_model, num_heads), d_model)
+        self.memory_attention = PreNorm(MultiHeadAttention(d_model, num_heads), d_model)
+        self.feed_forward = PreNorm(PositionwiseFeedForward(d_model, d_ff, dropout_p, ffnet_style), d_model)
 
     def forward(
             self,
@@ -147,12 +147,12 @@ class TransformerDecoder(DecoderInterface):
     def decode(self, encoder_outputs: Tensor, encoder_output_lengths: Tensor) -> Tensor:
         batch_size = encoder_outputs.size(0)
 
-        y_hats = encoder_outputs.new_zeros(batch_size, self.max_length).long()
-        y_hats[:, 0] = self.sos_id
+        predictions = encoder_outputs.new_zeros(batch_size, self.max_length).long()
+        predictions[:, 0] = self.sos_id
 
         for di in range(1, self.max_length):
-            step_outputs = self.decoder(y_hats, encoder_outputs, encoder_output_lengths)
+            step_outputs = self.decoder(predictions, encoder_outputs, encoder_output_lengths)
             step_outputs = step_outputs.max(dim=-1, keepdim=False)[1]
-            y_hats[:, di] = step_outputs[:, di]
+            predictions[:, di] = step_outputs[:, di]
 
-        return y_hats
+        return predictions
