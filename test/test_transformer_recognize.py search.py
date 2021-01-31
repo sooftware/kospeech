@@ -13,13 +13,35 @@
 # limitations under the License.
 
 import torch
+
+from kospeech.model_builder import build_transformer
 from kospeech.models import SpeechTransformer
 
 batch_size = 4
 seq_length = 200
 input_size = 80
 
-transformer = SpeechTransformer(num_classes=10, d_model=16, d_ff=32, num_encoder_layers=3, num_decoder_layers=2)
+cuda = torch.cuda.is_available()
+device = torch.device('cuda' if cuda else 'cpu')
+
+transformer = build_transformer(
+    num_classes=10,
+    d_model=16,
+    d_ff=32,
+    num_heads=2,
+    input_dim=input_size,
+    num_encoder_layers=3,
+    num_decoder_layers=2,
+    extractor='vgg',
+    dropout_p=0.1,
+    ffnet_style='ff',
+    device=device,
+    pad_id=0,
+    sos_id=1,
+    eos_id=2,
+    joint_ctc_attention=False,
+    max_length=10,
+)
 
 inputs = torch.FloatTensor(batch_size, seq_length, input_size)
 input_lengths = torch.LongTensor([seq_length, seq_length - 10, seq_length - 20, seq_length - 30])
