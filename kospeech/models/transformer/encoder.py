@@ -52,19 +52,16 @@ class TransformerEncoderLayer(nn.Module):
         self.self_attention = MultiHeadAttention(d_model, num_heads)
         self.feed_forward = PositionwiseFeedForward(d_model, d_ff, dropout_p)
 
-    def forward(
-            self,
-            inputs: Tensor,
-            non_pad_mask: Tensor = None,
-            self_attn_mask: Tensor = None
-    ) -> Tuple[Tensor, Tensor]:
+    def forward(self, inputs: Tensor, self_attn_mask: Tensor = None) -> Tuple[Tensor, Tensor]:
+        residual = inputs
         inputs = self.attention_prenorm(inputs)
         outputs, attn = self.self_attention(inputs, inputs, inputs, self_attn_mask)
-        outputs *= non_pad_mask
+        outputs += residual
 
+        residual = outputs
         outputs = self.feed_forward_prenorm(outputs)
         outputs = self.feed_forward(outputs)
-        outputs *= non_pad_mask
+        outputs += residual
         return outputs, attn
 
 
@@ -131,17 +128,15 @@ class TransformerEncoder(EncoderInterface):
         encoder_log_probs = None
         features, output_lengths = self.conv(inputs, input_lengths)
 
-        non_pad_mask = get_non_pad_mask(features, input_lengths=output_lengths)
         self_attn_mask = get_attn_pad_mask(features, output_lengths, features.size(1))
 
-        encoder_outputs = self.input_layer_norm(self.input_proj(features))
-        encoder_outputs += self.positional_encoding(encoder_outputs.size(1))
-        encoder_outputs = self.input_dropout(encoder_outputs)
+        outputs = self.input_layer_norm(self.input_proj(features)) + self.positional_encoding(features.size(1))
+        outputs = self.input_dropout(outputs)
 
         for layer in self.layers:
-            encoder_outputs, attn = layer(encoder_outputs, non_pad_mask, self_attn_mask)
+            outputs, attn = layer(outputs, self_attn_mask)
 
         if self.joint_ctc_attention:
-            encoder_log_probs = self.fc(encoder_outputs.transpose(1, 2)).log_softmax(dim=-1)
+            encoder_log_probs = self.fc(outputs.transpose(1, 2)).log_softmax(dim=-1)
 
-        return encoder_outputs, output_lengths, encoder_log_probs
+        return outputs, output_lengths, encoder_log_probs
