@@ -16,16 +16,15 @@ import torch.nn as nn
 from torch import Tensor
 from typing import Tuple, Optional
 
-from kospeech.models.encoder import EncoderRNN
+from kospeech.models.base import BaseEncoder
 from kospeech.models.modules import Linear, Transpose
 from kospeech.models.conv import (
     VGGExtractor,
     DeepSpeech2Extractor,
-    Conv2dSubsampling,
 )
 
 
-class Listener(EncoderRNN):
+class EncoderRNN(BaseEncoder):
     """
     Converts low level speech signals into higher level features
 
@@ -48,6 +47,16 @@ class Listener(EncoderRNN):
         - **encoder_log__probs**: tensor containing log probability for ctc loss
         - **output_lengths**: list of sequence lengths produced by Listener
     """
+    supported_rnns = {
+        'lstm': nn.LSTM,
+        'gru': nn.GRU,
+        'rnn': nn.RNN,
+    }
+    supported_extractors = {
+        'ds2': DeepSpeech2Extractor,
+        'vgg': VGGExtractor,
+    }
+
     def __init__(
             self,
             input_dim: int,                          # size of input
@@ -61,22 +70,22 @@ class Listener(EncoderRNN):
             activation: str = 'hardtanh',            # type of activation function
             joint_ctc_attention: bool = False,       # Use CTC Loss & Cross Entropy Joint Learning
     ) -> None:
-        if extractor.lower() == 'vgg':
-            conv = VGGExtractor(input_dim, activation=activation)
-        elif extractor.lower() == 'ds2':
-            conv = DeepSpeech2Extractor(input_dim, activation=activation)
-        elif extractor.lower() == 'conv2d':
-            conv = Conv2dSubsampling(input_dim, 1, hidden_state_dim, activation=activation)
-        else:
-            raise ValueError("Unsupported Extractor : {0}".format(extractor))
-
-        super(Listener, self).__init__(
-            conv.get_output_dim(), hidden_state_dim, num_layers, rnn_type, dropout_p, bidirectional,
-        )
-
-        self.conv = conv
+        super(EncoderRNN, self).__init__()
+        self.hidden_state_dim = hidden_state_dim       
         self.joint_ctc_attention = joint_ctc_attention
-
+        extractor = self.supported_extractors[extractor.lower()]
+        rnn_cell = self.supported_rnns[rnn_type.lower()]
+        self.conv = extractor(input_dim, activation=activation)
+        self.rnn = rnn_cell(
+            input_size=self.conv.get_output_dim(),
+            hidden_size=hidden_state_dim,
+            num_layers=num_layers,
+            bias=True,
+            batch_first=True,
+            dropout=dropout_p,
+            bidirectional=bidirectional,
+        )
+        
         if self.joint_ctc_attention:
             self.fc = nn.Sequential(
                 nn.BatchNorm1d(self.hidden_state_dim << 1),
@@ -91,9 +100,12 @@ class Listener(EncoderRNN):
         input_lengths (torch.LongTensor): (batch_size)
         """
         encoder_log_probs = None
-        conv_outputs, output_lengths = self.conv(inputs, input_lengths)
-        encoder_outputs = self._forward(conv_outputs, output_lengths)
+        features, output_lengths = self.conv(inputs, input_lengths)
+        features = nn.utils.rnn.pack_padded_sequence(features.transpose(0, 1), output_lengths.cpu())
+        encoder_outputs, hidden_states = self.rnn(features)
+        encoder_outputs, _ = nn.utils.rnn.pad_packed_sequence(encoder_outputs)
+        encoder_outputs = encoder_outputs.transpose(0, 1)
 
         if self.joint_ctc_attention:
-            encoder_log_probs = self.get_normalized_probs(encoder_outputs.transpose(1, 2))
-        return encoder_outputs, encoder_log_probs, output_lengths
+            encoder_log_probs = self.fc(encoder_outputs.transpose(1, 2)).log_softmax(dim=2)
+        return encoder_outputs, output_lengths, encoder_log_probs
