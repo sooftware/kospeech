@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import torch
+from torch import Tensor
 
 from kospeech.models.conformer.encoder import ConformerEncoder
 from kospeech.models.model import TransducerModel
@@ -29,14 +30,17 @@ class Conformer(TransducerModel):
         num_classes (int): Number of classification classes
         input_dim (int, optional): Dimension of input vector
         encoder_dim (int, optional): Dimension of conformer encoder
+        decoder_dim (int, optional): Dimension of conformer decoder
         encoder_num_layers (int, optional): Number of conformer blocks
         decoder_num_layers (int, optional): Number of decoder layers
+        decoder_rnn_type (str, optional): type of RNN cell
         num_attention_heads (int, optional): Number of attention heads
         feed_forward_expansion_factor (int, optional): Expansion factor of feed forward module
         conv_expansion_factor (int, optional): Expansion factor of conformer convolution module
         feed_forward_dropout_p (float, optional): Probability of feed forward module dropout
         attention_dropout_p (float, optional): Probability of attention module dropout
         conv_dropout_p (float, optional): Probability of conformer convolution module dropout
+        decoder_dropout_p (float, optional): Probability of conformer decoder dropout
         conv_kernel_size (int or tuple, optional): Size of the convolving kernel
         half_step_residual (bool): Flag indication whether to use half step residual or not
         device (torch.device): torch device (cuda or cpu)
@@ -94,3 +98,12 @@ class Conformer(TransducerModel):
             dropout_p=decoder_dropout_p,
         )
         super(Conformer, self).__init__(encoder, decoder, encoder_dim, num_classes)
+
+    def forward(
+            self,
+            inputs: Tensor,
+            input_lengths: Tensor,
+            targets: Tensor,
+            target_lengths: Tensor
+    ) -> Tensor:
+        return super().forward(inputs, input_lengths, targets, target_lengths)

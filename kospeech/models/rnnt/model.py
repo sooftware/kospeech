@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from torch import Tensor
+
 from kospeech.models.model import TransducerModel
 from kospeech.models.rnnt.decoder import DecoderRNNT
 from kospeech.models.rnnt.encoder import EncoderRNNT
@@ -54,3 +56,12 @@ class RNNTransducer(TransducerModel):
             dropout_p=decoder_dropout_p,
         )
         super(RNNTransducer, self).__init__(encoder, decoder, output_dim, num_classes)
+
+    def forward(
+            self,
+            inputs: Tensor,
+            input_lengths: Tensor,
+            targets: Tensor,
+            target_lengths: Tensor
+    ) -> Tensor:
+        return super().forward(inputs, input_lengths, targets, target_lengths)

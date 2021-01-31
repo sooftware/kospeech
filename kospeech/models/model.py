@@ -54,6 +54,7 @@ class EncoderModel(BaseModel):
         self.decoder = None
 
     def set_decoder(self, decoder):
+        """ Setter for decoder """
         self.decoder = decoder
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
@@ -208,6 +209,18 @@ class TransducerModel(BaseModel):
         self.decoder.update_dropout(dropout_p)
 
     def joint(self, encoder_outputs: Tensor, decoder_outputs: Tensor) -> Tensor:
+        """
+        Joint `encoder_outputs` and `decoder_outputs`.
+
+        Args:
+            encoder_outputs (torch.FloatTensor): A output sequence of encoder. `FloatTensor` of size
+                ``(batch, seq_length, dimension)``
+            decoder_outputs (torch.FloatTensor): A output sequence of decoder. `FloatTensor` of size
+                ``(batch, seq_length, dimension)``
+
+        Returns:
+            * outputs (torch.FloatTensor): outputs of joint `encoder_outputs` and `decoder_outputs`..
+        """
         input_length = encoder_outputs.size(1)
         target_length = decoder_outputs.size(1)
 
@@ -229,6 +242,19 @@ class TransducerModel(BaseModel):
             targets: Tensor,
             target_lengths: Tensor
     ) -> Tensor:
+        """
+        Forward propagate a `inputs` and `targets` pair for training.
+
+        Args:
+            inputs (torch.FloatTensor): A input sequence passed to encoder. Typically for inputs this will be a padded
+                `FloatTensor` of size ``(batch, seq_length, dimension)``.
+            input_lengths (torch.LongTensor): The length of input tensor. ``(batch)``
+            targets (torch.LongTensr): A target sequence passed to decoder. `IntTensor` of size ``(batch, seq_length)``
+            target_lengths (torch.LongTensor): The length of target tensor. ``(batch)``
+
+        Returns:
+            * predictions (torch.FloatTensor): Result of model predictions.
+        """
         encoder_outputs, _ = self.encoder(inputs, input_lengths)
         decoder_outputs, _ = self.decoder(targets, target_lengths)
         outputs = self.joint(encoder_outputs, decoder_outputs)
@@ -236,6 +262,16 @@ class TransducerModel(BaseModel):
 
     @torch.no_grad()
     def decode(self, encoder_outputs: Tensor) -> Tensor:
+        """
+        Decode `encoder_outputs`.
+
+        Args:
+            encoder_outputs (torch.FloatTensor): A output sequence of encoder. `FloatTensor` of size
+                ``(batch, seq_length, dimension)``
+
+        Returns:
+            * predicted_log_probs (torch.FloatTensor): Log probability of model predictions.
+        """
         predicted_log_probs, hidden_states = list(), None
 
         batch_size = encoder_outputs.size(0)
@@ -256,5 +292,16 @@ class TransducerModel(BaseModel):
 
     @torch.no_grad()
     def recognize(self, inputs: Tensor, input_lengths: Tensor):
+        """
+        Recognize input speech. This method consists of the forward of the encoder and the decode() of the decoder.
+
+        Args:
+            inputs (torch.FloatTensor): A input sequence passed to encoder. Typically for inputs this will be a padded
+                `FloatTensor` of size ``(batch, seq_length, dimension)``.
+            input_lengths (torch.LongTensor): The length of input tensor. ``(batch)``
+
+        Returns:
+            * predictions (torch.FloatTensor): Result of model predictions.
+        """
         encoder_outputs, _ = self.encoder(inputs, input_lengths)
         return self.decode(encoder_outputs)
