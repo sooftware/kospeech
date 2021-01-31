@@ -16,12 +16,12 @@ import pdb
 from torch import Tensor
 from typing import Tuple
 
-from kospeech.models.base import BaseEncoderDecoderModel
+from kospeech.models.interface import EncoderDecoderModelInterface
 from kospeech.models.transformer.decoder import TransformerDecoder
 from kospeech.models.transformer.encoder import TransformerEncoder
 
 
-class SpeechTransformer(BaseEncoderDecoderModel):
+class SpeechTransformer(EncoderDecoderModelInterface):
     """
     A Speech Transformer model. User is able to modify the attributes as needed.
     The model is based on the paper "Attention Is All You Need".
@@ -74,7 +74,7 @@ class SpeechTransformer(BaseEncoderDecoderModel):
             self,
             inputs: Tensor,
             input_lengths: Tensor,
-            targets: Tensor = None
+            targets: Tensor,
     ) -> Tuple[Tensor, Tensor, Tensor]:
         """
         inputs (torch.FloatTensor): (batch_size, sequence_length, dimension)
