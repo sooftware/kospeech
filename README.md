@@ -26,6 +26,7 @@
      
    
 ### What's New
+- Febuary 2021: Add RNN-Transducer model
 - January 2021: Release v1.3
 - January 2021: Add Conformer model
 - January 2021: Add Jasper model
@@ -138,6 +139,7 @@ We recommend creating a new virtual environment for this project (using virtual 
 * torchaudio: `pip install torchaudio==0.6.0` (Refer [here](https://github.com/pytorch/pytorch) for problem installing torchaudio)
 * tqdm: `pip install tqdm` (Refer [here](https://github.com/tqdm/tqdm) for problem installing tqdm)
 * sentencepiece: `pip install sentencepiece` (Refer [here](https://github.com/google/sentencepiece) for problem installing sentencepiece)
+* warprnnt_pytorch: Refer to [warp-transducer](https://github.com/HawkAaron/warp-transducer) to install `warprnnt_pytorch`.
 * hydra: `pip install hydra-core --upgrade` (Refer [here](https://github.com/facebookresearch/hydra) for problem installing hydra)
   
 ### Install from source
