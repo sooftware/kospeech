@@ -80,6 +80,13 @@ class EncoderDecoderModel(BaseModel):
         self.encoder = encoder
         self.decoder = decoder
 
+    def set_encoder(self, encoder):
+        self.encoder = encoder
+
+    def set_decoder(self, decoder):
+        self.decoder = decoder
+
+        
     def count_parameters(self):
         num_encoder_parameters = sum([p.numel for p in self.encoder.parameters()])
         num_decoder_parameters = sum([p.numel for p in self.decoder.parameters()])
