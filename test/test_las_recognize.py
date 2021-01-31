@@ -27,7 +27,7 @@ input_lengths = torch.IntTensor([T, T - 100, T - 1000])
 targets = torch.LongTensor([[1, 1, 2], [3, 4, 2], [7, 2, 0]])
 
 encoder = Listener(input_dim=D, hidden_state_dim=H, joint_ctc_attention=False)
-decoder = Speller(num_classes=10, hidden_state_dim=H << 1, max_length=10, device=device)
+decoder = Speller(num_classes=10, hidden_state_dim=H << 1, max_length=10)
 model = ListenAttendSpell(encoder, decoder).to(device)
 
 model.recognize(inputs, input_lengths)
