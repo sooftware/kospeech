@@ -360,7 +360,6 @@ def build_speller(
         num_layers=num_layers,
         rnn_type=rnn_type,
         dropout_p=dropout_p,
-        device=device,
     )
 
 
