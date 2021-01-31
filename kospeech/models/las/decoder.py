@@ -204,6 +204,15 @@ class DecoderRNN(DecoderInterface):
 
     @torch.no_grad()
     def decode(self, encoder_outputs: Tensor, encoder_output_lengths: Tensor) -> Tensor:
+        """
+        Decode encoder_outputs.
+        Args:
+            encoder_outputs (torch.FloatTensor): A output sequence of encoder. `FloatTensor` of size
+                ``(batch, seq_length, dimension)``
+            encoder_output_lengths (torch.LongTensor): The length of encoder outputs. ``(batch)``
+        Returns:
+            * predicted_log_probs (torch.FloatTensor): Log probability of model predictions.
+        """
         hidden_states, attn = None, None
         predicted_log_probs = list()
 
