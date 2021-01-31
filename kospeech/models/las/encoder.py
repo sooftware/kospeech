@@ -52,16 +52,16 @@ class EncoderRNN(BaseEncoder):
 
     def __init__(
             self,
-            input_dim: int,                          # size of input
-            num_classes: int = None,                 # number of class
-            hidden_state_dim: int = 512,             # dimension of RNN`s hidden state
-            dropout_p: float = 0.3,                  # dropout probability
-            num_layers: int = 3,                     # number of RNN layers
-            bidirectional: bool = True,              # if True, becomes a bidirectional encoder
-            rnn_type: str = 'lstm',                  # type of RNN cell
-            extractor: str = 'vgg',                  # type of CNN extractor
-            activation: str = 'hardtanh',            # type of activation function
-            joint_ctc_attention: bool = False,       # Use CTC Loss & Cross Entropy Joint Learning
+            input_dim: int,
+            num_classes: int = None,
+            hidden_state_dim: int = 512,
+            dropout_p: float = 0.3,
+            num_layers: int = 3,
+            bidirectional: bool = True,
+            rnn_type: str = 'lstm',
+            extractor: str = 'vgg',
+            activation: str = 'hardtanh',
+            joint_ctc_attention: bool = False,
     ) -> None:
         super(EncoderRNN, self).__init__(input_dim=input_dim, extractor=extractor, d_model=hidden_state_dim << 1,
                                          num_classes=num_classes, dropout_p=dropout_p, activation=activation,

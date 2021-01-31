@@ -103,7 +103,7 @@ class ListenAttendSpell(EncoderDecoderModel):
             pad_id=pad_id,
             sos_id=sos_id,
             eos_id=eos_id,
-            hidden_state_dim=decoder_hidden_state_dim << (1 if bidirectional else 0),
+            hidden_state_dim=decoder_hidden_state_dim,
             num_layers=num_decoder_layers,
             rnn_type=rnn_type,
             dropout_p=decoder_dropout_p,

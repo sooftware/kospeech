@@ -385,7 +385,7 @@ class DeepSpeech2Extractor(Conv2dExtractor):
             out_channels: int = 32,
             activation: str = 'hardtanh',
     ) -> None:
-        super(DeepSpeech2Extractor, self).__init__(input_dim, activation)
+        super(DeepSpeech2Extractor, self).__init__(input_dim=input_dim, activation=activation)
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.conv = MaskCNN(
@@ -430,7 +430,7 @@ class VGGExtractor(Conv2dExtractor):
             out_channels: int or tuple = (64, 128),
             activation: str = 'hardtanh',
     ):
-        super(VGGExtractor, self).__init__(input_dim, activation)
+        super(VGGExtractor, self).__init__(input_dim=input_dim, activation=activation)
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.conv = MaskCNN(

@@ -31,8 +31,8 @@ class Conformer(TransducerModel):
         input_dim (int, optional): Dimension of input vector
         encoder_dim (int, optional): Dimension of conformer encoder
         decoder_dim (int, optional): Dimension of conformer decoder
-        encoder_num_layers (int, optional): Number of conformer blocks
-        decoder_num_layers (int, optional): Number of decoder layers
+        num_encoder_layers (int, optional): Number of conformer blocks
+        num_decoder_layers (int, optional): Number of decoder layers
         decoder_rnn_type (str, optional): type of RNN cell
         num_attention_heads (int, optional): Number of attention heads
         feed_forward_expansion_factor (int, optional): Expansion factor of feed forward module
@@ -58,8 +58,8 @@ class Conformer(TransducerModel):
             input_dim: int = 80,
             encoder_dim: int = 512,
             decoder_dim: int = 640,
-            encoder_num_layers: int = 17,
-            decoder_num_layers: int = 1,
+            num_encoder_layers: int = 17,
+            num_decoder_layers: int = 1,
             decoder_rnn_type: str = 'lstm',
             num_attention_heads: int = 8,
             feed_forward_expansion_factor: int = 4,
@@ -76,7 +76,7 @@ class Conformer(TransducerModel):
         encoder = ConformerEncoder(
             input_dim=input_dim,
             encoder_dim=encoder_dim,
-            num_layers=encoder_num_layers,
+            num_layers=num_encoder_layers,
             num_attention_heads=num_attention_heads,
             feed_forward_expansion_factor=feed_forward_expansion_factor,
             conv_expansion_factor=conv_expansion_factor,
@@ -92,7 +92,7 @@ class Conformer(TransducerModel):
             num_classes=num_classes,
             hidden_state_dim=decoder_dim,
             output_dim=encoder_dim,
-            num_layers=decoder_num_layers,
+            num_layers=num_decoder_layers,
             rnn_type=decoder_rnn_type,
             dropout_p=decoder_dropout_p,
         )

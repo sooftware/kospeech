@@ -405,9 +405,13 @@ class SupervisedTrainer(object):
             else:
                 raise ValueError(f"Unsupported Criterion: {self.criterion}")
 
-        elif self.architecture in ('deepspeech2', 'jasper', 'conformer'):
+        elif self.architecture in ('deepspeech2', 'jasper'):
             outputs, output_lengths = model(inputs, input_lengths)
             loss = self.criterion(outputs.transpose(0, 1), targets[:, 1:], output_lengths, target_lengths)
+
+        elif self.architecture in ('conformer', 'rnnt'):
+            outputs, output_lengths = model(inputs, input_lengths, targets, target_lengths)
+            loss = self.criterion(outputs, targets.int(), input_lengths.int(), target_lengths.int())
 
         else:
             raise ValueError("Unsupported model : {0}".format(self.architecture))

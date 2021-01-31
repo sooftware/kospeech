@@ -189,7 +189,7 @@ class TransducerModel(BaseModel):
         self.encoder = encoder
         self.decoder = decoder
         self.fc = nn.Sequential(
-            Linear(d_model, d_model),
+            Linear(d_model << 1, d_model),
             nn.Tanh(),
             Linear(d_model, num_classes, bias=False),
         )
@@ -226,14 +226,15 @@ class TransducerModel(BaseModel):
         Returns:
             * outputs (torch.FloatTensor): outputs of joint `encoder_outputs` and `decoder_outputs`..
         """
-        input_length = encoder_outputs.size(1)
-        target_length = decoder_outputs.size(1)
+        if encoder_outputs.dim() == 3 and decoder_outputs.dim() == 3:
+            input_length = encoder_outputs.size(1)
+            target_length = decoder_outputs.size(1)
 
-        encoder_outputs = encoder_outputs.unsqueeze(2)
-        decoder_outputs = decoder_outputs.unsqueeze(1)
+            encoder_outputs = encoder_outputs.unsqueeze(2)
+            decoder_outputs = decoder_outputs.unsqueeze(1)
 
-        encoder_outputs = encoder_outputs.repeat([1, 1, target_length, 1])
-        decoder_outputs = decoder_outputs.repeat([1, input_length, 1, 1])
+            encoder_outputs = encoder_outputs.repeat([1, 1, target_length, 1])
+            decoder_outputs = decoder_outputs.repeat([1, input_length, 1, 1])
 
         outputs = torch.cat((encoder_outputs, decoder_outputs), dim=-1)
         outputs = self.fc(outputs)
@@ -266,34 +267,31 @@ class TransducerModel(BaseModel):
         return outputs
 
     @torch.no_grad()
-    def decode(self, encoder_outputs: Tensor) -> Tensor:
+    def decode(self, encoder_output: Tensor, max_length: int) -> Tensor:
         """
         Decode `encoder_outputs`.
 
         Args:
-            encoder_outputs (torch.FloatTensor): A output sequence of encoder. `FloatTensor` of size
-                ``(batch, seq_length, dimension)``
+            encoder_output (torch.FloatTensor): A output sequence of encoder. `FloatTensor` of size
+                ``(seq_length, dimension)``
+            max_length (int): max decoding time step
 
         Returns:
             * predicted_log_probs (torch.FloatTensor): Log probability of model predictions.
         """
-        predicted_log_probs, hidden_states = list(), None
-
-        batch_size = encoder_outputs.size(0)
-        max_length = encoder_outputs.size(1)
-
-        decoder_inputs = encoder_outputs.new_tensor([self.decoder.sos_id] * batch_size, dtype=torch.long)
+        pred_tokens, hidden_state = list(), None
+        decoder_input = encoder_output.new_tensor([[self.decoder.sos_id]], dtype=torch.long)
 
         for t in range(max_length):
-            decoder_outputs, hidden_states = self.decoder(decoder_inputs, hidden_states)
-            step_outputs = self.joint(encoder_outputs, decoder_outputs)
-            step_outputs = step_outputs.log_softmax(dim=0)
-            predicted_log_probs.append(step_outputs)
-            decoder_inputs = predicted_log_probs[-1].topk(1)[1]
+            decoder_output, hidden_state = self.decoder(decoder_input, hidden_states=hidden_state)
+            step_output = self.joint(encoder_output[t].view(-1), decoder_output.view(-1))
+            step_output = step_output.softmax(dim=0)
+            pred_token = step_output.argmax(dim=0)
+            pred_token = int(pred_token.item())
+            pred_tokens.append(pred_token)
+            decoder_input = step_output.new_tensor([[pred_token]], dtype=torch.long)
 
-        outputs = torch.stack(predicted_log_probs, dim=1)
-
-        return outputs
+        return torch.LongTensor(pred_tokens)
 
     @torch.no_grad()
     def recognize(self, inputs: Tensor, input_lengths: Tensor):
@@ -308,5 +306,15 @@ class TransducerModel(BaseModel):
         Returns:
             * predictions (torch.FloatTensor): Result of model predictions.
         """
-        encoder_outputs, _ = self.encoder(inputs, input_lengths)
-        return self.decode(encoder_outputs)
+        outputs = list()
+
+        encoder_outputs, output_lengths = self.encoder(inputs, input_lengths)
+        max_length = encoder_outputs.size(1)
+
+        for encoder_output in encoder_outputs:
+            decoded_seq = self.decode(encoder_output, max_length)
+            outputs.append(decoded_seq)
+
+        outputs = torch.stack(outputs, dim=1).transpose(0, 1)
+
+        return outputs

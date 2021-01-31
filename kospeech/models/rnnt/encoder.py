@@ -89,11 +89,10 @@ class EncoderRNNT(TransducerEncoder):
 
             * outputs (torch.FloatTensor): A output sequence of encoder. `FloatTensor` of size
                 ``(batch, seq_length, dimension)``
-            * hidden_states (torch.FloatTensor): A hidden state of encoder. `FloatTensor` of size
-                ``(batch, seq_length, dimension)``
+            * output_lengths (torch.LongTensor): The length of output tensor. ``(batch)``
         """
         inputs = nn.utils.rnn.pack_padded_sequence(inputs.transpose(0, 1), input_lengths.cpu())
         outputs, hidden_states = self.rnn(inputs)
         outputs, _ = nn.utils.rnn.pad_packed_sequence(outputs)
         outputs = self.out_proj(outputs.transpose(0, 1))
-        return outputs, hidden_states
+        return outputs, input_lengths

@@ -65,17 +65,17 @@ class DecoderRNN(BaseDecoder):
 
     def __init__(
             self,
-            num_classes: int,                        # number of classfication
-            max_length: int = 150,                   # a maximum allowed length for the sequence to be processed
-            hidden_state_dim: int = 1024,            # dimension of RNN`s hidden state vector
-            pad_id: int = 0,                         # pad token`s id
-            sos_id: int = 1,                         # start of sentence token`s id
-            eos_id: int = 2,                         # end of sentence token`s id
-            attn_mechanism: str = 'multi-head',      # type of attention mechanism
-            num_heads: int = 4,                      # number of attention heads
-            num_layers: int = 2,                     # number of RNN layers
-            rnn_type: str = 'lstm',                  # type of RNN cell
-            dropout_p: float = 0.3,                  # dropout probability
+            num_classes: int,
+            max_length: int = 150,
+            hidden_state_dim: int = 1024,
+            pad_id: int = 0,
+            sos_id: int = 1,
+            eos_id: int = 2,
+            attn_mechanism: str = 'multi-head',
+            num_heads: int = 4,
+            num_layers: int = 2,
+            rnn_type: str = 'lstm',
+            dropout_p: float = 0.3,
     ) -> None:
         super(DecoderRNN, self).__init__()
         self.hidden_state_dim = hidden_state_dim
@@ -152,7 +152,7 @@ class DecoderRNN(BaseDecoder):
             targets: Optional[Tensor],
             encoder_outputs: Tensor,
             teacher_forcing_ratio: float = 1.0,
-    ) -> list:
+    ) -> Tensor:
         """
         Forward propagate a `encoder_outputs` for training.
 
@@ -210,7 +210,7 @@ class DecoderRNN(BaseDecoder):
                 predicted_log_probs.append(step_outputs)
                 input_var = predicted_log_probs[-1].topk(1)[1]
 
-        predicted_log_probs = torch.stack(predicted_log_probs, dim=1).to(self.device)
+        predicted_log_probs = torch.stack(predicted_log_probs, dim=1)
 
         return predicted_log_probs
 
@@ -228,7 +228,7 @@ class DecoderRNN(BaseDecoder):
             * predicted_log_probs (torch.FloatTensor): Log probability of model predictions.
         """
         hidden_states, attn = None, None
-        predicted_log_probs = list()
+        outputs = list()
 
         batch_size = encoder_outputs.size(0)
         input_var = LongTensor([self.sos_id] * batch_size).view(batch_size, 1)
@@ -243,10 +243,10 @@ class DecoderRNN(BaseDecoder):
                 encoder_outputs=encoder_outputs,
                 attn=attn,
             )
-            predicted_log_probs.append(step_outputs)
-            input_var = predicted_log_probs[-1].topk(1)[1]
+            input_var = step_outputs.topk(1)[1]
+            outputs.append(input_var)
 
-        outputs = torch.stack(predicted_log_probs, dim=1)
+        outputs = torch.stack(outputs, dim=1).squeeze(2)
 
         return outputs
 

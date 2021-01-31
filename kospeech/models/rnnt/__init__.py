@@ -17,6 +17,7 @@ from dataclasses import dataclass
 
 @dataclass
 class RNNTransducerConfig:
+    architecture: str = "rnnt"
     num_encoder_layers: int = 4
     num_decoder_layers: int = 1
     encoder_hidden_state_dim: int = 320

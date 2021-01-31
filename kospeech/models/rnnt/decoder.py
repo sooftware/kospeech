@@ -38,6 +38,8 @@ class DecoderRNNT(TransducerDecoder):
     Inputs: inputs, input_lengths
         inputs (torch.LongTensor): A target sequence passed to decoder. `IntTensor` of size ``(batch, seq_length)``
         input_lengths (torch.LongTensor): The length of input tensor. ``(batch)``
+        hidden_states (torch.FloatTensor): A previous hidden state of decoder. `FloatTensor` of size
+            ``(batch, seq_length, dimension)``
 
     Returns:
         (Tensor, Tensor):
@@ -81,13 +83,20 @@ class DecoderRNNT(TransducerDecoder):
         )
         self.out_proj = Linear(hidden_state_dim, output_dim)
 
-    def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
+    def forward(
+            self,
+            inputs: Tensor,
+            input_lengths: Tensor = None,
+            hidden_states: Tensor = None,
+    ) -> Tuple[Tensor, Tensor]:
         """
         Forward propage a `inputs` (targets) for training.
 
         Args:
             inputs (torch.LongTensor): A target sequence passed to decoder. `IntTensor` of size ``(batch, seq_length)``
             input_lengths (torch.LongTensor): The length of input tensor. ``(batch)``
+            hidden_states (torch.FloatTensor): A previous hidden state of decoder. `FloatTensor` of size
+                ``(batch, seq_length, dimension)``
 
         Returns:
             (Tensor, Tensor):
@@ -99,9 +108,13 @@ class DecoderRNNT(TransducerDecoder):
         """
         embedded = self.embedding(inputs)
 
-        embedded = nn.utils.rnn.pack_padded_sequence(embedded.transpose(0, 1), input_lengths.cpu())
-        outputs, hidden_states = self.rnn(embedded)
-        outputs, _ = nn.utils.rnn.pad_packed_sequence(outputs)
-        outputs = self.out_proj(outputs.transpose(0, 1))
+        if input_lengths is not None:
+            embedded = nn.utils.rnn.pack_padded_sequence(embedded.transpose(0, 1), input_lengths.cpu())
+            outputs, hidden_states = self.rnn(embedded, hidden_states)
+            outputs, _ = nn.utils.rnn.pad_packed_sequence(outputs)
+            outputs = self.out_proj(outputs.transpose(0, 1))
+        else:
+            outputs, hidden_states = self.rnn(embedded, hidden_states)
+            outputs = self.out_proj(outputs)
 
         return outputs, hidden_states

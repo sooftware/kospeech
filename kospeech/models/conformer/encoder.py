@@ -18,7 +18,7 @@ from torch import Tensor
 from typing import Tuple
 
 from kospeech.models.convolution import Conv2dSubsampling
-from kospeech.models.model import EncoderInterface
+from kospeech.models.encoder import TransducerEncoder
 from kospeech.models.modules import (
     LayerNorm,
     ResidualConnectionModule,
@@ -116,7 +116,7 @@ class ConformerBlock(nn.Module):
         return self.sequential(inputs.to(self.device))
 
 
-class ConformerEncoder(EncoderInterface):
+class ConformerEncoder(TransducerEncoder):
     """
     Conformer encoder first processes the input with a convolution subsampling layer and then
     with a number of conformer blocks.
@@ -181,6 +181,21 @@ class ConformerEncoder(EncoderInterface):
         ])
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
+        """
+        Forward propagate a `inputs` for  encoder training.
+
+        Args:
+            inputs (torch.FloatTensor): A input sequence passed to encoder. Typically for inputs this will be a padded
+                `FloatTensor` of size ``(batch, seq_length, dimension)``.
+            input_lengths (torch.LongTensor): The length of input tensor. ``(batch)``
+
+        Returns:
+            (Tensor, Tensor)
+
+            * outputs (torch.FloatTensor): A output sequence of encoder. `FloatTensor` of size
+                ``(batch, seq_length, dimension)``
+            * output_lengths (torch.LongTensor): The length of output tensor. ``(batch)``
+        """
         outputs, output_lengths = self.conv_subsample(inputs, input_lengths)
         outputs = self.input_projection(outputs)
 

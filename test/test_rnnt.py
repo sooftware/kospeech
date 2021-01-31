@@ -1,20 +1,17 @@
 import torch
 import torch.nn as nn
 
-from kospeech.models.conformer import Conformer
+from kospeech.models.rnnt.model import RNNTransducer
 
 batch_size, sequence_length, dim = 3, 12345, 80
 
 cuda = torch.cuda.is_available()
 device = torch.device('cuda' if cuda else 'cpu')
 
-model = nn.DataParallel(Conformer(
+model = nn.DataParallel(RNNTransducer(
     num_classes=10,
     input_dim=dim,
-    encoder_dim=32,
     num_encoder_layers=3,
-    decoder_dim=32,
-    device=device,
 )).to(device)
 
 criterion = nn.CTCLoss(blank=3, zero_infinity=True)
@@ -29,6 +26,7 @@ for i in range(10):
     target_lengths = torch.LongTensor([9, 8, 7])
 
     outputs = model(inputs, input_lengths, targets, target_lengths)
+    print(outputs.size())
     print("PASS")
     # loss = criterion(outputs.transpose(0, 1), targets[:, 1:], output_lengths, target_lengths)
     # loss.backward()

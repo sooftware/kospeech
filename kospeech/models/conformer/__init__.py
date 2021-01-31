@@ -30,7 +30,7 @@ class ConformerConfig(ModelConfig):
     decoder_dropout_p: float = 0.1
     conv_kernel_size: int = 31
     half_step_residual: bool = True
-    decoder_num_layers: int = 1
+    num_decoder_layers: int = 1
     decoder_rnn_type: str = 'lstm'
 
 
@@ -38,7 +38,7 @@ class ConformerConfig(ModelConfig):
 class ConformerLargeConfig(ConformerConfig):
     encoder_dim: int = 512
     decoder_dim: int = 640
-    encoder_num_layers: int = 17
+    num_encoder_layers: int = 17
     num_attention_heads: int = 8
 
 
@@ -46,7 +46,7 @@ class ConformerLargeConfig(ConformerConfig):
 class ConformerMediumConfig(ConformerConfig):
     encoder_dim: int = 256
     decoder_dim: int = 640
-    encoder_num_layers: int = 16
+    num_encoder_layers: int = 16
     num_attention_heads: int = 4
 
 
@@ -54,5 +54,5 @@ class ConformerMediumConfig(ConformerConfig):
 class ConformerSmallConfig(ConformerConfig):
     encoder_dim: int = 144
     decoder_dim: int = 320
-    encoder_num_layers: int = 16
+    num_encoder_layers: int = 16
     num_attention_heads: int = 4

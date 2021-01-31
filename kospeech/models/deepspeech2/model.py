@@ -107,15 +107,15 @@ class DeepSpeech2(EncoderModel):
     """
     def __init__(
             self,
-            input_dim: int,                         # size of input
-            num_classes: int,                       # number of classfication
-            rnn_type='gru',                         # type of RNN cell
-            num_rnn_layers: int = 5,                # number of RNN layers
-            rnn_hidden_dim: int = 512,              # dimension of RNN`s hidden state
-            dropout_p: float = 0.1,                 # dropout probability
-            bidirectional: bool = True,             # if True, becomes a bidirectional rnn
-            activation: str = 'hardtanh',           # type of activation function
-            device: torch.device = 'cuda',          # device - 'cuda' or 'cpu'
+            input_dim: int,
+            num_classes: int,
+            rnn_type='gru',
+            num_rnn_layers: int = 5,
+            rnn_hidden_dim: int = 512,
+            dropout_p: float = 0.1,
+            bidirectional: bool = True,
+            activation: str = 'hardtanh',
+            device: torch.device = 'cuda',
     ):
         super(DeepSpeech2, self).__init__()
         self.device = device
