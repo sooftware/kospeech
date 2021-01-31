@@ -24,7 +24,7 @@ class BaseRNN(nn.Module):
         Do not use this class directly, use one of the sub classes.
     Args:
         input_size (int): size of input
-        hidden_dim (int): dimension of RNN`s hidden state vector
+        hidden_state_dim (int): dimension of RNN`s hidden state vector
         num_layers (int, optional): number of RNN layers (default: 1)
         bidirectional (bool, optional): if True, becomes a bidirectional RNN (defulat: False)
         rnn_type (str, optional): type of RNN cell (default: gru)
