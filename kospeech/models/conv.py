@@ -224,7 +224,7 @@ class MaskCNN(nn.Module):
         return seq_lengths.int()
 
 
-class CNNExtractor(nn.Module):
+class Conv2dExtractor(nn.Module):
     """
     Provides inteface of convolutional extractor.
     Note:
@@ -247,9 +247,9 @@ class CNNExtractor(nn.Module):
     }
 
     def __init__(self, input_dim: int, activation: str = 'hardtanh') -> None:
-        super(CNNExtractor, self).__init__()
+        super(Conv2dExtractor, self).__init__()
         self.input_dim = input_dim
-        self.activation = CNNExtractor.supported_activations[activation]
+        self.activation = Conv2dExtractor.supported_activations[activation]
         self.conv = None
 
     def get_output_lengths(self, seq_lengths: Tensor):
@@ -296,8 +296,7 @@ class CNNExtractor(nn.Module):
 
         return outputs, output_lengths
 
-
-class Conv2dSubsampling(CNNExtractor):
+class Conv2dSubsampling(Conv2dExtractor):
     """
     Convolutional 2D subsampling (to 1/4 length)
     Args:
@@ -331,7 +330,7 @@ class Conv2dSubsampling(CNNExtractor):
             )
         )
         
-class DeepSpeech2Extractor(CNNExtractor):
+class DeepSpeech2Extractor(Conv2dExtractor):
     """
     DeepSpeech2 extractor for automatic speech recognition described in
     "Deep Speech 2: End-to-End Speech Recognition in English and Mandarin" paper
@@ -371,7 +370,7 @@ class DeepSpeech2Extractor(CNNExtractor):
         )
 
 
-class VGGExtractor(CNNExtractor):
+class VGGExtractor(Conv2dExtractor):
     """
     VGG extractor for automatic speech recognition described in
     "Advances in Joint CTC-Attention based End-to-End Speech Recognition with a Deep CNN Encoder and RNN-LM" paper
