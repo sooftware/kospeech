@@ -107,14 +107,6 @@ class DecoderRNNT(TransducerDecoder):
                 ``(batch, seq_length, dimension)``
         """
         embedded = self.embedding(inputs)
-
-        if input_lengths is not None:
-            embedded = nn.utils.rnn.pack_padded_sequence(embedded.transpose(0, 1), input_lengths.cpu())
-            outputs, hidden_states = self.rnn(embedded, hidden_states)
-            outputs, _ = nn.utils.rnn.pad_packed_sequence(outputs)
-            outputs = self.out_proj(outputs.transpose(0, 1))
-        else:
-            outputs, hidden_states = self.rnn(embedded, hidden_states)
-            outputs = self.out_proj(outputs)
-
+        outputs, hidden_states = self.rnn(embedded, hidden_states)
+        outputs = self.out_proj(outputs)
         return outputs, hidden_states

@@ -237,7 +237,7 @@ class TransducerModel(BaseModel):
             decoder_outputs = decoder_outputs.repeat([1, input_length, 1, 1])
 
         outputs = torch.cat((encoder_outputs, decoder_outputs), dim=-1)
-        outputs = self.fc(outputs)
+        outputs = self.fc(outputs).log_softmax(dim=-1)
 
         return outputs
 
@@ -263,8 +263,7 @@ class TransducerModel(BaseModel):
         """
         encoder_outputs, _ = self.encoder(inputs, input_lengths)
         decoder_outputs, _ = self.decoder(targets, target_lengths)
-        outputs = self.joint(encoder_outputs, decoder_outputs)
-        return outputs
+        return self.joint(encoder_outputs, decoder_outputs)
 
     @torch.no_grad()
     def decode(self, encoder_output: Tensor, max_length: int) -> Tensor:

@@ -12,13 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import sentencepiece as spm
 from kospeech.vocabs import Vocabulary
 
 
 class LibriSpeechVocabulary(Vocabulary):
     def __init__(self, vocab_path, model_path):
         super(LibriSpeechVocabulary, self).__init__()
+        try:
+            import sentencepiece as spm
+        except ImportError:
+            raise ImportError("Please install sentencepiece: `pip install sentencepiece`")
         self.pad_id = 0
         self.sos_id = 1
         self.eos_id = 2

@@ -41,8 +41,11 @@ class Spectrogram(object):
 
         if self.feature_extract_by == 'kaldi':
             # torchaudio is only supported on Linux (Linux, Mac)
-            assert platform.system().lower() == 'linux' or platform.system().lower() == 'darwin'
-            import torchaudio
+            assert platform.system().lower() == 'linux' or platform.system().lower() == 'darwin'\
+            try:
+                import torchaudio
+            except ImportError:
+                raise ImportError("Please install torchaudio: `pip install torchaudio`")
 
             self.transforms = torchaudio.compliance.kaldi.spectrogram
             self.frame_length = frame_length
