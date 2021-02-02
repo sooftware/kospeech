@@ -25,7 +25,6 @@ setup(
         'torch>=1.4.0',
         'python-Levenshtein',
         'librosa >= 0.7.0',
-        'torchaudio == 0.6.0',
         'numpy',
         'pandas',
         'tqdm',
@@ -35,5 +34,5 @@ setup(
         'hydra-core',
     ],
     keywords=['asr', 'speech_recognition', 'korean'],
-    python_requires='>=3'
+    python_requires='>=3',
 )

@@ -29,6 +29,7 @@ from kospeech.optim import (
 from kospeech.criterion import (
     LabelSmoothedCrossEntropyLoss,
     JointCTCCrossEntropyLoss,
+    TransducerLoss,
 )
 from kospeech.optim.lr_scheduler import (
     TriStageLRScheduler,
@@ -107,11 +108,7 @@ def get_criterion(config: DictConfig, vocab: Vocabulary) -> nn.Module:
             smoothing=config.train.label_smoothing,
         )
     elif config.model.architecture in ('rnnt', 'conformer'):
-        try:
-            from warprnnt_pytorch import RNNTLoss
-        except ImportError:
-            raise ImportError("Please install warprnnt_pytorch: https://github.com/HawkAaron/warp-transducer")
-        criterion = RNNTLoss()
+        criterion = TransducerLoss(blank_id=vocab.blank_id)
     elif config.model.architecture == 'transformer' and config.train.label_smoothing <= 0.0:
         criterion = nn.CrossEntropyLoss(
             ignore_index=vocab.pad_id,

@@ -99,6 +99,10 @@ class SupervisedTrainer(object):
             self.log_format = "step: {:4d}/{:4d}, loss: {:.6f}, " \
                               "cer: {:.2f}, elapsed: {:.2f}s {:.2f}m {:.2f}h, lr: {:.6f}"
 
+        if self.architecture in ('rnnt', 'conformer'):
+            self.log_format = "step: {:4d}/{:4d}, loss: {:.6f}, " \
+                              "elapsed: {:.2f}s {:.2f}m {:.2f}h, lr: {:.6f}"
+
     def train(
         self,
         model: nn.Module,                           # model to train
@@ -250,12 +254,14 @@ class SupervisedTrainer(object):
                 model=model,
             )
 
-            y_hats = output.max(-1)[1]
-            cer = self.metric(targets, y_hats)
-            total_num += int(input_lengths.sum())
+            if self.architecture not in ('conformer', 'rnnt'):
+                y_hats = output.max(-1)[1]
+                cer = self.metric(targets, y_hats)
 
             loss.backward()
             self.optimizer.step(model)
+
+            total_num += int(input_lengths.sum())
             epoch_loss_total += loss.item()
 
             timestep += 1
@@ -267,23 +273,32 @@ class SupervisedTrainer(object):
                 epoch_elapsed = (current_time - epoch_begin_time) / 60.0
                 train_elapsed = (current_time - train_begin_time) / 3600.0
 
-                if self.joint_ctc_attention:
+                if self.architecture in ('rnnt', 'conformer'):
                     logger.info(self.log_format.format(
                         timestep, epoch_time_step,
                         loss,
                         ctc_loss, cross_entropy_loss,
-                        cer,
                         elapsed, epoch_elapsed, train_elapsed,
                         self.optimizer.get_lr(),
                     ))
                 else:
-                    logger.info(self.log_format.format(
-                        timestep, epoch_time_step,
-                        loss,
-                        cer,
-                        elapsed, epoch_elapsed, train_elapsed,
-                        self.optimizer.get_lr(),
-                    ))
+                    if self.joint_ctc_attention:
+                        logger.info(self.log_format.format(
+                            timestep, epoch_time_step,
+                            loss,
+                            ctc_loss, cross_entropy_loss,
+                            cer,
+                            elapsed, epoch_elapsed, train_elapsed,
+                            self.optimizer.get_lr(),
+                        ))
+                    else:
+                        logger.info(self.log_format.format(
+                            timestep, epoch_time_step,
+                            loss,
+                            cer,
+                            elapsed, epoch_elapsed, train_elapsed,
+                            self.optimizer.get_lr(),
+                        ))
                 begin_time = time.time()
 
             if timestep % self.save_result_every == 0:
@@ -292,7 +307,7 @@ class SupervisedTrainer(object):
             if timestep % self.checkpoint_every == 0:
                 Checkpoint(model, self.optimizer,  self.trainset_list, self.validset, epoch).save()
 
-            del inputs, input_lengths, targets, output, loss, y_hats
+            del inputs, input_lengths, targets, output, loss
 
         Checkpoint(model, self.optimizer, self.trainset_list, self.validset, epoch).save()
         logger.info('train() completed')
@@ -410,8 +425,10 @@ class SupervisedTrainer(object):
             loss = self.criterion(outputs.transpose(0, 1), targets[:, 1:], output_lengths, target_lengths)
 
         elif self.architecture in ('conformer', 'rnnt'):
-            outputs, output_lengths = model(inputs, input_lengths, targets, target_lengths)
-            loss = self.criterion(outputs, targets.int(), input_lengths.int(), target_lengths.int())
+            outputs = model(inputs, input_lengths, targets, target_lengths)
+            loss = self.criterion(
+                outputs, targets[:, 1:].contiguous().int(), input_lengths.int(), target_lengths.int()
+            )
 
         else:
             raise ValueError("Unsupported model : {0}".format(self.architecture))
