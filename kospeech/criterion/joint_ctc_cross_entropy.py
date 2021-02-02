@@ -48,7 +48,6 @@ class JointCTCCrossEntropyLoss(nn.Module):
             cross_entropy_weight: float = 0.7,    # weight of cross entropy loss
             blank_id: int = None,                 # identification of blank token
             smoothing: float = 0.1,               # ratio of smoothing (confidence = 1.0 - smoothing)
-            architecture: str = 'las'             # architecture of training model
     ) -> None:
         super(JointCTCCrossEntropyLoss, self).__init__()
         self.num_classes = num_classes
@@ -57,7 +56,6 @@ class JointCTCCrossEntropyLoss(nn.Module):
         self.reduction = reduction.lower()
         self.ctc_weight = ctc_weight
         self.cross_entropy_weight = cross_entropy_weight
-        self.architecture = architecture.lower()
         self.ctc_loss = nn.CTCLoss(blank=blank_id, reduction=self.reduction, zero_infinity=True)
         if smoothing > 0.0:
             self.cross_entropy_loss = LabelSmoothedCrossEntropyLoss(

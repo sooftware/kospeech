@@ -15,7 +15,6 @@
 import torch
 import platform
 import numpy as np
-
 from torch import Tensor, FloatTensor
 
 
@@ -61,7 +60,7 @@ class Spectrogram(object):
                 Tensor(signal).unsqueeze(0),
                 frame_length=self.frame_length,
                 frame_shift=self.frame_shift,
-                sample_frequency=self.sample_rate
+                sample_frequency=self.sample_rate,
             ).transpose(0, 1)
 
         else:
@@ -108,9 +107,11 @@ class MelSpectrogram(object):
 
             self.amplitude_to_db = torchaudio.transforms.AmplitudeToDB()
             self.transforms = torchaudio.transforms.MelSpectrogram(
-                sample_rate=sample_rate, win_length=frame_length,
-                hop_length=self.hop_length, n_fft=self.n_fft,
-                n_mels=n_mels
+                sample_rate=sample_rate,
+                win_length=frame_length,
+                hop_length=self.hop_length,
+                n_fft=self.n_fft,
+                n_mels=n_mels,
             )
         else:
             import librosa
@@ -129,7 +130,7 @@ class MelSpectrogram(object):
                 sr=self.sample_rate,
                 n_mels=self.n_mels,
                 n_fft=self.n_fft,
-                hop_length=self.hop_length
+                hop_length=self.hop_length,
             )
             melspectrogram = self.amplitude_to_db(melspectrogram, ref=np.max)
 
@@ -170,9 +171,12 @@ class MFCC(object):
             import torchaudio
 
             self.transforms = torchaudio.transforms.MFCC(
-                sample_rate=sample_rate, n_mfcc=n_mfcc,
-                log_mels=True, win_length=frame_length,
-                hop_length=self.hop_length, n_fft=self.n_fft
+                sample_rate=sample_rate,
+                n_mfcc=n_mfcc,
+                log_mels=True,
+                win_length=frame_length,
+                hop_length=self.hop_length,
+                n_fft=self.n_fft,
             )
         else:
             import librosa
@@ -185,8 +189,11 @@ class MFCC(object):
 
         elif self.feature_extract_by == 'librosa':
             mfcc = self.transforms(
-                y=signal, sr=self.sample_rate, n_mfcc=self.n_mfcc,
-                n_fft=self.n_fft, hop_length=self.hop_length
+                y=signal,
+                sr=self.sample_rate,
+                n_mfcc=self.n_mfcc,
+                n_fft=self.n_fft,
+                hop_length=self.hop_length,
             )
 
         else:
@@ -221,7 +228,8 @@ class FilterBank(object):
 
     def __call__(self, signal):
         return self.transforms(
-            Tensor(signal).unsqueeze(0), num_mel_bins=self.n_mels,
-            frame_length=self.frame_length, frame_shift=self.frame_shift,
-            window_type='hamming'
+            Tensor(signal).unsqueeze(0),
+            num_mel_bins=self.n_mels,
+            frame_length=self.frame_length,
+            frame_shift=self.frame_shift,
         ).transpose(0, 1).numpy()
