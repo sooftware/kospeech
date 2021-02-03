@@ -44,6 +44,7 @@ class Conformer(TransducerModel):
         conv_kernel_size (int or tuple, optional): Size of the convolving kernel
         half_step_residual (bool): Flag indication whether to use half step residual or not
         device (torch.device): torch device (cuda or cpu)
+        decoder (str): If decoder is None, train with CTC decoding
 
     Inputs: inputs
         - **inputs** (batch, time, dim): Tensor containing input vector
@@ -72,6 +73,7 @@ class Conformer(TransducerModel):
             conv_kernel_size: int = 31,
             half_step_residual: bool = True,
             device: torch.device = 'cuda',
+            decoder: str = None,
     ) -> None:
         encoder = ConformerEncoder(
             input_dim=input_dim,
@@ -88,15 +90,16 @@ class Conformer(TransducerModel):
             half_step_residual=half_step_residual,
             device=device,
         )
-        decoder = DecoderRNNT(
-            num_classes=num_classes,
-            hidden_state_dim=decoder_dim,
-            output_dim=encoder_dim,
-            num_layers=num_decoder_layers,
-            rnn_type=decoder_rnn_type,
-            dropout_p=decoder_dropout_p,
-        )
-        super(Conformer, self).__init__(encoder, decoder, encoder_dim, num_classes)
+        if decoder == 'rnnt':
+            decoder = DecoderRNNT(
+                num_classes=num_classes,
+                hidden_state_dim=decoder_dim,
+                output_dim=encoder_dim,
+                num_layers=num_decoder_layers,
+                rnn_type=decoder_rnn_type,
+                dropout_p=decoder_dropout_p,
+            )
+        super(Conformer, self).__init__(encoder, decoder, encoder_dim >> 1, num_classes)
 
     def forward(
             self,
@@ -118,4 +121,44 @@ class Conformer(TransducerModel):
         Returns:
             * predictions (torch.FloatTensor): Result of model predictions.
         """
-        return super().forward(inputs, input_lengths, targets, target_lengths)
+        if self.decoder is not None:
+            return super().forward(inputs, input_lengths, targets, target_lengths)
+        encoder_outputs, _ = self.encoder(inputs, input_lengths)
+        return self.fc(encoder_outputs).log_softmax(dim=-1)
+
+    @torch.no_grad()
+    def decode(self, encoder_outputs: Tensor, max_length: int = None) -> Tensor:
+        """
+        Decode `encoder_outputs`.
+
+        Args:
+            encoder_outputs (torch.FloatTensor): A output sequence of encoder. `FloatTensor` of size
+                ``(seq_length, dimension)``
+            max_length (int): max decoding time step
+
+        Returns:
+            * predicted_log_probs (torch.FloatTensor): Log probability of model predictions.
+        """
+        if self.decoder is not None:
+            return super().decode(encoder_outputs, max_length)
+        return encoder_outputs.max(-1)[1]
+
+    @torch.no_grad()
+    def recognize(self, inputs: Tensor, input_lengths: Tensor) -> Tensor:
+        """
+        Recognize input speech.
+
+        Args:
+            inputs (torch.FloatTensor): A input sequence passed to encoder. Typically for inputs this will be a padded
+                `FloatTensor` of size ``(batch, seq_length, dimension)``.
+            input_lengths (torch.LongTensor): The length of input tensor. ``(batch)``
+
+        Returns:
+            * predictions (torch.FloatTensor): Result of model predictions.
+        """
+        if self.decoder is not None:
+            return super().recognize(inputs, input_lengths)
+
+        encoder_outputs, _ = self.encoder(inputs, input_lengths)
+        predicted_log_probs = self.fc(encoder_outputs).log_softmax(dim=-1)
+        return self.decode(predicted_log_probs)

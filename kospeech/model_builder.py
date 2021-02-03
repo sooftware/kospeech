@@ -109,6 +109,7 @@ def build_model(
             conv_kernel_size=config.model.conv_kernel_size,
             half_step_residual=config.model.half_step_residual,
             device=device,
+            decoder=config.model.decoder,
         )
 
     elif config.model.architecture.lower() == 'rnnt':
@@ -187,6 +188,7 @@ def build_conformer(
         conv_kernel_size: int,
         half_step_residual: bool,
         device: torch.device,
+        decoder: str,
 ) -> nn.DataParallel:
     if input_dropout_p < 0.0:
         raise ParameterError("dropout probability should be positive")
@@ -219,6 +221,7 @@ def build_conformer(
         conv_kernel_size=conv_kernel_size,
         half_step_residual=half_step_residual,
         device=device,
+        decoder=decoder,
     ))
 
 

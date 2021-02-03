@@ -17,3 +17,4 @@ num_encoder_layers: 17
 num_decoder_layers: 1
 num_attention_heads: 8
 decoder_rnn_type: lstm
+decoder: None
