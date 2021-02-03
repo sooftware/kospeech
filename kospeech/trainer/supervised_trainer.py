@@ -100,8 +100,8 @@ class SupervisedTrainer(object):
                               "cer: {:.2f}, elapsed: {:.2f}s {:.2f}m {:.2f}h, lr: {:.6f}"
 
         if self.architecture in ('rnnt', 'conformer'):
-            self.log_format = "step: {:4d}/{:4d}, loss: {:.6f}, " \
-                              "elapsed: {:.2f}s {:.2f}m {:.2f}h, lr: {:.6f}"
+            self.rnnt_log_format = "step: {:4d}/{:4d}, loss: {:.6f}, " \
+                                   "elapsed: {:.2f}s {:.2f}m {:.2f}h, lr: {:.6f}"
 
     def train(
         self,
@@ -422,7 +422,26 @@ class SupervisedTrainer(object):
             outputs, output_lengths = model(inputs, input_lengths)
             loss = self.criterion(outputs.transpose(0, 1), targets[:, 1:], output_lengths, target_lengths)
 
-        elif self.architecture in ('conformer', 'rnnt'):
+        elif self.architecture == 'conformer':
+            if isinstance(model, nn.DataParallel):
+                if model.module.decoder is not None:
+                    outputs, output_lengths = model(inputs, input_lengths)
+                    loss = self.criterion(outputs.transpose(0, 1), targets[:, 1:], output_lengths, target_lengths)
+                else:
+                    outputs = model(inputs, input_lengths, targets, target_lengths)
+                    loss = self.criterion(
+                        outputs, targets[:, 1:].contiguous().int(), input_lengths.int(), target_lengths.int()
+                    )
+            else:
+                if model.module.decoder is not None:
+                    outputs, output_lengths = model(inputs, input_lengths)
+                    loss = self.criterion(outputs.transpose(0, 1), targets[:, 1:], output_lengths, target_lengths)
+                else:
+                    outputs = model(inputs, input_lengths, targets, target_lengths)
+                    loss = self.criterion(
+                        outputs, targets[:, 1:].contiguous().int(), input_lengths.int(), target_lengths.int()
+                    )
+        elif self.architecture in 'rnnt':
             outputs = model(inputs, input_lengths, targets, target_lengths)
             loss = self.criterion(
                 outputs, targets[:, 1:].contiguous().int(), input_lengths.int(), target_lengths.int()

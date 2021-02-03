@@ -14,6 +14,7 @@
 
 import torch
 from torch import Tensor
+from typing import Tuple, Optional
 
 from kospeech.models.conformer.encoder import ConformerEncoder
 from kospeech.models.model import TransducerModel
@@ -109,7 +110,7 @@ class Conformer(TransducerModel):
             input_lengths: Tensor,
             targets: Tensor,
             target_lengths: Tensor,
-    ) -> Tensor:
+    ) -> Tuple[Tensor, Optional[Tensor]]:
         """
         Forward propagate a `inputs` and `targets` pair for training.
 
@@ -125,8 +126,9 @@ class Conformer(TransducerModel):
         """
         if self.decoder is not None:
             return super().forward(inputs, input_lengths, targets, target_lengths)
-        encoder_outputs, _ = self.encoder(inputs, input_lengths)
-        return self.fc(encoder_outputs).log_softmax(dim=-1)
+        encoder_outputs, output_lengths = self.encoder(inputs, input_lengths)
+        outputs = self.fc(encoder_outputs).log_softmax(dim=-1)
+        return outputs, output_lengths
 
     @torch.no_grad()
     def decode(self, encoder_outputs: Tensor, max_length: int = None) -> Tensor:
