@@ -262,7 +262,7 @@ class SupervisedTrainer(object):
                 architecture=architecture,
             )
 
-            if architecture in ('rnnt', 'conformer_t'):
+            if architecture not in ('rnnt', 'conformer_t'):
                 y_hats = output.max(-1)[1]
                 cer = self.metric(targets, y_hats)
 
