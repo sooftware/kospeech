@@ -275,9 +275,7 @@ class SupervisedTrainer(object):
 
                 if self.architecture in ('rnnt', 'conformer'):
                     logger.info(self.log_format.format(
-                        timestep, epoch_time_step,
-                        loss,
-                        ctc_loss, cross_entropy_loss,
+                        timestep, epoch_time_step, loss,
                         elapsed, epoch_elapsed, train_elapsed,
                         self.optimizer.get_lr(),
                     ))
