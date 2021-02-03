@@ -108,7 +108,7 @@ class Conformer(TransducerModel):
             inputs: Tensor,
             input_lengths: Tensor,
             targets: Tensor,
-            target_lengths: Tensor
+            target_lengths: Tensor,
     ) -> Tensor:
         """
         Forward propagate a `inputs` and `targets` pair for training.

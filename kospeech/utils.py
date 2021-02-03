@@ -107,7 +107,15 @@ def get_criterion(config: DictConfig, vocab: Vocabulary) -> nn.Module:
             dim=-1,
             smoothing=config.train.label_smoothing,
         )
-    elif config.model.architecture in ('rnnt', 'conformer'):
+    elif config.model.architecture == 'conformer':
+        if config.model.decoder == 'rnnt':
+            criterion = TransducerLoss(blank_id=vocab.blank_id)
+        else:
+            criterion = nn.CrossEntropyLoss(
+                ignore_index=vocab.pad_id,
+                reduction=config.train.reduction,
+            )
+    elif config.model.architecture == 'rnnt':
         criterion = TransducerLoss(blank_id=vocab.blank_id)
     elif config.model.architecture == 'transformer' and config.train.label_smoothing <= 0.0:
         criterion = nn.CrossEntropyLoss(
