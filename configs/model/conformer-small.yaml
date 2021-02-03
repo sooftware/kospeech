@@ -16,3 +16,4 @@ decoder_dim: 320
 num_encoder_layers: 16
 num_decoder_layers: 1
 num_attention_heads: 4
+decoder: None

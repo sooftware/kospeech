@@ -31,7 +31,8 @@ class ConformerConfig(ModelConfig):
     conv_kernel_size: int = 31
     half_step_residual: bool = True
     num_decoder_layers: int = 1
-    decoder_rnn_type: str = 'lstm'
+    decoder_rnn_type: str = "lstm"
+    decoder: str = "None"
 
 
 @dataclass

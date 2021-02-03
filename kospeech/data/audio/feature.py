@@ -40,7 +40,7 @@ class Spectrogram(object):
 
         if self.feature_extract_by == 'kaldi':
             # torchaudio is only supported on Linux (Linux, Mac)
-            assert platform.system().lower() == 'linux' or platform.system().lower() == 'darwin'\
+            assert platform.system().lower() == 'linux' or platform.system().lower() == 'darwin'
             try:
                 import torchaudio
             except ImportError:

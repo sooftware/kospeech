@@ -100,8 +100,8 @@ class SupervisedTrainer(object):
                               "cer: {:.2f}, elapsed: {:.2f}s {:.2f}m {:.2f}h, lr: {:.6f}"
 
         if self.architecture in ('rnnt', 'conformer'):
-            self.log_format = "step: {:4d}/{:4d}, loss: {:.6f}, " \
-                              "elapsed: {:.2f}s {:.2f}m {:.2f}h, lr: {:.6f}"
+            self.rnnt_log_format = "step: {:4d}/{:4d}, loss: {:.6f}, " \
+                                   "elapsed: {:.2f}s {:.2f}m {:.2f}h, lr: {:.6f}"
 
     def train(
         self,
@@ -274,29 +274,44 @@ class SupervisedTrainer(object):
                 train_elapsed = (current_time - train_begin_time) / 3600.0
 
                 if self.architecture in ('rnnt', 'conformer'):
-                    logger.info(self.log_format.format(
-                        timestep, epoch_time_step,
-                        loss,
-                        ctc_loss, cross_entropy_loss,
-                        elapsed, epoch_elapsed, train_elapsed,
-                        self.optimizer.get_lr(),
-                    ))
+                    if isinstance(model, nn.DataParallel):
+                        if model.module.decoder is not None:
+                            logger.info(self.rnnt_log_format.format(
+                                timestep, epoch_time_step, loss,
+                                elapsed, epoch_elapsed, train_elapsed,
+                                self.optimizer.get_lr(),
+                            ))
+                        else:
+                            logger.info(self.log_format.format(
+                                timestep, epoch_time_step, loss,
+                                cer, elapsed, epoch_elapsed, train_elapsed,
+                                self.optimizer.get_lr(),
+                            ))
+                    else:
+                        if model.module.decoder is not None:
+                            logger.info(self.rnnt_log_format.format(
+                                timestep, epoch_time_step, loss,
+                                elapsed, epoch_elapsed, train_elapsed,
+                                self.optimizer.get_lr(),
+                            ))
+                        else:
+                            logger.info(self.log_format.format(
+                                timestep, epoch_time_step, loss,
+                                cer, elapsed, epoch_elapsed, train_elapsed,
+                                self.optimizer.get_lr(),
+                            ))
                 else:
                     if self.joint_ctc_attention:
                         logger.info(self.log_format.format(
-                            timestep, epoch_time_step,
-                            loss,
-                            ctc_loss, cross_entropy_loss,
-                            cer,
+                            timestep, epoch_time_step, loss,
+                            ctc_loss, cross_entropy_loss, cer,
                             elapsed, epoch_elapsed, train_elapsed,
                             self.optimizer.get_lr(),
                         ))
                     else:
                         logger.info(self.log_format.format(
-                            timestep, epoch_time_step,
-                            loss,
-                            cer,
-                            elapsed, epoch_elapsed, train_elapsed,
+                            timestep, epoch_time_step, loss,
+                            cer, elapsed, epoch_elapsed, train_elapsed,
                             self.optimizer.get_lr(),
                         ))
                 begin_time = time.time()
@@ -424,7 +439,26 @@ class SupervisedTrainer(object):
             outputs, output_lengths = model(inputs, input_lengths)
             loss = self.criterion(outputs.transpose(0, 1), targets[:, 1:], output_lengths, target_lengths)
 
-        elif self.architecture in ('conformer', 'rnnt'):
+        elif self.architecture == 'conformer':
+            if isinstance(model, nn.DataParallel):
+                if model.module.decoder is not None:
+                    outputs = model(inputs, input_lengths, targets, target_lengths)
+                    loss = self.criterion(
+                        outputs, targets[:, 1:].contiguous().int(), input_lengths.int(), target_lengths.int()
+                    )
+                else:
+                    outputs, output_lengths = model(inputs, input_lengths, targets, target_lengths)
+                    loss = self.criterion(outputs.transpose(0, 1), targets[:, 1:], output_lengths, target_lengths)
+            else:
+                if model.decoder is not None:
+                    outputs = model(inputs, input_lengths, targets, target_lengths)
+                    loss = self.criterion(
+                        outputs, targets[:, 1:].contiguous().int(), input_lengths.int(), target_lengths.int()
+                    )
+                else:
+                    outputs, output_lengths = model(inputs, input_lengths)
+                    loss = self.criterion(outputs.transpose(0, 1), targets[:, 1:], output_lengths, target_lengths)
+        elif self.architecture in 'rnnt':
             outputs = model(inputs, input_lengths, targets, target_lengths)
             loss = self.criterion(
                 outputs, targets[:, 1:].contiguous().int(), input_lengths.int(), target_lengths.int()
@@ -445,7 +479,7 @@ class SupervisedTrainer(object):
         
         results = pd.DataFrame(results)
         results.to_csv(save_path, index=False, encoding='cp949')
-    
+
     def _save_epoch_result(self, train_result: list, valid_result: list) -> None:
         """ Save result of epoch """
         train_dict, train_loss, train_cer = train_result
