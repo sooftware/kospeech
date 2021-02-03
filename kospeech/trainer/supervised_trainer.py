@@ -430,7 +430,7 @@ class SupervisedTrainer(object):
                         outputs, targets[:, 1:].contiguous().int(), input_lengths.int(), target_lengths.int()
                     )
                 else:
-                    outputs, output_lengths = model(inputs, input_lengths)
+                    outputs, output_lengths = model(inputs, input_lengths, targets, target_lengths)
                     loss = self.criterion(outputs.transpose(0, 1), targets[:, 1:], output_lengths, target_lengths)
             else:
                 if model.decoder is not None:
