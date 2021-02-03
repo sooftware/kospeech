@@ -125,14 +125,15 @@ class ConformerTrainConfig(TrainConfig):
 
 @dataclass
 class ConformerSmallTrainConfig(ConformerTrainConfig):
-    peak_lr: float = 0.05 / math.sqrt(144)
+    peak_lr: float = 1e-04
 
 
 @dataclass
 class ConformerMediumTrainConfig(ConformerTrainConfig):
-    peak_lr: float = 0.05 / math.sqrt(256)
+    peak_lr: float = 1e-04
 
 
 @dataclass
 class ConformerLargeTrainConfig(ConformerTrainConfig):
-    peak_lr: float = 0.05 / math.sqrt(512)
+        peak_lr: float = 1e-04
+
