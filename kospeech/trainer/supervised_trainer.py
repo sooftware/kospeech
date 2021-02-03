@@ -214,6 +214,13 @@ class SupervisedTrainer(object):
             - **loss** (float): loss of current epoch
             - **cer** (float): character error rate of current epoch
         """
+        architecture = self.architecture
+        if self.architecture == 'conformer':
+            if isinstance(model, nn.DataParallel):
+                architecture = 'conformer_t' if model.module.decoder is not None else 'conformer_ctc'
+            else:
+                architecture = 'conformer_t' if model.decoder is not None else 'conformer_ctc'
+
         cer = 1.0
         epoch_loss_total = 0.
         total_num = 0
@@ -252,9 +259,10 @@ class SupervisedTrainer(object):
                 targets=targets,
                 target_lengths=target_lengths,
                 model=model,
+                architecture=architecture,
             )
 
-            if self.architecture not in ('conformer', 'rnnt'):
+            if architecture in ('rnnt', 'conformer_t'):
                 y_hats = output.max(-1)[1]
                 cer = self.metric(targets, y_hats)
 
@@ -273,33 +281,12 @@ class SupervisedTrainer(object):
                 epoch_elapsed = (current_time - epoch_begin_time) / 60.0
                 train_elapsed = (current_time - train_begin_time) / 3600.0
 
-                if self.architecture in ('rnnt', 'conformer'):
-                    if isinstance(model, nn.DataParallel):
-                        if model.module.decoder is not None:
-                            logger.info(self.rnnt_log_format.format(
-                                timestep, epoch_time_step, loss,
-                                elapsed, epoch_elapsed, train_elapsed,
-                                self.optimizer.get_lr(),
-                            ))
-                        else:
-                            logger.info(self.log_format.format(
-                                timestep, epoch_time_step, loss,
-                                cer, elapsed, epoch_elapsed, train_elapsed,
-                                self.optimizer.get_lr(),
-                            ))
-                    else:
-                        if model.module.decoder is not None:
-                            logger.info(self.rnnt_log_format.format(
-                                timestep, epoch_time_step, loss,
-                                elapsed, epoch_elapsed, train_elapsed,
-                                self.optimizer.get_lr(),
-                            ))
-                        else:
-                            logger.info(self.log_format.format(
-                                timestep, epoch_time_step, loss,
-                                cer, elapsed, epoch_elapsed, train_elapsed,
-                                self.optimizer.get_lr(),
-                            ))
+                if architecture in ('rnnt', 'conformer_t'):
+                    logger.info(self.rnnt_log_format.format(
+                        timestep, epoch_time_step, loss,
+                        elapsed, epoch_elapsed, train_elapsed,
+                        self.optimizer.get_lr(),
+                    ))
                 else:
                     if self.joint_ctc_attention:
                         logger.info(self.log_format.format(
@@ -381,11 +368,12 @@ class SupervisedTrainer(object):
             targets: Tensor,
             target_lengths: Tensor,
             teacher_forcing_ratio: float,
+            architecture: str,
     ) -> Tuple[Tensor, Tensor, Tensor, Tensor]:
         ctc_loss = None
         cross_entropy_loss = None
 
-        if self.architecture == 'las':
+        if architecture == 'las':
             if isinstance(model, nn.DataParallel):
                 model.module.flatten_parameters()
             else:
@@ -413,7 +401,7 @@ class SupervisedTrainer(object):
             else:
                 raise ValueError(f"Unsupported Criterion: {self.criterion}")
 
-        elif self.architecture == 'transformer':
+        elif architecture == 'transformer':
             outputs, encoder_output_lengths, encoder_log_probs = model(inputs, input_lengths, targets)
 
             if isinstance(self.criterion, LabelSmoothedCrossEntropyLoss):
@@ -435,34 +423,19 @@ class SupervisedTrainer(object):
             else:
                 raise ValueError(f"Unsupported Criterion: {self.criterion}")
 
-        elif self.architecture in ('deepspeech2', 'jasper'):
+        elif architecture in ('deepspeech2', 'jasper'):
             outputs, output_lengths = model(inputs, input_lengths)
             loss = self.criterion(outputs.transpose(0, 1), targets[:, 1:], output_lengths, target_lengths)
 
-        elif self.architecture == 'conformer':
-            if isinstance(model, nn.DataParallel):
-                if model.module.decoder is not None:
-                    outputs = model(inputs, input_lengths, targets, target_lengths)
-                    loss = self.criterion(
-                        outputs, targets[:, 1:].contiguous().int(), input_lengths.int(), target_lengths.int()
-                    )
-                else:
-                    outputs, output_lengths = model(inputs, input_lengths, targets, target_lengths)
-                    loss = self.criterion(outputs.transpose(0, 1), targets[:, 1:], output_lengths, target_lengths)
-            else:
-                if model.decoder is not None:
-                    outputs = model(inputs, input_lengths, targets, target_lengths)
-                    loss = self.criterion(
-                        outputs, targets[:, 1:].contiguous().int(), input_lengths.int(), target_lengths.int()
-                    )
-                else:
-                    outputs, output_lengths = model(inputs, input_lengths)
-                    loss = self.criterion(outputs.transpose(0, 1), targets[:, 1:], output_lengths, target_lengths)
-        elif self.architecture in 'rnnt':
+        elif architecture in ('rnnt', 'conformer_t'):
             outputs = model(inputs, input_lengths, targets, target_lengths)
             loss = self.criterion(
                 outputs, targets[:, 1:].contiguous().int(), input_lengths.int(), target_lengths.int()
             )
+
+        elif architecture == 'conformer_ctc':
+            outputs, output_lengths = model(inputs, input_lengths, targets, target_lengths)
+            loss = self.criterion(outputs.transpose(0, 1), targets[:, 1:], output_lengths, target_lengths)
 
         else:
             raise ValueError("Unsupported model : {0}".format(self.architecture))
