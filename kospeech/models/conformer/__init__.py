@@ -32,7 +32,7 @@ class ConformerConfig(ModelConfig):
     half_step_residual: bool = True
     num_decoder_layers: int = 1
     decoder_rnn_type: str = "lstm"
-    decoder: str = None
+    decoder: str = "None"
 
 
 @dataclass
