@@ -99,6 +99,8 @@ class Conformer(TransducerModel):
                 rnn_type=decoder_rnn_type,
                 dropout_p=decoder_dropout_p,
             )
+        else:
+            decoder = None
         super(Conformer, self).__init__(encoder, decoder, encoder_dim >> 1, num_classes)
 
     def forward(
