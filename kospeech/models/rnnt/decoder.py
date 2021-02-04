@@ -24,7 +24,6 @@ class DecoderRNNT(TransducerDecoder):
     """
     Decoder of RNN-Transducer
 
-
     Args:
         num_classes (int): number of classification
         hidden_state_dim (int, optional): hidden state dimension of decoder (default: 512)

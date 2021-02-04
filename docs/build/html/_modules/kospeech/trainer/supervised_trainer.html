@@ -1,37 +1,42 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>kospeech.trainer.supervised_trainer &mdash; KoSpeech latest documentation</title>
   
 
   
-  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
   
   
 
   
-  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
@@ -74,6 +79,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -83,34 +89,48 @@
             
               <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../notes/intro.html">Intro</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notes/Preparation.html">Preparation before Training</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notes/opts.html">Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/intro.html">What’s New</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/intro.html#note">Note</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/intro.html#kospeech-open-source-toolkit-for-end-to-end-korean-speech-recognition-paper"><em><strong>KoSpeech:  Open-Source Toolkit for End-to-End Korean Speech Recognition [Paper]</strong></em></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/intro.html#supported-models">Supported Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/intro.html#pre-processed-transcripts">Pre-processed Transcripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/intro.html#introduction">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/intro.html#roadmap">Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/intro.html#installation">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/intro.html#get-started">Get Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/intro.html#troubleshoots-and-contributing">Troubleshoots and Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/intro.html#citation">Citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/Preparation.html">KsponSpeech-preprocess</a></li>
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../Deep Speech 2.html">Deep Speech 2</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../Listen, Attend and Spell.html">Listen, Attend and Spell</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../Speech Transformer.html">Speech Transformer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../Common Modules.html">Common Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Interface.html">Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Deep%20Speech%202.html">Deep Speech 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Listen%20Attend%20Spell.html">Listen, Attend and Spell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../RNN%20Transducer.html">RNN Transducer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Speech%20Transformer.html">Speech Transformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Jasper.html">Jasper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Conformer.html">Conformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Modules.html">Modules</a></li>
 </ul>
 <p class="caption"><span class="caption-text">LIBRARY REFERENCE</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../Checkpoint.html">Checkpoint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Criterion.html">Criterion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Data.html">Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Decode.html">Decode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Optim.html">Optim</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../Learning Rate Schedulers.html">Learning Rate Scheduler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Learning%20Rate%20Schedulers.html">Learning Rate Scheduler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Trainer.html">Trainer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Vocabs.html">Vocabs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../Voice Activity Detection.html">Voice Activity Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../Etc.html">Etc</a></li>
 </ul>
 
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -145,11 +165,13 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
@@ -169,22 +191,42 @@
            <div itemprop="articleBody">
             
   <h1>Source code for kospeech.trainer.supervised_trainer</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">math</span>
+<span></span><span class="c1"># Copyright (c) 2020, Soohwan Kim. All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+
+<span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
 <span class="kn">import</span> <span class="nn">queue</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Tuple</span>
-<span class="kn">from</span> <span class="nn">kospeech.checkpoint.checkpoint</span> <span class="k">import</span> <span class="n">Checkpoint</span>
-<span class="kn">from</span> <span class="nn">kospeech.metrics</span> <span class="k">import</span> <span class="n">CharacterErrorRate</span>
-<span class="kn">from</span> <span class="nn">kospeech.optim</span> <span class="k">import</span> <span class="n">Optimizer</span>
-<span class="kn">from</span> <span class="nn">kospeech.utils</span> <span class="k">import</span> <span class="n">logger</span>
-<span class="kn">from</span> <span class="nn">kospeech.vocabs</span> <span class="k">import</span> <span class="n">Vocabulary</span>
-<span class="kn">from</span> <span class="nn">kospeech.data.data_loader</span> <span class="k">import</span> <span class="p">(</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">Tensor</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
+
+<span class="kn">from</span> <span class="nn">kospeech.optim</span> <span class="kn">import</span> <span class="n">Optimizer</span>
+<span class="kn">from</span> <span class="nn">kospeech.vocabs</span> <span class="kn">import</span> <span class="n">Vocabulary</span>
+<span class="kn">from</span> <span class="nn">kospeech.checkpoint</span> <span class="kn">import</span> <span class="n">Checkpoint</span>
+<span class="kn">from</span> <span class="nn">kospeech.metrics</span> <span class="kn">import</span> <span class="n">CharacterErrorRate</span>
+<span class="kn">from</span> <span class="nn">kospeech.utils</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span> <span class="nn">kospeech.criterion</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">LabelSmoothedCrossEntropyLoss</span><span class="p">,</span>
+    <span class="n">JointCTCCrossEntropyLoss</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">kospeech.data</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">MultiDataLoader</span><span class="p">,</span>
     <span class="n">AudioDataLoader</span><span class="p">,</span>
-    <span class="n">SpectrogramDataset</span>
+    <span class="n">SpectrogramDataset</span><span class="p">,</span>
 <span class="p">)</span>
 
 
@@ -206,25 +248,26 @@
     <span class="n">train_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;loss&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;cer&#39;</span><span class="p">:</span> <span class="p">[]}</span>
     <span class="n">valid_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;loss&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;cer&#39;</span><span class="p">:</span> <span class="p">[]}</span>
     <span class="n">train_step_result</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;loss&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;cer&#39;</span><span class="p">:</span> <span class="p">[]}</span>
-    <span class="n">TRAIN_RESULT_PATH</span> <span class="o">=</span> <span class="s2">&quot;../data/train_result/train_result.csv&quot;</span>
-    <span class="n">VALID_RESULT_PATH</span> <span class="o">=</span> <span class="s2">&quot;../data/train_result/eval_result.csv&quot;</span>
-    <span class="n">TRAIN_STEP_RESULT_PATH</span> <span class="o">=</span> <span class="s2">&quot;../data/train_result/train_step_result.csv&quot;</span>
+    <span class="n">TRAIN_RESULT_PATH</span> <span class="o">=</span> <span class="s2">&quot;train_result.csv&quot;</span>
+    <span class="n">VALID_RESULT_PATH</span> <span class="o">=</span> <span class="s2">&quot;eval_result.csv&quot;</span>
+    <span class="n">TRAIN_STEP_RESULT_PATH</span> <span class="o">=</span> <span class="s2">&quot;train_step_result.csv&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">optimizer</span><span class="p">:</span> <span class="n">Optimizer</span><span class="p">,</span>                          <span class="c1"># optimizer for training</span>
             <span class="n">criterion</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span>                          <span class="c1"># loss function</span>
             <span class="n">trainset_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>                           <span class="c1"># list of training dataset</span>
             <span class="n">validset</span><span class="p">:</span> <span class="n">SpectrogramDataset</span><span class="p">,</span>                  <span class="c1"># validation dataset</span>
             <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>                              <span class="c1"># number of threads</span>
-            <span class="n">device</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>                                   <span class="c1"># device - cuda or cpu</span>
+            <span class="n">device</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>                          <span class="c1"># device - cuda or cpu</span>
             <span class="n">print_every</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>                              <span class="c1"># number of timesteps to save result after</span>
             <span class="n">save_result_every</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>                        <span class="c1"># nimber of timesteps to save result after</span>
             <span class="n">checkpoint_every</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>                         <span class="c1"># number of timesteps to checkpoint after</span>
             <span class="n">teacher_forcing_step</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span>             <span class="c1"># step of teacher forcing ratio decrease per epoch.</span>
             <span class="n">min_teacher_forcing_ratio</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">,</span>        <span class="c1"># minimum value of teacher forcing ratio</span>
-            <span class="n">architecture</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;las&#39;</span><span class="p">,</span>                     <span class="c1"># architecture to train - las, transformer</span>
-            <span class="n">vocab</span><span class="p">:</span> <span class="n">Vocabulary</span> <span class="o">=</span> <span class="kc">None</span>                       <span class="c1"># vocabulary object</span>
+            <span class="n">architecture</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;las&#39;</span><span class="p">,</span>                     <span class="c1"># model to train - las, transformer</span>
+            <span class="n">vocab</span><span class="p">:</span> <span class="n">Vocabulary</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>                      <span class="c1"># vocabulary object</span>
+            <span class="n">joint_ctc_attention</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>             <span class="c1"># flag indication whether joint CTC-Attention or not</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span> <span class="o">=</span> <span class="n">num_workers</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">optimizer</span>
@@ -240,6 +283,18 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">metric</span> <span class="o">=</span> <span class="n">CharacterErrorRate</span><span class="p">(</span><span class="n">vocab</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">architecture</span> <span class="o">=</span> <span class="n">architecture</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vocab</span> <span class="o">=</span> <span class="n">vocab</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">joint_ctc_attention</span> <span class="o">=</span> <span class="n">joint_ctc_attention</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint_ctc_attention</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_format</span> <span class="o">=</span> <span class="s2">&quot;step: </span><span class="si">{:4d}</span><span class="s2">/</span><span class="si">{:4d}</span><span class="s2">, loss: </span><span class="si">{:.6f}</span><span class="s2">, ctc_loss: </span><span class="si">{:.6f}</span><span class="s2">, ce_loss: </span><span class="si">{:.6f}</span><span class="s2">, &quot;</span> \
+                              <span class="s2">&quot;cer: </span><span class="si">{:.2f}</span><span class="s2">, elapsed: </span><span class="si">{:.2f}</span><span class="s2">s </span><span class="si">{:.2f}</span><span class="s2">m </span><span class="si">{:.2f}</span><span class="s2">h, lr: </span><span class="si">{:.6f}</span><span class="s2">&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_format</span> <span class="o">=</span> <span class="s2">&quot;step: </span><span class="si">{:4d}</span><span class="s2">/</span><span class="si">{:4d}</span><span class="s2">, loss: </span><span class="si">{:.6f}</span><span class="s2">, &quot;</span> \
+                              <span class="s2">&quot;cer: </span><span class="si">{:.2f}</span><span class="s2">, elapsed: </span><span class="si">{:.2f}</span><span class="s2">s </span><span class="si">{:.2f}</span><span class="s2">m </span><span class="si">{:.2f}</span><span class="s2">h, lr: </span><span class="si">{:.6f}</span><span class="s2">&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">architecture</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;rnnt&#39;</span><span class="p">,</span> <span class="s1">&#39;conformer&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rnnt_log_format</span> <span class="o">=</span> <span class="s2">&quot;step: </span><span class="si">{:4d}</span><span class="s2">/</span><span class="si">{:4d}</span><span class="s2">, loss: </span><span class="si">{:.6f}</span><span class="s2">, &quot;</span> \
+                                   <span class="s2">&quot;elapsed: </span><span class="si">{:.2f}</span><span class="s2">s </span><span class="si">{:.2f}</span><span class="s2">m </span><span class="si">{:.2f}</span><span class="s2">h, lr: </span><span class="si">{:.6f}</span><span class="s2">&quot;</span>
 
 <div class="viewcode-block" id="SupervisedTrainer.train"><a class="viewcode-back" href="../../../Trainer.html#kospeech.trainer.supervised_trainer.SupervisedTrainer.train">[docs]</a>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -248,7 +303,7 @@
         <span class="n">epoch_time_step</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>                       <span class="c1"># number of time step for training</span>
         <span class="n">num_epochs</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>                            <span class="c1"># number of epochs (iteration) for training</span>
         <span class="n">teacher_forcing_ratio</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.99</span><span class="p">,</span>        <span class="c1"># teacher forcing ratio</span>
-        <span class="n">resume</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>                        <span class="c1"># resume training with the latest checkpoint</span>
+        <span class="n">resume</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>                       <span class="c1"># resume training with the latest checkpoint</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run training for a given model.</span>
@@ -295,13 +350,13 @@
             <span class="p">)</span>
             <span class="n">train_loader</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
-            <span class="n">train_loss</span><span class="p">,</span> <span class="n">train_cer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__train_epoches</span><span class="p">(</span>
-                <span class="n">model</span><span class="p">,</span>
-                <span class="n">epoch</span><span class="p">,</span>
-                <span class="n">epoch_time_step</span><span class="p">,</span>
-                <span class="n">train_begin_time</span><span class="p">,</span>
-                <span class="n">train_queue</span><span class="p">,</span>
-                <span class="n">teacher_forcing_ratio</span>
+            <span class="n">model</span><span class="p">,</span> <span class="n">train_loss</span><span class="p">,</span> <span class="n">train_cer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_train_epoches</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+                <span class="n">epoch</span><span class="o">=</span><span class="n">epoch</span><span class="p">,</span>
+                <span class="n">epoch_time_step</span><span class="o">=</span><span class="n">epoch_time_step</span><span class="p">,</span>
+                <span class="n">train_begin_time</span><span class="o">=</span><span class="n">train_begin_time</span><span class="p">,</span>
+                <span class="n">queue</span><span class="o">=</span><span class="n">train_queue</span><span class="p">,</span>
+                <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="n">teacher_forcing_ratio</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">train_loader</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
@@ -316,11 +371,11 @@
             <span class="n">valid_loader</span> <span class="o">=</span> <span class="n">AudioDataLoader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">validset</span><span class="p">,</span> <span class="n">valid_queue</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocab</span><span class="o">.</span><span class="n">pad_id</span><span class="p">)</span>
             <span class="n">valid_loader</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
-            <span class="n">valid_cer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">valid_queue</span><span class="p">)</span>
+            <span class="n">valid_cer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">valid_queue</span><span class="p">)</span>
             <span class="n">valid_loader</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Epoch </span><span class="si">%d</span><span class="s1"> CER </span><span class="si">%0.4f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">valid_cer</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__save_epoch_result</span><span class="p">(</span><span class="n">train_result</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">train_dict</span><span class="p">,</span> <span class="n">train_loss</span><span class="p">,</span> <span class="n">train_cer</span><span class="p">],</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_save_epoch_result</span><span class="p">(</span><span class="n">train_result</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">train_dict</span><span class="p">,</span> <span class="n">train_loss</span><span class="p">,</span> <span class="n">train_cer</span><span class="p">],</span>
                                      <span class="n">valid_result</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">valid_dict</span><span class="p">,</span> <span class="n">train_loss</span><span class="p">,</span> <span class="n">valid_cer</span><span class="p">])</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Epoch </span><span class="si">%d</span><span class="s1"> Training result saved as a csv file complete !!&#39;</span> <span class="o">%</span> <span class="n">epoch</span><span class="p">)</span>
             <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">empty_cache</span><span class="p">()</span>
@@ -328,14 +383,15 @@
         <span class="n">Checkpoint</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainset_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">validset</span><span class="p">,</span> <span class="n">num_epochs</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">model</span></div>
 
-    <span class="k">def</span> <span class="nf">__train_epoches</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span>
+    <span class="k">def</span> <span class="nf">_train_epoches</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span>
             <span class="n">epoch</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
             <span class="n">epoch_time_step</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
             <span class="n">train_begin_time</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
             <span class="n">queue</span><span class="p">:</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">,</span>
-            <span class="n">teacher_forcing_ratio</span><span class="p">:</span> <span class="nb">float</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+            <span class="n">teacher_forcing_ratio</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run training one epoch</span>
 
@@ -351,6 +407,13 @@
 <span class="sd">            - **loss** (float): loss of current epoch</span>
 <span class="sd">            - **cer** (float): character error rate of current epoch</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">architecture</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">architecture</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">architecture</span> <span class="o">==</span> <span class="s1">&#39;conformer&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">DataParallel</span><span class="p">):</span>
+                <span class="n">architecture</span> <span class="o">=</span> <span class="s1">&#39;conformer_t&#39;</span> <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">decoder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s1">&#39;conformer_ctc&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">architecture</span> <span class="o">=</span> <span class="s1">&#39;conformer_t&#39;</span> <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">decoder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s1">&#39;conformer_ctc&#39;</span>
+
         <span class="n">cer</span> <span class="o">=</span> <span class="mf">1.0</span>
         <span class="n">epoch_loss_total</span> <span class="o">=</span> <span class="mf">0.</span>
         <span class="n">total_num</span> <span class="o">=</span> <span class="mi">0</span>
@@ -378,45 +441,29 @@
 
             <span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
             <span class="n">targets</span> <span class="o">=</span> <span class="n">targets</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-
             <span class="n">input_lengths</span> <span class="o">=</span> <span class="n">input_lengths</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
             <span class="n">target_lengths</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(</span><span class="n">target_lengths</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
 
             <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">output</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">ctc_loss</span><span class="p">,</span> <span class="n">cross_entropy_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model_forward</span><span class="p">(</span>
+                <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="n">teacher_forcing_ratio</span><span class="p">,</span>
+                <span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span>
+                <span class="n">input_lengths</span><span class="o">=</span><span class="n">input_lengths</span><span class="p">,</span>
+                <span class="n">targets</span><span class="o">=</span><span class="n">targets</span><span class="p">,</span>
+                <span class="n">target_lengths</span><span class="o">=</span><span class="n">target_lengths</span><span class="p">,</span>
+                <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+                <span class="n">architecture</span><span class="o">=</span><span class="n">architecture</span><span class="p">,</span>
+            <span class="p">)</span>
 
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">architecture</span> <span class="o">==</span> <span class="s1">&#39;las&#39;</span><span class="p">:</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">DataParallel</span><span class="p">):</span>
-                    <span class="n">model</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">flatten_parameters</span><span class="p">()</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">model</span><span class="o">.</span><span class="n">flatten_parameters</span><span class="p">()</span>
-
-                <span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="o">=</span><span class="n">input_lengths</span><span class="p">,</span>
-                               <span class="n">targets</span><span class="o">=</span><span class="n">targets</span><span class="p">,</span> <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="n">teacher_forcing_ratio</span><span class="p">)</span>
-
-                <span class="n">output</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-                <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">(</span>
-                    <span class="n">output</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)),</span> <span class="n">targets</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-                <span class="p">)</span>
-
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">architecture</span> <span class="o">==</span> <span class="s1">&#39;transformer&#39;</span><span class="p">:</span>
-                <span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">return_attns</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-                <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)),</span> <span class="n">targets</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
-
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">architecture</span> <span class="o">==</span> <span class="s1">&#39;deepspeech2&#39;</span><span class="p">:</span>
-                <span class="n">output</span><span class="p">,</span> <span class="n">output_lengths</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">)</span>
-                <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">targets</span><span class="p">,</span> <span class="n">output_lengths</span><span class="p">,</span> <span class="n">target_lengths</span><span class="p">)</span>
-
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unsupported architecture : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">architecture</span><span class="p">))</span>
-
-            <span class="n">y_hats</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">epoch_loss_total</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
-
-            <span class="n">cer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">y_hats</span><span class="p">)</span>
-            <span class="n">total_num</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">input_lengths</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">architecture</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;rnnt&#39;</span><span class="p">,</span> <span class="s1">&#39;conformer_t&#39;</span><span class="p">):</span>
+                <span class="n">y_hats</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">cer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">y_hats</span><span class="p">)</span>
 
             <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+
+            <span class="n">total_num</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">input_lengths</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+            <span class="n">epoch_loss_total</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
 
             <span class="n">timestep</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">empty_cache</span><span class="p">()</span>
@@ -427,29 +474,42 @@
                 <span class="n">epoch_elapsed</span> <span class="o">=</span> <span class="p">(</span><span class="n">current_time</span> <span class="o">-</span> <span class="n">epoch_begin_time</span><span class="p">)</span> <span class="o">/</span> <span class="mf">60.0</span>
                 <span class="n">train_elapsed</span> <span class="o">=</span> <span class="p">(</span><span class="n">current_time</span> <span class="o">-</span> <span class="n">train_begin_time</span><span class="p">)</span> <span class="o">/</span> <span class="mf">3600.0</span>
 
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;timestep: </span><span class="si">{:4d}</span><span class="s2">/</span><span class="si">{:4d}</span><span class="s2">, loss: </span><span class="si">{:.4f}</span><span class="s2">, cer: </span><span class="si">{:.2f}</span><span class="s2">, elapsed: </span><span class="si">{:.2f}</span><span class="s2">s </span><span class="si">{:.2f}</span><span class="s2">m </span><span class="si">{:.2f}</span><span class="s2">h, lr: </span><span class="si">{:.6f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="n">timestep</span><span class="p">,</span> <span class="n">epoch_time_step</span><span class="p">,</span>
-                    <span class="n">epoch_loss_total</span> <span class="o">/</span> <span class="n">total_num</span><span class="p">,</span>
-                    <span class="n">cer</span><span class="p">,</span>
-                    <span class="n">elapsed</span><span class="p">,</span> <span class="n">epoch_elapsed</span><span class="p">,</span> <span class="n">train_elapsed</span><span class="p">,</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">get_lr</span><span class="p">()</span>
-                <span class="p">))</span>
+                <span class="k">if</span> <span class="n">architecture</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;rnnt&#39;</span><span class="p">,</span> <span class="s1">&#39;conformer_t&#39;</span><span class="p">):</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rnnt_log_format</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">timestep</span><span class="p">,</span> <span class="n">epoch_time_step</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span>
+                        <span class="n">elapsed</span><span class="p">,</span> <span class="n">epoch_elapsed</span><span class="p">,</span> <span class="n">train_elapsed</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">get_lr</span><span class="p">(),</span>
+                    <span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint_ctc_attention</span><span class="p">:</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_format</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">timestep</span><span class="p">,</span> <span class="n">epoch_time_step</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span>
+                            <span class="n">ctc_loss</span><span class="p">,</span> <span class="n">cross_entropy_loss</span><span class="p">,</span> <span class="n">cer</span><span class="p">,</span>
+                            <span class="n">elapsed</span><span class="p">,</span> <span class="n">epoch_elapsed</span><span class="p">,</span> <span class="n">train_elapsed</span><span class="p">,</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">get_lr</span><span class="p">(),</span>
+                        <span class="p">))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_format</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">timestep</span><span class="p">,</span> <span class="n">epoch_time_step</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span>
+                            <span class="n">cer</span><span class="p">,</span> <span class="n">elapsed</span><span class="p">,</span> <span class="n">epoch_elapsed</span><span class="p">,</span> <span class="n">train_elapsed</span><span class="p">,</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">get_lr</span><span class="p">(),</span>
+                        <span class="p">))</span>
                 <span class="n">begin_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
             <span class="k">if</span> <span class="n">timestep</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_result_every</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__save_step_result</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_step_result</span><span class="p">,</span> <span class="n">epoch_loss_total</span> <span class="o">/</span> <span class="n">total_num</span><span class="p">,</span> <span class="n">cer</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_save_step_result</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_step_result</span><span class="p">,</span> <span class="n">epoch_loss_total</span> <span class="o">/</span> <span class="n">total_num</span><span class="p">,</span> <span class="n">cer</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">timestep</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkpoint_every</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">Checkpoint</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span>  <span class="bp">self</span><span class="o">.</span><span class="n">trainset_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">validset</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
 
-            <span class="k">del</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">y_hats</span>
+            <span class="k">del</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">loss</span>
 
         <span class="n">Checkpoint</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainset_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">validset</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;train() completed&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">epoch_loss_total</span> <span class="o">/</span> <span class="n">total_num</span><span class="p">,</span> <span class="n">cer</span>
 
-<div class="viewcode-block" id="SupervisedTrainer.validate"><a class="viewcode-back" href="../../../Trainer.html#kospeech.trainer.supervised_trainer.SupervisedTrainer.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span> <span class="n">queue</span><span class="p">:</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">model</span><span class="p">,</span> <span class="n">epoch_loss_total</span> <span class="o">/</span> <span class="n">total_num</span><span class="p">,</span> <span class="n">cer</span>
+
+    <span class="k">def</span> <span class="nf">_validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span> <span class="n">queue</span><span class="p">:</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run training one epoch</span>
 
@@ -461,6 +521,7 @@
 <span class="sd">            - **loss** (float): loss of validation</span>
 <span class="sd">            - **cer** (float): character error rate of validation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">target_list</span><span class="p">,</span> <span class="n">predict_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(),</span> <span class="nb">list</span><span class="p">()</span>
         <span class="n">cer</span> <span class="o">=</span> <span class="mf">1.0</span>
 
         <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
@@ -476,25 +537,116 @@
             <span class="n">targets</span> <span class="o">=</span> <span class="n">targets</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
             <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">architecture</span> <span class="o">==</span> <span class="s1">&#39;las&#39;</span><span class="p">:</span>
-                <span class="n">y_hats</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">greedy_decode</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">architecture</span> <span class="o">==</span> <span class="s1">&#39;transformer&#39;</span><span class="p">:</span>
-                <span class="n">y_hats</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">greedy_decode</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">)</span>
-
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">architecture</span> <span class="o">==</span> <span class="s1">&#39;deepspeech2&#39;</span><span class="p">:</span>
-                <span class="n">y_hats</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">greedy_decode</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">DataParallel</span><span class="p">):</span>
+                <span class="n">y_hats</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">recognize</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unsupported architecture : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">architecture</span><span class="p">))</span>
-
+                <span class="n">y_hats</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">recognize</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">)</span>
+                
+            <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">targets</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+                <span class="n">target_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocab</span><span class="o">.</span><span class="n">label_to_string</span><span class="p">(</span><span class="n">targets</span><span class="p">[</span><span class="n">idx</span><span class="p">]))</span>
+                <span class="n">predict_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocab</span><span class="o">.</span><span class="n">label_to_string</span><span class="p">(</span><span class="n">y_hats</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()))</span>
+                
             <span class="n">cer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">y_hats</span><span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_save_result</span><span class="p">(</span><span class="n">target_list</span><span class="p">,</span> <span class="n">predict_list</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;validate() completed&#39;</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">cer</span></div>
+        <span class="k">return</span> <span class="n">cer</span>
 
-    <span class="k">def</span> <span class="nf">__save_epoch_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train_result</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">valid_result</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_model_forward</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span>
+            <span class="n">inputs</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+            <span class="n">input_lengths</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+            <span class="n">targets</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+            <span class="n">target_lengths</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+            <span class="n">teacher_forcing_ratio</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+            <span class="n">architecture</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">]:</span>
+        <span class="n">ctc_loss</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">cross_entropy_loss</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">architecture</span> <span class="o">==</span> <span class="s1">&#39;las&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">DataParallel</span><span class="p">):</span>
+                <span class="n">model</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">flatten_parameters</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">model</span><span class="o">.</span><span class="n">flatten_parameters</span><span class="p">()</span>
+
+            <span class="n">outputs</span><span class="p">,</span> <span class="n">encoder_output_lengths</span><span class="p">,</span> <span class="n">encoder_log_probs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span>
+                <span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span>
+                <span class="n">input_lengths</span><span class="o">=</span><span class="n">input_lengths</span><span class="p">,</span>
+                <span class="n">targets</span><span class="o">=</span><span class="n">targets</span><span class="p">,</span>
+                <span class="n">teacher_forcing_ratio</span><span class="o">=</span><span class="n">teacher_forcing_ratio</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">,</span> <span class="n">LabelSmoothedCrossEntropyLoss</span><span class="p">):</span>
+                <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">(</span>
+                    <span class="n">outputs</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">outputs</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)),</span> <span class="n">targets</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">,</span> <span class="n">JointCTCCrossEntropyLoss</span><span class="p">):</span>
+                <span class="n">loss</span><span class="p">,</span> <span class="n">ctc_loss</span><span class="p">,</span> <span class="n">cross_entropy_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">(</span>
+                    <span class="n">encoder_log_probs</span><span class="o">=</span><span class="n">encoder_log_probs</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                    <span class="n">decoder_log_probs</span><span class="o">=</span><span class="n">outputs</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">outputs</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)),</span>
+                    <span class="n">output_lengths</span><span class="o">=</span><span class="n">encoder_output_lengths</span><span class="p">,</span>
+                    <span class="n">targets</span><span class="o">=</span><span class="n">targets</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:],</span>
+                    <span class="n">target_lengths</span><span class="o">=</span><span class="n">target_lengths</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported Criterion: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">architecture</span> <span class="o">==</span> <span class="s1">&#39;transformer&#39;</span><span class="p">:</span>
+            <span class="n">outputs</span><span class="p">,</span> <span class="n">encoder_output_lengths</span><span class="p">,</span> <span class="n">encoder_log_probs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">,</span> <span class="n">LabelSmoothedCrossEntropyLoss</span><span class="p">):</span>
+                <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">(</span>
+                    <span class="n">outputs</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">outputs</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)),</span> <span class="n">targets</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">,</span> <span class="n">JointCTCCrossEntropyLoss</span><span class="p">):</span>
+                <span class="n">loss</span><span class="p">,</span> <span class="n">ctc_loss</span><span class="p">,</span> <span class="n">cross_entropy_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">(</span>
+                    <span class="n">encoder_log_probs</span><span class="o">=</span><span class="n">encoder_log_probs</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                    <span class="n">decoder_log_probs</span><span class="o">=</span><span class="n">outputs</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">outputs</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)),</span>
+                    <span class="n">output_lengths</span><span class="o">=</span><span class="n">encoder_output_lengths</span><span class="p">,</span>
+                    <span class="n">targets</span><span class="o">=</span><span class="n">targets</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:],</span>
+                    <span class="n">target_lengths</span><span class="o">=</span><span class="n">target_lengths</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">):</span>
+                <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">(</span>
+                    <span class="n">outputs</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">outputs</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)),</span> <span class="n">targets</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported Criterion: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">architecture</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;deepspeech2&#39;</span><span class="p">,</span> <span class="s1">&#39;jasper&#39;</span><span class="p">):</span>
+            <span class="n">outputs</span><span class="p">,</span> <span class="n">output_lengths</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">)</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">(</span><span class="n">outputs</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">targets</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:],</span> <span class="n">output_lengths</span><span class="p">,</span> <span class="n">target_lengths</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">architecture</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;rnnt&#39;</span><span class="p">,</span> <span class="s1">&#39;conformer_t&#39;</span><span class="p">):</span>
+            <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">target_lengths</span><span class="p">)</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">(</span>
+                <span class="n">outputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">int</span><span class="p">(),</span> <span class="n">input_lengths</span><span class="o">.</span><span class="n">int</span><span class="p">(),</span> <span class="n">target_lengths</span><span class="o">.</span><span class="n">int</span><span class="p">()</span>
+            <span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">architecture</span> <span class="o">==</span> <span class="s1">&#39;conformer_ctc&#39;</span><span class="p">:</span>
+            <span class="n">outputs</span><span class="p">,</span> <span class="n">output_lengths</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">target_lengths</span><span class="p">)</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">(</span><span class="n">outputs</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">targets</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:],</span> <span class="n">output_lengths</span><span class="p">,</span> <span class="n">target_lengths</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unsupported model : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">architecture</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">outputs</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">ctc_loss</span><span class="p">,</span> <span class="n">cross_entropy_loss</span>
+
+    <span class="k">def</span> <span class="nf">_save_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">predict_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;targets&#39;</span><span class="p">:</span> <span class="n">target_list</span><span class="p">,</span>
+            <span class="s1">&#39;predictions&#39;</span><span class="p">:</span> <span class="n">predict_list</span>
+        <span class="p">}</span>
+        <span class="n">date_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y_%m_</span><span class="si">%d</span><span class="s1">_%H_%M_%S&#39;</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">localtime</span><span class="p">())</span>
+        <span class="n">save_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">date_time</span><span class="si">}</span><span class="s2">-valid.csv&quot;</span>
+        
+        <span class="n">results</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;cp949&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_save_epoch_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train_result</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">valid_result</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot; Save result of epoch &quot;&quot;&quot;</span>
         <span class="n">train_dict</span><span class="p">,</span> <span class="n">train_loss</span><span class="p">,</span> <span class="n">train_cer</span> <span class="o">=</span> <span class="n">train_result</span>
         <span class="n">valid_dict</span><span class="p">,</span> <span class="n">valid_loss</span><span class="p">,</span> <span class="n">valid_cer</span> <span class="o">=</span> <span class="n">valid_result</span>
@@ -511,7 +663,7 @@
         <span class="n">train_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">SupervisedTrainer</span><span class="o">.</span><span class="n">TRAIN_RESULT_PATH</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;cp949&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">valid_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">SupervisedTrainer</span><span class="o">.</span><span class="n">VALID_RESULT_PATH</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;cp949&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__save_step_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train_step_result</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">loss</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">cer</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_save_step_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train_step_result</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">loss</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">cer</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot; Save result of --save_result_every step &quot;&quot;&quot;</span>
         <span class="n">train_step_result</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
         <span class="n">train_step_result</span><span class="p">[</span><span class="s2">&quot;cer&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cer</span><span class="p">)</span>
@@ -524,20 +676,25 @@
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020, Soohwan Kim
+        &#169; Copyright 2020, Soohwan Kim.
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
@@ -545,7 +702,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

@@ -1,37 +1,42 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Decode &mdash; KoSpeech latest documentation</title>
   
 
   
-  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
   
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Evaluator" href="Evaluator.html" />
@@ -76,6 +81,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -85,20 +91,34 @@
             
               <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Intro</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">Preparation before Training</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notes/opts.html">Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html">What’s New</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#note">Note</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#kospeech-open-source-toolkit-for-end-to-end-korean-speech-recognition-paper"><em><strong>KoSpeech:  Open-Source Toolkit for End-to-End Korean Speech Recognition [Paper]</strong></em></a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#supported-models">Supported Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#pre-processed-transcripts">Pre-processed Transcripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#introduction">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#roadmap">Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#installation">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#get-started">Get Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#troubleshoots-and-contributing">Troubleshoots and Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#citation">Citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">KsponSpeech-preprocess</a></li>
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Deep Speech 2.html">Deep Speech 2</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Listen, Attend and Spell.html">Listen, Attend and Spell</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Speech Transformer.html">Speech Transformer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Common Modules.html">Common Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Interface.html">Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Deep%20Speech%202.html">Deep Speech 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Listen%20Attend%20Spell.html">Listen, Attend and Spell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="RNN%20Transducer.html">RNN Transducer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Speech%20Transformer.html">Speech Transformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Jasper.html">Jasper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Conformer.html">Conformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modules.html">Modules</a></li>
 </ul>
 <p class="caption"><span class="caption-text">LIBRARY REFERENCE</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Checkpoint.html">Checkpoint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Criterion.html">Criterion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Data.html">Data</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Decode</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#module-kospeech.decode.search">Search</a></li>
@@ -107,16 +127,16 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Optim.html">Optim</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Learning Rate Schedulers.html">Learning Rate Scheduler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Learning%20Rate%20Schedulers.html">Learning Rate Scheduler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Vocabs.html">Vocabs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Voice Activity Detection.html">Voice Activity Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Etc.html">Etc</a></li>
 </ul>
 
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -151,18 +171,20 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Decode</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/Decode.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -180,90 +202,48 @@
 <h1>Decode<a class="headerlink" href="#decode" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="module-kospeech.decode.search">
 <span id="search"></span><h2>Search<a class="headerlink" href="#module-kospeech.decode.search" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<dl class="py class">
 <dt id="kospeech.decode.search.BeamSearch">
-<em class="property">class </em><code class="descclassname">kospeech.decode.search.</code><code class="descname">BeamSearch</code><span class="sig-paren">(</span><em>vocab</em>, <em>k</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/decode/search.html#BeamSearch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.decode.search.BeamSearch" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">kospeech.decode.search.</code><code class="sig-name descname">BeamSearch</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vocab</span></em>, <em class="sig-param"><span class="n">k</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/decode/search.html#BeamSearch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.decode.search.BeamSearch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provides beam search decoding.</p>
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="kospeech.decode.search.GreedySearch">
-<em class="property">class </em><code class="descclassname">kospeech.decode.search.</code><code class="descname">GreedySearch</code><span class="sig-paren">(</span><em>vocab</em>, <em>metric: str = 'char'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/decode/search.html#GreedySearch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.decode.search.GreedySearch" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">kospeech.decode.search.</code><code class="sig-name descname">GreedySearch</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vocab</span></em>, <em class="sig-param"><span class="n">metric</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span> <span class="o">=</span> <span class="default_value">'char'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/decode/search.html#GreedySearch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.decode.search.GreedySearch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provides greedy search and save result to csv format</p>
 </dd></dl>
 
 </div>
 <div class="section" id="module-kospeech.decode.ensemble">
 <span id="ensemble"></span><h2>Ensemble<a class="headerlink" href="#module-kospeech.decode.ensemble" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<dl class="py class">
 <dt id="kospeech.decode.ensemble.BasicEnsemble">
-<em class="property">class </em><code class="descclassname">kospeech.decode.ensemble.</code><code class="descname">BasicEnsemble</code><span class="sig-paren">(</span><em>models</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/decode/ensemble.html#BasicEnsemble"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.decode.ensemble.BasicEnsemble" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">kospeech.decode.ensemble.</code><code class="sig-name descname">BasicEnsemble</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">models</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/decode/ensemble.html#BasicEnsemble"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.decode.ensemble.BasicEnsemble" title="Permalink to this definition">¶</a></dt>
 <dd><p>Basic ensemble decoding.</p>
 <p>Decodes using multiple models simultaneously,
 combining their prediction distributions by adding.
 All models in the ensemble must share a target characters.</p>
-<dl class="method">
-<dt id="kospeech.decode.ensemble.BasicEnsemble.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs</em>, <em>input_lengths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/decode/ensemble.html#BasicEnsemble.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.decode.ensemble.BasicEnsemble.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Although the recipe for forward pass needs to be defined within
-this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
-instead of this since the former takes care of running the
-registered hooks while the latter silently ignores them.</p>
-</div>
 </dd></dl>
 
-</dd></dl>
-
-<dl class="class">
+<dl class="py class">
 <dt id="kospeech.decode.ensemble.Ensemble">
-<em class="property">class </em><code class="descclassname">kospeech.decode.ensemble.</code><code class="descname">Ensemble</code><span class="sig-paren">(</span><em>models</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/decode/ensemble.html#Ensemble"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.decode.ensemble.Ensemble" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">kospeech.decode.ensemble.</code><code class="sig-name descname">Ensemble</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">models</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/decode/ensemble.html#Ensemble"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.decode.ensemble.Ensemble" title="Permalink to this definition">¶</a></dt>
 <dd><p>Ensemble decoding.
 Decodes using multiple models simultaneously,</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Do not use this class directly, use one of the sub classes.</p>
-</div>
-<dl class="method">
-<dt id="kospeech.decode.ensemble.Ensemble.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/decode/ensemble.html#Ensemble.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.decode.ensemble.Ensemble.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Although the recipe for forward pass needs to be defined within
-this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
-instead of this since the former takes care of running the
-registered hooks while the latter silently ignores them.</p>
+<p class="admonition-title">Note</p>
+<p>Do not use this class directly, use one of the sub classes.</p>
 </div>
 </dd></dl>
 
-</dd></dl>
-
-<dl class="class">
+<dl class="py class">
 <dt id="kospeech.decode.ensemble.WeightedEnsemble">
-<em class="property">class </em><code class="descclassname">kospeech.decode.ensemble.</code><code class="descname">WeightedEnsemble</code><span class="sig-paren">(</span><em>models</em>, <em>dim=128</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/decode/ensemble.html#WeightedEnsemble"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.decode.ensemble.WeightedEnsemble" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">kospeech.decode.ensemble.</code><code class="sig-name descname">WeightedEnsemble</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">models</span></em>, <em class="sig-param"><span class="n">dim</span><span class="o">=</span><span class="default_value">128</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/decode/ensemble.html#WeightedEnsemble"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.decode.ensemble.WeightedEnsemble" title="Permalink to this definition">¶</a></dt>
 <dd><p>Weighted ensemble decoding.</p>
 <p>Decodes using multiple models simultaneously,
 combining their prediction distributions by weighted sum.
 All models in the ensemble must share a target characters.</p>
-<dl class="method">
-<dt id="kospeech.decode.ensemble.WeightedEnsemble.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>inputs</em>, <em>input_lengths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/decode/ensemble.html#WeightedEnsemble.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.decode.ensemble.WeightedEnsemble.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Although the recipe for forward pass needs to be defined within
-this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
-instead of this since the former takes care of running the
-registered hooks while the latter silently ignores them.</p>
-</div>
-</dd></dl>
-
 </dd></dl>
 
 </div>
@@ -274,29 +254,29 @@ registered hooks while the latter silently ignores them.</p>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="Evaluator.html" class="btn btn-neutral float-right" title="Evaluator" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="Data.html" class="btn btn-neutral float-left" title="Data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="Evaluator.html" class="btn btn-neutral float-right" title="Evaluator" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="Data.html" class="btn btn-neutral float-left" title="Data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020, Soohwan Kim
+        &#169; Copyright 2020, Soohwan Kim.
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
@@ -304,7 +284,6 @@ registered hooks while the latter silently ignores them.</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

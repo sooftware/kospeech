@@ -1,40 +1,45 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Optim &mdash; KoSpeech latest documentation</title>
   
 
   
-  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
   
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Learning Rate Scheduler" href="Learning Rate Schedulers.html" />
+    <link rel="next" title="Learning Rate Scheduler" href="Learning%20Rate%20Schedulers.html" />
     <link rel="prev" title="Evaluator" href="Evaluator.html" /> 
 </head>
 
@@ -76,6 +81,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -85,38 +91,54 @@
             
               <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="notes/intro.html">Intro</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">Preparation before Training</a></li>
-<li class="toctree-l1"><a class="reference internal" href="notes/opts.html">Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html">What’s New</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#note">Note</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#kospeech-open-source-toolkit-for-end-to-end-korean-speech-recognition-paper"><em><strong>KoSpeech:  Open-Source Toolkit for End-to-End Korean Speech Recognition [Paper]</strong></em></a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#supported-models">Supported Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#pre-processed-transcripts">Pre-processed Transcripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#introduction">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#roadmap">Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#installation">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#get-started">Get Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#troubleshoots-and-contributing">Troubleshoots and Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#citation">Citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">KsponSpeech-preprocess</a></li>
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Deep Speech 2.html">Deep Speech 2</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Listen, Attend and Spell.html">Listen, Attend and Spell</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Speech Transformer.html">Speech Transformer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Common Modules.html">Common Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Interface.html">Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Deep%20Speech%202.html">Deep Speech 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Listen%20Attend%20Spell.html">Listen, Attend and Spell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="RNN%20Transducer.html">RNN Transducer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Speech%20Transformer.html">Speech Transformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Jasper.html">Jasper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Conformer.html">Conformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modules.html">Modules</a></li>
 </ul>
 <p class="caption"><span class="caption-text">LIBRARY REFERENCE</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Checkpoint.html">Checkpoint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Criterion.html">Criterion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Data.html">Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Decode.html">Decode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Optim</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#module-kospeech.optim.__init__">Optimizer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-kospeech.optim.radam">RAdam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.optim.adamp">AdamP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.optim.novograd">Novograd</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="Learning Rate Schedulers.html">Learning Rate Scheduler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Learning%20Rate%20Schedulers.html">Learning Rate Scheduler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Vocabs.html">Vocabs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Voice Activity Detection.html">Voice Activity Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Etc.html">Etc</a></li>
 </ul>
 
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -151,18 +173,20 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Optim</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/Optim.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -180,55 +204,117 @@
 <h1>Optim<a class="headerlink" href="#optim" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="module-kospeech.optim.__init__">
 <span id="optimizer"></span><h2>Optimizer<a class="headerlink" href="#module-kospeech.optim.__init__" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<dl class="py class">
 <dt id="kospeech.optim.__init__.Optimizer">
-<em class="property">class </em><code class="descclassname">kospeech.optim.__init__.</code><code class="descname">Optimizer</code><span class="sig-paren">(</span><em>optim</em>, <em>scheduler=None</em>, <em>scheduler_period=None</em>, <em>max_grad_norm=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/__init__.html#Optimizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.__init__.Optimizer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">kospeech.optim.__init__.</code><code class="sig-name descname">Optimizer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">optim</span></em>, <em class="sig-param"><span class="n">scheduler</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">scheduler_period</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">max_grad_norm</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/__init__.html#Optimizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.__init__.Optimizer" title="Permalink to this definition">¶</a></dt>
 <dd><p>This is wrapper classs of torch.optim.Optimizer.
 This class provides functionalities for learning rate scheduling and gradient norm clipping.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>optim</strong> (<a class="reference external" href="https://pytorch.org/docs/master/optim.html#torch.optim.Optimizer" title="(in PyTorch vmaster (1.8.0a0+2221ff5 ))"><em>torch.optim.Optimizer</em></a>) – optimizer object, the parameters to be optimized
-should be given when instantiating the object, e.g. torch.optim.Adam, torch.optim.SGD</li>
-<li><strong>scheduler</strong> (<em>kospeech.optim.lr_scheduler</em><em>, </em><em>optional</em>) – learning rate scheduler</li>
-<li><strong>scheduler_period</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – timestep with learning rate scheduler</li>
-<li><strong>max_grad_norm</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – value used for gradient norm clipping</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>optim</strong> (<a class="reference external" href="https://pytorch.org/docs/master/optim.html#torch.optim.Optimizer" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))"><em>torch.optim.Optimizer</em></a>) – optimizer object, the parameters to be optimized
+should be given when instantiating the object, e.g. torch.optim.Adam, torch.optim.SGD</p></li>
+<li><p><strong>scheduler</strong> (<em>kospeech.optim.lr_scheduler</em><em>, </em><em>optional</em>) – learning rate scheduler</p></li>
+<li><p><strong>scheduler_period</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – timestep with learning rate scheduler</p></li>
+<li><p><strong>max_grad_norm</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – value used for gradient norm clipping</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
 <div class="section" id="module-kospeech.optim.radam">
 <span id="radam"></span><h2>RAdam<a class="headerlink" href="#module-kospeech.optim.radam" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<dl class="py class">
 <dt id="kospeech.optim.radam.RAdam">
-<em class="property">class </em><code class="descclassname">kospeech.optim.radam.</code><code class="descname">RAdam</code><span class="sig-paren">(</span><em>params</em>, <em>lr=0.001</em>, <em>betas=(0.9</em>, <em>0.999)</em>, <em>eps=1e-08</em>, <em>weight_decay=0</em>, <em>degenerated_to_sgd=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/radam.html#RAdam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.radam.RAdam" title="Permalink to this definition">¶</a></dt>
-<dd><p>Copyright (c) LiyuanLucasLiu</p>
-<p>Copied from <a class="reference external" href="https://github.com/LiyuanLucasLiu/RAdam">https://github.com/LiyuanLucasLiu/RAdam</a>
-- Apache 2.0 License</p>
-<dl class="method">
+<em class="property">class </em><code class="sig-prename descclassname">kospeech.optim.radam.</code><code class="sig-name descname">RAdam</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">params</span></em>, <em class="sig-param"><span class="n">lr</span><span class="o">=</span><span class="default_value">0.001</span></em>, <em class="sig-param"><span class="n">betas</span><span class="o">=</span><span class="default_value">0.9, 0.999</span></em>, <em class="sig-param"><span class="n">eps</span><span class="o">=</span><span class="default_value">1e-08</span></em>, <em class="sig-param"><span class="n">weight_decay</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">degenerated_to_sgd</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/radam.html#RAdam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.radam.RAdam" title="Permalink to this definition">¶</a></dt>
+<dd><p>Paper: “On the Variance of the Adaptive Learning Rate and Beyond”</p>
+<p>Refer to <a class="reference external" href="https://github.com/LiyuanLucasLiu/RAdam">https://github.com/LiyuanLucasLiu/RAdam</a>
+Copyright (c) LiyuanLucasLiu
+Apache 2.0 License</p>
+<dl class="py method">
 <dt id="kospeech.optim.radam.RAdam.step">
-<code class="descname">step</code><span class="sig-paren">(</span><em>closure=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/radam.html#RAdam.step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.radam.RAdam.step" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">closure</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/radam.html#RAdam.step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.radam.RAdam.step" title="Permalink to this definition">¶</a></dt>
 <dd><p>Performs a single optimization step (parameter update).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>closure</strong> (<em>callable</em>) – A closure that reevaluates the model and
-returns the loss. Optional for most optimizers.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>closure</strong> (<em>callable</em>) – A closure that reevaluates the model and
+returns the loss. Optional for most optimizers.</p>
+</dd>
+</dl>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Unless otherwise specified, this function should not modify the
+<p class="admonition-title">Note</p>
+<p>Unless otherwise specified, this function should not modify the
 <code class="docutils literal notranslate"><span class="pre">.grad</span></code> field of the parameters.</p>
 </div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kospeech.optim.adamp">
+<span id="adamp"></span><h2>AdamP<a class="headerlink" href="#module-kospeech.optim.adamp" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="kospeech.optim.adamp.AdamP">
+<em class="property">class </em><code class="sig-prename descclassname">kospeech.optim.adamp.</code><code class="sig-name descname">AdamP</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">params</span></em>, <em class="sig-param"><span class="n">lr</span><span class="o">=</span><span class="default_value">0.001</span></em>, <em class="sig-param"><span class="n">betas</span><span class="o">=</span><span class="default_value">0.9, 0.999</span></em>, <em class="sig-param"><span class="n">eps</span><span class="o">=</span><span class="default_value">1e-08</span></em>, <em class="sig-param"><span class="n">weight_decay</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">delta</span><span class="o">=</span><span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">wd_ratio</span><span class="o">=</span><span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">nesterov</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/adamp.html#AdamP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.adamp.AdamP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Paper: “AdamP: Slowing Down the Slowdown for Momentum Optimizers on Scale-invariant Weights”</p>
+<p>Copied from <a class="reference external" href="https://github.com/clovaai/AdamP/">https://github.com/clovaai/AdamP/</a>
+Copyright (c) 2020 Naver Corp.
+MIT License</p>
+<dl class="py method">
+<dt id="kospeech.optim.adamp.AdamP.step">
+<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">closure</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/adamp.html#AdamP.step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.adamp.AdamP.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs a single optimization step (parameter update).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>closure</strong> (<em>callable</em>) – A closure that reevaluates the model and
+returns the loss. Optional for most optimizers.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Unless otherwise specified, this function should not modify the
+<code class="docutils literal notranslate"><span class="pre">.grad</span></code> field of the parameters.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kospeech.optim.novograd">
+<span id="novograd"></span><h2>Novograd<a class="headerlink" href="#module-kospeech.optim.novograd" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="kospeech.optim.novograd.Novograd">
+<em class="property">class </em><code class="sig-prename descclassname">kospeech.optim.novograd.</code><code class="sig-name descname">Novograd</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">params</span></em>, <em class="sig-param"><span class="n">lr</span><span class="o">=</span><span class="default_value">0.001</span></em>, <em class="sig-param"><span class="n">betas</span><span class="o">=</span><span class="default_value">0.95, 0</span></em>, <em class="sig-param"><span class="n">eps</span><span class="o">=</span><span class="default_value">1e-08</span></em>, <em class="sig-param"><span class="n">weight_decay</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">grad_averaging</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">amsgrad</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/novograd.html#Novograd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.novograd.Novograd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Novograd algorithm.</p>
+<p>Copied from <a class="reference external" href="https://github.com/NVIDIA/DeepLearningExamples/blob/master/PyTorch/SpeechRecognition/Jasper/optimizers.py">https://github.com/NVIDIA/DeepLearningExamples/blob/master/PyTorch/SpeechRecognition/Jasper/optimizers.py</a>
+Copyright (c) 2019 NVIDIA Corp.
+Apache-2.0 License</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>params</strong> (<em>iterable</em>) – iterable of parameters to optimize or dicts defining
+parameter groups</p></li>
+<li><p><strong>lr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – learning rate (default: 1e-3)</p></li>
+<li><p><strong>betas</strong> (<em>Tuple</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>]</em><em>, </em><em>optional</em>) – coefficients used for computing
+running averages of gradient and its square (default: (0.95, 0))</p></li>
+<li><p><strong>eps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – term added to the denominator to improve
+numerical stability (default: 1e-8)</p></li>
+<li><p><strong>weight_decay</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – weight decay (L2 penalty) (default: 0)</p></li>
+<li><p><strong>grad_averaging</strong> – gradient averaging</p></li>
+<li><p><strong>amsgrad</strong> (<em>boolean</em><em>, </em><em>optional</em>) – whether to use the AMSGrad variant of this
+algorithm from the paper <a href="#id1"><span class="problematic" id="id2">`On the Convergence of Adam and Beyond`_</span></a>
+(default: False)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="kospeech.optim.novograd.Novograd.step">
+<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">closure</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/optim/novograd.html#Novograd.step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.optim.novograd.Novograd.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs a single optimization step.
+:param closure: A closure that reevaluates the model
+:type closure: callable, optional
+:param and returns the loss.:</p>
 </dd></dl>
 
 </dd></dl>
@@ -241,29 +327,29 @@ returns the loss. Optional for most optimizers.</td>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="Learning Rate Schedulers.html" class="btn btn-neutral float-right" title="Learning Rate Scheduler" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="Evaluator.html" class="btn btn-neutral float-left" title="Evaluator" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="Learning%20Rate%20Schedulers.html" class="btn btn-neutral float-right" title="Learning Rate Scheduler" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="Evaluator.html" class="btn btn-neutral float-left" title="Evaluator" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020, Soohwan Kim
+        &#169; Copyright 2020, Soohwan Kim.
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
@@ -271,7 +357,6 @@ returns the loss. Optional for most optimizers.</td>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

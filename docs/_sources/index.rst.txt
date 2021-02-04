@@ -12,22 +12,27 @@ Welcome to KoSpeech's documentation!
 
    notes/intro
    notes/Preparation
-   notes/opts
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: ARCHITECTURE
 
+   Interface
    Deep Speech 2
-   Listen, Attend and Spell
+   Listen Attend Spell
+   RNN Transducer
    Speech Transformer
-   Common Modules
+   Jasper
+   Conformer
+   Modules
+
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: LIBRARY REFERENCE
 
    Checkpoint
+   Criterion
    Data
    Decode
    Evaluator
@@ -35,5 +40,4 @@ Welcome to KoSpeech's documentation!
    Learning Rate Schedulers
    Trainer
    Vocabs
-   Voice Activity Detection
    Etc

@@ -1,37 +1,42 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>kospeech.utils &mdash; KoSpeech latest documentation</title>
   
 
   
-  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
   
   
 
   
-  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
@@ -74,6 +79,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -83,34 +89,48 @@
             
               <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../notes/intro.html">Intro</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../notes/Preparation.html">Preparation before Training</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../notes/opts.html">Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notes/intro.html">What’s New</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notes/intro.html#note">Note</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notes/intro.html#kospeech-open-source-toolkit-for-end-to-end-korean-speech-recognition-paper"><em><strong>KoSpeech:  Open-Source Toolkit for End-to-End Korean Speech Recognition [Paper]</strong></em></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notes/intro.html#supported-models">Supported Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notes/intro.html#pre-processed-transcripts">Pre-processed Transcripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notes/intro.html#introduction">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notes/intro.html#roadmap">Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notes/intro.html#installation">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notes/intro.html#get-started">Get Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notes/intro.html#troubleshoots-and-contributing">Troubleshoots and Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notes/intro.html#citation">Citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notes/Preparation.html">KsponSpeech-preprocess</a></li>
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../Deep Speech 2.html">Deep Speech 2</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../Listen, Attend and Spell.html">Listen, Attend and Spell</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../Speech Transformer.html">Speech Transformer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../Common Modules.html">Common Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Interface.html">Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Deep%20Speech%202.html">Deep Speech 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Listen%20Attend%20Spell.html">Listen, Attend and Spell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../RNN%20Transducer.html">RNN Transducer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Speech%20Transformer.html">Speech Transformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Jasper.html">Jasper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Conformer.html">Conformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Modules.html">Modules</a></li>
 </ul>
 <p class="caption"><span class="caption-text">LIBRARY REFERENCE</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Checkpoint.html">Checkpoint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Criterion.html">Criterion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Data.html">Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Decode.html">Decode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Optim.html">Optim</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../Learning Rate Schedulers.html">Learning Rate Scheduler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Learning%20Rate%20Schedulers.html">Learning Rate Scheduler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Trainer.html">Trainer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Vocabs.html">Vocabs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../Voice Activity Detection.html">Voice Activity Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Etc.html">Etc</a></li>
 </ul>
 
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -145,11 +165,13 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../index.html">Module code</a> &raquo;</li>
         
@@ -169,39 +191,49 @@
            <div itemprop="articleBody">
             
   <h1>Source code for kospeech.utils</h1><div class="highlight"><pre>
-<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="c1"># Soohwan Kim, Seyoung Bae, Cheolhwang Won.</span>
-<span class="c1"># @ArXiv : KoSpeech: Open-Source Toolkit for End-to-End Korean Speech Recognition</span>
-<span class="c1"># This source code is licensed under the Apache 2.0 License license found in the</span>
-<span class="c1"># LICENSE file in the root directory of this source tree.</span>
+<span></span><span class="c1"># Copyright (c) 2020, Soohwan Kim. All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
 
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">from</span> <span class="nn">omegaconf</span> <span class="kn">import</span> <span class="n">DictConfig</span>
+
+<span class="kn">from</span> <span class="nn">kospeech.optim.lr_scheduler.lr_scheduler</span> <span class="kn">import</span> <span class="n">LearningRateScheduler</span>
+<span class="kn">from</span> <span class="nn">kospeech.vocabs</span> <span class="kn">import</span> <span class="n">Vocabulary</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">optim</span>
+<span class="kn">from</span> <span class="nn">kospeech.optim</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">RAdam</span><span class="p">,</span>
+    <span class="n">AdamP</span><span class="p">,</span>
+    <span class="n">Novograd</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">kospeech.criterion</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">LabelSmoothedCrossEntropyLoss</span><span class="p">,</span>
+    <span class="n">JointCTCCrossEntropyLoss</span><span class="p">,</span>
+    <span class="n">TransducerLoss</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">kospeech.optim.lr_scheduler</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">TriStageLRScheduler</span><span class="p">,</span>
+    <span class="n">TransformerLRScheduler</span><span class="p">,</span>
+<span class="p">)</span>
 
 
-<div class="viewcode-block" id="Logger"><a class="viewcode-back" href="../../Etc.html#kospeech.utils.Logger">[docs]</a><span class="k">class</span> <span class="nc">Logger</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Print log message in format.</span>
-<span class="sd">    FORMAT: [%(asctime)s %(filename)s:%(lineno)s - %(funcName)s()] %(message)s</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;root&#39;</span><span class="p">)</span>
-        <span class="n">FORMAT</span> <span class="o">=</span> <span class="s2">&quot;[</span><span class="si">%(asctime)s</span><span class="s2"> </span><span class="si">%(filename)s</span><span class="s2">:</span><span class="si">%(lineno)s</span><span class="s2"> - </span><span class="si">%(funcName)s</span><span class="s2">()] </span><span class="si">%(message)s</span><span class="s2">&quot;</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">stream</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">FORMAT</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
-
-<div class="viewcode-block" id="Logger.info"><a class="viewcode-back" href="../../Etc.html#kospeech.utils.Logger.info">[docs]</a>    <span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Print log message for information &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Logger.debug"><a class="viewcode-back" href="../../Etc.html#kospeech.utils.Logger.debug">[docs]</a>    <span class="k">def</span> <span class="nf">debug</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Print log message for debugging &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div></div>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="check_envirionment"><a class="viewcode-back" href="../../Etc.html#kospeech.utils.check_envirionment">[docs]</a><span class="k">def</span> <span class="nf">check_envirionment</span><span class="p">(</span><span class="n">use_cuda</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+<div class="viewcode-block" id="check_envirionment"><a class="viewcode-back" href="../../Etc.html#kospeech.utils.check_envirionment">[docs]</a><span class="k">def</span> <span class="nf">check_envirionment</span><span class="p">(</span><span class="n">use_cuda</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Check execution envirionment.</span>
 <span class="sd">    OS, Processor, CUDA version, Pytorch version, ... etc.</span>
@@ -209,44 +241,139 @@
     <span class="n">cuda</span> <span class="o">=</span> <span class="n">use_cuda</span> <span class="ow">and</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span>
     <span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s1">&#39;cuda&#39;</span> <span class="k">if</span> <span class="n">cuda</span> <span class="k">else</span> <span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Operating System : </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">(),</span> <span class="n">platform</span><span class="o">.</span><span class="n">release</span><span class="p">()))</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Processor : </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">platform</span><span class="o">.</span><span class="n">processor</span><span class="p">())</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Operating System : </span><span class="si">{</span><span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">platform</span><span class="o">.</span><span class="n">release</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processor : </span><span class="si">{</span><span class="n">platform</span><span class="o">.</span><span class="n">processor</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">device</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;cuda&#39;</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">device_count</span><span class="p">()):</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;device : </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">get_device_name</span><span class="p">(</span><span class="n">idx</span><span class="p">))</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;CUDA is available : </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()))</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;CUDA version : </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">torch</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">cuda</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;PyTorch version : </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">torch</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;device : </span><span class="si">{</span><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">get_device_name</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;CUDA is available : </span><span class="si">{</span><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;CUDA version : </span><span class="si">{</span><span class="n">torch</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">cuda</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PyTorch version : </span><span class="si">{</span><span class="n">torch</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;CUDA is available : </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()))</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;PyTorch version : </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">torch</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;CUDA is available : </span><span class="si">{</span><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PyTorch version : </span><span class="si">{</span><span class="n">torch</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">device</span></div>
 
 
-<span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">get_optimizer</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">DictConfig</span><span class="p">):</span>
+    <span class="n">supported_optimizer</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;adam&#39;</span><span class="p">:</span> <span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">,</span>
+        <span class="s1">&#39;radam&#39;</span><span class="p">:</span> <span class="n">RAdam</span><span class="p">,</span>
+        <span class="s1">&#39;adamp&#39;</span><span class="p">:</span> <span class="n">AdamP</span><span class="p">,</span>
+        <span class="s1">&#39;adadelta&#39;</span><span class="p">:</span> <span class="n">optim</span><span class="o">.</span><span class="n">Adadelta</span><span class="p">,</span>
+        <span class="s1">&#39;adagrad&#39;</span><span class="p">:</span> <span class="n">optim</span><span class="o">.</span><span class="n">Adagrad</span><span class="p">,</span>
+        <span class="s1">&#39;novograd&#39;</span><span class="p">:</span> <span class="n">Novograd</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="k">assert</span> <span class="n">config</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">supported_optimizer</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> \
+        <span class="sa">f</span><span class="s2">&quot;Unsupported Optimizer: </span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">optimizer</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> \
+        <span class="sa">f</span><span class="s2">&quot;Supported Optimizer: </span><span class="si">{</span><span class="n">supported_optimizer</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">architecture</span> <span class="o">==</span> <span class="s1">&#39;conformer&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span>
+            <span class="n">betas</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">optimizer_betas</span><span class="p">,</span>
+            <span class="n">eps</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">optimizer_eps</span><span class="p">,</span>
+            <span class="n">weight_decay</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">weight_decay</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">supported_optimizer</span><span class="p">[</span><span class="n">config</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">optimizer</span><span class="p">](</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span>
+        <span class="n">lr</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">init_lr</span><span class="p">,</span>
+        <span class="n">weight_decay</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">weight_decay</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">get_criterion</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">DictConfig</span><span class="p">,</span> <span class="n">vocab</span><span class="p">:</span> <span class="n">Vocabulary</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">architecture</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;deepspeech2&#39;</span><span class="p">,</span> <span class="s1">&#39;jasper&#39;</span><span class="p">):</span>
+        <span class="n">criterion</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CTCLoss</span><span class="p">(</span><span class="n">blank</span><span class="o">=</span><span class="n">vocab</span><span class="o">.</span><span class="n">blank_id</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">reduction</span><span class="p">,</span> <span class="n">zero_infinity</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">config</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">architecture</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;las&#39;</span><span class="p">,</span> <span class="s1">&#39;transformer&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">config</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">joint_ctc_attention</span><span class="p">:</span>
+        <span class="n">criterion</span> <span class="o">=</span> <span class="n">JointCTCCrossEntropyLoss</span><span class="p">(</span>
+            <span class="n">num_classes</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">vocab</span><span class="p">),</span>
+            <span class="n">ignore_index</span><span class="o">=</span><span class="n">vocab</span><span class="o">.</span><span class="n">pad_id</span><span class="p">,</span>
+            <span class="n">reduction</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">reduction</span><span class="p">,</span>
+            <span class="n">ctc_weight</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">ctc_weight</span><span class="p">,</span>
+            <span class="n">cross_entropy_weight</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">cross_entropy_weight</span><span class="p">,</span>
+            <span class="n">blank_id</span><span class="o">=</span><span class="n">vocab</span><span class="o">.</span><span class="n">blank_id</span><span class="p">,</span>
+            <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">smoothing</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">label_smoothing</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="n">config</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">architecture</span> <span class="o">==</span> <span class="s1">&#39;conformer&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">decoder</span> <span class="o">==</span> <span class="s1">&#39;rnnt&#39;</span><span class="p">:</span>
+            <span class="n">criterion</span> <span class="o">=</span> <span class="n">TransducerLoss</span><span class="p">(</span><span class="n">blank_id</span><span class="o">=</span><span class="n">vocab</span><span class="o">.</span><span class="n">blank_id</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">criterion</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CTCLoss</span><span class="p">(</span><span class="n">blank</span><span class="o">=</span><span class="n">vocab</span><span class="o">.</span><span class="n">blank_id</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">reduction</span><span class="p">,</span> <span class="n">zero_infinity</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">config</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">architecture</span> <span class="o">==</span> <span class="s1">&#39;rnnt&#39;</span><span class="p">:</span>
+        <span class="n">criterion</span> <span class="o">=</span> <span class="n">TransducerLoss</span><span class="p">(</span><span class="n">blank_id</span><span class="o">=</span><span class="n">vocab</span><span class="o">.</span><span class="n">blank_id</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">config</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">architecture</span> <span class="o">==</span> <span class="s1">&#39;transformer&#39;</span> <span class="ow">and</span> <span class="n">config</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">label_smoothing</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="n">criterion</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">(</span>
+            <span class="n">ignore_index</span><span class="o">=</span><span class="n">vocab</span><span class="o">.</span><span class="n">pad_id</span><span class="p">,</span>
+            <span class="n">reduction</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">reduction</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">criterion</span> <span class="o">=</span> <span class="n">LabelSmoothedCrossEntropyLoss</span><span class="p">(</span>
+            <span class="n">num_classes</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">vocab</span><span class="p">),</span>
+            <span class="n">ignore_index</span><span class="o">=</span><span class="n">vocab</span><span class="o">.</span><span class="n">pad_id</span><span class="p">,</span>
+            <span class="n">smoothing</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">label_smoothing</span><span class="p">,</span>
+            <span class="n">reduction</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">reduction</span><span class="p">,</span>
+            <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">criterion</span>
+
+
+<span class="k">def</span> <span class="nf">get_lr_scheduler</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">DictConfig</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">epoch_time_step</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LearningRateScheduler</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">lr_scheduler</span> <span class="o">==</span> <span class="s2">&quot;tri_stage_lr_scheduler&quot;</span><span class="p">:</span>
+        <span class="n">lr_scheduler</span> <span class="o">=</span> <span class="n">TriStageLRScheduler</span><span class="p">(</span>
+            <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span>
+            <span class="n">init_lr</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">init_lr</span><span class="p">,</span>
+            <span class="n">peak_lr</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">peak_lr</span><span class="p">,</span>
+            <span class="n">final_lr</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">final_lr</span><span class="p">,</span>
+            <span class="n">init_lr_scale</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">init_lr_scale</span><span class="p">,</span>
+            <span class="n">final_lr_scale</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">final_lr_scale</span><span class="p">,</span>
+            <span class="n">warmup_steps</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">warmup_steps</span><span class="p">,</span>
+            <span class="n">total_steps</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">num_epochs</span> <span class="o">*</span> <span class="n">epoch_time_step</span><span class="p">),</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="n">config</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">lr_scheduler</span> <span class="o">==</span> <span class="s2">&quot;transformer_lr_scheduler&quot;</span><span class="p">:</span>
+        <span class="n">lr_scheduler</span> <span class="o">=</span> <span class="n">TransformerLRScheduler</span><span class="p">(</span>
+            <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span>
+            <span class="n">peak_lr</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">peak_lr</span><span class="p">,</span>
+            <span class="n">final_lr</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">final_lr</span><span class="p">,</span>
+            <span class="n">final_lr_scale</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">final_lr_scale</span><span class="p">,</span>
+            <span class="n">warmup_steps</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">warmup_steps</span><span class="p">,</span>
+            <span class="n">decay_steps</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">decay_steps</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported Learning Rate Scheduler: </span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">lr_scheduler</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">lr_scheduler</span>
 </pre></div>
 
            </div>
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020, Soohwan Kim
+        &#169; Copyright 2020, Soohwan Kim.
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
@@ -254,7 +381,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

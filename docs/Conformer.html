@@ -1,0 +1,663 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Conformer &mdash; KoSpeech latest documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Modules" href="Modules.html" />
+    <link rel="prev" title="Jasper" href="Jasper.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> KoSpeech
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                latest
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html">What’s New</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#note">Note</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#kospeech-open-source-toolkit-for-end-to-end-korean-speech-recognition-paper"><em><strong>KoSpeech:  Open-Source Toolkit for End-to-End Korean Speech Recognition [Paper]</strong></em></a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#supported-models">Supported Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#pre-processed-transcripts">Pre-processed Transcripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#introduction">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#roadmap">Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#installation">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#get-started">Get Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#troubleshoots-and-contributing">Troubleshoots and Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#citation">Citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">KsponSpeech-preprocess</a></li>
+</ul>
+<p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Interface.html">Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Deep%20Speech%202.html">Deep Speech 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Listen%20Attend%20Spell.html">Listen, Attend and Spell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="RNN%20Transducer.html">RNN Transducer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Speech%20Transformer.html">Speech Transformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Jasper.html">Jasper</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Conformer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">Conformer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.models.conformer.encoder">Encoder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.models.rnnt.decoder">Decoder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.models.conformer.modules">Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Modules.html">Modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">LIBRARY REFERENCE</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Checkpoint.html">Checkpoint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Criterion.html">Criterion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Decode.html">Decode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Optim.html">Optim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Learning%20Rate%20Schedulers.html">Learning Rate Scheduler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Vocabs.html">Vocabs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Etc.html">Etc</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">KoSpeech</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Conformer</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/Conformer.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="conformer">
+<h1>Conformer<a class="headerlink" href="#conformer" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="id1">
+<h2>Conformer<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-kospeech.models.conformer.model"></span><dl class="py class">
+<dt id="kospeech.models.conformer.model.Conformer">
+<em class="property">class </em><code class="sig-prename descclassname">kospeech.models.conformer.model.</code><code class="sig-name descname">Conformer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num_classes</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em>, <em class="sig-param"><span class="n">input_dim</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">80</span></em>, <em class="sig-param"><span class="n">encoder_dim</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">512</span></em>, <em class="sig-param"><span class="n">decoder_dim</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">640</span></em>, <em class="sig-param"><span class="n">num_encoder_layers</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">17</span></em>, <em class="sig-param"><span class="n">num_decoder_layers</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">decoder_rnn_type</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span> <span class="o">=</span> <span class="default_value">'lstm'</span></em>, <em class="sig-param"><span class="n">num_attention_heads</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">8</span></em>, <em class="sig-param"><span class="n">feed_forward_expansion_factor</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">4</span></em>, <em class="sig-param"><span class="n">conv_expansion_factor</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">2</span></em>, <em class="sig-param"><span class="n">input_dropout_p</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></span> <span class="o">=</span> <span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">feed_forward_dropout_p</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></span> <span class="o">=</span> <span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">attention_dropout_p</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></span> <span class="o">=</span> <span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">conv_dropout_p</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></span> <span class="o">=</span> <span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">decoder_dropout_p</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></span> <span class="o">=</span> <span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">conv_kernel_size</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">31</span></em>, <em class="sig-param"><span class="n">half_step_residual</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">device</span><span class="p">:</span> <span class="n">torch.device</span> <span class="o">=</span> <span class="default_value">'cuda'</span></em>, <em class="sig-param"><span class="n">decoder</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/models/conformer/model.html#Conformer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.conformer.model.Conformer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conformer: Convolution-augmented Transformer for Speech Recognition
+The paper used a one-lstm Transducer decoder, currently still only implemented
+the conformer encoder shown in the paper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_classes</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Number of classification classes</p></li>
+<li><p><strong>input_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Dimension of input vector</p></li>
+<li><p><strong>encoder_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Dimension of conformer encoder</p></li>
+<li><p><strong>decoder_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Dimension of conformer decoder</p></li>
+<li><p><strong>num_encoder_layers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Number of conformer blocks</p></li>
+<li><p><strong>num_decoder_layers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Number of decoder layers</p></li>
+<li><p><strong>decoder_rnn_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – type of RNN cell</p></li>
+<li><p><strong>num_attention_heads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Number of attention heads</p></li>
+<li><p><strong>feed_forward_expansion_factor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Expansion factor of feed forward module</p></li>
+<li><p><strong>conv_expansion_factor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Expansion factor of conformer convolution module</p></li>
+<li><p><strong>feed_forward_dropout_p</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Probability of feed forward module dropout</p></li>
+<li><p><strong>attention_dropout_p</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Probability of attention module dropout</p></li>
+<li><p><strong>conv_dropout_p</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Probability of conformer convolution module dropout</p></li>
+<li><p><strong>decoder_dropout_p</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Probability of conformer decoder dropout</p></li>
+<li><p><strong>conv_kernel_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><em>tuple</em></a><em>, </em><em>optional</em>) – Size of the convolving kernel</p></li>
+<li><p><strong>half_step_residual</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – Flag indication whether to use half step residual or not</p></li>
+<li><p><strong>device</strong> (<em>torch.device</em>) – torch device (cuda or cpu)</p></li>
+<li><p><strong>decoder</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – If decoder is None, train with CTC decoding</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Inputs: inputs</dt><dd><ul class="simple">
+<li><p><strong>inputs</strong> (batch, time, dim): Tensor containing input vector</p></li>
+<li><p><strong>input_lengths</strong> (batch): list of sequence input lengths</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Result of model predictions.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>predictions (torch.FloatTensor)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="kospeech.models.conformer.model.Conformer.decode">
+<code class="sig-name descname">decode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">encoder_outputs</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a></span></em>, <em class="sig-param"><span class="n">max_length</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a><a class="reference internal" href="_modules/kospeech/models/conformer/model.html#Conformer.decode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.conformer.model.Conformer.decode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decode <cite>encoder_outputs</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>encoder_outputs</strong> (<em>torch.FloatTensor</em>) – A output sequence of encoder. <cite>FloatTensor</cite> of size
+<code class="docutils literal notranslate"><span class="pre">(seq_length,</span> <span class="pre">dimension)</span></code></p></li>
+<li><p><strong>max_length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – max decoding time step</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Log probability of model predictions.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p>predicted_log_probs (torch.FloatTensor)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="kospeech.models.conformer.model.Conformer.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inputs</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a></span></em>, <em class="sig-param"><span class="n">input_lengths</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a></span></em>, <em class="sig-param"><span class="n">targets</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a></span></em>, <em class="sig-param"><span class="n">target_lengths</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a></span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a><span class="p">, </span>Optional<span class="p">[</span><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a><span class="p">]</span><span class="p">]</span><a class="reference internal" href="_modules/kospeech/models/conformer/model.html#Conformer.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.conformer.model.Conformer.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Forward propagate a <cite>inputs</cite> and <cite>targets</cite> pair for training.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<em>torch.FloatTensor</em>) – A input sequence passed to encoder. Typically for inputs this will be a padded
+<cite>FloatTensor</cite> of size <code class="docutils literal notranslate"><span class="pre">(batch,</span> <span class="pre">seq_length,</span> <span class="pre">dimension)</span></code>.</p></li>
+<li><p><strong>input_lengths</strong> (<em>torch.LongTensor</em>) – The length of input tensor. <code class="docutils literal notranslate"><span class="pre">(batch)</span></code></p></li>
+<li><p><strong>targets</strong> (<em>torch.LongTensr</em>) – A target sequence passed to decoder. <cite>IntTensor</cite> of size <code class="docutils literal notranslate"><span class="pre">(batch,</span> <span class="pre">seq_length)</span></code></p></li>
+<li><p><strong>target_lengths</strong> (<em>torch.LongTensor</em>) – The length of target tensor. <code class="docutils literal notranslate"><span class="pre">(batch)</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Result of model predictions.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p>predictions (torch.FloatTensor)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="kospeech.models.conformer.model.Conformer.recognize">
+<code class="sig-name descname">recognize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inputs</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a></span></em>, <em class="sig-param"><span class="n">input_lengths</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a><a class="reference internal" href="_modules/kospeech/models/conformer/model.html#Conformer.recognize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.conformer.model.Conformer.recognize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recognize input speech.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<em>torch.FloatTensor</em>) – A input sequence passed to encoder. Typically for inputs this will be a padded
+<cite>FloatTensor</cite> of size <code class="docutils literal notranslate"><span class="pre">(batch,</span> <span class="pre">seq_length,</span> <span class="pre">dimension)</span></code>.</p></li>
+<li><p><strong>input_lengths</strong> (<em>torch.LongTensor</em>) – The length of input tensor. <code class="docutils literal notranslate"><span class="pre">(batch)</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Result of model predictions.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p>predictions (torch.FloatTensor)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kospeech.models.conformer.encoder">
+<span id="encoder"></span><h2>Encoder<a class="headerlink" href="#module-kospeech.models.conformer.encoder" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="kospeech.models.conformer.encoder.ConformerBlock">
+<em class="property">class </em><code class="sig-prename descclassname">kospeech.models.conformer.encoder.</code><code class="sig-name descname">ConformerBlock</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">encoder_dim</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">512</span></em>, <em class="sig-param"><span class="n">num_attention_heads</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">8</span></em>, <em class="sig-param"><span class="n">feed_forward_expansion_factor</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">4</span></em>, <em class="sig-param"><span class="n">conv_expansion_factor</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">2</span></em>, <em class="sig-param"><span class="n">feed_forward_dropout_p</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></span> <span class="o">=</span> <span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">attention_dropout_p</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></span> <span class="o">=</span> <span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">conv_dropout_p</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></span> <span class="o">=</span> <span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">conv_kernel_size</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">31</span></em>, <em class="sig-param"><span class="n">half_step_residual</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">device</span><span class="p">:</span> <span class="n">torch.device</span> <span class="o">=</span> <span class="default_value">'cuda'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/models/conformer/encoder.html#ConformerBlock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.conformer.encoder.ConformerBlock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conformer block contains two Feed Forward modules sandwiching the Multi-Headed Self-Attention module
+and the Convolution module. This sandwich structure is inspired by Macaron-Net, which proposes replacing
+the original feed-forward layer in the Transformer block into two half-step feed-forward layers,
+one before the attention layer and one after.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>encoder_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Dimension of conformer encoder</p></li>
+<li><p><strong>num_attention_heads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Number of attention heads</p></li>
+<li><p><strong>feed_forward_expansion_factor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Expansion factor of feed forward module</p></li>
+<li><p><strong>conv_expansion_factor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Expansion factor of conformer convolution module</p></li>
+<li><p><strong>feed_forward_dropout_p</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Probability of feed forward module dropout</p></li>
+<li><p><strong>attention_dropout_p</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Probability of attention module dropout</p></li>
+<li><p><strong>conv_dropout_p</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Probability of conformer convolution module dropout</p></li>
+<li><p><strong>conv_kernel_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><em>tuple</em></a><em>, </em><em>optional</em>) – Size of the convolving kernel</p></li>
+<li><p><strong>half_step_residual</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – Flag indication whether to use half step residual or not</p></li>
+<li><p><strong>device</strong> (<em>torch.device</em>) – torch device (cuda or cpu)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Inputs: inputs</dt><dd><ul class="simple">
+<li><p><strong>inputs</strong> (batch, time, dim): Tensor containing input vector</p></li>
+</ul>
+</dd>
+<dt>Returns: outputs</dt><dd><ul class="simple">
+<li><p><strong>outputs</strong> (batch, time, dim): Tensor produces by conformer block.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt id="kospeech.models.conformer.encoder.ConformerEncoder">
+<em class="property">class </em><code class="sig-prename descclassname">kospeech.models.conformer.encoder.</code><code class="sig-name descname">ConformerEncoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_dim</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">80</span></em>, <em class="sig-param"><span class="n">encoder_dim</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">512</span></em>, <em class="sig-param"><span class="n">num_layers</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">17</span></em>, <em class="sig-param"><span class="n">num_attention_heads</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">8</span></em>, <em class="sig-param"><span class="n">feed_forward_expansion_factor</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">4</span></em>, <em class="sig-param"><span class="n">conv_expansion_factor</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">2</span></em>, <em class="sig-param"><span class="n">input_dropout_p</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></span> <span class="o">=</span> <span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">feed_forward_dropout_p</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></span> <span class="o">=</span> <span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">attention_dropout_p</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></span> <span class="o">=</span> <span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">conv_dropout_p</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></span> <span class="o">=</span> <span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">conv_kernel_size</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">31</span></em>, <em class="sig-param"><span class="n">half_step_residual</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">device</span><span class="p">:</span> <span class="n">torch.device</span> <span class="o">=</span> <span class="default_value">'cuda'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/models/conformer/encoder.html#ConformerEncoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.conformer.encoder.ConformerEncoder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conformer encoder first processes the input with a convolution subsampling layer and then
+with a number of conformer blocks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Dimension of input vector</p></li>
+<li><p><strong>encoder_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Dimension of conformer encoder</p></li>
+<li><p><strong>num_layers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Number of conformer blocks</p></li>
+<li><p><strong>num_attention_heads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Number of attention heads</p></li>
+<li><p><strong>feed_forward_expansion_factor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Expansion factor of feed forward module</p></li>
+<li><p><strong>conv_expansion_factor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Expansion factor of conformer convolution module</p></li>
+<li><p><strong>feed_forward_dropout_p</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Probability of feed forward module dropout</p></li>
+<li><p><strong>attention_dropout_p</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Probability of attention module dropout</p></li>
+<li><p><strong>conv_dropout_p</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Probability of conformer convolution module dropout</p></li>
+<li><p><strong>conv_kernel_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><em>tuple</em></a><em>, </em><em>optional</em>) – Size of the convolving kernel</p></li>
+<li><p><strong>half_step_residual</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – Flag indication whether to use half step residual or not</p></li>
+<li><p><strong>device</strong> (<em>torch.device</em>) – torch device (cuda or cpu)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Inputs: inputs, input_lengths</dt><dd><ul class="simple">
+<li><p><strong>inputs</strong> (batch, time, dim): Tensor containing input vector</p></li>
+<li><p><strong>input_lengths</strong> (batch): list of sequence input lengths</p></li>
+</ul>
+</dd>
+<dt>Returns: outputs, output_lengths</dt><dd><ul class="simple">
+<li><p><strong>outputs</strong> (batch, out_channels, time): Tensor produces by conformer encoder.</p></li>
+<li><p><strong>output_lengths</strong> (batch): list of sequence output lengths</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="kospeech.models.conformer.encoder.ConformerEncoder.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inputs</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a></span></em>, <em class="sig-param"><span class="n">input_lengths</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a></span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a><span class="p">, </span><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a><span class="p">]</span><a class="reference internal" href="_modules/kospeech/models/conformer/encoder.html#ConformerEncoder.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.conformer.encoder.ConformerEncoder.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Forward propagate a <cite>inputs</cite> for  encoder training.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<em>torch.FloatTensor</em>) – A input sequence passed to encoder. Typically for inputs this will be a padded
+<cite>FloatTensor</cite> of size <code class="docutils literal notranslate"><span class="pre">(batch,</span> <span class="pre">seq_length,</span> <span class="pre">dimension)</span></code>.</p></li>
+<li><p><strong>input_lengths</strong> (<em>torch.LongTensor</em>) – The length of input tensor. <code class="docutils literal notranslate"><span class="pre">(batch)</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>(Tensor, Tensor)</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>outputs (torch.FloatTensor): A output sequence of encoder. <cite>FloatTensor</cite> of size</dt><dd><p><code class="docutils literal notranslate"><span class="pre">(batch,</span> <span class="pre">seq_length,</span> <span class="pre">dimension)</span></code></p>
+</dd>
+</dl>
+</li>
+<li><p>output_lengths (torch.LongTensor): The length of output tensor. <code class="docutils literal notranslate"><span class="pre">(batch)</span></code></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kospeech.models.rnnt.decoder">
+<span id="decoder"></span><h2>Decoder<a class="headerlink" href="#module-kospeech.models.rnnt.decoder" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="kospeech.models.rnnt.decoder.DecoderRNNT">
+<em class="property">class </em><code class="sig-prename descclassname">kospeech.models.rnnt.decoder.</code><code class="sig-name descname">DecoderRNNT</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num_classes</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em>, <em class="sig-param"><span class="n">hidden_state_dim</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em>, <em class="sig-param"><span class="n">output_dim</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em>, <em class="sig-param"><span class="n">num_layers</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em>, <em class="sig-param"><span class="n">rnn_type</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span> <span class="o">=</span> <span class="default_value">'lstm'</span></em>, <em class="sig-param"><span class="n">sos_id</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">eos_id</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">2</span></em>, <em class="sig-param"><span class="n">dropout_p</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></span> <span class="o">=</span> <span class="default_value">0.2</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/models/rnnt/decoder.html#DecoderRNNT"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.rnnt.decoder.DecoderRNNT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decoder of RNN-Transducer</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_classes</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of classification</p></li>
+<li><p><strong>hidden_state_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – hidden state dimension of decoder (default: 512)</p></li>
+<li><p><strong>output_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – output dimension of encoder and decoder (default: 512)</p></li>
+<li><p><strong>num_layers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – number of decoder layers (default: 1)</p></li>
+<li><p><strong>rnn_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – type of rnn cell (default: lstm)</p></li>
+<li><p><strong>sos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – start of sentence identification</p></li>
+<li><p><strong>eos_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – end of sentence identification</p></li>
+<li><p><strong>dropout_p</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – dropout probability of decoder</p></li>
+</ul>
+</dd>
+</dl>
+<dl>
+<dt>Inputs: inputs, input_lengths</dt><dd><p>inputs (torch.LongTensor): A target sequence passed to decoder. <cite>IntTensor</cite> of size <code class="docutils literal notranslate"><span class="pre">(batch,</span> <span class="pre">seq_length)</span></code>
+input_lengths (torch.LongTensor): The length of input tensor. <code class="docutils literal notranslate"><span class="pre">(batch)</span></code>
+hidden_states (torch.FloatTensor): A previous hidden state of decoder. <cite>FloatTensor</cite> of size</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">(batch,</span> <span class="pre">seq_length,</span> <span class="pre">dimension)</span></code></p>
+</div></blockquote>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><dl class="simple">
+<dt>decoder_outputs (torch.FloatTensor): A output sequence of decoder. <cite>FloatTensor</cite> of size</dt><dd><p><code class="docutils literal notranslate"><span class="pre">(batch,</span> <span class="pre">seq_length,</span> <span class="pre">dimension)</span></code></p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>hidden_states (torch.FloatTensor): A hidden state of decoder. <cite>FloatTensor</cite> of size</dt><dd><p><code class="docutils literal notranslate"><span class="pre">(batch,</span> <span class="pre">seq_length,</span> <span class="pre">dimension)</span></code></p>
+</dd>
+</dl>
+</li>
+</ul>
+</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>(Tensor, Tensor)</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="kospeech.models.rnnt.decoder.DecoderRNNT.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inputs</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a></span></em>, <em class="sig-param"><span class="n">input_lengths</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">hidden_states</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a><span class="p">, </span><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a><span class="p">]</span><a class="reference internal" href="_modules/kospeech/models/rnnt/decoder.html#DecoderRNNT.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.rnnt.decoder.DecoderRNNT.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Forward propage a <cite>inputs</cite> (targets) for training.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<em>torch.LongTensor</em>) – A target sequence passed to decoder. <cite>IntTensor</cite> of size <code class="docutils literal notranslate"><span class="pre">(batch,</span> <span class="pre">seq_length)</span></code></p></li>
+<li><p><strong>input_lengths</strong> (<em>torch.LongTensor</em>) – The length of input tensor. <code class="docutils literal notranslate"><span class="pre">(batch)</span></code></p></li>
+<li><p><strong>hidden_states</strong> (<em>torch.FloatTensor</em>) – A previous hidden state of decoder. <cite>FloatTensor</cite> of size
+<code class="docutils literal notranslate"><span class="pre">(batch,</span> <span class="pre">seq_length,</span> <span class="pre">dimension)</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><dl class="simple">
+<dt>decoder_outputs (torch.FloatTensor): A output sequence of decoder. <cite>FloatTensor</cite> of size</dt><dd><p><code class="docutils literal notranslate"><span class="pre">(batch,</span> <span class="pre">seq_length,</span> <span class="pre">dimension)</span></code></p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>hidden_states (torch.FloatTensor): A hidden state of decoder. <cite>FloatTensor</cite> of size</dt><dd><p><code class="docutils literal notranslate"><span class="pre">(batch,</span> <span class="pre">seq_length,</span> <span class="pre">dimension)</span></code></p>
+</dd>
+</dl>
+</li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(Tensor, Tensor)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-kospeech.models.conformer.modules">
+<span id="modules"></span><h2>Modules<a class="headerlink" href="#module-kospeech.models.conformer.modules" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="kospeech.models.conformer.modules.ConformerConvModule">
+<em class="property">class </em><code class="sig-prename descclassname">kospeech.models.conformer.modules.</code><code class="sig-name descname">ConformerConvModule</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">in_channels</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em>, <em class="sig-param"><span class="n">kernel_size</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">31</span></em>, <em class="sig-param"><span class="n">expansion_factor</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">2</span></em>, <em class="sig-param"><span class="n">dropout_p</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></span> <span class="o">=</span> <span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">device</span><span class="p">:</span> <span class="n">torch.device</span> <span class="o">=</span> <span class="default_value">'cuda'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/models/conformer/modules.html#ConformerConvModule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.conformer.modules.ConformerConvModule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conformer convolution module starts with a pointwise convolution and a gated linear unit (GLU).
+This is followed by a single 1-D depthwise convolution layer. Batchnorm is  deployed just after the convolution
+to aid training deep models.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_channels</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Number of channels in the input</p></li>
+<li><p><strong>kernel_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><em>tuple</em></a><em>, </em><em>optional</em>) – Size of the convolving kernel Default: 31</p></li>
+<li><p><strong>dropout_p</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – probability of dropout</p></li>
+<li><p><strong>device</strong> (<em>torch.device</em>) – torch device (cuda or cpu)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Inputs: inputs</dt><dd><p>inputs (batch, time, dim): Tensor contains input sequences</p>
+</dd>
+<dt>Outputs: outputs</dt><dd><p>outputs (batch, time, dim): Tensor produces by conformer convolution module.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt id="kospeech.models.conformer.modules.FeedForwardModule">
+<em class="property">class </em><code class="sig-prename descclassname">kospeech.models.conformer.modules.</code><code class="sig-name descname">FeedForwardModule</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">encoder_dim</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">512</span></em>, <em class="sig-param"><span class="n">expansion_factor</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">4</span></em>, <em class="sig-param"><span class="n">dropout_p</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></span> <span class="o">=</span> <span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">device</span><span class="p">:</span> <span class="n">torch.device</span> <span class="o">=</span> <span class="default_value">'cuda'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/models/conformer/modules.html#FeedForwardModule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.conformer.modules.FeedForwardModule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conformer Feed Forward Module follow pre-norm residual units and apply layer normalization within the residual unit
+and on the input before the first linear layer. This module also apply Swish activation and dropout, which helps
+regularizing the network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>encoder_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Dimension of conformer encoder</p></li>
+<li><p><strong>expansion_factor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Expansion factor of feed forward module.</p></li>
+<li><p><strong>dropout_p</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – Ratio of dropout</p></li>
+<li><p><strong>device</strong> (<em>torch.device</em>) – torch device (cuda or cpu)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Inputs: inputs</dt><dd><ul class="simple">
+<li><p><strong>inputs</strong> (batch, time, dim): Tensor contains input sequences</p></li>
+</ul>
+</dd>
+<dt>Outputs: outputs</dt><dd><ul class="simple">
+<li><p><strong>outputs</strong> (batch, time, dim): Tensor produces by feed forward module.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt id="kospeech.models.conformer.modules.MultiHeadedSelfAttentionModule">
+<em class="property">class </em><code class="sig-prename descclassname">kospeech.models.conformer.modules.</code><code class="sig-name descname">MultiHeadedSelfAttentionModule</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">d_model</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em>, <em class="sig-param"><span class="n">num_heads</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em>, <em class="sig-param"><span class="n">dropout_p</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></span> <span class="o">=</span> <span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">device</span><span class="p">:</span> <span class="n">torch.device</span> <span class="o">=</span> <span class="default_value">'cuda'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/models/conformer/modules.html#MultiHeadedSelfAttentionModule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.conformer.modules.MultiHeadedSelfAttentionModule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conformer employ multi-headed self-attention (MHSA) while integrating an important technique from Transformer-XL,
+the relative sinusoidal positional encoding scheme. The relative positional encoding allows the self-attention
+module to generalize better on different input length and the resulting encoder is more robust to the variance of
+the utterance length. Conformer use prenorm residual units with dropout which helps training
+and regularizing deeper models.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>d_model</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The dimension of model</p></li>
+<li><p><strong>num_heads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The number of attention heads.</p></li>
+<li><p><strong>dropout_p</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – probability of dropout</p></li>
+<li><p><strong>device</strong> (<em>torch.device</em>) – torch device (cuda or cpu)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Inputs: inputs, mask</dt><dd><ul class="simple">
+<li><p><strong>inputs</strong> (batch, time, dim): Tensor containing input vector</p></li>
+<li><p><strong>mask</strong> (batch, 1, time2) or (batch, time1, time2): Tensor containing indices to be masked</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Tensor produces by relative multi headed self attention module.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>outputs</strong> (batch, time, dim)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="Modules.html" class="btn btn-neutral float-right" title="Modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="Jasper.html" class="btn btn-neutral float-left" title="Jasper" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, Soohwan Kim.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

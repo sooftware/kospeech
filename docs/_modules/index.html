@@ -1,37 +1,42 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Overview: module code &mdash; KoSpeech latest documentation</title>
   
 
   
-  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
   
   
 
   
-  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
 </head>
@@ -74,6 +79,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -83,34 +89,48 @@
             
               <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../notes/intro.html">Intro</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notes/Preparation.html">Preparation before Training</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notes/opts.html">Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notes/intro.html">What’s New</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notes/intro.html#note">Note</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notes/intro.html#kospeech-open-source-toolkit-for-end-to-end-korean-speech-recognition-paper"><em><strong>KoSpeech:  Open-Source Toolkit for End-to-End Korean Speech Recognition [Paper]</strong></em></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notes/intro.html#supported-models">Supported Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notes/intro.html#pre-processed-transcripts">Pre-processed Transcripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notes/intro.html#introduction">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notes/intro.html#roadmap">Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notes/intro.html#installation">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notes/intro.html#get-started">Get Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notes/intro.html#troubleshoots-and-contributing">Troubleshoots and Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notes/intro.html#citation">Citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notes/Preparation.html">KsponSpeech-preprocess</a></li>
 </ul>
 <p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../Deep Speech 2.html">Deep Speech 2</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../Listen, Attend and Spell.html">Listen, Attend and Spell</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../Speech Transformer.html">Speech Transformer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../Common Modules.html">Common Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Interface.html">Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Deep%20Speech%202.html">Deep Speech 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Listen%20Attend%20Spell.html">Listen, Attend and Spell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../RNN%20Transducer.html">RNN Transducer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Speech%20Transformer.html">Speech Transformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Jasper.html">Jasper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Conformer.html">Conformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Modules.html">Modules</a></li>
 </ul>
 <p class="caption"><span class="caption-text">LIBRARY REFERENCE</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../Checkpoint.html">Checkpoint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Criterion.html">Criterion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Data.html">Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Decode.html">Decode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Evaluator.html">Evaluator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Optim.html">Optim</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../Learning Rate Schedulers.html">Learning Rate Scheduler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Learning%20Rate%20Schedulers.html">Learning Rate Scheduler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Trainer.html">Trainer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Vocabs.html">Vocabs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../Voice Activity Detection.html">Voice Activity Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Etc.html">Etc</a></li>
 </ul>
 
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -145,11 +165,13 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Overview: module code</li>
     
@@ -168,6 +190,9 @@
             
   <h1>All modules for which code is available</h1>
 <ul><li><a href="kospeech/checkpoint/checkpoint.html">kospeech.checkpoint.checkpoint</a></li>
+<li><a href="kospeech/criterion/joint_ctc_cross_entropy.html">kospeech.criterion.joint_ctc_cross_entropy</a></li>
+<li><a href="kospeech/criterion/label_smoothed_cross_entropy.html">kospeech.criterion.label_smoothed_cross_entropy</a></li>
+<li><a href="kospeech/criterion/transducer.html">kospeech.criterion.transducer</a></li>
 <li><a href="kospeech/data/audio/augment.html">kospeech.data.audio.augment</a></li>
 <li><a href="kospeech/data/audio/core.html">kospeech.data.audio.core</a></li>
 <li><a href="kospeech/data/audio/feature.html">kospeech.data.audio.feature</a></li>
@@ -179,51 +204,67 @@
 <li><a href="kospeech/evaluator/evaluator.html">kospeech.evaluator.evaluator</a></li>
 <li><a href="kospeech/metrics.html">kospeech.metrics</a></li>
 <li><a href="kospeech/model_builder.html">kospeech.model_builder</a></li>
+<li><a href="kospeech/models/activation.html">kospeech.models.activation</a></li>
 <li><a href="kospeech/models/attention.html">kospeech.models.attention</a></li>
+<li><a href="kospeech/models/conformer/encoder.html">kospeech.models.conformer.encoder</a></li>
+<li><a href="kospeech/models/conformer/model.html">kospeech.models.conformer.model</a></li>
+<li><a href="kospeech/models/conformer/modules.html">kospeech.models.conformer.modules</a></li>
+<li><a href="kospeech/models/convolution.html">kospeech.models.convolution</a></li>
+<li><a href="kospeech/models/decoder.html">kospeech.models.decoder</a></li>
 <li><a href="kospeech/models/deepspeech2/model.html">kospeech.models.deepspeech2.model</a></li>
-<li><a href="kospeech/models/extractor.html">kospeech.models.extractor</a></li>
+<li><a href="kospeech/models/encoder.html">kospeech.models.encoder</a></li>
+<li><a href="kospeech/models/jasper/model.html">kospeech.models.jasper.model</a></li>
+<li><a href="kospeech/models/jasper/sublayers.html">kospeech.models.jasper.sublayers</a></li>
 <li><a href="kospeech/models/las/decoder.html">kospeech.models.las.decoder</a></li>
 <li><a href="kospeech/models/las/encoder.html">kospeech.models.las.encoder</a></li>
 <li><a href="kospeech/models/las/model.html">kospeech.models.las.model</a></li>
-<li><a href="kospeech/models/las/topk_decoder.html">kospeech.models.las.topk_decoder</a></li>
-<li><a href="kospeech/models/modules.html">kospeech.models.modules</a></li>
+<li><a href="kospeech/models/model.html">kospeech.models.model</a></li>
+<li><a href="kospeech/models/rnnt/decoder.html">kospeech.models.rnnt.decoder</a></li>
+<li><a href="kospeech/models/rnnt/encoder.html">kospeech.models.rnnt.encoder</a></li>
+<li><a href="kospeech/models/rnnt/model.html">kospeech.models.rnnt.model</a></li>
+<li><a href="kospeech/models/transformer/decoder.html">kospeech.models.transformer.decoder</a></li>
 <li><a href="kospeech/models/transformer/embeddings.html">kospeech.models.transformer.embeddings</a></li>
-<li><a href="kospeech/models/transformer/layers.html">kospeech.models.transformer.layers</a></li>
+<li><a href="kospeech/models/transformer/encoder.html">kospeech.models.transformer.encoder</a></li>
 <li><a href="kospeech/models/transformer/mask.html">kospeech.models.transformer.mask</a></li>
 <li><a href="kospeech/models/transformer/model.html">kospeech.models.transformer.model</a></li>
 <li><a href="kospeech/models/transformer/sublayers.html">kospeech.models.transformer.sublayers</a></li>
 <li><a href="kospeech/optim/__init__.html">kospeech.optim.__init__</a></li>
+<li><a href="kospeech/optim/adamp.html">kospeech.optim.adamp</a></li>
 <li><a href="kospeech/optim/lr_scheduler/lr_scheduler.html">kospeech.optim.lr_scheduler.lr_scheduler</a></li>
+<li><a href="kospeech/optim/lr_scheduler/transformer_lr_scheduler.html">kospeech.optim.lr_scheduler.transformer_lr_scheduler</a></li>
 <li><a href="kospeech/optim/lr_scheduler/tri_stage_lr_scheduler.html">kospeech.optim.lr_scheduler.tri_stage_lr_scheduler</a></li>
+<li><a href="kospeech/optim/novograd.html">kospeech.optim.novograd</a></li>
 <li><a href="kospeech/optim/radam.html">kospeech.optim.radam</a></li>
-<li><a href="kospeech/opts.html">kospeech.opts</a></li>
 <li><a href="kospeech/trainer/supervised_trainer.html">kospeech.trainer.supervised_trainer</a></li>
 <li><a href="kospeech/utils.html">kospeech.utils</a></li>
 <li><a href="kospeech/vocabs/__init__.html">kospeech.vocabs.__init__</a></li>
 <li><a href="kospeech/vocabs/ksponspeech.html">kospeech.vocabs.ksponspeech</a></li>
 <li><a href="kospeech/vocabs/librispeech.html">kospeech.vocabs.librispeech</a></li>
-<li><a href="vad/model.html">vad.model</a></li>
-<li><a href="vad/vad.html">vad.vad</a></li>
 </ul>
 
            </div>
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020, Soohwan Kim
+        &#169; Copyright 2020, Soohwan Kim.
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
@@ -231,7 +272,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

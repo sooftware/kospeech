@@ -1,0 +1,701 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Modules &mdash; KoSpeech latest documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Checkpoint" href="Checkpoint.html" />
+    <link rel="prev" title="Conformer" href="Conformer.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> KoSpeech
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                latest
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html">What’s New</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#note">Note</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#kospeech-open-source-toolkit-for-end-to-end-korean-speech-recognition-paper"><em><strong>KoSpeech:  Open-Source Toolkit for End-to-End Korean Speech Recognition [Paper]</strong></em></a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#supported-models">Supported Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#pre-processed-transcripts">Pre-processed Transcripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#introduction">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#roadmap">Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#installation">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#get-started">Get Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#troubleshoots-and-contributing">Troubleshoots and Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/intro.html#citation">Citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notes/Preparation.html">KsponSpeech-preprocess</a></li>
+</ul>
+<p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Interface.html">Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Deep%20Speech%202.html">Deep Speech 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Listen%20Attend%20Spell.html">Listen, Attend and Spell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="RNN%20Transducer.html">RNN Transducer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Speech%20Transformer.html">Speech Transformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Jasper.html">Jasper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Conformer.html">Conformer</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.models.activation">Activation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.models.attention">Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-kospeech.models.convolution">Convolution</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">LIBRARY REFERENCE</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Checkpoint.html">Checkpoint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Criterion.html">Criterion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Decode.html">Decode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Evaluator.html">Evaluator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Optim.html">Optim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Learning%20Rate%20Schedulers.html">Learning Rate Scheduler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Vocabs.html">Vocabs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Etc.html">Etc</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">KoSpeech</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Modules</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/Modules.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="modules">
+<h1>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-kospeech.models.activation">
+<span id="activation"></span><h2>Activation<a class="headerlink" href="#module-kospeech.models.activation" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="kospeech.models.activation.GLU">
+<em class="property">class </em><code class="sig-prename descclassname">kospeech.models.activation.</code><code class="sig-name descname">GLU</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dim</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/models/activation.html#GLU"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.activation.GLU" title="Permalink to this definition">¶</a></dt>
+<dd><p>The gating mechanism is called Gated Linear Units (GLU), which was first introduced for natural language processing
+in the paper “Language Modeling with Gated Convolutional Networks”</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="kospeech.models.activation.Swish">
+<em class="property">class </em><code class="sig-prename descclassname">kospeech.models.activation.</code><code class="sig-name descname">Swish</code><a class="reference internal" href="_modules/kospeech/models/activation.html#Swish"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.activation.Swish" title="Permalink to this definition">¶</a></dt>
+<dd><p>Swish is a smooth, non-monotonic function that consistently matches or outperforms ReLU on deep networks applied
+to a variety of challenging domains such as Image classification and Machine translation.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-kospeech.models.attention">
+<span id="attention"></span><h2>Attention<a class="headerlink" href="#module-kospeech.models.attention" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="kospeech.models.attention.AdditiveAttention">
+<em class="property">class </em><code class="sig-prename descclassname">kospeech.models.attention.</code><code class="sig-name descname">AdditiveAttention</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dim</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/models/attention.html#AdditiveAttention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.attention.AdditiveAttention" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies a additive attention (bahdanau) mechanism on the output features from the decoder.
+Additive attention proposed in “Neural Machine Translation by Jointly Learning to Align and Translate” paper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – dimension of model</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Inputs: query, key, value</dt><dd><ul class="simple">
+<li><p><strong>query</strong> (batch_size, q_len, hidden_dim): tensor containing the output features from the decoder.</p></li>
+<li><p><strong>key</strong> (batch, k_len, d_model): tensor containing projection vector for encoder.</p></li>
+<li><p><strong>value</strong> (batch_size, v_len, hidden_dim): tensor containing features of the encoded input sequence.</p></li>
+</ul>
+</dd>
+<dt>Returns: context, attn</dt><dd><ul class="simple">
+<li><p><strong>context</strong>: tensor containing the context vector from attention mechanism.</p></li>
+<li><p><strong>attn</strong>: tensor containing the alignment from the encoder outputs.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt id="kospeech.models.attention.LocationAwareAttention">
+<em class="property">class </em><code class="sig-prename descclassname">kospeech.models.attention.</code><code class="sig-name descname">LocationAwareAttention</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dim</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">1024</span></em>, <em class="sig-param"><span class="n">attn_dim</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">1024</span></em>, <em class="sig-param"><span class="n">smoothing</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/models/attention.html#LocationAwareAttention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.attention.LocationAwareAttention" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies a location-aware attention mechanism on the output features from the decoder.
+Location-aware attention proposed in “Attention-Based Models for Speech Recognition” paper.
+The location-aware attention mechanism is performing well in speech recognition tasks.
+We refer to implementation of ClovaCall Attention style.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – dimension of model</p></li>
+<li><p><strong>attn_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – dimension of attention</p></li>
+<li><p><strong>smoothing</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – flag indication whether to use smoothing or not.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Inputs: query, value, last_attn</dt><dd><ul class="simple">
+<li><p><strong>query</strong> (batch, q_len, hidden_dim): tensor containing the output features from the decoder.</p></li>
+<li><p><strong>value</strong> (batch, v_len, hidden_dim): tensor containing features of the encoded input sequence.</p></li>
+<li><p><strong>last_attn</strong> (batch_size, v_len): tensor containing previous timestep`s attention (alignment)</p></li>
+</ul>
+</dd>
+<dt>Returns: output, attn</dt><dd><ul class="simple">
+<li><p><strong>output</strong> (batch, output_len, dimensions): tensor containing the feature from encoder outputs</p></li>
+<li><p><strong>attn</strong> (batch * num_heads, v_len): tensor containing the attention (alignment) from the encoder outputs.</p></li>
+</ul>
+</dd>
+<dt>Reference:</dt><dd><ul class="simple">
+<li><p><strong>Attention-Based Models for Speech Recognition</strong>: <a class="reference external" href="https://arxiv.org/abs/1506.07503">https://arxiv.org/abs/1506.07503</a></p></li>
+<li><p><strong>ClovaCall</strong>: <a class="reference external" href="https://github.com/clovaai/ClovaCall/blob/master/las.pytorch/models/attention.py">https://github.com/clovaai/ClovaCall/blob/master/las.pytorch/models/attention.py</a></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt id="kospeech.models.attention.MultiHeadAttention">
+<em class="property">class </em><code class="sig-prename descclassname">kospeech.models.attention.</code><code class="sig-name descname">MultiHeadAttention</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dim</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">512</span></em>, <em class="sig-param"><span class="n">num_heads</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">8</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/models/attention.html#MultiHeadAttention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.attention.MultiHeadAttention" title="Permalink to this definition">¶</a></dt>
+<dd><p>Multi-Head Attention proposed in “Attention Is All You Need”
+Instead of performing a single attention function with d_model-dimensional keys, values, and queries,
+project the queries, keys and values h times with different, learned linear projections to d_head dimensions.
+These are concatenated and once again projected, resulting in the final values.
+Multi-head attention allows the model to jointly attend to information from different representation
+subspaces at different positions.</p>
+<dl class="simple">
+<dt>MultiHead(Q, K, V) = Concat(head_1, …, head_h) · W_o</dt><dd><p>where head_i = Attention(Q · W_q, K · W_k, V · W_v)</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The dimension of model (default: 512)</p></li>
+<li><p><strong>num_heads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The number of attention heads. (default: 8)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Inputs: query, key, value, mask</dt><dd><ul class="simple">
+<li><p><strong>query</strong> (batch, q_len, d_model): tensor containing projection vector for decoder.</p></li>
+<li><p><strong>key</strong> (batch, k_len, d_model): tensor containing projection vector for encoder.</p></li>
+<li><p><strong>value</strong> (batch, v_len, d_model): tensor containing features of the encoded input sequence.</p></li>
+<li><p><strong>mask</strong> (-): tensor containing indices to be masked</p></li>
+</ul>
+</dd>
+<dt>Returns: output, attn</dt><dd><ul class="simple">
+<li><p><strong>output</strong> (batch, output_len, dimensions): tensor containing the attended output features.</p></li>
+<li><p><strong>attn</strong> (batch * num_heads, v_len): tensor containing the attention (alignment) from the encoder outputs.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt id="kospeech.models.attention.RelativeMultiHeadAttention">
+<em class="property">class </em><code class="sig-prename descclassname">kospeech.models.attention.</code><code class="sig-name descname">RelativeMultiHeadAttention</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dim</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">512</span></em>, <em class="sig-param"><span class="n">num_heads</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">16</span></em>, <em class="sig-param"><span class="n">dropout_p</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></span> <span class="o">=</span> <span class="default_value">0.1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/models/attention.html#RelativeMultiHeadAttention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.attention.RelativeMultiHeadAttention" title="Permalink to this definition">¶</a></dt>
+<dd><p>Multi-head attention with relative positional encoding.
+This concept was proposed in the “Transformer-XL: Attentive Language Models Beyond a Fixed-Length Context”</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The dimension of model</p></li>
+<li><p><strong>num_heads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The number of attention heads.</p></li>
+<li><p><strong>dropout_p</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – probability of dropout</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Inputs: query, key, value, pos_embedding, mask</dt><dd><ul class="simple">
+<li><p><strong>query</strong> (batch, time, dim): Tensor containing query vector</p></li>
+<li><p><strong>key</strong> (batch, time, dim): Tensor containing key vector</p></li>
+<li><p><strong>value</strong> (batch, time, dim): Tensor containing value vector</p></li>
+<li><p><strong>pos_embedding</strong> (batch, time, dim): Positional embedding tensor</p></li>
+<li><p><strong>mask</strong> (batch, 1, time2) or (batch, time1, time2): Tensor containing indices to be masked</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Tensor produces by relative multi head attention module.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>outputs</strong></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt id="kospeech.models.attention.ScaledDotProductAttention">
+<em class="property">class </em><code class="sig-prename descclassname">kospeech.models.attention.</code><code class="sig-name descname">ScaledDotProductAttention</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dim</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em>, <em class="sig-param"><span class="n">scale</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/models/attention.html#ScaledDotProductAttention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.attention.ScaledDotProductAttention" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scaled Dot-Product Attention proposed in “Attention Is All You Need”
+Compute the dot products of the query with all keys, divide each by sqrt(dim),
+and apply a softmax function to obtain the weights on the values</p>
+<dl class="simple">
+<dt>Args: dim, mask</dt><dd><p>dim (int): dimension of attention
+mask (torch.Tensor): tensor containing indices to be masked</p>
+</dd>
+<dt>Inputs: query, key, value, mask</dt><dd><ul class="simple">
+<li><p><strong>query</strong> (batch, q_len, d_model): tensor containing projection vector for decoder.</p></li>
+<li><p><strong>key</strong> (batch, k_len, d_model): tensor containing projection vector for encoder.</p></li>
+<li><p><strong>value</strong> (batch, v_len, d_model): tensor containing features of the encoded input sequence.</p></li>
+<li><p><strong>mask</strong> (-): tensor containing indices to be masked</p></li>
+</ul>
+</dd>
+<dt>Returns: context, attn</dt><dd><ul class="simple">
+<li><p><strong>context</strong>: tensor containing the context vector from attention mechanism.</p></li>
+<li><p><strong>attn</strong>: tensor containing the attention (alignment) from the encoder outputs.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-kospeech.models.convolution">
+<span id="convolution"></span><h2>Convolution<a class="headerlink" href="#module-kospeech.models.convolution" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="kospeech.models.convolution.Conv2dExtractor">
+<em class="property">class </em><code class="sig-prename descclassname">kospeech.models.convolution.</code><code class="sig-name descname">Conv2dExtractor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_dim</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em>, <em class="sig-param"><span class="n">activation</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span> <span class="o">=</span> <span class="default_value">'hardtanh'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/models/convolution.html#Conv2dExtractor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.convolution.Conv2dExtractor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides inteface of convolutional extractor.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Do not use this class directly, use one of the sub classes.
+Define the ‘self.conv’ class variable.</p>
+</div>
+<dl class="simple">
+<dt>Inputs: inputs, input_lengths</dt><dd><ul class="simple">
+<li><p><strong>inputs</strong> (batch, time, dim): Tensor containing input vectors</p></li>
+<li><p><strong>input_lengths</strong>: Tensor containing containing sequence lengths</p></li>
+</ul>
+</dd>
+<dt>Returns: outputs, output_lengths</dt><dd><ul class="simple">
+<li><p><strong>outputs</strong>: Tensor produced by the convolution</p></li>
+<li><p><strong>output_lengths</strong>: Tensor containing sequence lengths produced by the convolution</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="kospeech.models.convolution.Conv2dExtractor.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inputs</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a></span></em>, <em class="sig-param"><span class="n">input_lengths</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a></span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a><span class="p">, </span><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a><span class="p">]</span><a class="reference internal" href="_modules/kospeech/models/convolution.html#Conv2dExtractor.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.convolution.Conv2dExtractor.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>inputs: torch.FloatTensor (batch, time, dimension)
+input_lengths: torch.IntTensor (batch)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="kospeech.models.convolution.Conv2dSubsampling">
+<em class="property">class </em><code class="sig-prename descclassname">kospeech.models.convolution.</code><code class="sig-name descname">Conv2dSubsampling</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_dim</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em>, <em class="sig-param"><span class="n">in_channels</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em>, <em class="sig-param"><span class="n">out_channels</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em>, <em class="sig-param"><span class="n">activation</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span> <span class="o">=</span> <span class="default_value">'relu'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/models/convolution.html#Conv2dSubsampling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.convolution.Conv2dSubsampling" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convolutional 2D subsampling (to 1/4 length)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Dimension of input vector</p></li>
+<li><p><strong>in_channels</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Number of channels in the input vector</p></li>
+<li><p><strong>out_channels</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Number of channels produced by the convolution</p></li>
+<li><p><strong>activation</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Activation function</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Inputs: inputs</dt><dd><ul class="simple">
+<li><p><strong>inputs</strong> (batch, time, dim): Tensor containing sequence of inputs</p></li>
+<li><p><strong>input_lengths</strong> (batch): list of sequence input lengths</p></li>
+</ul>
+</dd>
+<dt>Returns: outputs, output_lengths</dt><dd><ul class="simple">
+<li><p><strong>outputs</strong> (batch, time, dim): Tensor produced by the convolution</p></li>
+<li><p><strong>output_lengths</strong> (batch): list of sequence output lengths</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="kospeech.models.convolution.Conv2dSubsampling.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inputs</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a></span></em>, <em class="sig-param"><span class="n">input_lengths</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a></span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a><span class="p">, </span><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a><span class="p">]</span><a class="reference internal" href="_modules/kospeech/models/convolution.html#Conv2dSubsampling.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.convolution.Conv2dSubsampling.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>inputs: torch.FloatTensor (batch, time, dimension)
+input_lengths: torch.IntTensor (batch)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="kospeech.models.convolution.DeepSpeech2Extractor">
+<em class="property">class </em><code class="sig-prename descclassname">kospeech.models.convolution.</code><code class="sig-name descname">DeepSpeech2Extractor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_dim</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em>, <em class="sig-param"><span class="n">in_channels</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">out_channels</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">32</span></em>, <em class="sig-param"><span class="n">activation</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span> <span class="o">=</span> <span class="default_value">'hardtanh'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/models/convolution.html#DeepSpeech2Extractor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.convolution.DeepSpeech2Extractor" title="Permalink to this definition">¶</a></dt>
+<dd><p>DeepSpeech2 extractor for automatic speech recognition described in
+“Deep Speech 2: End-to-End Speech Recognition in English and Mandarin” paper
+- <a class="reference external" href="https://arxiv.org/abs/1512.02595">https://arxiv.org/abs/1512.02595</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Dimension of input vector</p></li>
+<li><p><strong>in_channels</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Number of channels in the input vector</p></li>
+<li><p><strong>out_channels</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Number of channels produced by the convolution</p></li>
+<li><p><strong>activation</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Activation function</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Inputs: inputs, input_lengths</dt><dd><ul class="simple">
+<li><p><strong>inputs</strong> (batch, time, dim): Tensor containing input vectors</p></li>
+<li><p><strong>input_lengths</strong>: Tensor containing containing sequence lengths</p></li>
+</ul>
+</dd>
+<dt>Returns: outputs, output_lengths</dt><dd><ul class="simple">
+<li><p><strong>outputs</strong>: Tensor produced by the convolution</p></li>
+<li><p><strong>output_lengths</strong>: Tensor containing sequence lengths produced by the convolution</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="kospeech.models.convolution.DeepSpeech2Extractor.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inputs</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a></span></em>, <em class="sig-param"><span class="n">input_lengths</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a></span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a><span class="p">, </span><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a><span class="p">]</span><a class="reference internal" href="_modules/kospeech/models/convolution.html#DeepSpeech2Extractor.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.convolution.DeepSpeech2Extractor.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>inputs: torch.FloatTensor (batch, time, dimension)
+input_lengths: torch.IntTensor (batch)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="kospeech.models.convolution.DepthwiseConv1d">
+<em class="property">class </em><code class="sig-prename descclassname">kospeech.models.convolution.</code><code class="sig-name descname">DepthwiseConv1d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">in_channels</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em>, <em class="sig-param"><span class="n">out_channels</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em>, <em class="sig-param"><span class="n">kernel_size</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em>, <em class="sig-param"><span class="n">stride</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">padding</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">bias</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/models/convolution.html#DepthwiseConv1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.convolution.DepthwiseConv1d" title="Permalink to this definition">¶</a></dt>
+<dd><p>When groups == in_channels and out_channels == K * in_channels, where K is a positive integer,
+this operation is termed in literature as depthwise convolution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_channels</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Number of channels in the input</p></li>
+<li><p><strong>out_channels</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Number of channels produced by the convolution</p></li>
+<li><p><strong>kernel_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><em>tuple</em></a>) – Size of the convolving kernel</p></li>
+<li><p><strong>stride</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Stride of the convolution. Default: 1</p></li>
+<li><p><strong>padding</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><em>tuple</em></a><em>, </em><em>optional</em>) – Zero-padding added to both sides of the input. Default: 0</p></li>
+<li><p><strong>bias</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, adds a learnable bias to the output. Default: True</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Inputs: inputs</dt><dd><ul class="simple">
+<li><p><strong>inputs</strong> (batch, in_channels, time): Tensor containing input vector</p></li>
+</ul>
+</dd>
+<dt>Returns: outputs</dt><dd><ul class="simple">
+<li><p><strong>outputs</strong> (batch, out_channels, time): Tensor produces by depthwise 1-D convolution.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt id="kospeech.models.convolution.MaskCNN">
+<em class="property">class </em><code class="sig-prename descclassname">kospeech.models.convolution.</code><code class="sig-name descname">MaskCNN</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sequential</span><span class="p">:</span> <span class="n">torch.nn.modules.container.Sequential</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/models/convolution.html#MaskCNN"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.convolution.MaskCNN" title="Permalink to this definition">¶</a></dt>
+<dd><p>Masking Convolutional Neural Network</p>
+<p>Adds padding to the output of the module based on the given lengths.
+This is to ensure that the results of the model do not change when batch sizes change during inference.
+Input needs to be in the shape of (batch_size, channel, hidden_dim, seq_len)</p>
+<p>Refer to <a class="reference external" href="https://github.com/SeanNaren/deepspeech.pytorch/blob/master/model.py">https://github.com/SeanNaren/deepspeech.pytorch/blob/master/model.py</a>
+Copyright (c) 2017 Sean Naren
+MIT License</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sequential</strong> (<em>torch.nn</em>) – sequential list of convolution layer</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Inputs: inputs, seq_lengths</dt><dd><ul class="simple">
+<li><p><strong>inputs</strong> (torch.FloatTensor): The input of size BxCxHxT</p></li>
+<li><p><strong>seq_lengths</strong> (torch.IntTensor): The actual length of each sequence in the batch</p></li>
+</ul>
+</dd>
+<dt>Returns: output, seq_lengths</dt><dd><ul class="simple">
+<li><p><strong>output</strong>: Masked output from the sequential</p></li>
+<li><p><strong>seq_lengths</strong>: Sequence length of output from the sequential</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt id="kospeech.models.convolution.MaskConv1d">
+<em class="property">class </em><code class="sig-prename descclassname">kospeech.models.convolution.</code><code class="sig-name descname">MaskConv1d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">in_channels</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em>, <em class="sig-param"><span class="n">out_channels</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em>, <em class="sig-param"><span class="n">kernel_size</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em>, <em class="sig-param"><span class="n">stride</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">padding</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">dilation</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">groups</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">bias</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/models/convolution.html#MaskConv1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.convolution.MaskConv1d" title="Permalink to this definition">¶</a></dt>
+<dd><p>1D convolution with masking</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_channels</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Number of channels in the input vector</p></li>
+<li><p><strong>out_channels</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Number of channels produced by the convolution</p></li>
+<li><p><strong>kernel_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><em>tuple</em></a>) – Size of the convolving kernel</p></li>
+<li><p><strong>stride</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Stride of the convolution. Default: 1</p></li>
+<li><p><strong>padding</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Zero-padding added to both sides of the input. Default: 0</p></li>
+<li><p><strong>dilation</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Spacing between kernel elements. Default: 1</p></li>
+<li><p><strong>groups</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Number of blocked connections from input channels to output channels. Default: 1</p></li>
+<li><p><strong>bias</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – If True, adds a learnable bias to the output. Default: True</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Inputs: inputs, seq_lengths</dt><dd><ul class="simple">
+<li><p><strong>inputs</strong> (torch.FloatTensor): The input of size (batch, dimension, time)</p></li>
+<li><p><strong>seq_lengths</strong> (torch.IntTensor): The actual length of each sequence in the batch</p></li>
+</ul>
+</dd>
+<dt>Returns: output, seq_lengths</dt><dd><ul class="simple">
+<li><p><strong>output</strong>: Masked output from the conv1d</p></li>
+<li><p><strong>seq_lengths</strong>: Sequence length of output from the conv1d</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="kospeech.models.convolution.MaskConv1d.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inputs</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a></span></em>, <em class="sig-param"><span class="n">input_lengths</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a></span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a><span class="p">, </span><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a><span class="p">]</span><a class="reference internal" href="_modules/kospeech/models/convolution.html#MaskConv1d.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.convolution.MaskConv1d.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>inputs: (batch, dimension, time)
+input_lengths: (batch)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="kospeech.models.convolution.PointwiseConv1d">
+<em class="property">class </em><code class="sig-prename descclassname">kospeech.models.convolution.</code><code class="sig-name descname">PointwiseConv1d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">in_channels</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em>, <em class="sig-param"><span class="n">out_channels</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em>, <em class="sig-param"><span class="n">stride</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">padding</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">bias</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/models/convolution.html#PointwiseConv1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.convolution.PointwiseConv1d" title="Permalink to this definition">¶</a></dt>
+<dd><p>When kernel size == 1 conv1d, this operation is termed in literature as pointwise convolution.
+This operation often used to match dimensions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_channels</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Number of channels in the input</p></li>
+<li><p><strong>out_channels</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Number of channels produced by the convolution</p></li>
+<li><p><strong>stride</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Stride of the convolution. Default: 1</p></li>
+<li><p><strong>padding</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><em>tuple</em></a><em>, </em><em>optional</em>) – Zero-padding added to both sides of the input. Default: 0</p></li>
+<li><p><strong>bias</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, adds a learnable bias to the output. Default: True</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Inputs: inputs</dt><dd><ul class="simple">
+<li><p><strong>inputs</strong> (batch, in_channels, time): Tensor containing input vector</p></li>
+</ul>
+</dd>
+<dt>Returns: outputs</dt><dd><ul class="simple">
+<li><p><strong>outputs</strong> (batch, out_channels, time): Tensor produces by pointwise 1-D convolution.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt id="kospeech.models.convolution.VGGExtractor">
+<em class="property">class </em><code class="sig-prename descclassname">kospeech.models.convolution.</code><code class="sig-name descname">VGGExtractor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_dim</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em>, <em class="sig-param"><span class="n">in_channels</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">out_channels</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">64, 128</span></em>, <em class="sig-param"><span class="n">activation</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span> <span class="o">=</span> <span class="default_value">'hardtanh'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kospeech/models/convolution.html#VGGExtractor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.convolution.VGGExtractor" title="Permalink to this definition">¶</a></dt>
+<dd><p>VGG extractor for automatic speech recognition described in
+“Advances in Joint CTC-Attention based End-to-End Speech Recognition with a Deep CNN Encoder and RNN-LM” paper
+- <a class="reference external" href="https://arxiv.org/pdf/1706.02737.pdf">https://arxiv.org/pdf/1706.02737.pdf</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Dimension of input vector</p></li>
+<li><p><strong>in_channels</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Number of channels in the input image</p></li>
+<li><p><strong>out_channels</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><em>tuple</em></a>) – Number of channels produced by the convolution</p></li>
+<li><p><strong>activation</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Activation function</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Inputs: inputs, input_lengths</dt><dd><ul class="simple">
+<li><p><strong>inputs</strong> (batch, time, dim): Tensor containing input vectors</p></li>
+<li><p><strong>input_lengths</strong>: Tensor containing containing sequence lengths</p></li>
+</ul>
+</dd>
+<dt>Returns: outputs, output_lengths</dt><dd><ul class="simple">
+<li><p><strong>outputs</strong>: Tensor produced by the convolution</p></li>
+<li><p><strong>output_lengths</strong>: Tensor containing sequence lengths produced by the convolution</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="kospeech.models.convolution.VGGExtractor.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inputs</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a></span></em>, <em class="sig-param"><span class="n">input_lengths</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a></span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a><span class="p">, </span><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+4b6fea9 ))">torch.Tensor</a><span class="p">]</span><a class="reference internal" href="_modules/kospeech/models/convolution.html#VGGExtractor.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kospeech.models.convolution.VGGExtractor.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>inputs: torch.FloatTensor (batch, time, dimension)
+input_lengths: torch.IntTensor (batch)</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="Checkpoint.html" class="btn btn-neutral float-right" title="Checkpoint" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="Conformer.html" class="btn btn-neutral float-left" title="Conformer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, Soohwan Kim.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

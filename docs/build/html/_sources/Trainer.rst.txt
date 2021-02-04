@@ -2,7 +2,7 @@
 Trainer
 =====================================================
 
-SupervisedTrainer
+Supervised Trainer
 --------------------------------------------
 .. automodule:: kospeech.trainer.supervised_trainer
     :members:

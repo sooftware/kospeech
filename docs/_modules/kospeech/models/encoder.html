@@ -1,0 +1,369 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>kospeech.models.encoder &mdash; KoSpeech latest documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> KoSpeech
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                latest
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/intro.html">What’s New</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/intro.html#note">Note</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/intro.html#kospeech-open-source-toolkit-for-end-to-end-korean-speech-recognition-paper"><em><strong>KoSpeech:  Open-Source Toolkit for End-to-End Korean Speech Recognition [Paper]</strong></em></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/intro.html#supported-models">Supported Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/intro.html#pre-processed-transcripts">Pre-processed Transcripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/intro.html#introduction">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/intro.html#roadmap">Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/intro.html#installation">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/intro.html#get-started">Get Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/intro.html#troubleshoots-and-contributing">Troubleshoots and Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/intro.html#citation">Citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/Preparation.html">KsponSpeech-preprocess</a></li>
+</ul>
+<p class="caption"><span class="caption-text">ARCHITECTURE</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../Interface.html">Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Deep%20Speech%202.html">Deep Speech 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Listen%20Attend%20Spell.html">Listen, Attend and Spell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../RNN%20Transducer.html">RNN Transducer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Speech%20Transformer.html">Speech Transformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Jasper.html">Jasper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Conformer.html">Conformer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Modules.html">Modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">LIBRARY REFERENCE</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../Checkpoint.html">Checkpoint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Criterion.html">Criterion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Decode.html">Decode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Evaluator.html">Evaluator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Optim.html">Optim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Learning%20Rate%20Schedulers.html">Learning Rate Scheduler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Trainer.html">Trainer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Vocabs.html">Vocabs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Etc.html">Etc</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">KoSpeech</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>kospeech.models.encoder</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for kospeech.models.encoder</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2021, Soohwan Kim. All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">Tensor</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
+
+<span class="kn">from</span> <span class="nn">kospeech.models.convolution</span> <span class="kn">import</span> <span class="n">DeepSpeech2Extractor</span><span class="p">,</span> <span class="n">VGGExtractor</span>
+<span class="kn">from</span> <span class="nn">kospeech.models.modules</span> <span class="kn">import</span> <span class="n">Transpose</span><span class="p">,</span> <span class="n">Linear</span>
+
+
+<div class="viewcode-block" id="EncoderInterface"><a class="viewcode-back" href="../../../Interface.html#kospeech.models.encoder.EncoderInterface">[docs]</a><span class="k">class</span> <span class="nc">EncoderInterface</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Base Interface of Encoder &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">EncoderInterface</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+<div class="viewcode-block" id="EncoderInterface.count_parameters"><a class="viewcode-back" href="../../../Interface.html#kospeech.models.encoder.EncoderInterface.count_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">count_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; Count parameters of encoder &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="n">p</span><span class="o">.</span><span class="n">numel</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">()])</span></div>
+
+<div class="viewcode-block" id="EncoderInterface.update_dropout"><a class="viewcode-back" href="../../../Interface.html#kospeech.models.encoder.EncoderInterface.update_dropout">[docs]</a>    <span class="k">def</span> <span class="nf">update_dropout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dropout_p</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; Update dropout probability of encoder &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">named_children</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">):</span>
+                <span class="n">child</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">dropout_p</span></div>
+
+<div class="viewcode-block" id="EncoderInterface.forward"><a class="viewcode-back" href="../../../Interface.html#kospeech.models.encoder.EncoderInterface.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Forward propagate for encoder training.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            inputs (torch.FloatTensor): A input sequence passed to encoder. Typically for inputs this will be a padded</span>
+<span class="sd">                `FloatTensor` of size ``(batch, seq_length, dimension)``.</span>
+<span class="sd">            input_lengths (torch.LongTensor): The length of input tensor. ``(batch)``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
+
+
+<div class="viewcode-block" id="BaseEncoder"><a class="viewcode-back" href="../../../Interface.html#kospeech.models.encoder.BaseEncoder">[docs]</a><span class="k">class</span> <span class="nc">BaseEncoder</span><span class="p">(</span><span class="n">EncoderInterface</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; ASR Encoder Super Class for KoSpeech model implementation &quot;&quot;&quot;</span>
+    <span class="n">supported_extractors</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;ds2&#39;</span><span class="p">:</span> <span class="n">DeepSpeech2Extractor</span><span class="p">,</span>
+        <span class="s1">&#39;vgg&#39;</span><span class="p">:</span> <span class="n">VGGExtractor</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">input_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+            <span class="n">extractor</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;vgg&#39;</span><span class="p">,</span>
+            <span class="n">d_model</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">num_classes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">dropout_p</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">activation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;hardtanh&#39;</span><span class="p">,</span>
+            <span class="n">joint_ctc_attention</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">BaseEncoder</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">joint_ctc_attention</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">num_classes</span><span class="p">,</span> <span class="s2">&quot;If `joint_ctc_attention` True, `num_classes` should be not None&quot;</span>
+            <span class="k">assert</span> <span class="n">dropout_p</span><span class="p">,</span> <span class="s2">&quot;If `joint_ctc_attention` True, `dropout_p` should be not None&quot;</span>
+            <span class="k">assert</span> <span class="n">d_model</span><span class="p">,</span> <span class="s2">&quot;If `joint_ctc_attention` True, `d_model` should be not None&quot;</span>
+
+        <span class="k">if</span> <span class="n">extractor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">extractor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">supported_extractors</span><span class="p">[</span><span class="n">extractor</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conv</span> <span class="o">=</span> <span class="n">extractor</span><span class="p">(</span><span class="n">input_dim</span><span class="o">=</span><span class="n">input_dim</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="n">activation</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">conv_output_dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv</span><span class="o">.</span><span class="n">get_output_dim</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span> <span class="o">=</span> <span class="n">num_classes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">joint_ctc_attention</span> <span class="o">=</span> <span class="n">joint_ctc_attention</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint_ctc_attention</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fc</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm1d</span><span class="p">(</span><span class="n">d_model</span><span class="p">),</span>
+                <span class="n">Transpose</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">dropout_p</span><span class="p">),</span>
+                <span class="n">Linear</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+            <span class="p">)</span>
+
+<div class="viewcode-block" id="BaseEncoder.forward"><a class="viewcode-back" href="../../../Interface.html#kospeech.models.encoder.BaseEncoder.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Forward propagate a `inputs` for  encoder training.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            inputs (torch.FloatTensor): A input sequence passed to encoder. Typically for inputs this will be a padded</span>
+<span class="sd">                `FloatTensor` of size ``(batch, seq_length, dimension)``.</span>
+<span class="sd">            input_lengths (torch.LongTensor): The length of input tensor. ``(batch)``</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (Tensor, Tensor, Tensor):</span>
+
+<span class="sd">            * encoder_outputs: A output sequence of encoder. `FloatTensor` of size ``(batch, seq_length, dimension)``</span>
+<span class="sd">            * encoder_output_lengths: The length of encoder outputs. ``(batch)``</span>
+<span class="sd">            * encoder_log_probs: Log probability of encoder outputs will be passed to CTC Loss.</span>
+<span class="sd">                If joint_ctc_attention is False, return None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
+
+
+<div class="viewcode-block" id="TransducerEncoder"><a class="viewcode-back" href="../../../Interface.html#kospeech.models.encoder.TransducerEncoder">[docs]</a><span class="k">class</span> <span class="nc">TransducerEncoder</span><span class="p">(</span><span class="n">EncoderInterface</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; ASR Transducer Encoder Super class for KoSpeech model implementation &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TransducerEncoder</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+<div class="viewcode-block" id="TransducerEncoder.forward"><a class="viewcode-back" href="../../../Interface.html#kospeech.models.encoder.TransducerEncoder.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Forward propagate a `inputs` for  encoder training.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            inputs (torch.FloatTensor): A input sequence passed to encoder. Typically for inputs this will be a padded</span>
+<span class="sd">                `FloatTensor` of size ``(batch, seq_length, dimension)``.</span>
+<span class="sd">            input_lengths (torch.LongTensor): The length of input tensor. ``(batch)``</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (Tensor, Tensor)</span>
+
+<span class="sd">            * outputs (torch.FloatTensor): A output sequence of encoder. `FloatTensor` of size</span>
+<span class="sd">                ``(batch, seq_length, dimension)``</span>
+<span class="sd">            * output_lengths (torch.LongTensor): The length of output tensor. ``(batch)``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, Soohwan Kim.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -2,16 +2,22 @@
 Speech Transformer
 =====================================================
 
-Speech Transformer
+Transformer
 --------------------------------------------
 
 .. automodule:: kospeech.models.transformer.model
     :members:
 
-Layers
+Encoder
 --------------------------------------------
 
-.. automodule:: kospeech.models.transformer.layers
+.. automodule:: kospeech.models.transformer.encoder
+    :members:
+
+Decoder
+--------------------------------------------
+
+.. automodule:: kospeech.models.transformer.decoder
     :members:
 
 Sublayers

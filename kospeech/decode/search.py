@@ -23,8 +23,9 @@ from kospeech.metrics import (
 from kospeech.models import (
     DeepSpeech2,
     ListenAttendSpell,
-    TopKDecoder,
-    SpeechTransformer, Jasper, Conformer
+    SpeechTransformer,
+    Jasper,
+    Conformer,
 )
 
 
