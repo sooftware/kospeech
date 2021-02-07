@@ -188,11 +188,7 @@ class TransducerModel(BaseModel):
         super(TransducerModel, self).__init__()
         self.encoder = encoder
         self.decoder = decoder
-        self.fc = nn.Sequential(
-            Linear(d_model << 1, d_model),
-            nn.Tanh(),
-            Linear(d_model, num_classes, bias=False),
-        )
+        self.fc = Linear(d_model << 1, num_classes, bias=False)
 
     def set_encoder(self, encoder):
         """ Setter for encoder """
