@@ -355,7 +355,10 @@ class Conv2dSubsampling(Conv2dExtractor):
         )
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
-        return super().forward(inputs, input_lengths)
+        outputs, input_lengths = super().forward(inputs, input_lengths)
+        output_lengths = input_lengths >> 2
+        output_lengths -= 1
+        return outputs, output_lengths
 
 
 class DeepSpeech2Extractor(Conv2dExtractor):
