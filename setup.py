@@ -19,7 +19,7 @@ setup(
     version='latest',
     description='Open-Source Toolkit for End-to-End Korean Speech Recognition',
     author='Soohwan Kim',
-    author_email='kaki.brain@kakaobrain.com',
+    author_email='kaki.ai@tunib.ai',
     url='https://github.com/sooftware/KoSpeech',
     install_requires=[
         'torch>=1.4.0',
