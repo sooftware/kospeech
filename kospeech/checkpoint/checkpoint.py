@@ -74,7 +74,7 @@ class Checkpoint(object):
             'optimizer': self.optimizer,
             'trainset_list': self.trainset_list,
             'validset': self.validset,
-            'epoch': self.epoch
+            'epoch': self.epoch,
         }
         torch.save(trainer_states, os.path.join(os.getcwd(), self.TRAINER_STATE_NAME))
         torch.save(self.model, os.path.join(os.getcwd(), self.MODEL_NAME))
@@ -111,9 +111,11 @@ class Checkpoint(object):
                 model.flatten_parameters()
 
         return Checkpoint(
-            model=model, optimizer=resume_checkpoint['optimizer'], epoch=resume_checkpoint['epoch'],
+            model=model, 
+            optimizer=resume_checkpoint['optimizer'], 
+            epoch=resume_checkpoint['epoch'],
             trainset_list=resume_checkpoint['trainset_list'],
-            validset=resume_checkpoint['validset']
+            validset=resume_checkpoint['validset'],
         )
 
     def get_latest_checkpoint(self):
