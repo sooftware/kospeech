@@ -105,7 +105,6 @@ class MelSpectrogram(object):
             assert platform.system().lower() == 'linux' or platform.system().lower() == 'darwin'
             import torchaudio
 
-            self.amplitude_to_db = torchaudio.transforms.AmplitudeToDB()
             self.transforms = torchaudio.transforms.MelSpectrogram(
                 sample_rate=sample_rate,
                 win_length=frame_length,
@@ -116,12 +115,11 @@ class MelSpectrogram(object):
         else:
             import librosa
             self.transforms = librosa.feature.melspectrogram
-            self.amplitude_to_db = librosa.amplitude_to_db
+            self.power_to_db = librosa.power_to_db
 
     def __call__(self, signal):
         if self.feature_extract_by == 'torchaudio':
             melspectrogram = self.transforms(Tensor(signal))
-            melspectrogram = self.amplitude_to_db(melspectrogram)
             melspectrogram = melspectrogram.numpy()
 
         elif self.feature_extract_by == 'librosa':
@@ -132,7 +130,7 @@ class MelSpectrogram(object):
                 n_fft=self.n_fft,
                 hop_length=self.hop_length,
             )
-            melspectrogram = self.amplitude_to_db(melspectrogram, ref=np.max)
+            melspectrogram = self.power_to_db(melspectrogram, ref=np.max)
 
         else:
             raise ValueError("Unsupported library : {0}".format(self.feature_extract_by))
