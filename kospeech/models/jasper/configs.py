@@ -38,7 +38,7 @@ class Jasper10x5Config:
             'out_channels': (896, 1024, num_classes),
             'kernel_size': (29, 1, 1),
             'dilation': (2, 1, 1),
-            'dropout_p': (0.4, 0.4, 0.0)
+            'dropout_p': (0.4, 0.4, 0.0),
         }
 
 
@@ -67,5 +67,5 @@ class Jasper5x3Config:
             'out_channels': (896, 1024, num_classes),
             'kernel_size': (29, 1, 1),
             'dilation': (2, 1, 1),
-            'dropout_p': (0.4, 0.4, 0.0)
+            'dropout_p': (0.4, 0.4, 0.0),
         }

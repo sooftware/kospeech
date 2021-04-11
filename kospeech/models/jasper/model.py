@@ -156,7 +156,7 @@ class Jasper(EncoderModel):
             for j in range(i + 1):
                 residual_modules.append(nn.ModuleList([
                     MaskConv1d(self.config.block['in_channels'][j], self.config.block['out_channels'][i], kernel_size=1),
-                    nn.BatchNorm1d(self.config.block['out_channels'][i], eps=1e-03, momentum=0.1)
+                    nn.BatchNorm1d(self.config.block['out_channels'][i], eps=1e-03, momentum=0.1),
                 ]))
             residual_connections.append(residual_modules)
 

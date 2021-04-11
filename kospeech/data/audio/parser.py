@@ -88,7 +88,7 @@ class SpectrogramParser(AudioParser):
             sos_id: int = 1,                          # start of sentence token`s identification
             eos_id: int = 2,                          # end of sentence token`s identification
             dataset_path: str = None,                 # noise dataset path
-            audio_extension: str = 'pcm'              # audio extension
+            audio_extension: str = 'pcm',             # audio extension
     ) -> None:
         super(SpectrogramParser, self).__init__(dataset_path)
         self.del_silence = del_silence
@@ -101,16 +101,12 @@ class SpectrogramParser(AudioParser):
 
         if transform_method.lower() == 'mel':
             self.transforms = MelSpectrogram(sample_rate, n_mels, frame_length, frame_shift, feature_extract_by)
-
         elif transform_method.lower() == 'mfcc':
             self.transforms = MFCC(sample_rate, n_mels, frame_length, frame_shift, feature_extract_by)
-
         elif transform_method.lower() == 'spect':
             self.transforms = Spectrogram(sample_rate, frame_length, frame_shift, feature_extract_by)
-
         elif transform_method.lower() == 'fbank':
             self.transforms = FilterBank(sample_rate, n_mels, frame_length, frame_shift)
-
         else:
             raise ValueError("Unsupported feature : {0}".format(transform_method))
 

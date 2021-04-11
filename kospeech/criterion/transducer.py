@@ -24,7 +24,7 @@ class TransducerLoss(nn.Module):
         blank_id (int): blank symbol id
     """
 
-    def __init__(self, blank_id):
+    def __init__(self, blank_id: int) -> None:
         """Construct an TransLoss object."""
         super().__init__()
         try:

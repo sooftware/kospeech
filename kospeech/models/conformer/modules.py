@@ -47,7 +47,7 @@ class FeedForwardModule(nn.Module):
             encoder_dim: int = 512,
             expansion_factor: int = 4,
             dropout_p: float = 0.1,
-            device: torch.device = 'cuda'
+            device: torch.device = 'cuda',
     ) -> None:
         super(FeedForwardModule, self).__init__()
         self.device = device
@@ -132,7 +132,13 @@ class MultiHeadedSelfAttentionModule(nn.Module):
     Returns:
         - **outputs** (batch, time, dim): Tensor produces by relative multi headed self attention module.
     """
-    def __init__(self, d_model: int, num_heads: int, dropout_p: float = 0.1, device: torch.device = 'cuda'):
+    def __init__(
+            self,
+            d_model: int,
+            num_heads: int,
+            dropout_p: float = 0.1,
+            device: torch.device = 'cuda',
+    ) -> None:
         super(MultiHeadedSelfAttentionModule, self).__init__()
         self.positional_encoding = PositionalEncoding(d_model)
         self.layer_norm = LayerNorm(d_model)
@@ -140,7 +146,7 @@ class MultiHeadedSelfAttentionModule(nn.Module):
         self.dropout = nn.Dropout(p=dropout_p)
         self.device = device
 
-    def forward(self, inputs: Tensor, mask: Optional[Tensor] = None):
+    def forward(self, inputs: Tensor, mask: Optional[Tensor] = None) -> Tensor:
         batch_size, seq_length, _ = inputs.size()
         pos_embedding = self.positional_encoding(seq_length).to(self.device)
         pos_embedding = pos_embedding.repeat(batch_size, 1, 1)

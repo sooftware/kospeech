@@ -162,7 +162,6 @@ class Conformer(TransducerModel):
         """
         if self.decoder is not None:
             return super().recognize(inputs, input_lengths)
-
         encoder_outputs, _ = self.encoder(inputs, input_lengths)
         predicted_log_probs = self.fc(encoder_outputs).log_softmax(dim=-1)
         return self.decode(predicted_log_probs)

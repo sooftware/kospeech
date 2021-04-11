@@ -59,7 +59,7 @@ class LabelSmoothedCrossEntropyLoss(nn.Module):
         else:
             raise ValueError("Unsupported reduction method {0}".format(reduction))
 
-    def forward(self, logits: Tensor, targets: Tensor):
+    def forward(self, logits: Tensor, targets: Tensor) -> Tensor:
         if self.smoothing > 0.0:
             with torch.no_grad():
                 label_smoothed = torch.zeros_like(logits)

@@ -217,7 +217,10 @@ class FilterBank(object):
             frame_length: int = 20,
             frame_shift: int = 10
     ) -> None:
-        import torchaudio
+        try:
+            import torchaudio
+        except ImportError:
+            raise ImportError("Please install torchaudio `pip install torchaudio`")
         self.transforms = torchaudio.compliance.kaldi.fbank
         self.sample_rate = sample_rate
         self.n_mels = n_mels

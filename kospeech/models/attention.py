@@ -89,7 +89,7 @@ class ScaledDotProductAttention(nn.Module):
             query: Tensor,
             key: Tensor,
             value: Tensor,
-            mask: Optional[Any] = None
+            mask: Optional[Tensor] = None,
     ) -> Tuple[Tensor, Tensor]:
         score = torch.bmm(query, key.transpose(1, 2)) / self.sqrt_dim
 
@@ -139,7 +139,13 @@ class MultiHeadAttention(nn.Module):
         self.value_proj = Linear(dim, self.d_head * num_heads)
         self.scaled_dot_attn = ScaledDotProductAttention(self.d_head, scale=True)
 
-    def forward(self, query: Tensor, key: Tensor, value: Tensor, mask: Optional[Any] = None) -> Tuple[Tensor, Tensor]:
+    def forward(
+            self,
+            query: Tensor,
+            key: Tensor,
+            value: Tensor,
+            mask: Optional[Tensor] = None,
+    ) -> Tuple[Tensor, Tensor]:
         batch_size = value.size(0)
 
         query = self.query_proj(query).view(batch_size, -1, self.num_heads, self.d_head)
@@ -186,7 +192,7 @@ class RelativeMultiHeadAttention(nn.Module):
             dim: int = 512,
             num_heads: int = 16,
             dropout_p: float = 0.1,
-    ):
+    ) -> None:
         super(RelativeMultiHeadAttention, self).__init__()
         assert dim % num_heads == 0, "d_model % num_heads should be zero."
 

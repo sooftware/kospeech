@@ -23,7 +23,12 @@ class ResidualConnectionModule(nn.Module):
     Residual Connection Module.
     outputs = (module(inputs) x module_factor + inputs x input_factor)
     """
-    def __init__(self, module: nn.Module, module_factor: float = 1.0, input_factor: float = 1.0):
+    def __init__(
+            self,
+            module: nn.Module,
+            module_factor: float = 1.0,
+            input_factor: float = 1.0,
+    ) -> None:
         super(ResidualConnectionModule, self).__init__()
         self.module = module
         self.module_factor = module_factor
@@ -76,7 +81,6 @@ class View(nn.Module):
     def forward(self, inputs):
         if self.contiguous:
             inputs = inputs.contiguous()
-
         return inputs.view(*self.shape)
 
 

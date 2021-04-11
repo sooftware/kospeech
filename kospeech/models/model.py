@@ -242,7 +242,7 @@ class TransducerModel(BaseModel):
             inputs: Tensor,
             input_lengths: Tensor,
             targets: Tensor,
-            target_lengths: Tensor
+            target_lengths: Tensor,
     ) -> Tensor:
         """
         Forward propagate a `inputs` and `targets` pair for training.
@@ -289,7 +289,7 @@ class TransducerModel(BaseModel):
         return torch.LongTensor(pred_tokens)
 
     @torch.no_grad()
-    def recognize(self, inputs: Tensor, input_lengths: Tensor):
+    def recognize(self, inputs: Tensor, input_lengths: Tensor) -> Tensor:
         """
         Recognize input speech. This method consists of the forward of the encoder and the decode() of the decoder.
 
@@ -299,7 +299,7 @@ class TransducerModel(BaseModel):
             input_lengths (torch.LongTensor): The length of input tensor. ``(batch)``
 
         Returns:
-            * predictions (torch.FloatTensor): Result of model predictions.
+            * outputs (torch.FloatTensor): Result of model predictions.
         """
         outputs = list()
 

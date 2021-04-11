@@ -72,7 +72,7 @@ class JasperSubBlock(nn.Module):
             stride=stride,
             padding=padding,
             bias=bias,
-            dilation=dilation
+            dilation=dilation,
         )
         self.batch_norm = nn.BatchNorm1d(out_channels, eps=1e-3, momentum=0.1)
         self.activation = self.supported_activations[activation]
