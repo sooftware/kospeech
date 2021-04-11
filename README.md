@@ -275,19 +275,9 @@ We follow [PEP-8](https://www.python.org/dev/peps/pep-0008/) for code style. Esp
   
 *[LiyuanLucasLiu/RAdam](https://github.com/LiyuanLucasLiu/RAdam)*
   
-*[AppleHolic/2020 AI Challenge - SpeechRecognition](https://github.com/AppleHolic/2020AIChallengeSpeechRecognition)*  
-  
 *[NVIDIA/DeepLearningExample](https://github.com/NVIDIA/DeepLearningExamples)*
   
 *[espnet/espnet](https://github.com/espnet/espnet)*
-  
-*[sooftware/conformer](https://github.com/sooftware/conformer)*
-  
-*[sooftware/jasper](https://github.com/sooftware/jasper)*
-  
-*[sooftware/speech-transformer](https://github.com/sooftware/speech-transformer)*
-  
-*[sooftware/seq2seq](https://github.com/sooftware/seq2seq)*
    
 ### License
 This project is licensed under the Apache-2.0 LICENSE - see the [LICENSE.md](https://github.com/sooftware/KoSpeech/blob/master/LICENSE) file for details
