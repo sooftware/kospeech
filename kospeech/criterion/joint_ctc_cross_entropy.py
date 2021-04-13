@@ -20,24 +20,6 @@ from kospeech.criterion import LabelSmoothedCrossEntropyLoss
 
 
 class JointCTCCrossEntropyLoss(nn.Module):
-    """
-    Label smoothed cross entropy loss function.
-
-    Args:
-        num_classes (int): the number of classfication
-        ignore_index (int): Indexes that are ignored when calculating loss
-        dim (int): dimension of calculation loss
-        reduction (str): reduction method [sum, mean] (default: sum)
-        ctc_weight (float): weight of ctc loss
-        cross_entropy_weight (float): weight of cross entropy loss
-
-    Inputs: logit, target
-        logit (torch.Tensor): probability distribution value from model and it has a logarithm shape
-        target (torch.Tensor): ground-thruth encoded to integers which directly point a word in label
-
-    Returns: label_smoothed
-        - **label_smoothed** (Tensor): sum of loss
-    """
     def __init__(
             self,
             num_classes: int,                     # the number of classfication
