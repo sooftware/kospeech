@@ -17,9 +17,9 @@ import math
 import threading
 import torch
 import random
-
 from omegaconf import DictConfig
 from torch.utils.data import Dataset
+
 from kospeech.data import load_dataset
 from kospeech.utils import logger
 from kospeech.data import SpectrogramParser
@@ -69,6 +69,10 @@ class SpectrogramDataset(Dataset, SpectrogramParser):
     def get_item(self, idx):
         """ get feature vector & transcript """
         feature = self.parse_audio(os.path.join(self.dataset_path, self.audio_paths[idx]), self.augment_methods[idx])
+        
+        if feature is None:
+            return None, None
+        
         transcript = self.parse_transcript(self.transcripts[idx])
 
         return feature, transcript
