@@ -37,6 +37,7 @@ class TrainConfig:
     final_lr_scale: float = 0.05
     max_grad_norm: int = 400
     weight_decay: float = 1e-05
+    total_steps: int = 200000
 
     seed: int = 777
     resume: bool = False
