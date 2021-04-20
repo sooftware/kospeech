@@ -104,7 +104,7 @@ def train(config: DictConfig) -> nn.DataParallel:
         optimizer = get_optimizer(model, config)
         lr_scheduler = get_lr_scheduler(config, optimizer, epoch_time_step)
 
-        optimizer = Optimizer(optimizer, lr_scheduler, config.train.warmup_steps, config.train.max_grad_norm)
+        optimizer = Optimizer(optimizer, lr_scheduler, config.train.total_steps, config.train.max_grad_norm)
         criterion = get_criterion(config, vocab)
 
     else:
