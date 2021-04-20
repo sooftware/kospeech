@@ -20,16 +20,29 @@ from kospeech.criterion import LabelSmoothedCrossEntropyLoss
 
 
 class JointCTCCrossEntropyLoss(nn.Module):
+    """
+    Privides Joint CTC-CrossEntropy Loss function
+
+    Args:
+        num_classes (int): the number of classification
+        ignore_index (int): indexes that are ignored when calculating loss
+        dim (int): dimension of calculation loss
+        reduction (str): reduction method [sum, mean] (default: mean)
+        ctc_weight (float): weight of ctc loss
+        cross_entropy_weight (float): weight of cross entropy loss
+        blank_id (int): identification of blank for ctc
+    """
+    
     def __init__(
             self,
-            num_classes: int,                     # the number of classfication
-            ignore_index: int,                    # indexes that are ignored when calcuating loss
-            dim: int = -1,                        # dimension of caculation loss
-            reduction='mean',                     # reduction method [sum, mean]
-            ctc_weight: float = 0.3,              # weight of ctc loss
-            cross_entropy_weight: float = 0.7,    # weight of cross entropy loss
-            blank_id: int = None,                 # identification of blank token
-            smoothing: float = 0.1,               # ratio of smoothing (confidence = 1.0 - smoothing)
+            num_classes: int,                     
+            ignore_index: int,                    
+            dim: int = -1,                        
+            reduction='mean',                     
+            ctc_weight: float = 0.3,              
+            cross_entropy_weight: float = 0.7,    
+            blank_id: int = None,                 
+            smoothing: float = 0.1,               
     ) -> None:
         super(JointCTCCrossEntropyLoss, self).__init__()
         self.num_classes = num_classes
