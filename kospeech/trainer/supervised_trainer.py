@@ -187,7 +187,7 @@ class SupervisedTrainer(object):
             logger.info('Epoch %d Training result saved as a csv file complete !!' % epoch)
             torch.cuda.empty_cache()
 
-        Checkpoint(model, self.optimizer, self.criterion, self.trainset_list, self.validset, num_epochs).save()
+        Checkpoint(model, self.optimizer, self.trainset_list, self.validset, num_epochs).save()
         return model
 
     def _train_epoches(
