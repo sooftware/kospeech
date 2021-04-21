@@ -37,6 +37,7 @@
   
 ### Note
   
+- Not long ago, I modified a lot of the code, but I was personally busy, so I couldn't test all the cases. If there is an error, please feel free to give me feedback.
 - Currently, beam search may not work properly.  
 - Subword and Grapheme unit currently not tested.
   
