@@ -18,11 +18,11 @@ We will explain the details in the **Output-Unit** part below.
   
 ## Usage
   
-1. Set options in [run.sh](https://github.com/sooftware/KsponSpeech-preprocess/blob/master/run.sh)  
+1. Set options in [preprocess.sh](https://github.com/sooftware/KsponSpeech-preprocess/blob/master/preprocess.sh)  
   
-2. Run [run.sh](https://github.com/sooftware/KsponSpeech-preprocess/blob/master/run.sh)  
+2. Run [preprocess.sh](https://github.com/sooftware/KsponSpeech-preprocess/blob/master/preprocess.sh)  
 ```shell
-$ ./run.sh
+$ ./preprocess.sh
 ```
   
 3. Leave the computer for minutes or hours.  
