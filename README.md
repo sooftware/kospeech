@@ -1,6 +1,12 @@
 <p  align="center"><img src="https://user-images.githubusercontent.com/42150335/105211661-e1b33080-5b8f-11eb-9956-184d60ccc55a.png" height=100>
 
-<p  align="center">An Apache 2.0 ASR research library, built on PyTorch, for developing end-to-end speech recognition models.
+
+<div align="center">
+
+**An Apache 2.0 ASR research library, built on PyTorch, for developing end-to-end speech recognition models.**
+
+  
+</div>
 
 ***
 
