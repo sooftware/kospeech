@@ -15,8 +15,9 @@
   <a href="https://github.com/sooftware/KoSpeech#introduction">Roadmap</a> •
   <a href="sooftware.github.io/kospeech/">Docs</a> •
   <a href="https://www.codefactor.io/repository/github/sooftware/KoSpeech">Codefactor</a> •
-  <a href="https://github.com/sooftware/KoSpeech/blob/main/LICENSE">License</a>
-  <a href="https://gitter.im/Korean-Speech-Recognition/community">Gitter</a>
+  <a href="https://github.com/sooftware/KoSpeech/blob/main/LICENSE">License</a> •
+  <a href="https://gitter.im/Korean-Speech-Recognition/community">Gitter</a> •
+  <a href="https://www.sciencedirect.com/science/article/pii/S2665963821000026">Paper</a>
 </p>
 
 ---
