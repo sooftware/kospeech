@@ -7,28 +7,20 @@
 
   
 </div>
+  
+---
+  
+<p align="center">
+  <a href="https://github.com/sooftware/KoSpeech#introduction">Introduction</a> •
+  <a href="https://github.com/sooftware/KoSpeech#introduction">Roadmap</a> •
+  <a href="sooftware.github.io/kospeech/">Docs</a> •
+  <a href="https://www.codefactor.io/repository/github/sooftware/KoSpeech">Codefactor</a> •
+  <a href="https://github.com/sooftware/KoSpeech/blob/main/LICENSE">License</a>
+  <a href="https://gitter.im/Korean-Speech-Recognition/community">Gitter</a>
+</p>
 
-***
-
-<p  align="center"> 
-     <a href="https://www.codefactor.io/repository/github/sooftware/kospeech">
-          <img src="https://www.codefactor.io/repository/github/sooftware/kospeech/badge"> 
-     </a>
-     <a href="https://github.com/sooftware/KoSpeech/blob/latest/LICENSE">
-          <img src="http://img.shields.io/badge/license-Apache--2.0-informational"> 
-     </a>
-     <a href="https://github.com/pytorch/pytorch">
-          <img src="http://img.shields.io/badge/framework-PyTorch-informational"> 
-     </a>
-     <a href="https://www.python.org/dev/peps/pep-0008/">
-          <img src="http://img.shields.io/badge/codestyle-PEP--8-informational"> 
-     </a>
-     <a href="https://sooftware.github.io/KoSpeech/">
-          <img src="http://img.shields.io/badge/docs-passing-success">
-     </a>
-     <a href="https://gitter.im/Korean-Speech-Recognition/community">
-          <img src="https://img.shields.io/gitter/room/sooftware/KoSpeech">
-     </a>
+---
+</div>
      
    
 ### What's New
