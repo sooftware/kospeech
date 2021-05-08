@@ -264,7 +264,7 @@ class SupervisedTrainer(object):
 
             if architecture not in ('rnnt', 'conformer_t'):
                 y_hats = output.max(-1)[1]
-                cer = self.metric(targets, y_hats)
+                cer = self.metric(targets[:, 1:], y_hats)
 
             loss.backward()
             self.optimizer.step(model)
@@ -353,7 +353,7 @@ class SupervisedTrainer(object):
                 target_list.append(self.vocab.label_to_string(targets[idx]))
                 predict_list.append(self.vocab.label_to_string(y_hats[idx].cpu().detach().numpy()))
                 
-            cer = self.metric(targets, y_hats)
+            cer = self.metric(targets[:, 1:], y_hats)
 
         self._save_result(target_list, predict_list)
         logger.info('validate() completed')
