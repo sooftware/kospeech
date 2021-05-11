@@ -320,7 +320,7 @@ class KospeechEncoderDecoderModel(BaseKospeechModel):
         return criterion
 
 
-class KospeechEncoderModel(BaseKospeechModel):
+class KospeechCTCModel(BaseKospeechModel):
     def __init__(
             self,
             configs: DictConfig,
@@ -329,7 +329,7 @@ class KospeechEncoderModel(BaseKospeechModel):
             wer_metric: WordErrorRate = WordErrorRate,
             cer_metric: CharacterErrorRate = CharacterErrorRate,
     ) -> None:
-        super(KospeechEncoderModel, self).__init__(configs, num_classes, vocab, wer_metric, cer_metric)
+        super(KospeechCTCModel, self).__init__(configs, num_classes, vocab, wer_metric, cer_metric)
         self.encoder = None
         self.decoder = None
         self.criterion = self.configure_criterion()

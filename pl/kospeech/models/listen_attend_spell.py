@@ -19,12 +19,12 @@ from typing import Tuple
 from kospeech.metrics import WordErrorRate, CharacterErrorRate
 from kospeech.models.decoder.lstm import DecoderLSTM
 from kospeech.models.encoder.lstm import EncoderLSTM
-from kospeech.models.kospeech_model import KospeechTransducerModel
+from kospeech.models.kospeech_model import KospeechEncoderDecoderModel
 from kospeech.vocabs import KsponSpeechVocabulary
 from kospeech.vocabs.vocab import Vocabulary
 
 
-class ListenAttendSpellModel(KospeechTransducerModel):
+class ListenAttendSpellModel(KospeechEncoderDecoderModel):
     """
     Deep Speech2 model with configurable encoder and decoder.
     Paper: https://arxiv.org/abs/1512.02595
@@ -69,7 +69,7 @@ class ListenAttendSpellModel(KospeechTransducerModel):
         )
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
-        return super(KospeechTransducerModel, self).forward(inputs, input_lengths)
+        return super(ListenAttendSpellModel, self).forward(inputs, input_lengths)
 
     def training_step(self, batch: tuple, batch_idx: int) -> Tensor:
         """
@@ -82,7 +82,7 @@ class ListenAttendSpellModel(KospeechTransducerModel):
         Returns:
             loss (torch.FloatTensor): Loss for training.
         """
-        return super(KospeechTransducerModel, self).training_step(batch, batch_idx)
+        return super(ListenAttendSpellModel, self).training_step(batch, batch_idx)
 
     def validation_step(self, batch: tuple, batch_idx: int) -> Tensor:
         """
@@ -95,7 +95,7 @@ class ListenAttendSpellModel(KospeechTransducerModel):
         Returns:
             loss (torch.FloatTensor): Loss for training.
         """
-        return super(KospeechTransducerModel, self).validation_step(batch, batch_idx)
+        return super(ListenAttendSpellModel, self).validation_step(batch, batch_idx)
 
     def test_step(self, batch: tuple, batch_idx: int) -> Tensor:
         """
@@ -108,4 +108,4 @@ class ListenAttendSpellModel(KospeechTransducerModel):
         Returns:
             loss (torch.FloatTensor): Loss for training.
         """
-        return super(KospeechTransducerModel, self).test_step(batch, batch_idx)
+        return super(ListenAttendSpellModel, self).test_step(batch, batch_idx)

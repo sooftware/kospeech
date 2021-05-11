@@ -18,12 +18,12 @@ from typing import Tuple
 
 from kospeech.metrics import WordErrorRate, CharacterErrorRate
 from kospeech.models.encoder.conformer import ConformerEncoder
-from kospeech.models.kospeech_model import KospeechEncoderModel
+from kospeech.models.kospeech_model import KospeechCTCModel
 from kospeech.vocabs import KsponSpeechVocabulary
 from kospeech.vocabs.vocab import Vocabulary
 
 
-class ConformerEncoderOnlyModel(KospeechEncoderModel):
+class ConformerEncoderOnlyModel(KospeechCTCModel):
     """
     Deep Speech2 model with configurable encoder and decoder.
     Paper: https://arxiv.org/abs/1512.02595

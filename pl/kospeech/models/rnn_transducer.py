@@ -18,7 +18,6 @@ from typing import Tuple
 
 from kospeech.metrics import WordErrorRate, CharacterErrorRate
 from kospeech.models.decoder.rnn_transducer import DecoderRNNT
-from kospeech.models.encoder.jasper import JasperEncoder
 from kospeech.models.encoder.rnn_transducer import EncoderRNNT
 from kospeech.models.kospeech_model import KospeechTransducerModel
 from kospeech.vocabs import KsponSpeechVocabulary
@@ -62,7 +61,7 @@ class RNNTransducerModel(KospeechTransducerModel):
             dropout_p=configs.dropout_p,
         )
 
-    def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
+    def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tensor:
         return super(KospeechTransducerModel, self).forward(inputs, input_lengths)
 
     def training_step(self, batch: tuple, batch_idx: int) -> Tensor:

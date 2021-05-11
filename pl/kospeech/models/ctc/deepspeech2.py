@@ -20,7 +20,7 @@ from kospeech.models.modules.convolution import DeepSpeech2Extractor
 from kospeech.models.modules.modules import LayerNorm, Linear, BNReluRNN
 
 
-class DeepSpeech2Encoder(nn.module):
+class DeepSpeech2(nn.module):
     """
     Deep Speech2 model with configurable encoder and decoder.
     Paper: https://arxiv.org/abs/1512.02595
@@ -53,7 +53,7 @@ class DeepSpeech2Encoder(nn.module):
             bidirectional: bool = True,
             activation: str = 'hardtanh',
     ):
-        super(DeepSpeech2Encoder, self).__init__()
+        super(DeepSpeech2, self).__init__()
         self.conv = DeepSpeech2Extractor(input_dim, activation=activation)
         self.rnn_layers = nn.ModuleList()
         rnn_output_size = rnn_hidden_dim << 1 if bidirectional else rnn_hidden_dim

@@ -17,13 +17,13 @@ from torch import Tensor
 from typing import Tuple
 
 from kospeech.metrics import WordErrorRate, CharacterErrorRate
-from kospeech.models.encoder.deepspeech2 import DeepSpeech2Encoder
-from kospeech.models.kospeech_model import KospeechEncoderModel
+from kospeech.models.ctc.deepspeech2 import DeepSpeech2
+from kospeech.models.kospeech_model import KospeechCTCModel
 from kospeech.vocabs import KsponSpeechVocabulary
 from kospeech.vocabs.vocab import Vocabulary
 
 
-class DeepSpeech2Model(KospeechEncoderModel):
+class DeepSpeech2Model(KospeechCTCModel):
     """
     Deep Speech2 model with configurable encoder and decoder.
     Paper: https://arxiv.org/abs/1512.02595
@@ -39,7 +39,7 @@ class DeepSpeech2Model(KospeechEncoderModel):
         super(DeepSpeech2Model, self).__init__(configs, num_classes, vocab, wer_metric, cer_metric)
 
     def build_encoder(self, configs: DictConfig, num_classes: int):
-        self.encoder = DeepSpeech2Encoder(
+        self.encoder = DeepSpeech2(
             input_dim=configs.input_dim,
             num_classes=num_classes,
             rnn_type=configs.rnn_type,

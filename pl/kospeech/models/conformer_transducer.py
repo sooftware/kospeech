@@ -68,7 +68,7 @@ class ConformerTransducerModel(KospeechTransducerModel):
         )
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
-        return super(KospeechTransducerModel, self).forward(inputs, input_lengths)
+        return super(ConformerTransducerModel, self).forward(inputs, input_lengths)
 
     def training_step(self, batch: tuple, batch_idx: int) -> Tensor:
         """
@@ -81,7 +81,7 @@ class ConformerTransducerModel(KospeechTransducerModel):
         Returns:
             loss (torch.FloatTensor): Loss for training.
         """
-        return super(KospeechTransducerModel, self).training_step(batch, batch_idx)
+        return super(ConformerTransducerModel, self).training_step(batch, batch_idx)
 
     def validation_step(self, batch: tuple, batch_idx: int) -> Tensor:
         """
@@ -94,7 +94,7 @@ class ConformerTransducerModel(KospeechTransducerModel):
         Returns:
             loss (torch.FloatTensor): Loss for training.
         """
-        return super(KospeechTransducerModel, self).validation_step(batch, batch_idx)
+        return super(ConformerTransducerModel, self).validation_step(batch, batch_idx)
 
     def test_step(self, batch: tuple, batch_idx: int) -> Tensor:
         """
@@ -107,4 +107,4 @@ class ConformerTransducerModel(KospeechTransducerModel):
         Returns:
             loss (torch.FloatTensor): Loss for training.
         """
-        return super(KospeechTransducerModel, self).test_step(batch, batch_idx)
+        return super(ConformerTransducerModel, self).test_step(batch, batch_idx)

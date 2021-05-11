@@ -19,7 +19,6 @@ from torch import Tensor
 from typing import Tuple
 
 from kospeech.models.modules.convolution import DeepSpeech2Extractor
-from kospeech.models.conformer_lstm import EncoderModel
 from kospeech.models.modules.modules import Linear, LayerNorm
 
 
@@ -82,7 +81,7 @@ class BNReluRNN(nn.Module):
         return outputs
 
 
-class DeepSpeech2(EncoderModel):
+class DeepSpeech2(nn.Module):
     """
     Deep Speech2 model with configurable encoder and decoder.
     Paper: https://arxiv.org/abs/1512.02595

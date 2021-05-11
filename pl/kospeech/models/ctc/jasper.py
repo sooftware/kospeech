@@ -81,7 +81,7 @@ class Jasper5x3Config:
         }
 
 
-class JasperEncoder(nn.Module):
+class Jasper(nn.Module):
     """
     Jasper: An End-to-End Convolutional Neural Acoustic Model
     Jasper (Just Another Speech Recognizer), an ASR model comprised of 54 layers proposed by NVIDIA.
@@ -102,7 +102,7 @@ class JasperEncoder(nn.Module):
     """
 
     def __init__(self, num_classes: int, version: str = '10x5') -> None:
-        super(JasperEncoder, self).__init__()
+        super(Jasper, self).__init__()
         supported_versions = {
             '10x5': Jasper10x5Config(num_classes, num_blocks=10, num_sub_blocks=5),
             '5x3': Jasper5x3Config(num_classes, num_blocks=5, num_sub_blocks=3),

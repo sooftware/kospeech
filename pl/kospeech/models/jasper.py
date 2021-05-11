@@ -17,13 +17,13 @@ from torch import Tensor
 from typing import Tuple
 
 from kospeech.metrics import WordErrorRate, CharacterErrorRate
-from kospeech.models.encoder.jasper import JasperEncoder
-from kospeech.models.kospeech_model import KospeechEncoderModel
+from kospeech.models.ctc.jasper import Jasper
+from kospeech.models.kospeech_model import KospeechCTCModel
 from kospeech.vocabs import KsponSpeechVocabulary
 from kospeech.vocabs.vocab import Vocabulary
 
 
-class JasperModel(KospeechEncoderModel):
+class JasperModel(KospeechCTCModel):
     """
     Deep Speech2 model with configurable encoder and decoder.
     Paper: https://arxiv.org/abs/1512.02595
@@ -39,7 +39,7 @@ class JasperModel(KospeechEncoderModel):
         super(JasperModel, self).__init__(configs, num_classes, vocab, wer_metric, cer_metric)
 
     def build_encoder(self, configs: DictConfig, num_classes: int):
-        self.encoder = JasperEncoder(
+        self.encoder = Jasper(
             num_classes=num_classes,
             version=configs.version,
         )
