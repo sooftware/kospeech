@@ -222,7 +222,7 @@ def build_conformer(
         half_step_residual=half_step_residual,
         device=device,
         decoder=decoder,
-    ))
+    )).to(device)
 
 
 def build_deepspeech2(
