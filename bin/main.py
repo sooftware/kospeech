@@ -78,10 +78,17 @@ def train(config: DictConfig) -> nn.DataParallel:
     torch.cuda.manual_seed_all(config.train.seed)
     device = check_envirionment(config.train.use_cuda)
   
-    vocab = KsponSpeechVocabulary(
-        f'../../../data/vocab/aihub_{config.train.output_unit}_vocabs.csv',
-        output_unit=config.train.output_unit,
-    )
+    if config.train.output_unit == 'subword':
+        vocab = KsponSpeechVocabulary(
+            '../../../data/vocab/kspon_sentencepiece.vocab',
+            output_unit=config.train.output_unit,
+            sp_model_path='../../../data/vocab/kspon_sentencepiece.model',
+        )
+    else:
+        vocab = KsponSpeechVocabulary(
+            f'../../../data/vocab/aihub_{config.train.output_unit}_vocabs.csv',
+            output_unit=config.train.output_unit,
+        )
             
     if not config.train.resume:
         epoch_time_step, trainset_list, validset = split_dataset(config, config.train.transcripts_path, vocab)

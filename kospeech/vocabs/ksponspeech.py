@@ -19,6 +19,9 @@ from kospeech.vocabs import Vocabulary
 class KsponSpeechVocabulary(Vocabulary):
     def __init__(self, vocab_path, output_unit: str = 'character', sp_model_path=None):
         super(KsponSpeechVocabulary, self).__init__()
+        self.vocab_path = vocab_path
+        self.output_unit = output_unit
+
         if output_unit == 'subword':
             import sentencepiece as spm
             self.sp = spm.SentencePieceProcessor()
@@ -27,16 +30,13 @@ class KsponSpeechVocabulary(Vocabulary):
             self.pad_id = 0
             self.sos_id = 1
             self.eos_id = 2
-            self.blank_id = len(self)
+            self.blank_id = 3
         else:
             self.vocab_dict, self.id_dict = self.load_vocab(vocab_path, encoding='utf-8')
             self.sos_id = int(self.vocab_dict['<sos>'])
             self.eos_id = int(self.vocab_dict['<eos>'])
             self.pad_id = int(self.vocab_dict['<pad>'])
             self.blank_id = int(self.vocab_dict['<blank>'])
-
-        self.vocab_path = vocab_path
-        self.output_unit = output_unit
 
     def __len__(self):
         if self.output_unit == 'subword':
