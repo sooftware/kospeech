@@ -32,6 +32,7 @@ class TrainConfig:
 
     num_workers: int = 4
     use_cuda: bool = True
+    num_threads: int = 2
 
     init_lr_scale: float = 0.01
     final_lr_scale: float = 0.05
