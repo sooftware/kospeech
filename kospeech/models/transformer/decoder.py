@@ -21,14 +21,8 @@ from kospeech.models.attention import MultiHeadAttention
 from kospeech.models.decoder import BaseDecoder
 from kospeech.models.modules import Linear, LayerNorm
 from kospeech.models.transformer.sublayers import PositionwiseFeedForward
-from kospeech.models.transformer.embeddings import (
-    Embedding,
-    PositionalEncoding,
-)
-from kospeech.models.transformer.mask import (
-    get_decoder_self_attn_mask,
-    get_attn_pad_mask,
-)
+from kospeech.models.transformer.embeddings import Embedding, PositionalEncoding
+from kospeech.models.transformer.mask import get_attn_pad_mask, get_attn_subsequent_mask
 
 
 class TransformerDecoderLayer(nn.Module):
@@ -138,7 +132,44 @@ class TransformerDecoder(BaseDecoder):
             Linear(d_model, num_classes, bias=False),
         )
 
-    def forward(self, targets: Tensor, encoder_outputs: Tensor, encoder_output_lengths: Tensor) -> Tensor:
+    def forward_step(
+            self,
+            decoder_inputs,
+            decoder_input_lengths,
+            encoder_outputs,
+            encoder_output_lengths,
+            positional_encoding_length,
+    ) -> Tensor:
+        dec_self_attn_pad_mask = get_attn_pad_mask(
+            decoder_inputs, decoder_input_lengths, decoder_inputs.size(1)
+        )
+        dec_self_attn_subsequent_mask = get_attn_subsequent_mask(decoder_inputs)
+        self_attn_mask = torch.gt((dec_self_attn_pad_mask + dec_self_attn_subsequent_mask), 0)
+
+        encoder_attn_mask = get_attn_pad_mask(
+            encoder_outputs, encoder_output_lengths, decoder_inputs.size(1)
+        )
+
+        outputs = self.embedding(decoder_inputs) + self.positional_encoding(positional_encoding_length)
+        outputs = self.input_dropout(outputs)
+
+        for layer in self.layers:
+            outputs, self_attn, memory_attn = layer(
+                inputs=outputs,
+                encoder_outputs=encoder_outputs,
+                self_attn_mask=self_attn_mask,
+                encoder_attn_mask=encoder_attn_mask,
+            )
+
+        return outputs
+
+    def forward(
+            self,
+            targets: Tensor,
+            encoder_outputs: Tensor,
+            encoder_output_lengths: Tensor,
+            target_lengths: Tensor,
+    ) -> Tensor:
         """
         Forward propagate a `encoder_outputs` for training.
 
@@ -151,38 +182,42 @@ class TransformerDecoder(BaseDecoder):
         Returns:
             * predicted_log_probs (torch.FloatTensor): Log probability of model predictions.
         """
-        batch_size = targets.size(0)
+        batch_size = encoder_outputs.size(0)
+
         targets = targets[targets != self.eos_id].view(batch_size, -1)
         target_length = targets.size(1)
 
-        self_attn_mask = get_decoder_self_attn_mask(targets, targets, self.pad_id)
-        encoder_outputs_mask = get_attn_pad_mask(encoder_outputs, encoder_output_lengths, target_length)
-
-        outputs = self.embedding(targets) + self.positional_encoding(target_length)
-        outputs = self.input_dropout(outputs)
-
-        for layer in self.layers:
-            outputs, self_attn, memory_attn = layer(
-                inputs=outputs,
-                encoder_outputs=encoder_outputs,
-                self_attn_mask=self_attn_mask,
-                encoder_outputs_mask=encoder_outputs_mask,
-            )
-
-        predicted_log_probs = self.fc(outputs).log_softmax(dim=-1)
-
-        return predicted_log_probs
+        outputs = self.forward_step(
+            decoder_inputs=targets,
+            decoder_input_lengths=target_lengths,
+            encoder_outputs=encoder_outputs,
+            encoder_output_lengths=encoder_output_lengths,
+            positional_encoding_length=target_length,
+        )
+        return self.fc(outputs).log_softmax(dim=-1)
 
     @torch.no_grad()
     def decode(self, encoder_outputs: Tensor, encoder_output_lengths: Tensor) -> Tensor:
+        logits = list()
         batch_size = encoder_outputs.size(0)
 
-        predictions = encoder_outputs.new_zeros(batch_size, self.max_length).long()
-        predictions[:, 0] = self.sos_id
+        input_var = encoder_outputs.new_zeros(batch_size, self.max_length).long()
+        input_var = input_var.fill_(self.pad_id)
+        input_var[:, 0] = self.sos_id
 
         for di in range(1, self.max_length):
-            step_outputs = self.forward(predictions, encoder_outputs, encoder_output_lengths)
-            step_outputs = step_outputs.max(dim=-1, keepdim=False)[1]
-            predictions[:, di] = step_outputs[:, di]
+            input_lengths = torch.IntTensor(batch_size).fill_(di)
 
-        return predictions
+            outputs = self.forward_step(
+                decoder_inputs=input_var[:, :di],
+                decoder_input_lengths=input_lengths,
+                encoder_outputs=encoder_outputs,
+                encoder_output_lengths=encoder_output_lengths,
+                positional_encoding_length=di,
+            )
+            step_output = self.fc(outputs).log_softmax(dim=-1)
+
+            logits.append(step_output[:, -1, :])
+            input_var = logits[-1].topk(1)[1]
+
+        return torch.stack(logits, dim=1)

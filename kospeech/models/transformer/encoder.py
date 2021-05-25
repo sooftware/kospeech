@@ -137,11 +137,12 @@ class TransformerEncoder(BaseEncoder):
         """
         encoder_log_probs = None
 
-        features, output_lengths = self.conv(inputs, input_lengths)
+        conv_outputs, output_lengths = self.conv(inputs, input_lengths)
 
-        self_attn_mask = get_attn_pad_mask(features, output_lengths, features.size(1))
+        self_attn_mask = get_attn_pad_mask(conv_outputs, output_lengths, conv_outputs.size(1))
 
-        outputs = self.input_layer_norm(self.input_proj(features)) + self.positional_encoding(features.size(1))
+        outputs = self.input_layer_norm(self.input_proj(conv_outputs))
+        outputs += self.positional_encoding(outputs.size(1))
         outputs = self.input_dropout(outputs)
 
         for layer in self.layers:

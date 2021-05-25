@@ -402,7 +402,7 @@ class SupervisedTrainer(object):
                 raise ValueError(f"Unsupported Criterion: {self.criterion}")
 
         elif architecture == 'transformer':
-            outputs, encoder_output_lengths, encoder_log_probs = model(inputs, input_lengths, targets)
+            outputs, encoder_output_lengths, encoder_log_probs = model(inputs, input_lengths, targets, target_lengths)
 
             if isinstance(self.criterion, LabelSmoothedCrossEntropyLoss):
                 loss = self.criterion(

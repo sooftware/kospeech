@@ -114,6 +114,7 @@ class SpeechTransformer(EncoderDecoderModel):
             inputs: Tensor,
             input_lengths: Tensor,
             targets: Tensor,
+            target_lengths: Tensor,
     ) -> Tuple[Tensor, Tensor, Tensor]:
         """
         Forward propagate a `inputs` and `targets` pair for training.
@@ -133,5 +134,5 @@ class SpeechTransformer(EncoderDecoderModel):
                 If joint_ctc_attention is False, return None.
         """
         encoder_outputs, output_lengths, encoder_log_probs = self.encoder(inputs, input_lengths)
-        predicted_log_probs = self.decoder(targets, encoder_outputs, output_lengths)
+        predicted_log_probs = self.decoder(targets, encoder_outputs, output_lengths, target_lengths)
         return predicted_log_probs, output_lengths, encoder_log_probs
