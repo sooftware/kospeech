@@ -37,7 +37,6 @@
 ### Note
   
 - Not long ago, I modified a lot of the code, but I was personally busy, so I couldn't test all the cases. If there is an error, please feel free to give me a feedback.
-- Currently, beam search may not work properly.  
 - Subword and Grapheme unit currently not tested.
   
 ### ***[KoSpeech:  Open-Source Toolkit for End-to-End Korean Speech Recognition \[Paper\]](https://www.sciencedirect.com/science/article/pii/S2665963821000026)***
