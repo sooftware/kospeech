@@ -106,7 +106,6 @@ class TransformerEncoder(BaseEncoder):
         self.num_layers = num_layers
         self.num_heads = num_heads
         self.input_proj = Linear(self.conv_output_dim, d_model)
-        self.input_layer_norm = LayerNorm(d_model)
         self.input_dropout = nn.Dropout(p=dropout_p)
         self.positional_encoding = PositionalEncoding(d_model)
         self.layers = nn.ModuleList([
@@ -141,7 +140,7 @@ class TransformerEncoder(BaseEncoder):
 
         self_attn_mask = get_attn_pad_mask(conv_outputs, output_lengths, conv_outputs.size(1))
 
-        outputs = self.input_layer_norm(self.input_proj(conv_outputs))
+        outputs = self.input_proj(conv_outputs)
         outputs += self.positional_encoding(outputs.size(1))
         outputs = self.input_dropout(outputs)
 
