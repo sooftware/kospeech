@@ -22,21 +22,20 @@ def train_sentencepiece(transcripts, datapath: str = './data', vocab_size: int =
     if not os.path.exists(datapath):
         os.mkdir(datapath)
 
-    with open(f'{datapath}/sentencepiece_input.txt', 'w') as f:
+    with open('sentencepiece_input.txt', 'w', encoding="utf-8") as f:
         for transcript in transcripts:
-            transcript = transcript.upper()
             f.write(f'{transcript}\n')
 
     spm.SentencePieceTrainer.Train(
-        f'--input={datapath}/sentencepiece_input.txt '
-        '--model_prefix=kspon_sentencepiece '
-        f'--vocab_size={vocab_size} '
-        '--model_type=bpe '
-        '--max_sentence_length=9999 '
-        '--hard_vocab_limit=false'
-        '--pad_id=0'
-        '--bos_id=1'
-        '--eos_id=2'
+        f"--input={datapath}/sentencepiece_input.txt "
+        f"--model_prefix=kspon_sentencepiece "
+        f"--vocab_size={vocab_size} "
+        f"--model_type=bpe "
+        f"--pad_id=0 "
+        f"--bos_id=1 "
+        f"--eos_id=2 "
+        f"--unk_id=3 "
+        f"--user_defined_symbols={blank_token}"
     )
 
 
