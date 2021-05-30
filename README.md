@@ -25,6 +25,7 @@
      
    
 ### What's New
+- May 2021: Fix LayerNorm Error, Subword Error
 - Febuary 2021: Update Documentation
 - Febuary 2021: Add RNN-Transducer model
 - January 2021: Release v1.3
