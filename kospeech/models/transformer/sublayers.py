@@ -14,7 +14,7 @@
 
 import torch.nn as nn
 from torch import Tensor
-from kospeech.models.modules import Linear, LayerNorm
+from kospeech.models.modules import Linear
 
 
 class AddNorm(nn.Module):
@@ -26,7 +26,7 @@ class AddNorm(nn.Module):
     def __init__(self, sublayer: nn.Module, d_model: int = 512) -> None:
         super(AddNorm, self).__init__()
         self.sublayer = sublayer
-        self.layer_norm = LayerNorm(d_model)
+        self.layer_norm = nn.LayerNorm(d_model)
 
     def forward(self, *args):
         residual = args[0]

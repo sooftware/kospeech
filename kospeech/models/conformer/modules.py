@@ -20,7 +20,7 @@ from typing import Optional
 from kospeech.models.activation import GLU, Swish
 from kospeech.models.attention import RelativeMultiHeadAttention
 from kospeech.models.convolution import PointwiseConv1d, DepthwiseConv1d
-from kospeech.models.modules import LayerNorm, Transpose, Linear
+from kospeech.models.modules import Transpose, Linear
 from kospeech.models.transformer.embeddings import PositionalEncoding
 
 
@@ -52,7 +52,7 @@ class FeedForwardModule(nn.Module):
         super(FeedForwardModule, self).__init__()
         self.device = device
         self.sequential = nn.Sequential(
-            LayerNorm(encoder_dim),
+            nn.LayerNorm(encoder_dim),
             Linear(encoder_dim, encoder_dim * expansion_factor, bias=True),
             Swish(),
             nn.Dropout(p=dropout_p),
@@ -96,7 +96,7 @@ class ConformerConvModule(nn.Module):
 
         self.device = device
         self.sequential = nn.Sequential(
-            LayerNorm(in_channels),
+            nn.LayerNorm(in_channels),
             Transpose(shape=(1, 2)),
             PointwiseConv1d(in_channels, in_channels * expansion_factor, stride=1, padding=0, bias=True),
             GLU(dim=1),
@@ -141,7 +141,7 @@ class MultiHeadedSelfAttentionModule(nn.Module):
     ) -> None:
         super(MultiHeadedSelfAttentionModule, self).__init__()
         self.positional_encoding = PositionalEncoding(d_model)
-        self.layer_norm = LayerNorm(d_model)
+        self.layer_norm = nn.LayerNorm(d_model)
         self.attention = RelativeMultiHeadAttention(d_model, num_heads, dropout_p)
         self.dropout = nn.Dropout(p=dropout_p)
         self.device = device

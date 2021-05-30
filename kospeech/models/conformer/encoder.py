@@ -19,11 +19,7 @@ from typing import Tuple
 
 from kospeech.models.convolution import Conv2dSubsampling
 from kospeech.models.encoder import TransducerEncoder
-from kospeech.models.modules import (
-    LayerNorm,
-    ResidualConnectionModule,
-    Linear,
-)
+from kospeech.models.modules import ResidualConnectionModule, Linear
 from kospeech.models.conformer.modules import (
     FeedForwardModule,
     MultiHeadedSelfAttentionModule,
@@ -112,7 +108,7 @@ class ConformerBlock(nn.Module):
                 ),
                 module_factor=self.feed_forward_residual_factor,
             ),
-            LayerNorm(encoder_dim),
+            nn.LayerNorm(encoder_dim),
         )
 
     def forward(self, inputs: Tensor) -> Tensor:

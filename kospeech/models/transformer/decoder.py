@@ -19,7 +19,7 @@ from typing import Optional, Tuple
 
 from kospeech.models.attention import MultiHeadAttention
 from kospeech.models.decoder import BaseDecoder
-from kospeech.models.modules import Linear, LayerNorm
+from kospeech.models.modules import Linear
 from kospeech.models.transformer.sublayers import PositionwiseFeedForward
 from kospeech.models.transformer.embeddings import Embedding, PositionalEncoding
 from kospeech.models.transformer.mask import get_attn_pad_mask, get_attn_subsequent_mask
@@ -45,9 +45,9 @@ class TransformerDecoderLayer(nn.Module):
             dropout_p: float = 0.3,         # probability of dropout
     ) -> None:
         super(TransformerDecoderLayer, self).__init__()
-        self.self_attention_prenorm = LayerNorm(d_model)
-        self.encoder_attention_prenorm = LayerNorm(d_model)
-        self.feed_forward_prenorm = LayerNorm(d_model)
+        self.self_attention_prenorm = nn.LayerNorm(d_model)
+        self.encoder_attention_prenorm = nn.LayerNorm(d_model)
+        self.feed_forward_prenorm = nn.LayerNorm(d_model)
         self.self_attention = MultiHeadAttention(d_model, num_heads)
         self.encoder_attention = MultiHeadAttention(d_model, num_heads)
         self.feed_forward = PositionwiseFeedForward(d_model, d_ff, dropout_p)
@@ -128,7 +128,7 @@ class TransformerDecoder(BaseDecoder):
             ) for _ in range(num_layers)
         ])
         self.fc = nn.Sequential(
-            LayerNorm(d_model),
+            nn.LayerNorm(d_model),
             Linear(d_model, num_classes, bias=False),
         )
 

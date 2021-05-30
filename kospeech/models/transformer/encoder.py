@@ -21,11 +21,7 @@ from kospeech.models.encoder import BaseEncoder
 from kospeech.models.transformer.embeddings import PositionalEncoding
 from kospeech.models.transformer.mask import get_attn_pad_mask
 from kospeech.models.transformer.sublayers import PositionwiseFeedForward
-from kospeech.models.modules import (
-    Linear,
-    LayerNorm,
-    Transpose,
-)
+from kospeech.models.modules import Linear, Transpose
 
 
 class TransformerEncoderLayer(nn.Module):
@@ -48,8 +44,8 @@ class TransformerEncoderLayer(nn.Module):
             dropout_p: float = 0.3,         # probability of dropout
     ) -> None:
         super(TransformerEncoderLayer, self).__init__()
-        self.attention_prenorm = LayerNorm(d_model)
-        self.feed_forward_prenorm = LayerNorm(d_model)
+        self.attention_prenorm = nn.LayerNorm(d_model)
+        self.feed_forward_prenorm = nn.LayerNorm(d_model)
         self.self_attention = MultiHeadAttention(d_model, num_heads)
         self.feed_forward = PositionwiseFeedForward(d_model, d_ff, dropout_p)
 
@@ -106,6 +102,7 @@ class TransformerEncoder(BaseEncoder):
         self.num_layers = num_layers
         self.num_heads = num_heads
         self.input_proj = Linear(self.conv_output_dim, d_model)
+        self.input_norm = nn.LayerNorm(d_model)
         self.input_dropout = nn.Dropout(p=dropout_p)
         self.positional_encoding = PositionalEncoding(d_model)
         self.layers = nn.ModuleList([
@@ -140,7 +137,7 @@ class TransformerEncoder(BaseEncoder):
 
         self_attn_mask = get_attn_pad_mask(conv_outputs, output_lengths, conv_outputs.size(1))
 
-        outputs = self.input_proj(conv_outputs)
+        outputs = self.input_norm(self.input_proj(conv_outputs))
         outputs += self.positional_encoding(outputs.size(1))
         outputs = self.input_dropout(outputs)
 
