@@ -169,7 +169,14 @@ class BeamDecoderRNN(BaseDecoder):
         encoder_outputs = encoder_outputs.view(self.beam_size, batch_size, -1, encoder_dim)
         encoder_outputs = encoder_outputs.transpose(0, 1)
         encoder_outputs = encoder_outputs.reshape(batch_size * self.beam_size, -1, encoder_dim)
-        hidden_states = self._inflate(hidden_states, self.beam_size, dim=1)
+        
+        if attn is not None:
+            attn = self._inflate(attn, self.beam_size, dim=0)
+        
+        if isinstance(hidden_states, tuple):
+            hidden_states = tuple([self._inflate(h, self.beam_size, 1) for h in hidden_states])
+        else:
+            hidden_states = self._inflate(hidden_states, self.beam_size, 1)
 
         for di in range(max_length - 1):
             if self._is_all_finished(self.beam_size):
