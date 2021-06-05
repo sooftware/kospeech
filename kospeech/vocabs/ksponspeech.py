@@ -34,6 +34,7 @@ class KsponSpeechVocabulary(Vocabulary):
             self.eos_id = int(self.vocab_dict['<eos>'])
             self.pad_id = int(self.vocab_dict['<pad>'])
             self.blank_id = int(self.vocab_dict['<blank>'])
+            self.labels = self.vocab_dict.keys()
 
         self.vocab_path = vocab_path
         self.output_unit = output_unit

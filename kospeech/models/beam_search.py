@@ -127,7 +127,6 @@ class BeamSearchBaseDecoder(nn.Module):
         raise NotImplementedError
 
 
-
 class BeamDecoderRNN(BaseDecoder):
     """ Beam Search Decoder RNN """
     def __init__(self, decoder: DecoderRNN, beam_size: int, batch_size: int):
@@ -244,7 +243,8 @@ class BeamTransformerDecoder(BeamSearchBaseDecoder):
         super(BeamTransformerDecoder, self).__init__(decoder, beam_size, batch_size)
         self.use_cuda = True if torch.cuda.is_available() else False
 
-    def forward(self, encoder_outputs: torch.FloatTensor, encoder_output_lengths: torch.FloatTensor):
+    @torch.no_grad()
+    def decode(self, encoder_outputs: torch.FloatTensor, encoder_output_lengths: torch.FloatTensor):
         batch_size = encoder_outputs.size(0)
 
         decoder_inputs = torch.IntTensor(batch_size, self.decoder.max_length).fill_(self.sos_id).long()
@@ -390,7 +390,8 @@ class BeamCTCDecoder(nn.Module):
         self.decoder = CTCBeamDecoder(labels, lm_path, alpha, beta, cutoff_top_n,
                                       cutoff_prob, beam_size, num_processes, blank_id)
 
-    def forward(self, logits, sizes=None):
+    @torch.no_grad()
+    def decode(self, logits, sizes=None):
         r"""
         Decodes probability output using ctcdecode package.
 

@@ -15,6 +15,10 @@
 import pandas as pd
 import torch.nn as nn
 from queue import Queue
+
+from kospeech.models.beam_search import BeamDecoderRNN, BeamCTCDecoder, BeamTransformerDecoder
+from kospeech.models.model import EncoderDecoderModel, EncoderModel
+from kospeech.models.transformer.decoder import TransformerDecoder
 from kospeech.utils import logger
 from kospeech.metrics import (
     CharacterErrorRate,
@@ -25,7 +29,7 @@ from kospeech.models import (
     ListenAttendSpell,
     SpeechTransformer,
     Jasper,
-    Conformer,
+    Conformer, DecoderRNN,
 )
 
 
@@ -81,21 +85,18 @@ class GreedySearch(object):
 
         while True:
             inputs, targets, input_lengths, target_lengths = queue.get()
+
             if inputs.shape[0] == 0:
                 break
 
             inputs = inputs.to(device)
             targets = targets.to(device)
 
-            y_hats = model.greedy_search(inputs, input_lengths, device)
+            y_hats = model.recognize(inputs, input_lengths)
 
             for idx in range(targets.size(0)):
-                self.target_list.append(
-                    self.vocab.label_to_string(targets[idx])
-                )
-                self.predict_list.append(
-                    self.vocab.label_to_string(y_hats[idx].cpu().detach().numpy())
-                )
+                self.target_list.append(self.vocab.label_to_string(targets[idx]))
+                self.predict_list.append(self.vocab.label_to_string(y_hats[idx].cpu().detach().numpy()))
 
             cer = self.metric(targets[:, 1:], y_hats)
             total_sent_num += targets.size(0)
@@ -118,15 +119,55 @@ class GreedySearch(object):
 
 class BeamSearch(GreedySearch):
     """ Provides beam search decoding. """
-    def __init__(self, vocab, k):
+    def __init__(self, vocab, k: int, batch_size: int):
         super(BeamSearch, self).__init__(vocab)
         self.k = k
+        self.batch_size = batch_size
 
     def search(self, model: nn.Module, queue: Queue, device: str, print_every: int) -> float:
         if isinstance(model, nn.DataParallel):
-            topk_decoder = TopKDecoder(model.module.decoder, self.k)
+            if isinstance(model.module, EncoderDecoderModel):
+                if isinstance(model.module.decoder, DecoderRNN):
+                    topk_decoder = BeamDecoderRNN(
+                        model.module.decoder,
+                        beam_size=self.k,
+                        batch_size=self.batch_size,
+                    )
+                elif isinstance(model.module.decoder, TransformerDecoder):
+                    topk_decoder = BeamTransformerDecoder(
+                        model.module.decoder,
+                        beam_size=self.k,
+                        batch_size=self.batch_size,
+                    )
+                else:
+                    raise ValueError("This model unsupport beam search.")
+            elif isinstance(model.module, EncoderModel):
+                topk_decoder = BeamCTCDecoder(labels=self.vocab.labels)
+
+            else:
+                raise ValueError("This model unsupport beam search.")
+
             model.module.set_decoder(topk_decoder)
         else:
-            topk_decoder = TopKDecoder(model.decoder, self.k)
+            if isinstance(model, EncoderDecoderModel):
+                if isinstance(model.decoder, DecoderRNN):
+                    topk_decoder = BeamDecoderRNN(
+                        model.module.decoder,
+                        beam_size=self.k,
+                        batch_size=self.batch_size,
+                    )
+                elif isinstance(model.decoder, TransformerDecoder):
+                    topk_decoder = BeamTransformerDecoder(
+                        model.module.decoder,
+                        beam_size=self.k,
+                        batch_size=self.batch_size,
+                    )
+                else:
+                    raise ValueError("This model unsupport beam search.")
+            elif isinstance(model, EncoderModel):
+                topk_decoder = BeamCTCDecoder(labels=self.vocab.labels)
+            else:
+                raise ValueError("This model unsupport beam search.")
+
             model.set_decoder(topk_decoder)
         return super(BeamSearch, self).search(model, queue, device, print_every)

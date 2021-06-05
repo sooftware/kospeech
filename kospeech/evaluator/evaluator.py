@@ -43,11 +43,11 @@ class Evaluator(object):
         self.print_every = print_every
 
         if decode == 'greedy':
-            self.decoder = GreedySearch(vocab)
+            self.search = GreedySearch(vocab)
 
         elif decode == 'beam':
             assert beam_size > 1, "beam_size should be greater than 1. You can choose `greedy` search"
-            self.decoder = BeamSearch(vocab, beam_size)
+            self.search = BeamSearch(vocab, beam_size, batch_size)
 
         else:
             raise ValueError("Unsupported decode : {0}".format(decode))
@@ -60,8 +60,8 @@ class Evaluator(object):
         eval_loader = AudioDataLoader(self.dataset, eval_queue, self.batch_size, thread_id=0, pad_id=0)
         eval_loader.start()
 
-        cer = self.decoder.search(model, eval_queue, self.device, self.print_every)
-        self.decoder.save_result('data/train_result/%s.csv' % type(self.decoder).__name__)
+        cer = self.search.search(model, eval_queue, self.device, self.print_every)
+        self.search.save_result('data/train_result/%s.csv' % type(self.decoder).__name__)
 
         logger.info('Evaluate CER: %s' % cer)
         logger.info('evaluate() completed')
