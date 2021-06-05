@@ -20,16 +20,10 @@ from kospeech.models.beam_search import BeamDecoderRNN, BeamCTCDecoder, BeamTran
 from kospeech.models.model import EncoderDecoderModel, EncoderModel
 from kospeech.models.transformer.decoder import TransformerDecoder
 from kospeech.utils import logger
+from kospeech.models import DecoderRNN
 from kospeech.metrics import (
     CharacterErrorRate,
     WordErrorRate
-)
-from kospeech.models import (
-    DeepSpeech2,
-    ListenAttendSpell,
-    SpeechTransformer,
-    Jasper,
-    Conformer, DecoderRNN,
 )
 
 
@@ -54,31 +48,6 @@ class GreedySearch(object):
 
         if isinstance(model, nn.DataParallel):
             model = model.module
-            if isinstance(model, ListenAttendSpell):
-                architecture = 'las'
-            elif isinstance(model, SpeechTransformer):
-                architecture = 'transformer'
-            elif isinstance(model, DeepSpeech2):
-                architecture = 'deepspeech2'
-            elif isinstance(model, Jasper):
-                architecture = 'jasper'
-            elif isinstance(model, Conformer):
-                architecture = 'conformer'
-            else:
-                raise ValueError("Unsupported model : {0}".format(type(model)))
-        else:
-            if isinstance(model, ListenAttendSpell):
-                architecture = 'las'
-            elif isinstance(model, SpeechTransformer):
-                architecture = 'transformer'
-            elif isinstance(model, DeepSpeech2):
-                architecture = 'deepspeech2'
-            elif isinstance(model, Jasper):
-                architecture = 'jasper'
-            elif isinstance(model, Conformer):
-                architecture = 'conformer'
-            else:
-                raise ValueError("Unsupported model : {0}".format(type(model)))
 
         model.eval()
         model.to(device)
