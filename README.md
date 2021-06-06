@@ -23,6 +23,7 @@
 ---
 </div>
      
+#### This repository archived. Further development is under way [here](https://github.com/sooftware/openspeech).
    
 ### What's New
 - May 2021: Fix LayerNorm Error, Subword Error
