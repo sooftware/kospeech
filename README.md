@@ -11,11 +11,11 @@
 ---
   
 <p align="center">
-  <a href="https://github.com/sooftware/KoSpeech#introduction">Introduction</a> •
-  <a href="https://github.com/sooftware/KoSpeech#introduction">Roadmap</a> •
+  <a href="https://github.com/sooftware/kospeech#introduction">Introduction</a> •
+  <a href="https://github.com/sooftware/kospeech#introduction">Roadmap</a> •
   <a href="sooftware.github.io/kospeech/">Docs</a> •
-  <a href="https://www.codefactor.io/repository/github/sooftware/KoSpeech">Codefactor</a> •
-  <a href="https://github.com/sooftware/KoSpeech/blob/main/LICENSE">License</a> •
+  <a href="https://www.codefactor.io/repository/github/sooftware/kospeech">Codefactor</a> •
+  <a href="https://github.com/sooftware/kospeech/blob/main/LICENSE">License</a> •
   <a href="https://gitter.im/Korean-Speech-Recognition/community">Gitter</a> •
   <a href="https://www.sciencedirect.com/science/article/pii/S2665963821000026">Paper</a>
 </p>
@@ -69,7 +69,7 @@ It is based on the above papers, but there may be other parts of the model imple
 |KsponSpeech|*Required*    |Grapheme   |[download](https://drive.google.com/file/d/1awhfTpqAaDs7K5R9npvFoqeMYWiUtGtq/view?usp=sharing)|   
 |LibriSpeech|*Unrequired*  |Subword    |[download](https://drive.google.com/file/d/1kTeQ93FU7B6bzIXlQLV6du5g-7LEukGH/view?usp=sharing)|  
    
-KsponSpeech needs permission from [AI Hub](https://aihub.or.kr/). Please send e-mail including the approved screenshot to sh951011@gmail.com. It may be slow to reply, so it is recommended to execute [preprocessing code](https://github.com/sooftware/KoSpeech/tree/master/dataset/kspon).
+KsponSpeech needs permission from [AI Hub](https://aihub.or.kr/). Please send e-mail including the approved screenshot to sh951011@gmail.com. It may be slow to reply, so it is recommended to execute [preprocessing code](https://github.com/sooftware/kospeech/tree/master/dataset/kspon).
   
 ## Introduction
   
@@ -140,10 +140,10 @@ We use [Hydra](https://github.com/facebookresearch/hydra) to control all the tra
   
 ### Preparing KsponSpeech Dataset (LibriSpeech also supports)
   
-Download from [here](https://github.com/sooftware/KoSpeech#pre-processed-transcripts) or refer to the following to preprocess.
+Download from [here](https://github.com/sooftware/kospeech#pre-processed-transcripts) or refer to the following to preprocess.
   
-- KsponSpeech : [Check this page](https://github.com/sooftware/KoSpeech/tree/master/dataset/kspon)
-- LibriSpeech : [Check this page](https://github.com/sooftware/KoSpeech/tree/master/dataset/libri)
+- KsponSpeech : [Check this page](https://github.com/sooftware/kospeech/tree/master/dataset/kspon)
+- LibriSpeech : [Check this page](https://github.com/sooftware/kospeech/tree/master/dataset/libri)
   
 ### Training KsponSpeech Dataset
   
@@ -281,7 +281,7 @@ We follow [PEP-8](https://www.python.org/dev/peps/pep-0008/) for code style. Esp
 *[espnet/espnet](https://github.com/espnet/espnet)*
    
 ### License
-This project is licensed under the Apache-2.0 LICENSE - see the [LICENSE.md](https://github.com/sooftware/KoSpeech/blob/master/LICENSE) file for details
+This project is licensed under the Apache-2.0 LICENSE - see the [LICENSE.md](https://github.com/sooftware/kospeech/blob/master/LICENSE) file for details
   
 ## Citation
   
