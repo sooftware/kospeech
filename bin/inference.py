@@ -47,8 +47,8 @@ def parse_audio(audio_path: str, del_silence: bool = False, audio_extension: str
 
 
 parser = argparse.ArgumentParser(description='KoSpeech')
-parser.add_argument('--model_path', type=str, require=True)
-parser.add_argument('--audio_path', type=str, require=True)
+parser.add_argument('--model_path', type=str, required=True)
+parser.add_argument('--audio_path', type=str, required=True)
 parser.add_argument('--device', type=str, require=False, default='cpu')
 opt = parser.parse_args()
 
@@ -65,12 +65,12 @@ if isinstance(model, ListenAttendSpell):
     model.encoder.device = opt.device
     model.decoder.device = opt.device
 
-    y_hats = model.greedy_search(feature.unsqueeze(0), input_length, opt.device)
+    y_hats = model.recognize(feature.unsqueeze(0), input_length)
 elif isinstance(model, DeepSpeech2):
     model.device = opt.device
-    y_hats = model.greedy_search(feature.unsqueeze(0), input_length, opt.device)
+    y_hats = model.recognize(feature.unsqueeze(0), input_length)
 elif isinstance(model, SpeechTransformer) or isinstance(model, Jasper) or isinstance(model, Conformer):
-    y_hats = model.greedy_search(feature.unsqueeze(0), input_length, opt.device)
+    y_hats = model.recognize(feature.unsqueeze(0), input_length)
 
 sentence = vocab.label_to_string(y_hats.cpu().detach().numpy())
 print(sentence)
