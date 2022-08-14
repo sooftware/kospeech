@@ -29,7 +29,7 @@ class ModelConfig:
 
 from kospeech.models.deepspeech2.model import DeepSpeech2
 from kospeech.models.las.encoder import EncoderRNN
-from kospeech.models.las.decoder import DecoderRNN, BeamDecoderRNN
+from kospeech.models.las.decoder import DecoderRNN
 from kospeech.models.rnnt import RNNTransducerConfig
 from kospeech.models.rnnt.model import RNNTransducer
 from kospeech.models.las.model import ListenAttendSpell
