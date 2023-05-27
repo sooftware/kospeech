@@ -25,7 +25,7 @@
      
 #### This repository archived. If the reason why you found this repo is below, I will recommend a different repository for each reason.
 
-- I want to try training the speech recognition model myself or look at the internal code! **→** [OpenSpeech](https://github.com/openspeech-team/openspeech)
+- I want to train my own voice recognition model or study internal code! **→** [OpenSpeech](https://github.com/openspeech-team/openspeech)
 - I want to test the trained Korean speech recognition model right away! **→** [Pororo ASR](https://github.com/kakaobrain/pororo) or [Whisper](https://github.com/openai/whisper)
    
 ### What's New
